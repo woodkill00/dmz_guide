@@ -46,7 +46,8 @@
   },
   "BOOT-005": {
     "tasks": [
-      "T010"
+      "T010",
+      "T011"
     ],
     "evidence": [
       "LICENSE",

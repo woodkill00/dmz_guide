@@ -22,10 +22,13 @@ Goal: every requirement has tasks and evidence. Independent test: dangling-task 
 ## Phase 5: User story 3 — Safe cross-platform maintenance (P2)
 Goal: detect vendor drift and metadata errors offline and in CI. Independent test: upstream mutation, empty manifest, malformed JSON and ignored runtime-state fixtures.
 - [x] T008 [US3] Run positive and negative tests in tests/test_repository.py and Bash smoke tests (BOOT-004).
-- [ ] T009 [US3] Verify .github/workflows/quality.yml at exact PR head on Ubuntu and Windows Git Bash (BOOT-004).
+- [x] T009 [US3] Verify .github/workflows/quality.yml at exact PR head on Ubuntu and Windows Git Bash (BOOT-004).
 
 ## Phase 6: Polish and release
-- [ ] T010 Record independent review and convergence in specs/002-repository-bootstrap/review.md; confirm LICENSE and THIRD_PARTY_NOTICES.md; publish only reviewed passing changes (BOOT-005).
+- [x] T010 Record independent review and convergence in specs/002-repository-bootstrap/review.md; confirm LICENSE and THIRD_PARTY_NOTICES.md; publish only reviewed passing changes (BOOT-005).
 
 ## Dependencies and parallel opportunities
 T001 → T002 → T003 → T004. T005 precedes validator repair T007; docs T006 may run in parallel with T007 because ownership is disjoint. T008 follows T003–T007; T009 follows T008 and branch publication; T010 release closes only after T009 and independent approval. Shared contracts and merges belong to integrator. MVP is US1; final bootstrap includes all three stories.
+
+## Phase 7: Convergence
+- [x] T011 Record exact-head hosted validation and independent review in specs/002-repository-bootstrap/acceptance.md and review.md per BOOT-005 (partial). Finding F1: code is present and validated; evidence files still say pending. This task does not authorize merge before review and final-head CI.

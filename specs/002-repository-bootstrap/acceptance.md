@@ -14,5 +14,11 @@ Initial scaffold was manual, not a completed official lifecycle. The remaining w
 
 This is in-session adherence to installed instructions, not a separate Codex CLI skill invocation. The CLI executable is present, but its login, model service, workflow runner execution and semantic agent dispatch were not tested. Constitution remains the proposed product baseline; no ratification is invented.
 
-## Pending remote evidence
-Exact-head hosted Linux/Windows Git Bash CI, final convergence/review and merge remain pending. No native PowerShell workflow is installed or claimed tested. Game application/browser journeys are not implemented and are outside this bootstrap.
+## Hosted evidence and release gate
+[PR workflow run 39586013216](https://github.com/woodkill00/dmz_guide/actions/runs/39586013216) passed at head `be564c663e1d69de4aec7ee8820340d31fd51e4f` on 2026-10-21. Both `repository-checks (ubuntu-latest)` and `repository-checks (windows-latest)` passed structural/provenance checks, all 15 tests and official Bash smoke steps. Push run 39586006735 also passed. Independent reviewer verified the remote 96-file tree matches the reviewed sanitized tree.
+
+Independent code/docs approval was recorded for that head. A final evidence-only commit must receive its own successful CI and diff review before merge. To avoid self-referential evidence commits, the final exact head, checks and merge result are recorded in [PR #1](https://github.com/woodkill00/dmz_guide/pull/1), not by repeatedly changing these source files.
+
+Initial convergence found one partial evidence gap F1 (pending-results wording), appended T011, and implement completed that evidence task. Final convergence assesses the resulting deliverable; see review.md. Merge is an external release gate, not evidence that the game application exists.
+
+No native PowerShell workflow is installed or claimed tested. Game application/browser journeys are not implemented and are outside this bootstrap.
