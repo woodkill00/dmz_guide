@@ -1,0 +1,15 @@
+# Only reviewed skill files are shared, never agent runtime/auth state.
+.agents/*
+!.agents/skills/
+.codex/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+dist/
+coverage/
+.DS_Store
+.specify/workflows/runs/
