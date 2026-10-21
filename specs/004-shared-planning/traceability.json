@@ -1,0 +1,55 @@
+{
+  "acceptedApplicationHead": "93ad1f54027d103aed1bd94433ece18e29d68727",
+  "exactHeadCI": "https://github.com/woodkill00/dmz_guide/actions/runs/39601721603",
+  "mainMergeAndCIPending": true,
+  "requirements": {
+    "F004-01": {
+      "evidence": [
+        "src/domain/shared-plan.mjs",
+        "tests/runtime/shared-plan.test.mjs",
+        "tests/browser/shared-plan.mjs",
+        "review.md"
+      ]
+    },
+    "F004-02": {
+      "evidence": [
+        "src/domain/shared-plan.mjs",
+        "tests/runtime/shared-plan.test.mjs",
+        "tests/browser/shared-plan.mjs",
+        "review.md"
+      ]
+    },
+    "F004-03": {
+      "evidence": [
+        "src/domain/shared-plan.mjs",
+        "tests/runtime/shared-plan.test.mjs",
+        "tests/browser/shared-plan.mjs",
+        "review.md"
+      ]
+    },
+    "F004-04": {
+      "evidence": [
+        "src/domain/shared-plan.mjs",
+        "tests/runtime/shared-plan.test.mjs",
+        "tests/browser/shared-plan.mjs",
+        "review.md"
+      ]
+    },
+    "F004-05": {
+      "evidence": [
+        "src/domain/shared-plan.mjs",
+        "tests/runtime/shared-plan.test.mjs",
+        "tests/browser/shared-plan.mjs",
+        "review.md"
+      ]
+    },
+    "F004-06": {
+      "evidence": [
+        "src/domain/shared-plan.mjs",
+        "tests/runtime/shared-plan.test.mjs",
+        "tests/browser/shared-plan.mjs",
+        "review.md"
+      ]
+    }
+  }
+}

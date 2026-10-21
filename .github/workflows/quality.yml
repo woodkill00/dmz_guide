@@ -35,6 +35,9 @@ jobs:
           python scripts/select-feature.py 002-repository-bootstrap
           for script in .specify/scripts/bash/*.sh; do bash -n "$script"; done
           bash .specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks
+          for feature in 003-runnable-guide 004-shared-planning 005-portable-editor 006-location-intelligence 007-progression-guides 008-community-release; do
+            SPECIFY_FEATURE="$feature" bash .specify/scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks
+          done
 
   runtime-checks:
     name: runtime-checks (${{ matrix.os }})
@@ -51,15 +54,45 @@ jobs:
       - name: Report installed Node
         run: node --version
       - run: npm ci --ignore-scripts
+      - run: npm run format:check
       - run: npm test
       - run: npm run build
       - run: npx playwright install chromium
       - run: npm run test:browser
+      - name: Rebuild and verify clean distributable
+        run: npm run package && python scripts/verify-release.py
+      - name: Save clean static release
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: static-release-${{ matrix.os }}
+          path: release/dmz-guide-static.zip
+          retention-days: 14
       - name: Save browser evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: browser-evidence-${{ matrix.os }}
+          path: test-results/
+          retention-days: 14
+          if-no-files-found: warn
+
+  browser-engines:
+    name: Firefox and WebKit smoke (Ubuntu)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: npx playwright install --with-deps firefox webkit
+      - run: npm run test:engines
+      - name: Save engine evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: browser-evidence-engines-ubuntu
           path: test-results/
           retention-days: 14
           if-no-files-found: warn

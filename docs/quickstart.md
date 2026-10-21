@@ -2,7 +2,23 @@
 
 ## What you can run today
 
-Repository validation and Spec Kit workflows. There is no application dev server, package-manager install step or website build yet. Do not invent an `npm run dev` command; the first implementation feature will document its actual runtime.
+The native multipage application is runnable without an agent or external runtime service. Development currently uses Node24.19.0; hosted Chrome checks have used Node22.23.3 on Linux and Windows.
+
+### Website, Linux/macOS shell or Windows PowerShell
+
+```text
+git clone https://github.com/woodkill00/dmz_guide.git
+cd dmz_guide
+npm ci
+npm run build
+npm start
+```
+
+Open http://127.0.0.1:4173 and keep the terminal running. Stop with Ctrl+C. Do not open module pages using file://. The static output expects host root `/`, not a repository subpath. No hosting is enabled. For a prebuilt static ZIP, extract it and run `node scripts/serve.mjs`; no npm dependencies are needed at runtime. See [release and editing instructions](release.md).
+
+### Optional contributor tooling
+
+The following Spec Kit tooling is for maintainers, not required to run or edit local content in the website.
 
 You need Git, Python 3.11+, [uv](https://docs.astral.sh/uv/getting-started/installation/), and a configured Codex coding agent to use the installed agent skills. Install prerequisites from their official sources. Repository checks use Python's standard library; using agent skills can require your own agent authentication and service access.
 

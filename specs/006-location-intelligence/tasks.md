@@ -19,7 +19,7 @@ Independent test: match actual itemIds against positive shared-plan deficits; ab
 - [x] T010 [US3] Integrate confirmed shared-plan adapter and visible relevance explanation in src/client/maps.mjs and src/domain/locations.mjs (LI-007).
 ## Final Phase: cross-cutting evidence
 - [x] T011 Implement exported browser tests and screenshots in tests/browser/maps.mjs for list/map/floor/filter/keyboard/zoom/goal/context/imagery journeys (LI-001–008).
-- [ ] T012 Run runtime checks, obtain parent hosted-browser evidence, converge and independent review; record exact outcomes in specs/006-location-intelligence/acceptance.md and convergence.md (LI-001–008).
+- [x] T012 Run runtime checks, obtain parent hosted-browser evidence, converge and independent review; record exact outcomes in specs/006-location-intelligence/acceptance.md and convergence.md (LI-001–008).
 
 Dependencies: T001 → T002 → US1 → US2 → US3 → T011/T012. T006/T009 tests may be prepared in sequence in the shared test file, not parallel edits. Reviewer checklist can run in parallel with adapter contract confirmation. No further delegation or shared file edits by this worker. MVP is US1, but full requested scope includes all stories. No implementation completion claim until evidence/review gates pass.
 
@@ -31,3 +31,7 @@ Dependencies: T001 → T002 → US1 → US2 → US3 → T011/T012. T006/T009 tes
 
 ## Phase 8: Hosted failure repair
 - [x] T015 Diagnose hosted maps.mjs missing-image timeout, replace dangling asset reference with validator-accepted reference-only image metadata, add precondition/runtime regression and failure screenshot/status diagnostics in tests/browser/maps.mjs and tests/runtime/locations.test.mjs (LI-006/008, T012).
+
+Slice evidence: exact cb6e40776fbd28da9bf73ec640df45f91cdff817 hosted browser/visual/source accepted independently2026-10-21. Final integration gates and authorized exact-main merge remain open.
+
+Final integrated evidence supersedes earlier browser-pending notes: exact93ad1f5, all five hosted jobs in run39601721603, independent112-test/build/link/full-height visual/package verdict. Only explicitly named owner-authorized readiness/merge and exact-main CI gates remain pending; see ../008-community-release/acceptance.md.

@@ -2,7 +2,7 @@
 
 A community field guide being built around trustworthy game data and explainable “what should I collect next?” planning.
 
-**Status: runnable guide foundation under review; broader roadmap implementation continues.** Run `npm ci && npm run build && npm start` with Node22+. No public deployment, complete verified game catalog or supported final release is claimed. See [quickstart](docs/quickstart.md) and [003 evidence](specs/003-runnable-guide/acceptance.md).
+**Status: the runnable multipage feature set passed independent integrated review and hosted browser validation at [`93ad1f5`](https://github.com/woodkill00/dmz_guide/tree/93ad1f54027d103aed1bd94433ece18e29d68727).** The implementation remains in reviewed draft PRs; owner authorization to ready/merge and exact-main CI are still pending. See [final acceptance evidence](specs/008-community-release/acceptance.md). With Node22+, run `npm ci`, `npm run build`, then `npm start`. Open http://127.0.0.1:4173. No public deployment or complete verified game catalog is claimed. See the [run and content-editing guide](docs/release.md) and [quickstart](docs/quickstart.md).
 
 ## Start here
 
@@ -12,11 +12,19 @@ A community field guide being built around trustworthy game data and explainable
 - **Maintaining the repository?** Read the [maintainer runbook](docs/maintainer-runbook.md) and [Spec Kit lifecycle](docs/spec-kit-cycle.md).
 - **Looking for something else?** Browse the [documentation index](docs/README.md).
 
-## Planned experience
+## Current implementation and boundaries
 
-Find items and recipes, track local inventory and goals, explain shortages without double-counting, edit and transfer validated content packs, and explore useful map/list views. Progression, story guides and community corrections remain part of the roadmap. Accounts, bots and cloud sync are not prerequisites for the core guide.
+- Native searchable catalog/detail routes, typed weapon stats, recipes and guides.
+- Shared single/multi-goal planning with reserves, prerequisites, retained tools, now/later shortages and executable-now trials.
+- Private local inventory/progress with explicit backup, restore, version rebind and retained-snapshot recovery.
+- Guided all-entity editing, searchable reference pickers and portable PNG/JPEG/WebP picture packs. New private records have real generic detail routes immediately.
+- Accessible map/list views, floors/source/version filters and goal-to-location relevance. Real unknown coordinates stay unplotted; fictional schematic is explicitly opt-in.
+- Separate DMZ Orders/upgrades and campaign progression, spoiler controls and local correction/review export.
+- Optional Discord configuration is unset. No login, bot, public moderation service, sync, PWA installation or paid hosting is simulated.
 
-Public content and private player state must stay separate. Unknown game facts remain visibly unknown. Synthetic test data is not a production catalog. Original or licensed assets only; private reference screenshots are not distributed.
+The source-backed starter has **19 items/weapon identities, 6 recipes, 1 disputed objective, 6 guides, 1 map, 13 locations and 2 conflict claims**. This is a small starter, not a complete verified current-build catalog. Unknown weapon numbers are not zero, and source-supported identity never certifies every stat.
+
+Public content and private player state stay separate. Only original or explicitly licensed assets may be distributed; private screenshots and profile backups must never enter public history. Local operation needs the server running. Browser storage is not a backup.
 
 ## How changes happen
 
@@ -26,7 +34,7 @@ Spec Kit is pinned to **v1.2.2** (commit `74be0a63e93c7087c5b06556b7561810d8f78a
 
 ## Before a public product launch
 
-The owner must settle release scope, target game/build, hosting and community ownership. Game facts and asset rights need verification. Application behavior, accessibility, mobile journeys, imports and recovery need implementation and measured tests.
+The owner must settle release scope, target game/build, hosting and community ownership. Game facts and asset rights need verification. The tested branch has exact-head integrated browser/visual evidence and review; merging to main and any public launch remain separate gates. Physical devices and formal WCAG certification are not implied by automated tests.
 
 Original project code is licensed under [MIT](LICENSE). Game artwork, maps, third-party data and assets are not relicensed by that grant. Upstream tooling retains its own notices. See [licensing and asset rights](docs/licensing-and-assets.md).
 

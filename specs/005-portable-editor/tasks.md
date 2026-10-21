@@ -15,8 +15,8 @@
 - [x] T009 [US3] Implement rollback snapshot preview, profile impact, generation invalidation, dirty-switch confirmation and storage-failure preservation in src/client/editor.mjs (E08,E09,E11–E14).
 ## Phase 6: Verification / polish
 - [x] T010 Write exported hosted-browser acceptance journey in tests/browser/editor.mjs for guided edit, real original raster export/clean import/reload, cancellation, rollback, quota/conflict and narrow keyboard controls (SC01–SC05, E01–E14).
-- [ ] T011 Run unit/build/check evidence and parent hosted-browser handoff; record exact results/remaining gaps in specs/005-portable-editor/acceptance.md (SC01–SC05).
-- [ ] T012 Execute append-only convergence assessment and independent implementation handoff, recording lifecycle in specs/005-portable-editor/lifecycle.md (all requirements).
+- [x] T011 Run unit/build/check evidence and parent hosted-browser handoff; record exact results/remaining gaps in specs/005-portable-editor/acceptance.md (SC01–SC05).
+- [x] T012 Execute append-only convergence assessment and independent implementation handoff, recording lifecycle in specs/005-portable-editor/lifecycle.md (all requirements).
 ## Dependencies and strategy
 T001→T002→T003→T004→T005→T006→T007→T008→T009→T010→T011→T012. No parallel edits of shared client file; parent integration files are disjoint. US1 useful first increment; US2/3 close full requested journey. Tests before corresponding boundary implementation. Parent alone owns publication, CI hook and final release.
 
@@ -28,3 +28,7 @@ T001→T002→T003→T004→T005→T006→T007→T008→T009→T010→T011→T01
 
 - [x] T017 Bound guided nested array rendering to20entries per page while preserving all fields via keyboard pagination in src/client/editor.mjs per E06/E11 (partial).
 - [x] T018 Extend tests/browser/editor.mjs to add a new gun/stat and guide, then verify typed private reader links, inventory and planner after clean import per SC01/SC02 (partial; hosted execution pending).
+
+Integration status2026-10-21: completed markers above reflect implemented behavior and actual slice evidence, not final release/merge. Final integrated cross-engine/mobile200% checks and exact-main CI remain separately gated.
+
+Final integrated evidence supersedes earlier browser-pending notes: exact93ad1f5, all five hosted jobs in run39601721603, independent112-test/build/link/full-height visual/package verdict. Only explicitly named owner-authorized readiness/merge and exact-main CI gates remain pending; see ../008-community-release/acceptance.md.
