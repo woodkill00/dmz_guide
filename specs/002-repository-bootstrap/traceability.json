@@ -1,0 +1,58 @@
+{
+  "BOOT-001": {
+    "tasks": [
+      "T001"
+    ],
+    "evidence": [
+      "speckit.lock.json",
+      ".specify/integration.json",
+      "third_party/spec-kit/LICENSE"
+    ]
+  },
+  "BOOT-002": {
+    "tasks": [
+      "T002",
+      "T003",
+      "T004"
+    ],
+    "evidence": [
+      "scripts/select-feature.py",
+      "specs/001-guide-foundation/spec.md"
+    ]
+  },
+  "BOOT-003": {
+    "tasks": [
+      "T004",
+      "T006"
+    ],
+    "evidence": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "docs/spec-kit-cycle.md"
+    ]
+  },
+  "BOOT-004": {
+    "tasks": [
+      "T005",
+      "T007",
+      "T008",
+      "T009"
+    ],
+    "evidence": [
+      "scripts/check.py",
+      "tests/test_repository.py",
+      ".github/workflows/quality.yml"
+    ]
+  },
+  "BOOT-005": {
+    "tasks": [
+      "T010",
+      "T011"
+    ],
+    "evidence": [
+      "LICENSE",
+      "THIRD_PARTY_NOTICES.md",
+      "specs/002-repository-bootstrap/review.md"
+    ]
+  }
+}

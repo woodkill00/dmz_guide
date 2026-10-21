@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible non-security project problem.
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: "For vulnerabilities, follow SECURITY.md. Do not post credentials, private player exports, account IDs, or private screenshots. The application is not built yet; identify the tooling or document involved."
+  - type: textarea
+    id: expected_actual
+    attributes:
+      label: Expected and actual behavior
+      description: Explain what should happen and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Number the steps and provide sanitized inputs or commands.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Commit/version and environment
+      description: Include OS, tool/browser version and relevant feature directory.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence and impact
+      description: Include error text and affected task; describe unavailable evidence honestly.

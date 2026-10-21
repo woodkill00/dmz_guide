@@ -1,0 +1,33 @@
+name: Content correction
+description: Submit sourced game information or flag a disputed claim.
+title: "[Content] "
+body:
+  - type: markdown
+    attributes:
+      value: "A report enters review, not automatic publication. No private profiles or unlicensed screenshots. Unknown build or rights should be stated explicitly."
+  - type: textarea
+    id: claim
+    attributes:
+      label: Current claim and proposed correction
+      description: Include the affected entity, page or record ID.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and conflicts
+      description: Source URLs, publication/capture dates and contradictory evidence.
+    validations:
+      required: true
+  - type: input
+    id: applicability
+    attributes:
+      label: Game, build and season
+      description: Write unknown where not established.
+    validations:
+      required: true
+  - type: textarea
+    id: rights
+    attributes:
+      label: Assets and permissions
+      description: If proposing an asset, identify creator, license and permission evidence. Otherwise write not applicable.

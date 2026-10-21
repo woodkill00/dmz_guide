@@ -1,0 +1,145 @@
+{
+  "method": "WCAG relative luminance formula; opaque solid token pairs only; not rendered UI or WCAG conformance testing",
+  "colors": {
+    "canvas": "#101416",
+    "surface": "#1A2022",
+    "alternate": "#222A2D",
+    "text": "#F2F0E7",
+    "secondary": "#BDC5C2",
+    "decoration": "#526164",
+    "gold": "#D9B866",
+    "lime": "#B8DE79",
+    "cyan": "#8FC8D1",
+    "warning": "#F0B378"
+  },
+  "pairs": [
+    {
+      "foreground": "text",
+      "background": "canvas",
+      "ratio": 16.22
+    },
+    {
+      "foreground": "text",
+      "background": "surface",
+      "ratio": 14.44
+    },
+    {
+      "foreground": "text",
+      "background": "alternate",
+      "ratio": 12.8
+    },
+    {
+      "foreground": "secondary",
+      "background": "canvas",
+      "ratio": 10.52
+    },
+    {
+      "foreground": "secondary",
+      "background": "surface",
+      "ratio": 9.37
+    },
+    {
+      "foreground": "secondary",
+      "background": "alternate",
+      "ratio": 8.3
+    },
+    {
+      "foreground": "decoration",
+      "background": "canvas",
+      "ratio": 2.87
+    },
+    {
+      "foreground": "decoration",
+      "background": "surface",
+      "ratio": 2.55
+    },
+    {
+      "foreground": "decoration",
+      "background": "alternate",
+      "ratio": 2.26
+    },
+    {
+      "foreground": "gold",
+      "background": "canvas",
+      "ratio": 9.7
+    },
+    {
+      "foreground": "gold",
+      "background": "surface",
+      "ratio": 8.64
+    },
+    {
+      "foreground": "gold",
+      "background": "alternate",
+      "ratio": 7.65
+    },
+    {
+      "foreground": "lime",
+      "background": "canvas",
+      "ratio": 12.14
+    },
+    {
+      "foreground": "lime",
+      "background": "surface",
+      "ratio": 10.81
+    },
+    {
+      "foreground": "lime",
+      "background": "alternate",
+      "ratio": 9.58
+    },
+    {
+      "foreground": "cyan",
+      "background": "canvas",
+      "ratio": 10.01
+    },
+    {
+      "foreground": "cyan",
+      "background": "surface",
+      "ratio": 8.91
+    },
+    {
+      "foreground": "cyan",
+      "background": "alternate",
+      "ratio": 7.9
+    },
+    {
+      "foreground": "warning",
+      "background": "canvas",
+      "ratio": 10.08
+    },
+    {
+      "foreground": "warning",
+      "background": "surface",
+      "ratio": 8.97
+    },
+    {
+      "foreground": "warning",
+      "background": "alternate",
+      "ratio": 7.95
+    }
+  ],
+  "button_pairs": [
+    {
+      "foreground": "canvas",
+      "background": "gold",
+      "ratio": 9.7
+    },
+    {
+      "foreground": "canvas",
+      "background": "lime",
+      "ratio": 12.14
+    },
+    {
+      "foreground": "text",
+      "background": "gold",
+      "ratio": 1.67
+    },
+    {
+      "foreground": "text",
+      "background": "lime",
+      "ratio": 1.34
+    }
+  ],
+  "focus_gold_ratio": 1.03
+}

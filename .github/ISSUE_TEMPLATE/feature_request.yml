@@ -1,0 +1,23 @@
+name: Feature or documentation request
+description: Describe a player or contributor need before proposing a solution.
+title: "[Request] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and audience
+      description: Who needs this and what are they unable to do?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome and acceptance example
+      description: Describe one observable result and what is out of scope.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence, alternatives and dependencies
+      description: Link relevant roadmap/specification entries and sources. Do not include personal data.
