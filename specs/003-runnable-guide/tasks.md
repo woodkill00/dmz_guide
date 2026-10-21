@@ -1,20 +1,20 @@
 # Tasks: Runnable guide foundation
 Input: spec.md, plan.md, research.md, data-model.md, contracts/ui.md.
 ## Phase 1 Setup
-- [ ] T001 Create package.json and runtime commands; retain baseline gates in .github/workflows/quality.yml. F003-07/08.
-- [ ] T002 Record static route spike and architecture result in research.md after scripts/build.mjs + scripts/serve.mjs test. F003-01/07.
+- [x] T001 Create package.json and runtime commands; retain baseline gates in .github/workflows/quality.yml. F003-07/08.
+- [x] T002 Record static route spike and architecture result in research.md after scripts/build.mjs + scripts/serve.mjs test. F003-01/07.
 ## Phase 2 Foundation
-- [ ] T003 Integrate reviewed schemas/pack.schema.json and content/packs/*.json; add src/content/validate.mjs with canonical caps, reference/status/scope checks and tests/runtime/content.test.mjs. F003-02/08.
+- [x] T003 Integrate reviewed schemas/pack.schema.json and content/packs/*.json; add src/content/validate.mjs with canonical caps, reference/status/scope checks and tests/runtime/content.test.mjs. F003-02/08.
 ## Phase 3 US1 Read
-- [ ] T004 [US1] Implement escaped native routes and provenance in scripts/build.mjs + src/ui/render.mjs; test direct/no-JS routes in tests/browser/guide.mjs. F003-01/02.
-- [ ] T005 [US1] Implement accessible responsive theme and URL search in src/styles.css + src/client/catalog.mjs + src/client/theme.mjs; inspect screenshots. F003-06.
+- [x] T004 [US1] Implement escaped native routes and provenance in scripts/build.mjs + src/ui/render.mjs; test direct/no-JS routes in tests/browser/guide.mjs. F003-01/02.
+- [x] T005 [US1] Implement accessible responsive theme and URL search in src/styles.css + src/client/catalog.mjs + src/client/theme.mjs; inspect screenshots. F003-06.
 ## Phase 4 US2 Plan
-- [ ] T006 [US2] Write tests/runtime/planner.test.mjs covering batch rounding, tools, currency, gated/unknown states, invalid references/cycles and 100-operation conservation. F003-04/08.
-- [ ] T007 [US2] Implement pure one-goal calculations in src/domain/planner.mjs and planner UI in src/client/planner.mjs. F003-03/04.
+- [x] T006 [US2] Write tests/runtime/planner.test.mjs covering batch rounding, tools, currency, gated/unknown states, invalid references/cycles and 100-operation conservation. F003-04/08.
+- [x] T007 [US2] Implement pure one-goal calculations in src/domain/planner.mjs and planner UI in src/client/planner.mjs. F003-03/04.
 ## Phase 5 US3 Recover
-- [ ] T008 [US3] Write tests/runtime/profile.test.mjs for bytes/depth/count limits, dangerous keys, versions, mismatch and round trip. F003-05.
-- [ ] T009 [US3] Implement src/storage/store.mjs and src/domain/profile.mjs with atomic expected-revision saves, previous snapshot, memory unsaved fallback and preview restore/rebind. F003-03/05.
-- [ ] T010 [US3] Implement inventory/settings UI in src/client/profile.mjs and browser reload/restore/cancel/conflict/error tests in tests/browser/profile.mjs. F003-03/05.
+- [x] T008 [US3] Write tests/runtime/profile.test.mjs for bytes/depth/count limits, dangerous keys, versions, mismatch and round trip. F003-05.
+- [x] T009 [US3] Implement src/storage/store.mjs and src/domain/profile.mjs with atomic expected-revision saves, previous snapshot, memory unsaved fallback and preview restore/rebind. F003-03/05.
+- [x] T010 [US3] Implement inventory/settings UI in src/client/profile.mjs and browser reload/restore/cancel/conflict/error tests in tests/browser/profile.mjs. F003-03/05.
 ## Phase 6 Polish and acceptance
 - [ ] T011 Verify build/link/budget and all repository/runtime/browser checks; write acceptance.md and traceability.json with exact evidence. F003-07/08.
 - [ ] T012 Run convergence, append missing tasks, repair and obtain independent reviewer verdict in review.md. F003-08.
@@ -25,6 +25,8 @@ T001/003 precede domain implementation. After reviewer gate and schema lock, US1
 S0–S2 end-to-end first, then 004 shared planning, 005 portable editor, 006 location intelligence, 007 progression and 008 community/release. No dummy controls stand in for completed behavior.
 
 ## Phase7: Convergence
-- [ ] T014 Repair reviewer-found atomic preview pack/revision binding and direct unsaved export in src/client/profile.mjs/common.mjs/private-pages, verify cross-pack/denied-storage browser cases. F003-03/05 partial.
-- [ ] T015 Repair bounded prerequisite traversal, disputed readiness, one-time quantities and aggregate overflow in src/domain/planner.mjs with regression tests. F003-04 partial.
-- [ ] T016 Correct browser option synchronization, use supported installed Chrome sandbox, update official artifact action pin and rerun actual CI screenshots. F003-08 missing browser evidence.
+- [x] T014 Repair reviewer-found atomic preview pack/revision binding and direct unsaved export in src/client/profile.mjs/common.mjs/private-pages, verify cross-pack/denied-storage browser cases. F003-03/05 partial.
+- [x] T015 Repair bounded prerequisite traversal, disputed readiness, one-time quantities and aggregate overflow in src/domain/planner.mjs with regression tests. F003-04 partial.
+- [x] T016 Correct browser option synchronization, use supported installed Chrome sandbox, update official artifact action pin and rerun actual CI screenshots. F003-08 missing browser evidence.
+
+Integration status2026-10-21: completed markers above reflect implemented behavior and actual slice evidence, not final release/merge. Final integrated cross-engine/mobile200% checks and exact-main CI remain separately gated.

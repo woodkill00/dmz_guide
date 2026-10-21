@@ -408,6 +408,8 @@ try {
   await runLocalNetworkTests({ browser, base });
   const { runReflowTests } = await import("./reflow.mjs");
   await runReflowTests({ browser, base });
+  const { runShowcase } = await import("./showcase.mjs");
+  await runShowcase({ browser, base });
   checkHealth();
   console.log(
     "Browser acceptance passed: direct routes, persistence, planning, backup/reset/cancel/restore, hostile import, tab conflict, 320/390px, no-JS and console.",

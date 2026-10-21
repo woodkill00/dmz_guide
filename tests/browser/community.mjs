@@ -122,6 +122,9 @@ export async function runCommunityTests({ browser, base }) {
     buffer: Buffer.from('{"schemaVersion":1,"schemaVersion":1}'),
   });
   await page.waitForSelector("#error:not([hidden])");
+  await page.waitForFunction(() =>
+    document.querySelector("#error").textContent.includes("Duplicate"),
+  );
   assert.match(await page.locator("#error").textContent(), /Duplicate/);
   await page.screenshot({
     path: "test-results/community-390.png",

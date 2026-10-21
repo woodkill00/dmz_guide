@@ -8,6 +8,29 @@ export const escapeHTML = (value) =>
       ],
   );
 export const e = escapeHTML;
+export function recordSearchText(record) {
+  if (record.spoiler) return "spoiler-protected record";
+  return [
+    record.name,
+    record.title,
+    record.description,
+    record.body,
+    record.category,
+    record.station,
+    ...(record.aliases || []),
+    ...(record.stats || []).flatMap((stat) => [
+      stat.label,
+      stat.metric,
+      stat.value ?? "unknown",
+      stat.unit,
+      stat.status,
+      JSON.stringify(stat.context || {}),
+    ]),
+  ]
+    .join(" ")
+    .toLowerCase();
+}
+
 const groups = {
   item: "items",
   resource: "items",
@@ -94,7 +117,7 @@ export const statusLabel = (record) =>
     : record.status;
 export function renderCard(record) {
   const kind = record.recordType === "item" ? record.kind : record.recordType;
-  return `<article class="record-card" data-record-card data-search="${e([publicTitle(record), record.spoiler ? "" : record.description, record.category, ...(record.spoiler ? [] : record.aliases || [])].join(" ").toLowerCase())}" data-type="${e(kind)}" data-pack="${e(record.pack.id)}"><div class="card-meta"><span>${e(kind)}</span><span class="badge ${record.status === "fictional" ? "fixture" : ""}">${e(statusLabel(record))}</span></div><h3><a href="${recordUrl(record)}">${e(publicTitle(record))}<span aria-hidden="true"> ↗</span></a></h3><p>${e(record.spoiler ? "Spoiler content. Open this record and choose Reveal spoiler content to read it." : record.description || record.body || record.category || record.station || "Open the record for evidence and scope.")}</p><div class="card-foot">${isFixture(record.pack) ? '<strong class="fixture-text">FICTIONAL FIXTURE · NOT GAME DATA</strong>' : `<span>${e(record.category || record.recordType)} · ${e(record.pack.contentVersion)}</span>`}</div></article>`;
+  return `<article class="record-card" data-record-card data-search="${e(recordSearchText(record))}" data-type="${e(kind)}" data-pack="${e(record.pack.id)}"><div class="card-meta"><span>${e(kind)}</span><span class="badge ${record.status === "fictional" ? "fixture" : ""}">${e(statusLabel(record))}</span></div><h3><a href="${recordUrl(record)}">${e(publicTitle(record))}<span aria-hidden="true"> ↗</span></a></h3><p>${e(record.spoiler ? "Spoiler content. Open this record and choose Reveal spoiler content to read it." : record.description || record.body || record.category || record.station || "Open the record for evidence and scope.")}</p><div class="card-foot">${isFixture(record.pack) ? '<strong class="fixture-text">FICTIONAL FIXTURE · NOT GAME DATA</strong>' : `<span>${e(record.category || record.recordType)} · ${e(record.pack.contentVersion)}</span>`}</div></article>`;
 }
 export function renderHome(packs) {
   const records = allRecords(packs);

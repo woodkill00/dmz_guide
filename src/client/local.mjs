@@ -1,6 +1,11 @@
 import { init, state, $, esc, error } from "./common.mjs";
 import { readRecord } from "../storage/store.mjs";
-import { allRecords, renderDetail, recordUrl } from "../ui/render.mjs";
+import {
+  allRecords,
+  renderDetail,
+  recordUrl,
+  recordSearchText,
+} from "../ui/render.mjs";
 import {
   bytesFromBase64,
   hashBytes,
@@ -57,7 +62,7 @@ async function render() {
         .replaceAll("<h1>", "<h2>")
         .replaceAll("</h1>", "</h2>");
   } else
-    markup += `<label>Search private visible records<input id="local-query" type="search"></label><div class="card-grid">${records.map((r) => `<article class="panel" data-local-search="${esc(r.spoiler ? "" : `${r.name || r.title} ${r.description || r.category || ""}`.toLowerCase())}"><p>${esc(r.recordType)} · ${esc(r.status)}</p><h2><a href="${link(r)}">${r.spoiler ? "Spoiler-protected record" : esc(r.name || r.title)}</a></h2><p>${r.spoiler ? "Reveal only after choosing this record." : esc(r.description || r.category || "")}</p></article>`).join("")}</div>`;
+    markup += `<label>Search private visible records<input id="local-query" type="search"></label><div class="card-grid">${records.map((r) => `<article class="panel" data-local-search="${esc(recordSearchText(r))}"><p>${esc(r.recordType)} · ${esc(r.status)}</p><h2><a href="${link(r)}">${r.spoiler ? "Spoiler-protected record" : esc(r.name || r.title)}</a></h2><p>${r.spoiler ? "Reveal only after choosing this record." : esc(r.description || r.category || "")}</p></article>`).join("")}</div>`;
   $("#local-records").innerHTML = markup;
   // Private relationships always stay in this exact selected pack, never a public fork.
   for (const a of $("#local-records").querySelectorAll("a[href]")) {

@@ -88,6 +88,7 @@ $("#review-file").addEventListener("change", async (event) => {
   const token = ++generation;
   review = null;
   $("#review-stage").hidden = true;
+  $("#error").hidden = true;
   try {
     const file = event.target.files[0];
     if (!file) return;
