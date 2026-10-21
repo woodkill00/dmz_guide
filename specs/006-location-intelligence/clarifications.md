@@ -1,0 +1,2 @@
+# Clarification pass — 2026-10-21
+Active feature resolved by check-prerequisites --json --paths-only to 006-location-intelligence. No critical ambiguities detected worth formal clarification; zero questions asked. All functional scope, entity identity, UX, security, dependencies, edge cases, terminology and completion categories clear from parent contract and 001 baseline. Performance inherits bounded validated pack limits; no latency marketing claim. Spec self-check unchanged 5/5. No extension hooks configured. Proceed to plan.
