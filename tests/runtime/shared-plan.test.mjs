@@ -174,3 +174,26 @@ test('root targets are earmarked; only newly produced batch surplus can serve ot
   const { pack, profile } = fixture(); profile.goals = [{ id: 'demo:beacon-build', quantity: 1 }, { id: 'demo:board-batch', quantity: 1 }]; supply(profile, { wire: 3, cell: 1, tool: 1, credits: 10 });
   const r = planShared(pack, profile); assert(r.schedule.every(s => s.executable)); assert.equal(row(r, 'wire').consumed, 3); assert.equal(r.schedule[1].actions.length, 0); assert.equal(r.remainingInventory['demo:board'], 1);
 });
+
+
+test('retained floor increases are attributed by goal/horizon without charging later needs to now', () => {
+  for (const owned of [0, 1, 3, 5, 6]) for (const consumed of [0, 2]) {
+    const { pack, profile } = fixture();
+    pack.recipes[1].prerequisites = [];
+    pack.recipes[2].inputs.find(c => c.itemId === 'demo:tool').quantity = 5;
+    if (consumed) pack.recipes[1].inputs.push({ itemId: 'demo:tool', quantity: consumed, consumed: true });
+    supply(profile, { tool: owned }); const before = JSON.stringify(profile);
+    const r = planShared(pack, profile), tool = row(r, 'tool');
+    const firstRetainedMissing = Math.max(0, 1 - owned);
+    const laterRetainedMissing = Math.max(0, 5 - owned) - firstRetainedMissing;
+    const allocated = Math.min(consumed, Math.max(0, owned - 5));
+    assert.equal(tool.retained, 5); assert.equal(tool.retainedMissing, Math.max(0, 5 - owned));
+    assert.equal(tool.allocated, allocated); assert.equal(tool.missing, consumed - allocated);
+    assert.equal(amount(r.goals[0], 'collectNow', 'tool'), firstRetainedMissing + consumed - allocated);
+    assert.equal(amount(r.goals[1], 'collectLater', 'tool'), laterRetainedMissing);
+    assert.equal(amount(r.goals[0], 'collectLater', 'tool'), 0); assert.equal(amount(r.goals[1], 'collectNow', 'tool'), 0);
+    assert.equal(tool.perGoal.reduce((n, p) => n + p.retainedMissing, 0), tool.retainedMissing);
+    assert(tool.allocated + Math.min(owned, tool.retained) <= owned);
+    assert.equal(JSON.stringify(profile), before);
+  }
+});
