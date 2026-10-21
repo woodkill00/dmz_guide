@@ -1,0 +1,3 @@
+# Model
+Correction/review schema1 strict allowlisted fields; JSON256KiB/depth12/nodes2000/string8000, canonical IDs<=100 and safeURL. current/proposed values strings<=8000 to avoid executing arbitrary structures; maintainer deliberately applies via schema editor. Rights/attribution mandatory, no profile fields allowed. Review decisions approved/rejected/needs-evidence; no credentials/identity verification.
+No cache manifest or service worker. Optional Discord exact HTTPS host/path allowed, no query/credentials. Canonical correction and reviewed wrapper fields/bounds are specified in spec.md; both have strict allowlists.

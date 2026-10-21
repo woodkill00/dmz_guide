@@ -1,0 +1,32 @@
+# Feature Specification: Community correction and reliable local release
+Branch008-community-release. Created2026-10-21. Status requirements review.
+Input: complete approved S7 correction/export/review workflow, configurable verified Discord entry and final runnable release operations; prove reliable local-server operation without external network, without sync/backend or installable caching.
+## User Scenarios & Testing
+### US1 Prepare a correction safely (P1)
+Contributor selects an active-pack record, explains an incorrect field, proposed replacement, evidence, attribution/rights and exports a bounded correction packet. Preview shows exact record/version/current/proposed values. It never uploads automatically or includes inventory/private profile.
+Acceptance: export contains only listed correction fields and source/rights, malformed fields rejected, no public send occurs. Existing pack remains unchanged.
+### US2 Review a proposed correction (P2)
+Maintainer imports a correction packet, reviews current-content mismatch/diff and evidence, records local approve/reject/needs-evidence decision with reviewer label and notes, and exports a reviewed packet for normal repository review.
+Acceptance: no local approval automatically publishes or mutates pack. Reviewer identity is self-reported, not authenticated. Unknown versions/keys/executable URLs/oversized packets rejected without current-state change. Conflicting source evidence remains explicit.
+### US3 Run and use the guide reliably (P3)
+User starts a clean checkout locally and reads native pages and private local inventory/packs with the local static server running and no external network. Portable packs carry actual raster bytes.
+Acceptance: external requests are denied while loopback remains reachable; native/detail/inventory/editor reload succeeds with previously saved local data. Stopping the server makes new uncached navigation unavailable, not offline-ready. No service worker/PWA installation is supplied. Browser storage can be cleared/denied and is not a backup; explicit portable/private exports remain essential.
+## Requirements
+- F008-01: Native community page includes correction draft/preview/export and review import/decision/export. Bound JSON256KiB,depth12,keys2000,strings8000; reject duplicate/pollution keys, unknown schema and unsafe URLs. Required pack/entity/contentVersion/evidence/rights and explicit unknown facts.
+- F008-02: Corrective packets exclude all profile/player-state/raw screenshots and imported executable markup. Review approval is local metadata only; applying reviewed correction remains deliberate validated editor+repository PR workflow, not fake public moderation.
+- F008-03: Discord destination config remains unset until owner supplied/verified; show truthful unavailable state, no invented link. Validate configured HTTPS discord.gg or discord.com/invite destination without automatic navigation. No chat/login/bot/API/sync.
+- F008-04: All runtime routes/assets are served locally without remote fonts/CDNs/APIs or automatic remote image fetches. Verify external-network-denied operation with loopback allowed, local private pack/raster reload, and honest server-stopped limitations. Optional installable PWA/service-worker caching and cross-device sync are deferred; no cache management machinery or offline-after-server-close claim.
+- F008-05: Clean install/build/start instructions, portable static output, source/license/rights/coverage/community limitations and backup/update/recovery documented. No deployment/paid service/security changes. Format source/tests with pinned repeatable formatter and preserve tests.
+- F008-06: Full unit/adversarial/import/property/browser suite and original desktop/mobile screenshot review across actual hosted ChromeLinux/Windows plus Firefox/WebKit smoke for core/picture transfer. Verify no console errors/broken links, no remote runtime dependency, and no physical-device/WCAG-perfect claims. Exact reviewed-head/main CI gates remain.
+## Key Entities
+Correction schema1 {packId,contentVersion,entityId,field,currentValue,proposedValue,reason,evidenceUrl,attribution,rights}; reviewed wrapper includes decision/reviewer/notes. Configured community destination separate from content/private profile.
+## Success Criteria
+All malformed packet cases preserve existing state; correction export has zero private profile fields; external-network-denied direct detail/inventory/editor reload succeeds while loopback server runs; clean checkout local build serves every internal route; every required functional slice has traceable actual evidence and explicit remaining external boundaries.
+## Assumptions
+Owner Discord invite remains pending and is not a blocker to independent work. Public launch/hosting not performed. Optional installable caching and sync are deferred, not prerequisites of the approved core release. Source-backed starter is not complete verified game catalog.
+## Clarifications
+Prior authorization covers implementation/repo work, not hosting/security credentials. Local serving is required for native module pages and disclosed. Review is exported human-governed evidence, not fictitious remote service. No new user question needed.
+
+## Canonical correction contract
+Correction exact fields: schemaVersion (integer 1), packId, contentVersion, entityId, field, currentValue, proposedValue, reason, evidenceUrl, attribution, rights. All except schemaVersion are strings. packId/entityId use canonical IDs at most 100 characters; contentVersion 1–100; field 1–100; currentValue 0–8000; proposedValue 1–8000; reason 1–2000; evidenceUrl 1–2000 safe HTTPS/HTTP URL without credentials/control characters; attribution and rights 1–500. Empty unknown values must be explicitly described rather than fabricated. No other keys allowed.
+Reviewed packet exact fields: schemaVersion (1), correction (validated canonical correction), decision (approved|rejected|needs-evidence), reviewer (1–200), notes (1–2000). Identity is self-reported and decisions never automatically mutate content. Both imports enforce UTF-8 256 KiB, depth12, total nodes2000, string/key caps, duplicate-key/pollution-key rejection before parsing, and atomic staged preview. Pack/version/entity mismatch is visible and cannot silently apply. Cancellation preserves draft; import never commits player/content data.

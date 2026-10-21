@@ -1,8 +1,129 @@
-import{LIMITS,ID,assert,boundedWalk,parseBounded}from'../content/limits.mjs';
-const validID=id=>typeof id==='string'&&id.length<=100&&ID.test(id);
-export function newProfile(pack){return{schemaVersion:1,id:pack.id,packId:pack.id,contentVersion:pack.contentVersion,revision:0,inventory:{},reserves:{},goals:[],completion:{},spoilers:false,routes:{}};}
-export function validateProfile(p){boundedWalk(p,{depth:12,nodes:LIMITS.profileNodes,string:2000});assert(p&&typeof p==='object'&&!Array.isArray(p),'Invalid profile');const keys=['schemaVersion','id','packId','contentVersion','revision','inventory','reserves','goals','completion','spoilers','routes'];assert(Object.keys(p).every(k=>keys.includes(k))&&keys.every(k=>Object.hasOwn(p,k)),'Invalid profile fields');assert(p.schemaVersion===1,'Unsupported profile version');assert(validID(p.id)&&validID(p.packId),'Invalid profile ID');assert(typeof p.contentVersion==='string'&&p.contentVersion.length<=80,'Invalid content version');assert(Number.isSafeInteger(p.revision)&&p.revision>=0,'Invalid revision');assert(typeof p.spoilers==='boolean','Invalid spoiler preference');
- for(const key of['inventory','reserves','completion','routes']){const map=p[key];assert(map&&typeof map==='object'&&!Array.isArray(map),`Invalid ${key}`);assert(Object.keys(map).length<=10000,'Too many references');for(const[id,v]of Object.entries(map)){assert(validID(id),'Invalid reference ID');if(['inventory','reserves'].includes(key))assert(Number.isSafeInteger(v)&&v>=0&&v<=LIMITS.quantity,'Quantity must be an integer from 0 to 1000000');else if(key==='completion')assert(['unknown','locked','unlocked','completed'].includes(v),'Invalid progress');else assert(validID(v),'Invalid route');}}
- assert(Array.isArray(p.goals)&&p.goals.length<=LIMITS.goals,'Goal limit exceeded');for(const g of p.goals){assert(g&&Object.keys(g).length===2&&validID(g.id)&&Number.isSafeInteger(g.quantity)&&g.quantity>0&&g.quantity<=LIMITS.quantity,'Invalid goal');}assert(new Set(p.goals.map(g=>g.id)).size===p.goals.length,'Duplicate goals');return p;}
-export function parseProfile(text){return validateProfile(parseBounded(text,LIMITS.profileBytes,{depth:12,nodes:LIMITS.profileNodes,string:2000}));}
-export function previewProfile(p,pack){validateProfile(p);assert(p.packId===pack.id,'Backup belongs to a different pack');const known=new Set([...pack.items,...pack.recipes,...pack.objectives].map(r=>r.id));const refs=new Set([...Object.keys(p.inventory),...Object.keys(p.reserves),...Object.keys(p.completion),...p.goals.map(g=>g.id),...Object.keys(p.routes),...Object.values(p.routes)]);return{versionMismatch:p.contentVersion!==pack.contentVersion,unresolved:[...refs].filter(id=>!known.has(id)),inventoryEntries:Object.keys(p.inventory).length,goals:p.goals.length};}
+import {
+  LIMITS,
+  ID,
+  assert,
+  boundedWalk,
+  parseBounded,
+} from "../content/limits.mjs";
+const validID = (id) =>
+  typeof id === "string" && id.length <= 100 && ID.test(id);
+export function newProfile(pack) {
+  return {
+    schemaVersion: 1,
+    id: pack.id,
+    packId: pack.id,
+    contentVersion: pack.contentVersion,
+    revision: 0,
+    inventory: {},
+    reserves: {},
+    goals: [],
+    completion: {},
+    spoilers: false,
+    routes: {},
+  };
+}
+export function validateProfile(p) {
+  boundedWalk(p, { depth: 12, nodes: LIMITS.profileNodes, string: 2000 });
+  assert(p && typeof p === "object" && !Array.isArray(p), "Invalid profile");
+  const keys = [
+    "schemaVersion",
+    "id",
+    "packId",
+    "contentVersion",
+    "revision",
+    "inventory",
+    "reserves",
+    "goals",
+    "completion",
+    "spoilers",
+    "routes",
+  ];
+  assert(
+    Object.keys(p).every((k) => keys.includes(k)) &&
+      keys.every((k) => Object.hasOwn(p, k)),
+    "Invalid profile fields",
+  );
+  assert(p.schemaVersion === 1, "Unsupported profile version");
+  assert(validID(p.id) && validID(p.packId), "Invalid profile ID");
+  assert(
+    typeof p.contentVersion === "string" && p.contentVersion.length <= 80,
+    "Invalid content version",
+  );
+  assert(
+    Number.isSafeInteger(p.revision) && p.revision >= 0,
+    "Invalid revision",
+  );
+  assert(typeof p.spoilers === "boolean", "Invalid spoiler preference");
+  for (const key of ["inventory", "reserves", "completion", "routes"]) {
+    const map = p[key];
+    assert(
+      map && typeof map === "object" && !Array.isArray(map),
+      `Invalid ${key}`,
+    );
+    assert(Object.keys(map).length <= 10000, "Too many references");
+    for (const [id, v] of Object.entries(map)) {
+      assert(validID(id), "Invalid reference ID");
+      if (["inventory", "reserves"].includes(key))
+        assert(
+          Number.isSafeInteger(v) && v >= 0 && v <= LIMITS.quantity,
+          "Quantity must be an integer from 0 to 1000000",
+        );
+      else if (key === "completion")
+        assert(
+          ["unknown", "locked", "unlocked", "completed"].includes(v),
+          "Invalid progress",
+        );
+      else assert(validID(v), "Invalid route");
+    }
+  }
+  assert(
+    Array.isArray(p.goals) && p.goals.length <= LIMITS.goals,
+    "Goal limit exceeded",
+  );
+  for (const g of p.goals) {
+    assert(
+      g &&
+        Object.keys(g).length === 2 &&
+        validID(g.id) &&
+        Number.isSafeInteger(g.quantity) &&
+        g.quantity > 0 &&
+        g.quantity <= LIMITS.quantity,
+      "Invalid goal",
+    );
+  }
+  assert(
+    new Set(p.goals.map((g) => g.id)).size === p.goals.length,
+    "Duplicate goals",
+  );
+  return p;
+}
+export function parseProfile(text) {
+  return validateProfile(
+    parseBounded(text, LIMITS.profileBytes, {
+      depth: 12,
+      nodes: LIMITS.profileNodes,
+      string: 2000,
+    }),
+  );
+}
+export function previewProfile(p, pack) {
+  validateProfile(p);
+  assert(p.packId === pack.id, "Backup belongs to a different pack");
+  const known = new Set(
+    [...pack.items, ...pack.recipes, ...pack.objectives].map((r) => r.id),
+  );
+  const refs = new Set([
+    ...Object.keys(p.inventory),
+    ...Object.keys(p.reserves),
+    ...Object.keys(p.completion),
+    ...p.goals.map((g) => g.id),
+    ...Object.keys(p.routes),
+    ...Object.values(p.routes),
+  ]);
+  return {
+    versionMismatch: p.contentVersion !== pack.contentVersion,
+    unresolved: [...refs].filter((id) => !known.has(id)),
+    inventoryEntries: Object.keys(p.inventory).length,
+    goals: p.goals.length,
+  };
+}
