@@ -1,6 +1,6 @@
 import {LIMITS,assert,boundedWalk,safeURL} from './limits.mjs';
 export function validateSchema(value,schema,root=schema,path='$'){
- if(schema.$ref)return validateSchema(value,root.$defs[schema.$ref.split('/').at(-1)],root,path);
+ if(schema.$ref){assert(schema.$ref.startsWith('#/'),'Only local schema references supported');let target=root;for(const part of schema.$ref.slice(2).split('/'))target=target?.[part.replaceAll('~1','/').replaceAll('~0','~')];assert(target,'Unknown schema reference');return validateSchema(value,target,root,path);}
  if(schema.anyOf){assert(schema.anyOf.some(s=>{try{validateSchema(value,s,root,path);return true;}catch{return false;}}),`${path}: invalid variant`);return;}
  if(schema.allOf)for(const s of schema.allOf)validateSchema(value,s,root,path);
  if(schema.if){let matches=true;try{validateSchema(value,schema.if,root,path);}catch{matches=false;}if(matches&&schema.then)validateSchema(value,schema.then,root,path);}
