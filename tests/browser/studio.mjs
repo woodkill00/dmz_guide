@@ -100,6 +100,25 @@ async function prepareMediaScreenshot(page) {
   // Only mounted cards are visited; this never loads the rest of the catalog.
   for (const image of await page.locator("#media-library img").all()) {
     await image.scrollIntoViewIfNeeded();
+    // Firefox can defer selecting a native lazy image's request until after
+    // scrolling has completed. decode() rejects when no current request exists;
+    // first require real loaded pixels, without hiding broken image requests.
+    const element = await image.elementHandle();
+    assert(element, "Displayed media image remains mounted");
+    try {
+      await page.waitForFunction(
+        (image) =>
+          image.isConnected &&
+          image.currentSrc.length > 0 &&
+          image.complete &&
+          image.naturalWidth > 0 &&
+          image.naturalHeight > 0,
+        element,
+        { timeout: 30000 },
+      );
+    } finally {
+      await element.dispose();
+    }
     const decoded = await image.evaluate(async (element) => {
       await element.decode();
       return element.complete && element.naturalWidth > 0;
