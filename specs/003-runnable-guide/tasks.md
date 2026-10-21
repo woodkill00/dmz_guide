@@ -23,3 +23,8 @@ Input: spec.md, plan.md, research.md, data-model.md, contracts/ui.md.
 T001/003 precede domain implementation. After reviewer gate and schema lock, US1 shell worker owns scripts/build/serve, src/ui, styles and catalog/theme only; integration owner owns domain/storage/planner/profile. T004 and T006 may run in parallel after T003 contract stabilization. US2/US3 integrate shared profile sequentially. MVP is US1 but stopping there does not meet user scope.
 ## Implementation strategy
 S0–S2 end-to-end first, then 004 shared planning, 005 portable editor, 006 location intelligence, 007 progression and 008 community/release. No dummy controls stand in for completed behavior.
+
+## Phase7: Convergence
+- [ ] T014 Repair reviewer-found atomic preview pack/revision binding and direct unsaved export in src/client/profile.mjs/common.mjs/private-pages, verify cross-pack/denied-storage browser cases. F003-03/05 partial.
+- [ ] T015 Repair bounded prerequisite traversal, disputed readiness, one-time quantities and aggregate overflow in src/domain/planner.mjs with regression tests. F003-04 partial.
+- [ ] T016 Correct browser option synchronization, use supported installed Chrome sandbox, update official artifact action pin and rerun actual CI screenshots. F003-08 missing browser evidence.
