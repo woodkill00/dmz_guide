@@ -2,7 +2,7 @@
 
 A community field guide being built around trustworthy game data and explainable “what should I collect next?” planning.
 
-**Status: repository bootstrap and product planning. There is no runnable guide, deployed website, production content catalog, or supported app release yet.** Spec Kit tooling and repository checks are not evidence that the product is implemented.
+**Status: runnable guide foundation under review; broader roadmap implementation continues.** Run `npm ci && npm run build && npm start` with Node22+. No public deployment, complete verified game catalog or supported final release is claimed. See [quickstart](docs/quickstart.md) and [003 evidence](specs/003-runnable-guide/acceptance.md).
 
 ## Start here
 

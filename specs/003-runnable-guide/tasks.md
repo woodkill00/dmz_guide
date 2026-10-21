@@ -1,0 +1,25 @@
+# Tasks: Runnable guide foundation
+Input: spec.md, plan.md, research.md, data-model.md, contracts/ui.md.
+## Phase 1 Setup
+- [ ] T001 Create package.json and runtime commands; retain baseline gates in .github/workflows/quality.yml. F003-07/08.
+- [ ] T002 Record static route spike and architecture result in research.md after scripts/build.mjs + scripts/serve.mjs test. F003-01/07.
+## Phase 2 Foundation
+- [ ] T003 Integrate reviewed schemas/pack.schema.json and content/packs/*.json; add src/content/validate.mjs with canonical caps, reference/status/scope checks and tests/runtime/content.test.mjs. F003-02/08.
+## Phase 3 US1 Read
+- [ ] T004 [US1] Implement escaped native routes and provenance in scripts/build.mjs + src/ui/render.mjs; test direct/no-JS routes in tests/browser/guide.mjs. F003-01/02.
+- [ ] T005 [US1] Implement accessible responsive theme and URL search in src/styles.css + src/client/catalog.mjs + src/client/theme.mjs; inspect screenshots. F003-06.
+## Phase 4 US2 Plan
+- [ ] T006 [US2] Write tests/runtime/planner.test.mjs covering batch rounding, tools, currency, gated/unknown states, invalid references/cycles and 100-operation conservation. F003-04/08.
+- [ ] T007 [US2] Implement pure one-goal calculations in src/domain/planner.mjs and planner UI in src/client/planner.mjs. F003-03/04.
+## Phase 5 US3 Recover
+- [ ] T008 [US3] Write tests/runtime/profile.test.mjs for bytes/depth/count limits, dangerous keys, versions, mismatch and round trip. F003-05.
+- [ ] T009 [US3] Implement src/storage/store.mjs and src/domain/profile.mjs with atomic expected-revision saves, previous snapshot, memory unsaved fallback and preview restore/rebind. F003-03/05.
+- [ ] T010 [US3] Implement inventory/settings UI in src/client/profile.mjs and browser reload/restore/cancel/conflict/error tests in tests/browser/profile.mjs. F003-03/05.
+## Phase 6 Polish and acceptance
+- [ ] T011 Verify build/link/budget and all repository/runtime/browser checks; write acceptance.md and traceability.json with exact evidence. F003-07/08.
+- [ ] T012 Run convergence, append missing tasks, repair and obtain independent reviewer verdict in review.md. F003-08.
+- [ ] T013 Publish PR, verify exact-head CI, merge and verify exact-main CI; record release evidence and continue 004. F003-08.
+## Dependencies and parallelism
+T001/003 precede domain implementation. After reviewer gate and schema lock, US1 shell worker owns scripts/build/serve, src/ui, styles and catalog/theme only; integration owner owns domain/storage/planner/profile. T004 and T006 may run in parallel after T003 contract stabilization. US2/US3 integrate shared profile sequentially. MVP is US1 but stopping there does not meet user scope.
+## Implementation strategy
+S0–S2 end-to-end first, then 004 shared planning, 005 portable editor, 006 location intelligence, 007 progression and 008 community/release. No dummy controls stand in for completed behavior.

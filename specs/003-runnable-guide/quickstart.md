@@ -1,0 +1,2 @@
+# Validation quickstart
+Planned commands after implementation: npm test; npm run build; npm start; npm run test:browser. Open the printed localhost address, follow catalog to a detail, disable JavaScript and reload. On the fixture catalog choose a goal, enter stock, verify shortage and reload. Export private backup, preview reset, restore via preview. Invalid and oversized imports must leave saved state unchanged. Tests and release evidence will record actual commands and outcomes, not infer success from these instructions.

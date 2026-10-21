@@ -1,0 +1,1403 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/dmz-guide/pack.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+      "maxLength": 100
+    },
+    "contentVersion": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "game": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "mode": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "build": {
+          "type": "string",
+          "maxLength": 120
+        }
+      },
+      "required": [
+        "id",
+        "mode",
+        "build"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedTotal": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "expectedTotal",
+        "note"
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "items": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    },
+    "recipes": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {
+        "$ref": "#/$defs/recipe"
+      }
+    },
+    "objectives": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {
+        "$ref": "#/$defs/objective"
+      }
+    },
+    "guides": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {
+        "$ref": "#/$defs/guide"
+      }
+    },
+    "maps": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {
+        "$ref": "#/$defs/map"
+      }
+    },
+    "locations": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {
+        "$ref": "#/$defs/location"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "assets": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {
+        "$ref": "#/$defs/asset"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "contentVersion",
+    "game",
+    "title",
+    "description",
+    "coverage",
+    "sources",
+    "items",
+    "recipes",
+    "objectives",
+    "guides",
+    "maps",
+    "locations",
+    "claims",
+    "assets"
+  ],
+  "$defs": {
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gameId": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "mode": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "build": {
+          "type": "string",
+          "maxLength": 120
+        }
+      },
+      "required": [
+        "gameId",
+        "mode",
+        "build"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 300,
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 2000,
+          "pattern": "^https?://"
+        },
+        "type": {
+          "enum": [
+            "official",
+            "community",
+            "observation",
+            "original-fixture"
+          ]
+        },
+        "publishedAt": {
+          "type": "string",
+          "maxLength": 30
+        },
+        "reviewedAt": {
+          "type": "string",
+          "maxLength": 30
+        },
+        "supports": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "url",
+        "type",
+        "publishedAt",
+        "reviewedAt",
+        "supports"
+      ]
+    },
+    "stat": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "enum": [
+            "damage",
+            "fire-rate",
+            "magazine-capacity",
+            "reload-time",
+            "ads-time",
+            "muzzle-velocity",
+            "range",
+            "custom"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "unit": {
+          "enum": [
+            "damage-points",
+            "rounds/min",
+            "rounds",
+            "s",
+            "ms",
+            "m/s",
+            "m",
+            "custom"
+          ]
+        },
+        "customUnit": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "context": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "target": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "rangeMeters": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "min": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "max": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "min",
+                    "max"
+                  ]
+                }
+              ]
+            },
+            "attachments": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "stance": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "method": {
+              "type": "string",
+              "maxLength": 1000
+            }
+          },
+          "required": [
+            "target",
+            "rangeMeters",
+            "attachments",
+            "stance",
+            "method"
+          ]
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "observed",
+            "unverified",
+            "unknown",
+            "disputed",
+            "stale",
+            "fictional"
+          ]
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "reviewedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        }
+      },
+      "required": [
+        "metric",
+        "label",
+        "value",
+        "unit",
+        "context",
+        "status",
+        "sourceIds",
+        "reviewedAt"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "metric": {
+                "const": "damage"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "unit": {
+                "const": "damage-points"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "metric": {
+                "const": "fire-rate"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "unit": {
+                "const": "rounds/min"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "metric": {
+                "const": "magazine-capacity"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "unit": {
+                "const": "rounds"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "metric": {
+                "const": "reload-time"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "unit": {
+                "const": "ms"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "metric": {
+                "const": "ads-time"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "unit": {
+                "const": "ms"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "metric": {
+                "const": "muzzle-velocity"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "unit": {
+                "const": "m/s"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "metric": {
+                "const": "range"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "unit": {
+                "const": "m"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "metric": {
+                "const": "custom"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "unit": {
+                "const": "custom"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "metric": {
+                "const": "custom"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "customUnit"
+            ],
+            "properties": {
+              "customUnit": {
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "value": {
+                "type": "number"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "sourceIds": {
+                "minItems": 1
+              },
+              "status": {
+                "enum": [
+                  "verified",
+                  "observed",
+                  "unverified",
+                  "disputed",
+                  "stale",
+                  "fictional"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "unknown"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "observed",
+            "unverified",
+            "unknown",
+            "disputed",
+            "stale",
+            "fictional"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "kind": {
+          "enum": [
+            "item",
+            "weapon",
+            "currency",
+            "resource"
+          ]
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 80,
+          "minLength": 1
+        },
+        "unit": {
+          "enum": [
+            "count",
+            "resource-unit",
+            "dmz-cash"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "aliases": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "maxLength": 120
+          }
+        },
+        "stats": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "$ref": "#/$defs/stat"
+          }
+        },
+        "assetId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sourceIds",
+        "status",
+        "kind",
+        "category",
+        "unit",
+        "description",
+        "aliases",
+        "stats"
+      ]
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "itemId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000000
+        },
+        "consumed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "itemId",
+        "quantity",
+        "consumed"
+      ]
+    },
+    "recipe": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "observed",
+            "unverified",
+            "unknown",
+            "disputed",
+            "stale",
+            "fictional"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "output": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "itemId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+              "maxLength": 100
+            },
+            "quantity": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000
+            }
+          },
+          "required": [
+            "itemId",
+            "quantity"
+          ]
+        },
+        "inputs": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "$ref": "#/$defs/requirement"
+          }
+        },
+        "prerequisites": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "ingredientsKnown": {
+          "type": "boolean"
+        },
+        "eligibility": {
+          "enum": [
+            "unknown",
+            "stash",
+            "carried",
+            "bank",
+            "resources"
+          ]
+        },
+        "station": {
+          "type": "string",
+          "maxLength": 120,
+          "minLength": 1
+        },
+        "assetId": {
+          "$ref": "#/$defs/item/properties/assetId"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sourceIds",
+        "status",
+        "output",
+        "inputs",
+        "prerequisites",
+        "ingredientsKnown",
+        "eligibility",
+        "station"
+      ]
+    },
+    "effect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "capacityDelta",
+            "capacitySet",
+            "categoryUnlock",
+            "unlockFlag"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "value": {
+          "type": [
+            "integer",
+            "string",
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "target",
+        "value"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "capacityDelta",
+                  "capacitySet"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "unlockFlag"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "categoryUnlock"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              }
+            }
+          }
+        }
+      ]
+    },
+    "objective": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "observed",
+            "unverified",
+            "unknown",
+            "disputed",
+            "stale",
+            "fictional"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "track": {
+          "enum": [
+            "dmz-order",
+            "dmz-upgrade",
+            "dmz-story",
+            "campaign",
+            "progression"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "requirements": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "$ref": "#/$defs/requirement"
+          }
+        },
+        "prerequisites": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "requirementsKnown": {
+          "type": "boolean"
+        },
+        "oneTime": {
+          "type": "boolean"
+        },
+        "effects": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        },
+        "spoiler": {
+          "type": "boolean"
+        },
+        "assetId": {
+          "$ref": "#/$defs/item/properties/assetId"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sourceIds",
+        "status",
+        "track",
+        "description",
+        "requirements",
+        "prerequisites",
+        "requirementsKnown",
+        "oneTime",
+        "effects",
+        "spoiler"
+      ]
+    },
+    "guide": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "category": {
+          "enum": [
+            "getting-started",
+            "crafting",
+            "weapons",
+            "orders",
+            "campaign",
+            "progression",
+            "locations",
+            "contributing"
+          ],
+          "minLength": 1
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "spoiler": {
+          "type": "boolean"
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "observed",
+            "unverified",
+            "unknown",
+            "disputed",
+            "stale",
+            "fictional"
+          ]
+        },
+        "relatedIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "assetId": {
+          "$ref": "#/$defs/item/properties/assetId"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "category",
+        "body",
+        "spoiler",
+        "sourceIds",
+        "status",
+        "relatedIds"
+      ]
+    },
+    "map": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "observed",
+            "unverified",
+            "unknown",
+            "disputed",
+            "stale",
+            "fictional"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "coordinateSpace": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "coordinateVersion": {
+          "type": "string",
+          "maxLength": 60
+        },
+        "assetId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "extent": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "number"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "floors": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "origin": {
+          "enum": [
+            "top-left",
+            "bottom-left",
+            "center",
+            "unknown"
+          ]
+        },
+        "axis": {
+          "enum": [
+            "x-right-y-down",
+            "x-right-y-up",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sourceIds",
+        "status",
+        "coordinateSpace",
+        "coordinateVersion",
+        "extent"
+      ]
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "observed",
+            "unverified",
+            "unknown",
+            "disputed",
+            "stale",
+            "fictional"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "mapId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "grid": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 20
+        },
+        "coordinates": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "floor": {
+                  "type": "string",
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "floor"
+              ]
+            }
+          ]
+        },
+        "spawnKind": {
+          "enum": [
+            "fixed",
+            "possible",
+            "event",
+            "unknown"
+          ]
+        },
+        "itemIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sourceIds",
+        "status",
+        "mapId",
+        "description",
+        "grid",
+        "coordinates",
+        "spawnKind",
+        "itemIds"
+      ]
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "entityId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "field": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ],
+          "maxLength": 1000
+        },
+        "sourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "locator": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "observed",
+            "unverified",
+            "unknown",
+            "disputed",
+            "stale",
+            "fictional"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        }
+      },
+      "required": [
+        "id",
+        "entityId",
+        "field",
+        "value",
+        "sourceId",
+        "locator",
+        "status"
+      ]
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "path": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "mime": {
+          "enum": [
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ]
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5242880
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "rightsHolder": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "license": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "sourceUrl": {
+          "type": "string",
+          "maxLength": 2000,
+          "pattern": "^https?://"
+        },
+        "attribution": {
+          "type": "string",
+          "maxLength": 1000,
+          "minLength": 1
+        },
+        "redistributionAllowed": {
+          "const": true
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "mime",
+        "sha256",
+        "bytes",
+        "width",
+        "height",
+        "rightsHolder",
+        "license",
+        "sourceUrl",
+        "attribution",
+        "redistributionAllowed"
+      ]
+    }
+  }
+}
