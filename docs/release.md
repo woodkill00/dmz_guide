@@ -1,7 +1,7 @@
 # Run, extend and release the guide
 
 ## Local run (no account, hosting or paid service)
-Use Node.js 22 or newer; development and hosted tests use Node 24. From a clean source checkout run `npm ci`, `npm run build`, then `npm start`. Open `http://127.0.0.1:4173`. The server binds loopback by default. Stop it with Ctrl+C. Do not open pages using `file://`: browser modules and local fetches require a server.
+Use Node.js 22 or newer; development uses Node 24; hosted Chrome jobs have been verified on Node 22.23.3. From a clean source checkout run `npm ci`, `npm run build`, then `npm start`. Open `http://127.0.0.1:4173`. The server binds loopback by default. Stop it with Ctrl+C. Do not open pages using `file://`: browser modules and local fetches require a server.
 
 The production `dist/` is static HTML/CSS/JavaScript/JSON. Runtime does not need npm dependencies, external fonts, a CDN, login or an API. Copy `dist/` plus `scripts/serve.mjs` in the same directory structure and run `node scripts/serve.mjs`; Node alone is sufficient. Build output currently expects the host root `/`, not a `/dmz_guide/` subpath. No hosting was enabled. Configure a host-root static site yourself only after rights and content review; do not assume drop-in repository GitHub Pages support.
 

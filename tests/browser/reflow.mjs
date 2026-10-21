@@ -24,6 +24,9 @@ export async function runReflowTests({ browser, base }) {
             .getAttribute("aria-busy")
             ?.includes("true"),
       );
+      const bodyBefore = await page
+        .locator("body")
+        .evaluate((n) => parseFloat(getComputedStyle(n).fontSize));
       await page.addStyleTag({ url: base + "/__test-text-zoom.css" });
       assert.equal(
         await page
@@ -32,10 +35,17 @@ export async function runReflowTests({ browser, base }) {
         32,
         "Actual 200% root text",
       );
+      assert.equal(
+        await page
+          .locator("body")
+          .evaluate((n) => parseFloat(getComputedStyle(n).fontSize)),
+        bodyBefore * 2,
+        "Actual body text doubles",
+      );
       await page.locator(".nav-more summary").focus();
       await page.keyboard.press("Enter");
       assert(await page.locator(".nav-more").evaluate((n) => n.open));
-      assert(await page.locator('.nav-more a[href^="/settings/"]').isVisible());
+      assert(await page.locator('.nav-more a[href*="/settings/"]').isVisible());
       await page.keyboard.press("Enter");
       await page.screenshot({
         path: `test-results/${route}-${width}-text200.png`,

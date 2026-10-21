@@ -144,3 +144,18 @@ test("effective scope and unrevealed spoiler labels are honest", () => {
     "Secret ending",
   );
 });
+
+import { referenceOnlyMapFixture } from "../browser/maps.mjs";
+import { validatePack } from "../../src/content/validate.mjs";
+const schema = JSON.parse(
+  await readFile(new URL("../../schemas/pack.schema.json", import.meta.url)),
+);
+test("missing-image browser fixture passes pack validation before testing absent pixels", () => {
+  const invalid = structuredClone(demo);
+  invalid.maps[0].assetId = "demo:missing-image";
+  assert.throws(() => validatePack(invalid, schema), /reference/i);
+  const fixture = referenceOnlyMapFixture(demo);
+  assert.doesNotThrow(() => validatePack(fixture, schema));
+  assert.equal(fixture.maps[0].assetId, fixture.assets[0].id);
+  assert.equal(demo.assets.length, 0, "fixture does not mutate seed");
+});

@@ -1,12 +1,44 @@
 import assert from "node:assert/strict";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
+// A valid reference-only manifest deliberately has no raster payload.
+// A dangling map.assetId instead tests pack rejection, not missing-image fallback.
+export function referenceOnlyMapFixture(source) {
+  const pack = structuredClone(source);
+  pack.maps[0].assetId = "demo:missing-image";
+  pack.assets = [
+    {
+      id: "demo:missing-image",
+      path: "assets/missing-map.png",
+      mime: "image/png",
+      sha256: "0".repeat(64),
+      bytes: 68,
+      width: 1,
+      height: 1,
+      rightsHolder: "Original synthetic test fixture",
+      license: "CC0",
+      sourceUrl: "https://example.invalid/missing-map-fixture",
+      attribution:
+        "Synthetic reference-only image metadata; no pixels supplied",
+      redistributionAllowed: true,
+    },
+  ];
+  return pack;
+}
 export async function runMapsTests({ browser, base }) {
   const context = await browser.newContext({
       viewport: { width: 1280, height: 900 },
     }),
     page = await context.newPage(),
-    errors = [];
+    errors = [],
+    consoleErrors = [],
+    requestFailures = [];
   page.on("pageerror", (e) => errors.push(e.message));
+  page.on("console", (m) => {
+    if (m.type() === "error") consoleErrors.push(m.text());
+  });
+  page.on("requestfailed", (r) =>
+    requestFailures.push({ url: r.url(), failure: r.failure() }),
+  );
   await mkdir("test-results", { recursive: true });
   const ready = () =>
     page.waitForFunction(() =>
@@ -172,22 +204,38 @@ export async function runMapsTests({ browser, base }) {
     await page.waitForFunction(() =>
       document.querySelector("#pack-note").textContent.includes("FICTIONAL"),
     );
-    await page.evaluate(async () => {
-      const [{ state }, { commitRecord }] = await Promise.all([
-        import("/assets/src/client/common.mjs"),
+    const referencePack = referenceOnlyMapFixture(
+      await page.evaluate(async () => {
+        const { state } = await import("/assets/src/client/common.mjs");
+        return state.pack;
+      }),
+    );
+    await page.evaluate(async (pack) => {
+      const [{ commitRecord }, { validatePack }] = await Promise.all([
         import("/assets/src/storage/store.mjs"),
+        import("/assets/src/content/validate.mjs"),
       ]);
-      const pack = structuredClone(state.pack);
-      pack.maps[0].assetId = "demo:missing-image";
+      const schema = await (
+        await fetch("/assets/schemas/pack.schema.json")
+      ).json();
+      validatePack(pack, schema);
       await commitRecord(
         "content",
         pack.id,
         { pack, revision: 0, payloads: [] },
         0,
       );
-    });
+    }, referencePack);
     await page.reload();
     await ready();
+    assert.equal(
+      await page.evaluate(async () => {
+        const { state } = await import("/assets/src/client/common.mjs");
+        return state.pack.maps[0].assetId;
+      }),
+      "demo:missing-image",
+      "Reference-only pack must be accepted before testing absent pixels",
+    );
     await page.waitForFunction(() =>
       document
         .querySelector("#imagery-status")
@@ -382,6 +430,56 @@ export async function runMapsTests({ browser, base }) {
         "maps-demo-1280.png",
       ],
     };
+  } catch (failure) {
+    const diagnostics = {
+      failure: failure.stack || String(failure),
+      url: page.url(),
+      pageErrors: errors,
+      consoleErrors,
+      requestFailures,
+    };
+    try {
+      diagnostics.state = await page.evaluate(() => ({
+        title: document.title,
+        pack: document.querySelector("#pack-select")?.value,
+        status: Object.fromEntries(
+          [
+            "pack-note",
+            "save-status",
+            "error",
+            "imagery-status",
+            "goal-context",
+            "map-context",
+            "location-count",
+          ].map((id) => [id, document.getElementById(id)?.textContent]),
+        ),
+        locationIds: [
+          ...document.querySelectorAll("#location-list [data-location-id]"),
+        ].map((n) => n.dataset.locationId),
+        imageHref: document
+          .querySelector("#map-background image")
+          ?.getAttribute("href"),
+      }));
+    } catch (e) {
+      diagnostics.stateError = e.message;
+    }
+    try {
+      await page.screenshot({
+        path: "test-results/maps-failure.png",
+        fullPage: true,
+      });
+    } catch (e) {
+      diagnostics.screenshotError = e.message;
+    }
+    await writeFile(
+      "test-results/maps-failure.json",
+      JSON.stringify(diagnostics, null, 2),
+    );
+    console.error(
+      "Map acceptance failure diagnostics:",
+      JSON.stringify(diagnostics),
+    );
+    throw failure;
   } finally {
     await context.close();
   }
