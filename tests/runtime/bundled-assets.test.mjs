@@ -20,6 +20,7 @@ import {
   loadBundledManifest,
   loadBundledPayloads,
   validateBundledManifest,
+  decodeBundledRaster,
 } from "../../src/content/bundled-assets.mjs";
 import { hashBytes } from "../../src/content/portable.mjs";
 const schema = JSON.parse(
@@ -466,4 +467,151 @@ test("many tiny stream chunks use bounded storage; empty chunks reject", async (
       }),
     /empty/,
   );
+});
+
+test("public spoiler picture alt stays generic before explicit disclosure", async () => {
+  const { allRecords, renderDetail, setBundledAssets } = await import(
+    "../../src/ui/render.mjs"
+  );
+  const pack = JSON.parse(
+    await readFile("content/packs/bundled-pictures.json", "utf8"),
+  );
+  pack.maps[0].spoiler = true;
+  const { manifest } = await prepareBundledAssets({
+    root: process.cwd(),
+    packs: [pack],
+    schema,
+  });
+  setBundledAssets(manifest);
+  try {
+    const record = allRecords([pack]).find((r) => r.recordType === "map");
+    const html = renderDetail(record, [pack]);
+    const alt = html.match(/data-public-image[^>]*alt="([^"]*)"/)[1];
+    assert(!alt.includes(record.name));
+    assert.match(alt, /Spoiler-protected/);
+    assert(html.includes('<details class="spoiler-content">'));
+    assert(
+      html.includes(record.name),
+      "The explicitly revealable heading remains useful",
+    );
+  } finally {
+    setBundledAssets(null);
+  }
+});
+
+function mockBitmapDecoder(t, implementation) {
+  const previous = Object.getOwnPropertyDescriptor(
+    globalThis,
+    "createImageBitmap",
+  );
+  Object.defineProperty(globalThis, "createImageBitmap", {
+    configurable: true,
+    writable: true,
+    value: implementation,
+  });
+  t.after(() => {
+    if (previous)
+      Object.defineProperty(globalThis, "createImageBitmap", previous);
+    else delete globalThis.createImageBitmap;
+  });
+}
+test("bundled bitmap decoder returns actual pixel dimensions and closes successful bitmap", async (t) => {
+  const bytes = png();
+  let calls = 0,
+    closed = 0;
+  mockBitmapDecoder(t, async (blob) => {
+    calls++;
+    assert(blob instanceof Blob);
+    assert.equal(blob.type, "image/png");
+    assert.equal(blob.size, bytes.length);
+    return {
+      width: 8,
+      height: 6,
+      close() {
+        closed++;
+      },
+    };
+  });
+  assert.deepEqual(await decodeBundledRaster(bytes, "image/png"), {
+    width: 8,
+    height: 6,
+  });
+  assert.equal(calls, 1);
+  assert.equal(closed, 1);
+});
+test("bundled bitmap decoder aborts and closes a bitmap that resolves late", async (t) => {
+  let finish,
+    closed = 0;
+  mockBitmapDecoder(
+    t,
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  );
+  const controller = new AbortController();
+  const pending = decodeBundledRaster(png(), "image/png", controller.signal);
+  const rejected = assert.rejects(pending, /cancelled/);
+  controller.abort();
+  await rejected;
+  assert.equal(closed, 0);
+  finish({
+    width: 8,
+    height: 6,
+    close() {
+      closed++;
+    },
+  });
+  await Promise.resolve();
+  await Promise.resolve();
+  assert.equal(closed, 1);
+});
+test("bundled bitmap decoder enforces five-second timeout and closes late success", async (t) => {
+  let finish,
+    fire,
+    milliseconds,
+    closed = 0;
+  mockBitmapDecoder(
+    t,
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  );
+  t.mock.method(globalThis, "setTimeout", (callback, duration) => {
+    fire = callback;
+    milliseconds = duration;
+    return 1;
+  });
+  t.mock.method(globalThis, "clearTimeout", () => {});
+  const pending = decodeBundledRaster(png(), "image/png");
+  const rejected = assert.rejects(pending, /timed out/);
+  assert.equal(milliseconds, 5000);
+  fire();
+  await rejected;
+  assert.equal(closed, 0);
+  finish({
+    width: 8,
+    height: 6,
+    close() {
+      closed++;
+    },
+  });
+  await Promise.resolve();
+  await Promise.resolve();
+  assert.equal(closed, 1);
+});
+test("bundled bitmap decoder rejects pre-aborted work without starting codec", async (t) => {
+  let calls = 0;
+  mockBitmapDecoder(t, async () => {
+    calls++;
+    throw new Error("Codec must not start");
+  });
+  const controller = new AbortController();
+  controller.abort();
+  await assert.rejects(
+    () => decodeBundledRaster(png(), "image/png", controller.signal),
+    /cancelled/,
+  );
+  assert.equal(calls, 0);
 });

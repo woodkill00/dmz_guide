@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { allRecords, recordUrl } from "../../src/ui/render.mjs";
+import { expectConsoleErrors } from "./health.mjs";
 
 export async function runBundledAssetTests({
   browser,
@@ -209,56 +210,154 @@ export async function runBundledAssetTests({
     }, pack.id);
     assert.deepEqual(restored.payloads, envelope.payloads);
     assert.equal(restored.pack.items[0].name, pack.items[0].name);
-    // Even with self-consistent manifest metadata, invalid compressed pixels must fail real decode.
-    const corrupt = await p.evaluate(
-      async ({ pack, manifest }) => {
-        const { loadBundledPayloads, bundledFileURL } = await import(
-          "/assets/src/content/bundled-assets.mjs"
-        );
-        const { hashBytes, imageInfo } = await import(
-          "/assets/src/content/portable.mjs"
-        );
-        const candidate = structuredClone(pack),
-          a = candidate.assets.find((a) => a.mime === "image/png"),
-          m = structuredClone(manifest),
-          entry = m.packs
-            .find((p) => p.packId === candidate.id)
-            .assets.find((x) => x.assetId === a.id),
-          bytes = new Uint8Array(await (await fetch(entry.url)).arrayBuffer());
-        let offset = 8;
-        const view = new DataView(bytes.buffer);
-        while (offset + 12 <= bytes.length) {
-          const n = view.getUint32(offset);
-          if (
-            String.fromCharCode(...bytes.slice(offset + 4, offset + 8)) ===
-            "IDAT"
-          ) {
-            bytes.fill(0, offset + 8, offset + 8 + n);
-            break;
-          }
-          offset += n + 12;
-        }
-        imageInfo(bytes);
-        a.sha256 = await hashBytes(bytes);
-        entry.sha256 = a.sha256;
-        entry.url = bundledFileURL(candidate.id, a);
-        try {
-          await loadBundledPayloads(candidate, {
-            manifest: m,
-            assetIds: [a.id],
-            fetchImpl: async () =>
-              new Response(bytes, { headers: { "content-type": a.mime } }),
-          });
-          return false;
-        } catch {
-          return true;
-        }
-      },
-      { pack, manifest },
-    );
-    assert(corrupt, "Malformed compressed raster cannot pass browser decode");
   } finally {
     await editable.close();
+  }
+  // Isolate intentional codec failures: no other context may consume their diagnostics.
+  const invalidRaster = await context();
+  let codecDiagnostics;
+  try {
+    const p = await invalidRaster.newPage();
+    await p.goto(base + "/");
+    codecDiagnostics = expectConsoleErrors(invalidRaster, {
+      label: "Intentional malformed PNG/JPEG full-pixel decode rejection",
+      patterns: [/^Image corrupt or truncated\.$/],
+      maxCount: 2,
+    });
+    const results = await p.evaluate(
+      async ({ pack, manifest, payloads }) => {
+        const { loadBundledPayloads, bundledFileURL, decodeBundledRaster } =
+          await import("/assets/src/content/bundled-assets.mjs");
+        const { hashBytes, imageInfo, bytesFromBase64 } = await import(
+          "/assets/src/content/portable.mjs"
+        );
+        const crc32 = (bytes) => {
+          let crc = 0xffffffff;
+          for (const byte of bytes) {
+            crc ^= byte;
+            for (let bit = 0; bit < 8; bit++)
+              crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+          }
+          return (crc ^ 0xffffffff) >>> 0;
+        };
+        const results = [];
+        for (const mime of ["image/png", "image/jpeg"]) {
+          const candidate = structuredClone(pack),
+            a = candidate.assets.find((a) => a.mime === mime),
+            m = structuredClone(manifest);
+          const entry = m.packs
+            .find((p) => p.packId === candidate.id)
+            .assets.find((x) => x.assetId === a.id);
+          let bytes,
+            changedChunks = 0;
+          if (mime === "image/png") {
+            bytes = bytesFromBase64(
+              payloads.find((p) => p.assetId === a.id).base64,
+            );
+            const view = new DataView(bytes.buffer);
+            let offset = 8;
+            while (offset + 12 <= bytes.length) {
+              const n = view.getUint32(offset);
+              if (
+                String.fromCharCode(...bytes.slice(offset + 4, offset + 8)) ===
+                "IDAT"
+              ) {
+                // Invalid zlib stream with a correct PNG chunk checksum isolates the codec layer.
+                bytes.fill(0, offset + 8, offset + 8 + n);
+                view.setUint32(
+                  offset + 8 + n,
+                  crc32(bytes.subarray(offset + 4, offset + 8 + n)),
+                );
+                changedChunks++;
+              }
+              offset += n + 12;
+            }
+          } else {
+            // Independent absent-pixel-stream case: valid SOF dimensions but no SOS/scan at all.
+            bytes = Uint8Array.from([
+              0xff, 0xd8, 0xff, 0xc0, 0, 11, 8, 0, 6, 0, 8, 1, 1, 0x11, 0, 0xff,
+              0xd9,
+            ]);
+          }
+          const header = imageInfo(bytes);
+          a.bytes = bytes.length;
+          a.sha256 = await hashBytes(bytes);
+          entry.bytes = a.bytes;
+          entry.sha256 = a.sha256;
+          entry.url = bundledFileURL(candidate.id, a);
+          let decodeCalls = 0,
+            fetchCalls = 0;
+          try {
+            await loadBundledPayloads(candidate, {
+              manifest: m,
+              assetIds: [a.id],
+              fetchImpl: async () => {
+                fetchCalls++;
+                return new Response(bytes, {
+                  headers: { "content-type": a.mime },
+                });
+              },
+              decodeRaster: async (actualBytes, type, signal) => {
+                decodeCalls++;
+                return decodeBundledRaster(actualBytes, type, signal);
+              },
+            });
+            results.push({
+              rejected: false,
+              decodeCalls,
+              fetchCalls,
+              header,
+              changedChunks,
+            });
+          } catch (error) {
+            results.push({
+              rejected: true,
+              decodeCalls,
+              fetchCalls,
+              header,
+              changedChunks,
+              error: error.message,
+            });
+          }
+        }
+        return results;
+      },
+      { pack, manifest, payloads: JSON.parse(text).payloads },
+    );
+    assert.equal(results.length, 2);
+    assert(
+      results[0].changedChunks > 0,
+      "PNG zlib data and its checksum were both changed",
+    );
+    for (const result of results) {
+      assert.deepEqual(result.header, {
+        mime: result.header.mime,
+        width: 8,
+        height: 6,
+      });
+      assert.equal(result.fetchCalls, 1);
+      assert.equal(
+        result.decodeCalls,
+        1,
+        "The real bounded full-pixel decoder must run, not fail an earlier metadata check",
+      );
+      assert(
+        result.rejected,
+        `${result.header.mime}: malformed compressed pixels cannot pass full browser decode`,
+      );
+      assert.doesNotMatch(
+        result.error,
+        /timed out|cancelled/i,
+        "The codec must reject malformed pixels rather than merely expire",
+      );
+    }
+  } finally {
+    await invalidRaster.close();
+    if (codecDiagnostics)
+      console.log(
+        "Expected isolated codec diagnostics:",
+        JSON.stringify(codecDiagnostics()),
+      );
   }
   // Replacing pixels under an existing ID must not overwrite the first rollback snapshot.
   const replaced = await context();

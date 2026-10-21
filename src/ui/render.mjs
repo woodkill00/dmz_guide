@@ -219,7 +219,7 @@ export function renderDetail(record, packs) {
     const caption = record.spoiler
       ? asset.attribution
       : guardFor(pack).text(asset.attribution);
-    picture = `<figure class="panel"><img data-public-image class="local-raster" src="${e(url)}" width="${asset.width}" height="${asset.height}" alt="${e(record.spoiler ? record.name || record.title : publicTitle(record))} — original or rights-cleared illustration"><figcaption>${e(caption)} · ${e(asset.license)}. Image availability does not verify game facts.</figcaption></figure>`;
+    picture = `<figure class="panel"><img data-public-image class="local-raster" src="${e(url)}" width="${asset.width}" height="${asset.height}" alt="${e(publicTitle(record))} — original or rights-cleared illustration"><figcaption>${e(caption)} · ${e(asset.license)}. Image availability does not verify game facts.</figcaption></figure>`;
   }
   let detail = "";
   if (record.recordType === "item") {

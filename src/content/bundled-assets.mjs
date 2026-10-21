@@ -306,36 +306,35 @@ export async function decodeBundledRaster(bytes, mime, signal) {
   assert(info.mime === mime, "Bundled raster MIME mismatch");
   assert(!signal?.aborted, "Bundled decode cancelled");
   assert(
-    typeof globalThis.Image === "function",
+    typeof globalThis.createImageBitmap === "function",
     "Browser raster decoder required",
   );
-  const url = URL.createObjectURL(new Blob([bytes], { type: mime })),
-    img = new Image();
-  let timer, abort;
+  // Materialize decoded pixels, not just dimensions from a lazily decoded Image.
+  const work = createImageBitmap(new Blob([bytes], { type: mime }));
+  let timer, abort, bitmap;
   try {
-    return await Promise.race([
-      new Promise((resolve, reject) => {
+    bitmap = await Promise.race([
+      work,
+      new Promise((_, reject) => {
         timer = setTimeout(
           () => reject(new Error("Bundled image decode timed out")),
           TRANSFER_LIMITS.decodeMs,
         );
         abort = () => reject(new Error("Bundled decode cancelled"));
         signal?.addEventListener("abort", abort, { once: true });
-        img.src = url;
-        img
-          .decode()
-          .then(
-            () =>
-              resolve({ width: img.naturalWidth, height: img.naturalHeight }),
-            reject,
-          );
       }),
     ]);
+    assert(!signal?.aborted, "Bundled decode cancelled");
+    return { width: bitmap.width, height: bitmap.height };
   } finally {
     clearTimeout(timer);
     signal?.removeEventListener("abort", abort);
-    img.removeAttribute("src");
-    URL.revokeObjectURL(url);
+    if (bitmap) bitmap.close();
+    else
+      work.then(
+        (lateBitmap) => lateBitmap.close(),
+        () => {},
+      );
   }
 }
 export async function loadBundledPayloads(pack, options = {}) {
