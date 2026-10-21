@@ -58,6 +58,29 @@ export async function runProgressionTests({ browser, base }) {
         { type: "categoryUnlock", target: secret.id, value: secret.name },
       ];
       pack.guides[0].relatedIds = [secret.id];
+      pack.maps.push({
+        ...structuredClone(pack.maps[0]),
+        id: "demo:hidden-map",
+        name: "Hidden relay activation annex",
+        spoiler: true,
+      });
+      pack.locations.push(
+        {
+          ...structuredClone(pack.locations[0]),
+          id: "demo:hidden-location",
+          name: "Concealed relay cache",
+          coordinates: { x: 11, y: 19, floor: "ground" },
+          spoiler: true,
+        },
+        {
+          ...structuredClone(pack.locations[0]),
+          id: "demo:hidden-map-child",
+          name: "Hidden-parent landing",
+          mapId: "demo:hidden-map",
+          coordinates: { x: 31, y: 47, floor: "ground" },
+        },
+      );
+      pack.locations[0].description = `Start with ${secret.name}.`;
       pack.sources.push({
         ...pack.sources[0],
         id: "source:public-fixture",
@@ -79,6 +102,85 @@ export async function runProgressionTests({ browser, base }) {
     await page.reload();
     await page.waitForSelector("#progress-rows article");
     const inventoryBaseline = (await profile(page)).value;
+    // Exercise the real private reader and map UI, not only pure projections.
+    const probe = await context.newPage();
+    probe.on("pageerror", (e) => errors.push(e.message));
+    await probe.goto(base + "/local/?pack=demo%3Atraining-pack");
+    await probe.waitForSelector("#local-query");
+    assert(
+      !(await probe.locator("#local-records").innerHTML()).includes(
+        "Hidden relay activation",
+      ),
+    );
+    await probe.fill("#local-query", "Hidden relay activation");
+    assert.equal(await probe.locator("[data-local-search]:visible").count(), 0);
+    await probe.fill("#local-query", "Unlock training bench");
+    assert.equal(await probe.locator("[data-local-search]:visible").count(), 1);
+    await probe.goto(
+      base + "/local/?pack=demo%3Atraining-pack&id=demo%3Abench-unlock",
+    );
+    await probe.waitForSelector("#local-records .detail-grid");
+    assert(
+      !(await probe.locator("#local-records").innerHTML()).includes(
+        "Hidden relay activation",
+      ),
+    );
+    await probe.goto(base + "/maps/?pack=demo%3Atraining-pack");
+    await probe.waitForSelector("#location-list button");
+    assert.equal(await probe.locator("#map-select option").count(), 1);
+    assert.equal(
+      await probe
+        .locator('#map-select option[value="demo:hidden-map"]')
+        .count(),
+      0,
+    );
+    assert.equal(await probe.locator("#location-list button").count(), 3);
+    assert.equal(
+      await probe.locator("#map-markers [data-location-id]").count(),
+      3,
+    );
+    assert.match(
+      await probe.locator("#location-count").textContent(),
+      /^3 matching locations/,
+    );
+    assert.equal(
+      await probe.locator('[data-location-id="demo:hidden-location"]').count(),
+      0,
+    );
+    assert.equal(
+      await probe.locator('[data-location-id="demo:hidden-map-child"]').count(),
+      0,
+    );
+    assert(
+      !(await probe.locator("main").innerHTML()).includes(
+        "Hidden relay activation",
+      ),
+    );
+    await probe
+      .locator('#location-list [data-location-id="demo:supply-shed"]')
+      .click();
+    assert.match(
+      await probe.locator("#location-detail").textContent(),
+      /Spoiler-protected content/,
+    );
+    for (const query of [
+      "Hidden relay activation",
+      "Concealed relay cache",
+      "Hidden-parent landing",
+    ]) {
+      await probe.fill("#location-search", query);
+      assert.equal(
+        await probe.locator("#location-list button").count(),
+        0,
+        query,
+      );
+      assert.equal(
+        await probe.locator("#map-markers [data-location-id]").count(),
+        0,
+        query,
+      );
+    }
+    await probe.close();
     assert(
       !(await page.locator("#progress-rows").innerHTML()).includes(
         "Hidden relay",
@@ -163,6 +265,36 @@ export async function runProgressionTests({ browser, base }) {
       await page.locator("#progress-rows").textContent(),
       /Hidden relay activation/,
     );
+    const revealedMap = await context.newPage();
+    revealedMap.on("pageerror", (e) => errors.push(e.message));
+    await revealedMap.goto(base + "/maps/?pack=demo%3Atraining-pack");
+    await revealedMap.waitForSelector("#location-list button");
+    assert.equal(await revealedMap.locator("#map-select option").count(), 2);
+    assert.equal(await revealedMap.locator("#location-list button").count(), 4);
+    assert.equal(
+      await revealedMap.locator("#map-markers [data-location-id]").count(),
+      4,
+    );
+    await revealedMap.fill("#location-search", "Concealed relay cache");
+    assert.equal(await revealedMap.locator("#location-list button").count(), 1);
+    await revealedMap
+      .locator('#location-list [data-location-id="demo:hidden-location"]')
+      .click();
+    assert.match(
+      await revealedMap.locator("#location-detail").textContent(),
+      /11, 19/,
+    );
+    await revealedMap.fill("#location-search", "");
+    await revealedMap.selectOption("#map-select", "demo:hidden-map");
+    assert.equal(await revealedMap.locator("#location-list button").count(), 1);
+    await revealedMap
+      .locator('#location-list [data-location-id="demo:hidden-map-child"]')
+      .click();
+    assert.match(
+      await revealedMap.locator("#location-detail").textContent(),
+      /31, 47/,
+    );
+    await revealedMap.close();
     await page.selectOption(
       '[data-progress-id="demo:campaign-chapter"]',
       "completed",

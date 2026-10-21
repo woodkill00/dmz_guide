@@ -18,3 +18,6 @@ Dependencies: T001 before code; correction domain before UI; offline runtime tes
 - [x] T010 Promote compact pickup/retain/later summary before technical ledger, retaining disclosure and schedule explanation. F008-05/06, original planner usability.
 - [ ] T011 Test task-first More navigation, landscape and computed 200% text on 320/390 interactive pages; context-wide console/network checks. F008-06.
 - [ ] T012 Rebuild clean production output after tests and package/re-extract static ZIP, checking no private data/test artifacts, host-root limitation and Node-only runtime. F008-05.
+- [ ] T013 Complete validated public bundled-raster publication path, original new fixture item/map, JPEG MIME and clean-profile/public-detail/map/portable re-export browser proof. F008-05/06; closes original easy-content/pictures scope, not an optional feature.
+- [x] T014 Correct stale correction error presentation and operation-specific duplicate parse assertion without weakening validation. F008-01/02.
+- [x] T015 Include typed stat metric/value/unit/context and guide body in public/private search while excluding spoiler content before reveal. F008-05/06.

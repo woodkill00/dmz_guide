@@ -1,0 +1,1 @@
+Original raster generated from first principles: 8x6 RGB pixels at x,y = ((x*31)%256,(y*43)%256,((x+y)*19)%256). PNG and JPEG use Pillow encoding; JPEG quality90,subsampling0. No source artwork or personal data. Project-original MIT fixtures, not game facts. Generated2026-10-21. Source URL should be replaced by verified repository permalink by integration owner.

@@ -1,3 +1,4 @@
+import { loadBundledPayloads } from "../content/bundled-assets.mjs";
 import { $, state, init, error, status, download } from "./common.mjs";
 import { readRecord, commitRecord } from "../storage/store.mjs";
 import { LIMITS, assert, clone, parseBounded } from "../content/limits.mjs";
@@ -21,6 +22,7 @@ let schema,
   draft,
   baseline,
   payloads = [],
+  baselinePayloads = [],
   revision = 0,
   previous = null,
   stage = null,
@@ -537,6 +539,7 @@ async function loadWorkspace() {
   revision = 0;
   previous = null;
   payloads = [];
+  baselinePayloads = [];
   dirty = false;
   try {
     const record = await readRecord("content", id);
@@ -556,6 +559,27 @@ async function loadWorkspace() {
     error(e);
   }
   if (token !== generation) return;
+  const missing = baseline.assets
+    .filter((a) => !payloads.some((p) => p.assetId === a.id))
+    .map((a) => a.id);
+  if (missing.length) {
+    try {
+      const bundled = await loadBundledPayloads(baseline, {
+        assetIds: missing,
+        ...options(),
+      });
+      if (token !== generation) return;
+      payloads.push(...bundled);
+    } catch (reason) {
+      if (token !== generation) return;
+      status(
+        "Some picture bytes unavailable; content remains editable and exportable.",
+      );
+      error(reason);
+    }
+  }
+  if (token !== generation) return;
+  baselinePayloads = clone(payloads);
   $("#private-reader").href = `/local/?pack=${encodeURIComponent(id)}`;
   renderRecords();
 }
@@ -658,6 +682,33 @@ async function stageCandidate(
   }
   if (token !== generation) return;
   const impact = profileImpact(profile, targetBaseline, candidate);
+  let originalPayloads = [];
+  if (targetBaseline?.assets.length) {
+    const sameActive =
+      targetBaseline.id === baseline?.id &&
+      targetBaseline.contentVersion === baseline?.contentVersion;
+    originalPayloads = sameActive
+      ? baselinePayloads.filter((p) =>
+          targetBaseline.assets.some((a) => a.id === p.assetId),
+        )
+      : [];
+    const missing = targetBaseline.assets
+      .filter((a) => !originalPayloads.some((p) => p.assetId === a.id))
+      .map((a) => a.id);
+    if (missing.length) {
+      try {
+        originalPayloads.push(
+          ...(await loadBundledPayloads(targetBaseline, {
+            assetIds: missing,
+            ...options(),
+          })),
+        );
+      } catch {
+        /* Reference-only original remains explicitly incomplete. */
+      }
+    }
+    if (token !== generation) return;
+  }
   stage = {
     pack: clone(candidate),
     payloads: clone(candidatePayloads),
@@ -666,7 +717,11 @@ async function stageCandidate(
     generation: token,
     rollback,
     initialPrevious: targetBaseline
-      ? { pack: clone(targetBaseline), payloads: [], revision: 0 }
+      ? {
+          pack: clone(targetBaseline),
+          payloads: clone(originalPayloads),
+          revision: 0,
+        }
       : null,
   };
   $("#stage-target").textContent =
@@ -843,6 +898,12 @@ async function importFile() {
         ),
       );
   $("#export-rights").checked = false;
+  baselinePayloads = record?.value
+    ? clone(record.value.payloads || [])
+    : existing?.id === baseline?.id &&
+        existing?.contentVersion === baseline?.contentVersion
+      ? clone(baselinePayloads)
+      : [];
   baseline = existing ? clone(existing) : null;
   revision = record?.value?.revision || 0;
   previous = record?.previous || null;
@@ -1024,6 +1085,7 @@ async function start() {
       draft = clone(saved.pack);
       payloads = clone(saved.payloads);
       baseline = clone(saved.pack);
+      baselinePayloads = clone(saved.payloads);
       activeId = saved.pack.id;
       state.pack = clone(saved.pack);
       const record = await readRecord("content", saved.pack.id);

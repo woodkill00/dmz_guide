@@ -76,6 +76,44 @@ export function spoilerGuard(pack, reveal = false) {
   };
 }
 
+const referenceKeys = new Set([
+  "id",
+  "sourceIds",
+  "relatedIds",
+  "prerequisites",
+  "itemId",
+  "assetId",
+  "mapId",
+]);
+export function projectSpoilerValue(value, guard, key = "") {
+  if (referenceKeys.has(key)) return value;
+  if (typeof value === "string") return guard.text(value);
+  if (Array.isArray(value))
+    return value.map((v) => projectSpoilerValue(v, guard));
+  if (value && typeof value === "object")
+    return Object.fromEntries(
+      Object.entries(value).map(([k, v]) => [
+        k,
+        k === "pack" ? v : projectSpoilerValue(v, guard, k),
+      ]),
+    );
+  return value;
+}
+export function projectMapPack(pack, reveal = false) {
+  const guard = spoilerGuard(pack, reveal),
+    maps = pack.maps.filter((m) => reveal || !m.spoiler),
+    visibleMaps = new Set(maps.map((m) => m.id));
+  return {
+    ...pack,
+    maps: maps.map((m) => projectSpoilerValue(m, guard)),
+    locations: pack.locations
+      .filter((l) => visibleMaps.has(l.mapId) && (reveal || !l.spoiler))
+      .map((l) => projectSpoilerValue(l, guard)),
+    items: pack.items.map((i) => projectSpoilerValue(i, guard)),
+    sources: pack.sources.map((source) => projectSpoilerValue(source, guard)),
+  };
+}
+
 function sourceView(source, guard) {
   let url = null;
   if (safeURL(source.url) && !guard.contains(source.url)) {

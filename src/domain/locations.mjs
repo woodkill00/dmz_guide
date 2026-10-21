@@ -1,3 +1,4 @@
+import { projectMapPack, spoilerGuard } from "./progression.mjs";
 /** Map display is deliberately independent of game mechanics and image dimensions. */
 export const floorOf = (location) => location?.coordinates?.floor || "unknown";
 export function placementReason(map, location) {
@@ -50,6 +51,7 @@ export function unmetItemIds(pack, plan) {
   ];
 }
 export function filterLocations(pack, filters = {}, neededItemIds = []) {
+  pack = projectMapPack(pack, Boolean(filters.reveal));
   const needed = new Set(neededItemIds),
     query = (filters.query || "").trim().toLocaleLowerCase();
   return (pack.locations || []).filter((l) => {
@@ -79,14 +81,5 @@ export function effectiveScope(pack, record) {
     : `${pack.game.id} / ${pack.game.mode} / ${pack.game.build}`;
 }
 export function safePlanText(pack, profile, text) {
-  let value = String(text);
-  if (profile.spoilers) return value;
-  const hidden = pack.objectives
-    .filter((o) => o.spoiler)
-    .flatMap((o) => [o.name, o.id])
-    .filter(Boolean)
-    .sort((a, b) => b.length - a.length);
-  for (const name of hidden)
-    value = value.split(name).join("Spoiler-protected objective");
-  return value;
+  return spoilerGuard(pack, profile.spoilers).text(String(text));
 }

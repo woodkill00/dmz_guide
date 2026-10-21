@@ -137,7 +137,7 @@ test("effective scope and unrevealed spoiler labels are honest", () => {
       { spoilers: false },
       "Secret ending: demo:secret locked",
     ),
-    "Spoiler-protected objective: Spoiler-protected objective locked",
+    "Spoiler-protected content",
   );
   assert.equal(
     safePlanText(pack, { spoilers: true }, "Secret ending"),
@@ -158,4 +158,105 @@ test("missing-image browser fixture passes pack validation before testing absent
   assert.doesNotThrow(() => validatePack(fixture, schema));
   assert.equal(fixture.maps[0].assetId, fixture.assets[0].id);
   assert.equal(demo.assets.length, 0, "fixture does not mutate seed");
+});
+
+import { projectMapPack } from "../../src/domain/progression.mjs";
+function spoilerMapFixture() {
+  const pack = structuredClone(demo);
+  pack.objectives.push({
+    ...structuredClone(pack.objectives[0]),
+    id: "demo:hidden-relay",
+    name: "Hidden relay activation",
+    description: "Secret relay instructions.",
+    spoiler: true,
+    prerequisites: [],
+    effects: [],
+  });
+  pack.maps.push({
+    ...structuredClone(pack.maps[0]),
+    id: "demo:hidden-map",
+    name: "Hidden relay activation annex",
+    spoiler: true,
+  });
+  pack.locations.push(
+    {
+      ...structuredClone(pack.locations[0]),
+      id: "demo:hidden-location",
+      name: "Concealed relay cache",
+      coordinates: { x: 11, y: 19, floor: "ground" },
+      spoiler: true,
+    },
+    {
+      ...structuredClone(pack.locations[0]),
+      id: "demo:hidden-map-child",
+      name: "Hidden-parent landing",
+      mapId: "demo:hidden-map",
+      coordinates: { x: 31, y: 47, floor: "ground" },
+    },
+  );
+  pack.locations[0].description = "Start with Hidden relay activation.";
+  return pack;
+}
+
+test("hidden locations and hidden parent maps are excluded before map choices, counts, coordinates and search", () => {
+  const pack = spoilerMapFixture();
+  const projected = projectMapPack(pack);
+  assert.deepEqual(
+    projected.maps.map((m) => m.id),
+    ["demo:training-map"],
+  );
+  assert.deepEqual(
+    projected.locations.map((l) => l.id),
+    demo.locations.map((l) => l.id),
+  );
+  assert.equal(projected.locations[0].description, "Spoiler-protected content");
+  assert(
+    !projected.locations.some(
+      (l) => l.coordinates?.x === 11 || l.coordinates?.x === 31,
+    ),
+  );
+  assert.equal(filterLocations(pack, {}).length, demo.locations.length);
+  for (const query of [
+    "Hidden relay activation",
+    "Concealed relay cache",
+    "Hidden-parent landing",
+  ])
+    assert.equal(filterLocations(pack, { query }).length, 0, query);
+  assert.equal(filterLocations(pack, { mapId: "demo:hidden-map" }).length, 0);
+  assert.equal(
+    pack.locations[0].description,
+    "Start with Hidden relay activation.",
+  );
+  assert.equal(
+    pack.maps.length,
+    2,
+    "projection must not change the saved pack",
+  );
+});
+
+test("explicit reveal restores hidden map/location records, coordinates and matching searches", () => {
+  const pack = spoilerMapFixture();
+  const projected = projectMapPack(pack, true);
+  assert.deepEqual(projected.maps, pack.maps);
+  assert.deepEqual(projected.locations, pack.locations);
+  assert.equal(filterLocations(pack, { reveal: true }).length, 5);
+  assert.equal(
+    filterLocations(pack, { reveal: true, query: "Concealed relay cache" })[0]
+      .coordinates.x,
+    11,
+  );
+  assert.equal(
+    filterLocations(pack, { reveal: true, mapId: "demo:hidden-map" })[0]
+      .coordinates.y,
+    47,
+  );
+  assert.equal(
+    filterLocations(pack, { reveal: true, query: "Hidden relay activation" })
+      .length,
+    1,
+  );
+});
+
+test("map spoiler overlay fixture is accepted by the content contract", () => {
+  assert.doesNotThrow(() => validatePack(spoilerMapFixture(), schema));
 });

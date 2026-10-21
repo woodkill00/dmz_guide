@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { runBundledAssetTests } from "./bundled-assets.mjs";
 import { runEditorTests } from "./editor.mjs";
 export async function runLocalNetworkTests({
   browser,
@@ -21,6 +22,11 @@ export async function runLocalNetworkTests({
   // This repeats the actual original PNG/JPEG/WebP clean-profile import, saved raster decode,
   // private linked routes and reload journey while every non-loopback request is blocked.
   await runEditorTests({ browser: localBrowser, base, captureScreenshots });
+  await runBundledAssetTests({
+    browser: localBrowser,
+    base,
+    captureScreenshots,
+  });
   const context = await localBrowser.newContext(),
     page = await context.newPage();
   await page.goto(base + "/inventory/?pack=demo%3Atraining-pack");

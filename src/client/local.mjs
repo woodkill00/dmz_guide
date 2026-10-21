@@ -1,3 +1,4 @@
+import { loadBundledPayloads } from "../content/bundled-assets.mjs";
 import { init, state, $, esc, error } from "./common.mjs";
 import { readRecord } from "../storage/store.mjs";
 import {
@@ -5,6 +6,8 @@ import {
   renderDetail,
   recordUrl,
   recordSearchText,
+  displayRecord,
+  publicTitle,
 } from "../ui/render.mjs";
 import {
   bytesFromBase64,
@@ -15,7 +18,10 @@ import {
 let imageURL = null,
   generation = 0,
   pendingDecode = null;
+let assetController = new AbortController();
 function releaseImage() {
+  assetController.abort();
+  assetController = new AbortController();
   pendingDecode?.cancel();
   if (imageURL) URL.revokeObjectURL(imageURL);
   imageURL = null;
@@ -49,7 +55,7 @@ function decodeImage(image) {
 async function render() {
   const token = ++generation;
   releaseImage();
-  const records = allRecords([state.pack]);
+  const records = allRecords([state.pack]).map(displayRecord);
   const id = new URL(location.href).searchParams.get("id");
   const chosen = records.find((r) => r.id === id);
   const link = (r) =>
@@ -77,12 +83,22 @@ async function render() {
   });
   if (chosen?.assetId) {
     try {
-      const saved = await readRecord("content", state.pack.id);
+      const saved = await readRecord("content", state.pack.id).catch(
+        () => null,
+      );
       if (token !== generation) return;
-      const payload = saved?.value?.payloads?.find(
-          (p) => p.assetId === chosen.assetId,
-        ),
-        asset = state.pack.assets.find((a) => a.id === chosen.assetId);
+      const asset = state.pack.assets.find((a) => a.id === chosen.assetId);
+      let payload = saved?.value?.payloads?.find(
+        (p) => p.assetId === chosen.assetId,
+      );
+      if (!payload)
+        payload = (
+          await loadBundledPayloads(state.pack, {
+            assetIds: [chosen.assetId],
+            signal: assetController.signal,
+          })
+        )[0];
+      if (token !== generation) return;
       if (!payload || !asset)
         throw new Error(
           "Picture bytes unavailable; record details remain readable.",
@@ -101,7 +117,7 @@ async function render() {
       imageURL = URL.createObjectURL(new Blob([bytes], { type: asset.mime }));
       const image = document.createElement("img");
       image.src = imageURL;
-      image.alt = `Private pack illustration for ${chosen.name || chosen.title}`;
+      image.alt = `Private pack illustration for ${publicTitle(chosen)}`;
       image.width = asset.width;
       image.height = asset.height;
       image.className = "local-raster";

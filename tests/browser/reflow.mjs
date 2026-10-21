@@ -46,13 +46,20 @@ export async function runReflowTests({ browser, base }) {
       await page.keyboard.press("Enter");
       assert(await page.locator(".nav-more").evaluate((n) => n.open));
       assert(await page.locator('.nav-more a[href*="/settings/"]').isVisible());
+      assert(
+        await page.locator(".nav-more>div").evaluate((n) => {
+          const r = n.getBoundingClientRect();
+          return r.left >= 0 && r.right <= innerWidth + 1;
+        }),
+        "Open menu fits enlarged narrow viewport",
+      );
       await page.keyboard.press("Enter");
       await page.screenshot({
         path: `test-results/${route}-${width}-text200.png`,
         fullPage: true,
       });
       const offenders = await page.evaluate(() =>
-        [...document.querySelectorAll("main *")]
+        [...document.querySelectorAll("body *")]
           .filter((n) => {
             const r = n.getBoundingClientRect();
             return r.width > 0 && (r.right > innerWidth + 1 || r.left < -1);
@@ -72,7 +79,19 @@ export async function runReflowTests({ browser, base }) {
       ) {
         await writeFile(
           `test-results/${route}-${width}-overflow.json`,
-          JSON.stringify(offenders, null, 2),
+          JSON.stringify(
+            {
+              viewport: width,
+              dimensions: await page.evaluate(() => ({
+                innerWidth,
+                clientWidth: document.documentElement.clientWidth,
+                scrollWidth: document.documentElement.scrollWidth,
+              })),
+              offenders,
+            },
+            null,
+            2,
+          ),
         );
         assert.fail(
           `200% text overflow: ${route} ${width} ${JSON.stringify(offenders.slice(0, 5))}`,

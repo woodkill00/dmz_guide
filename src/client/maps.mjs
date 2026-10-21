@@ -1,3 +1,5 @@
+import { projectMapPack } from "../domain/progression.mjs";
+import { loadBundledPayloads } from "../content/bundled-assets.mjs";
 import { $, esc, state, init, error } from "./common.mjs";
 import { readRecord } from "../storage/store.mjs";
 import {
@@ -10,6 +12,7 @@ import {
   effectiveScope,
 } from "../domain/locations.mjs";
 const NS = "http://www.w3.org/2000/svg";
+let viewPack = null;
 let filters = {},
   selectedId = "",
   camera = { x: 0, y: 0, size: 100 },
@@ -26,8 +29,11 @@ const svg = (tag, attributes = {}) => {
 };
 const option = (value, label) =>
   `<option value="${esc(value)}">${esc(label)}</option>`;
-const currentMap = () => state.pack.maps.find((m) => m.id === filters.mapId);
+const currentMap = () => viewPack.maps.find((m) => m.id === filters.mapId);
+let assetController = new AbortController();
 function releaseImage() {
+  assetController.abort();
+  assetController = new AbortController();
   pendingDecode?.cancel();
   if (assetURL) {
     URL.revokeObjectURL(assetURL);
@@ -97,7 +103,7 @@ function moveCamera(action) {
 function sources(ids) {
   return ids
     .map((id) => {
-      const s = state.pack.sources.find((s) => s.id === id);
+      const s = viewPack.sources.find((s) => s.id === id);
       if (!s) return `<li>Unknown source ${esc(id)}</li>`;
       let href = "";
       try {
@@ -109,18 +115,18 @@ function sources(ids) {
     .join("");
 }
 function showDetail() {
-  const l = state.pack.locations.find((l) => l.id === selectedId);
+  const l = viewPack.locations.find((l) => l.id === selectedId);
   if (!l) {
     $("#location-detail").innerHTML =
       "<h2>Location details</h2><p>Select a location from the list or map.</p>";
     return;
   }
-  const m = state.pack.maps.find((m) => m.id === l.mapId);
+  const m = viewPack.maps.find((m) => m.id === l.mapId);
   const items = l.itemIds.map(
-    (id) => state.pack.items.find((i) => i.id === id)?.name || id,
+    (id) => viewPack.items.find((i) => i.id === id)?.name || id,
   );
   $("#location-detail").innerHTML =
-    `<h2>${esc(l.name)}</h2><p>${esc(l.description)}</p><dl><dt>Floor / grid</dt><dd>${esc(floorOf(l))} / ${esc(l.grid || "unknown")}</dd><dt>Coordinates</dt><dd>${l.coordinates ? esc(`${l.coordinates.x}, ${l.coordinates.y}`) : "Unknown"} ${esc(placementReason(m, l))}</dd><dt>Landmark directions</dt><dd>${esc(l.description || "Unknown")}</dd><dt>Category / evidence status</dt><dd>${esc(l.category || "uncategorized")} / ${esc(l.status)}</dd><dt>Spawn classification</dt><dd>${esc(l.spawnKind)}. Not a guarantee of availability.</dd><dt>Declared item relations</dt><dd>${esc(items.join(", ") || "No verified item relation")}</dd><dt>Build / content / coordinate version</dt><dd>${esc(effectiveScope(state.pack, l))} / ${esc(state.pack.contentVersion)} / ${esc(m?.coordinateVersion || "unknown")}</dd></dl><h3>Sources</h3><ul>${sources(l.sourceIds)}</ul>`;
+    `<h2>${esc(l.name)}</h2><p>${esc(l.description)}</p><dl><dt>Floor / grid</dt><dd>${esc(floorOf(l))} / ${esc(l.grid || "unknown")}</dd><dt>Coordinates</dt><dd>${l.coordinates ? esc(`${l.coordinates.x}, ${l.coordinates.y}`) : "Unknown"} ${esc(placementReason(m, l))}</dd><dt>Landmark directions</dt><dd>${esc(l.description || "Unknown")}</dd><dt>Category / evidence status</dt><dd>${esc(l.category || "uncategorized")} / ${esc(l.status === "verified" ? "Source-backed · live build unverified" : l.status)}</dd><dt>Spawn classification</dt><dd>${esc(l.spawnKind)}. Not a guarantee of availability.</dd><dt>Declared item relations</dt><dd>${esc(items.join(", ") || "No verified item relation")}</dd><dt>Build / content / coordinate version</dt><dd>${esc(effectiveScope(viewPack, l))} / ${esc(viewPack.contentVersion)} / ${esc(m?.coordinateVersion || "unknown")}</dd></dl><h3>Sources</h3><ul>${sources(l.sourceIds)}</ul>`;
 }
 function selectLocation(id, focus = false) {
   selectedId = id;
@@ -131,7 +137,7 @@ function selectLocation(id, focus = false) {
 }
 function renderResults() {
   const map = currentMap(),
-    records = filterLocations(state.pack, filters, needed);
+    records = filterLocations(viewPack, filters, needed);
   if (!records.some((l) => l.id === selectedId)) selectedId = "";
   const markers = $("#map-markers");
   markers.replaceChildren();
@@ -176,7 +182,7 @@ function renderResults() {
         });
         markers.append(g);
       }
-      return `<li><button type="button" data-location-id="${esc(l.id)}" aria-pressed="${selectedId === l.id}">${index + 1}. ${esc(l.name)}</button><p>Floor ${esc(floorOf(l))} · Grid ${esc(l.grid || "unknown")} · ${esc(l.spawnKind)} spawn · ${esc(l.status)}${point ? "" : ` · ${esc(placementReason(map, l))}`}</p></li>`;
+      return `<li><button type="button" data-location-id="${esc(l.id)}" aria-pressed="${selectedId === l.id}">${index + 1}. ${esc(l.name)}</button><p>Floor ${esc(floorOf(l))} · Grid ${esc(l.grid || "unknown")} · ${esc(l.spawnKind)} spawn · ${esc(l.status === "verified" ? "Source-backed · live build unverified" : l.status)}${point ? "" : ` · ${esc(placementReason(map, l))}`}</p></li>`;
     })
     .join("");
   $("#location-list")
@@ -196,7 +202,7 @@ function renderResults() {
 function renderMapContext() {
   const m = currentMap();
   $("#map-context").textContent = m
-    ? `${m.name} · build ${effectiveScope(state.pack, m)} · content ${state.pack.contentVersion} · coordinate ${m.coordinateVersion} · ${m.coordinateSpace} · origin ${m.origin || "unknown"} · axes ${m.axis || "unknown"} · bounds ${m.extent?.join(", ") || "unknown"}`
+    ? `${m.name} · build ${effectiveScope(viewPack, m)} · content ${viewPack.contentVersion} · coordinate ${m.coordinateVersion} · ${m.coordinateSpace} · origin ${m.origin || "unknown"} · axes ${m.axis || "unknown"} · bounds ${m.extent?.join(", ") || "unknown"}`
     : "No maps in this pack. Choose another pack.";
 }
 function schematic(map) {
@@ -207,7 +213,7 @@ function schematic(map) {
   );
   if (
     map?.id === "demo:training-map" &&
-    state.pack.game.id === "fictional-training"
+    viewPack.game.id === "fictional-training"
   ) {
     for (let n = 0; n <= 100; n += 10) {
       g.append(
@@ -247,10 +253,20 @@ async function loadImage(token) {
   if (!map?.assetId) return;
   $("#imagery-status").textContent = "Loading validated local map image…";
   try {
-    const record = await readRecord("content", state.pack.id);
+    const record = await readRecord("content", viewPack.id).catch(() => null);
     if (token !== generation) return;
-    const asset = state.pack.assets.find((a) => a.id === map.assetId),
-      payload = record?.value?.payloads?.find((p) => p.assetId === map.assetId);
+    const asset = viewPack.assets.find((a) => a.id === map.assetId);
+    let payload = record?.value?.payloads?.find(
+      (p) => p.assetId === map.assetId,
+    );
+    if (!payload)
+      payload = (
+        await loadBundledPayloads(state.pack, {
+          assetIds: [map.assetId],
+          signal: assetController.signal,
+        })
+      )[0];
+    if (token !== generation) return;
     if (!asset || !payload)
       throw new Error("Local validated raster payload unavailable");
     const { bytesFromBase64, imageInfo, hashBytes, TRANSFER_LIMITS } =
@@ -321,7 +337,7 @@ async function loadNeeds(token) {
     const { planShared } = await import("../domain/shared-plan.mjs");
     if (token !== generation) return;
     const plan = planShared(state.pack, state.profile);
-    needed = unmetItemIds(state.pack, plan);
+    needed = unmetItemIds(viewPack, plan);
     const reasons = [
       ...new Set((plan.goals || []).flatMap((g) => g.reasons || [])),
     ];
@@ -346,7 +362,7 @@ function mapChanged() {
     [
       ...new Set([
         ...(m?.floors || []),
-        ...state.pack.locations.filter((l) => l.mapId === m?.id).map(floorOf),
+        ...viewPack.locations.filter((l) => l.mapId === m?.id).map(floorOf),
       ]),
     ]
       .map((f) => option(f, f))
@@ -358,33 +374,35 @@ function mapChanged() {
   loadNeeds(generation);
 }
 function packChanged() {
+  viewPack = projectMapPack(state.pack, Boolean(state.profile.spoilers));
   generation++;
   releaseImage();
   filters = {
-    mapId: state.pack.maps[0]?.id || "",
+    mapId: viewPack.maps[0]?.id || "",
     floor: "",
     category: "",
     query: "",
     sourceId: "",
     coordinateVersion: "",
     goalOnly: false,
+    reveal: Boolean(state.profile.spoilers),
   };
   selectedId = "";
   needed = [];
-  $("#map-select").innerHTML = state.pack.maps
+  $("#map-select").innerHTML = viewPack.maps
     .map((m) => option(m.id, m.name))
     .join("");
   $("#location-category").innerHTML =
     option("", "All categories") +
-    [...new Set(state.pack.locations.map((l) => l.category || "uncategorized"))]
+    [...new Set(viewPack.locations.map((l) => l.category || "uncategorized"))]
       .map((c) => option(c, c))
       .join("");
   $("#location-source").innerHTML =
     option("", "All sources") +
-    state.pack.sources.map((s) => option(s.id, s.title)).join("");
+    viewPack.sources.map((s) => option(s.id, s.title)).join("");
   $("#coordinate-version").innerHTML =
     option("", "All coordinate versions") +
-    [...new Set(state.pack.maps.map((m) => m.coordinateVersion))]
+    [...new Set(viewPack.maps.map((m) => m.coordinateVersion))]
       .map((v) => option(v, v))
       .join("");
   $("#location-search").value = "";

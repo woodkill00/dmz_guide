@@ -19,7 +19,10 @@ import {
   pageHeading,
   setNavigation,
   publicTitle,
+  setBundledAssets,
 } from "../src/ui/render.mjs";
+import { parseBounded } from "../src/content/limits.mjs";
+import { prepareBundledAssets, writeBundledAssets } from "./bundled-assets.mjs";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
 const packs = await Promise.all(
@@ -27,7 +30,7 @@ const packs = await Promise.all(
     .filter((f) => f.endsWith(".json"))
     .sort()
     .map(async (f) =>
-      JSON.parse(await readFile(join(root, "content/packs", f), "utf8")),
+      parseBounded(await readFile(join(root, "content/packs", f), "utf8")),
     ),
 );
 const schema = JSON.parse(
@@ -41,6 +44,8 @@ for (const pack of packs) {
       `Invalid pack ${pack.id}: ${JSON.stringify(result.errors)}`,
     );
 }
+const bundled = await prepareBundledAssets({ root, packs, schema });
+setBundledAssets(bundled.manifest);
 const pages = [
   {
     path: "/",
@@ -139,10 +144,24 @@ await writeFile(
   }),
 );
 await mkdir(join(dist, "assets"), { recursive: true });
-for (const folder of ["src", "content", "schemas"])
+for (const folder of ["src", "schemas"])
   await cp(join(root, folder), join(dist, "assets", folder), {
     recursive: true,
   });
+await mkdir(join(dist, "assets/content/packs"), { recursive: true });
+for (const file of (await readdir(join(root, "content/packs"))).filter((f) =>
+  f.endsWith(".json"),
+)) {
+  if (!/^[a-z0-9-]+\.json$/.test(file)) throw new Error("Unsafe pack filename");
+  await cp(
+    join(root, "content/packs", file),
+    join(dist, "assets/content/packs", file),
+  );
+}
+await cp(
+  join(root, "content/site.json"),
+  join(dist, "assets/content/site.json"),
+);
 await writeFile(
   join(dist, "assets/content/manifest.json"),
   JSON.stringify(
@@ -156,6 +175,7 @@ await writeFile(
     2,
   ),
 );
+await writeBundledAssets({ dist, ...bundled });
 console.log(
   `Built ${pages.length} independent HTML routes and 404 page in dist/.`,
 );

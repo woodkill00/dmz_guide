@@ -1,3 +1,5 @@
+import { bundledAssetURL } from "../content/bundled-assets.mjs";
+import { spoilerGuard, projectSpoilerValue } from "../domain/progression.mjs";
 /** Pure HTML rendering. Content text is always escaped; only authored UI is markup. */
 export const escapeHTML = (value) =>
   String(value ?? "").replace(
@@ -8,7 +10,23 @@ export const escapeHTML = (value) =>
       ],
   );
 export const e = escapeHTML;
+let bundledManifest = null;
+export function setBundledAssets(manifest) {
+  bundledManifest = manifest;
+}
+const spoilerGuards = new WeakMap();
+function guardFor(pack) {
+  if (!pack) return { text: (value) => value, contains: () => false };
+  if (!spoilerGuards.has(pack)) spoilerGuards.set(pack, spoilerGuard(pack));
+  return spoilerGuards.get(pack);
+}
+const maskedValue = projectSpoilerValue;
+export function displayRecord(record) {
+  return record.spoiler ? record : maskedValue(record, guardFor(record.pack));
+}
+
 export function recordSearchText(record) {
+  record = displayRecord(record);
   if (record.spoiler) return "spoiler-protected record";
   return [
     record.name,
@@ -110,12 +128,15 @@ export function pageHeading(eyebrow, title, description = "") {
   return `<header class="page-heading"><p class="eyebrow">${e(eyebrow)}</p><h1>${e(title)}</h1>${description ? `<p class="lede">${e(description)}</p>` : ""}</header>`;
 }
 export const publicTitle = (record) =>
-  record.spoiler ? "Spoiler-protected record" : record.name || record.title;
+  record.spoiler
+    ? "Spoiler-protected record"
+    : guardFor(record.pack).text(record.name || record.title);
 export const statusLabel = (record) =>
   record.status === "verified" && !isFixture(record.pack)
     ? "Source-backed · live build unverified"
     : record.status;
 export function renderCard(record) {
+  record = displayRecord(record);
   const kind = record.recordType === "item" ? record.kind : record.recordType;
   return `<article class="record-card" data-record-card data-search="${e(recordSearchText(record))}" data-type="${e(kind)}" data-pack="${e(record.pack.id)}"><div class="card-meta"><span>${e(kind)}</span><span class="badge ${record.status === "fictional" ? "fixture" : ""}">${e(statusLabel(record))}</span></div><h3><a href="${recordUrl(record)}">${e(publicTitle(record))}<span aria-hidden="true"> ↗</span></a></h3><p>${e(record.spoiler ? "Spoiler content. Open this record and choose Reveal spoiler content to read it." : record.description || record.body || record.category || record.station || "Open the record for evidence and scope.")}</p><div class="card-foot">${isFixture(record.pack) ? '<strong class="fixture-text">FICTIONAL FIXTURE · NOT GAME DATA</strong>' : `<span>${e(record.category || record.recordType)} · ${e(record.pack.contentVersion)}</span>`}</div></article>`;
 }
@@ -172,6 +193,7 @@ function sourceMarkup(source) {
   return `<li>${url ? `<a href="${e(url)}" rel="noreferrer noopener">${e(source.title)} ↗</a>` : e(source.title)}<p>${e(source.supports)}</p><span class="muted">${e(source.type)} · Published ${e(source.publishedAt || "unknown")} · Reviewed ${e(source.reviewedAt || "unknown")}</span></li>`;
 }
 export function renderDetail(record, packs) {
+  record = displayRecord(record);
   const pack = record.pack;
   const records = allRecords(packs);
   const find = (id) => records.find((r) => r.id === id);
@@ -181,11 +203,24 @@ export function renderDetail(record, packs) {
       ? `<a href="${recordUrl(r)}">${e(publicTitle(r))}</a>`
       : e(id) + " (unresolved reference)";
   };
-  const sources = pack.sources.filter((s) =>
-    (record.sourceIds || []).includes(s.id),
-  );
-  const claims = pack.claims.filter((c) => c.entityId === record.id);
+  const sources = pack.sources
+    .filter((s) => (record.sourceIds || []).includes(s.id))
+    .map((source) =>
+      record.spoiler ? source : maskedValue(source, guardFor(pack)),
+    );
+  const claims = pack.claims
+    .filter((c) => c.entityId === record.id)
+    .map((c) => (record.spoiler ? c : maskedValue(c, guardFor(pack))));
   const scope = record.scope || pack.game;
+  let picture = "";
+  if (record.assetId && bundledManifest) {
+    const asset = pack.assets.find((a) => a.id === record.assetId),
+      url = bundledAssetURL(pack, record.assetId, bundledManifest);
+    const caption = record.spoiler
+      ? asset.attribution
+      : guardFor(pack).text(asset.attribution);
+    picture = `<figure class="panel"><img data-public-image class="local-raster" src="${e(url)}" width="${asset.width}" height="${asset.height}" alt="${e(record.spoiler ? record.name || record.title : publicTitle(record))} — original or rights-cleared illustration"><figcaption>${e(caption)} · ${e(asset.license)}. Image availability does not verify game facts.</figcaption></figure>`;
+  }
   let detail = "";
   if (record.recordType === "item") {
     const uses = records.filter((r) =>
@@ -205,7 +240,13 @@ export function renderDetail(record, packs) {
                 `<div class="stat-row"><h3>${e(s.label)}</h3><p><strong>${s.value === null ? "Unknown" : e(s.value)}</strong> ${e(s.customUnit || s.unit)} · ${e(s.status)}</p><p>${e(s.context.method)} Target: ${e(s.context.target)}. Attachments: ${e(s.context.attachments)}. Stance: ${e(s.context.stance)}. Range: ${s.context.rangeMeters ? `${e(s.context.rangeMeters.min)}–${e(s.context.rangeMeters.max)} m` : "unknown"}.</p><p>Reviewed: ${e(s.reviewedAt || "unknown")}. Scope: ${e(JSON.stringify(s.scope || scope))}</p><ul class="source-list">${
                   pack.sources
                     .filter((src) => s.sourceIds.includes(src.id))
-                    .map(sourceMarkup)
+                    .map((source) =>
+                      sourceMarkup(
+                        record.spoiler
+                          ? source
+                          : maskedValue(source, guardFor(pack)),
+                      ),
+                    )
                     .join("") || "<li>No verified numeric source.</li>"
                 }</ul></div>`,
             )
@@ -227,14 +268,20 @@ export function renderDetail(record, packs) {
           .map((line) => `<p>${e(line)}</p>`)
           .join("")}</div>`
       : ""
-  }<div class="detail-grid"><div>${detail}${
+  }${picture}<div class="detail-grid"><div>${detail}${
     claims.length
       ? `<section class="panel"><h2>Claims &amp; conflicts</h2><p>Conflicting claims are preserved, not silently resolved.</p>${claims
           .map(
             (c) =>
               `<article class="claim"><h3>${e(c.field)}: ${e(c.value ?? "Unknown")}</h3><p>Status: ${e(c.status)}. Locator: ${e(c.locator)}</p><p>Scope: ${e(JSON.stringify(c.scope || scope))}</p><ul class="source-list">${pack.sources
                 .filter((s) => s.id === c.sourceId)
-                .map(sourceMarkup)
+                .map((source) =>
+                  sourceMarkup(
+                    record.spoiler
+                      ? source
+                      : maskedValue(source, guardFor(pack)),
+                  ),
+                )
                 .join("")}</ul></article>`,
           )
           .join("")}</section>`
@@ -245,5 +292,5 @@ export function renderDetail(record, packs) {
       .filter(Boolean)
       .sort()
       .at(-1) || "Unknown",
-  )}</dd><dt>Record ID</dt><dd>${e(record.id)}</dd><dt>Pack</dt><dd>${e(pack.title)}</dd></dl><h3>Sources</h3><ul class="source-list">${sources.map(sourceMarkup).join("") || "<li>No sources recorded. Treat this as unverified.</li>"}</ul><p class="muted">Verification applies only to the stated claim and scope, not every mechanic or the current live build.</p></aside></div>${record.spoiler ? "</details>" : ""}`;
+  )}</dd><dt>Record ID</dt><dd>${e(record.id)}</dd><dt>Pack</dt><dd>${e(pack.title)}</dd></dl><h3>Sources</h3><ul class="source-list">${sources.map((source) => sourceMarkup(record.spoiler ? source : maskedValue(source, guardFor(pack)))).join("") || "<li>No sources recorded. Treat this as unverified.</li>"}</ul><p class="muted">Verification applies only to the stated claim and scope, not every mechanic or the current live build.</p></aside></div>${record.spoiler ? "</details>" : ""}`;
 }

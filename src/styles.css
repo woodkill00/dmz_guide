@@ -1247,3 +1247,30 @@ textarea {
     padding: 0.75rem 0.6rem;
   }
 }
+/* Anchor the secondary menu to the full navigation width at enlarged text sizes. */
+.site-nav {
+  position: relative;
+}
+.nav-more {
+  position: static;
+}
+.nav-more > div {
+  top: 100%;
+  min-width: min(12rem, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+}
+@media (max-width: 600px) {
+  .site-header {
+    flex-wrap: wrap;
+    padding-block: 0.75rem;
+  }
+  .brand {
+    max-width: 100%;
+  }
+  .brand-mark {
+    flex-shrink: 0;
+  }
+  .theme-toggle {
+    max-width: 100%;
+  }
+}

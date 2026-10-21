@@ -59,6 +59,14 @@ jobs:
       - run: npm run build
       - run: npx playwright install chromium
       - run: npm run test:browser
+      - name: Rebuild and verify clean distributable
+        run: npm run package && python scripts/verify-release.py
+      - name: Save clean static release
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: static-release-${{ matrix.os }}
+          path: release/dmz-guide-static.zip
+          retention-days: 14
       - name: Save browser evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

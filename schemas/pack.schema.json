@@ -1131,6 +1131,9 @@
             "x-right-y-up",
             "unknown"
           ]
+        },
+        "spoiler": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -1245,6 +1248,9 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 80
+        },
+        "spoiler": {
+          "type": "boolean"
         }
       },
       "required": [

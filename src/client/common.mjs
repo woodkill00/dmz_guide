@@ -49,19 +49,39 @@ export function download(name, data, type = "application/json") {
 let generation = 0;
 let disabledControls = [];
 export async function init(render) {
+  const schemaResponse = await fetch("/assets/schemas/pack.schema.json");
+  if (!schemaResponse.ok) throw new Error("Content schema unavailable.");
+  const schema = await schemaResponse.json();
+  const manifestResponse = await fetch("/assets/content/manifest.json");
+  if (!manifestResponse.ok) throw new Error("Content manifest unavailable.");
+  const manifest = await manifestResponse.json();
+  if (
+    !Array.isArray(manifest.packs) ||
+    manifest.packs.length > 32 ||
+    manifest.packs.some(
+      (path) =>
+        typeof path !== "string" ||
+        !/^\/assets\/content\/packs\/[a-z0-9-]+\.json$/.test(path),
+    )
+  )
+    throw new Error("Invalid bundled content manifest");
   state.packs = await Promise.all(
-    ["official-starter", "demo-training"].map(async (name) => {
-      const response = await fetch(`/assets/content/packs/${name}.json`);
+    manifest.packs.map(async (path) => {
+      const response = await fetch(path);
       if (!response.ok)
         throw new Error(
           "Content unavailable. Start the local server and retry.",
         );
-      return response.json();
+      const pack = await response.json();
+      validatePack(pack, schema);
+      return pack;
     }),
   );
-  const schemaResponse = await fetch("/assets/schemas/pack.schema.json");
-  if (!schemaResponse.ok) throw new Error("Content schema unavailable.");
-  const schema = await schemaResponse.json();
+  state.packs.sort(
+    (a, b) =>
+      Number(b.id === "official:mw4-dmz-starter") -
+      Number(a.id === "official:mw4-dmz-starter"),
+  );
   let contentWarning = null;
   $("#export-current-profile")?.addEventListener("click", () => {
     try {
@@ -147,10 +167,6 @@ export async function init(render) {
     state.pack = pack;
     state.profile = profile;
     state.revision = revision;
-    state.loading = false;
-    for (const [n, disabled] of disabledControls) n.disabled = disabled;
-    disabledControls = [];
-    document.querySelector("main").setAttribute("aria-busy", "false");
     status(
       warning
         ? "Unsaved: browser storage unavailable. Export a backup to keep edits."
@@ -180,7 +196,17 @@ export async function init(render) {
         anchor.href = target.href;
       }
     }
-    render();
+    try {
+      await render();
+    } finally {
+      if (token === generation) {
+        state.loading = false;
+        for (const [n, disabled] of disabledControls) n.disabled = disabled;
+        disabledControls = [];
+        document.querySelector("main").setAttribute("aria-busy", "false");
+      }
+    }
+    if (token !== generation) return;
     if (warning) error(warning);
   }
   select.addEventListener("change", () => change().catch(error));
