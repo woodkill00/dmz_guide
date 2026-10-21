@@ -50,3 +50,6 @@ Deliver the smallest real repository save journey first, then complete media/imp
 
 ## Phase 7: Approved preview scope reconciliation
 - [ ] T025 Add read-only saved-record preview rendering at GET /preview in scripts/author.mjs and a selected-record link in src/client/studio.mjs; validate source/images/references without writing public dist, and cover save-to-preview in tests/browser/studio.mjs (FR-015; SC-001).
+
+## Phase 8: Convergence
+- [ ] T026 [US1] Resolve CONV-001 (HIGH, contradicts constitution principle 2 / FR-013 / SC-004): replace the light-only author stylesheet in src/ui/studio.css with dark-default and accessible optional light palettes, add a persisted theme-only toggle in src/ui/studio-page.mjs using existing theme support, and verify theme defaults/persistence/contrast plus both-theme responsive screenshots in tests/browser/studio.mjs. First hosted evidence showed cream/light default despite the established dark-first requirement; preserve the private-profile isolation boundary.

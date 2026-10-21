@@ -1,4 +1,6 @@
 import test from "node:test";
+import { readFile } from "node:fs/promises";
+import { renderStudioPage } from "../../src/ui/studio-page.mjs";
 import assert from "node:assert/strict";
 import { recordUses } from "../../src/client/studio-media.mjs";
 import { GROUPS } from "../../src/content/portable.mjs";
@@ -112,4 +114,20 @@ test("Studio thumbnail parents are visible in where-used and deletion previews",
       },
     ],
   );
+});
+
+test("Studio defaults dark and offers the standalone persisted theme toggle", async () => {
+  const html = renderStudioPage();
+  assert.match(html, /<html lang="en" data-theme="dark">/);
+  assert.match(
+    html,
+    /id="theme-toggle"[^>]+aria-label="Switch to light theme"/,
+  );
+  assert.match(html, /src="\/assets\/src\/client\/theme.mjs"/);
+  const css = await readFile(
+    new URL("../../src/ui/studio.css", import.meta.url),
+    "utf8",
+  );
+  assert.doesNotMatch(css, /prefers-color-scheme/);
+  assert.match(css, /:root\[data-theme="light"\]/);
 });

@@ -95,6 +95,105 @@ async function startReader(root) {
   throw new Error(`Reader did not start: ${output}`);
 }
 
+async function checkStudioThemes(page, { prefix, captureScreenshots }) {
+  const assertTheme = async (theme) => {
+    await page.waitForFunction(
+      (expected) => document.documentElement.dataset.theme === expected,
+      theme,
+    );
+    assert.equal(
+      await page.locator("#theme-toggle").getAttribute("aria-label"),
+      `Switch to ${theme === "dark" ? "light" : "dark"} theme`,
+    );
+    const contrast = await page.locator("#pack-select").evaluate((element) => {
+      const style = getComputedStyle(element);
+      const luminance = (color) => {
+        const rgb = color
+          .match(/[\d.]+/g)
+          .slice(0, 3)
+          .map(Number)
+          .map((value) => {
+            value /= 255;
+            return value <= 0.04045
+              ? value / 12.92
+              : ((value + 0.055) / 1.055) ** 2.4;
+          });
+        return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+      };
+      const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+      const background = luminance(style.backgroundColor);
+      return {
+        boundary: ratio(luminance(style.borderTopColor), background),
+        text: ratio(luminance(style.color), background),
+        rootBackground: getComputedStyle(document.documentElement)
+          .backgroundColor,
+      };
+    });
+    assert(
+      contrast.boundary >= 3,
+      `${theme} input boundary contrast: ${contrast.boundary}`,
+    );
+    assert(
+      contrast.text >= 4.5,
+      `${theme} input text contrast: ${contrast.text}`,
+    );
+    return contrast;
+  };
+  assert.equal(
+    await page.evaluate(
+      () => matchMedia("(prefers-color-scheme: light)").matches,
+    ),
+    true,
+    "Test OS preference is light",
+  );
+  const dark = await assertTheme("dark");
+  assert.equal(
+    await page.evaluate(() => localStorage.getItem("dmz-theme")),
+    null,
+    "Fresh Studio defaults dark without a stored preference",
+  );
+  await page.locator("#theme-toggle").focus();
+  await page.keyboard.press("Enter");
+  const light = await assertTheme("light");
+  assert.notEqual(
+    light.rootBackground,
+    dark.rootBackground,
+    "Theme control changes the actual rendered palette",
+  );
+  assert.equal(
+    await page.evaluate(() => localStorage.getItem("dmz-theme")),
+    "light",
+  );
+  await page.reload();
+  await page.waitForSelector('[data-path="contentVersion"]');
+  await assertTheme("light");
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    assert(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth + 1,
+      ),
+      `Light Studio reflows at ${width}`,
+    );
+    if (captureScreenshots)
+      await page.screenshot({
+        path: `test-results/${prefix}-studio-light-${width}.png`,
+        fullPage: true,
+      });
+  }
+  await page.locator("#theme-toggle").focus();
+  await page.keyboard.press("Enter");
+  await assertTheme("dark");
+  await page.reload();
+  await page.waitForSelector('[data-path="contentVersion"]');
+  await assertTheme("dark");
+  assert.deepEqual(
+    await page.evaluate(() => Object.keys(localStorage)),
+    ["dmz-theme"],
+    "Theme persistence creates no private profile or player-state storage",
+  );
+}
+
 async function captureLayout(page, { base, prefix, captureScreenshots }) {
   const layout = async (width, suffix) => {
     await page.setViewportSize({ width, height: 900 });
@@ -261,6 +360,7 @@ export async function runStudioTests({
     author = await createAuthorServer({ root: repository, port: 0 });
     context = await browser.newContext({
       viewport: { width: 1280, height: 900 },
+      colorScheme: "light",
     });
     const page = await context.newPage();
     activePage = page;
@@ -313,6 +413,9 @@ export async function runStudioTests({
     await page.goto(author.url + "/assets/schemas/pack.schema.json");
     await page.goto(author.url);
     await page.waitForSelector('[data-path="contentVersion"]');
+    phase = "dark-default palette and accessible persistent light toggle";
+    await checkStudioThemes(page, { prefix, captureScreenshots });
+    phase = "guided catalog and sourced typed records";
     await page.locator("#new-catalog-panel summary").first().click();
     await page.fill("#new-catalog-title", "Studio Acceptance Fixture");
     await page.fill("#new-catalog-game", "fictional-training");

@@ -1,6 +1,6 @@
 # Repository Content Studio
 
-The Content Studio is an explicitly started, local contributor tool. It saves public game content into this Git checkout. It is separate from the normal reader and its private browser editor.
+The Content Studio is an explicitly started, local contributor tool. It saves public game content into this Git checkout. It is separate from the normal reader and its private browser editor. Studio defaults to the guide’s dark palette; the accessible Light mode/Dark mode button remembers only a theme preference, without opening player profiles.
 
 The static ZIP is reader-only and does not include the author server. Clone the source repository to use the instructions below.
 
@@ -55,9 +55,19 @@ Only one Studio writer owns a repository transaction at a time. Saves compare th
 
 If another tab or an external editor changes the files, a stale save is refused. Keep or download the unsaved draft before explicitly reloading/discarding it. A lost response does not establish whether a save happened: check the returned/current revision rather than blindly overwriting again.
 
-Interrupted saves leave ignored `.author-state/` recovery material. Do not commit, delete or manually edit it. Author startup refuses to continue a pending transaction silently. Close the old author process and run `npm run author:recover` for a preview; use `npm run author:recover -- --apply` only after reviewing the reported known transaction. A live or unverifiable lock owner is not discarded because it is old. A file whose bytes differ from both the recorded before and after versions blocks recovery for manual review.
+Interrupted saves leave ignored `.author-state/` recovery material. Do not commit it or delete/edit pending recovery material. Completed backup storage is handled separately below. Author startup refuses to continue a pending transaction silently. Close the old author process and run `npm run author:recover` for a preview; use `npm run author:recover -- --apply` only after reviewing the reported known transaction. A live or unverifiable lock owner is not discarded because it is old. A file whose bytes differ from both the recorded before and after versions blocks recovery for manual review.
 
 Filesystem guarantees have limits. Portable Node filesystems do not provide atomic compare-and-swap against an unrelated editor between the final check and rename. Avoid concurrent external edits while saving. Before bytes are retained, but no universal guarantee is made against malicious local programs, hardware failure or power loss. Operating-system/filesystem durability and Windows sharing restrictions can differ; failures must remain visible and recoverable rather than being reported as success.
+
+## Retained completed backups
+
+The 64 MiB transaction limit is not a lifetime storage quota. Completed before/after backups remain in `.author-state/transactions/`, so repeated large saves can grow disk usage without a fixed total limit. There is no automatic pruning or destructive cleanup API. The Git review scans at most 1,000 completed receipts and 8 MiB of receipt bytes; it reports truncation when history exceeds these bounds. Your usual Git client remains the complete working-tree review.
+
+To archive completed backups safely:
+1. Stop every author and migration process. Run `npm run author:recover` and proceed only when its preview reports `pending: false` and `lock: null`. If either differs, resolve recovery first; never infer safety from an old timestamp.
+2. Consider only a regular, non-symlink transaction directory named with exactly 32 lowercase hexadecimal characters. Its regular `outcome.json` must say `state: "committed"`, have the matching `transactionId`, and contain valid managed public paths and hashes. If you cannot verify these conditions, retain it and ask for help. Missing/invalid outcomes, rolled-back/incomplete transactions, symlinks, `journal.json` and `current.lock` are not eligible for this procedure.
+3. Move that whole eligible directory to a unique, user-chosen backup location outside the checkout, without replacing existing files. Preserve every file. Recreate its original transaction directory and copy back only the unchanged regular `outcome.json`; verify those receipt bytes exactly match the archived copy before restarting Studio. Keeping the receipt preserves managed deleted-path history, within the scan limits above.
+4. Keep the archived before/after bytes for as long as you need rollback evidence. Do not erase them as part of this archive operation. If interrupted, leave Studio stopped and complete receipt restoration before resuming.
 
 ## Review and share with Git
 

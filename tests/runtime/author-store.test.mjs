@@ -333,6 +333,49 @@ test("FR-008: recovery rejects modified backup bytes", async (t) => {
     code: "RECOVERY_CONFLICT",
   });
 });
+test("FR-008: recovery rejects an outcome receipt inconsistent with its journal", async (t) => {
+  const root = await rootFor(t);
+  const target = record,
+    marker = manifest;
+  const before = new Map([
+    [target, null],
+    [marker, null],
+  ]);
+  const after = new Map([
+    [target, b("new")],
+    [marker, b("manifest")],
+  ]);
+  await assert.rejects(
+    applyFilePlan({
+      root,
+      before,
+      after,
+      failpoint: (phase) => {
+        if (phase === "committed") throw new Error("Interrupted");
+      },
+    }),
+  );
+  const journal = JSON.parse(
+    await readFile(join(root, ".author-state/journal.json")),
+  );
+  await put(
+    root,
+    `.author-state/transactions/${journal.transactionId}/outcome.json`,
+    b(
+      JSON.stringify({
+        state: "committed",
+        transactionId: journal.transactionId,
+        paths: [],
+      }),
+    ),
+  );
+  await assert.rejects(
+    recoverRepository({ root, apply: true }),
+    /outcome receipt/,
+  );
+  assert.equal((await readFile(join(root, target))).toString(), "new");
+  assert(await readFile(join(root, ".author-state/journal.json")));
+});
 test("FR-008: malformed, oversized and out-of-scope journals fail closed", async (t) => {
   const root = await rootFor(t);
   for (const content of [
@@ -637,4 +680,23 @@ test("FR-011: completed receipts retain deleted managed paths across store resta
         file.status === "deleted",
     ),
   );
+});
+test("FR-011: receipt history has one total byte budget and reports truncation", async (t) => {
+  const { root, store } = await fixture(t);
+  execFileSync("git", ["init", "-q"], { cwd: root });
+  for (const character of ["a", "b"]) {
+    const transactionId = character.repeat(32);
+    await put(
+      root,
+      `.author-state/transactions/${transactionId}/outcome.json`,
+      b(
+        " ".repeat(4 * 1024 * 1024 + 1) +
+          JSON.stringify({ state: "committed", transactionId, paths: [] }),
+      ),
+    );
+  }
+  const summary = await store.changes();
+  assert.equal(summary.gitAvailable, true);
+  assert.equal(summary.truncated, true);
+  assert(summary.files.some((file) => file.path === manifest));
 });

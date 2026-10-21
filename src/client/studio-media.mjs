@@ -464,7 +464,10 @@ export function createStudioMedia({
       details.dataset.mediaAction = "where-used";
       details.append(summary);
       for (const use of uses) {
-        const button = node("button", `${use.name} · ${use.path}`);
+        const button = node(
+          "button",
+          `${use.name} · ${use.path.endsWith(".parentAssetId") ? "thumbnail parent relationship · " : ""}${use.path}`,
+        );
         button.type = "button";
         button.onclick = () => onSelect(use.group, use.index);
         details.append(button);

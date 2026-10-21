@@ -406,7 +406,12 @@ function requestRemoval(group, index) {
     `${record.name || record.title || record.id}: ${uses.length ? "Removal blocked. Reassign or remove these references explicitly first." : "No dependents found. Removal changes only the draft until Save to repository."}`;
   $("#remove-usage").replaceChildren();
   for (const use of uses.slice(0, 100))
-    $("#remove-usage").append(node("li", `${use.name} · ${use.path}`));
+    $("#remove-usage").append(
+      node(
+        "li",
+        `${use.name} · ${use.path.endsWith(".parentAssetId") ? "thumbnail parent relationship · " : ""}${use.path}`,
+      ),
+    );
   $("#confirm-remove").disabled = uses.length > 0;
   $("#remove-stage").hidden = false;
   $("#remove-stage").scrollIntoView({ block: "nearest" });

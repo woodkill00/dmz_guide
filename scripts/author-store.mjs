@@ -620,10 +620,27 @@ export async function recoverRepository({
       `${STATE}/transactions/${journal.transactionId}/outcome.json`,
       8 * 1024 * 1024,
     );
-    const committed =
-      outcome &&
-      parseBounded(outcome.toString("utf8"), 8 * 1024 * 1024).state ===
-        "committed";
+    let committed = false;
+    if (outcome) {
+      const receipt = parseBounded(outcome.toString("utf8"), 8 * 1024 * 1024);
+      check(
+        receipt.state === "committed" &&
+          receipt.transactionId === journal.transactionId &&
+          Array.isArray(receipt.paths) &&
+          receipt.paths.length === journal.entries.length &&
+          receipt.paths.every(
+            (item, i) =>
+              item &&
+              item.path === journal.entries[i].path &&
+              item.beforeHash === journal.entries[i].beforeHash &&
+              item.afterHash === journal.entries[i].afterHash,
+          ),
+        "Recovery outcome receipt is invalid or changed",
+        "RECOVERY_CONFLICT",
+        409,
+      );
+      committed = true;
+    }
     for (const [i, e] of [...journal.entries.entries()].reverse()) {
       const current = digest(await bytesAt(root, e.path));
       const target = committed ? e.afterHash : e.beforeHash;
@@ -925,6 +942,8 @@ export async function createAuthorStore({ root, schema }) {
       const known = new Set(
         [...state.files.keys()].filter((p) => isManagedPath(p)),
       );
+      let historyTruncated = false;
+      let historyBudget = 8 * 1024 * 1024;
       // Completed receipts retain deleted managed paths across author restarts.
       const transactionFolder = await safePath(root, `${STATE}/transactions`, {
         directory: true,
@@ -933,14 +952,19 @@ export async function createAuthorStore({ root, schema }) {
         const transactions = (await readdir(transactionFolder)).filter((name) =>
           /^[a-f0-9]{32}$/.test(name),
         );
+        historyTruncated = transactions.length > 1000;
         if (transactions.length <= 1000)
           for (const tx of transactions) {
-            const bytes = await bytesAt(
-              root,
-              `${STATE}/transactions/${tx}/outcome.json`,
-              8 * 1024 * 1024,
-            );
+            const receipt = `${STATE}/transactions/${tx}/outcome.json`;
+            const receiptPath = await safePath(root, receipt);
+            const receiptStat = await exists(receiptPath);
+            if (receiptStat && receiptStat.size > historyBudget) {
+              historyTruncated = true;
+              break;
+            }
+            const bytes = await bytesAt(root, receipt, historyBudget);
             if (!bytes) continue;
+            historyBudget -= bytes.length;
             const outcome = parseBounded(
               bytes.toString("utf8"),
               8 * 1024 * 1024,
@@ -963,7 +987,7 @@ export async function createAuthorStore({ root, schema }) {
       }
       const inventory = [...known].sort();
       const files = [];
-      let truncated = false;
+      let truncated = historyTruncated;
       try {
         const hooks = await safePath(root, `${STATE}/empty-hooks`, {
           createParents: true,
@@ -1050,7 +1074,7 @@ export async function createAuthorStore({ root, schema }) {
               break;
             }
           }
-          if (truncated) break;
+          if (files.length >= 1000) break;
         }
         return { files, truncated, gitAvailable: true };
       } catch {

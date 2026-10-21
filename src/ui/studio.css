@@ -1,13 +1,14 @@
 :root {
   color-scheme: dark;
-  --bg: #10191a;
-  --panel: #192526;
-  --field: #111c1e;
-  --text: #edf2e9;
-  --muted: #b8c7c1;
-  --line: #4c6562;
-  --accent: #e6c06e;
-  --error: #ffb7a8;
+  --bg: #111513;
+  --panel: #191e1a;
+  --field: #111513;
+  --text: #f4f3e9;
+  --muted: #b9c0b2;
+  --line: #444d40;
+  --control-line: #839076;
+  --accent: #e0bd72;
+  --error: #ffc5ad;
   font:
     100%/1.55 system-ui,
     sans-serif;
@@ -29,6 +30,17 @@ footer {
 header {
   padding: 2.5rem 0 1rem;
 }
+.studio-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+#theme-toggle {
+  flex: 0 0 auto;
+}
+
 h1 {
   font-size: clamp(2rem, 6vw, 3.4rem);
   line-height: 1.05;
@@ -61,11 +73,16 @@ select,
 textarea {
   max-width: 100%;
   min-width: 0;
-  border: 1px solid var(--line);
+  border: 1px solid var(--control-line);
   border-radius: 0.3rem;
   background: var(--field);
   color: var(--text);
   padding: 0.65rem;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
 }
 input:not([type="checkbox"]),
 select,
@@ -94,14 +111,14 @@ label:has(input[type="checkbox"]) {
 button {
   border: 1px solid var(--accent);
   border-radius: 0.3rem;
-  background: #243633;
+  background: #243023;
   color: var(--text);
   padding: 0.65rem 0.9rem;
   cursor: pointer;
   min-height: 44px;
 }
 button:hover {
-  background: #354c46;
+  background: #34442e;
 }
 button:disabled {
   opacity: 0.55;
@@ -316,35 +333,33 @@ footer {
     transition: background 0.12s;
   }
 }
-@media (prefers-color-scheme: light) {
-  :root {
-    color-scheme: light;
-    --bg: #eff2e9;
-    --panel: #fffdf5;
-    --field: #fff;
-    --text: #172b27;
-    --muted: #3c5550;
-    --line: #788d81;
-    --accent: #715514;
-    --error: #9a2e22;
-  }
-  .notice {
-    background: #f6ecd3;
-  }
-  button {
-    background: #e5ede3;
-    color: var(--text);
-  }
-  button:hover {
-    background: #d7e3d4;
-  }
-  #save-repository,
-  #preview-content,
-  #create-catalog,
-  #attach-picture {
-    color: #fff;
-  }
-  .drop-zone.dragover {
-    background: #e5ede3;
-  }
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5f3eb;
+  --panel: #fffef8;
+  --field: #fff;
+  --text: #1f2920;
+  --muted: #4f5e4d;
+  --line: #a6b09d;
+  --control-line: #788873;
+  --accent: #71501b;
+  --error: #8b361b;
+}
+:root[data-theme="light"] .notice {
+  background: #f6ecd3;
+}
+:root[data-theme="light"] button {
+  background: #e9ebdf;
+  color: var(--text);
+}
+:root[data-theme="light"] button:hover {
+  background: #d7e3d4;
+}
+:root[data-theme="light"]
+  :is(#save-repository, #preview-content, #create-catalog, #attach-picture) {
+  background: var(--accent);
+  color: #fff;
+}
+:root[data-theme="light"] .drop-zone.dragover {
+  background: #e9ebdf;
 }
