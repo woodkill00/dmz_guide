@@ -1,0 +1,7 @@
+{
+  "F007-01": {"tasks":["T002","T003","T008"],"evidence":["src/domain/progression.mjs","src/ui/progression-page.mjs","src/client/progression.mjs","tests/runtime/progression.test.mjs"]},
+  "F007-02": {"tasks":["T002","T003"],"evidence":["src/domain/progression.mjs","src/client/progression.mjs","tests/runtime/progression.test.mjs"]},
+  "F007-03": {"tasks":["T004","T009"],"evidence":["src/domain/progression.mjs","src/client/progression.mjs","tests/runtime/progression.test.mjs","tests/browser/progression.mjs"]},
+  "F007-04": {"tasks":["T005","T009"],"evidence":["src/client/progression.mjs","tests/runtime/progression.test.mjs","tests/browser/progression.mjs"]},
+  "F007-05": {"tasks":["T006","T008","T009"],"evidence":["tests/runtime/progression.test.mjs","tests/browser/progression.mjs","specs/007-progression-guides/acceptance.md"]}
+}
