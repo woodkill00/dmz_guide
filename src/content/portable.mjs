@@ -48,3 +48,16 @@ export async function buildTransfer(pack,payloads,schema,options={}){checkedPack
 export function exportContent(pack,schema){checkedPack(pack,schema);return JSON.stringify(pack,null,2);}
 export function diffPacks(before,after){const result={added:[],removed:[],changed:[],manifest:[]};for(const group of GROUPS){const old=new Map((before?.[group]||[]).map(r=>[r.id,r])),next=new Map(after[group].map(r=>[r.id,r]));for(const[id,value]of next){if(!old.has(id))result.added.push({group,id,after:value});else if(JSON.stringify(old.get(id))!==JSON.stringify(value))result.changed.push({group,id,before:old.get(id),after:value});}for(const[id,value]of old)if(!next.has(id))result.removed.push({group,id,before:value});}for(const key of Object.keys(after).filter(k=>!GROUPS.includes(k)))if(JSON.stringify(before?.[key])!==JSON.stringify(after[key]))result.manifest.push({field:key,before:before?.[key]??null,after:after[key]});return result;}
 export function profileImpact(profile,before,after){if(!profile)return{rebindRequired:false,unresolved:[],affectedGoals:[]};const known=new Set(GROUPS.flatMap(k=>after[k].map(r=>r.id)));const refs=new Set([...Object.keys(profile.inventory||{}),...Object.keys(profile.reserves||{}),...Object.keys(profile.completion||{}),...Object.keys(profile.routes||{}),...Object.values(profile.routes||{}),...(profile.goals||[]).map(g=>g.id)]);const diff=diffPacks(before,after),changed=new Set([...diff.changed,...diff.removed].map(x=>x.id));return{rebindRequired:profile.packId!==after.id||profile.contentVersion!==after.contentVersion||JSON.stringify(before?.game)!==JSON.stringify(after.game),unresolved:[...refs].filter(id=>!known.has(id)),affectedGoals:(profile.goals||[]).filter(g=>changed.has(g.id)||[...diff.changed,...diff.removed,...diff.added].some(c=>['items','recipes','objectives'].includes(c.group))).map(g=>g.id)};}
+
+// Defaults are draft placeholders, not invented facts; final schema/semantic validation remains mandatory.
+export function defaultFieldValue(root,field,{fictional=false}={},key=''){
+ let s=field;while(s.$ref)s=s.$ref.slice(2).split('/').reduce((value,part)=>value[part],root);
+ const next=(child,name='')=>defaultFieldValue(root,child,{fictional},name);
+ if('const'in s)return s.const;if(s.anyOf)return next(s.anyOf[0],key);
+ if(s.enum){if(key==='status')return fictional?'fictional':'unknown';return s.enum.includes('unknown')?'unknown':s.enum[0];}
+ if(Array.isArray(s.type)){if(s.type.includes('null'))return null;return next({...s,type:s.type[0]},key);}
+ if(s.type==='null')return null;
+ if(s.type==='object')return Object.fromEntries((s.required||[]).map(name=>[name,next(s.properties[name],name)]));
+ if(s.type==='array')return Array.from({length:s.minItems||0},()=>next(s.items));
+ if(s.type==='boolean')return false;if(['number','integer'].includes(s.type))return s.minimum??0;return '';
+}

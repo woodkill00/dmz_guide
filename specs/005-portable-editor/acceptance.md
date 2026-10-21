@@ -11,3 +11,6 @@
 
 ## Review-driven repairs
 Independent reviewer identified conflicting per-frame dimensions, dirty draft replacement, atomic-save mutation and imported embedded metadata disclosure. Boundary and UI fixes plus regression tests implemented. Requirements checklist approved15/15 before code; implementation review is separate and pending.
+
+## Hosted failure and repair tracking
+Parent reported hosted PR4 head208323 failed on Linux job119199414751 and Windows job119199414574 at editor320px overflow assertion. Earlier journey assertions completed before that point, but the suite did not pass. No visual approval inferred. Commit1cdfe38 moves screenshots before the assertion and records overflowing element geometry/text in editor-overflow-320.json for reproduction. Shared CSS owner notified that editor picture metadata has an unbroken SHA256 and actual DOM IDs are guided-form/editor-fields; targeted text wrapping and min-width fixes are requested, not hidden page overflow or a weakened gate. Latest expanded browser suite and these repairs require a fresh hosted run.
