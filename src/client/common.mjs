@@ -1,5 +1,6 @@
+import {validatePack} from '../content/validate.mjs';
 import {newProfile, validateProfile} from '../domain/profile.mjs';
-import {loadProfile, saveProfile, readRecord} from '../storage/store.mjs';
+import {loadProfile, saveProfile, readRecord, listRecords} from '../storage/store.mjs';
 export const $ = selector => document.querySelector(selector);
 export const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const state = {pack:null, profile:null, revision:0, packs:[], loading:false, saving:false};
@@ -21,19 +22,22 @@ export async function init(render) {
     if (!response.ok) throw new Error('Content unavailable. Start the local server and retry.');
     return response.json();
   }));
+  const schemaResponse=await fetch('/assets/schemas/pack.schema.json');if(!schemaResponse.ok)throw new Error('Content schema unavailable.');const schema=await schemaResponse.json();let contentWarning=null;
   $('#export-current-profile')?.addEventListener('click',()=>{
     try { if(state.loading)throw new Error('Wait for the selected pack to load.');validateProfile(state.profile);download('dmz-private-profile.json',state.profile); } catch(reason) {error(reason);}
   });
+  try {for(const record of await listRecords('content')) {const pack=record.value?.pack;if(pack&&!state.packs.some(p=>p.id===pack.id)){try{validatePack(pack,schema);state.packs.push(pack);}catch{contentWarning=new Error('An invalid local pack was retained but not loaded. Restore its original exported bundle in the editor; no stored data was deleted.');}}}} catch {}
   const requested=new URL(location.href).searchParams.get('pack'), select=$('#pack-select');
+  select.innerHTML=state.packs.map(pack=>`<option value="${esc(pack.id)}">${esc(pack.title)}</option>`).join('');
   if(requested && state.packs.some(pack=>pack.id===requested))select.value=requested;
   async function change() {
     const token=++generation;
     document.dispatchEvent(new Event('pack-changing'));
     if(!state.loading){disabledControls=[...document.querySelectorAll('main button, main input, main select')].filter(n=>n!==select).map(n=>[n,n.disabled]);for(const[n]of disabledControls)n.disabled=true;}state.loading=true;document.querySelector('main').setAttribute('aria-busy','true');status('Loading selected local pack…');
     let pack=state.packs.find(pack=>pack.id===select.value)||state.packs[0];
-    let warning=null;
-    try { const overlay=await readRecord('content',pack.id);if(token!==generation)return;if(overlay?.value?.pack)pack=overlay.value.pack; }
-    catch { if(token!==generation)return; }
+    let warning=contentWarning;
+    try { const overlay=await readRecord('content',pack.id);if(token!==generation)return;if(overlay?.value?.pack){validatePack(overlay.value.pack,schema);if(overlay.value.pack.id!==pack.id)throw new Error('Stored pack identity mismatch');pack=overlay.value.pack;} }
+    catch(reason) { if(token!==generation)return;warning=new Error('Local content unavailable or invalid; using published baseline. Stored data retained. '+reason.message); }
     let profile=newProfile(pack), revision=0;
     try {
       const record=await loadProfile(pack.id);
