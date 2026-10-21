@@ -63,6 +63,18 @@ export function recordUses(pack, id, assetSources = {}) {
   });
   return result;
 }
+// Removing src schedules the browser's image-data cancellation. Wait for that
+// decode lifecycle to settle before revoking; do not race it with a timer or
+// force an unseen lazy preview to start loading its old resource.
+export async function retirePreviewURL(url, images) {
+  await Promise.all(
+    images.map((image) => {
+      if (image.getAttribute("src") === url) image.removeAttribute("src");
+      return image.decode().catch(() => {});
+    }),
+  );
+  URL.revokeObjectURL(url);
+}
 export function createStudioMedia({
   schema,
   getDraft,
@@ -85,8 +97,8 @@ export function createStudioMedia({
     duplicate = null,
     page = 0,
     generation = 0,
-    controller = new AbortController(),
-    urls = [];
+    controller = new AbortController();
+  const previews = new Map();
   function invoke(fn) {
     try {
       assert(!isLocked(), "Wait for the current operation to finish");
@@ -102,14 +114,35 @@ export function createStudioMedia({
     }
   }
   const listen = (id, fn) => $(id).addEventListener("click", () => invoke(fn));
-  function revoke() {
-    for (const url of urls) URL.revokeObjectURL(url);
-    urls = [];
+  function previewImage(owner, bytes, mime, element = null) {
+    let entry = previews.get(owner);
+    if (!entry) {
+      entry = {
+        url: URL.createObjectURL(
+          new Blob(
+            [typeof bytes === "string" ? bytesFromBase64(bytes) : bytes],
+            { type: mime },
+          ),
+        ),
+        image: element || node("img"),
+      };
+      if (!element) entry.image.loading = "lazy";
+      previews.set(owner, entry);
+    }
+    if (entry.image.getAttribute("src") !== entry.url)
+      entry.image.src = entry.url;
+    return entry.image;
   }
-  function url(bytes, mime) {
-    const value = URL.createObjectURL(new Blob([bytes], { type: mime }));
-    urls.push(value);
-    return value;
+  function retireUnusedPreviews() {
+    // Retain upload URLs across paging/search/rerenders. The pending upload
+    // batch is bounded to 32 images / 8 MiB; only these two workbench owners
+    // are additional. Saved catalog previews use lazy HTTP URLs, not blobs.
+    const retained = new Set([source, working, ...getUploads().values()]);
+    for (const [owner, entry] of previews) {
+      if (retained.has(owner)) continue;
+      previews.delete(owner);
+      void retirePreviewURL(entry.url, [entry.image]);
+    }
   }
   function rightsReset() {
     generation++;
@@ -139,9 +172,19 @@ export function createStudioMedia({
     $("#picture-original-size").checked = false;
   }
   function renderWorking() {
-    if (!source || !working) return;
-    $("#picture-original").src = url(source.bytes, source.info.mime);
-    $("#picture-working").src = url(working.bytes, working.mime);
+    if (!source || !working) {
+      $("#picture-original").removeAttribute("src");
+      $("#picture-working").removeAttribute("src");
+      $("#picture-workbench").hidden = true;
+      return;
+    }
+    previewImage(
+      source,
+      source.bytes,
+      source.info.mime,
+      $("#picture-original"),
+    );
+    previewImage(working, working.bytes, working.mime, $("#picture-working"));
     $("#picture-size").textContent =
       `Original ${source.info.width} × ${source.info.height}, ${source.bytes.length.toLocaleString()} bytes → draft ${working.width} × ${working.height}, ${working.bytes.length.toLocaleString()} bytes. PNG may be larger; choose smaller output dimensions if needed.`;
     $("#picture-workbench").hidden = false;
@@ -397,10 +440,11 @@ export function createStudioMedia({
     onRender();
   }
   function render() {
-    revoke();
     const pack = getDraft(),
       root = $("#media-library");
     root.replaceChildren();
+    renderWorking();
+    retireUnusedPreviews();
     if (!pack) return;
     const selected = canAttach();
     $("#picture-target").textContent = selected
@@ -425,12 +469,13 @@ export function createStudioMedia({
       const upload = getUploads().get(asset.id),
         existing = getAssetSources()[asset.id];
       if (upload || existing) {
-        const img = node("img");
+        const img = upload
+          ? previewImage(upload, upload.base64, asset.mime)
+          : node("img");
         img.loading = "lazy";
         img.alt = `Picture ${asset.id}`;
-        img.src = upload
-          ? url(bytesFromBase64(upload.base64), asset.mime)
-          : `/api/media?packKey=${encodeURIComponent(getKey())}&assetId=${encodeURIComponent(asset.id)}`;
+        if (!upload)
+          img.src = `/api/media?packKey=${encodeURIComponent(getKey())}&assetId=${encodeURIComponent(asset.id)}`;
         card.append(img);
       } else
         card.append(
@@ -509,7 +554,6 @@ export function createStudioMedia({
       }
       root.append(card);
     }
-    renderWorking();
   }
   $("#picture-file").addEventListener("change", () => {
     const file = $("#picture-file").files[0];

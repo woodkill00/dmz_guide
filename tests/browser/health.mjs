@@ -69,6 +69,8 @@ export function expectResponseErrors(
 }
 export function monitorBrowser(browser) {
   const failures = [],
+    responses = [],
+    pendingDiagnostics = [],
     contexts = [],
     original = browser.newContext.bind(browser);
   browser.newContext = async (...args) => {
@@ -103,14 +105,15 @@ export function monitorBrowser(browser) {
           expected.observed.push(text);
           return;
         }
-        failures.push("Console: " + text);
+        const location = message.location?.();
+        failures.push(
+          "Console: " + text + (location?.url ? " at " + location.url : ""),
+        );
       });
       page.on("requestfailed", (request) => {
         const reason = request.failure()?.errorText || "";
         if (!/ERR_ABORTED|NS_BINDING_ABORTED|cancelled/i.test(reason))
-          failures.push(
-            "Request: " + new URL(request.url()).pathname + " " + reason,
-          );
+          failures.push("Request: " + request.url() + " " + reason);
       });
       page.on("response", (response) => {
         const expected = expectedResponses.get(context);
@@ -128,18 +131,32 @@ export function monitorBrowser(browser) {
           });
           return;
         }
-        if (response.status() >= 400)
-          failures.push(
-            "HTTP " +
-              response.status() +
-              ": " +
-              new URL(response.url()).pathname,
-          );
+        if (response.status() >= 400) {
+          failures.push("HTTP " + response.status() + ": " + response.url());
+          const diagnostic = {
+            status: response.status(),
+            method: response.request().method(),
+            url: response.url(),
+            page: page.url?.() || null,
+          };
+          responses.push(diagnostic);
+          if (response.text)
+            pendingDiagnostics.push(
+              response.text().then(
+                (body) => {
+                  diagnostic.body = body.slice(0, 8192);
+                },
+                (error) => {
+                  diagnostic.bodyError = error.message;
+                },
+              ),
+            );
+        }
       });
     });
     return context;
   };
-  return () => {
+  const check = () => {
     for (const context of contexts) {
       const expected = expectedResponses.get(context);
       if (expected)
@@ -155,4 +172,12 @@ export function monitorBrowser(browser) {
       "No unexpected console errors, script errors or failed HTTP requests across contexts",
     );
   };
+  check.diagnostics = async () => {
+    await Promise.all(pendingDiagnostics);
+    return {
+      failures: [...failures],
+      responses: responses.map((value) => ({ ...value })),
+    };
+  };
+  return check;
 }

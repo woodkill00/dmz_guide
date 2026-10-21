@@ -2,7 +2,10 @@ import test from "node:test";
 import { readFile } from "node:fs/promises";
 import { renderStudioPage } from "../../src/ui/studio-page.mjs";
 import assert from "node:assert/strict";
-import { recordUses } from "../../src/client/studio-media.mjs";
+import {
+  recordUses,
+  retirePreviewURL,
+} from "../../src/client/studio-media.mjs";
 import { GROUPS } from "../../src/content/portable.mjs";
 const empty = () => Object.fromEntries(GROUPS.map((group) => [group, []]));
 
@@ -124,10 +127,69 @@ test("Studio defaults dark and offers the standalone persisted theme toggle", as
     /id="theme-toggle"[^>]+aria-label="Switch to light theme"/,
   );
   assert.match(html, /src="\/assets\/src\/client\/theme.mjs"/);
+  assert.match(html, /rel="icon" href="\/assets\/src\/favicon.svg"/);
   const css = await readFile(
     new URL("../../src/ui/studio.css", import.meta.url),
     "utf8",
   );
   assert.doesNotMatch(css, /prefers-color-scheme/);
   assert.match(css, /:root\[data-theme="light"\]/);
+});
+
+test("Studio clears retired image sources and waits for every decode settlement before revoking", async (t) => {
+  const url = "blob:studio-retired-preview",
+    events = [],
+    settlers = [];
+  t.mock.method(URL, "revokeObjectURL", (value) =>
+    events.push(["revoke", value]),
+  );
+  const images = [0, 1].map((index) => ({
+    source: url,
+    getAttribute() {
+      return this.source;
+    },
+    removeAttribute(name) {
+      assert.equal(name, "src");
+      this.source = null;
+      events.push(["clear", index]);
+    },
+    decode() {
+      assert.equal(
+        this.source,
+        null,
+        "Retirement cannot start an unseen lazy source",
+      );
+      events.push(["decode", index]);
+      return new Promise((resolve, reject) =>
+        settlers.push({ resolve, reject }),
+      );
+    },
+  }));
+  const retired = retirePreviewURL(url, images);
+  assert.deepEqual(events, [
+    ["clear", 0],
+    ["decode", 0],
+    ["clear", 1],
+    ["decode", 1],
+  ]);
+  settlers[0].resolve();
+  await Promise.resolve();
+  assert(!events.some(([event]) => event === "revoke"));
+  settlers[1].reject(new Error("Image source cancellation settled"));
+  await retired;
+  assert.deepEqual(events.at(-1), ["revoke", url]);
+});
+
+test("Studio retirement does not clear a newer workbench source", async (t) => {
+  const revoked = [];
+  t.mock.method(URL, "revokeObjectURL", (url) => revoked.push(url));
+  await retirePreviewURL("blob:old", [
+    {
+      getAttribute: () => "blob:new",
+      removeAttribute: () =>
+        assert.fail("Must retain the newer selected picture"),
+      decode: () => Promise.resolve(),
+    },
+  ]);
+  assert.deepEqual(revoked, ["blob:old"]);
 });

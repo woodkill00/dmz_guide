@@ -700,3 +700,93 @@ test("FR-011: receipt history has one total byte budget and reports truncation",
   assert.equal(summary.truncated, true);
   assert(summary.files.some((file) => file.path === manifest));
 });
+test("FR-005/011: cooperative reads wait for an in-flight save instead of seeing its journal", async (t) => {
+  const { root, store } = await fixture(t);
+  const alias = await createAuthorStore({ root: `${root}/./`, schema });
+  execFileSync("git", ["init", "-q"], { cwd: root });
+  const before = await readCatalog({ root, schema });
+  const entries = structuredClone(before.entries);
+  entries[0].pack.contentVersion = "2";
+  entries[0].pack.title = "Complete committed snapshot";
+  const after = serializeCatalog({ entries, schema });
+  let prepared, release;
+  const preparedSignal = new Promise((resolve) => {
+    prepared = resolve;
+  });
+  const releaseSignal = new Promise((resolve) => {
+    release = resolve;
+  });
+  const write = applyFilePlan({
+    root,
+    before: before.files,
+    after,
+    failpoint: async (phase) => {
+      if (phase === "prepared") {
+        prepared();
+        await releaseSignal;
+      }
+    },
+  });
+  await preparedSignal;
+  let settled = false;
+  const reads = Promise.all(
+    [alias.read(), store.changes()].map((promise) =>
+      promise.catch((error) => ({ error })),
+    ),
+  ).then((results) => {
+    settled = true;
+    return results;
+  });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  const settledWhileWriting = settled;
+  release();
+  await write;
+  const [snapshot, changes] = await reads;
+  assert.equal(
+    settledWhileWriting,
+    false,
+    "Reads must not inspect an active cooperative transaction",
+  );
+  assert.equal(snapshot.entries[0].pack.title, "Complete committed snapshot");
+  assert.equal(changes.gitAvailable, true);
+  const committed = await readCatalog({ root, schema });
+  const nextEntries = structuredClone(committed.entries);
+  nextEntries[0].pack.contentVersion = "3";
+  let earlierReadCompleted = false;
+  const earlierRead = store.changes().then((summary) => {
+    earlierReadCompleted = true;
+    return summary;
+  });
+  const nextWrite = applyFilePlan({
+    root,
+    before: committed.files,
+    after: serializeCatalog({ entries: nextEntries, schema }),
+    failpoint: (phase) => {
+      if (phase === "prepared")
+        assert.equal(
+          earlierReadCompleted,
+          true,
+          "A writer must wait for readers that arrived before it",
+        );
+    },
+  });
+  const laterRead = store.read();
+  await Promise.all([earlierRead, nextWrite]);
+  assert.equal((await laterRead).entries[0].pack.contentVersion, "3");
+  const third = await readCatalog({ root, schema });
+  const thirdEntries = structuredClone(third.entries);
+  thirdEntries[0].pack.contentVersion = "4";
+  const failedReader = assert.rejects(alias.media("test", "test:missing"));
+  const thirdWrite = applyFilePlan({
+    root,
+    before: third.files,
+    after: serializeCatalog({ entries: thirdEntries, schema }),
+  });
+  const afterFailure = store.read();
+  await Promise.all([failedReader, thirdWrite]);
+  assert.equal(
+    (await afterFailure).entries[0].pack.contentVersion,
+    "4",
+    "A failed earlier reader cannot poison a later write or reader",
+  );
+});

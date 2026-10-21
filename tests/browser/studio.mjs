@@ -95,6 +95,20 @@ async function startReader(root) {
   throw new Error(`Reader did not start: ${output}`);
 }
 
+async function prepareMediaScreenshot(page) {
+  // Native lazy images must actually enter the viewport before evidence capture.
+  // Only mounted cards are visited; this never loads the rest of the catalog.
+  for (const image of await page.locator("#media-library img").all()) {
+    await image.scrollIntoViewIfNeeded();
+    const decoded = await image.evaluate(async (element) => {
+      await element.decode();
+      return element.complete && element.naturalWidth > 0;
+    });
+    assert(decoded, "Every displayed media card has decoded pixels");
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+}
+
 async function checkStudioThemes(page, { prefix, captureScreenshots }) {
   const assertTheme = async (theme) => {
     await page.waitForFunction(
@@ -175,11 +189,13 @@ async function checkStudioThemes(page, { prefix, captureScreenshots }) {
       ),
       `Light Studio reflows at ${width}`,
     );
-    if (captureScreenshots)
+    if (captureScreenshots) {
+      await prepareMediaScreenshot(page);
       await page.screenshot({
         path: `test-results/${prefix}-studio-light-${width}.png`,
         fullPage: true,
       });
+    }
   }
   await page.locator("#theme-toggle").focus();
   await page.keyboard.press("Enter");
@@ -197,6 +213,7 @@ async function checkStudioThemes(page, { prefix, captureScreenshots }) {
 async function captureLayout(page, { base, prefix, captureScreenshots }) {
   const layout = async (width, suffix) => {
     await page.setViewportSize({ width, height: 900 });
+    if (captureScreenshots) await prepareMediaScreenshot(page);
     await page.evaluate(() => window.scrollTo(0, 0));
     const diagnostics = await page.evaluate(() => {
       const bounds = (element) => {
@@ -540,7 +557,15 @@ export async function runStudioTests({
       return data;
     };
     // Establish a real preceding document for the dirty browser-back test.
-    await page.goto(author.url + "/assets/schemas/pack.schema.json");
+    const historyEntry = (await snapshot()).entries.find(
+      (candidate) => allRecords([candidate.pack]).length > 0,
+    );
+    assert(historyEntry, "A saved record establishes real navigation history");
+    const historyUrl = new URL("/preview", author.url);
+    historyUrl.searchParams.set("packKey", historyEntry.key);
+    historyUrl.searchParams.set("id", allRecords([historyEntry.pack])[0].id);
+    const historyResponse = await page.goto(historyUrl.href);
+    assert.equal(historyResponse.status(), 200);
     await page.goto(author.url);
     await page.waitForSelector('[data-path="contentVersion"]');
     phase = "dark-default palette and accessible persistent light toggle";
@@ -645,6 +670,34 @@ export async function runStudioTests({
     const pictureId = await page.locator("#picture-id").inputValue();
     await page.click("#attach-picture");
     await page.waitForSelector(`#media-library [data-asset-id="${pictureId}"]`);
+    const assertWorkbenchCleared = async () => {
+      for (const selector of ["#picture-original", "#picture-working"])
+        assert.equal(
+          await page.locator(selector).getAttribute("src"),
+          null,
+          "Canceled or attached workbench images release their old source",
+        );
+    };
+    await assertWorkbenchCleared();
+    const uploadedImage = page.locator(
+      `#media-library [data-asset-id="${pictureId}"] img`,
+    );
+    const uploadPreviewUrl = await uploadedImage.getAttribute("src");
+    assert.match(uploadPreviewUrl, /^blob:/);
+    for (let repeat = 0; repeat < 3; repeat++) {
+      await section("metadata");
+      await field("description").fill(
+        "Original synthetic Studio acceptance catalog.",
+      );
+      await section("items", weaponIndex);
+      assert.equal(
+        await uploadedImage.getAttribute("src"),
+        uploadPreviewUrl,
+        "Ordinary metadata and section renders retain the pending upload URL",
+      );
+    }
+    await uploadedImage.scrollIntoViewIfNeeded();
+    await uploadedImage.evaluate((image) => image.decode());
 
     phase = "additional pictures, duplicate reuse and where-used removal";
     const preparePicture = async (x, name, attachment) => {
@@ -751,6 +804,25 @@ export async function runStudioTests({
     await page.click("#cancel-remove");
     await preparePicture(512, "cancel-picture.png", "library");
     await page.click("#cancel-picture");
+    await assertWorkbenchCleared();
+    let previousWorkbenchUrl;
+    for (let repeat = 0; repeat < 2; repeat++) {
+      await page.setInputFiles("#picture-file", {
+        name: "rapid-reselect.png",
+        mimeType: "image/png",
+        buffer: Buffer.from(original, "base64"),
+      });
+      await page.waitForSelector("#picture-workbench:not([hidden])");
+      const current = await page
+        .locator("#picture-working")
+        .getAttribute("src");
+      assert.match(current, /^blob:/);
+      assert.notEqual(current, previousWorkbenchUrl);
+      previousWorkbenchUrl = current;
+      await page.click("#cancel-picture");
+      await assertWorkbenchCleared();
+      assert.equal(await uploadedImage.getAttribute("src"), uploadPreviewUrl);
+    }
     assert.equal(
       await page.locator("#media-library .media-card").count(),
       3,
@@ -1079,7 +1151,13 @@ export async function runStudioTests({
     });
     const stalePage = await context.newPage();
     activePage = stalePage;
+    const initialChanges = stalePage.waitForResponse(
+      (response) => new URL(response.url()).pathname === "/api/changes",
+    );
     await stalePage.goto(author.url);
+    const initialChangeResult = await initialChanges;
+    assert.equal(initialChangeResult.status(), 200);
+    await initialChangeResult.finished();
     await stalePage.waitForSelector('[data-path="contentVersion"]');
     await stalePage.selectOption("#pack-select", entry.key);
     await stalePage
@@ -1141,11 +1219,13 @@ export async function runStudioTests({
         externallyChanged.revision,
         "Stale save never overwrites the external edit",
       );
-      if (captureScreenshots)
+      if (captureScreenshots) {
+        await prepareMediaScreenshot(stalePage);
         await stalePage.screenshot({
           path: `test-results/${prefix}-studio-conflict-390.png`,
           fullPage: true,
         });
+      }
       const cancelReload = stalePage.waitForEvent("dialog");
       const reloadAction = stalePage.click("#reload-repository");
       assert.match((await cancelReload).message(), /discard this draft/i);
@@ -1384,11 +1464,13 @@ export async function runStudioTests({
       mediaRequests.length <= 49,
       "Searching the final asset does not fetch the other 951 payloads",
     );
-    if (captureScreenshots)
+    if (captureScreenshots) {
+      await prepareMediaScreenshot(libraryPage);
       await libraryPage.screenshot({
         path: `test-results/${prefix}-studio-large-library-search.png`,
         fullPage: true,
       });
+    }
     console.log(
       `${engineName}: Studio guided records, sourced units, crop/thumbnail/additional pixels, duplicate reuse, blocked removal, import/cancel/back, real stale conflict/export, saved preview, repeat-save, restart/fresh Git clone, read-only serving, 1,000-asset paging and mobile/200% reflow passed.`,
     );
@@ -1461,6 +1543,21 @@ async function main() {
         captureScreenshots: engineName !== "webkit",
       });
       health();
+    } catch (error) {
+      await mkdir("test-results", { recursive: true });
+      await writeFile(
+        `test-results/${engineName}-studio-health.json`,
+        JSON.stringify(
+          {
+            message: error.message,
+            stack: error.stack,
+            ...(await health.diagnostics()),
+          },
+          null,
+          2,
+        ),
+      );
+      throw error;
     } finally {
       await browser.close();
     }

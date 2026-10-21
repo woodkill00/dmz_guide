@@ -42,6 +42,7 @@ const digest = (bytes) =>
   bytes === null ? null : createHash("sha256").update(bytes).digest("hex");
 const jsonBytes = (v) => Buffer.from(JSON.stringify(v, null, 2) + "\n");
 const queues = new Map();
+const activeReads = new Map();
 export class AuthorError extends Error {
   constructor(code, message, status = 422) {
     super(message);
@@ -209,12 +210,29 @@ async function removeFile(root, rel) {
 }
 async function serial(root, operation) {
   const previous = queues.get(root) || Promise.resolve();
-  const pending = previous.catch(() => {}).then(operation);
+  const pending = Promise.allSettled([
+    previous,
+    ...(activeReads.get(root) || []),
+  ]).then(operation);
   queues.set(root, pending);
   try {
     return await pending;
   } finally {
     if (queues.get(root) === pending) queues.delete(root);
+  }
+}
+async function sharedRead(root, operation) {
+  const previous = queues.get(root) || Promise.resolve();
+  const pending = previous.catch(() => {}).then(operation);
+  const readers = activeReads.get(root) || new Set();
+  activeReads.set(root, readers);
+  readers.add(pending);
+  try {
+    return await pending;
+  } finally {
+    readers.delete(pending);
+    if (!readers.size && activeReads.get(root) === readers)
+      activeReads.delete(root);
   }
 }
 async function acquireLock(root) {
@@ -731,7 +749,7 @@ export async function createAuthorStore({ root, schema }) {
     );
     return readCatalog({ root, schema });
   };
-  return {
+  const store = {
     schema,
     async read() {
       const state = await snapshot();
@@ -1087,5 +1105,14 @@ export async function createAuthorStore({ root, schema }) {
         };
       }
     },
+  };
+  // Readers run together, but never overlap a cooperative writer. Internal
+  // snapshots stay unqueued so a transaction can validate without deadlocking.
+  return {
+    ...store,
+    read: () => sharedRead(root, () => store.read()),
+    media: (packKey, assetId) =>
+      sharedRead(root, () => store.media(packKey, assetId)),
+    changes: () => sharedRead(root, () => store.changes()),
   };
 }

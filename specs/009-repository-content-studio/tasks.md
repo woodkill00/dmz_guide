@@ -56,3 +56,9 @@ Deliver the smallest real repository save journey first, then complete media/imp
 
 ## Phase 9: Convergence
 - [ ] T027 [US1] Resolve CONV-002 (HIGH, partial FR-013 / SC-004 / constitution principle 2): fix intrinsic-width overflow in src/ui/studio.css at 320px with actual 200% text sizing. Hosted run 39662205116 measured a 494px document width. Preserve enlarged text, accessible controls and the existing no-overflow assertions in tests/browser/studio.mjs; verify actual desktop/mobile/enlarged-text screenshots and both themes without clipping or hiding content.
+
+## Phase 10: Convergence
+- [ ] T028 [US2] Resolve CONV-003 (HIGH, partial FR-006/013 and SC-004): eliminate unexpected browser resource failures after the complete Studio journey. Give Studio and saved preview explicit existing local favicons, and repair the image object-URL lifecycle causing ERR_FILE_NOT_FOUND during draft rerenders. Preserve the strict browser health gate, add targeted regressions, and verify all supported hosted engines without broad console/network exceptions.
+
+## Phase 11: Convergence
+- [ ] T029 [US1] Resolve CONV-004 (HIGH, partial FR-005/013 and SC-004): serialize same-process repository read/media/change-summary operations with active saves in scripts/author-store.mjs. Hosted Firefox and Windows completed functional workflows but exposed a transient HTTP 422 summary while a following save was in progress. Add a deterministic prepared-journal overlap test in tests/runtime/author-store.test.mjs. Preserve external-edit detection and strict browser health; do not return a partially installed snapshot or suppress failures.

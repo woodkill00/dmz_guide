@@ -11,6 +11,7 @@ test("saved preview uses validated local IDs, saved revision and lazy media", ()
   const record = entry.pack.items.find((item) => item.assetId);
   const html = renderSavedPreview(snapshot, entry.key, record.id);
   assert.match(html, /Saved repository preview/);
+  assert.ok(html.includes('rel="icon" href="/assets/src/favicon.svg"'));
   assert.ok(html.includes(snapshot.revision));
   assert.match(html, /loading="lazy"/);
   assert.ok(

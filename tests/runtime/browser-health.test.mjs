@@ -163,3 +163,40 @@ test("negative HTTP expectation cannot be silently replaced", async () => {
     /cannot be silently replaced/,
   );
 });
+
+test("health diagnostics retain blob schemes, console locations and error bodies", async () => {
+  const { check, page } = await setup();
+  const blob = "blob:http://127.0.0.1:4174/synthetic-picture-id";
+  const icon = "http://127.0.0.1:4174/favicon.ico";
+  page.emit("requestfailed", {
+    url: () => blob,
+    failure: () => ({ errorText: "net::ERR_FILE_NOT_FOUND" }),
+  });
+  page.emit("console", {
+    type: () => "error",
+    text: () => "Failed to load resource: 404",
+    location: () => ({ url: icon }),
+  });
+  page.emit("response", {
+    status: () => 422,
+    url: () => "http://127.0.0.1:4174/api/changes",
+    request: () => ({ method: () => "GET" }),
+    text: async () => '{"code":"INVALID_CONTENT"}',
+  });
+  const diagnostics = await check.diagnostics();
+  assert.equal(diagnostics.failures.length, 3);
+  assert(diagnostics.failures[0].includes(blob));
+  assert(diagnostics.failures[1].includes(icon));
+  assert.deepEqual(diagnostics.responses, [
+    {
+      status: 422,
+      method: "GET",
+      url: "http://127.0.0.1:4174/api/changes",
+      page: null,
+      body: '{"code":"INVALID_CONTENT"}',
+    },
+  ]);
+  diagnostics.failures.length = 0;
+  assert.throws(check, /No unexpected/);
+  assert.equal((await check.diagnostics()).failures.length, 3);
+});
