@@ -1,0 +1,5 @@
+# Contract004
+Input pack schema1 + profile schema1, valid same pack/content. goals[{id,quantity}] max100 unique IDs, objectives quantity1. routes{outputItemId:recipeId}, only matching output/scope selected; zero route means raw acquisition.
+Output: ledger[{id,unit,owned,reserved,consumed,retained,allocated,missing,retainedMissing,produced,surplus,perGoal:[{goalId,demand,allocated,missing}]}], goals[{id,reasons,collectNow,collectLater}], schedule[{goalId,executable,reasons,actions}], mode:'strict'|'work-conserving', versions. No write to profile. Units stay per-item, never sum currencies/materials. Exact shape may add explanatory fields but not remove semantics.
+Bounds: quantities<=1e6; each aggregate<=1e12 and safe integer;100goals;20krecords;500kgraph/action work. All iterative traversals are bounded; invalid paths report stable IDs.
+Root delivery: ledger.rootReserved records requested goal output protected from reuse. schedule.delivered {itemId,quantity} describes claimed produced root output; only unclaimed new batch surplus may be reused. Pre-existing stock cannot discharge additional-production root goals.

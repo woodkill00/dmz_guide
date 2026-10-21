@@ -1,0 +1,3 @@
+# Decisions
+Decision: aggregate topological requirements before batch rounding; separate copied trial schedule. Per-goal recursive expansion alone was rejected because it rounds shared intermediates twice. Greedy whole-goal simulation is explainable and bounded, not globally optimal. Strict reservation intentionally may leave lower work blocked; optional work-conserving explains that tradeoff.
+Decision: persist routes/goals with existing profile format. Execution policy remains explicit current-page choice default strict, avoiding a new migration for a convenience preference. No auto-selected alternative; raw acquisition is default.

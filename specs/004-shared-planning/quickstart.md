@@ -1,0 +1,2 @@
+# Validation
+npm test; npm run build; npm start. Choose fictional training pack, add beacon and scanner, select board-batch route, verify3wire/30credits plus cells/tool; mark bench completed and confirm20credits. Enter stock, change strict/work-conserving and inspect why schedule differs without inventory mutation. Reload to preserve ordered goals/routes. npm run test:browser after browser installation provides recorded UI evidence; local execution limitations remain explicit.
