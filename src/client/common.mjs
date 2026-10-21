@@ -1,5 +1,5 @@
 import {newProfile, validateProfile} from '../domain/profile.mjs';
-import {loadProfile, saveProfile, readRecord} from '../storage/store.mjs';
+import {loadProfile, saveProfile, readRecord, listRecords} from '../storage/store.mjs';
 export const $ = selector => document.querySelector(selector);
 export const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const state = {pack:null, profile:null, revision:0, packs:[], loading:false, saving:false};
@@ -24,7 +24,9 @@ export async function init(render) {
   $('#export-current-profile')?.addEventListener('click',()=>{
     try { if(state.loading)throw new Error('Wait for the selected pack to load.');validateProfile(state.profile);download('dmz-private-profile.json',state.profile); } catch(reason) {error(reason);}
   });
+  try {for(const record of await listRecords('content')) {const pack=record.value?.pack;if(pack&&!state.packs.some(p=>p.id===pack.id))state.packs.push(pack);}} catch {}
   const requested=new URL(location.href).searchParams.get('pack'), select=$('#pack-select');
+  select.innerHTML=state.packs.map(pack=>`<option value="${esc(pack.id)}">${esc(pack.title)}</option>`).join('');
   if(requested && state.packs.some(pack=>pack.id===requested))select.value=requested;
   async function change() {
     const token=++generation;

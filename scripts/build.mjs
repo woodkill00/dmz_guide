@@ -11,7 +11,7 @@ for(const pack of packs){const result=validatePack(pack,schema);if(result===fals
 const pages=[{path:'/',title:'Prepare for the next run',body:renderHome(packs),page:'home'}];
 for(const [path,title,type] of [['catalog','The catalog',''],['items','Items & resources','item'],['weapons','Weapon reference','weapon'],['recipes','Recipes & crafting','recipe'],['guides','The field manual','guide']])pages.push({path:`/${path}/`,title,body:renderCatalog(packs,{title,type}),page:path==='items'||path==='weapons'?'catalog':path,scripts:['/assets/src/client/catalog.mjs']});
 for(const record of allRecords(packs))pages.push({path:recordUrl(record),title:publicTitle(record),body:renderDetail(record,packs),page:({item:'catalog',recipe:'recipes',guide:'guides'})[record.recordType]||record.recordType});
-for(const moduleName of ['private-pages','features']){
+for(const moduleName of ['private-pages','features','editor-page','local-page']){
  const file=join(root,`src/ui/${moduleName}.mjs`);try{await access(file);}catch{continue;}
  const module=await import(pathToFileURL(file)); const extensions=await module.featurePages(packs);for(const page of extensions)pages.push({...page,path:'/'+page.path.replace(/^\/+|\/+$/g,'')+'/'});
 }
