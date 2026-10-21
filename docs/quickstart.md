@@ -16,6 +16,10 @@ npm start
 
 Open http://127.0.0.1:4173 and keep the terminal running. Stop with Ctrl+C. Do not open module pages using file://. The static output expects host root `/`, not a repository subpath. No hosting is enabled. For a prebuilt static ZIP, extract it and run `node scripts/serve.mjs`; no npm dependencies are needed at runtime. See [release and editing instructions](release.md).
 
+### Repository Content Studio
+
+To add public records and pictures directly to a source checkout, run `npm ci`, then `npm run author`. Open the exact loopback address printed in the terminal (normally `http://127.0.0.1:4174`). No build is needed first. The guided page creates canonical JSON, organizes media and shows a saved-record preview; review files and commit/push with your normal Git workflow. See the [Content Studio guide](content-studio.md) for Windows startup, recovery, limits and rights. The static ZIP is reader-only and cannot run Studio.
+
 ### Optional contributor tooling
 
 The following Spec Kit tooling is for maintainers, not required to run or edit local content in the website.
@@ -68,7 +72,7 @@ The active-feature pointer is machine-local and intentionally untracked. `script
 
 A passing repository check confirms only the checks it implements. It does not validate future app functionality, game data, rights, or a release. Capture actual commands and outcomes in your change evidence.
 
-## Runnable guide development (feature003, under review)
+## Runnable guide development
 Node22 or later is required. From a clean checkout run `npm ci`, `npm run build`, then `npm start`. Open http://127.0.0.1:4173. The server binds loopback by default; do not use file:// because browser modules and local content need an HTTP origin. Stop with Ctrl+C. `dist/` contains static output and no server-side app or mandatory paid service. No deployment is performed.
 
 Run `npm test` for pure unit/security contracts. Run `npx playwright install chromium` then `npm run test:browser` for browser acceptance. Tests may use `CHROMIUM_PATH` when a supported installed browser is available. `npm run build` needs no network; npm dependency installation/browser setup does. Local browser sandbox restrictions may block launch; report NOT RUN, never pass. Development dependencies are pinned in package-lock.json. Application code uses native JavaScript and system fonts only.

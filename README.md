@@ -2,7 +2,7 @@
 
 A community field guide being built around trustworthy game data and explainable “what should I collect next?” planning.
 
-**Status: the runnable multipage feature set passed independent integrated review and hosted browser validation at [`93ad1f5`](https://github.com/woodkill00/dmz_guide/tree/93ad1f54027d103aed1bd94433ece18e29d68727).** The baseline is merged on main at `159a922` with successful exact-main CI. Repository Content Studio is being developed separately; see its current acceptance status before treating it as released. See [final acceptance evidence](specs/008-community-release/acceptance.md). With Node22+, run `npm ci`, `npm run build`, then `npm start`. Open http://127.0.0.1:4173. No public deployment or complete verified game catalog is claimed. See the [run and content-editing guide](docs/release.md) and [quickstart](docs/quickstart.md).
+**Status: the runnable multipage guide and Repository Content Studio are merged on main.** Content Studio passed independent implementation and visual review at [`ce4d50c`](https://github.com/woodkill00/dmz_guide/tree/ce4d50c35b785db17e1eca96822918fffbe6a3aa), then merged through [PR #8](https://github.com/woodkill00/dmz_guide/pull/8). See [Content Studio acceptance](specs/009-repository-content-studio/acceptance.md) and [baseline guide acceptance](specs/008-community-release/acceptance.md) for exact test evidence. With Node22+, run `npm ci` and `npm run author` to edit repository JSON/media at the printed local address. To read the public guide, run `npm run build` and `npm start`. No public deployment or complete verified game catalog is claimed. See the [run and content-editing guide](docs/release.md) and [quickstart](docs/quickstart.md).
 
 ## Start here
 
@@ -15,6 +15,7 @@ A community field guide being built around trustworthy game data and explainable
 
 ## Current implementation and boundaries
 
+- Opt-in local Content Studio saves guided records, sourced weapon stats and categorized pictures directly to the checkout, with saved previews, conflict recovery and manual Git review.
 - Native searchable catalog/detail routes, typed weapon stats, recipes and guides.
 - Shared single/multi-goal planning with reserves, prerequisites, retained tools, now/later shortages and executable-now trials.
 - Private local inventory/progress with explicit backup, restore, version rebind and retained-snapshot recovery.
@@ -35,7 +36,7 @@ Spec Kit is pinned to **v1.2.2** (commit `74be0a63e93c7087c5b06556b7561810d8f78a
 
 ## Before a public product launch
 
-The owner must settle release scope, target game/build, hosting and community ownership. Game facts and asset rights need verification. The tested branch has exact-head integrated browser/visual evidence and review; The baseline merge passed exact-main CI; any public launch remains a separate gate. Physical devices and formal WCAG certification are not implied by automated tests.
+The owner must settle release scope, target game/build, hosting and community ownership. Game facts and asset rights need verification. The guide and Content Studio have exact-head integrated browser/visual evidence and independent review; exact-main results are recorded in their acceptance files. Any public launch remains a separate gate. Physical devices and formal WCAG certification are not implied by automated tests.
 
 Original project code is licensed under [MIT](LICENSE). Game artwork, maps, third-party data and assets are not relicensed by that grant. Upstream tooling retains its own notices. See [licensing and asset rights](docs/licensing-and-assets.md).
 
