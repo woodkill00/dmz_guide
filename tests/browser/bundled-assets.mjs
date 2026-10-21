@@ -9,6 +9,17 @@ export async function runBundledAssetTests({
   base,
   captureScreenshots = true,
 }) {
+  const engine = browser.browserType().name();
+  console.log(
+    "Bundled raster environment:",
+    JSON.stringify({
+      engine,
+      version: browser.version(),
+      platform: process.platform,
+      job: process.env.GITHUB_JOB || "local",
+      run: process.env.GITHUB_RUN_ID || "unscheduled",
+    }),
+  );
   const manifest = await (
     await fetch(base + "/assets/content/bundled-assets.json")
   ).json();
@@ -240,115 +251,185 @@ export async function runBundledAssetTests({
           }
           return (crc ^ 0xffffffff) >>> 0;
         };
-        const results = [];
-        for (const mime of ["image/png", "image/jpeg"]) {
-          const candidate = structuredClone(pack),
-            a = candidate.assets.find((a) => a.mime === mime),
-            m = structuredClone(manifest);
-          const entry = m.packs
-            .find((p) => p.packId === candidate.id)
-            .assets.find((x) => x.assetId === a.id);
-          let bytes,
-            changedChunks = 0;
-          if (mime === "image/png") {
-            bytes = bytesFromBase64(
-              payloads.find((p) => p.assetId === a.id).base64,
-            );
-            const view = new DataView(bytes.buffer);
-            let offset = 8;
-            while (offset + 12 <= bytes.length) {
-              const n = view.getUint32(offset);
-              if (
-                String.fromCharCode(...bytes.slice(offset + 4, offset + 8)) ===
-                "IDAT"
-              ) {
-                // Invalid zlib stream with a correct PNG chunk checksum isolates the codec layer.
-                bytes.fill(0, offset + 8, offset + 8 + n);
-                view.setUint32(
-                  offset + 8 + n,
-                  crc32(bytes.subarray(offset + 4, offset + 8 + n)),
-                );
-                changedChunks++;
+        const candidatePNG = () =>
+          bytesFromBase64(
+            payloads.find(
+              (p) =>
+                p.assetId ===
+                pack.assets.find((a) => a.mime === "image/png").id,
+            ).base64,
+          );
+        const results = [],
+          nativeBitmap = globalThis.createImageBitmap;
+        let bitmapCalls = 0;
+        globalThis.createImageBitmap = (...args) => {
+          bitmapCalls++;
+          return nativeBitmap.apply(globalThis, args);
+        };
+        try {
+          const valid = candidatePNG();
+          const dimensions = await decodeBundledRaster(valid, "image/png");
+          results.push({
+            layer: "valid-png-full-bitmap",
+            dimensions,
+            bitmapCalls,
+          });
+          for (const mime of ["image/png", "image/jpeg"]) {
+            bitmapCalls = 0;
+            const candidate = structuredClone(pack),
+              a = candidate.assets.find((a) => a.mime === mime),
+              m = structuredClone(manifest);
+            const entry = m.packs
+              .find((p) => p.packId === candidate.id)
+              .assets.find((x) => x.assetId === a.id);
+            let bytes,
+              changedChunks = 0;
+            if (mime === "image/png") {
+              bytes = bytesFromBase64(
+                payloads.find((p) => p.assetId === a.id).base64,
+              );
+              const view = new DataView(bytes.buffer);
+              let offset = 8;
+              while (offset + 12 <= bytes.length) {
+                const n = view.getUint32(offset);
+                if (
+                  String.fromCharCode(
+                    ...bytes.slice(offset + 4, offset + 8),
+                  ) === "IDAT"
+                ) {
+                  // Invalid zlib stream with a correct PNG chunk checksum isolates the codec layer.
+                  bytes.fill(0, offset + 8, offset + 8 + n);
+                  view.setUint32(
+                    offset + 8 + n,
+                    crc32(bytes.subarray(offset + 4, offset + 8 + n)),
+                  );
+                  changedChunks++;
+                }
+                offset += n + 12;
               }
-              offset += n + 12;
+            } else {
+              // Independent absent-pixel-stream case: valid SOF dimensions but no SOS/scan at all.
+              bytes = Uint8Array.from([
+                0xff, 0xd8, 0xff, 0xc0, 0, 11, 8, 0, 6, 0, 8, 1, 1, 0x11, 0,
+                0xff, 0xd9,
+              ]);
             }
-          } else {
-            // Independent absent-pixel-stream case: valid SOF dimensions but no SOS/scan at all.
-            bytes = Uint8Array.from([
-              0xff, 0xd8, 0xff, 0xc0, 0, 11, 8, 0, 6, 0, 8, 1, 1, 0x11, 0, 0xff,
-              0xd9,
-            ]);
+            const header = imageInfo(bytes);
+            a.bytes = bytes.length;
+            a.sha256 = await hashBytes(bytes);
+            entry.bytes = a.bytes;
+            entry.sha256 = a.sha256;
+            entry.url = bundledFileURL(candidate.id, a);
+            let decodeCalls = 0,
+              fetchCalls = 0;
+            try {
+              await loadBundledPayloads(candidate, {
+                manifest: m,
+                assetIds: [a.id],
+                fetchImpl: async () => {
+                  fetchCalls++;
+                  return new Response(bytes, {
+                    headers: { "content-type": a.mime },
+                  });
+                },
+                decodeRaster: async (actualBytes, type, signal, deadline) => {
+                  decodeCalls++;
+                  return decodeBundledRaster(
+                    actualBytes,
+                    type,
+                    signal,
+                    deadline,
+                  );
+                },
+              });
+              results.push({
+                rejected: false,
+                decodeCalls,
+                fetchCalls,
+                header,
+                changedChunks,
+                bitmapCalls,
+                layer:
+                  mime === "image/png"
+                    ? "strict-png-preflight"
+                    : "jpeg-full-bitmap",
+              });
+            } catch (error) {
+              results.push({
+                rejected: true,
+                decodeCalls,
+                fetchCalls,
+                header,
+                changedChunks,
+                bitmapCalls,
+                layer:
+                  mime === "image/png"
+                    ? "strict-png-preflight"
+                    : "jpeg-full-bitmap",
+                error: error.message,
+              });
+            }
           }
-          const header = imageInfo(bytes);
-          a.bytes = bytes.length;
-          a.sha256 = await hashBytes(bytes);
-          entry.bytes = a.bytes;
-          entry.sha256 = a.sha256;
-          entry.url = bundledFileURL(candidate.id, a);
-          let decodeCalls = 0,
-            fetchCalls = 0;
-          try {
-            await loadBundledPayloads(candidate, {
-              manifest: m,
-              assetIds: [a.id],
-              fetchImpl: async () => {
-                fetchCalls++;
-                return new Response(bytes, {
-                  headers: { "content-type": a.mime },
-                });
-              },
-              decodeRaster: async (actualBytes, type, signal) => {
-                decodeCalls++;
-                return decodeBundledRaster(actualBytes, type, signal);
-              },
-            });
-            results.push({
-              rejected: false,
-              decodeCalls,
-              fetchCalls,
-              header,
-              changedChunks,
-            });
-          } catch (error) {
-            results.push({
-              rejected: true,
-              decodeCalls,
-              fetchCalls,
-              header,
-              changedChunks,
-              error: error.message,
-            });
-          }
+          return results;
+        } finally {
+          globalThis.createImageBitmap = nativeBitmap;
         }
-        return results;
       },
       { pack, manifest, payloads: JSON.parse(text).payloads },
     );
-    assert.equal(results.length, 2);
+    console.log(
+      "Bundled raster layer results:",
+      JSON.stringify({ engine, results }),
+    );
+    assert.equal(results.length, 3);
+    assert.deepEqual(results[0], {
+      layer: "valid-png-full-bitmap",
+      dimensions: { width: 8, height: 6 },
+      bitmapCalls: 1,
+    });
     assert(
-      results[0].changedChunks > 0,
+      results[1].changedChunks > 0,
       "PNG zlib data and its checksum were both changed",
     );
-    for (const result of results) {
+    for (const result of results.slice(1)) {
       assert.deepEqual(result.header, {
         mime: result.header.mime,
         width: 8,
         height: 6,
       });
       assert.equal(result.fetchCalls, 1);
-      assert.equal(
-        result.decodeCalls,
-        1,
-        "The real bounded full-pixel decoder must run, not fail an earlier metadata check",
-      );
+      if (result.header.mime === "image/png") {
+        assert.equal(
+          result.decodeCalls,
+          0,
+          "Known-invalid PNG must be rejected by the shared strict preflight before a supplied decoder",
+        );
+        assert.equal(
+          result.bitmapCalls,
+          0,
+          "Known-invalid PNG must not reach a permissive browser bitmap codec",
+        );
+        assert.match(result.error, /PNG zlib/);
+      } else {
+        assert.equal(
+          result.decodeCalls,
+          1,
+          "JPEG fixture must reach the real decoder wrapper",
+        );
+        assert.equal(
+          result.bitmapCalls,
+          1,
+          "JPEG fixture must invoke the real full-pixel codec",
+        );
+      }
       assert(
         result.rejected,
-        `${result.header.mime}: malformed compressed pixels cannot pass full browser decode`,
+        `${engine}/${result.layer}: malformed pixels cannot pass layered raster validation`,
       );
       assert.doesNotMatch(
         result.error,
         /timed out|cancelled/i,
-        "The codec must reject malformed pixels rather than merely expire",
+        "Malformed pixels must be rejected rather than merely expire",
       );
     }
   } finally {
@@ -356,7 +437,7 @@ export async function runBundledAssetTests({
     if (codecDiagnostics)
       console.log(
         "Expected isolated codec diagnostics:",
-        JSON.stringify(codecDiagnostics()),
+        JSON.stringify({ engine, ...codecDiagnostics() }),
       );
   }
   // Replacing pixels under an existing ID must not overwrite the first rollback snapshot.

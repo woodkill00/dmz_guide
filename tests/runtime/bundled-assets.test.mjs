@@ -21,6 +21,7 @@ import {
   loadBundledPayloads,
   validateBundledManifest,
   decodeBundledRaster,
+  validatePNGPixelStream,
 } from "../../src/content/bundled-assets.mjs";
 import { hashBytes } from "../../src/content/portable.mjs";
 const schema = JSON.parse(
@@ -550,7 +551,13 @@ test("bundled bitmap decoder aborts and closes a bitmap that resolves late", asy
       }),
   );
   const controller = new AbortController();
-  const pending = decodeBundledRaster(png(), "image/png", controller.signal);
+  const pending = decodeBundledRaster(
+    Uint8Array.from([
+      255, 216, 255, 192, 0, 11, 8, 0, 6, 0, 8, 1, 1, 17, 0, 255, 217,
+    ]),
+    "image/jpeg",
+    controller.signal,
+  );
   const rejected = assert.rejects(pending, /cancelled/);
   controller.abort();
   await rejected;
@@ -584,9 +591,14 @@ test("bundled bitmap decoder enforces five-second timeout and closes late succes
     return 1;
   });
   t.mock.method(globalThis, "clearTimeout", () => {});
-  const pending = decodeBundledRaster(png(), "image/png");
+  const pending = decodeBundledRaster(
+    Uint8Array.from([
+      255, 216, 255, 192, 0, 11, 8, 0, 6, 0, 8, 1, 1, 17, 0, 255, 217,
+    ]),
+    "image/jpeg",
+  );
   const rejected = assert.rejects(pending, /timed out/);
-  assert.equal(milliseconds, 5000);
+  assert(milliseconds > 4900 && milliseconds <= 5000);
   fire();
   await rejected;
   assert.equal(closed, 0);
@@ -614,4 +626,265 @@ test("bundled bitmap decoder rejects pre-aborted work without starting codec", a
     /cancelled/,
   );
   assert.equal(calls, 0);
+});
+
+function pixelPNG({
+  width = 8,
+  height = 6,
+  depth = 8,
+  color = 6,
+  interlace = 0,
+  raw,
+  compressed,
+} = {}) {
+  const header = Buffer.alloc(13);
+  header.writeUInt32BE(width);
+  header.writeUInt32BE(height, 4);
+  header[8] = depth;
+  header[9] = color;
+  header[12] = interlace;
+  const channels = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 }[color];
+  const passes = interlace
+    ? [
+        [0, 0, 8, 8],
+        [4, 0, 8, 8],
+        [0, 4, 4, 8],
+        [2, 0, 4, 4],
+        [0, 2, 2, 4],
+        [1, 0, 2, 2],
+        [0, 1, 1, 2],
+      ]
+    : [[0, 0, 1, 1]];
+  const rows = [];
+  for (const [x, y, dx, dy] of passes) {
+    const w = Math.max(0, Math.ceil((width - x) / dx)),
+      h = Math.max(0, Math.ceil((height - y) / dy));
+    if (!w || !h) continue;
+    for (let row = 0; row < h; row++) {
+      const bytes = Buffer.alloc(1 + Math.ceil((w * channels * depth) / 8));
+      bytes[0] = row % 5;
+      rows.push(bytes);
+    }
+  }
+  const scanlines = raw ?? Buffer.concat(rows);
+  const bytes = Buffer.concat([
+    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    chunk("IHDR", header),
+    ...(color === 3
+      ? [chunk("PLTE", Buffer.from([0, 0, 0, 255, 255, 255]))]
+      : []),
+    chunk("IDAT", compressed ?? deflateSync(scanlines)),
+    chunk("IEND", Buffer.alloc(0)),
+  ]);
+  return { bytes, raw: scanlines };
+}
+test("strict PNG supports every legal bit-depth/color combination and Adam7 geometry", async () => {
+  for (const [color, depths] of [
+    [0, [1, 2, 4, 8, 16]],
+    [2, [8, 16]],
+    [3, [1, 2, 4, 8]],
+    [4, [8, 16]],
+    [6, [8, 16]],
+  ])
+    for (const depth of depths)
+      for (const interlace of [0, 1]) {
+        const { bytes } = pixelPNG({
+          width: 9,
+          height: 7,
+          color,
+          depth,
+          interlace,
+        });
+        assert.deepEqual(await validatePNGPixelStream(bytes), {
+          mime: "image/png",
+          width: 9,
+          height: 7,
+        });
+      }
+  const adam = pixelPNG({ interlace: 1 });
+  assert.equal(adam.raw.length, 204);
+  await validatePNGPixelStream(adam.bytes);
+  const small = pixelPNG({ width: 1, height: 1, interlace: 1 });
+  assert.equal(small.raw.length, 5);
+  await validatePNGPixelStream(small.bytes);
+});
+test("strict PNG rejects CRC, invalid zlib/checksum, filters and exact-size under/overrun", async () => {
+  const { bytes, raw } = pixelPNG();
+  const crcBad = Buffer.from(bytes);
+  crcBad[29] ^= 1;
+  await assert.rejects(() => validatePNGPixelStream(crcBad), /CRC/);
+  const invalidZlib = pixelPNG({
+    compressed: Buffer.alloc(deflateSync(raw).length),
+  }).bytes;
+  await assert.rejects(() => validatePNGPixelStream(invalidZlib), /zlib/);
+  const wrongAdler = Buffer.from(deflateSync(raw));
+  wrongAdler[wrongAdler.length - 1] ^= 1;
+  await assert.rejects(
+    () => validatePNGPixelStream(pixelPNG({ compressed: wrongAdler }).bytes),
+    /zlib/,
+  );
+  const invalidFilter = Buffer.from(raw);
+  invalidFilter[0] = 5;
+  await assert.rejects(
+    () => validatePNGPixelStream(pixelPNG({ raw: invalidFilter }).bytes),
+    /filter/,
+  );
+  await assert.rejects(
+    () => validatePNGPixelStream(pixelPNG({ raw: raw.subarray(0, -1) }).bytes),
+    /shorter/,
+  );
+  await assert.rejects(
+    () =>
+      validatePNGPixelStream(
+        pixelPNG({ raw: Buffer.concat([raw, Buffer.from([0])]) }).bytes,
+      ),
+    /exceeds/,
+  );
+  await assert.rejects(
+    () => validatePNGPixelStream(pixelPNG({ interlace: 1, raw }).bytes),
+    /shorter|filter/,
+  );
+  const trailing = Buffer.concat([deflateSync(raw), Buffer.from([1, 2, 3])]);
+  await assert.rejects(
+    () => validatePNGPixelStream(pixelPNG({ compressed: trailing }).bytes),
+    /zlib/,
+  );
+});
+test("strict PNG rejects a compressed expansion bomb without retaining raw output", async () => {
+  const compressed = deflateSync(Buffer.alloc(4 * 1024 * 1024));
+  assert(compressed.length < 8192);
+  await assert.rejects(
+    () =>
+      validatePNGPixelStream(
+        pixelPNG({ width: 1, height: 1, compressed }).bytes,
+      ),
+    /exceeds/,
+  );
+});
+test("strict PNG rejects missing native capability and cancelled work clearly", async (t) => {
+  const original = globalThis.DecompressionStream;
+  t.after(() => {
+    globalThis.DecompressionStream = original;
+  });
+  globalThis.DecompressionStream = undefined;
+  await assert.rejects(
+    () => validatePNGPixelStream(pixelPNG().bytes),
+    /requires browser DecompressionStream/,
+  );
+  globalThis.DecompressionStream = original;
+  const controller = new AbortController();
+  controller.abort();
+  await assert.rejects(
+    () => validatePNGPixelStream(pixelPNG().bytes, controller.signal),
+    /cancelled/,
+  );
+});
+test("strict PNG bounds stalled inflater by timeout and cancels its reader", async (t) => {
+  const original = globalThis.DecompressionStream;
+  let cancelled = 0,
+    fire;
+  globalThis.DecompressionStream = class {
+    constructor() {
+      return {
+        readable: new ReadableStream({
+          cancel() {
+            cancelled++;
+          },
+        }),
+        writable: new WritableStream({ write() {} }),
+      };
+    }
+  };
+  t.after(() => {
+    globalThis.DecompressionStream = original;
+  });
+  t.mock.method(globalThis, "setTimeout", (callback) => {
+    fire = callback;
+    return 1;
+  });
+  t.mock.method(globalThis, "clearTimeout", () => {});
+  const pending = validatePNGPixelStream(pixelPNG().bytes);
+  const rejected = assert.rejects(pending, /timed out/);
+  fire();
+  await rejected;
+  await Promise.resolve();
+  assert.equal(cancelled, 1);
+});
+test("strict PNG preflight cannot be bypassed with a supplied bundled decoder", async (t) => {
+  const f = await fixture(t);
+  const { manifest } = await prepareBundledAssets({
+    root: f.root,
+    packs: [f.pack],
+    schema,
+  });
+  const bytes = pixelPNG({ compressed: Buffer.alloc(10) }).bytes;
+  f.pack.assets[0].bytes = bytes.length;
+  f.pack.assets[0].sha256 = await hashBytes(bytes);
+  const entry = manifest.packs[0].assets[0];
+  entry.bytes = bytes.length;
+  entry.sha256 = f.pack.assets[0].sha256;
+  entry.url = entry.url.replace(/[a-f0-9]{64}/, entry.sha256);
+  let calls = 0;
+  await assert.rejects(
+    () =>
+      loadBundledPayloads(f.pack, {
+        manifest,
+        baseURL: "https://local.test",
+        fetchImpl: async () => response(bytes),
+        decodeRaster: async () => {
+          calls++;
+          return { width: 8, height: 6 };
+        },
+      }),
+    /zlib/,
+  );
+  assert.equal(calls, 0);
+  await writeFile(f.file, bytes);
+  await assert.rejects(
+    () => prepareBundledAssets({ root: f.root, packs: [f.pack], schema }),
+    /zlib/,
+  );
+});
+test("strict PNG preserves valid split and empty contiguous IDAT chunks", async () => {
+  const { bytes, raw } = pixelPNG();
+  const compressed = deflateSync(raw);
+  const split = Buffer.concat([
+    bytes.subarray(0, 8),
+    chunk("IHDR", bytes.subarray(16, 29)),
+    chunk("IDAT", Buffer.alloc(0)),
+    ...Array.from(compressed, (byte) => chunk("IDAT", Buffer.from([byte]))),
+    chunk("IDAT", Buffer.alloc(0)),
+    chunk("IEND", Buffer.alloc(0)),
+  ]);
+  assert.deepEqual(await validatePNGPixelStream(split), {
+    mime: "image/png",
+    width: 8,
+    height: 6,
+  });
+});
+test("strict PNG cancellation stops an in-progress stalled inflater", async (t) => {
+  const original = globalThis.DecompressionStream;
+  let cancelled = 0;
+  globalThis.DecompressionStream = class {
+    constructor() {
+      return {
+        readable: new ReadableStream({
+          cancel() {
+            cancelled++;
+          },
+        }),
+        writable: new WritableStream({ write() {} }),
+      };
+    }
+  };
+  t.after(() => {
+    globalThis.DecompressionStream = original;
+  });
+  const controller = new AbortController();
+  const pending = validatePNGPixelStream(pixelPNG().bytes, controller.signal);
+  const rejected = assert.rejects(pending, /cancelled/);
+  controller.abort();
+  await rejected;
+  await Promise.resolve();
+  assert.equal(cancelled, 1);
 });

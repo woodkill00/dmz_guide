@@ -8,6 +8,8 @@ export async function runLocalNetworkTests({
 }) {
   const remote = [];
   const localBrowser = {
+    browserType: () => browser.browserType(),
+    version: () => browser.version(),
     newContext: async (...args) => {
       const context = await browser.newContext(...args);
       await context.route("**/*", (route) => {

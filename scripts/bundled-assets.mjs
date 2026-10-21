@@ -17,6 +17,7 @@ import {
   bundledPackKey,
   bundledFileURL,
   BUNDLED_LIMITS,
+  validatePNGPixelStream,
 } from "../src/content/bundled-assets.mjs";
 async function noSymlinks(path, { file = false } = {}) {
   const absolute = resolve(path),
@@ -154,6 +155,7 @@ export async function prepareBundledAssets({ root, packs, schema }) {
           info.height === asset.height,
         "Bundled raster signature/dimensions mismatch",
       );
+      if (info.mime === "image/png") await validatePNGPixelStream(bytes);
       assert(
         (await hashBytes(bytes)) === asset.sha256,
         "Bundled raster hash mismatch",

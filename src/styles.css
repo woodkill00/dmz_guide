@@ -1274,3 +1274,12 @@ textarea {
     max-width: 100%;
   }
 }
+/* Readable long provenance and prerequisite prose at narrow, enlarged text sizes. */
+main :where(p, li, a, ul, ol, section, article, div) {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+/* Keep closed native disclosure panels out of both layout and hit testing. */
+.nav-more:not([open]) > div {
+  display: none;
+}

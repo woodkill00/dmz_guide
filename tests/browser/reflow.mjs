@@ -88,6 +88,31 @@ export async function runReflowTests({ browser, base }) {
                 scrollWidth: document.documentElement.scrollWidth,
               })),
               offenders,
+              textOverflow: await page.evaluate(() => {
+                const result = [],
+                  walker = document.createTreeWalker(
+                    document.body,
+                    NodeFilter.SHOW_TEXT,
+                  );
+                while (walker.nextNode() && result.length < 40) {
+                  const node = walker.currentNode,
+                    parent = node.parentElement;
+                  if (!node.textContent.trim() || !parent?.checkVisibility())
+                    continue;
+                  const range = document.createRange();
+                  range.selectNodeContents(node);
+                  const r = range.getBoundingClientRect();
+                  if (r.width && (r.right > innerWidth + 1 || r.left < -1))
+                    result.push({
+                      tag: parent.tagName,
+                      id: parent.id,
+                      left: r.left,
+                      right: r.right,
+                      text: node.textContent.trim().slice(0, 80),
+                    });
+                }
+                return result;
+              }),
             },
             null,
             2,

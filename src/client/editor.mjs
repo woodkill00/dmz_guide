@@ -1,4 +1,7 @@
-import { loadBundledPayloads } from "../content/bundled-assets.mjs";
+import {
+  loadBundledPayloads,
+  validatePNGPixelStream,
+} from "../content/bundled-assets.mjs";
 import { $, state, init, error, status, download } from "./common.mjs";
 import { readRecord, commitRecord } from "../storage/store.mjs";
 import { LIMITS, assert, clone, parseBounded } from "../content/limits.mjs";
@@ -489,18 +492,30 @@ function renderPictures() {
     root.append(row);
   }
 }
-async function decodeBitmap(bytes, mime, signal) {
+async function decodeBitmap(bytes, mime, signal, sharedDeadline) {
+  const deadline =
+    sharedDeadline ?? performance.now() + TRANSFER_LIMITS.decodeMs;
   assert(!signal?.aborted, "Import cancelled");
+  if (mime === "image/png")
+    await validatePNGPixelStream(bytes, signal, deadline);
+  assert(!signal?.aborted, "Import cancelled");
+  assert(
+    performance.now() < deadline,
+    "Picture decode timed out; no changes saved",
+  );
   let timer, abort;
   const work = createImageBitmap(new Blob([bytes], { type: mime }));
   let expired = false;
   const result = await Promise.race([
     work,
     new Promise((_, reject) => {
-      timer = setTimeout(() => {
-        expired = true;
-        reject(new Error("Picture decode timed out; no changes saved"));
-      }, TRANSFER_LIMITS.decodeMs);
+      timer = setTimeout(
+        () => {
+          expired = true;
+          reject(new Error("Picture decode timed out; no changes saved"));
+        },
+        Math.max(1, deadline - performance.now()),
+      );
       abort = () => {
         expired = true;
         reject(new Error("Import cancelled"));
@@ -519,8 +534,8 @@ async function decodeBitmap(bytes, mime, signal) {
   });
   return result;
 }
-async function decodeRaster(bytes, mime, signal) {
-  const result = await decodeBitmap(bytes, mime, signal);
+async function decodeRaster(bytes, mime, signal, deadline) {
+  const result = await decodeBitmap(bytes, mime, signal, deadline);
   try {
     return { width: result.width, height: result.height };
   } finally {

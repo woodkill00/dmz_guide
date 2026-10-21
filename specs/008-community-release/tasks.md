@@ -21,3 +21,4 @@ Dependencies: T001 before code; correction domain before UI; offline runtime tes
 - [ ] T013 Complete validated public bundled-raster publication path, original new fixture item/map, JPEG MIME and clean-profile/public-detail/map/portable re-export browser proof. F008-05/06; closes original easy-content/pictures scope, not an optional feature.
 - [x] T014 Correct stale correction error presentation and operation-specific duplicate parse assertion without weakening validation. F008-01/02.
 - [x] T015 Include typed stat metric/value/unit/context and guide body in public/private search while excluding spoiler content before reveal. F008-05/06.
+- [ ] T016 Converge actual-engine PNG stream validation and narrow 200% progression prose reflow; preserve strict scoped negative diagnostics and clean distributable gates. F008-05/06.

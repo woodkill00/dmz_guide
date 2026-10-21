@@ -301,7 +301,208 @@ export async function loadBundledManifest(options = {}) {
     }),
   );
 }
-export async function decodeBundledRaster(bytes, mime, signal) {
+// PNG codecs may recover corrupt streams. Verify the exact filtered pixel stream first.
+export async function validatePNGPixelStream(
+  bytes,
+  signal,
+  deadline = performance.now() + TRANSFER_LIMITS.decodeMs,
+) {
+  deadline = Math.min(deadline, performance.now() + TRANSFER_LIMITS.decodeMs);
+  assert(Number.isFinite(deadline), "Invalid PNG validation deadline");
+  const info = imageInfo(bytes);
+  assert(info.mime === "image/png", "PNG pixel validation requires PNG bytes");
+  const check = () => {
+    assert(!signal?.aborted, "Bundled decode cancelled");
+    assert(performance.now() <= deadline, "Bundled image decode timed out");
+  };
+  check();
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const channels = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 }[bytes[25]],
+    bits = channels * bytes[24];
+  const passes = (
+    bytes[28]
+      ? [
+          [0, 0, 8, 8],
+          [4, 0, 8, 8],
+          [0, 4, 4, 8],
+          [2, 0, 4, 4],
+          [0, 2, 2, 4],
+          [1, 0, 2, 2],
+          [0, 1, 1, 2],
+        ]
+      : [[0, 0, 1, 1]]
+  )
+    .map(([x, y, dx, dy]) => ({
+      width: Math.max(0, Math.ceil((info.width - x) / dx)),
+      rows: Math.max(0, Math.ceil((info.height - y) / dy)),
+    }))
+    .filter((pass) => pass.width && pass.rows)
+    .map((pass) => ({
+      rows: pass.rows,
+      rowBytes: 1 + Math.ceil((pass.width * bits) / 8),
+    }));
+  const expected = passes.reduce(
+    (sum, pass) => sum + pass.rows * pass.rowBytes,
+    0,
+  );
+  assert(
+    Number.isSafeInteger(expected) &&
+      expected > 0 &&
+      expected <= LIMITS.pixels * 8 + LIMITS.dimension * 8,
+    "PNG inflated geometry limit exceeded",
+  );
+  const isIDAT = (offset) =>
+    bytes[offset + 4] === 73 &&
+    bytes[offset + 5] === 68 &&
+    bytes[offset + 6] === 65 &&
+    bytes[offset + 7] === 84;
+  let compressedSize = 0;
+  for (let offset = 8; offset + 12 <= bytes.length; ) {
+    check();
+    const length = view.getUint32(offset);
+    let crc = 0xffffffff;
+    for (let i = offset + 4; i < offset + 8 + length; i++) {
+      if ((i & 16383) === 0) check();
+      crc ^= bytes[i];
+      for (let bit = 0; bit < 8; bit++)
+        crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+    }
+    assert(
+      (crc ^ 0xffffffff) >>> 0 === view.getUint32(offset + 8 + length),
+      "PNG chunk CRC mismatch",
+    );
+    if (isIDAT(offset)) compressedSize += length;
+    offset += length + 12;
+  }
+  assert(
+    compressedSize > 0 && compressedSize <= LIMITS.assetBytes,
+    "PNG compressed byte limit exceeded",
+  );
+  const compressed = new Uint8Array(compressedSize);
+  let written = 0;
+  for (let offset = 8; offset + 12 <= bytes.length; ) {
+    const length = view.getUint32(offset);
+    if (isIDAT(offset)) {
+      compressed.set(bytes.subarray(offset + 8, offset + 8 + length), written);
+      written += length;
+    }
+    offset += length + 12;
+  }
+  assert(
+    typeof globalThis.DecompressionStream === "function",
+    "Strict PNG validation requires browser DecompressionStream support; keep the readable reference fallback",
+  );
+  let inflater;
+  try {
+    inflater = new DecompressionStream("deflate");
+  } catch {
+    throw new Error(
+      "Strict PNG validation requires browser zlib support; keep the readable reference fallback",
+    );
+  }
+  // Backpressure plus 1KiB compressed pulls avoids queuing a whole-file expansion at once.
+  let inputOffset = 0,
+    reader,
+    timer,
+    abort,
+    stopped = false;
+  const source = new ReadableStream({
+    pull(controller) {
+      if (stopped || inputOffset === compressed.length) {
+        controller.close();
+        return;
+      }
+      const end = Math.min(inputOffset + 1024, compressed.length);
+      controller.enqueue(compressed.subarray(inputOffset, end));
+      inputOffset = end;
+    },
+  });
+  const cancel = () => {
+    stopped = true;
+    void reader?.cancel().catch(() => {});
+  };
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(
+      () => {
+        cancel();
+        reject(new Error("Bundled image decode timed out"));
+      },
+      Math.max(1, deadline - performance.now()),
+    );
+    abort = () => {
+      cancel();
+      reject(new Error("Bundled decode cancelled"));
+    };
+    signal?.addEventListener("abort", abort, { once: true });
+  });
+  try {
+    await Promise.race([
+      timeout,
+      (async () => {
+        reader = source.pipeThrough(inflater).getReader();
+        let total = 0,
+          passIndex = 0,
+          row = 0,
+          rowOffset = 0;
+        while (true) {
+          check();
+          const { done, value } = await reader.read();
+          check();
+          assert(!stopped, "Bundled decode cancelled");
+          if (done) break;
+          assert(
+            value instanceof Uint8Array && value.length > 0,
+            "Invalid PNG inflated stream chunk",
+          );
+          assert(
+            total + value.length <= expected,
+            "PNG inflated pixel stream exceeds exact geometry",
+          );
+          let offset = 0;
+          while (offset < value.length) {
+            check();
+            const pass = passes[passIndex];
+            assert(pass, "PNG inflated pixel stream exceeds pass geometry");
+            if (rowOffset === 0)
+              assert(value[offset] <= 4, "Invalid PNG scanline filter");
+            const take = Math.min(
+              value.length - offset,
+              pass.rowBytes - rowOffset,
+            );
+            offset += take;
+            rowOffset += take;
+            if (rowOffset === pass.rowBytes) {
+              rowOffset = 0;
+              row++;
+              if (row === pass.rows) {
+                passIndex++;
+                row = 0;
+              }
+            }
+          }
+          total += value.length;
+        }
+        assert(
+          total === expected && passIndex === passes.length && rowOffset === 0,
+          "PNG inflated pixel stream is shorter than exact geometry",
+        );
+      })(),
+    ]);
+  } catch (error) {
+    if (/cancelled|timed out|PNG/.test(error.message)) throw error;
+    throw new Error("PNG zlib integrity validation failed: " + error.message);
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener("abort", abort);
+    cancel();
+  }
+  return info;
+}
+export async function decodeBundledRaster(bytes, mime, signal, sharedDeadline) {
+  const deadline = Math.min(
+    sharedDeadline ?? Infinity,
+    performance.now() + TRANSFER_LIMITS.decodeMs,
+  );
   const info = imageInfo(bytes);
   assert(info.mime === mime, "Bundled raster MIME mismatch");
   assert(!signal?.aborted, "Bundled decode cancelled");
@@ -309,6 +510,10 @@ export async function decodeBundledRaster(bytes, mime, signal) {
     typeof globalThis.createImageBitmap === "function",
     "Browser raster decoder required",
   );
+  if (mime === "image/png")
+    await validatePNGPixelStream(bytes, signal, deadline);
+  assert(!signal?.aborted, "Bundled decode cancelled");
+  assert(performance.now() <= deadline, "Bundled image decode timed out");
   // Materialize decoded pixels, not just dimensions from a lazily decoded Image.
   const work = createImageBitmap(new Blob([bytes], { type: mime }));
   let timer, abort, bitmap;
@@ -318,7 +523,7 @@ export async function decodeBundledRaster(bytes, mime, signal) {
       new Promise((_, reject) => {
         timer = setTimeout(
           () => reject(new Error("Bundled image decode timed out")),
-          TRANSFER_LIMITS.decodeMs,
+          Math.max(1, deadline - performance.now()),
         );
         abort = () => reject(new Error("Bundled decode cancelled"));
         signal?.addEventListener("abort", abort, { once: true });
@@ -367,7 +572,19 @@ export async function loadBundledPayloads(pack, options = {}) {
   }
   await validatePayloads(pack, payloads, {
     complete: options.assetIds === undefined,
-    decodeRaster: options.decodeRaster || decodeBundledRaster,
+    decodeRaster: options.decodeRaster
+      ? async (bytes, mime, signal) => {
+          const deadline = performance.now() + TRANSFER_LIMITS.decodeMs;
+          if (mime === "image/png")
+            await validatePNGPixelStream(bytes, signal, deadline);
+          assert(!signal?.aborted, "Bundled decode cancelled");
+          assert(
+            performance.now() <= deadline,
+            "Bundled image decode timed out",
+          );
+          return options.decodeRaster(bytes, mime, signal, deadline);
+        }
+      : decodeBundledRaster,
     signal: options.signal,
   });
   return payloads;
