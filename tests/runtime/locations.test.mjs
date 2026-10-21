@@ -13,3 +13,8 @@ test('map/list filters share one record set',()=>{assert.equal(filterLocations(d
 test('goal relations require actual unmet items including tools, never currency',()=>{const ids=unmetItemIds(demo,{ledger:[{id:'demo:wire',missing:2},{id:'demo:tool',retainedMissing:1},{id:'demo:credits',missing:50},{id:'demo:cell',missing:0},{id:'demo:missing',missing:1}]});assert.deepEqual(ids,['demo:wire','demo:tool']);assert.deepEqual(filterLocations(demo,{goalOnly:true},ids).map(l=>l.id),['demo:supply-shed','demo:upper-cache']);assert.equal(filterLocations(demo,{goalOnly:true},[]).length,0);});
 
 test('effective scope and unrevealed spoiler labels are honest',()=>{assert.equal(effectiveScope(demo,{scope:{gameId:'other',mode:'story',build:'v2'}}),'other / story / v2');const pack={objectives:[{id:'demo:secret',name:'Secret ending',spoiler:true}]};assert.equal(safePlanText(pack,{spoilers:false},'Secret ending: demo:secret locked'),'Spoiler-protected objective: Spoiler-protected objective locked');assert.equal(safePlanText(pack,{spoilers:true},'Secret ending'),'Secret ending');});
+
+import {referenceOnlyMapFixture} from '../browser/maps.mjs';
+import {validatePack} from '../../src/content/validate.mjs';
+const schema=JSON.parse(await readFile(new URL('../../schemas/pack.schema.json',import.meta.url)));
+test('missing-image browser fixture passes pack validation before testing absent pixels',()=>{const invalid=structuredClone(demo);invalid.maps[0].assetId='demo:missing-image';assert.throws(()=>validatePack(invalid,schema),/reference/i);const fixture=referenceOnlyMapFixture(demo);assert.doesNotThrow(()=>validatePack(fixture,schema));assert.equal(fixture.maps[0].assetId,fixture.assets[0].id);assert.equal(demo.assets.length,0,'fixture does not mutate seed');});

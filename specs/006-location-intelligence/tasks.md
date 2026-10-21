@@ -28,3 +28,6 @@ Dependencies: T001 → T002 → US1 → US2 → US3 → T011/T012. T006/T009 tes
 
 ## Phase 7: Review convergence
 - [x] T014 Bound and cancel pending raster decode URLs in src/client/maps.mjs, mask unrevealed spoiler names in goal explanations, and show effective record/map scope per LI-005/006/007/008 and constitution trust/accessibility (partial, HIGH).
+
+## Phase 8: Hosted failure repair
+- [x] T015 Diagnose hosted maps.mjs missing-image timeout, replace dangling asset reference with validator-accepted reference-only image metadata, add precondition/runtime regression and failure screenshot/status diagnostics in tests/browser/maps.mjs and tests/runtime/locations.test.mjs (LI-006/008, T012).
