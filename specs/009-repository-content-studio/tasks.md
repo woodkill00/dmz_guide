@@ -53,3 +53,6 @@ Deliver the smallest real repository save journey first, then complete media/imp
 
 ## Phase 8: Convergence
 - [ ] T026 [US1] Resolve CONV-001 (HIGH, contradicts constitution principle 2 / FR-013 / SC-004): replace the light-only author stylesheet in src/ui/studio.css with dark-default and accessible optional light palettes, add a persisted theme-only toggle in src/ui/studio-page.mjs using existing theme support, and verify theme defaults/persistence/contrast plus both-theme responsive screenshots in tests/browser/studio.mjs. First hosted evidence showed cream/light default despite the established dark-first requirement; preserve the private-profile isolation boundary.
+
+## Phase 9: Convergence
+- [ ] T027 [US1] Resolve CONV-002 (HIGH, partial FR-013 / SC-004 / constitution principle 2): fix intrinsic-width overflow in src/ui/studio.css at 320px with actual 200% text sizing. Hosted run 39662205116 measured a 494px document width. Preserve enlarged text, accessible controls and the existing no-overflow assertions in tests/browser/studio.mjs; verify actual desktop/mobile/enlarged-text screenshots and both themes without clipping or hiding content.

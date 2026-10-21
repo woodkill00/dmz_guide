@@ -197,27 +197,157 @@ async function checkStudioThemes(page, { prefix, captureScreenshots }) {
 async function captureLayout(page, { base, prefix, captureScreenshots }) {
   const layout = async (width, suffix) => {
     await page.setViewportSize({ width, height: 900 });
-    const dimensions = await page.evaluate(() => ({
-      innerWidth,
-      scrollWidth: document.documentElement.scrollWidth,
-    }));
-    assert(
-      dimensions.scrollWidth <= dimensions.innerWidth + 1,
-      `Studio overflow at ${width} ${suffix}: ${JSON.stringify(dimensions)}`,
-    );
-    for (const selector of [
-      "#pack-select",
-      "#preview-content",
-      "#export-draft",
-      "#picture-file",
-      "#media-search",
-    ]) {
-      const bounds = await page.locator(selector).boundingBox();
-      assert(
-        bounds && bounds.x >= -1 && bounds.x + bounds.width <= width + 1,
-        `${selector} fits ${width} ${suffix}`,
+    await page.evaluate(() => window.scrollTo(0, 0));
+    const diagnostics = await page.evaluate(() => {
+      const bounds = (element) => {
+        const { left, right, top, bottom, width, height } =
+          element.getBoundingClientRect();
+        return { left, right, top, bottom, width, height };
+      };
+      const textBounds = (element) => {
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        return [...range.getClientRects()].map(
+          ({ left, right, top, bottom, width, height }) => ({
+            left,
+            right,
+            top,
+            bottom,
+            width,
+            height,
+          }),
+        );
+      };
+      const outside = (rect) =>
+        rect.width > 0 && (rect.left < -1 || rect.right > innerWidth + 1);
+      const visible = [...document.querySelectorAll("body *")].filter(
+        (element) => element.getClientRects().length > 0,
       );
-    }
+      return {
+        innerWidth,
+        innerHeight,
+        scrollY,
+        scrollWidth: document.documentElement.scrollWidth,
+        rootFontSize: getComputedStyle(document.documentElement).fontSize,
+        activeElement:
+          document.activeElement?.id || document.activeElement?.className,
+        controls: [
+          "#pack-select",
+          "#preview-content",
+          "#export-draft",
+          "#picture-file",
+          "#media-search",
+        ].map((selector) => ({
+          selector,
+          ...bounds(document.querySelector(selector)),
+        })),
+        headings: [...document.querySelectorAll("#media-library h3")].map(
+          (element) => ({
+            text: element.textContent,
+            ...bounds(element),
+            textRects: textBounds(element),
+          }),
+        ),
+        skipLink: {
+          ...bounds(document.querySelector(".skip-link")),
+          focused:
+            document.activeElement === document.querySelector(".skip-link"),
+        },
+        offenders: visible
+          .filter((element) => outside(bounds(element)))
+          .slice(0, 40)
+          .map((element) => ({
+            tag: element.tagName,
+            id: element.id,
+            className: element.className,
+            text: element.textContent.slice(0, 160),
+            ...bounds(element),
+          })),
+        textOffenders: visible
+          .filter(
+            (element) =>
+              element.childElementCount === 0 &&
+              element.textContent.trim() &&
+              textBounds(element).some(outside),
+          )
+          .slice(0, 40)
+          .map((element) => ({
+            tag: element.tagName,
+            id: element.id,
+            text: element.textContent.slice(0, 160),
+            textRects: textBounds(element),
+          })),
+      };
+    });
+    const problems = [];
+    if (diagnostics.scrollWidth > width + 1)
+      problems.push(`document scrollWidth ${diagnostics.scrollWidth}`);
+    for (const control of diagnostics.controls)
+      if (!control.width || control.left < -1 || control.right > width + 1)
+        problems.push(`${control.selector} exceeds viewport`);
+    if (!diagnostics.headings.length)
+      problems.push("No media headings were exercised");
+    for (const heading of diagnostics.headings)
+      if (
+        heading.left < -1 ||
+        heading.right > width + 1 ||
+        heading.textRects.some(
+          (rect) =>
+            rect.left < heading.left - 1 || rect.right > heading.right + 1,
+        )
+      )
+        problems.push(`Media heading text exceeds its bounds: ${heading.text}`);
+    if (diagnostics.skipLink.focused || diagnostics.skipLink.bottom > 0)
+      problems.push("Unfocused skip link is not fully above the viewport");
+    if (problems.length)
+      await writeFile(
+        `test-results/${prefix}-studio-${width}-${suffix}-overflow.json`,
+        JSON.stringify({ problems, ...diagnostics }, null, 2),
+      );
+    assert.deepEqual(
+      problems,
+      [],
+      `Studio reflow at ${width} ${suffix}; see overflow diagnostics`,
+    );
+
+    // The skip link immediately precedes the theme control in keyboard order.
+    await page.locator("#theme-toggle").focus();
+    await page.keyboard.press("Shift+Tab");
+    const focusedSkip = await page.locator(".skip-link").evaluate((element) => {
+      const { left, right, top, bottom } = element.getBoundingClientRect();
+      return {
+        focused: document.activeElement === element,
+        left,
+        right,
+        top,
+        bottom,
+        innerWidth,
+        innerHeight,
+      };
+    });
+    const skipVisible =
+      focusedSkip.focused &&
+      focusedSkip.left >= 0 &&
+      focusedSkip.right <= width + 1 &&
+      focusedSkip.top >= 0 &&
+      focusedSkip.bottom <= focusedSkip.innerHeight;
+    if (!skipVisible)
+      await writeFile(
+        `test-results/${prefix}-studio-${width}-${suffix}-skip-link.json`,
+        JSON.stringify({ focusedSkip, ...diagnostics }, null, 2),
+      );
+    assert(skipVisible, `Keyboard-focused skip link fits ${width} ${suffix}`);
+    await page.keyboard.press("Tab");
+    assert(
+      await page
+        .locator(".skip-link")
+        .evaluate(
+          (element) =>
+            document.activeElement !== element &&
+            element.getBoundingClientRect().bottom <= 0,
+        ),
+      "Skip link hides completely after keyboard focus leaves",
+    );
     if (captureScreenshots)
       await page.screenshot({
         path: `test-results/${prefix}-studio-${width}-${suffix}.png`,

@@ -13,7 +13,7 @@ npm ci
 npm run author
 ```
 
-Open the exact `http://127.0.0.1:4174` address printed by the command. Keep the terminal running. The author server binds only loopback and does not honor `HOST`; do not expose it through a tunnel, reverse proxy or shared network. The repository must be a local writable checkout. Network and cloud-synchronized folders are outside the tested recovery guarantee.
+No `npm run build` is needed before authoring: Studio runs directly from source. Open the exact `http://127.0.0.1:4174` address printed by the command. Keep the terminal running. The author server binds only loopback and does not honor `HOST`; do not expose it through a tunnel, reverse proxy or shared network. The repository must be a local writable checkout. Network and cloud-synchronized folders are outside the tested recovery guarantee.
 
 Normal reading is unchanged:
 
@@ -23,6 +23,16 @@ npm start
 ```
 
 Open `http://127.0.0.1:4173`. That server and the static ZIP have no authoring write API. The portable browser editor remains private: its Save does not modify the repository. Content Studio is the tool for files you intend to share through Git.
+
+## Windows first-use checklist
+
+1. Use the source checkout, not the earlier static ZIP. In Windows Terminal, open the folder containing `package.json`. If this is an existing checkout, review `git status`, preserve unrelated local edits, then switch to `main` and pull its current changes using your usual Git workflow. If cloning for the first time, clone `https://github.com/woodkill00/dmz_guide.git` and enter the new `dmz_guide` folder.
+2. Check `node --version` reports 22 or newer. Run `npm ci`, then `npm run author`. If PowerShell blocks the npm script wrapper, use `npm.cmd ci` and `npm.cmd run author`; do not change execution policy for this app.
+3. Open the exact printed local address in Chrome, Firefox or Edge. Leave the terminal open while editing. Stop it with Ctrl+C when finished.
+4. Add a catalog/record, attach an original rights-cleared picture, then review and Save to repository. Use View saved preview immediately; no build is required for that preview.
+5. Run `npm run build` and `npm start` when you want the normal public reader updated. Review the changed source JSON/media in Git, commit only intended public files and publish through your normal pull-request workflow. Studio does not perform those Git actions.
+
+The checked-in starter migration is already complete in this feature. A new pull/clone receives canonical files directly and must not re-run migration just to start Studio. Preserve and review any older custom whole-pack content separately; the portable import preview can bring compatible packs into a selected catalog without creating competing editable source trees.
 
 ## Add a record and its pictures
 
