@@ -25,3 +25,6 @@ T001→T002→T003→T004→T005→T006→T007→T008→T009→T010→T011→T01
 - [x] T014 Guard dirty-import disposal and all draft mutation before atomic-save lock in src/client/editor.mjs per E08/E13/E14 (partial); reset picture export attestations on changed content.
 - [x] T015 Disclose original imported raster metadata and require explicit embedded/visible privacy attestation in src/ui/editor-page.mjs per E10 (partial), preserving actual-byte roundtrip instead of silently altering imported hashes.
 - [x] T016 Add first-edit rollback, real JPEG/WebP decode, denied/quota-save direct recovery export and decode timeout browser cases in tests/browser/editor.mjs per E05/E08/E14 and SC02/03 (partial).
+
+- [x] T017 Bound guided nested array rendering to20entries per page while preserving all fields via keyboard pagination in src/client/editor.mjs per E06/E11 (partial).
+- [x] T018 Extend tests/browser/editor.mjs to add a new gun/stat and guide, then verify typed private reader links, inventory and planner after clean import per SC01/SC02 (partial; hosted execution pending).

@@ -19,3 +19,5 @@ Parent-approved value {pack, revision, payloads}, payloads array [{assetId,base6
 
 ## Review clarifications
 Existing pack identity is read-only. Import targets its own ID at captured revision (zero if new), never silently selected-pack replacement. Workspace generation invalidates staged and async work on cancel/switch; dirty switch needs explicit discard acknowledgment. Decode sequentially with five-second timeout, cancel and late resource cleanup; reject APNG/animated WebP and ZIP. Keep failed-save draft directly exportable. No profile mutation.
+
+Nested array controls paginate20entries to avoid rendering a maximum-size imported record as an unbounded DOM; all entries remain editable through native previous/next controls.

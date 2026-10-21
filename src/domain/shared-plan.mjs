@@ -133,9 +133,19 @@ export function planShared(pack, profile, { mode = 'strict' } = {}) {
     }
     for (const [s, q] of slots(n.forced)) { put(craftNeed, s, q); rootDemand = add(rootDemand, q); }
     if (retainedMissing) {
-      // A shared floor is counted once, owned stock is protected before consumption.
-      const s = slots(n.retained)[0][0]; const p = parts.get(s) || { demand: 0, allocated: 0, missing: 0, retainedMissing: 0 };
-      p.retainedMissing = retainedMissing; parts.set(s, p); put(craftNeed, s, retainedMissing);
+      // Protect the global floor, but charge each priority/horizon only its increase.
+      // Existing tools cover the earliest floor before later goals enlarge it.
+      let floor = 0, attributedMissing = 0;
+      for (const [s, q] of slots(n.retained)) {
+        tick(); floor = Math.max(floor, q);
+        const missingThroughSlot = Math.max(0, floor - available);
+        const increment = missingThroughSlot - attributedMissing;
+        if (increment) {
+          const p = parts.get(s) || { demand: 0, allocated: 0, missing: 0, retainedMissing: 0 };
+          p.retainedMissing = increment; parts.set(s, p); put(craftNeed, s, increment);
+        }
+        attributedMissing = missingThroughSlot;
+      }
     }
     const batchParts = new Map(); let cumulative = 0, batches = 0;
     if (n.record) for (const [s, q] of slots(craftNeed)) {

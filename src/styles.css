@@ -19,3 +19,7 @@ button:not(.theme-toggle){background:var(--accent);color:var(--ink);border:1px s
 /* Private creator controls remain bounded at narrow widths. */
 .editor-layout,.editor-grid{display:grid;gap:1rem;grid-template-columns:minmax(0,1fr)}
 fieldset{min-width:0;max-width:100%;margin-block:1rem;border:1px solid var(--line);padding:1rem}legend{overflow-wrap:anywhere;max-width:100%}pre{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}textarea{width:100%;min-height:7rem}.local-raster{display:block;max-width:100%;height:auto;max-height:30rem;object-fit:contain;margin-block:1rem}#editor-root,#editor-form,#record-fields{min-width:0}.editor-array{padding-left:.5rem;border-left:2px solid var(--line)}
+/* Long provenance hashes and nested schema labels must reflow on narrow screens. */
+#picture-preview p,#stage-target,#stage-warnings,#editor-fields small,#editor-fields label{overflow-wrap:anywhere}
+#guided-form,#editor-fields,.field{min-width:0;max-width:100%}
+@media(max-width:40rem){#editor-fields fieldset{padding:.5rem;margin-inline:0}#editor-fields fieldset fieldset{padding-inline:.25rem}}
