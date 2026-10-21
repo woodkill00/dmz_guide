@@ -33,3 +33,5 @@ Dependencies: T001 → T002 → US1 → US2 → US3 → T011/T012. T006/T009 tes
 - [x] T015 Diagnose hosted maps.mjs missing-image timeout, replace dangling asset reference with validator-accepted reference-only image metadata, add precondition/runtime regression and failure screenshot/status diagnostics in tests/browser/maps.mjs and tests/runtime/locations.test.mjs (LI-006/008, T012).
 
 Slice evidence: exact cb6e40776fbd28da9bf73ec640df45f91cdff817 hosted browser/visual/source accepted independently2026-10-21. Final integration gates and authorized exact-main merge remain open.
+
+Final integrated evidence supersedes earlier browser-pending notes: exact93ad1f5, all five hosted jobs in run39601721603, independent112-test/build/link/full-height visual/package verdict. Only explicitly named owner-authorized readiness/merge and exact-main CI gates remain pending; see ../008-community-release/acceptance.md.

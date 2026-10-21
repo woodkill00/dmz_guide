@@ -30,3 +30,5 @@ T001→T002→T003→T004→T005→T006→T007→T008→T009→T010→T011→T01
 - [x] T018 Extend tests/browser/editor.mjs to add a new gun/stat and guide, then verify typed private reader links, inventory and planner after clean import per SC01/SC02 (partial; hosted execution pending).
 
 Integration status2026-10-21: completed markers above reflect implemented behavior and actual slice evidence, not final release/merge. Final integrated cross-engine/mobile200% checks and exact-main CI remain separately gated.
+
+Final integrated evidence supersedes earlier browser-pending notes: exact93ad1f5, all five hosted jobs in run39601721603, independent112-test/build/link/full-height visual/package verdict. Only explicitly named owner-authorized readiness/merge and exact-main CI gates remain pending; see ../008-community-release/acceptance.md.

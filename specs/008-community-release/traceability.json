@@ -1,0 +1,91 @@
+{
+  "acceptedApplicationHead": "93ad1f54027d103aed1bd94433ece18e29d68727",
+  "exactHeadCI": "https://github.com/woodkill00/dmz_guide/actions/runs/39601721603",
+  "mainMergeAndCIPending": true,
+  "requirements": {
+    "F008-01": {
+      "tasks": [
+        "T002",
+        "T003",
+        "T004"
+      ],
+      "evidence": [
+        "src/domain/corrections.mjs",
+        "tests/runtime/corrections.test.mjs",
+        "tests/browser/community.mjs"
+      ]
+    },
+    "F008-02": {
+      "tasks": [
+        "T002",
+        "T004",
+        "T014"
+      ],
+      "evidence": [
+        "src/client/community.mjs",
+        "tests/browser/community.mjs"
+      ]
+    },
+    "F008-03": {
+      "tasks": [
+        "T003"
+      ],
+      "evidence": [
+        "content/site.json",
+        "src/domain/corrections.mjs",
+        "tests/browser/community.mjs"
+      ]
+    },
+    "F008-04": {
+      "tasks": [
+        "T005"
+      ],
+      "evidence": [
+        "tests/browser/offline.mjs",
+        "tests/browser/engines.mjs",
+        "docs/release.md"
+      ]
+    },
+    "F008-05": {
+      "tasks": [
+        "T006",
+        "T007",
+        "T012",
+        "T013"
+      ],
+      "evidence": [
+        "scripts/build.mjs",
+        "scripts/package-release.py",
+        "scripts/verify-release.py",
+        "docs/release.md"
+      ]
+    },
+    "F008-06": {
+      "tasks": [
+        "T008",
+        "T009",
+        "T010",
+        "T011",
+        "T016"
+      ],
+      "evidence": [
+        "tests/browser/run.mjs",
+        "tests/browser/reflow.mjs",
+        "tests/browser/health.mjs",
+        "checklists/release-quality.md"
+      ]
+    },
+    "F008-07": {
+      "tasks": [
+        "T013",
+        "T016"
+      ],
+      "evidence": [
+        "scripts/bundled-assets.mjs",
+        "src/content/bundled-assets.mjs",
+        "tests/runtime/bundled-assets.test.mjs",
+        "tests/browser/bundled-assets.mjs"
+      ]
+    }
+  }
+}

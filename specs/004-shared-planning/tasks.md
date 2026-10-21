@@ -12,9 +12,11 @@
 - [x] T007 [US3] Add selected/unused cycle,scope,overflow,200goals,20k-DAG tests in tests/runtime/shared-plan.test.mjs and bounded error UI in src/client/planner.mjs. F004-05/06.
 - [x] T008 [US3] Add browser goal editing/order/route/reload tests in tests/browser/run.mjs; run full regression/build and record acceptance.md. F004-06.
 ## Phase5 Release
-- [ ] T009 Execute convergence and independent review; append repairs and record traceability.json/review.md. F004-06.
+- [x] T009 Execute convergence and independent review; append repairs and record traceability.json/review.md. F004-06.
 - [ ] T010 Create stacked PR, verify exact-head CI, merge only after authorized, verify exact-main CI. F004-06.
 Dependencies: T001 before all coding. Domain worker owns T002/003/005/006(domain)/007(tests) only; integration owner UI/artifacts/browser. Parallel UI T004 after stable domain output contract.003 review fixes propagated before final004 acceptance.
 - [x] T011 [US2] Add A25 now/later redistribution, conflicting-root-route and additional-production semantics regressions in tests/runtime/shared-plan.test.mjs. F004-02/03/05.
 
 Integration status2026-10-21: completed markers above reflect implemented behavior and actual slice evidence, not final release/merge. Final integrated cross-engine/mobile200% checks and exact-main CI remain separately gated.
+
+Final integrated evidence supersedes earlier browser-pending notes: exact93ad1f5, all five hosted jobs in run39601721603, independent112-test/build/link/full-height visual/package verdict. Only explicitly named owner-authorized readiness/merge and exact-main CI gates remain pending; see ../008-community-release/acceptance.md.
