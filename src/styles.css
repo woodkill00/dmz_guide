@@ -14,3 +14,5 @@ button:not(.theme-toggle){background:var(--accent);color:var(--ink);border:1px s
 .spoiler-content{border:1px solid var(--line);padding:1rem;margin-bottom:2rem}.spoiler-content summary{min-height:44px;cursor:pointer;display:list-item;font-weight:650;color:var(--accent);padding:.5rem}.spoiler-content[open]>summary{margin-bottom:1rem}
 /* Control boundaries meet 3:1 contrast; decorative dividers remain subdued. */
 :root{--control-line:#7c8975}:root[data-theme=light]{--control-line:#6e7c64}input,select,textarea,.theme-toggle,.secondary,button.secondary{border-color:var(--control-line)}
+
+.home-search{margin-block:1.5rem}.home-search .actions{margin-block:.6rem 1.5rem}
