@@ -1,7 +1,15 @@
 import assert from 'node:assert/strict';
-import {mkdir} from 'node:fs/promises';
+import {mkdir,writeFile} from 'node:fs/promises';
+// A valid reference-only manifest deliberately has no raster payload.
+// A dangling map.assetId instead tests pack rejection, not missing-image fallback.
+export function referenceOnlyMapFixture(source){
+ const pack=structuredClone(source);
+ pack.maps[0].assetId='demo:missing-image';
+ pack.assets=[{id:'demo:missing-image',path:'assets/missing-map.png',mime:'image/png',sha256:'0'.repeat(64),bytes:68,width:1,height:1,rightsHolder:'Original synthetic test fixture',license:'CC0',sourceUrl:'https://example.invalid/missing-map-fixture',attribution:'Synthetic reference-only image metadata; no pixels supplied',redistributionAllowed:true}];
+ return pack;
+}
 export async function runMapsTests({browser,base}){
- const context=await browser.newContext({viewport:{width:1280,height:900}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const context=await browser.newContext({viewport:{width:1280,height:900}}),page=await context.newPage(),errors=[],consoleErrors=[],requestFailures=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')consoleErrors.push(m.text());});page.on('requestfailed',r=>requestFailures.push({url:r.url(),failure:r.failure()}));
  await mkdir('test-results',{recursive:true});
  const ready=()=>page.waitForFunction(()=>document.querySelector('#location-count')?.textContent.includes('matching'));
  const ids=selector=>page.locator(selector).evaluateAll(nodes=>nodes.map(n=>n.dataset.locationId).sort());
@@ -19,7 +27,21 @@ export async function runMapsTests({browser,base}){
   await page.evaluate(async()=>{const [{state},{saveProfile}]=await Promise.all([import('/assets/src/client/common.mjs'),import('/assets/src/storage/store.mjs')]);await saveProfile({...state.profile,contentVersion:'stale-test'},state.revision);});await page.reload();await ready();await page.waitForFunction(()=>document.querySelector('#goal-context').textContent.includes('unavailable'));await page.check('#goal-locations');assert.equal(await page.locator('#location-list button').count(),0);
   await page.selectOption('#pack-select','official:mw4-dmz-starter');await page.waitForFunction(()=>document.querySelector('#location-list').querySelectorAll('button').length===13);assert.equal(await page.locator('#goal-locations').isChecked(),false);assert.match(await page.locator('#location-detail').textContent(),/Select a location/);assert.equal(await page.locator('#location-map').getAttribute('viewBox'),'0 0 100 100');
   // Missing local raster produces an explicit fallback; it cannot hide the list.
-  await page.selectOption('#pack-select','demo:training-pack');await page.waitForFunction(()=>document.querySelector('#pack-note').textContent.includes('FICTIONAL'));await page.evaluate(async()=>{const [{state},{commitRecord}]=await Promise.all([import('/assets/src/client/common.mjs'),import('/assets/src/storage/store.mjs')]);const pack=structuredClone(state.pack);pack.maps[0].assetId='demo:missing-image';await commitRecord('content',pack.id,{pack,revision:0,payloads:[]},0);});await page.reload();await ready();await page.waitForFunction(()=>document.querySelector('#imagery-status').textContent.includes('Image unavailable'));assert.equal(await page.locator('#location-list button').count(),3);await page.locator('#location-list button').first().click();assert.match(await page.locator('#location-detail').textContent(),/Training supply shed/);
+  await page.selectOption('#pack-select','demo:training-pack');
+  await page.waitForFunction(()=>document.querySelector('#pack-note').textContent.includes('FICTIONAL'));
+  const referencePack=referenceOnlyMapFixture(await page.evaluate(async()=>{const {state}=await import('/assets/src/client/common.mjs');return state.pack;}));
+  await page.evaluate(async pack=>{
+   const [{commitRecord},{validatePack}]=await Promise.all([import('/assets/src/storage/store.mjs'),import('/assets/src/content/validate.mjs')]);
+   const schema=await (await fetch('/assets/schemas/pack.schema.json')).json();
+   validatePack(pack,schema);
+   await commitRecord('content',pack.id,{pack,revision:0,payloads:[]},0);
+  },referencePack);
+  await page.reload();await ready();
+  assert.equal(await page.evaluate(async()=>{const {state}=await import('/assets/src/client/common.mjs');return state.pack.maps[0].assetId;}),'demo:missing-image','Reference-only pack must be accepted before testing absent pixels');
+  await page.waitForFunction(()=>document.querySelector('#imagery-status').textContent.includes('Image unavailable'));
+  assert.equal(await page.locator('#location-list button').count(),3);
+  await page.locator('#location-list button').first().click();
+  assert.match(await page.locator('#location-detail').textContent(),/Training supply shed/);
   // Original canvas raster passes the canonical picture-pack validation before local commit.
   await page.evaluate(async()=>{const [{state},{commitRecord,readRecord},portable]=await Promise.all([import('/assets/src/client/common.mjs'),import('/assets/src/storage/store.mjs'),import('/assets/src/content/portable.mjs')]);const canvas=document.createElement('canvas');canvas.width=canvas.height=64;const ctx=canvas.getContext('2d');ctx.fillStyle='#31452d';ctx.fillRect(0,0,64,64);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));const bytes=new Uint8Array(await blob.arrayBuffer()),hash=await portable.hashBytes(bytes),pack=structuredClone(state.pack);pack.contentVersion='1.0.1';pack.maps[0]={...pack.maps[0],assetId:'demo:owner-map',extent:[0,0,200,200],coordinateVersion:'2',floors:['ground','upper','roof']};pack.assets=[{id:'demo:owner-map',path:`assets/${hash}.png`,mime:'image/png',sha256:hash,bytes:bytes.length,width:64,height:64,rightsHolder:'Original test author',license:'CC0',sourceUrl:'https://example.invalid/original-test',attribution:'Original generated test raster',redistributionAllowed:true}];const payloads=[{assetId:'demo:owner-map',base64:portable.base64FromBytes(bytes)}],schema=await (await fetch('/assets/schemas/pack.schema.json')).json();const decodeRaster=async(b,mime)=>{const bitmap=await createImageBitmap(new Blob([b],{type:mime}));try{return{width:bitmap.width,height:bitmap.height};}finally{bitmap.close();}};await portable.buildTransfer(pack,payloads,schema,{decodeRaster});const current=await readRecord('content',pack.id);await commitRecord('content',pack.id,{pack,payloads,revision:current.value.revision},current.value.revision);});await page.reload();await ready();await page.waitForFunction(()=>document.querySelector('#imagery-status').textContent.includes('Local owner image'));assert.equal(await page.locator('#map-background image').count(),1);assert.match(await page.locator('#map-context').textContent(),/coordinate 2/);assert.equal(await page.locator('#floor-select option[value=roof]').count(),1);assert.equal(await page.locator('#map-markers [data-location-id="demo:supply-shed"]').getAttribute('transform'),'translate(10 15)');await page.selectOption('#coordinate-version','2');assert.equal(await page.locator('#location-list button').count(),3);await page.selectOption('#floor-select','roof');assert.equal(await page.locator('#location-list button').count(),0);await page.selectOption('#floor-select','');
   // Rapid context changes must not let a late image contaminate the real map.
@@ -28,5 +50,12 @@ export async function runMapsTests({browser,base}){
   // A decoder that never settles is bounded, and a pack switch revokes pending URLs.
   await page.addInitScript(()=>{window.__mapDecoded=0;window.__mapRevoked=0;Image.prototype.decode=function(){window.__mapDecoded++;return new Promise(()=>{});};const revoke=URL.revokeObjectURL.bind(URL);URL.revokeObjectURL=url=>{window.__mapRevoked++;revoke(url);};});await page.reload();await ready();await page.waitForFunction(()=>window.__mapDecoded>0);await page.waitForFunction(()=>document.querySelector('#imagery-status').textContent.includes('timed out'),{},{timeout:8000});assert(await page.evaluate(()=>window.__mapRevoked>0));assert.equal(await page.locator('#location-list button').count(),3);await page.reload();await ready();await page.waitForFunction(()=>window.__mapDecoded>0);await page.selectOption('#pack-select','official:mw4-dmz-starter');await page.waitForFunction(()=>document.querySelector('#location-list').querySelectorAll('button').length===13);assert(await page.evaluate(()=>window.__mapRevoked>0));
   assert.deepEqual(errors,[]);return {passed:true,journeys:['real list-only','demo parity','filters','floors','keyboard selection/camera','goal actual relations','stale goal','context reset','image fallback'],screenshots:['maps-real-desktop.png','maps-demo-320.png','maps-demo-390.png','maps-demo-768.png','maps-demo-1280.png']};
+ }catch(failure){
+  const diagnostics={failure:failure.stack||String(failure),url:page.url(),pageErrors:errors,consoleErrors,requestFailures};
+  try{diagnostics.state=await page.evaluate(()=>({title:document.title,pack:document.querySelector('#pack-select')?.value,status:Object.fromEntries(['pack-note','save-status','error','imagery-status','goal-context','map-context','location-count'].map(id=>[id,document.getElementById(id)?.textContent])),locationIds:[...document.querySelectorAll('#location-list [data-location-id]')].map(n=>n.dataset.locationId),imageHref:document.querySelector('#map-background image')?.getAttribute('href')}));}catch(e){diagnostics.stateError=e.message;}
+  try{await page.screenshot({path:'test-results/maps-failure.png',fullPage:true});}catch(e){diagnostics.screenshotError=e.message;}
+  await writeFile('test-results/maps-failure.json',JSON.stringify(diagnostics,null,2));
+  console.error('Map acceptance failure diagnostics:',JSON.stringify(diagnostics));
+  throw failure;
  }finally{await context.close();}
 }
