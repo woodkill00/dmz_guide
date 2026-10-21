@@ -4,3 +4,4 @@ test('profile round trip and unknown references',()=>{const p=newProfile(pack);p
 for(const value of[-1,.5,Infinity,1000001])test(`reject quantity ${value}`,()=>{const p=newProfile(pack);p.inventory['demo:x']=value;assert.throws(()=>validateProfile(p));});
 test('bounds/version/hostile fields',()=>{assert.throws(()=>parseProfile('{"__proto__":1}'));const p=newProfile(pack);p.schemaVersion=2;assert.throws(()=>validateProfile(p));assert.throws(()=>parseProfile(' '.repeat(1048577)));});
 test('mismatch preview',()=>{const p=newProfile(pack);p.contentVersion='old';assert.equal(previewProfile(p,pack).versionMismatch,true);});
+test('canonical ID and key lengths bounded',()=>{const p=newProfile(pack);p.inventory['demo:'+'a'.repeat(101)]=1;assert.throws(()=>validateProfile(p));assert.throws(()=>parseProfile(JSON.stringify({...newProfile(pack),inventory:{['demo:'+'a'.repeat(5000)]:1}})));});
