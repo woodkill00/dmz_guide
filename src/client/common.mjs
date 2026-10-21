@@ -2,7 +2,7 @@ import {newProfile, validateProfile} from '../domain/profile.mjs';
 import {loadProfile, saveProfile, readRecord} from '../storage/store.mjs';
 export const $ = selector => document.querySelector(selector);
 export const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export const state = {pack:null, profile:null, revision:0, packs:[], loading:false};
+export const state = {pack:null, profile:null, revision:0, packs:[], loading:false, saving:false};
 export function error(reason) {
   const element = $('#error');
   if (element) { element.hidden=false; element.textContent=reason.message || String(reason); element.focus(); }
@@ -57,6 +57,9 @@ export async function init(render) {
   await change();return state;
 }
 export async function persist(candidate=state.profile) {
+  if(state.saving){error(new Error('A save is already in progress. Wait for it to finish.'));return false;}
+  const controls=[...document.querySelectorAll('main button, main input, main select')].map(n=>[n,n.disabled]);
+  state.saving=true;for(const[n]of controls)n.disabled=true;
   try {
     if(state.loading)throw new Error('Wait for the selected pack to load.');
     validateProfile(candidate);
@@ -68,5 +71,5 @@ export async function persist(candidate=state.profile) {
     status(`Saved locally · revision ${saved.revision}`);$('#error').hidden=true;return true;
   } catch(reason) {
     status('Unsaved changes remain in this page. Export before reload.');error(reason);return false;
-  }
+  } finally {state.saving=false;for(const[n,disabled]of controls)n.disabled=disabled;}
 }
