@@ -32,3 +32,5 @@ Set `content/site.json` `discordInvite` only after the owner supplies and verifi
 Run unit/adversarial tests, production build, browser suites and repository checks. Inspect actual desktop/narrow/200% text screenshots; emulated sizes are not physical-device tests or WCAG certification. Rebuild after tests so test-only zoom CSS and screenshots never ship. Inspect ZIP contents and internal links from clean extraction.
 
 The starter catalog is intentionally small and source-backed, not a complete verified live-game dataset. Printer level conflicts remain explicit. Real map-art/coordinate rights, catalog enrichment, a verified Discord invite and any hosting are external owner decisions. Original code is MIT; third-party game names/evidence and owner images retain their own rights.
+
+WebKit functional browser tests do not capture screenshots: the pinned automation tool injects an inline animation-sync stylesheet when capturing WebKit, which correctly conflicts with the site CSP. CSP and console-health assertions remain enabled. Chrome and Firefox provide visual captures; WebKit results are functional/computed-layout evidence, not physical iOS Safari certification.

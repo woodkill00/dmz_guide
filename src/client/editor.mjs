@@ -122,13 +122,121 @@ function setAt(path, value) {
 function getAt(path) {
   return path.reduce((o, k) => o?.[k], draft);
 }
+const entryNames = {
+  items: "Item or weapon",
+  recipes: "Recipe",
+  objectives: "Objective",
+  sources: "Source",
+  guides: "Guide",
+  maps: "Map",
+  locations: "Location",
+  claims: "Claim",
+  assets: "Picture",
+  stats: "Statistic",
+  inputs: "Ingredient",
+  requirements: "Requirement",
+  prerequisites: "Prerequisite",
+  sourceIds: "Source",
+  itemIds: "Item",
+  relatedIds: "Related record",
+  aliases: "Alias",
+  effects: "Effect",
+  floors: "Floor",
+  extent: "Extent coordinate",
+};
+function fieldTitle(path, value) {
+  const key = path.at(-1);
+  if (typeof key !== "number") return label(String(key));
+  const group = path.at(-2),
+    name =
+      value && typeof value === "object"
+        ? value.name || value.title || value.label || value.id
+        : "";
+  return `${entryNames[group] || "Entry"} ${key + 1}${name ? " · " + name : ""}`;
+}
+function referenceGroup(path) {
+  const key = typeof path.at(-1) === "number" ? path.at(-2) : path.at(-1);
+  return {
+    itemId: "items",
+    itemIds: "items",
+    sourceId: "sources",
+    sourceIds: "sources",
+    prerequisites: "objectives",
+    mapId: "maps",
+    assetId: "assets",
+    entityId: "all",
+    relatedIds: "all",
+  }[key];
+}
+function referencePicker(path, title, input) {
+  const group = referenceGroup(path);
+  if (!group) return null;
+  const container = node("div"),
+    searchLabel = node("label", `Find ${title.toLowerCase()} by name or ID `),
+    search = node("input"),
+    pickLabel = node("label", `Choose existing ${title.toLowerCase()} `),
+    picker = node("select"),
+    summary = node("small");
+  search.type = "search";
+  search.autocomplete = "off";
+  search.placeholder = "Search this private pack";
+  search.dataset.refSearch = path.join(".");
+  picker.dataset.refPicker = path.join(".");
+  searchLabel.append(search);
+  pickLabel.append(picker);
+  container.append(searchLabel, pickLabel, summary);
+  const records = (
+    group === "all" ? GROUPS.flatMap((k) => draft[k]) : draft[group]
+  ).filter((r) => r.id);
+  function populate() {
+    const query = search.value.trim().toLowerCase(),
+      matches = records.filter((r) =>
+        `${r.name || r.title || r.label || ""} ${r.id}`
+          .toLowerCase()
+          .includes(query),
+      ),
+      visible = matches.slice(0, 50);
+    picker.replaceChildren();
+    const placeholder = node(
+      "option",
+      matches.length ? "Select a matching record…" : "No matching records",
+    );
+    placeholder.value = "";
+    picker.append(placeholder);
+    for (const record of visible) {
+      const option = node(
+        "option",
+        `${record.name || record.title || record.label || record.id} · ${record.id}`,
+      );
+      option.value = record.id;
+      picker.append(option);
+    }
+    picker.value = visible.some((r) => r.id === input.value) ? input.value : "";
+    summary.textContent = `${matches.length} matching ${group === "all" ? "records" : group}; showing ${visible.length}. Search more specifically if needed. Exact IDs remain editable below.`;
+  }
+  search.addEventListener("input", populate);
+  search.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      picker.focus();
+    }
+  });
+  picker.addEventListener("change", () => {
+    if (!picker.value) return;
+    setAt(path, picker.value);
+    input.value = picker.value;
+  });
+  input.addEventListener("input", populate);
+  populate();
+  return container;
+}
 function control(s, path, required = true) {
   s = resolve(s);
   const key = path.at(-1),
     value = getAt(path),
     box = node("div");
   box.className = "field";
-  const title = label(String(key));
+  const title = fieldTitle(path, value);
   if (!required) {
     const l = node("label"),
       check = node("input");
@@ -153,7 +261,7 @@ function control(s, path, required = true) {
         (type === "number" && resolve(v).type === "integer"),
     );
     if (idx < 0) idx = 0;
-    const l = node("label", `${title} value type `),
+    const l = node("label", `${title} type `),
       select = node("select");
     select.dataset.path = path.join(".") + ".type";
     variants.forEach((v, i) => {
@@ -299,6 +407,11 @@ function control(s, path, required = true) {
     );
   });
   l.append(input);
+  const picker = referencePicker(path, title, input);
+  if (picker) {
+    box.append(picker);
+    l.firstChild.textContent = `Exact ${title.toLowerCase()} ID (advanced) `;
+  }
   box.append(l);
   if (help[key]) box.append(node("small", help[key]));
   return box;

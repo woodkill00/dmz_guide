@@ -84,8 +84,19 @@ export async function runSharedPlanTests({ browser, base }) {
   await page.selectOption('[data-completion="demo:bench-unlock"]', "completed");
   await page.waitForFunction(
     () =>
-      !document.querySelector("main").getAttribute("aria-busy") &&
+      document.querySelector("main").getAttribute("aria-busy") !== "true" &&
+      !document.querySelector('[data-completion="demo:bench-unlock"]')
+        .disabled &&
       document.querySelector("#save-status").textContent.includes("revision"),
+  );
+  assert.equal(
+    await page.evaluate(async () => {
+      const { loadProfile } = await import("/assets/src/storage/store.mjs");
+      return (await loadProfile("demo:training-pack")).value.completion[
+        "demo:bench-unlock"
+      ];
+    }),
+    "completed",
   );
   await page.goto(base + "/planner/?pack=demo%3Atraining-pack");
   await page.waitForSelector("#goals-list li strong");

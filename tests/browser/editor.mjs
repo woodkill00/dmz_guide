@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
-export async function runEditorTests({ browser, base }) {
+export async function runEditorTests({
+  browser,
+  base,
+  captureScreenshots = true,
+}) {
   const context = await browser.newContext({
       viewport: { width: 390, height: 844 },
     }),
@@ -8,6 +12,22 @@ export async function runEditorTests({ browser, base }) {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   const field = (path) => page.locator(`[data-path="${path}"]`);
+  const chooseReference = async (path, query, id) => {
+    const search = page.locator(`[data-ref-search="${path}"]`),
+      picker = page.locator(`[data-ref-picker="${path}"]`);
+    await search.fill(query);
+    assert(
+      (await picker.locator("option").count()) <= 51,
+      "Reference suggestions are bounded",
+    );
+    await search.press("Enter");
+    assert.equal(
+      await picker.evaluate((n) => n === document.activeElement),
+      true,
+    );
+    await picker.selectOption(id);
+    assert.equal(await field(path).inputValue(), id);
+  };
   const open = async () => {
     await page.goto(base + "/editor/?pack=demo%3Atraining-pack");
     await page.waitForSelector('[data-path="contentVersion"]');
@@ -28,10 +48,11 @@ export async function runEditorTests({ browser, base }) {
     try {
       await page.waitForSelector("#content-stage:not([hidden])");
     } catch (failure) {
-      await page.screenshot({
-        path: `test-results/editor-preview-failure-${previewAttempt}.png`,
-        fullPage: true,
-      });
+      captureScreenshots &&
+        (await page.screenshot({
+          path: `test-results/editor-preview-failure-${previewAttempt}.png`,
+          fullPage: true,
+        }));
       const diagnostics = await page.evaluate(() => ({
         error: document.querySelector("#error")?.textContent,
         errorHidden: document.querySelector("#error")?.hidden,
@@ -105,22 +126,52 @@ export async function runEditorTests({ browser, base }) {
       .getByRole("button", { name: "Add Source Ids entry", exact: true })
       .last()
       .click();
-    await field("items.9.stats.0.sourceIds.0").fill("source:fixture");
+    await chooseReference(
+      "items.9.stats.0.sourceIds.0",
+      "Original fictional test",
+      "source:fixture",
+    );
+    assert(
+      (await page.locator("#editor-fields legend").allTextContents()).every(
+        (text) => !/^\d+$/.test(text),
+      ),
+    );
+    assert(
+      !(await page.locator("#editor-fields").textContent()).includes(
+        "Value value type",
+      ),
+    );
     await section("recipes");
     await field("recipes.0.inputs.0.consumed").uncheck();
     await page.click("#add-record");
     await field("recipes.4.id").fill("demo:private-recipe");
     await field("recipes.4.name").fill("Private New Recipe");
-    await field("recipes.4.output.itemId").fill("demo:private-part");
+    await chooseReference(
+      "recipes.4.output.itemId",
+      "Private New Part",
+      "demo:private-part",
+    );
     await field("recipes.4.station").fill("Fictional test bench");
     await field("recipes.4.ingredientsKnown").check();
     await field("recipes.4.eligibility").selectOption("stash");
     await page
       .getByRole("button", { name: "Add Inputs entry", exact: true })
       .click();
-    await field("recipes.4.inputs.0.itemId").fill("demo:wire");
+    await chooseReference(
+      "recipes.4.inputs.0.itemId",
+      "Private Copper",
+      "demo:wire",
+    );
     await field("recipes.4.inputs.0.quantity").fill("2");
     await field("recipes.4.inputs.0.consumed").check();
+    await page
+      .getByRole("button", { name: "Add Prerequisites entry", exact: true })
+      .click();
+    await chooseReference(
+      "recipes.4.prerequisites.0",
+      "Unlock training bench",
+      "demo:bench-unlock",
+    );
     await section("sources");
     await field("sources.0.title").fill("Original private fixture evidence");
     await section("objectives");
@@ -141,11 +192,20 @@ export async function runEditorTests({ browser, base }) {
     await page
       .getByRole("button", { name: "Add Related Ids entry", exact: true })
       .click();
-    await field("guides.2.relatedIds.0").fill("demo:private-gun");
+    await chooseReference(
+      "guides.2.relatedIds.0",
+      "Private New Gun",
+      "demo:private-gun",
+    );
     await section("maps");
     await field("maps.0.name").fill("Private training map");
     await section("locations");
     await field("locations.0.description").fill("Private landmark directions");
+    await chooseReference(
+      "locations.0.mapId",
+      "Private training map",
+      "demo:training-map",
+    );
     await preview();
     assert.match(
       await page.locator("#stage-diff").textContent(),
@@ -415,10 +475,11 @@ export async function runEditorTests({ browser, base }) {
       await page.goto(base + "/editor/?pack=demo%3Atraining-pack");
       await page.waitForSelector('[data-path="contentVersion"]');
       await section("items", "7");
-      await page.screenshot({
-        path: `test-results/editor-${width}.png`,
-        fullPage: true,
-      });
+      captureScreenshots &&
+        (await page.screenshot({
+          path: `test-results/editor-${width}.png`,
+          fullPage: true,
+        }));
       const overflow = await page.evaluate(() => ({
         viewport: innerWidth,
         documentWidth: document.documentElement.scrollWidth,

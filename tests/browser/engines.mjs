@@ -37,13 +37,22 @@ try {
         await page.locator("#location-count").textContent(),
         /0 plotted/,
       );
-      await page.screenshot({
-        path: `test-results/${name}-maps-390.png`,
-        fullPage: true,
-      });
+      if (name !== "webkit")
+        await page.screenshot({
+          path: `test-results/${name}-maps-390.png`,
+          fullPage: true,
+        });
       await context.close();
-      await runEditorTests({ browser, base });
-      await runLocalNetworkTests({ browser, base });
+      await runEditorTests({
+        browser,
+        base,
+        captureScreenshots: name !== "webkit",
+      });
+      await runLocalNetworkTests({
+        browser,
+        base,
+        captureScreenshots: name !== "webkit",
+      });
       health();
       console.log(
         `${name}: native navigation, narrow maps, IndexedDB portable raster roundtrip and local-network tests passed`,

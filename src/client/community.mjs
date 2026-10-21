@@ -86,6 +86,8 @@ $("#cancel-correction").addEventListener("click", () => {
 });
 $("#review-file").addEventListener("change", async (event) => {
   const token = ++generation;
+  review = null;
+  $("#review-stage").hidden = true;
   try {
     const file = event.target.files[0];
     if (!file) return;
@@ -93,6 +95,8 @@ $("#review-file").addEventListener("change", async (event) => {
     const candidate = parseCorrection(await file.text());
     if (token !== generation) return;
     review = candidate;
+    $("#review-decision").value = "needs-evidence";
+    $("#review-notes").value = "";
     const record = allRecords([state.pack]).find(
       (r) => r.id === candidate.entityId,
     );

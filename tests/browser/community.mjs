@@ -75,6 +75,31 @@ export async function runCommunityTests({ browser, base }) {
   assert.match(await page.locator("#review-context").textContent(), /MISMATCH/);
   await page.click("#cancel-review");
   assert.equal(await page.locator("#review-stage").isVisible(), false);
+  await page.setInputFiles("#review-file", {
+    name: "valid-again.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(raw),
+  });
+  await page.waitForSelector("#review-stage:not([hidden])");
+  await page.selectOption("#review-decision", "approved");
+  await page.setInputFiles("#review-file", {
+    name: "invalid-replacement.json",
+    mimeType: "application/json",
+    buffer: Buffer.from("{}"),
+  });
+  await page.waitForSelector("#error:not([hidden])");
+  assert.equal(await page.locator("#review-stage").isVisible(), false);
+  await page.setInputFiles("#review-file", {
+    name: "valid-reset.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(raw),
+  });
+  await page.waitForSelector("#review-stage:not([hidden])");
+  assert.equal(
+    await page.locator("#review-decision").inputValue(),
+    "needs-evidence",
+  );
+  assert.equal(await page.locator("#review-notes").inputValue(), "");
   await page.evaluate(() => {
     const read = File.prototype.text;
     File.prototype.text = async function () {
