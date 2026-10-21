@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {deflateSync} from 'node:zlib';
-import {parseTransfer,buildTransfer,diffPacks,imageInfo,hashBytes,base64FromBytes,profileImpact} from '../../src/content/portable.mjs';
+import {parseTransfer,buildTransfer,diffPacks,imageInfo,hashBytes,base64FromBytes,profileImpact,defaultFieldValue,exportContent} from '../../src/content/portable.mjs';
 const schema=JSON.parse(await readFile(new URL('../../schemas/pack.schema.json',import.meta.url)));
 const pack=JSON.parse(await readFile(new URL('../../content/packs/demo-training.json',import.meta.url)));
 const copy=v=>structuredClone(v);
@@ -30,3 +30,5 @@ test('conflicting WebP canvas/frame and duplicate JPEG/PNG headers reject before
  const sof=w=>{const b=Buffer.alloc(12);b[0]=255;b[1]=192;b.writeUInt16BE(10,2);b[4]=8;b.writeUInt16BE(1,5);b.writeUInt16BE(w,7);return b;};assert.throws(()=>imageInfo(Buffer.concat([Buffer.from([255,216]),sof(3000),sof(1),Buffer.from([255,217])])),/dimensions/);assert.throws(()=>imageInfo(Buffer.concat([Buffer.from([255,216]),sof(1),sof(1),Buffer.from([255,217])])),/Multiple/);const b=png();assert.throws(()=>imageInfo(Buffer.concat([b.subarray(0,33),b.subarray(8,33),b.subarray(33)])),/Duplicate/);
 });
 test('per-file and aggregate raster byte budgets are independent of envelope cap',async()=>{const{p,payloads}=await fixture();const per=copy(p);per.assets[0].bytes=2*1024*1024+1;await assert.rejects(()=>buildTransfer(per,payloads,schema,{decodeRaster:decoder}),/size/);const total=copy(p);total.assets=Array.from({length:5},(_,i)=>({...p.assets[0],id:`demo:budget-${i}`,path:`assets/budget-${i}.png`,bytes:2*1024*1024}));total.items[0].assetId=total.assets[0].id;await assert.rejects(()=>buildTransfer(total,[],schema,{decodeRaster:decoder}),/Total asset/);const tooLarge=copy(payloads);tooLarge[0].base64='A'.repeat(Math.ceil((2*1024*1024+1)/3)*4+4);await assert.rejects(()=>buildTransfer(p,tooLarge,schema,{decodeRaster:decoder}),/base64 byte/);});
+
+test('guided defaults preserve nullable anyOf unknowns for newly created gun statistics',()=>{const p=copy(pack),gun=defaultFieldValue(schema,schema.$defs.item,{fictional:true});Object.assign(gun,{id:'demo:new-gun',name:'New gun',kind:'weapon',category:'fixture'});const stat=defaultFieldValue(schema,schema.$defs.stat,{fictional:true});assert.equal(stat.context.rangeMeters,null);Object.assign(stat,{label:'Fictional damage',value:17,reviewedAt:'2026-10-21',sourceIds:['source:fixture']});gun.stats.push(stat);p.items.push(gun);assert.doesNotThrow(()=>JSON.parse(exportContent(p,schema)));const location=defaultFieldValue(schema,schema.$defs.location,{fictional:true});assert.equal(location.coordinates,null);assert.equal(location.grid,null);});
