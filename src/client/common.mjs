@@ -73,7 +73,7 @@ export async function init(render) {
           "Content unavailable. Start the local server and retry.",
         );
       const pack = await response.json();
-      validatePack(pack, schema);
+      validatePack(pack, schema, { profile: "published" });
       return pack;
     }),
   );

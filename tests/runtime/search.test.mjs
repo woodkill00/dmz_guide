@@ -1,3 +1,4 @@
+import { loadFixturePack } from "../helpers/catalog.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { recordSearchText } from "../../src/ui/render.mjs";
@@ -34,11 +35,7 @@ import {
   renderCard,
   renderDetail,
 } from "../../src/ui/render.mjs";
-const demo = JSON.parse(
-  readFileSync(
-    new URL("../../content/packs/demo-training.json", import.meta.url),
-  ),
-);
+const demo = loadFixturePack("demo-training");
 function relayFixture() {
   const pack = structuredClone(demo);
   pack.objectives.push({

@@ -1,0 +1,21 @@
+{
+  "category": "supply",
+  "coordinates": {
+    "floor": "upper",
+    "x": 50,
+    "y": 20
+  },
+  "description": "Fictional possible loot candidate; not guaranteed.",
+  "grid": null,
+  "id": "demo:upper-cache",
+  "itemIds": [
+    "demo:tool"
+  ],
+  "mapId": "demo:training-map",
+  "name": "Training upper cache",
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "spawnKind": "possible",
+  "status": "fictional"
+}

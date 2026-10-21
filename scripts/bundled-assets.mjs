@@ -99,7 +99,13 @@ async function sourceBytes(root, file, expected) {
     await handle.close();
   }
 }
-export async function prepareBundledAssets({ root, packs, schema }) {
+export async function prepareBundledAssets({
+  root,
+  packs,
+  schema,
+  assetSources,
+  sourceFiles,
+}) {
   root = resolve(root);
   assert(
     Array.isArray(packs) && packs.length <= BUNDLED_LIMITS.packs,
@@ -113,7 +119,7 @@ export async function prepareBundledAssets({ root, packs, schema }) {
       new TextEncoder().encode(JSON.stringify(pack)).length <= LIMITS.packBytes,
       "Pack byte limit exceeded",
     );
-    validatePack(pack, schema);
+    validatePack(pack, schema, { profile: "published" });
     const assets = pack.assets.map((a) => ({
       assetId: a.id,
       path: a.path,
@@ -141,16 +147,31 @@ export async function prepareBundledAssets({ root, packs, schema }) {
           ),
         "Bundled asset redistribution rights required",
       );
-      const file = join(
-          root,
-          "content/assets",
-          bundledPackKey(pack.id),
-          asset.path,
-        ),
-        bytes = await sourceBytes(root, file, asset.bytes),
+      const source = assetSources?.get(`${pack.id}\0${asset.id}`);
+      if (assetSources)
+        assert(typeof source === "string", "Missing canonical asset source");
+      const file = source
+        ? resolve(root, source)
+        : join(root, "content/assets", bundledPackKey(pack.id), asset.path);
+      if (sourceFiles?.has(source)) {
+        await noSymlinks(root);
+        await noSymlinks(file, { file: true });
+        const rel = relative(await realpath(root), await realpath(file));
+        assert(
+          rel &&
+            !isAbsolute(rel) &&
+            !rel.startsWith(".." + sep) &&
+            rel !== "..",
+          "Bundled source containment failed",
+        );
+      }
+      const bytes =
+          sourceFiles?.get(source) ||
+          (await sourceBytes(root, file, asset.bytes)),
         info = imageInfo(bytes);
       assert(
-        info.mime === asset.mime &&
+        bytes.length === asset.bytes &&
+          info.mime === asset.mime &&
           info.width === asset.width &&
           info.height === asset.height,
         "Bundled raster signature/dimensions mismatch",

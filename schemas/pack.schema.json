@@ -33,11 +33,7 @@
           "maxLength": 120
         }
       },
-      "required": [
-        "id",
-        "mode",
-        "build"
-      ]
+      "required": ["id", "mode", "build"]
     },
     "title": {
       "type": "string",
@@ -52,10 +48,7 @@
       "additionalProperties": false,
       "properties": {
         "expectedTotal": {
-          "type": [
-            "integer",
-            "null"
-          ],
+          "type": ["integer", "null"],
           "minimum": 0
         },
         "note": {
@@ -63,10 +56,7 @@
           "maxLength": 2000
         }
       },
-      "required": [
-        "expectedTotal",
-        "note"
-      ]
+      "required": ["expectedTotal", "note"]
     },
     "sources": {
       "type": "array",
@@ -126,7 +116,7 @@
     },
     "assets": {
       "type": "array",
-      "maxItems": 20000,
+      "maxItems": 1000,
       "items": {
         "$ref": "#/$defs/asset"
       }
@@ -168,11 +158,7 @@
           "maxLength": 120
         }
       },
-      "required": [
-        "gameId",
-        "mode",
-        "build"
-      ]
+      "required": ["gameId", "mode", "build"]
     },
     "source": {
       "type": "object",
@@ -194,12 +180,7 @@
           "pattern": "^https?://"
         },
         "type": {
-          "enum": [
-            "official",
-            "community",
-            "observation",
-            "original-fixture"
-          ]
+          "enum": ["official", "community", "observation", "original-fixture"]
         },
         "publishedAt": {
           "type": "string",
@@ -246,10 +227,7 @@
           "minLength": 1
         },
         "value": {
-          "type": [
-            "number",
-            "null"
-          ],
+          "type": ["number", "null"],
           "minimum": 0
         },
         "unit": {
@@ -294,10 +272,7 @@
                       "minimum": 0
                     }
                   },
-                  "required": [
-                    "min",
-                    "max"
-                  ]
+                  "required": ["min", "max"]
                 }
               ]
             },
@@ -498,9 +473,7 @@
             }
           },
           "then": {
-            "required": [
-              "customUnit"
-            ],
+            "required": ["customUnit"],
             "properties": {
               "customUnit": {
                 "minLength": 1
@@ -590,12 +563,7 @@
           "$ref": "#/$defs/scope"
         },
         "kind": {
-          "enum": [
-            "item",
-            "weapon",
-            "currency",
-            "resource"
-          ]
+          "enum": ["item", "weapon", "currency", "resource"]
         },
         "category": {
           "type": "string",
@@ -603,11 +571,7 @@
           "minLength": 1
         },
         "unit": {
-          "enum": [
-            "count",
-            "resource-unit",
-            "dmz-cash"
-          ]
+          "enum": ["count", "resource-unit", "dmz-cash"]
         },
         "description": {
           "type": "string",
@@ -632,6 +596,13 @@
           "type": "string",
           "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
           "maxLength": 100
+        },
+        "assetIds": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/item/properties/assetId"
+          }
         }
       },
       "required": [
@@ -665,11 +636,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "itemId",
-        "quantity",
-        "consumed"
-      ]
+      "required": ["itemId", "quantity", "consumed"]
     },
     "recipe": {
       "type": "object",
@@ -723,10 +690,7 @@
               "maximum": 1000000
             }
           },
-          "required": [
-            "itemId",
-            "quantity"
-          ]
+          "required": ["itemId", "quantity"]
         },
         "inputs": {
           "type": "array",
@@ -748,13 +712,7 @@
           "type": "boolean"
         },
         "eligibility": {
-          "enum": [
-            "unknown",
-            "stash",
-            "carried",
-            "bank",
-            "resources"
-          ]
+          "enum": ["unknown", "stash", "carried", "bank", "resources"]
         },
         "station": {
           "type": "string",
@@ -763,6 +721,13 @@
         },
         "assetId": {
           "$ref": "#/$defs/item/properties/assetId"
+        },
+        "assetIds": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/item/properties/assetId"
+          }
         }
       },
       "required": [
@@ -795,28 +760,16 @@
           "maxLength": 200
         },
         "value": {
-          "type": [
-            "integer",
-            "string",
-            "boolean",
-            "null"
-          ]
+          "type": ["integer", "string", "boolean", "null"]
         }
       },
-      "required": [
-        "type",
-        "target",
-        "value"
-      ],
+      "required": ["type", "target", "value"],
       "allOf": [
         {
           "if": {
             "properties": {
               "type": {
-                "enum": [
-                  "capacityDelta",
-                  "capacitySet"
-                ]
+                "enum": ["capacityDelta", "capacitySet"]
               }
             }
           },
@@ -949,6 +902,13 @@
         },
         "assetId": {
           "$ref": "#/$defs/item/properties/assetId"
+        },
+        "assetIds": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/item/properties/assetId"
+          }
         }
       },
       "required": [
@@ -1034,6 +994,13 @@
         },
         "assetId": {
           "$ref": "#/$defs/item/properties/assetId"
+        },
+        "assetIds": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/item/properties/assetId"
+          }
         }
       },
       "required": [
@@ -1098,10 +1065,7 @@
           "maxLength": 100
         },
         "extent": {
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": ["array", "null"],
           "items": {
             "type": "number"
           },
@@ -1118,22 +1082,20 @@
           }
         },
         "origin": {
-          "enum": [
-            "top-left",
-            "bottom-left",
-            "center",
-            "unknown"
-          ]
+          "enum": ["top-left", "bottom-left", "center", "unknown"]
         },
         "axis": {
-          "enum": [
-            "x-right-y-down",
-            "x-right-y-up",
-            "unknown"
-          ]
+          "enum": ["x-right-y-down", "x-right-y-up", "unknown"]
         },
         "spoiler": {
           "type": "boolean"
+        },
+        "assetIds": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/item/properties/assetId"
+          }
         }
       },
       "required": [
@@ -1193,10 +1155,7 @@
           "maxLength": 4000
         },
         "grid": {
-          "type": [
-            "string",
-            "null"
-          ],
+          "type": ["string", "null"],
           "maxLength": 20
         },
         "coordinates": {
@@ -1219,21 +1178,12 @@
                   "maxLength": 80
                 }
               },
-              "required": [
-                "x",
-                "y",
-                "floor"
-              ]
+              "required": ["x", "y", "floor"]
             }
           ]
         },
         "spawnKind": {
-          "enum": [
-            "fixed",
-            "possible",
-            "event",
-            "unknown"
-          ]
+          "enum": ["fixed", "possible", "event", "unknown"]
         },
         "itemIds": {
           "type": "array",
@@ -1285,12 +1235,7 @@
           "maxLength": 200
         },
         "value": {
-          "type": [
-            "string",
-            "number",
-            "boolean",
-            "null"
-          ],
+          "type": ["string", "number", "boolean", "null"],
           "maxLength": 1000
         },
         "sourceId": {
@@ -1341,11 +1286,7 @@
           "maxLength": 300
         },
         "mime": {
-          "enum": [
-            "image/png",
-            "image/jpeg",
-            "image/webp"
-          ]
+          "enum": ["image/png", "image/jpeg", "image/webp"]
         },
         "sha256": {
           "type": "string",
@@ -1354,17 +1295,17 @@
         "bytes": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 5242880
+          "maximum": 2097152
         },
         "width": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 4096
+          "maximum": 2048
         },
         "height": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 4096
+          "maximum": 2048
         },
         "rightsHolder": {
           "type": "string",

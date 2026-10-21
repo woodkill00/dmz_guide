@@ -1,3 +1,4 @@
+import { loadFixturePack, fixtureAssetSources } from "../helpers/catalog.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -27,11 +28,7 @@ import { hashBytes } from "../../src/content/portable.mjs";
 const schema = JSON.parse(
   await readFile(new URL("../../schemas/pack.schema.json", import.meta.url)),
 );
-const template = JSON.parse(
-  await readFile(
-    new URL("../../content/packs/demo-training.json", import.meta.url),
-  ),
-);
+const template = loadFixturePack("demo-training");
 function crc(bytes) {
   let c = 0xffffffff;
   for (const b of bytes) {
@@ -216,7 +213,7 @@ test("cross-pack same paths are isolated; case collisions and global limits fail
   m.packs[0].assets[0].bytes = 2097152;
   m.packs[0].assets[0].width = 2048;
   m.packs[0].assets[0].height = 2048;
-  for (let n = 1; n < 5; n++)
+  for (let n = 1; n < 129; n++)
     m.packs[0].assets.push({
       ...m.packs[0].assets[0],
       assetId: `demo:pixel${n}`,
@@ -474,14 +471,13 @@ test("public spoiler picture alt stays generic before explicit disclosure", asyn
   const { allRecords, renderDetail, setBundledAssets } = await import(
     "../../src/ui/render.mjs"
   );
-  const pack = JSON.parse(
-    await readFile("content/packs/bundled-pictures.json", "utf8"),
-  );
+  const pack = loadFixturePack("bundled-pictures");
   pack.maps[0].spoiler = true;
   const { manifest } = await prepareBundledAssets({
     root: process.cwd(),
     packs: [pack],
     schema,
+    assetSources: fixtureAssetSources,
   });
   setBundledAssets(manifest);
   try {

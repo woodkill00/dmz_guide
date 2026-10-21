@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "Original programmatic 8x6 fictional software fixture by DMZ Guide contributors; not game artwork. MIT project license.",
+    "bytes": 83,
+    "height": 6,
+    "id": "demo:bundled-grid",
+    "license": "MIT",
+    "mime": "image/png",
+    "path": "assets/original-grid.png",
+    "redistributionAllowed": true,
+    "rightsHolder": "DMZ Guide contributors",
+    "sha256": "02f7ae16ae1bc2abb98b20903f031698734e0e165b9b585ad187afb9eb70cf78",
+    "sourceUrl": "https://github.com/woodkill00/dmz_guide",
+    "width": 8
+  },
+  "category": "maps",
+  "sourcePath": "media/bundled-pictures/maps/demo_bundled-grid/original.png"
+}

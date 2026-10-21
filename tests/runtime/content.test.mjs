@@ -1,10 +1,11 @@
+import { loadFixturePack } from "../helpers/catalog.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { validatePack } from "../../src/content/validate.mjs";
 import { parseBounded } from "../../src/content/limits.mjs";
 const schema = JSON.parse(readFileSync("schemas/pack.schema.json"));
-const load = (n) => JSON.parse(readFileSync(`content/packs/${n}.json`));
+const load = loadFixturePack;
 for (const n of ["official-starter", "demo-training"])
   test(`valid seed ${n}`, () =>
     assert.equal(validatePack(load(n), schema).schemaVersion, 1));

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 const expectedConsole = new WeakMap();
+const expectedResponses = new WeakMap();
 /** Only an isolated negative-test context may declare exact, bounded codec diagnostics. */
 export function expectConsoleErrors(context, { label, patterns, maxCount }) {
   assert(typeof label === "string" && label.length > 0);
@@ -24,11 +25,55 @@ export function expectConsoleErrors(context, { label, patterns, maxCount }) {
   expectedConsole.set(context, expectation);
   return () => ({ label, observed: [...expectation.observed] });
 }
+/** A genuine negative API test may allow only an exact, bounded HTTP result. */
+export function expectResponseErrors(
+  context,
+  { label, method, url, status, count = 1 },
+) {
+  assert(typeof label === "string" && label.length > 0);
+  assert(["POST", "PUT", "PATCH", "DELETE"].includes(method));
+  const target = new URL(url);
+  assert(
+    ["http:", "https:"].includes(target.protocol) &&
+      !target.hash &&
+      !target.search,
+  );
+  assert(Number.isInteger(status) && status >= 400 && status <= 599);
+  assert(Number.isInteger(count) && count > 0 && count <= 4);
+  assert(
+    !expectedResponses.has(context),
+    "Expected HTTP scope cannot be silently replaced",
+  );
+  const expected = {
+    label,
+    method,
+    url: target.href,
+    status,
+    count,
+    responses: [],
+    console: [],
+  };
+  expectedResponses.set(context, expected);
+  return () => {
+    assert.equal(
+      expected.responses.length,
+      count,
+      `${label}: required exact negative HTTP result`,
+    );
+    return {
+      label,
+      responses: [...expected.responses],
+      console: [...expected.console],
+    };
+  };
+}
 export function monitorBrowser(browser) {
   const failures = [],
+    contexts = [],
     original = browser.newContext.bind(browser);
   browser.newContext = async (...args) => {
     const context = await original(...args);
+    contexts.push(context);
     context.on("page", (page) => {
       page.on("pageerror", (error) =>
         failures.push("JavaScript: " + error.message),
@@ -36,7 +81,20 @@ export function monitorBrowser(browser) {
       page.on("console", (message) => {
         if (message.type() !== "error") return;
         const expected = expectedConsole.get(context),
+          responseScope = expectedResponses.get(context),
           text = message.text();
+        // Chrome emits this exact resource diagnostic for the genuine conflict.
+        // Its location must identify the exact failed API URL, not a page script.
+        if (
+          responseScope?.status === 409 &&
+          responseScope.console.length < responseScope.count &&
+          text ===
+            "Failed to load resource: the server responded with a status of 409 (Conflict)" &&
+          message.location().url === responseScope.url
+        ) {
+          responseScope.console.push(text);
+          return;
+        }
         if (
           expected &&
           expected.observed.length < expected.maxCount &&
@@ -55,6 +113,21 @@ export function monitorBrowser(browser) {
           );
       });
       page.on("response", (response) => {
+        const expected = expectedResponses.get(context);
+        if (
+          expected &&
+          expected.responses.length < expected.count &&
+          response.status() === expected.status &&
+          response.url() === expected.url &&
+          response.request().method() === expected.method
+        ) {
+          expected.responses.push({
+            method: expected.method,
+            url: expected.url,
+            status: expected.status,
+          });
+          return;
+        }
         if (response.status() >= 400)
           failures.push(
             "HTTP " +
@@ -66,10 +139,20 @@ export function monitorBrowser(browser) {
     });
     return context;
   };
-  return () =>
+  return () => {
+    for (const context of contexts) {
+      const expected = expectedResponses.get(context);
+      if (expected)
+        assert.equal(
+          expected.responses.length,
+          expected.count,
+          `${expected.label}: required exact negative HTTP result`,
+        );
+    }
     assert.deepEqual(
       failures,
       [],
       "No unexpected console errors, script errors or failed HTTP requests across contexts",
     );
+  };
 }

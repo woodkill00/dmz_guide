@@ -19,3 +19,6 @@ coverage/
 test-results/
 
 release/
+
+# Local author transaction journals and recovery bytes must never be published.
+.author-state/

@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "consumable",
+  "description": "",
+  "id": "mw4:medkit",
+  "kind": "item",
+  "name": "Medkit",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "count"
+}

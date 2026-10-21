@@ -1,0 +1,30 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:recipe-two-plate-armor-vest",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumed": true,
+      "itemId": "mw4:synthetics",
+      "quantity": 50
+    },
+    {
+      "consumed": true,
+      "itemId": "mw4:reactive-metals",
+      "quantity": 5
+    }
+  ],
+  "name": "Print 2-Plate Armor Vest",
+  "output": {
+    "itemId": "mw4:two-plate-armor-vest",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access"
+  ],
+  "sourceIds": [
+    "source:fob"
+  ],
+  "station": "3D Printer",
+  "status": "verified"
+}

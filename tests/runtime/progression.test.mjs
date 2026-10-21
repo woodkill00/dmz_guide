@@ -1,3 +1,4 @@
+import { loadFixturePack } from "../helpers/catalog.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -9,7 +10,7 @@ import {
 } from "../../src/domain/progression.mjs";
 import { newProfile } from "../../src/domain/profile.mjs";
 import { featurePages } from "../../src/ui/progression-page.mjs";
-const pack = JSON.parse(readFileSync("content/packs/demo-training.json"));
+const pack = loadFixturePack("demo-training");
 const rowsFor = (copy, options) =>
   progressRows(copy, newProfile(copy), options);
 

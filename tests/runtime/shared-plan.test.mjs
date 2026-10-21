@@ -1,9 +1,10 @@
+import { loadFixturePack } from "../helpers/catalog.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { planShared } from "../../src/domain/shared-plan.mjs";
 import { newProfile } from "../../src/domain/profile.mjs";
-const original = JSON.parse(readFileSync("content/packs/demo-training.json"));
+const original = loadFixturePack("demo-training");
 function fixture() {
   const pack = structuredClone(original),
     profile = newProfile(pack);

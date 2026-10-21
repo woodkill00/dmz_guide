@@ -1,0 +1,24 @@
+{
+  "format": "dmz-catalog",
+  "packs": [
+    {
+      "id": "demo:bundled-pictures",
+      "key": "bundled-pictures"
+    },
+    {
+      "id": "demo:training-pack",
+      "key": "demo-training"
+    },
+    {
+      "id": "official:mw4-dmz-starter",
+      "key": "official-starter"
+    }
+  ],
+  "provenance": [
+    {
+      "path": "media/bundled-pictures/ORIGIN.txt",
+      "sha256": "007d119a0c0e57438098cf43dc5360fe77f0eda995cc64cbe174acf9aa3f072b"
+    }
+  ],
+  "version": 1
+}

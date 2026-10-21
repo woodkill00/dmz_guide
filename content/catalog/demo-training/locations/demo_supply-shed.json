@@ -1,0 +1,21 @@
+{
+  "category": "supply",
+  "coordinates": {
+    "floor": "ground",
+    "x": 20,
+    "y": 30
+  },
+  "description": "Fictional possible loot candidate; not guaranteed.",
+  "grid": null,
+  "id": "demo:supply-shed",
+  "itemIds": [
+    "demo:wire"
+  ],
+  "mapId": "demo:training-map",
+  "name": "Training supply shed",
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "spawnKind": "possible",
+  "status": "fictional"
+}

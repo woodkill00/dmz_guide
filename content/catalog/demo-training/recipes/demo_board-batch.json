@@ -1,0 +1,23 @@
+{
+  "eligibility": "stash",
+  "id": "demo:board-batch",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumed": true,
+      "itemId": "demo:wire",
+      "quantity": 3
+    }
+  ],
+  "name": "Training board batch",
+  "output": {
+    "itemId": "demo:board",
+    "quantity": 2
+  },
+  "prerequisites": [],
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "station": "Fictional training bench",
+  "status": "fictional"
+}

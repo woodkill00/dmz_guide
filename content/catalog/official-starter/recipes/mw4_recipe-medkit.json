@@ -1,0 +1,35 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:recipe-medkit",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumed": true,
+      "itemId": "mw4:chemicals",
+      "quantity": 30
+    },
+    {
+      "consumed": true,
+      "itemId": "mw4:binding-catalyst",
+      "quantity": 1
+    },
+    {
+      "consumed": true,
+      "itemId": "mw4:biomaterials",
+      "quantity": 5
+    }
+  ],
+  "name": "Print Medkit",
+  "output": {
+    "itemId": "mw4:medkit",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access"
+  ],
+  "sourceIds": [
+    "source:fob"
+  ],
+  "station": "3D Printer",
+  "status": "verified"
+}

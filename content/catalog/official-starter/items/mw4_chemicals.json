@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "printer-resource",
+  "description": "",
+  "id": "mw4:chemicals",
+  "kind": "resource",
+  "name": "Chemicals",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "resource-unit"
+}

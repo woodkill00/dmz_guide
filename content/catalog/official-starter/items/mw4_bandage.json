@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "consumable",
+  "description": "",
+  "id": "mw4:bandage",
+  "kind": "item",
+  "name": "Bandage",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "count"
+}

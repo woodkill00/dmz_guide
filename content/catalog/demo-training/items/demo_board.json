@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "intermediate",
+  "description": "Fictional software test data.",
+  "id": "demo:board",
+  "kind": "item",
+  "name": "Training Board",
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "stats": [],
+  "status": "fictional",
+  "unit": "count"
+}

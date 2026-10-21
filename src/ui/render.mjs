@@ -192,7 +192,16 @@ function sourceMarkup(source) {
   } catch {}
   return `<li>${url ? `<a href="${e(url)}" rel="noreferrer noopener">${e(source.title)} ↗</a>` : e(source.title)}<p>${e(source.supports)}</p><span class="muted">${e(source.type)} · Published ${e(source.publishedAt || "unknown")} · Reviewed ${e(source.reviewedAt || "unknown")}</span></li>`;
 }
-export function renderDetail(record, packs) {
+export function renderDetail(
+  record,
+  packs,
+  {
+    imageURL = null,
+    referenceURL = recordUrl,
+    catalogURL = "/catalog/",
+    showPlanner = true,
+  } = {},
+) {
   record = displayRecord(record);
   const pack = record.pack;
   const records = allRecords(packs);
@@ -200,7 +209,7 @@ export function renderDetail(record, packs) {
   const ref = (id) => {
     const r = find(id);
     return r
-      ? `<a href="${recordUrl(r)}">${e(publicTitle(r))}</a>`
+      ? `<a href="${e(referenceURL(r))}">${e(publicTitle(r))}</a>`
       : e(id) + " (unresolved reference)";
   };
   const sources = pack.sources
@@ -213,13 +222,24 @@ export function renderDetail(record, packs) {
     .map((c) => (record.spoiler ? c : maskedValue(c, guardFor(pack))));
   const scope = record.scope || pack.game;
   let picture = "";
-  if (record.assetId && bundledManifest) {
-    const asset = pack.assets.find((a) => a.id === record.assetId),
-      url = bundledAssetURL(pack, record.assetId, bundledManifest);
-    const caption = record.spoiler
-      ? asset.attribution
-      : guardFor(pack).text(asset.attribution);
-    picture = `<figure class="panel"><img data-public-image class="local-raster" src="${e(url)}" width="${asset.width}" height="${asset.height}" alt="${e(publicTitle(record))} — original or rights-cleared illustration"><figcaption>${e(caption)} · ${e(asset.license)}. Image availability does not verify game facts.</figcaption></figure>`;
+  const pictureIds = [
+    ...new Set([record.assetId, ...(record.assetIds || [])].filter(Boolean)),
+  ];
+  if (imageURL || bundledManifest) {
+    picture = pictureIds
+      .map((assetId, index) => {
+        const asset = pack.assets.find((a) => a.id === assetId);
+        if (!asset) return "";
+        const url = imageURL
+          ? imageURL(pack, assetId)
+          : bundledAssetURL(pack, assetId, bundledManifest);
+        if (!url) return "";
+        const caption = record.spoiler
+          ? asset.attribution
+          : guardFor(pack).text(asset.attribution);
+        return `<figure class="panel"><img data-public-image class="local-raster" loading="lazy" decoding="async" src="${e(url)}" width="${asset.width}" height="${asset.height}" alt="${e(publicTitle(record))} — ${index ? "additional" : "primary"} rights-cleared illustration"><figcaption>${e(caption)} · ${e(asset.license)}. Image availability does not verify game facts.</figcaption></figure>`;
+      })
+      .join("");
   }
   let detail = "";
   if (record.recordType === "item") {
@@ -254,14 +274,14 @@ export function renderDetail(record, packs) {
         : "<p>No numeric statistics verified for this record. Missing values are unknown, not zero.</p>"
     }</section>`;
   if (record.inputs || record.requirements)
-    detail += `<section class="panel"><h2>${record.inputs ? "Ingredients & retained tools" : "Requirements"}</h2>${record.station ? `<p>Station: ${e(record.station)}. Eligible game inventory: ${e(record.eligibility)}.</p>` : ""}${record.output ? `<p>Output: ${e(record.output.quantity)} × ${ref(record.output.itemId)}</p>` : ""}<ul class="requirements">${(record.inputs || record.requirements).map((input) => `<li><span>${ref(input.itemId)}<small>${input.consumed ? "Consumed material" : "Retained tool"} · ${e(find(input.itemId)?.unit || "unknown unit")}</small></span><strong>${e(input.quantity)}</strong></li>`).join("") || ((record.ingredientsKnown ?? record.requirementsKnown) ? "<li>No listed material requirements.</li>" : "<li>Unknown cost. Requirements have not been verified.</li>")}</ul><p>Requirement completeness: ${(record.ingredientsKnown ?? record.requirementsKnown) ? "Known for this scoped record" : "Unknown; do not assume complete"}.</p><h3>Prerequisites</h3><ul>${(record.prerequisites || []).map((id) => `<li>${ref(id)}</li>`).join("") || "<li>No listed prerequisites.</li>"}</ul><a class="button primary" href="/planner/?pack=${encodeURIComponent(pack.id)}&amp;goal=${encodeURIComponent(record.id)}">Open planner ↗</a></section>`;
+    detail += `<section class="panel"><h2>${record.inputs ? "Ingredients & retained tools" : "Requirements"}</h2>${record.station ? `<p>Station: ${e(record.station)}. Eligible game inventory: ${e(record.eligibility)}.</p>` : ""}${record.output ? `<p>Output: ${e(record.output.quantity)} × ${ref(record.output.itemId)}</p>` : ""}<ul class="requirements">${(record.inputs || record.requirements).map((input) => `<li><span>${ref(input.itemId)}<small>${input.consumed ? "Consumed material" : "Retained tool"} · ${e(find(input.itemId)?.unit || "unknown unit")}</small></span><strong>${e(input.quantity)}</strong></li>`).join("") || ((record.ingredientsKnown ?? record.requirementsKnown) ? "<li>No listed material requirements.</li>" : "<li>Unknown cost. Requirements have not been verified.</li>")}</ul><p>Requirement completeness: ${(record.ingredientsKnown ?? record.requirementsKnown) ? "Known for this scoped record" : "Unknown; do not assume complete"}.</p><h3>Prerequisites</h3><ul>${(record.prerequisites || []).map((id) => `<li>${ref(id)}</li>`).join("") || "<li>No listed prerequisites.</li>"}</ul>${showPlanner ? `<a class="button primary" href="/planner/?pack=${encodeURIComponent(pack.id)}&amp;goal=${encodeURIComponent(record.id)}">Open planner ↗</a>` : ""}</section>`;
   if (record.recordType === "location" || record.recordType === "map")
     detail += `<section class="panel"><h2>Location evidence</h2><p>Grid: ${e(record.grid ?? "Unknown")}. Coordinates: ${e(record.coordinates ? JSON.stringify(record.coordinates) : "Unknown")}. Spawn evidence: ${e(record.spawnKind || "Unknown")}.</p><p>No calibrated game map image is provided. A named location does not imply guaranteed loot.</p>${record.mapId ? `<p>Map: ${ref(record.mapId)}</p>` : ""}</section>`;
   if (record.effects?.length)
     detail += `<section class="panel"><h2>Recorded effects</h2><ul>${record.effects.map((effect) => `<li>${e(effect.type)} · ${e(effect.target)}: ${e(effect.value)}</li>`).join("")}</ul><p>Recorded effects are reference data, not proof of current player access.</p></section>`;
   if (record.relatedIds?.length)
     detail += `<section class="panel"><h2>Related records</h2><ul>${record.relatedIds.map((id) => `<li>${ref(id)}</li>`).join("")}</ul></section>`;
-  return `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/catalog/">Catalog</a><span aria-hidden="true">/</span><span>${e(record.recordType)}</span></nav>${isFixture(pack) ? '<aside class="notice fixture-notice"><strong>FICTIONAL FIXTURE · NOT GAME DATA</strong><p>This synthetic record demonstrates the guide’s behavior. Do not use it as gameplay advice.</p></aside>' : ""}${pageHeading(`${record.kind || record.recordType} / ${record.category || record.track || "REFERENCE"}`, publicTitle(record), record.spoiler ? "" : record.description || "")}${record.spoiler ? '<details class="spoiler-content"><summary>Reveal spoiler content</summary><h2>' + e(record.name || record.title) + "</h2>" + (record.description ? '<p class="lede">' + e(record.description) + "</p>" : "") : ""}${
+  return `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${e(catalogURL)}">Catalog</a><span aria-hidden="true">/</span><span>${e(record.recordType)}</span></nav>${isFixture(pack) ? '<aside class="notice fixture-notice"><strong>FICTIONAL FIXTURE · NOT GAME DATA</strong><p>This synthetic record demonstrates the guide’s behavior. Do not use it as gameplay advice.</p></aside>' : ""}${pageHeading(`${record.kind || record.recordType} / ${record.category || record.track || "REFERENCE"}`, publicTitle(record), record.spoiler ? "" : record.description || "")}${record.spoiler ? '<details class="spoiler-content"><summary>Reveal spoiler content</summary><h2>' + e(record.name || record.title) + "</h2>" + (record.description ? '<p class="lede">' + e(record.description) + "</p>" : "") : ""}${
     record.body
       ? `<div class="prose panel">${record.body
           .split("\n")

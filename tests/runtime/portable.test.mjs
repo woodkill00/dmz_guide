@@ -1,3 +1,4 @@
+import { loadFixturePack } from "../helpers/catalog.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -16,11 +17,7 @@ import {
 const schema = JSON.parse(
   await readFile(new URL("../../schemas/pack.schema.json", import.meta.url)),
 );
-const pack = JSON.parse(
-  await readFile(
-    new URL("../../content/packs/demo-training.json", import.meta.url),
-  ),
-);
+const pack = loadFixturePack("demo-training");
 const copy = (v) => structuredClone(v);
 // Original 1x1 RGBA raster generated from first principles, not game artwork.
 function crc(b) {
@@ -190,7 +187,7 @@ test("image limits, animation and signature fail before decoder", async () => {
           throw new Error("decoder must not run");
         },
       }),
-    /size/,
+    /size|too large/,
   );
   assert.throws(() => imageInfo(Buffer.from("<svg/>")), /raster/);
   const b = png();
@@ -412,7 +409,7 @@ test("per-file and aggregate raster byte budgets are independent of envelope cap
   per.assets[0].bytes = 2 * 1024 * 1024 + 1;
   await assert.rejects(
     () => buildTransfer(per, payloads, schema, { decodeRaster: decoder }),
-    /size/,
+    /size|too large/,
   );
   const total = copy(p);
   total.assets = Array.from({ length: 5 }, (_, i) => ({

@@ -1,0 +1,21 @@
+{
+  "category": "supply",
+  "coordinates": {
+    "floor": "ground",
+    "x": 70,
+    "y": 60
+  },
+  "description": "Fictional possible loot candidate; not guaranteed.",
+  "grid": null,
+  "id": "demo:power-hut",
+  "itemIds": [
+    "demo:cell"
+  ],
+  "mapId": "demo:training-map",
+  "name": "Training power hut",
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "spawnKind": "possible",
+  "status": "fictional"
+}

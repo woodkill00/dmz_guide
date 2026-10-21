@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "material",
+  "description": "Fictional software test data.",
+  "id": "demo:wire",
+  "kind": "item",
+  "name": "Training Wire",
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "stats": [],
+  "status": "fictional",
+  "unit": "count"
+}

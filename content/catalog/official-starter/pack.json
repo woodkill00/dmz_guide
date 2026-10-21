@@ -1,0 +1,90 @@
+{
+  "order": {
+    "assets": [],
+    "claims": [
+      "claim:printer-level-fob",
+      "claim:printer-level-progression"
+    ],
+    "guides": [
+      "guide:resources",
+      "guide:orders",
+      "guide:progression",
+      "guide:map-reference",
+      "guide:weapon-reference",
+      "guide:campaign-background"
+    ],
+    "items": [
+      "mw4:chemicals",
+      "mw4:synthetics",
+      "mw4:electronics",
+      "mw4:metals",
+      "mw4:binding-catalyst",
+      "mw4:biomaterials",
+      "mw4:medkit",
+      "mw4:bandage",
+      "mw4:dmz-cash",
+      "mw4:m4",
+      "mw4:reactive-metals",
+      "mw4:rigid-synthetics",
+      "mw4:one-plate-armor-vest",
+      "mw4:two-plate-armor-vest",
+      "mw4:small-backpack",
+      "mw4:medium-backpack",
+      "mw4:han-86",
+      "mw4:kastov-762",
+      "mw4:axion"
+    ],
+    "locations": [
+      "mw4:imjin-farmland",
+      "mw4:songdo-wharf",
+      "mw4:mirae-general-hospital",
+      "mw4:political-prison",
+      "mw4:chang-san-air-base",
+      "mw4:deadtown",
+      "mw4:cheongun-village",
+      "mw4:cheonwang-peak-array",
+      "mw4:haneul-nuclear-reactor",
+      "mw4:nurigo-mall",
+      "mw4:the-grid",
+      "mw4:wolves-stadium",
+      "mw4:hajin-river-heights"
+    ],
+    "maps": [
+      "mw4:hajin"
+    ],
+    "objectives": [
+      "mw4:printer-access"
+    ],
+    "recipes": [
+      "mw4:recipe-medkit",
+      "mw4:recipe-bandage",
+      "mw4:recipe-one-plate-armor-vest",
+      "mw4:recipe-two-plate-armor-vest",
+      "mw4:recipe-small-backpack",
+      "mw4:recipe-medium-backpack"
+    ],
+    "sources": [
+      "source:fob",
+      "source:progression",
+      "source:weapons",
+      "source:hajin",
+      "source:story"
+    ]
+  },
+  "pack": {
+    "contentVersion": "2026.10.21.1",
+    "coverage": {
+      "expectedTotal": null,
+      "note": "Coverage not established. Selected starter records only; combat statistics, full Orders, campaign walkthroughs and calibrated map imagery are not yet verified."
+    },
+    "description": "Selected independently checked facts, not a complete catalog or live-build validation. Unknown values remain unknown. No third-party artwork included.",
+    "game": {
+      "build": "official-prelaunch-intel-2026-10; live-build-unverified",
+      "id": "mw4",
+      "mode": "dmz"
+    },
+    "id": "official:mw4-dmz-starter",
+    "schemaVersion": 1,
+    "title": "MW4 DMZ: source-backed starter reference"
+  }
+}

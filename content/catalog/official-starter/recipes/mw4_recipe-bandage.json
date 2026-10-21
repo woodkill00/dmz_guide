@@ -1,0 +1,30 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:recipe-bandage",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumed": true,
+      "itemId": "mw4:synthetics",
+      "quantity": 15
+    },
+    {
+      "consumed": true,
+      "itemId": "mw4:chemicals",
+      "quantity": 15
+    }
+  ],
+  "name": "Print Bandage",
+  "output": {
+    "itemId": "mw4:bandage",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access"
+  ],
+  "sourceIds": [
+    "source:fob"
+  ],
+  "station": "3D Printer",
+  "status": "verified"
+}

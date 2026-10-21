@@ -1,0 +1,21 @@
+{
+  "description": "Fictional story fixture, separate from DMZ progress.",
+  "effects": [],
+  "id": "demo:campaign-chapter",
+  "name": "Training campaign chapter",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": true,
+  "scope": {
+    "build": "test-only-v1",
+    "gameId": "fictional-training",
+    "mode": "campaign"
+  },
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "spoiler": true,
+  "status": "fictional",
+  "track": "campaign"
+}

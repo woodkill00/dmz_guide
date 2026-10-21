@@ -15,7 +15,11 @@
     "format": "prettier --write \"src/**/*.mjs\" \"src/**/*.css\" \"scripts/*.mjs\" \"tests/**/*.mjs\" package.json",
     "format:check": "prettier --check \"src/**/*.mjs\" \"src/**/*.css\" \"scripts/*.mjs\" \"tests/**/*.mjs\" package.json",
     "test:engines": "node tests/browser/engines.mjs",
-    "package": "npm run build && python scripts/package-release.py"
+    "package": "npm run build && python scripts/package-release.py",
+    "author": "node scripts/author.mjs",
+    "author:recover": "node scripts/author.mjs --recover",
+    "catalog:migrate": "node scripts/migrate-catalog.mjs",
+    "test:studio": "node tests/browser/studio.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2",

@@ -1,0 +1,35 @@
+{
+  "eligibility": "stash",
+  "id": "demo:beacon-build",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumed": true,
+      "itemId": "demo:board",
+      "quantity": 1
+    },
+    {
+      "consumed": true,
+      "itemId": "demo:cell",
+      "quantity": 1
+    },
+    {
+      "consumed": false,
+      "itemId": "demo:tool",
+      "quantity": 1
+    }
+  ],
+  "name": "Training beacon",
+  "output": {
+    "itemId": "demo:beacon",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "demo:bench-unlock"
+  ],
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "station": "Fictional training bench",
+  "status": "fictional"
+}

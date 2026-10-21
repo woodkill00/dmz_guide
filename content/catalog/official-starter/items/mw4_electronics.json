@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "printer-resource",
+  "description": "",
+  "id": "mw4:electronics",
+  "kind": "resource",
+  "name": "Electronics",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "resource-unit"
+}

@@ -1,7 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { EventEmitter } from "node:events";
-import { monitorBrowser, expectConsoleErrors } from "../browser/health.mjs";
+import {
+  monitorBrowser,
+  expectConsoleErrors,
+  expectResponseErrors,
+} from "../browser/health.mjs";
 const message = (text) => ({ type: () => "error", text: () => text });
 async function setup() {
   const browser = { newContext: async () => new EventEmitter() };
@@ -53,4 +57,109 @@ test("codec allowance never hides CSP, extra diagnostics or script errors", asyn
     new Error("Unexpected decoder implementation exception"),
   );
   assert.throws(check, /unexpected console errors/);
+});
+
+const url = "http://127.0.0.1:4174/api/save";
+const diagnostic =
+  "Failed to load resource: the server responded with a status of 409 (Conflict)";
+async function fixture() {
+  const browser = {
+    async newContext() {
+      return new EventEmitter();
+    },
+  };
+  const health = monitorBrowser(browser);
+  const context = await browser.newContext();
+  const verify = expectResponseErrors(context, {
+    label: "Isolated stale-save test",
+    method: "POST",
+    url,
+    status: 409,
+    count: 1,
+  });
+  const page = new EventEmitter();
+  context.emit("page", page);
+  const response = (changes = {}) =>
+    page.emit("response", {
+      status: () => changes.status ?? 409,
+      url: () => changes.url ?? url,
+      request: () => ({ method: () => changes.method ?? "POST" }),
+    });
+  const console = (text = diagnostic, location = url) =>
+    page.emit("console", {
+      type: () => "error",
+      text: () => text,
+      location: () => ({ url: location }),
+    });
+  return { health, verify, response, console, page, context };
+}
+
+test("negative HTTP scope requires exactly one genuine method/URL/status result", async () => {
+  for (const withDiagnostic of [false, true]) {
+    const f = await fixture();
+    f.response();
+    if (withDiagnostic) f.console();
+    assert.equal(f.verify().responses.length, 1);
+    assert.doesNotThrow(f.health);
+  }
+});
+
+test("negative HTTP scope does not swallow wrong target, method, status or count", async () => {
+  for (const changes of [
+    { url: "http://127.0.0.1:4174/api/catalog" },
+    { url: "http://127.0.0.1:9999/api/save" },
+    { url: url + "?unexpected=1" },
+    { method: "GET" },
+    { status: 403 },
+    { status: 500 },
+  ]) {
+    const f = await fixture();
+    f.response();
+    f.response(changes);
+    assert.throws(f.health, /No unexpected/);
+  }
+  const excess = await fixture();
+  excess.response();
+  excess.response();
+  assert.throws(excess.health, /No unexpected/);
+  const missing = await fixture();
+  assert.throws(missing.health, /required exact negative HTTP result/);
+  assert.throws(missing.verify, /required exact negative HTTP result/);
+});
+
+test("conflict scope preserves console, CSP, script and request health", async () => {
+  for (const emit of [
+    (f) =>
+      f.console("Refused to execute inline script because it violates CSP"),
+    (f) => f.console(diagnostic, "http://127.0.0.1:4174/assets/studio.mjs"),
+    (f) => {
+      f.console();
+      f.console();
+    },
+    (f) => f.page.emit("pageerror", new Error("Unexpected script failure")),
+    (f) =>
+      f.page.emit("requestfailed", {
+        url: () => url,
+        failure: () => ({ errorText: "ERR_CONNECTION_RESET" }),
+      }),
+  ]) {
+    const f = await fixture();
+    f.response();
+    emit(f);
+    assert.throws(f.health, /No unexpected/);
+  }
+});
+
+test("negative HTTP expectation cannot be silently replaced", async () => {
+  const f = await fixture();
+  assert.throws(
+    () =>
+      expectResponseErrors(f.context, {
+        label: "Another scope",
+        method: "POST",
+        url,
+        status: 409,
+      }),
+    /cannot be silently replaced/,
+  );
 });

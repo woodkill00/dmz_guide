@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "printer-ingredient",
+  "description": "",
+  "id": "mw4:rigid-synthetics",
+  "kind": "item",
+  "name": "Rigid Synthetics",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "count"
+}

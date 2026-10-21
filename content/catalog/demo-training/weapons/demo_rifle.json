@@ -1,0 +1,33 @@
+{
+  "aliases": [],
+  "category": "assault-rifle",
+  "description": "Fictional software test data.",
+  "id": "demo:rifle",
+  "kind": "weapon",
+  "name": "Training Rifle",
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "stats": [
+    {
+      "context": {
+        "attachments": "none; fictional base configuration",
+        "method": "Invented software fixture, not a measurement.",
+        "rangeMeters": null,
+        "stance": "not applicable",
+        "target": "not applicable"
+      },
+      "label": "Magazine capacity (fictional)",
+      "metric": "magazine-capacity",
+      "reviewedAt": "2026-10-21",
+      "sourceIds": [
+        "source:fixture"
+      ],
+      "status": "fictional",
+      "unit": "rounds",
+      "value": 20
+    }
+  ],
+  "status": "fictional",
+  "unit": "count"
+}

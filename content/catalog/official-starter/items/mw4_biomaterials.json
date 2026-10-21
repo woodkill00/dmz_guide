@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "printer-ingredient",
+  "description": "",
+  "id": "mw4:biomaterials",
+  "kind": "item",
+  "name": "Biomaterials",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "count"
+}

@@ -1,0 +1,17 @@
+{
+  "body": "The official weapon overview covers weapons available in Multiplayer and DMZ, but its unlock criteria describe Create-a-Class. This catalog does not treat those player levels as DMZ unlocks or assume Multiplayer figures are live DMZ measurements. Select a weapon to inspect the evidence scope and any unknown stats.",
+  "category": "weapons",
+  "id": "guide:weapon-reference",
+  "relatedIds": [
+    "mw4:m4",
+    "mw4:han-86",
+    "mw4:kastov-762",
+    "mw4:axion"
+  ],
+  "sourceIds": [
+    "source:weapons"
+  ],
+  "spoiler": false,
+  "status": "verified",
+  "title": "Read weapon evidence carefully"
+}

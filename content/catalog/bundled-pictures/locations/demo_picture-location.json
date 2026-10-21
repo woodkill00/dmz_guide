@@ -1,0 +1,21 @@
+{
+  "category": "supply",
+  "coordinates": {
+    "floor": "ground",
+    "x": 20,
+    "y": 30
+  },
+  "description": "Fictional possible loot candidate; not guaranteed.",
+  "grid": null,
+  "id": "demo:picture-location",
+  "itemIds": [
+    "demo:picture-token"
+  ],
+  "mapId": "demo:picture-map",
+  "name": "Fictional picture location",
+  "sourceIds": [
+    "source:bundled-picture-fixture"
+  ],
+  "spawnKind": "possible",
+  "status": "fictional"
+}
