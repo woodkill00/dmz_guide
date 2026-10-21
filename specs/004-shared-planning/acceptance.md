@@ -1,0 +1,2 @@
+# 004 evidence in progress
+2026-10-21:42 runtime tests pass including17 shared engine cases,1000 seeded stock/reserve trials with independent successful-action replay and20k-node DAG. Static build76 native routes passes. Hosted browser tests include add/reorder/remove/route/mode/persistence at390px. Actual hosted result and independent implementation review pending. PR stacked on003, not final website completion.
