@@ -1,0 +1,6 @@
+# Data model
+progressRows(pack, profile, {track, query, source, status, progress, reveal}) returns a safe display projection of objectives/guides. Evidence status and manual progress are distinct filters; guides have no completion state. Hidden records expose generic labels only. Text mentioning a hidden record ID/title/name/body/description is conservatively withheld in descriptions, effects, references, source metadata and search. Source-only metadata for hidden records is not offered in the source selector.
+
+Prerequisite chains use a bounded, cycle-defensive traversal of the selected pack. Hidden prerequisite branches remain collapsed until reveal. Visible related/prerequisite links are pack-qualified /local/ links; unresolved and hidden references are not navigable. Source URLs allow HTTP(S) only and fictional .invalid citations remain inert.
+
+setCompletion(pack, profile, id, state) validates objective existence/state and returns a copy; only completion changes. resetProgress(profile) returns a copy with completion={} and every other field unchanged. Existing profile schema1 is preserved. No campaign completion infers DMZ readiness, and disputed claim flags survive manual completion.
