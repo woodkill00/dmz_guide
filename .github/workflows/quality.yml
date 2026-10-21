@@ -35,7 +35,7 @@ jobs:
           python scripts/select-feature.py 002-repository-bootstrap
           for script in .specify/scripts/bash/*.sh; do bash -n "$script"; done
           bash .specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks
-          for feature in 003-runnable-guide 004-shared-planning 005-portable-editor 006-location-intelligence 007-progression-guides 008-community-release; do
+          for feature in 003-runnable-guide 004-shared-planning 005-portable-editor 006-location-intelligence 007-progression-guides 008-community-release 009-repository-content-studio; do
             SPECIFY_FEATURE="$feature" bash .specify/scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks
           done
 
@@ -46,7 +46,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -59,6 +59,7 @@ jobs:
       - run: npm run build
       - run: npx playwright install chromium
       - run: npm run test:browser
+      - run: npm run test:studio
       - name: Rebuild and verify clean distributable
         run: npm run package && python scripts/verify-release.py
       - name: Save clean static release
@@ -79,7 +80,7 @@ jobs:
   browser-engines:
     name: Firefox and WebKit smoke (Ubuntu)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -88,6 +89,7 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps firefox webkit
       - run: npm run test:engines
+      - run: npm run test:studio -- --engines
       - name: Save engine evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9

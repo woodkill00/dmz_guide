@@ -1,0 +1,24 @@
+{
+  "description": "Fictional consumptive turn-in. A completed order must not charge twice.",
+  "effects": [],
+  "id": "demo:delivery-order",
+  "name": "Training delivery order",
+  "oneTime": true,
+  "prerequisites": [
+    "demo:bench-unlock"
+  ],
+  "requirements": [
+    {
+      "consumed": true,
+      "itemId": "demo:beacon",
+      "quantity": 1
+    }
+  ],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "spoiler": false,
+  "status": "fictional",
+  "track": "dmz-order"
+}

@@ -2,11 +2,12 @@
 
 A community field guide being built around trustworthy game data and explainable “what should I collect next?” planning.
 
-**Status: the runnable multipage feature set passed independent integrated review and hosted browser validation at [`93ad1f5`](https://github.com/woodkill00/dmz_guide/tree/93ad1f54027d103aed1bd94433ece18e29d68727).** The implementation remains in reviewed draft PRs; owner authorization to ready/merge and exact-main CI are still pending. See [final acceptance evidence](specs/008-community-release/acceptance.md). With Node22+, run `npm ci`, `npm run build`, then `npm start`. Open http://127.0.0.1:4173. No public deployment or complete verified game catalog is claimed. See the [run and content-editing guide](docs/release.md) and [quickstart](docs/quickstart.md).
+**Status: the runnable multipage feature set passed independent integrated review and hosted browser validation at [`93ad1f5`](https://github.com/woodkill00/dmz_guide/tree/93ad1f54027d103aed1bd94433ece18e29d68727).** The baseline is merged on main at `159a922` with successful exact-main CI. Repository Content Studio is being developed separately; see its current acceptance status before treating it as released. See [final acceptance evidence](specs/008-community-release/acceptance.md). With Node22+, run `npm ci`, `npm run build`, then `npm start`. Open http://127.0.0.1:4173. No public deployment or complete verified game catalog is claimed. See the [run and content-editing guide](docs/release.md) and [quickstart](docs/quickstart.md).
 
 ## Start here
 
 - **Building the project?** Follow the [developer quickstart](docs/quickstart.md), then the [first-feature tutorial](docs/tutorials/first-feature.md).
+- **Editing repository JSON and media?** See the [Content Studio guide](docs/content-studio.md) and its explicit local-only scope.
 - **Reporting a wrong fact or contributing a guide?** Start with [contributing](CONTRIBUTING.md) and the [content guide](docs/content-contributing.md). Coding is not required to submit evidence.
 - **Understanding the direction?** Read the [roadmap](docs/roadmap.md), [decision summary](decision-summary.md), and [foundation specification](specs/001-guide-foundation/spec.md).
 - **Maintaining the repository?** Read the [maintainer runbook](docs/maintainer-runbook.md) and [Spec Kit lifecycle](docs/spec-kit-cycle.md).
@@ -34,7 +35,7 @@ Spec Kit is pinned to **v1.2.2** (commit `74be0a63e93c7087c5b06556b7561810d8f78a
 
 ## Before a public product launch
 
-The owner must settle release scope, target game/build, hosting and community ownership. Game facts and asset rights need verification. The tested branch has exact-head integrated browser/visual evidence and review; merging to main and any public launch remain separate gates. Physical devices and formal WCAG certification are not implied by automated tests.
+The owner must settle release scope, target game/build, hosting and community ownership. Game facts and asset rights need verification. The tested branch has exact-head integrated browser/visual evidence and review; The baseline merge passed exact-main CI; any public launch remains a separate gate. Physical devices and formal WCAG certification are not implied by automated tests.
 
 Original project code is licensed under [MIT](LICENSE). Game artwork, maps, third-party data and assets are not relicensed by that grant. Upstream tooling retains its own notices. See [licensing and asset rights](docs/licensing-and-assets.md).
 

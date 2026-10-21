@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "equipment",
+  "description": "Fictional software test data.",
+  "id": "demo:scanner",
+  "kind": "item",
+  "name": "Training Scanner",
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "stats": [],
+  "status": "fictional",
+  "unit": "count"
+}

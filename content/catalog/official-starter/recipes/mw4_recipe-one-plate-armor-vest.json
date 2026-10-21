@@ -1,0 +1,30 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:recipe-one-plate-armor-vest",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumed": true,
+      "itemId": "mw4:synthetics",
+      "quantity": 25
+    },
+    {
+      "consumed": true,
+      "itemId": "mw4:metals",
+      "quantity": 25
+    }
+  ],
+  "name": "Print 1-Plate Armor Vest",
+  "output": {
+    "itemId": "mw4:one-plate-armor-vest",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access"
+  ],
+  "sourceIds": [
+    "source:fob"
+  ],
+  "station": "3D Printer",
+  "status": "verified"
+}

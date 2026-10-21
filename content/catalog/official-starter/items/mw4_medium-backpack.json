@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "backpack",
+  "description": "",
+  "id": "mw4:medium-backpack",
+  "kind": "item",
+  "name": "Medium Backpack",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "count"
+}

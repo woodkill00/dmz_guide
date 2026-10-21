@@ -1,0 +1,15 @@
+{
+  "body": "Printer resources and intact ingredients are distinct. The Medkit example combines both. Recipe access still requires review because the printer unlock level is disputed.",
+  "category": "crafting",
+  "id": "guide:resources",
+  "relatedIds": [
+    "mw4:medkit",
+    "mw4:recipe-medkit"
+  ],
+  "sourceIds": [
+    "source:fob"
+  ],
+  "spoiler": false,
+  "status": "verified",
+  "title": "Resources and ingredients"
+}

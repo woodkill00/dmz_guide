@@ -1,0 +1,14 @@
+{
+  "coordinates": null,
+  "description": "Named point of interest. Precise coordinates and item spawns are unverified.",
+  "grid": null,
+  "id": "mw4:mirae-general-hospital",
+  "itemIds": [],
+  "mapId": "mw4:hajin",
+  "name": "Mirae General Hospital",
+  "sourceIds": [
+    "source:hajin"
+  ],
+  "spawnKind": "unknown",
+  "status": "verified"
+}

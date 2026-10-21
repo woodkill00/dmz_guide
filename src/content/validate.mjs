@@ -1,4 +1,10 @@
-import { LIMITS, assert, boundedWalk, safeURL } from "./limits.mjs";
+import {
+  LIMITS,
+  PUBLISHED_LIMITS,
+  assert,
+  boundedWalk,
+  safeURL,
+} from "./limits.mjs";
 export function validateSchema(value, schema, root = schema, path = "$") {
   if (schema.$ref) {
     assert(
@@ -98,7 +104,12 @@ export const scopeOf = (pack, r) =>
   r.scope
     ? `${r.scope.gameId}|${r.scope.mode}|${r.scope.build}`
     : `${pack.game.id}|${pack.game.mode}|${pack.game.build}`;
-export function validatePack(pack, schema) {
+export function validatePack(pack, schema, { profile = "portable" } = {}) {
+  assert(
+    ["portable", "published"].includes(profile),
+    "Unknown resource profile",
+  );
+  const mediaLimits = profile === "published" ? PUBLISHED_LIMITS : LIMITS;
   boundedWalk(pack);
   validateSchema(pack, schema);
   const groups = [
@@ -131,6 +142,14 @@ export function validatePack(pack, schema) {
   for (const r of all) {
     for (const id of r.sourceIds || []) ref(id, "sources", r);
     if (r.assetId) ref(r.assetId, "assets", r);
+    if (r.assetIds) {
+      assert(
+        r.assetIds.length <= 8 &&
+          new Set(r.assetIds).size === r.assetIds.length,
+        "Additional pictures must contain at most 8 unique IDs",
+      );
+      for (const id of r.assetIds) ref(id, "assets", r);
+    }
     if (["verified", "observed", "disputed", "stale"].includes(r.status))
       assert(r.sourceIds?.length || r.sourceId, `Evidence required ${r.id}`);
     if (pack.game.id === "fictional-training" && r.status)
@@ -208,7 +227,7 @@ export function validatePack(pack, schema) {
         m.extent[0] < m.extent[2] && m.extent[1] < m.extent[3],
         "Invalid map extent",
       );
-  assert(pack.assets.length <= LIMITS.assets, "Too many assets");
+  assert(pack.assets.length <= mediaLimits.assets, "Too many assets");
   let bytes = 0;
   for (const a of pack.assets) {
     assert(
@@ -225,7 +244,7 @@ export function validatePack(pack, schema) {
     assert(!a.sourceUrl || safeURL(a.sourceUrl), "Unsafe asset source");
     bytes += a.bytes;
   }
-  assert(bytes <= LIMITS.totalAssetBytes, "Total asset limit exceeded");
+  assert(bytes <= mediaLimits.totalAssetBytes, "Total asset limit exceeded");
   const graph = new Map(pack.objectives.map((r) => [r.id, r.prerequisites]));
   checkGraph(graph);
   // Selected recipe routes are checked by the planner; unused alternatives are not blanket-rejected.

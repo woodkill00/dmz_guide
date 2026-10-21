@@ -1,0 +1,14 @@
+{
+  "body": "DMZ has its own 70-level track. Multiplayer progress must not be used as proof of a DMZ unlock.",
+  "category": "progression",
+  "id": "guide:progression",
+  "relatedIds": [
+    "mw4:printer-access"
+  ],
+  "sourceIds": [
+    "source:progression"
+  ],
+  "spoiler": false,
+  "status": "verified",
+  "title": "Keep progression tracks separate"
+}

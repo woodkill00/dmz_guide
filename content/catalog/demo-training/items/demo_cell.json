@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "resource",
+  "description": "Fictional software test data.",
+  "id": "demo:cell",
+  "kind": "resource",
+  "name": "Training Cell",
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "stats": [],
+  "status": "fictional",
+  "unit": "resource-unit"
+}

@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "retained-tool",
+  "description": "Fictional software test data.",
+  "id": "demo:tool",
+  "kind": "item",
+  "name": "Training Tool",
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "stats": [],
+  "status": "fictional",
+  "unit": "count"
+}

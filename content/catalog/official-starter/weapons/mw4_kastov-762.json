@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "assault-rifle",
+  "description": "Weapon identity and class supported by the official launch overview. Live DMZ combat statistics are not verified here.",
+  "id": "mw4:kastov-762",
+  "kind": "weapon",
+  "name": "Kastov 762",
+  "sourceIds": [
+    "source:weapons"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "count"
+}

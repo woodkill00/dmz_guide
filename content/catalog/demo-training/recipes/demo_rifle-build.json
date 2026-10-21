@@ -1,0 +1,30 @@
+{
+  "eligibility": "stash",
+  "id": "demo:rifle-build",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumed": true,
+      "itemId": "demo:board",
+      "quantity": 2
+    },
+    {
+      "consumed": true,
+      "itemId": "demo:credits",
+      "quantity": 50
+    }
+  ],
+  "name": "Training rifle",
+  "output": {
+    "itemId": "demo:rifle",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "demo:bench-unlock"
+  ],
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "station": "Fictional training bench",
+  "status": "fictional"
+}

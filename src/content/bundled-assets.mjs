@@ -1,4 +1,11 @@
-import { ID, LIMITS, assert, parseBounded, boundedWalk } from "./limits.mjs";
+import {
+  ID,
+  LIMITS,
+  PUBLISHED_LIMITS,
+  assert,
+  parseBounded,
+  boundedWalk,
+} from "./limits.mjs";
 import {
   TRANSFER_LIMITS,
   base64FromBytes,
@@ -7,8 +14,8 @@ import {
 } from "./portable.mjs";
 export const BUNDLED_LIMITS = Object.freeze({
   manifestBytes: 1048576,
-  packs: 32,
-  assets: 1024,
+  packs: PUBLISHED_LIMITS.packs,
+  assets: PUBLISHED_LIMITS.siteAssets,
   depth: 8,
   nodes: 20000,
   string: 1000,
@@ -68,8 +75,7 @@ export function validateBundledManifest(manifest) {
   );
   const packs = new Set();
   let count = 0,
-    bytes = 0,
-    pixels = 0;
+    bytes = 0;
   for (const pack of manifest.packs) {
     exact(pack, ["packId", "contentVersion", "assets"], "pack");
     bundledPackKey(pack.packId);
@@ -82,7 +88,8 @@ export function validateBundledManifest(manifest) {
       "Invalid bundled content version",
     );
     assert(
-      Array.isArray(pack.assets) && pack.assets.length <= LIMITS.assets,
+      Array.isArray(pack.assets) &&
+        pack.assets.length <= PUBLISHED_LIMITS.assets,
       "Bundled asset count limit exceeded",
     );
     const ids = new Set(),
@@ -133,13 +140,11 @@ export function validateBundledManifest(manifest) {
         "Bundled URL must match immutable local allowlist",
       );
       bytes += asset.bytes;
-      pixels += asset.width * asset.height;
       count++;
       assert(
-        bytes <= LIMITS.totalAssetBytes &&
-          pixels <= TRANSFER_LIMITS.totalPixels &&
+        bytes <= PUBLISHED_LIMITS.totalAssetBytes &&
           count <= BUNDLED_LIMITS.assets,
-        "Bundled aggregate byte/pixel/entry limit exceeded",
+        "Bundled aggregate byte/entry limit exceeded",
       );
     }
   }
@@ -544,7 +549,7 @@ export async function decodeBundledRaster(bytes, mime, signal, sharedDeadline) {
 }
 export async function loadBundledPayloads(pack, options = {}) {
   assert(
-    Array.isArray(pack.assets) && pack.assets.length <= LIMITS.assets,
+    Array.isArray(pack.assets) && pack.assets.length <= PUBLISHED_LIMITS.assets,
     "Invalid pack assets",
   );
   if (!pack.assets.length) return [];

@@ -1,0 +1,14 @@
+{
+  "body": "Use the location list without assuming precise positions or guaranteed loot. Imjin Farmland is identified at grid D7 in the official guide.",
+  "category": "locations",
+  "id": "guide:map-reference",
+  "relatedIds": [
+    "mw4:imjin-farmland"
+  ],
+  "sourceIds": [
+    "source:hajin"
+  ],
+  "spoiler": false,
+  "status": "verified",
+  "title": "Read the location reference"
+}

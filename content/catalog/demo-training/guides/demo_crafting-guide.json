@@ -1,0 +1,12 @@
+{
+  "body": "These are fictional numbers. One board batch makes two boards from three wire. A beacon and scanner share that batch and pay the bench unlock once. The tool is retained.",
+  "category": "crafting",
+  "id": "demo:crafting-guide",
+  "relatedIds": [],
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "spoiler": false,
+  "status": "fictional",
+  "title": "Practice shared planning"
+}

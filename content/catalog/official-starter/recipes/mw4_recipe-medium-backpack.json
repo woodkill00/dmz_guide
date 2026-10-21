@@ -1,0 +1,30 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:recipe-medium-backpack",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumed": true,
+      "itemId": "mw4:synthetics",
+      "quantity": 50
+    },
+    {
+      "consumed": true,
+      "itemId": "mw4:rigid-synthetics",
+      "quantity": 5
+    }
+  ],
+  "name": "Print Medium Backpack",
+  "output": {
+    "itemId": "mw4:medium-backpack",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access"
+  ],
+  "sourceIds": [
+    "source:fob"
+  ],
+  "station": "3D Printer",
+  "status": "verified"
+}

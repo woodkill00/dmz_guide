@@ -1,0 +1,9 @@
+{
+  "id": "source:fixture",
+  "publishedAt": "2026-10-21",
+  "reviewedAt": "2026-10-21",
+  "supports": "All demo facts are invented software tests, not game information.",
+  "title": "Original fictional test fixture",
+  "type": "original-fixture",
+  "url": "https://example.invalid/fictional-fixture"
+}

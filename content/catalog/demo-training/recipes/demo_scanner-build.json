@@ -1,0 +1,35 @@
+{
+  "eligibility": "stash",
+  "id": "demo:scanner-build",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumed": true,
+      "itemId": "demo:board",
+      "quantity": 1
+    },
+    {
+      "consumed": true,
+      "itemId": "demo:credits",
+      "quantity": 20
+    },
+    {
+      "consumed": false,
+      "itemId": "demo:tool",
+      "quantity": 1
+    }
+  ],
+  "name": "Training scanner",
+  "output": {
+    "itemId": "demo:scanner",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "demo:bench-unlock"
+  ],
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "station": "Fictional training bench",
+  "status": "fictional"
+}

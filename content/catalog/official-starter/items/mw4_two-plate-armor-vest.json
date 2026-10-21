@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "plate-carrier",
+  "description": "",
+  "id": "mw4:two-plate-armor-vest",
+  "kind": "item",
+  "name": "2-Plate Armor Vest",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "count"
+}

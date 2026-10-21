@@ -15,7 +15,7 @@ import {
   imageInfo,
   TRANSFER_LIMITS,
 } from "../content/portable.mjs";
-let imageURL = null,
+let imageURLs = [],
   generation = 0,
   pendingDecode = null;
 let assetController = new AbortController();
@@ -23,8 +23,8 @@ function releaseImage() {
   assetController.abort();
   assetController = new AbortController();
   pendingDecode?.cancel();
-  if (imageURL) URL.revokeObjectURL(imageURL);
-  imageURL = null;
+  for (const url of imageURLs) URL.revokeObjectURL(url);
+  imageURLs = [];
 }
 function decodeImage(image) {
   return new Promise((resolve, reject) => {
@@ -81,67 +81,75 @@ async function render() {
     for (const card of document.querySelectorAll("[data-local-search]"))
       card.hidden = !card.dataset.localSearch.includes(q);
   });
-  if (chosen?.assetId) {
+  const pictureIds = [
+    ...new Set([chosen?.assetId, ...(chosen?.assetIds || [])].filter(Boolean)),
+  ];
+  if (pictureIds.length) {
     try {
       const saved = await readRecord("content", state.pack.id).catch(
         () => null,
       );
       if (token !== generation) return;
-      const asset = state.pack.assets.find((a) => a.id === chosen.assetId);
-      let payload = saved?.value?.payloads?.find(
-        (p) => p.assetId === chosen.assetId,
-      );
-      if (!payload)
-        payload = (
-          await loadBundledPayloads(state.pack, {
-            assetIds: [chosen.assetId],
-            signal: assetController.signal,
-          })
-        )[0];
-      if (token !== generation) return;
-      if (!payload || !asset)
-        throw new Error(
-          "Picture bytes unavailable; record details remain readable.",
+      for (const assetId of pictureIds) {
+        const asset = state.pack.assets.find((a) => a.id === assetId);
+        let payload = saved?.value?.payloads?.find(
+          (p) => p.assetId === assetId,
         );
-      const bytes = bytesFromBase64(payload.base64),
-        info = imageInfo(bytes);
-      if (
-        bytes.length !== asset.bytes ||
-        info.mime !== asset.mime ||
-        info.width !== asset.width ||
-        info.height !== asset.height ||
-        (await hashBytes(bytes)) !== asset.sha256
-      )
-        throw new Error("Picture metadata mismatch");
-      if (token !== generation) return;
-      imageURL = URL.createObjectURL(new Blob([bytes], { type: asset.mime }));
-      const image = document.createElement("img");
-      image.src = imageURL;
-      image.alt = `Private pack illustration for ${publicTitle(chosen)}`;
-      image.width = asset.width;
-      image.height = asset.height;
-      image.className = "local-raster";
-      await decodeImage(image);
-      if (token !== generation) return;
-      if (
-        image.naturalWidth !== asset.width ||
-        image.naturalHeight !== asset.height
-      )
-        throw new Error("Decoded picture dimensions mismatch");
-      image.addEventListener("error", () => {
-        if (token === generation) {
-          releaseImage();
-          $("#private-picture").textContent =
-            "Picture unavailable; record details remain readable.";
-        }
-      });
-      if (chosen.spoiler) {
-        const details = document.createElement("details");
-        const summary = document.createElement("summary");
-        summary.textContent = "Reveal spoiler picture";
-        details.append(summary, image);
-        $("#private-picture").append(details);
-      } else $("#private-picture").append(image);
+        if (!payload)
+          payload = (
+            await loadBundledPayloads(state.pack, {
+              assetIds: [assetId],
+              signal: assetController.signal,
+            })
+          )[0];
+        if (token !== generation) return;
+        if (!payload || !asset)
+          throw new Error(
+            "Picture bytes unavailable; record details remain readable.",
+          );
+        const bytes = bytesFromBase64(payload.base64),
+          info = imageInfo(bytes);
+        if (
+          bytes.length !== asset.bytes ||
+          info.mime !== asset.mime ||
+          info.width !== asset.width ||
+          info.height !== asset.height ||
+          (await hashBytes(bytes)) !== asset.sha256
+        )
+          throw new Error("Picture metadata mismatch");
+        if (token !== generation) return;
+        const imageURL = URL.createObjectURL(
+          new Blob([bytes], { type: asset.mime }),
+        );
+        imageURLs.push(imageURL);
+        const image = document.createElement("img");
+        image.src = imageURL;
+        image.alt = `Private pack illustration for ${publicTitle(chosen)}`;
+        image.width = asset.width;
+        image.height = asset.height;
+        image.className = "local-raster";
+        await decodeImage(image);
+        if (token !== generation) return;
+        if (
+          image.naturalWidth !== asset.width ||
+          image.naturalHeight !== asset.height
+        )
+          throw new Error("Decoded picture dimensions mismatch");
+        image.addEventListener("error", () => {
+          if (token === generation) {
+            releaseImage();
+            $("#private-picture").textContent =
+              "Picture unavailable; record details remain readable.";
+          }
+        });
+        if (chosen.spoiler) {
+          const details = document.createElement("details");
+          const summary = document.createElement("summary");
+          summary.textContent = "Reveal spoiler picture";
+          details.append(summary, image);
+          $("#private-picture").append(details);
+        } else $("#private-picture").append(image);
+      }
     } catch (reason) {
       if (token === generation) {
         releaseImage();

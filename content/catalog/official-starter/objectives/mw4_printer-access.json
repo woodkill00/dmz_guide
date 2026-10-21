@@ -1,0 +1,23 @@
+{
+  "description": "Official sources disagree on the player-level gate. Confirm access in your game; this pack does not select a level.",
+  "effects": [
+    {
+      "target": "3d-printer-access",
+      "type": "unlockFlag",
+      "value": true
+    }
+  ],
+  "id": "mw4:printer-access",
+  "name": "3D Printer access",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:fob",
+    "source:progression"
+  ],
+  "spoiler": false,
+  "status": "disputed",
+  "track": "progression"
+}

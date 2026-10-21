@@ -1,0 +1,9 @@
+{
+  "entityId": "mw4:printer-access",
+  "field": "dmzPlayerLevel",
+  "id": "claim:printer-level-progression",
+  "locator": "Image description under DMZ Player Level Unlocks",
+  "sourceId": "source:progression",
+  "status": "disputed",
+  "value": 1
+}

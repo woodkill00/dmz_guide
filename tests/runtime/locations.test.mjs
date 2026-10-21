@@ -1,3 +1,4 @@
+import { loadFixturePack } from "../helpers/catalog.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -10,16 +11,8 @@ import {
   safePlanText,
   effectiveScope,
 } from "../../src/domain/locations.mjs";
-const demo = JSON.parse(
-  await readFile(
-    new URL("../../content/packs/demo-training.json", import.meta.url),
-  ),
-);
-const real = JSON.parse(
-  await readFile(
-    new URL("../../content/packs/official-starter.json", import.meta.url),
-  ),
-);
+const demo = loadFixturePack("demo-training");
+const real = loadFixturePack("official-starter");
 const map = demo.maps[0];
 test("real POIs stay list-only, with no invented placement", () => {
   assert.equal(filterLocations(real, {}).length, 13);

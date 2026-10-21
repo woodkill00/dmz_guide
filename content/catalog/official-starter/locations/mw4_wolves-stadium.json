@@ -1,0 +1,14 @@
+{
+  "coordinates": null,
+  "description": "Named point of interest. Precise coordinates and item spawns are unverified.",
+  "grid": null,
+  "id": "mw4:wolves-stadium",
+  "itemIds": [],
+  "mapId": "mw4:hajin",
+  "name": "Wolves Stadium",
+  "sourceIds": [
+    "source:hajin"
+  ],
+  "spawnKind": "unknown",
+  "status": "verified"
+}

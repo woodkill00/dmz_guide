@@ -15,6 +15,13 @@ export const LIMITS = Object.freeze({
   pixels: 4194304,
   dimension: 2048,
 });
+// Published catalogs are metadata and individually fetched media, not portable envelopes.
+export const PUBLISHED_LIMITS = Object.freeze({
+  assets: 1000,
+  siteAssets: 1024,
+  totalAssetBytes: 256 * 1024 * 1024,
+  packs: 32,
+});
 export const ID = /^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$/;
 export function assert(condition, message) {
   if (!condition) throw new Error(message);

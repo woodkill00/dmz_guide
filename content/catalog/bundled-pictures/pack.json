@@ -1,0 +1,40 @@
+{
+  "order": {
+    "assets": [
+      "demo:bundled-grid",
+      "demo:bundled-token"
+    ],
+    "claims": [],
+    "guides": [],
+    "items": [
+      "demo:picture-token"
+    ],
+    "locations": [
+      "demo:picture-location"
+    ],
+    "maps": [
+      "demo:picture-map"
+    ],
+    "objectives": [],
+    "recipes": [],
+    "sources": [
+      "source:bundled-picture-fixture"
+    ]
+  },
+  "pack": {
+    "contentVersion": "1.0.0",
+    "coverage": {
+      "expectedTotal": null,
+      "note": "Two original pictures and a fictional location, not game coverage."
+    },
+    "description": "Original tiny raster examples demonstrate publishing and portable export, not game artwork.",
+    "game": {
+      "build": "test-only-v1",
+      "id": "fictional-training",
+      "mode": "demo"
+    },
+    "id": "demo:bundled-pictures",
+    "schemaVersion": 1,
+    "title": "FICTIONAL PUBLIC PICTURE EXAMPLES — NOT GAME DATA"
+  }
+}

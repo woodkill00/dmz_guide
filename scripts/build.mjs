@@ -7,7 +7,7 @@ import {
   cp,
   access,
 } from "node:fs/promises";
-import { resolve, dirname, join } from "node:path";
+import { resolve, dirname, join, relative } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   renderLayout,
@@ -21,30 +21,22 @@ import {
   publicTitle,
   setBundledAssets,
 } from "../src/ui/render.mjs";
-import { parseBounded } from "../src/content/limits.mjs";
+import { readCatalog, bundledSources, catalogJSON } from "./catalog.mjs";
 import { prepareBundledAssets, writeBundledAssets } from "./bundled-assets.mjs";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
-const packs = await Promise.all(
-  (await readdir(join(root, "content/packs")))
-    .filter((f) => f.endsWith(".json"))
-    .sort()
-    .map(async (f) =>
-      parseBounded(await readFile(join(root, "content/packs", f), "utf8")),
-    ),
-);
 const schema = JSON.parse(
   await readFile(join(root, "schemas/pack.schema.json"), "utf8"),
 );
-const { validatePack } = await import("../src/content/validate.mjs");
-for (const pack of packs) {
-  const result = validatePack(pack, schema);
-  if (result === false || result?.ok === false || result?.valid === false)
-    throw new Error(
-      `Invalid pack ${pack.id}: ${JSON.stringify(result.errors)}`,
-    );
-}
-const bundled = await prepareBundledAssets({ root, packs, schema });
+const catalog = await readCatalog({ root, schema });
+const packs = catalog.packs;
+const bundled = await prepareBundledAssets({
+  root,
+  packs,
+  schema,
+  assetSources: bundledSources(catalog.entries),
+  sourceFiles: catalog.files,
+});
 setBundledAssets(bundled.manifest);
 const pages = [
   {
@@ -144,18 +136,24 @@ await writeFile(
   }),
 );
 await mkdir(join(dist, "assets"), { recursive: true });
+const authorOnly = new Set([
+  "src/client/studio.mjs",
+  "src/client/studio-media.mjs",
+  "src/client/raster-editor.mjs",
+  "src/ui/studio-page.mjs",
+  "src/ui/studio.css",
+]);
 for (const folder of ["src", "schemas"])
   await cp(join(root, folder), join(dist, "assets", folder), {
     recursive: true,
+    filter: (path) =>
+      !authorOnly.has(relative(root, path).replaceAll("\\", "/")),
   });
 await mkdir(join(dist, "assets/content/packs"), { recursive: true });
-for (const file of (await readdir(join(root, "content/packs"))).filter((f) =>
-  f.endsWith(".json"),
-)) {
-  if (!/^[a-z0-9-]+\.json$/.test(file)) throw new Error("Unsafe pack filename");
-  await cp(
-    join(root, "content/packs", file),
-    join(dist, "assets/content/packs", file),
+for (const { key, pack } of catalog.entries) {
+  await writeFile(
+    join(dist, "assets/content/packs", `${key}.json`),
+    catalogJSON(pack),
   );
 }
 await cp(
@@ -166,10 +164,9 @@ await writeFile(
   join(dist, "assets/content/manifest.json"),
   JSON.stringify(
     {
-      packs: (await readdir(join(root, "content/packs")))
-        .filter((f) => f.endsWith(".json"))
-        .sort()
-        .map((f) => `/assets/content/packs/${f}`),
+      packs: catalog.entries.map(
+        ({ key }) => `/assets/content/packs/${key}.json`,
+      ),
     },
     null,
     2,

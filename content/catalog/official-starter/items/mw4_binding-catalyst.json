@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "printer-ingredient",
+  "description": "",
+  "id": "mw4:binding-catalyst",
+  "kind": "item",
+  "name": "Binding Catalyst",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "count"
+}

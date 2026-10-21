@@ -1,0 +1,17 @@
+{
+  "body": "Story premise: conflict spreads across the Korean Peninsula while John Price operates outside official channels. This is campaign background, not a DMZ Order or a mission walkthrough. Campaign completion and DMZ progress are kept separate in this guide.",
+  "category": "campaign",
+  "id": "guide:campaign-background",
+  "relatedIds": [],
+  "scope": {
+    "build": "official-prelaunch-intel-2026-10; live-build-unverified",
+    "gameId": "mw4",
+    "mode": "campaign"
+  },
+  "sourceIds": [
+    "source:story"
+  ],
+  "spoiler": true,
+  "status": "verified",
+  "title": "Campaign background"
+}

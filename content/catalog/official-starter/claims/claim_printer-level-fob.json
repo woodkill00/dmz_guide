@@ -1,0 +1,9 @@
+{
+  "entityId": "mw4:printer-access",
+  "field": "dmzPlayerLevel",
+  "id": "claim:printer-level-fob",
+  "locator": "Initial Unlocks: Your First Crafting Session",
+  "sourceId": "source:fob",
+  "status": "disputed",
+  "value": 2
+}

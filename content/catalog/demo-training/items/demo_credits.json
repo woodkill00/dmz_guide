@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "currency",
+  "description": "Fictional software test data.",
+  "id": "demo:credits",
+  "kind": "currency",
+  "name": "Training Credits",
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "stats": [],
+  "status": "fictional",
+  "unit": "dmz-cash"
+}

@@ -1,0 +1,58 @@
+{
+  "order": {
+    "assets": [],
+    "claims": [],
+    "guides": [
+      "demo:crafting-guide",
+      "demo:campaign-guide"
+    ],
+    "items": [
+      "demo:wire",
+      "demo:board",
+      "demo:cell",
+      "demo:beacon",
+      "demo:scanner",
+      "demo:credits",
+      "demo:tool",
+      "demo:rifle"
+    ],
+    "locations": [
+      "demo:supply-shed",
+      "demo:power-hut",
+      "demo:upper-cache"
+    ],
+    "maps": [
+      "demo:training-map"
+    ],
+    "objectives": [
+      "demo:bench-unlock",
+      "demo:delivery-order",
+      "demo:campaign-chapter"
+    ],
+    "recipes": [
+      "demo:board-batch",
+      "demo:beacon-build",
+      "demo:scanner-build",
+      "demo:rifle-build"
+    ],
+    "sources": [
+      "source:fixture"
+    ]
+  },
+  "pack": {
+    "contentVersion": "1.0.0",
+    "coverage": {
+      "expectedTotal": null,
+      "note": "Fictional mechanics sandbox, not game coverage."
+    },
+    "description": "Original software fixtures for practicing the planner and editor. No values describe Call of Duty.",
+    "game": {
+      "build": "test-only-v1",
+      "id": "fictional-training",
+      "mode": "demo"
+    },
+    "id": "demo:training-pack",
+    "schemaVersion": 1,
+    "title": "FICTIONAL TRAINING DATA — NOT GAME FACTS"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "printer-ingredient",
+  "description": "",
+  "id": "mw4:reactive-metals",
+  "kind": "item",
+  "name": "Reactive Metals",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "count"
+}

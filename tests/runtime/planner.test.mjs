@@ -1,9 +1,10 @@
+import { loadFixturePack } from "../helpers/catalog.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { planSingle } from "../../src/domain/planner.mjs";
 import { newProfile } from "../../src/domain/profile.mjs";
-const pack = JSON.parse(readFileSync("content/packs/demo-training.json"));
+const pack = loadFixturePack("demo-training");
 test("batch rounding and no projected owned surplus", () => {
   const p = newProfile(pack);
   p.goals = [{ id: "demo:board-batch", quantity: 3 }];

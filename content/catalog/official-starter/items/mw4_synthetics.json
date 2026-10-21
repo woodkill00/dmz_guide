@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "printer-resource",
+  "description": "",
+  "id": "mw4:synthetics",
+  "kind": "resource",
+  "name": "Synthetics",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "resource-unit"
+}

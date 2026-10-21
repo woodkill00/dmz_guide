@@ -1,6 +1,6 @@
 # Repository instructions
 
-Read README.md, .specify/memory/constitution.md, docs/spec-kit-cycle.md, and the owning change artifacts before editing. This is a bootstrap, not a running application. Preserve the product roadmap and do not label planning as shipped behavior.
+Read README.md, .specify/memory/constitution.md, docs/spec-kit-cycle.md, and the owning change artifacts before editing. This is a runnable static guide with an opt-in repository authoring tool under development. Preserve the product roadmap, verified acceptance evidence and the distinction between planned and shipped behavior.
 
 1. Use the applicable pinned Spec Kit workflow for every change. Production features require the full cycle; repairs require assessment, scoped fix and reproduction-based verification. See docs/tutorials/change-types.md for documentation and emergency handling.
 2. Resolve the active feature explicitly through SPECIFY_FEATURE_DIRECTORY or .specify/feature.json. Branch changes alone do not select it. Keep machine-local feature state out of commits. Use isolated worktrees for parallel features and serialize shared-contract edits.

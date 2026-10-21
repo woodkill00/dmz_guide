@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "backpack",
+  "description": "",
+  "id": "mw4:small-backpack",
+  "kind": "item",
+  "name": "Small Backpack",
+  "sourceIds": [
+    "source:fob"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "count"
+}

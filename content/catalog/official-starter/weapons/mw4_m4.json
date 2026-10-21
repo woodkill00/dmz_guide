@@ -1,0 +1,32 @@
+{
+  "aliases": [],
+  "category": "assault-rifle",
+  "description": "Assault rifle. Numeric DMZ performance has not been verified for this pack.",
+  "id": "mw4:m4",
+  "kind": "weapon",
+  "name": "M4",
+  "sourceIds": [
+    "source:weapons",
+    "source:fob"
+  ],
+  "stats": [
+    {
+      "context": {
+        "attachments": "unknown",
+        "method": "No live DMZ measurement verified.",
+        "rangeMeters": null,
+        "stance": "unknown",
+        "target": "unknown"
+      },
+      "label": "Fire rate",
+      "metric": "fire-rate",
+      "reviewedAt": "2026-10-21",
+      "sourceIds": [],
+      "status": "unknown",
+      "unit": "rounds/min",
+      "value": null
+    }
+  ],
+  "status": "verified",
+  "unit": "count"
+}

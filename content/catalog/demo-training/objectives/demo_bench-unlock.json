@@ -1,0 +1,28 @@
+{
+  "description": "Fictional once-only cost-bearing unlock shared by multiple recipes.",
+  "effects": [
+    {
+      "target": "demo:training-bench",
+      "type": "unlockFlag",
+      "value": true
+    }
+  ],
+  "id": "demo:bench-unlock",
+  "name": "Unlock training bench",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumed": true,
+      "itemId": "demo:credits",
+      "quantity": 10
+    }
+  ],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "spoiler": false,
+  "status": "fictional",
+  "track": "dmz-upgrade"
+}

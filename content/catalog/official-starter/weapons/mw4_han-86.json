@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "assault-rifle",
+  "description": "Weapon identity and class supported by the official launch overview. Live DMZ combat statistics are not verified here.",
+  "id": "mw4:han-86",
+  "kind": "weapon",
+  "name": "Han 86",
+  "sourceIds": [
+    "source:weapons"
+  ],
+  "stats": [],
+  "status": "verified",
+  "unit": "count"
+}

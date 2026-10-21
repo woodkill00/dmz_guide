@@ -20,3 +20,5 @@
 - [Research synthesis](roundtable.md), [design review](visual-token-review.md), [feature prompts](feature-prompts.md).
 
 The older planning documents describe proposals at their recorded date. The constitution and current change artifacts govern new work. Neither roadmap checklists nor research recommendations establish that tests or agent skills have run.
+
+- [Repository Content Studio](content-studio.md): local JSON/media authoring and manual Git sharing.

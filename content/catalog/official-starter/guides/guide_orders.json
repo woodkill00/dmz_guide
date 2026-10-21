@@ -1,0 +1,12 @@
+{
+  "body": "The FOB Orders station lists objectives and rewards. A complete mission-by-mission catalog has not yet been verified here.",
+  "category": "orders",
+  "id": "guide:orders",
+  "relatedIds": [],
+  "sourceIds": [
+    "source:fob"
+  ],
+  "spoiler": false,
+  "status": "verified",
+  "title": "Start with the Orders station"
+}

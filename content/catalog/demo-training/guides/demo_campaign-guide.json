@@ -1,0 +1,17 @@
+{
+  "body": "FICTIONAL SPOILER: The training beacon signals the end of the exercise.",
+  "category": "campaign",
+  "id": "demo:campaign-guide",
+  "relatedIds": [],
+  "scope": {
+    "build": "test-only-v1",
+    "gameId": "fictional-training",
+    "mode": "campaign"
+  },
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "spoiler": true,
+  "status": "fictional",
+  "title": "Training story spoiler"
+}

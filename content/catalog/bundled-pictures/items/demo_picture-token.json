@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "assetId": "demo:bundled-token",
+  "category": "material",
+  "description": "Fictional software test data.",
+  "id": "demo:picture-token",
+  "kind": "item",
+  "name": "Fictional picture token",
+  "sourceIds": [
+    "source:bundled-picture-fixture"
+  ],
+  "stats": [],
+  "status": "fictional",
+  "unit": "count"
+}

@@ -1,0 +1,23 @@
+{
+  "assetId": "demo:bundled-grid",
+  "axis": "x-right-y-down",
+  "coordinateSpace": "demo-unit-square",
+  "coordinateVersion": "1",
+  "extent": [
+    0,
+    0,
+    100,
+    100
+  ],
+  "floors": [
+    "ground",
+    "upper"
+  ],
+  "id": "demo:picture-map",
+  "name": "Original fictional picture map",
+  "origin": "top-left",
+  "sourceIds": [
+    "source:bundled-picture-fixture"
+  ],
+  "status": "fictional"
+}

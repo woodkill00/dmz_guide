@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "equipment",
+  "description": "Fictional software test data.",
+  "id": "demo:beacon",
+  "kind": "item",
+  "name": "Training Beacon",
+  "sourceIds": [
+    "source:fixture"
+  ],
+  "stats": [],
+  "status": "fictional",
+  "unit": "count"
+}
