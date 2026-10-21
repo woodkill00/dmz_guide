@@ -1,0 +1,3 @@
+# 003 acceptance evidence (in progress)
+2026-10-21: Node v24.19.0, npm11.9.0. npm test:21 tests pass; includes100 conservation iterations. npm run build:76 native HTML routes +404. python scripts/check.py:0 failures; python unittest:15 pass. Static link scan:0 broken generated links. No runtime CDN/fonts.
+Local Chromium launch could not create sandbox sockets; NOT RUN locally. Pinned Playwright browser suite is in CI with desktop/320/390px, private state/backup/reset/hostile import/tab conflict, keyboard/error focus/theme/zoom/storage-denial journeys and screenshots. No screenshot acceptance, physical device claim or WCAG certification yet. Exact-head CI and independent implementation review pending. Tests may expose failures to repair.
