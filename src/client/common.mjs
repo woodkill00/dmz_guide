@@ -219,6 +219,7 @@ export async function init(render) {
       Number(a.id === "official:mw4-dmz-starter"),
   );
   let contentWarning = null;
+  let listingFailure = null;
   try {
     for (const record of await listRecords("content")) {
       const pack = record.value?.pack;
@@ -233,7 +234,9 @@ export async function init(render) {
         }
       }
     }
-  } catch {}
+  } catch (reason) {
+    listingFailure = reason;
+  }
   const requested = new URL(location.href).searchParams.get("pack"),
     select = $("#pack-select");
   select.innerHTML = state.packs
@@ -259,35 +262,57 @@ export async function init(render) {
     status("Loading selected local pack…");
     let pack =
       state.packs.find((pack) => pack.id === select.value) || state.packs[0];
-    let warning = contentWarning;
+    let warning =
+      contentWarning ||
+      (listingFailure
+        ? new Error(
+            "Some local catalogs could not be listed; published catalogs remain available. Stored data retained.",
+          )
+        : null);
+    let storageFailure = listingFailure;
     try {
       const overlay = await readRecord("content", pack.id);
+      storageFailure = null;
       if (token !== generation) return;
       if (overlay?.value?.pack) {
-        validatePack(overlay.value.pack, schema);
-        if (overlay.value.pack.id !== pack.id)
-          throw new Error("Stored pack identity mismatch");
-        pack = overlay.value.pack;
+        try {
+          validatePack(overlay.value.pack, schema);
+          if (overlay.value.pack.id !== pack.id)
+            throw new Error("Stored pack identity mismatch");
+          pack = overlay.value.pack;
+        } catch {
+          warning = new Error(
+            "Local content invalid; using published baseline. Stored data retained. Restore the original exported bundle in the editor.",
+          );
+        }
       }
     } catch (reason) {
       if (token !== generation) return;
+      storageFailure = reason;
       warning = new Error(
-        "Local content unavailable or invalid; using published baseline. Stored data retained. " +
-          reason.message,
+        "Local content storage unavailable; using published baseline. Stored data retained.",
       );
     }
     let profile = newProfile(pack),
       revision = 0;
     try {
       const record = await loadProfile(pack.id);
+      storageFailure = null;
       if (token !== generation) return;
       if (record?.value) {
-        validateProfile(record.value);
-        profile = record.value;
-        revision = profile.revision;
+        try {
+          validateProfile(record.value);
+          profile = record.value;
+          revision = profile.revision;
+        } catch {
+          warning = new Error(
+            "Stored profile invalid and retained. Restore a validated backup before saving new changes.",
+          );
+        }
       }
     } catch (reason) {
       if (token !== generation) return;
+      storageFailure = reason;
       warning = reason;
     }
     if (token !== generation) return;
@@ -295,9 +320,11 @@ export async function init(render) {
     state.profile = profile;
     state.revision = revision;
     status(
-      warning
+      storageFailure
         ? "Unsaved: browser storage unavailable. Export a backup to keep edits."
-        : "Saved locally · no account or sync",
+        : warning
+          ? "Browser storage available · content warning; stored data retained."
+          : "Saved locally · no account or sync",
     );
     $("#pack-note").textContent =
       `${pack.title} · ${pack.contentVersion}. ${pack.coverage.note}`;

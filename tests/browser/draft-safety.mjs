@@ -206,6 +206,7 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
     await page.fill("#inventory-query", "wire");
     await plannerLink().click();
     await page.waitForURL("**/planner/**");
+    await ready(page);
     assert.equal(await page.locator("#draft-navigation:visible").count(), 0);
     await page.goto(inventoryUrl);
     await ready(page);
@@ -327,6 +328,7 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
     await plannerLink().click();
     await page.click("#draft-save");
     await page.waitForURL("**/planner/**");
+    await ready(page);
     await page.goto(inventoryUrl);
     await ready(page);
     assert.equal(await page.locator(wire).inputValue(), "29");
@@ -334,6 +336,7 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
     await plannerLink().click();
     await page.click("#draft-discard");
     await page.waitForURL("**/planner/**");
+    await ready(page);
     await page.goto(inventoryUrl);
     await ready(page);
     assert.equal(await page.locator(wire).inputValue(), "29");
@@ -395,6 +398,47 @@ async function visualJourneys({ page, base, prefix }) {
           ),
           "Dirty dialog has no horizontal page overflow",
         );
+        const titleGeometry = await page
+          .locator("#draft-navigation-title")
+          .evaluate((heading) => {
+            const dialogNode = heading.closest("dialog");
+            const rect = (node) => {
+              const r = node.getBoundingClientRect();
+              return {
+                top: r.top,
+                bottom: r.bottom,
+                left: r.left,
+                right: r.right,
+                width: r.width,
+                height: r.height,
+              };
+            };
+            return {
+              title: rect(heading),
+              dialog: rect(dialogNode),
+              scrollTop: dialogNode.scrollTop,
+              scrollHeight: dialogNode.scrollHeight,
+              clientHeight: dialogNode.clientHeight,
+              viewport: { width: innerWidth, height: innerHeight },
+              focused: document.activeElement?.id,
+            };
+          });
+        const titleEvidence = { theme, width, enlarged, ...titleGeometry };
+        await writeFile(
+          `test-results/${prefix}-draft-dialog-${theme}-${width}-${enlarged ? "text200" : "normal"}-geometry.json`,
+          JSON.stringify(titleEvidence, null, 2),
+        );
+        await captureDocumentEvidence(
+          page,
+          `test-results/${prefix}-draft-dialog-${theme}-${width}-${enlarged ? "text200" : "normal"}.png`,
+        );
+        assert(
+          titleGeometry.title.top >= titleGeometry.dialog.top &&
+            titleGeometry.title.bottom <= titleGeometry.dialog.bottom &&
+            titleGeometry.title.top >= 0 &&
+            titleGeometry.title.bottom <= titleGeometry.viewport.height,
+          `The complete dirty-dialog title is visible on opening: ${JSON.stringify(titleEvidence)}`,
+        );
         for (const id of ["draft-save", "draft-discard", "draft-stay"]) {
           const button = page.locator(`#${id}`);
           assert(await button.isVisible());
@@ -411,10 +455,6 @@ async function visualJourneys({ page, base, prefix }) {
             "Decision controls retain touch target and fit viewport",
           );
         }
-        await captureDocumentEvidence(
-          page,
-          `test-results/${prefix}-draft-dialog-${theme}-${width}-${enlarged ? "text200" : "normal"}.png`,
-        );
         await page.click("#draft-stay");
         assert.equal(await page.locator(wire).inputValue(), "73");
         await page.selectOption("#pack-select", official);

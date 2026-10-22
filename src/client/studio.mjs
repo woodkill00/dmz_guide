@@ -638,6 +638,7 @@ async function loadCatalog() {
   );
   if (!guided) {
     guided = createGuidedEditor({
+      onError: error,
       schema,
       getDraft: () => draft,
       mutateDraft,

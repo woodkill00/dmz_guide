@@ -1,3 +1,4 @@
+import { profileChangeSummary } from "../domain/profile-preview.mjs";
 import { planShared } from "../domain/shared-plan.mjs";
 import {
   init,
@@ -64,9 +65,13 @@ function render() {
     filterInventory();
   }
   if ($("#version-status")) {
-    const p = previewProfile(state.profile, state.pack);
+    const summary = profileChangeSummary(
+      state.profile,
+      state.profile,
+      state.pack,
+    );
     $("#version-status").textContent =
-      `Profile content: ${state.profile.contentVersion}; active content: ${state.pack.contentVersion}. ${p.versionMismatch ? "Planning blocked until explicit rebind." : "Versions match."} Unresolved references: ${p.unresolved.join(", ") || "none"}.`;
+      `Profile content: ${summary.currentVersion}; active content: ${summary.activeVersion}. ${summary.versionMismatch ? "Planning blocked until explicit rebind." : "Versions match."} Unresolved references: ${summary.unresolvedCount}.`;
   }
 }
 $("#inventory-form")?.addEventListener("input", (e) => {
@@ -95,30 +100,19 @@ $("#completion-fields")?.addEventListener("change", async (e) => {
   }
 });
 function preview(p) {
-  const summary = previewProfile(p, state.pack);
-  const changes = {};
-  for (const field of [
-    "inventory",
-    "reserves",
-    "completion",
-    "goals",
-    "contentVersion",
-    "routes",
-  ])
-    if (JSON.stringify(p[field]) !== JSON.stringify(state.profile[field]))
-      changes[field] = { before: state.profile[field], after: p[field] };
+  const summary = profileChangeSummary(state.profile, p, state.pack);
   staged = p;
   stagedPack = state.pack.id;
   stagedRevision = state.revision;
-  $("#restore-summary").textContent = JSON.stringify(
-    {
-      action: "Replace selected profile, not add quantities",
-      ...summary,
-      changes,
-    },
-    null,
-    2,
-  );
+  $("#restore-summary").innerHTML =
+    `<p><strong>Replace this profile, not add quantities.</strong></p><p>Catalog: ${esc(summary.catalog)}. Current version: ${esc(summary.currentVersion)}. Proposed version: ${esc(summary.proposedVersion)}.</p><p>${summary.versionMismatch ? "Different content version: planning remains blocked until explicit rebind." : "Content versions match."} Unresolved references: ${summary.unresolvedCount}.</p><p>Unknown version text is withheld while spoilers are hidden. Use the existing spoiler preference before previewing if you want to inspect it.</p>` +
+    summary.sections
+      .map(
+        (section) =>
+          `<section><h4>${esc(section.title)}</h4>${section.changes.length ? `<ul>${section.changes.map((change) => `<li><strong>${esc(change.label)}</strong>: ${esc(change.before)} → ${esc(change.after)}</li>`).join("")}</ul>` : "<p>Unchanged.</p>"}</section>`,
+      )
+      .join("");
+  $("#restore-detail").textContent = JSON.stringify(summary, null, 2);
   $("#restore-preview").hidden = false;
 }
 $("#import-profile")?.addEventListener("change", async (e) => {

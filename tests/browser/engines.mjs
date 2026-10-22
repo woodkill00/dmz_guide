@@ -59,6 +59,14 @@ try {
         base,
         captureScreenshots: name !== "webkit",
       });
+      const { runRecoveryTruthfulnessTests } = await import(
+        "./recovery-truthfulness.mjs"
+      );
+      await runRecoveryTruthfulnessTests({
+        browser,
+        base,
+        captureScreenshots: name !== "webkit",
+      });
       health();
       console.log(
         `${name}: native navigation, narrow maps, IndexedDB portable raster roundtrip and local-network tests passed`,

@@ -415,7 +415,7 @@ try {
   const { runRecoveryTruthfulnessTests } = await import(
     "./recovery-truthfulness.mjs"
   );
-  await runRecoveryTruthfulnessTests({ browser, base, baseline: true });
+  await runRecoveryTruthfulnessTests({ browser, base });
   checkHealth();
   console.log(
     "Browser acceptance passed: direct routes, persistence, planning, backup/reset/cancel/restore, hostile import, tab conflict, 320/390px, no-JS and console.",

@@ -7,6 +7,9 @@ export function createGuidedEditor({
   getDraft,
   mutateDraft,
   onRender = () => {},
+  onError = (reason) => {
+    throw reason;
+  },
   searchPlaceholder = "Search this private pack",
   root = document,
   isIdentityReadOnly = () => false,
@@ -17,6 +20,15 @@ export function createGuidedEditor({
     if (text !== undefined) n.textContent = text;
     return n;
   };
+  const guarded =
+    (handler) =>
+    (...args) => {
+      try {
+        return handler(...args);
+      } catch (reason) {
+        onError(reason);
+      }
+    };
   const arrayPages = new Map();
   const label = (k) =>
     k.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^./, (s) => s.toUpperCase());
@@ -190,11 +202,14 @@ export function createGuidedEditor({
         picker.focus();
       }
     });
-    picker.addEventListener("change", () => {
-      if (!picker.value) return;
-      setAt(path, picker.value);
-      input.value = picker.value;
-    });
+    picker.addEventListener(
+      "change",
+      guarded(() => {
+        if (!picker.value) return;
+        setAt(path, picker.value);
+        input.value = picker.value;
+      }),
+    );
     input.addEventListener("input", populate);
     populate();
     return container;
@@ -214,10 +229,13 @@ export function createGuidedEditor({
       check.dataset.path = path.join(".") + ".included";
       l.append(check, document.createTextNode(` Include ${title} (optional)`));
       box.append(l);
-      check.addEventListener("change", () => {
-        setAt(path, check.checked ? defaultValue(s, key) : undefined);
-        renderFields();
-      });
+      check.addEventListener(
+        "change",
+        guarded(() => {
+          setAt(path, check.checked ? defaultValue(s, key) : undefined);
+          renderFields();
+        }),
+      );
       if (value === undefined) return box;
     }
     if (s.anyOf || Array.isArray(s.type)) {
@@ -250,10 +268,13 @@ export function createGuidedEditor({
       select.value = String(idx);
       l.append(select);
       box.append(l);
-      select.addEventListener("change", () => {
-        setAt(path, defaultValue(variants[Number(select.value)], key));
-        renderFields();
-      });
+      select.addEventListener(
+        "change",
+        guarded(() => {
+          setAt(path, defaultValue(variants[Number(select.value)], key));
+          renderFields();
+        }),
+      );
       if (resolve(variants[idx]).type === "null") return box;
       box.append(control(variants[idx], path, true));
       return box;
@@ -292,19 +313,19 @@ export function createGuidedEditor({
       if (start > 0) {
         const previous = node("button", `Previous ${title} entries`);
         previous.type = "button";
-        previous.onclick = () => {
+        previous.onclick = guarded(() => {
           arrayPages.set(pageKey, Math.max(0, start - pageSize));
           renderFields();
-        };
+        });
         fieldset.append(previous);
       }
       if (start + pageSize < (value?.length || 0)) {
         const next = node("button", `Next ${title} entries`);
         next.type = "button";
-        next.onclick = () => {
+        next.onclick = guarded(() => {
           arrayPages.set(pageKey, start + pageSize);
           renderFields();
-        };
+        });
         fieldset.append(next);
       }
       (value || []).slice(start, start + pageSize).forEach((_, offset) => {
@@ -313,16 +334,16 @@ export function createGuidedEditor({
         row.append(control(s.items, [...path, i], true));
         const remove = node("button", `Remove ${title} entry ${i + 1}`);
         remove.type = "button";
-        remove.onclick = () => {
+        remove.onclick = guarded(() => {
           mutateDraft(() => getAt(path).splice(i, 1));
           renderFields();
-        };
+        });
         row.append(remove);
         fieldset.append(row);
       });
       const add = node("button", `Add ${title} entry`);
       add.type = "button";
-      add.onclick = () => {
+      add.onclick = guarded(() => {
         mutateDraft(() => {
           assert(
             (getAt(path) || []).length < (s.maxItems || LIMITS.records),
@@ -335,7 +356,7 @@ export function createGuidedEditor({
           );
         });
         renderFields();
-      };
+      });
       fieldset.append(add);
       box.append(fieldset);
       return box;
@@ -370,18 +391,21 @@ export function createGuidedEditor({
     input.dataset.path = path.join(".");
     if ((path.length === 1 && key === "id") || isIdentityReadOnly(path, value))
       input.disabled = true;
-    input.addEventListener("input", () => {
-      setAt(
-        path,
-        s.type === "boolean"
-          ? input.checked
-          : ["number", "integer"].includes(s.type)
-            ? input.value === ""
-              ? NaN
-              : Number(input.value)
-            : input.value,
-      );
-    });
+    input.addEventListener(
+      "input",
+      guarded(() => {
+        setAt(
+          path,
+          s.type === "boolean"
+            ? input.checked
+            : ["number", "integer"].includes(s.type)
+              ? input.value === ""
+                ? NaN
+                : Number(input.value)
+              : input.value,
+        );
+      }),
+    );
     l.append(input);
     const picker = referencePicker(path, title, input);
     if (picker) {
