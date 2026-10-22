@@ -28,3 +28,6 @@ T001–004 gate production. US1 then US2/US3 share files; no parallel file write
 - [x] T017 Apply independently reviewed same-tab button amendment in src/client/planner.mjs, with44px targets and storage-failure/no-navigation/keyboard tests in tests/browser/reader-flow.mjs (FR-003,009). Preserve existing native links.
 
 T005/T008/T010/T017 checkmarks mean test coverage authored and available runtime assertions passed; browser execution remains required by T013/T015. No screenshot/hosted success inferred.
+
+- [x] T018 Reproduce and repair ledger accessible heading contamination; add regression preserving exact heading/sibling controls (FR-003,008).
+- [ ] T019 Diagnose actual Firefox Back failure using bounded hosted failure artifacts, then repair confirmed cause and rerun unchanged browser assertions (FR-003,009).

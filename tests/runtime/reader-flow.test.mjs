@@ -302,3 +302,54 @@ test("in-memory navigation context is rechecked for expiry on later render", asy
     /unavailable/,
   );
 });
+
+test("ledger preserves item-only headings and sibling navigation controls", () => {
+  const nodes = new Map(),
+    $ = (s) => {
+      if (!nodes.has(s)) nodes.set(s, { innerHTML: "", addEventListener() {} });
+      return nodes.get(s);
+    };
+  const item = {
+    id: "demo:wire",
+    name: "Training Wire",
+    unit: "wire",
+    perGoal: [],
+  };
+  vm.runInNewContext(
+    source("src/client/planner.mjs").replace(/^import .*?;\n/gms, ""),
+    {
+      $,
+      esc: String,
+      state: {
+        pack: {
+          recipes: [],
+          objectives: [],
+          guides: [],
+          items: [item],
+          locations: [],
+        },
+        profile: {
+          goals: [{ id: "goal", quantity: 1 }],
+          routes: {},
+          spoilers: false,
+        },
+      },
+      init: (fn) => {
+        fn();
+        return Promise.resolve();
+      },
+      error: (e) => {
+        throw e;
+      },
+      planShared: () => ({ goals: [], ledger: [item], schedule: [] }),
+      URL,
+      location: { href: "http://localhost/planner/" },
+      document: { addEventListener() {} },
+      WeakMap,
+    },
+  );
+  const markup = $("#plan-output").innerHTML;
+  assert.match(markup, /<h3>Training Wire<\/h3><p>[^<]*<button type="button"/);
+  for (const heading of markup.matchAll(/<h3>(.*?)<\/h3>/gs))
+    assert.doesNotMatch(heading[1], /<(?:button|a)\b/);
+});

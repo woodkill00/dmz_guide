@@ -9,7 +9,33 @@ export async function runReaderFlowTests({
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
   });
+  const navigationEvents = [];
+  const recordNavigation = (event) => {
+    navigationEvents.push(event);
+    if (navigationEvents.length > 100) navigationEvents.shift();
+  };
+  await context.addInitScript(() => {
+    for (const type of ["pageshow", "pagehide"])
+      window.addEventListener(type, (event) =>
+        console.info(
+          "reader-lifecycle " +
+            JSON.stringify({
+              type,
+              persisted: event.persisted,
+              url: location.href,
+            }),
+        ),
+      );
+  });
   const page = await context.newPage();
+  page.on("framenavigated", (frame) => {
+    if (frame === page.mainFrame())
+      recordNavigation({ type: "navigation", url: frame.url() });
+  });
+  page.on("console", (message) => {
+    if (message.text().startsWith("reader-lifecycle "))
+      recordNavigation(JSON.parse(message.text().slice(17)));
+  });
   const ready = () =>
     page.waitForFunction(
       () =>
@@ -65,7 +91,50 @@ export async function runReaderFlowTests({
     await page.waitForSelector("#local-records h2");
     assert.equal(page.url(), itemURL);
     await page.goBack();
-    await page.waitForSelector('[data-need-item="demo:wire"]');
+    try {
+      await page.waitForSelector('[data-need-item="demo:wire"]');
+    } catch (failure) {
+      const state = await page
+        .evaluate(async () => {
+          const { state } = await import("/assets/src/client/common.mjs");
+          return {
+            url: location.href,
+            title: document.title,
+            error: document.querySelector("#error")?.textContent,
+            status: document.querySelector("#save-status")?.textContent,
+            output: document
+              .querySelector("#plan-output")
+              ?.textContent?.slice(0, 4000),
+            controls: [
+              ...document.querySelectorAll('[data-need-item="demo:wire"]'),
+            ].map((n) => ({
+              visible: !!n.getClientRects().length,
+              disabled: n.disabled,
+            })),
+            packId: state.pack?.id,
+            goals: state.profile?.goals,
+            revision: state.revision,
+            loading: state.loading,
+            saving: state.saving,
+          };
+        })
+        .catch((error) => ({
+          diagnosticError: error.message,
+          url: page.url(),
+        }));
+      const evidence = { navigationEvents, state };
+      console.log("Reader Back failure evidence", JSON.stringify(evidence));
+      await writeFile(
+        "test-results/reader-back-failure.json",
+        JSON.stringify(evidence, null, 2),
+      );
+      if (captureScreenshots)
+        await page.screenshot({
+          path: "test-results/reader-back-failure.png",
+          fullPage: true,
+        });
+      throw failure;
+    }
     const locationControl = page
       .locator('[data-need-item="demo:wire"][data-need-destination="maps"]')
       .first();
