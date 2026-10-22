@@ -1,5 +1,13 @@
 import assert from "node:assert/strict";
-import { cp, mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import {
+  cp,
+  mkdtemp,
+  mkdir,
+  readFile,
+  rm,
+  stat,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { execFile } from "node:child_process";
@@ -328,6 +336,7 @@ export async function runPageEditTests({
   });
   let reader,
     freshReader,
+    ownsPublicBuild = false,
     phase = "public detail targets";
   const page = await context.newPage();
   const snapshot = async () => {
@@ -398,6 +407,11 @@ export async function runPageEditTests({
     return data;
   };
   try {
+    // The parent intentionally starts from a build-free isolated repository;
+    // its later saved-preview regression must still prove no build is needed.
+    // Never claim or remove a pre-existing caller-owned build directory.
+    await assert.rejects(stat(join(repository, "dist")), { code: "ENOENT" });
+    ownsPublicBuild = true;
     await build(repository);
     reader = await startReader(repository);
     const automaticLocalRequests = [];
@@ -901,6 +915,19 @@ export async function runPageEditTests({
     await context.close();
     await reader?.close();
     await freshReader?.close();
+    if (ownsPublicBuild) {
+      await rm(join(repository, "dist"), {
+        recursive: true,
+        force: true,
+        maxRetries: 5,
+        retryDelay: 100,
+      });
+      await assert.rejects(
+        stat(join(repository, "dist")),
+        { code: "ENOENT" },
+        "Page-edit's owned public build is removed before the parent Studio journey resumes",
+      );
+    }
     await rm(temporary, {
       recursive: true,
       force: true,

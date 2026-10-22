@@ -46,3 +46,5 @@ Execution note: T009/T010 mark authored browser coverage and documentation, not 
 - [x] T017 [CONV-004] Capture tall enlarged editor pages as complete bounded-height tiles with document dimensions and tile geometry, avoiding Firefox's 32767px bitmap limit without skipping visual coverage. Keep all reflow/pixel checks.
 
 - [x] T018 [CONV-005] Allow long Studio paragraph words to wrap normally at 320px/200% text; preserve actual size, content and layout assertions. Hosted verification remains T011/T012.
+
+- [x] T019 [CONV-006] Restore no-build precondition after page-edit helper: verify dist absent before its owned build, stop reader, remove only that generated build, and verify absent in cleanup. Preserve existing saved-preview assertion unchanged; complete-suite rerun remains T011/T012.
