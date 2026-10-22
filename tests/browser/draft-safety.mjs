@@ -222,7 +222,13 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
       "Escape restores initiating link focus",
     );
     // A full current-page link is a real reload, not a fragment-only no-op.
-    await page.locator('a[href*="/inventory/"]').first().click();
+    const selfLink = page.getByRole("link", { name: "Inventory", exact: true });
+    assert.equal(
+      new URL(await selfLink.getAttribute("href"), page.url()).hash,
+      "",
+      "Self-link regression targets a full navigation, not skip-to-content",
+    );
+    await selfLink.click();
     await page.waitForSelector("#draft-navigation:visible");
     await page.click("#draft-stay");
     assert.equal(await page.locator(wire).inputValue(), "23");
