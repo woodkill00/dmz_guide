@@ -372,12 +372,51 @@ async function pagedDrafts({ browser, base, evidence }) {
       true,
     );
   const next = () => page.click("#inventory-next");
+  // Intentionally aria-disabled boundaries remain focusable and accept pointer
+  // events. Playwright locator.click correctly refuses them, so verify the hit
+  // target and deliver a genuine mouse action rather than forcing actionability.
+  const boundaryClick = async (selector) => {
+    const button = page.locator(selector);
+    assert.equal(await button.getAttribute("aria-disabled"), "true");
+    await button.scrollIntoViewIfNeeded();
+    const point = await button.evaluate((node) => {
+      const rect = node.getBoundingClientRect();
+      const x = rect.x + rect.width / 2,
+        y = rect.y + rect.height / 2;
+      if (
+        !(rect.width > 0 && rect.height > 0) ||
+        document.elementFromPoint(x, y) !== node
+      )
+        throw new Error(
+          "Unavailable pager center is not an unobscured button hit target",
+        );
+      window.scaleBoundaryClick = null;
+      node.addEventListener(
+        "click",
+        (event) => {
+          window.scaleBoundaryClick = {
+            trusted: event.isTrusted,
+            id: event.currentTarget.id,
+            target: event.target.id,
+          };
+        },
+        { once: true },
+      );
+      return { x, y };
+    });
+    await page.mouse.click(point.x, point.y);
+    assert.deepEqual(await page.evaluate(() => window.scaleBoundaryClick), {
+      trusted: true,
+      id: selector.slice(1),
+      target: selector.slice(1),
+    });
+  };
   try {
     await page.goto(`${base}/inventory/?pack=${encodeURIComponent(training)}`);
     await ready(page);
     assert.equal(await page.locator("[data-inventory-item]").count(), 50);
     await range("Items 1–50 of 101 matches. Page 1 of 3.");
-    await page.click("#inventory-previous");
+    await boundaryClick("#inventory-previous");
     await page.keyboard.press("Enter");
     await focus("#inventory-previous");
     await range("Items 1–50 of 101 matches. Page 1 of 3.");
@@ -408,7 +447,7 @@ async function pagedDrafts({ browser, base, evidence }) {
       await page.locator("#inventory-next").getAttribute("aria-disabled"),
       "true",
     );
-    await next();
+    await boundaryClick("#inventory-next");
     await page.keyboard.press("Enter");
     await focus("#inventory-next");
     assert.equal(await field(100).inputValue(), "8");
@@ -442,6 +481,8 @@ async function pagedDrafts({ browser, base, evidence }) {
     await field(0, "reserves").fill("4");
     await next();
     await field(75).fill("2.5");
+    await field(75, "reserves").fill("");
+    await field(76).fill("-1");
     await page
       .getByRole("button", { name: "Save inventory", exact: true })
       .click();
@@ -451,6 +492,26 @@ async function pagedDrafts({ browser, base, evidence }) {
       "2.5",
       "Native mounted invalid-event recovery retains raw fractional value",
     );
+    assert.equal(await field(75, "reserves").inputValue(), "");
+    assert.equal(await field(76).inputValue(), "-1");
+    await field(75).fill("0007");
+    await page
+      .getByRole("button", { name: "Save inventory", exact: true })
+      .click();
+    await focus('[data-field="reserves"][data-id="demo:scale-item-75"]');
+    assert.equal(await field(75).inputValue(), "0007");
+    assert.equal(await field(75, "reserves").inputValue(), "");
+    assert.equal(await field(76).inputValue(), "-1");
+    await field(75, "reserves").fill("5");
+    await page
+      .getByRole("button", { name: "Save inventory", exact: true })
+      .click();
+    await focus('[data-field="inventory"][data-id="demo:scale-item-76"]');
+    assert.equal(await field(75).inputValue(), "0007");
+    assert.equal(await field(75, "reserves").inputValue(), "5");
+    assert.equal(await field(76).inputValue(), "-1");
+    await field(76).fill("0");
+    await field(75).fill("2.5");
     await next();
     await page
       .getByRole("button", { name: "Save inventory", exact: true })
