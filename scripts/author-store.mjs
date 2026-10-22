@@ -269,6 +269,21 @@ async function withLock(root, operation) {
     }
   });
 }
+// Capture raw catalog/media bytes only. Queued store operations must not be
+// called inside this boundary: they would wait for the lock already held here.
+export async function withRepositorySnapshot({ root }, operation) {
+  root = resolve(root);
+  return withLock(root, async () => {
+    const recovery = await inspectRecovery({ root });
+    check(
+      !recovery.pending,
+      "An interrupted save requires author:recover",
+      "RECOVERY_REQUIRED",
+      409,
+    );
+    return operation();
+  });
+}
 function validatePlan(before, after, markerPath) {
   check(
     before instanceof Map && after instanceof Map,

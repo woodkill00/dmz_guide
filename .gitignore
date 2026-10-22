@@ -22,3 +22,6 @@ release/
 
 # Local author transaction journals and recovery bytes must never be published.
 .author-state/
+
+# Local candidate/OLD build trees and interrupted-build lock.
+.build-state/

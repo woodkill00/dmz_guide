@@ -1,23 +1,15 @@
 import { firefox, webkit } from "playwright";
-import { spawn } from "node:child_process";
+import { startBrowserServer } from "./server.mjs";
 import { mkdir } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { runEditorTests } from "./editor.mjs";
 import { runLocalNetworkTests } from "./offline.mjs";
 import { monitorBrowser } from "./health.mjs";
-const port = "4176",
-  base = `http://127.0.0.1:${port}`;
-const server = spawn(process.execPath, ["scripts/serve.mjs"], {
-  env: { ...process.env, PORT: port },
-  stdio: "pipe",
-});
+const server = await startBrowserServer();
+const { base } = server;
+const passed = [];
+let failure;
 try {
-  for (let n = 0; n < 100; n++) {
-    try {
-      if ((await fetch(base)).ok) break;
-    } catch {}
-    await new Promise((r) => setTimeout(r, 100));
-  }
   await mkdir("test-results", { recursive: true });
   for (const [name, engine] of Object.entries({ firefox, webkit })) {
     const browser = await engine.launch({ headless: true });
@@ -68,13 +60,18 @@ try {
         captureScreenshots: name !== "webkit",
       });
       health();
-      console.log(
+      server.assertAlive();
+      passed.push(
         `${name}: native navigation, narrow maps, IndexedDB portable raster roundtrip and local-network tests passed`,
       );
     } finally {
       await browser.close();
     }
   }
+} catch (error) {
+  failure = error;
+  throw error;
 } finally {
-  server.kill();
+  await server.stop(failure);
 }
+for (const message of passed) console.log(message);

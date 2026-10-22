@@ -1,9 +1,19 @@
 # Run, extend and release the guide
 
 ## Local run (no account, hosting or paid service)
-Use Node.js 22 or newer; development uses Node 24; hosted Chrome jobs have been verified on Node 22.23.3. From a clean source checkout run `npm ci`, `npm run build`, then `npm start`. Open `http://127.0.0.1:4173`. The server binds loopback by default. Stop it with Ctrl+C. Do not open pages using `file://`: browser modules and local fetches require a server.
+Use Node.js 22.x (supported baseline) or 24.x (development/compatibility); other majors are not claimed supported. CI explicitly selects Node 22.x on Linux/Windows and Node 24.x on Linux without multiplying full browser suites. From a clean source checkout run `npm ci`, `npm run build`, then `npm start`. Open `http://127.0.0.1:4173`. The server binds loopback by default. Stop it with Ctrl+C. Do not open pages using `file://`: browser modules and local fetches require a server.
 
 The production `dist/` is static HTML/CSS/JavaScript/JSON. Runtime does not need npm dependencies, external fonts, a CDN, login or an API. Copy `dist/` plus `scripts/serve.mjs` in the same directory structure and run `node scripts/serve.mjs`; Node alone is sufficient. Build output currently expects the host root `/`, not a `/dmz_guide/` subpath. No hosting was enabled. Configure a host-root static site yourself only after rights and content review; do not assume drop-in repository GitHub Pages support.
+
+## Failed or interrupted rebuilds
+
+A build generates and validates an unpublished candidate before replacing `dist/`. Write, copy or validation failure retains the previous reader at `dist/` and labels it **OLD** in the build/Studio diagnostic. A successful repository Save is not a successful reader rebuild or public deployment. Success is printed only after complete promotion.
+
+Directory replacement is not universally atomic: a promotion failure attempts rollback. If rollback also fails, the diagnostic reports the complete retained OLD tree and whether the normal `dist/` path is unavailable. A hard process exit between moves can also leave `dist/` unavailable. The local `.build-state/` folder keeps the candidate/previous trees and ownership lock for explicit inspection; a later build refuses rather than guessing or deleting this material.
+
+For manual recovery, stop relevant build/reader processes first and confirm no active process owns the lock. Inspect the reported tree and `.build-state/current.lock`; preserve a copy of both candidate and previous trees before making changes. If `dist/` is missing and the complete OLD tree is identified, restore that tree to `dist/` deliberately. Never overwrite an existing `dist/` without reviewing it. Only after the outcome is verified should you explicitly archive resolved build-control material outside `.build-state/` and retry. Do not confuse build-control material with `.author-state/` transaction recovery; never delete or automatically prune either to bypass a warning.
+
+This provides rollback-aware preservation, not power-loss atomicity or guaranteed uninterrupted serving during a path switch. A cleanup warning after successful promotion means the NEW build is current but retained output/control material needs inspection; it is not an OLD-build success claim.
 
 ## Offline means local server running
 With the local server running, the guide and saved portable pictures work without external internet. New navigation fails when the server stops. There is no installable PWA, service-worker cache or cross-device synchronization. Browser storage can be unavailable, cleared, evicted or scoped to a different origin/port/profile. Export backups before changing browsers or origins. Do not rely on browser cache as a backup.
