@@ -13,6 +13,7 @@ class ReleasePathTests(unittest.TestCase):
         for path in module.AUTHOR_ONLY_PATHS:
             self.assertTrue(module.is_author_only(path), path)
         self.assertTrue(module.is_author_only('.author-state/journal.json'))
+        self.assertTrue(module.is_author_only('assets/src/content/studio-recovery.mjs'))
 
     def test_harmless_public_titles_are_not_excluded(self):
         for path in ('items/studio-key/index.html', 'locations/author-house/index.html',

@@ -2,12 +2,12 @@
 ## Phase1: Requirements and reproduction
 - [x] T001 Inspect source and approved wave; specify, clarify and plan bounded contracts in spec.md/plan.md/research.md.
 - [x] T002 Obtain independent requirements checklist review and run read-only analysis before production edits (FR001–009).
-- [ ] T003 Create actual browser baseline dependency/unknown-fallback probes and valid fixture measurement harness in tests/browser/measured-scale.mjs; publish test-only and record hosted evidence (FR001/002/006).
-- [ ] T004 Add failing runtime identity/cache and stable-filter contracts in tests/runtime/measured-scale.test.mjs; retain baseline results (FR001–005).
+- [x] T003 Create actual browser baseline dependency/unknown-fallback probes and valid fixture measurement harness in tests/browser/measured-scale.mjs; publish test-only and record hosted evidence (FR001/002/006).
+- [x] T004 Add failing runtime identity/cache and stable-filter contracts in tests/runtime/measured-scale.test.mjs; retain baseline results (FR001–005).
 ## Phase2: Selected identity and indexing
-- [ ] T005 Integrate014 common options and add bounded exact descriptor index/loader in scripts/build.mjs and src/content/catalog-loader.mjs; coordinate016 identity hook (FR001/002/004).
-- [ ] T006 Integrate selected-only initialization, failure rollback, explicit retry and local discovery in src/client/common.mjs; update private import full-baseline lookup in src/client/editor.mjs (FR001–004).
-- [ ] T007 Replace per-item repeated find with per-pack ID index in src/client/profile.mjs; retain raw checkpoints/filter order/counts (FR005/008).
+- [x] T005 Integrate014 common options and add bounded exact descriptor index/loader in scripts/build.mjs and src/content/catalog-loader.mjs; coordinate016 identity hook (FR001/002/004).
+- [x] T006 Integrate selected-only initialization, failure rollback, explicit retry and local discovery in src/client/common.mjs; update private import full-baseline lookup in src/client/editor.mjs (FR001–004).
+- [x] T007 Replace per-item repeated find with per-pack ID index in src/client/profile.mjs; retain raw checkpoints/filter order/counts (FR005/008).
 ## Phase3: Measured conditional decisions
 - [ ] T008 Run actual after-index hosted measurements with identical valid fixtures and record samples/medians/environment/limitations (FR006).
 - [ ] T009 Record separate pagination/native-selector implement-or-no-change decisions; if needed amend owning artifacts and obtain independent gate before adding conditional tasks/code (FR007/008).

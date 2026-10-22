@@ -14,6 +14,15 @@ const port = Number(
 );
 if (!Number.isInteger(port) || port < 1 || port > 65535)
   throw new Error("Port must be an integer from 1 to 65535.");
+try {
+  if (!(await stat(join(root, "index.html"))).isFile())
+    throw new Error("Missing reader index");
+} catch {
+  console.error(
+    "Reader build is missing. In a source checkout run npm run build, then npm start. For a static release, extract the complete ZIP. Repository Content Studio uses npm run author and needs no reader build.",
+  );
+  process.exit(1);
+}
 const types = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -79,6 +88,14 @@ const server = createServer(async (req, res) => {
     res.writeHead(404, { "Content-Type": "text/html; charset=utf-8" });
     res.end(req.method === "HEAD" ? undefined : body);
   }
+});
+server.on("error", (error) => {
+  console.error(
+    error.code === "EADDRINUSE"
+      ? `Port ${port} is already in use. Stop the other server or explicitly choose a port. No port was changed: private browser data belongs to its original address and port.`
+      : `Reader startup failed: ${error.message}`,
+  );
+  process.exitCode = 1;
 });
 server.listen(port, process.env.HOST || "127.0.0.1", () =>
   console.log(`DMZ Guide: http://${process.env.HOST || "127.0.0.1"}:${port}`),

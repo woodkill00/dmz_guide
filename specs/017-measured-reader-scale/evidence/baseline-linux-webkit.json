@@ -1,0 +1,197 @@
+{
+  "baseline": true,
+  "status": "baseline reproduction, not acceptance",
+  "environment": {
+    "browser": "webkit",
+    "version": "26.0",
+    "os": "linux",
+    "osRelease": "7.0.0-1017-azure",
+    "node": "v22.23.3",
+    "cpu": "AMD EPYC 7763 64-Core Processor",
+    "logicalCpus": 4,
+    "memoryBytes": 16760344576,
+    "runner": "GitHub Actions 1000015786",
+    "runnerOS": "Linux"
+  },
+  "method": "One warmup and five samples per valid fixture. Initialization uses navigation time origin to ready plus double animation frame. Filter dispatch measures synchronous work and next painted frame; native keydown measures next painted frame and verifies selected option. Routed HTTP200 fixture payloads isolate browser work from network variability. Warm process/context; no universal latency claims, native popup opening or user study claims. No timing pass/fail assertions.",
+  "budgetsMs": {
+    "initialization": 1000,
+    "filter": 100,
+    "nativeSelection": 100
+  },
+  "scenarios": [
+    "REPRODUCED: selected payload completed but initialization waited for controlled unrelated payload release",
+    "REPRODUCED: HTTP200 malformed unrelated content blocks healthy selected catalog",
+    "REPRODUCED: unknown requested ID silently opens official catalog"
+  ],
+  "measurements": [
+    {
+      "count": 100,
+      "kind": "inventory",
+      "bytes": 23877,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        137,
+        133,
+        132,
+        128,
+        129
+      ],
+      "interactionToPaintMs": [
+        27,
+        25,
+        27,
+        31,
+        31
+      ],
+      "synchronousFilterMs": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "medianInitializationMs": 132,
+      "medianInteractionMs": 27
+    },
+    {
+      "count": 1000,
+      "kind": "inventory",
+      "bytes": 232677,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        666,
+        658,
+        699.0000000000001,
+        653,
+        649
+      ],
+      "interactionToPaintMs": [
+        110.00000000000011,
+        110.99999999999989,
+        111,
+        109.99999999999989,
+        107.99999999999989
+      ],
+      "synchronousFilterMs": [
+        5,
+        4.999999999999886,
+        6,
+        4,
+        5
+      ],
+      "medianInitializationMs": 658,
+      "medianInteractionMs": 110.00000000000011
+    },
+    {
+      "count": 5000,
+      "kind": "inventory",
+      "bytes": 1164677,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        6174,
+        6199,
+        6178,
+        5927.000000000001,
+        5892
+      ],
+      "interactionToPaintMs": [
+        562,
+        566,
+        578,
+        580,
+        571.0000000000009
+      ],
+      "synchronousFilterMs": [
+        78,
+        77,
+        81,
+        82,
+        76
+      ],
+      "medianInitializationMs": 6174,
+      "medianInteractionMs": 571.0000000000009
+    },
+    {
+      "count": 100,
+      "kind": "native-selector",
+      "bytes": 32977,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        93,
+        93,
+        92,
+        118.00000000000001,
+        94
+      ],
+      "interactionToPaintMs": [
+        26,
+        28,
+        27,
+        26.00000000000003,
+        28
+      ],
+      "synchronousFilterMs": [],
+      "medianInitializationMs": 93,
+      "medianInteractionMs": 27
+    },
+    {
+      "count": 1000,
+      "kind": "native-selector",
+      "bytes": 323677,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        126,
+        133,
+        136,
+        145,
+        127
+      ],
+      "interactionToPaintMs": [
+        27,
+        20,
+        16.99999999999997,
+        20.00000000000003,
+        23
+      ],
+      "synchronousFilterMs": [],
+      "medianInitializationMs": 133,
+      "medianInteractionMs": 20.00000000000003
+    },
+    {
+      "count": 5000,
+      "kind": "native-selector",
+      "bytes": 1619677,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        284.00000000000006,
+        297,
+        294,
+        280,
+        294
+      ],
+      "interactionToPaintMs": [
+        37,
+        32,
+        36,
+        37,
+        36
+      ],
+      "synchronousFilterMs": [],
+      "medianInitializationMs": 294,
+      "medianInteractionMs": 36
+    }
+  ]
+}

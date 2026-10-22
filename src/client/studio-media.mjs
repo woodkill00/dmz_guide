@@ -1,3 +1,4 @@
+import { pruneImageDescriptions } from "../content/image-description.mjs";
 import {
   LIMITS,
   PUBLISHED_LIMITS,
@@ -156,6 +157,8 @@ export function createStudioMedia({
     controller.abort();
     controller = new AbortController();
     source = working = duplicate = null;
+    if ($("#picture-description")) $("#picture-description").value = "";
+    if ($("#picture-decorative")) $("#picture-decorative").checked = false;
     $("#picture-workbench").hidden = true;
     $("#picture-file").value = "";
     rightsReset();
@@ -196,6 +199,8 @@ export function createStudioMedia({
       file && file.size > 0 && file.size <= LIMITS.assetBytes,
       "Choose one raster file up to 2 MiB",
     );
+    if ($("#picture-description")) $("#picture-description").value = "";
+    if ($("#picture-decorative")) $("#picture-decorative").checked = false;
     const token = ++generation,
       workspace = getGeneration();
     controller.abort();
@@ -258,7 +263,16 @@ export function createStudioMedia({
       ? selected
       : null;
   }
-  function attachToRecord(draft, assetId, method) {
+  function descriptionInput() {
+    const text = $("#picture-description")?.value.trim() || "";
+    const decorative = $("#picture-decorative")?.checked || false;
+    assert(
+      text.length <= 1000 && !(decorative && text),
+      "Use a description or decorative choice, not both",
+    );
+    return text || decorative ? { text, decorative } : null;
+  }
+  function attachToRecord(draft, assetId, method, description = null) {
     if (method === "library") return;
     const selected = canAttach();
     assert(
@@ -274,6 +288,15 @@ export function createStudioMedia({
         "At most eight additional pictures are allowed",
       );
       record.assetIds = [...new Set([...ids, assetId])];
+    }
+    pruneImageDescriptions(record);
+    if (description) {
+      record.imageDescriptions = [
+        ...(record.imageDescriptions || []).filter(
+          (entry) => entry.assetId !== assetId,
+        ),
+        { assetId, ...description },
+      ];
     }
   }
   function category() {
@@ -416,9 +439,10 @@ export function createStudioMedia({
           "At most eight additional pictures are allowed",
         );
     }
+    const description = method === "library" ? null : descriptionInput();
     mutateDraft((draft) => {
       for (const entry of additions) draft.assets.push(entry.asset);
-      attachToRecord(draft, id, method);
+      attachToRecord(draft, id, method, description);
       for (const [key, upload] of next) getUploads().set(key, upload);
     });
     cancelPicture();
@@ -427,7 +451,7 @@ export function createStudioMedia({
       `Picture ${id} attached to the unsaved draft${additions.length > 1 ? " with a separate thumbnail" : ""}. Validate and save when ready.`,
     );
   }
-  function useExisting(id, method) {
+  function useExisting(id, method, description = null) {
     assert(
       getDraft().assets.some((a) => a.id === id),
       "Picture no longer exists",
@@ -441,7 +465,7 @@ export function createStudioMedia({
           (selected.record.assetIds || []).length < 8,
         "At most eight additional pictures are allowed",
       );
-    mutateDraft((draft) => attachToRecord(draft, id, method));
+    mutateDraft((draft) => attachToRecord(draft, id, method, description));
     onRender();
   }
   function render() {
@@ -548,6 +572,7 @@ export function createStudioMedia({
                   selected.record.assetIds = selected.record.assetIds.filter(
                     (id) => id !== asset.id,
                   );
+                pruneImageDescriptions(selected.record);
               });
               onRender();
             } else useExisting(asset.id, action);
@@ -616,7 +641,8 @@ export function createStudioMedia({
   listen("#reuse-picture", () => {
     assert(duplicate, "No duplicate is selected");
     const method = $("#picture-attachment").value;
-    if (method !== "library") useExisting(duplicate, method);
+    if (method !== "library")
+      useExisting(duplicate, method, descriptionInput());
     cancelPicture();
     onStatus("Existing picture reused; no duplicate image bytes added.");
   });

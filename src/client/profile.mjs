@@ -32,6 +32,7 @@ document.addEventListener("pack-changing", () => {
   if ($("#restore-preview")) $("#restore-preview").hidden = true;
 });
 let inventoryCheckpoint = new Map();
+let inventoryIndex = new Map();
 function checkpointInventory() {
   inventoryCheckpoint = new Map(
     [...document.querySelectorAll("#inventory-form [data-field]")].map(
@@ -48,6 +49,7 @@ registerDraftGuard({
 document.addEventListener("profile-saved", checkpointInventory);
 function render() {
   if ($("#inventory-fields")) {
+    inventoryIndex = new Map(state.pack.items.map((item) => [item.id, item]));
     $("#inventory-fields").innerHTML = state.pack.items
       .map(
         (r) =>
@@ -208,7 +210,7 @@ function filterInventory() {
   let count = 0;
   for (const node of document.querySelectorAll("[data-inventory-item]")) {
     const id = node.dataset.inventoryItem,
-      item = state.pack.items.find((r) => r.id === id);
+      item = inventoryIndex.get(id);
     node.hidden =
       ![item.name, item.category, id].join(" ").toLowerCase().includes(q) ||
       (mode === "owned" &&

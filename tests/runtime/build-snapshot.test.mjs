@@ -138,7 +138,13 @@ async function fixture(t, { build = false } = {}) {
   const root = await mkdtemp(join(tmpdir(), "dmz-build-snapshot-"));
   t.after(() => rm(root, { recursive: true, force: true }));
   if (build) {
-    for (const part of ["scripts", "src", "schemas"])
+    for (const part of [
+      "scripts",
+      "src",
+      "schemas",
+      "package.json",
+      "package-lock.json",
+    ])
       await cp(join(source, part), join(root, part), { recursive: true });
     await put(
       root,

@@ -1,5 +1,13 @@
 import { constants } from "node:fs";
-import { lstat, mkdir, open, readdir, rename, unlink } from "node:fs/promises";
+import {
+  lstat,
+  mkdir,
+  open,
+  opendir,
+  readdir,
+  rename,
+  unlink,
+} from "node:fs/promises";
 import { resolve, join, dirname, relative, sep, parse } from "node:path";
 import { createHash, randomBytes } from "node:crypto";
 import { execFile } from "node:child_process";
@@ -1130,4 +1138,218 @@ export async function createAuthorStore({ root, schema }) {
       sharedRead(root, () => store.media(packKey, assetId)),
     changes: () => sharedRead(root, () => store.changes()),
   };
+}
+
+// Point-in-time evidence for manual archival review only. Receipts are also used
+// by changes() to track deleted paths, so eligible never means safe to delete.
+export async function inspectRecoveryStorage({ root }) {
+  root = resolve(root);
+  const result = {
+    complete: true,
+    transactionCount: 0,
+    fileCount: 0,
+    bytes: 0,
+    transactions: [],
+    warnings: [],
+  };
+  const observed = new Map();
+  let readBytes = 0,
+    entryCount = 0;
+  const stamp = (s) => `${s.dev}:${s.ino}:${s.size}:${s.mtimeMs}:${s.ctimeMs}`;
+  const uncertain = (message) => {
+    result.complete = false;
+    result.warnings.push(message);
+  };
+  async function stat(path) {
+    const info = await lstat(path);
+    if (info.isSymbolicLink() || (!info.isFile() && !info.isDirectory()))
+      throw new Error("Unsupported recovery path type");
+    if (observed.has(path) && observed.get(path) !== stamp(info))
+      throw new Error("Recovery path changed during inspection");
+    observed.set(path, stamp(info));
+    return info;
+  }
+  async function read(path, limit) {
+    const info = await stat(path);
+    if (
+      !info.isFile() ||
+      info.size > limit ||
+      readBytes + info.size > 128 * 1024 * 1024
+    )
+      throw new Error("Recovery read limit reached");
+    const handle = await open(
+      path,
+      constants.O_RDONLY | (constants.O_NOFOLLOW || 0),
+    );
+    try {
+      if (stamp(await handle.stat()) !== stamp(info))
+        throw new Error("Recovery file changed during inspection");
+      const bytes = Buffer.alloc(info.size + 1);
+      let total = 0;
+      while (total < bytes.length) {
+        const part = await handle.read(
+          bytes,
+          total,
+          bytes.length - total,
+          total,
+        );
+        if (!part.bytesRead) break;
+        total += part.bytesRead;
+      }
+      if (total !== info.size || stamp(await handle.stat()) !== stamp(info))
+        throw new Error("Recovery file changed during inspection");
+      readBytes += total;
+      return bytes.subarray(0, total);
+    } finally {
+      await handle.close();
+    }
+  }
+  async function list(path) {
+    const info = await stat(path);
+    if (!info.isDirectory())
+      throw new Error("Recovery directory is not a directory");
+    const names = [],
+      folded = new Set();
+    const dir = await opendir(path);
+    for await (const entry of dir) {
+      if (++entryCount > 55000) throw new Error("Recovery entry limit reached");
+      if (folded.has(entry.name.toLowerCase()))
+        throw new Error("Case-colliding recovery path");
+      folded.add(entry.name.toLowerCase());
+      names.push(entry.name);
+      if (names.length > 50000)
+        throw new Error("Recovery directory limit reached");
+    }
+    return names.sort();
+  }
+  try {
+    // Validate ancestors without creating paths or traversing symlinks.
+    let ancestor = parse(root).root;
+    for (const part of relative(ancestor, root).split(sep).filter(Boolean)) {
+      ancestor = join(ancestor, part);
+      const info = await lstat(ancestor);
+      if (!info.isDirectory() || info.isSymbolicLink())
+        throw new Error("Unsafe recovery root");
+    }
+    const state = join(root, STATE);
+    if (!(await exists(state))) return result;
+    await stat(state);
+    const blockers = [];
+    for (const name of ["journal.json", "current.lock"]) {
+      const path = join(state, name);
+      if (await exists(path)) {
+        await read(path, 8 * 1024 * 1024);
+        blockers.push(`${name} exists; pending or locked state`);
+      }
+    }
+    const folder = join(state, "transactions");
+    if (!(await exists(folder))) {
+      result.warnings.push(...blockers);
+      return result;
+    }
+    const transactions = await list(folder);
+    if (transactions.length > 1000)
+      throw new Error("Recovery transaction limit reached; totals are partial");
+    for (const transactionId of transactions) {
+      if (!/^[a-f0-9]{32}$/.test(transactionId))
+        throw new Error("Unsupported retained transaction name");
+      const tx = {
+        transactionId,
+        fileCount: 0,
+        bytes: 0,
+        archiveEligible: false,
+        reasons: [...blockers],
+      };
+      result.transactions.push(tx);
+      result.transactionCount++;
+      const base = join(folder, transactionId),
+        files = new Map();
+      async function walk(path, prefix = "", depth = 0) {
+        if (depth > 3) throw new Error("Recovery depth limit reached");
+        for (const name of await list(path)) {
+          const file = join(path, name),
+            rel = prefix + name,
+            info = await stat(file);
+          if (info.isDirectory()) await walk(file, rel + "/", depth + 1);
+          else {
+            if (++result.fileCount > 50000)
+              throw new Error("Recovery file limit reached");
+            tx.fileCount++;
+            tx.bytes += info.size;
+            result.bytes += info.size;
+            files.set(rel, file);
+          }
+        }
+      }
+      await walk(base);
+      try {
+        if (!files.has("outcome.json")) throw new Error("No completed receipt");
+        const receipt = parseBounded(
+          (await read(files.get("outcome.json"), 8 * 1024 * 1024)).toString(
+            "utf8",
+          ),
+          8 * 1024 * 1024,
+        );
+        if (
+          receipt.state !== "committed" ||
+          receipt.transactionId !== transactionId ||
+          !Array.isArray(receipt.paths) ||
+          !receipt.paths.length ||
+          receipt.paths.length > AUTHOR_LIMITS.transactionFiles
+        )
+          throw new Error("Invalid completed receipt");
+        const expected = new Set(["outcome.json"]),
+          paths = new Set();
+        for (const [i, item] of receipt.paths.entries()) {
+          if (
+            !item ||
+            !isManagedPath(item.path, { legacy: true }) ||
+            paths.has(item.path)
+          )
+            throw new Error("Invalid receipt path");
+          if (item.beforeHash === null && item.afterHash === null)
+            throw new Error("Receipt has no before or after content");
+          paths.add(item.path);
+          for (const direction of ["before", "after"]) {
+            const hash = item[`${direction}Hash`];
+            if (hash === null) continue;
+            if (typeof hash !== "string" || !/^[a-f0-9]{64}$/.test(hash))
+              throw new Error("Invalid receipt digest");
+            const name = `${direction}/${i}.bin`;
+            expected.add(name);
+            if (
+              !files.has(name) ||
+              digest(await read(files.get(name), 64 * 1024 * 1024)) !== hash
+            )
+              throw new Error("Retained backup missing or changed");
+          }
+        }
+        if (
+          files.size !== expected.size ||
+          [...files.keys()].some((name) => !expected.has(name))
+        )
+          throw new Error("Unexpected retained files");
+        tx.archiveEligible = !tx.reasons.length;
+      } catch (error) {
+        tx.reasons.push(error.message);
+        if (/limit|changed during/.test(error.message))
+          uncertain(error.message);
+      }
+    }
+    for (const [path, expected] of observed) {
+      if (stamp(await lstat(path)) !== expected)
+        throw new Error("Recovery state changed during inspection");
+    }
+  } catch (error) {
+    uncertain(error.message);
+  }
+  if (!result.complete)
+    for (const tx of result.transactions) {
+      tx.archiveEligible = false;
+      tx.reasons.push("Incomplete or changing inventory; totals are partial");
+    }
+  result.warnings.push(
+    "Archival eligibility is manual-review evidence only, never deletion permission. Retain receipts needed for repository history.",
+  );
+  return result;
 }

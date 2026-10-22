@@ -39,7 +39,7 @@ jobs:
           python scripts/select-feature.py 002-repository-bootstrap
           for script in .specify/scripts/bash/*.sh; do bash -n "$script"; done
           bash .specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks
-          for feature in 003-runnable-guide 004-shared-planning 005-portable-editor 006-location-intelligence 007-progression-guides 008-community-release 009-repository-content-studio 010-page-edit-actions 011-private-draft-safety 012-recovery-truthfulness 013-build-reliability 017-measured-reader-scale; do
+          for feature in 003-runnable-guide 004-shared-planning 005-portable-editor 006-location-intelligence 007-progression-guides 008-community-release 009-repository-content-studio 010-page-edit-actions 011-private-draft-safety 012-recovery-truthfulness 013-build-reliability 014-reader-flow 015-contributor-workflows 016-accessible-release-evidence 017-measured-reader-scale; do
             SPECIFY_FEATURE_DIRECTORY="specs/$feature" bash .specify/scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks
           done
 
@@ -66,6 +66,8 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npx playwright install chromium
+      - run: node tests/browser/measured-scale-runner.mjs
+      - run: node tests/browser/contributor-workflows.mjs
       - run: npm run test:browser
       - run: npm run test:studio
       - name: Rebuild and verify clean distributable
@@ -119,6 +121,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: npx playwright install --with-deps firefox webkit
+      - run: node tests/browser/measured-scale-runner.mjs --engines
+      - run: node tests/browser/contributor-workflows.mjs --engines
       - run: npm run test:engines
       - run: npm run test:studio -- --engines
       - name: Save engine evidence

@@ -1334,3 +1334,52 @@ main :where(p, li, a, ul, ol, section, article, div) {
 #draft-navigation .draft-actions {
   gap: 12px;
 }
+
+/* Wave 2: readable functional metadata; density comes from spacing, not small text. */
+.card-meta,
+.card-foot,
+.provenance dt,
+.site-nav a,
+.theme-toggle {
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
+}
+.badge {
+  color: var(--text);
+}
+.record-card {
+  padding: 1rem;
+}
+.record-card h3 {
+  margin-top: 0.75rem;
+}
+.evidence-caveat {
+  margin-block: 0.75rem 1rem;
+}
+.map-layout.list-only {
+  grid-template-columns: 1fr;
+}
+@media (max-width: 600px) {
+  .hero {
+    min-height: 0;
+    padding-block: 1.5rem;
+    gap: 1rem;
+  }
+  .radar-art {
+    max-width: 200px;
+    margin-top: 0;
+  }
+  .page-heading {
+    padding-block: 1.5rem 1rem;
+  }
+  .feature-card {
+    min-height: 0;
+    padding: 1rem;
+  }
+  .feature-card h3 {
+    margin-top: 1rem;
+  }
+  .section {
+    margin-top: 2rem;
+  }
+}

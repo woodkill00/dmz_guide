@@ -25,7 +25,9 @@ const staticFiles = new Set([
   "src/client/raster-editor.mjs",
   "src/client/theme.mjs",
   "src/content/limits.mjs",
+  "src/content/image-description.mjs",
   "src/content/author-target.mjs",
+  "src/content/studio-recovery.mjs",
   "src/content/json.mjs",
   "src/content/validate.mjs",
   "src/content/portable.mjs",
@@ -446,6 +448,10 @@ if (
   resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 )
   main().catch((error) => {
-    console.error(error.message);
+    console.error(
+      error.code === "EADDRINUSE"
+        ? "Content Studio port is already in use. Stop the other server or explicitly choose --port. No port was changed; browser storage belongs to its original address and port."
+        : error.message,
+    );
     process.exitCode = 1;
   });

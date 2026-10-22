@@ -1,0 +1,2 @@
+# Verification
+Use SPECIFY_FEATURE_DIRECTORY=specs/014-reader-flow for each lifecycle phase. node --test tests/runtime/reader-flow.test.mjs; npm test; npm run build; npm run format:check; python3 scripts/check.py. Integrator attaches new browser module to strict existing runners, preserving readiness/health. Hosted Windows/Linux Chrome plus Firefox/WebKit; baseline/candidate full-page tiles,320/390/desktop,dark/light,actual200% computed text,keyboard/44px controls. Local socket EPERM not a pass or permission to disable sandbox.

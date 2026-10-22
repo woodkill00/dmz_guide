@@ -603,6 +603,13 @@
           "items": {
             "$ref": "#/$defs/item/properties/assetId"
           }
+        },
+        "imageDescriptions": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/$defs/imageDescription"
+          }
         }
       },
       "required": [
@@ -727,6 +734,13 @@
           "maxItems": 8,
           "items": {
             "$ref": "#/$defs/item/properties/assetId"
+          }
+        },
+        "imageDescriptions": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/$defs/imageDescription"
           }
         }
       },
@@ -909,6 +923,13 @@
           "items": {
             "$ref": "#/$defs/item/properties/assetId"
           }
+        },
+        "imageDescriptions": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/$defs/imageDescription"
+          }
         }
       },
       "required": [
@@ -1000,6 +1021,13 @@
           "maxItems": 8,
           "items": {
             "$ref": "#/$defs/item/properties/assetId"
+          }
+        },
+        "imageDescriptions": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/$defs/imageDescription"
           }
         }
       },
@@ -1095,6 +1123,13 @@
           "maxItems": 8,
           "items": {
             "$ref": "#/$defs/item/properties/assetId"
+          }
+        },
+        "imageDescriptions": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/$defs/imageDescription"
           }
         }
       },
@@ -1210,6 +1245,13 @@
           "maxItems": 8,
           "items": {
             "$ref": "#/$defs/item/properties/assetId"
+          }
+        },
+        "imageDescriptions": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/$defs/imageDescription"
           }
         }
       },
@@ -1355,6 +1397,23 @@
         "attribution",
         "redistributionAllowed"
       ]
+    },
+    "imageDescription": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assetId", "text", "decorative"],
+      "properties": {
+        "assetId": {
+          "$ref": "#/$defs/item/properties/assetId"
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "decorative": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }

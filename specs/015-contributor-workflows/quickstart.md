@@ -1,0 +1,4 @@
+# Validation quickstart
+Use Node 22.x/24.x and npm ci. Run npm test, npm run check, npm run format:check, Python tests, existing browser/engine/Studio suites and focused contributor browser suite. Capture command results and actual failures in acceptance.md.
+
+Open Studio with a temporary fixture repository: edit a field and picture rights, navigate anchors, confirm same DOM/value/rights. Preview save, explicitly edit version, assert old preview hidden and old save unavailable. Import a valid recovery export: compare files and draft before preview/cancel; apply explicitly and assert only draft changes. Test hostile matrix in runtime tests. Screenshots must include full page/tiled and actual 200% text at small/desktop widths with strict health. Never relabel unavailable local browser launch as passed.

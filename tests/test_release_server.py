@@ -11,6 +11,7 @@ import zipfile
 import json
 import importlib.util
 from unittest.mock import patch
+from release_fixture import identity_for, manifest_for
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = b'<!doctype html><title>Synthetic release readiness</title>exact fixture bytes'
@@ -24,8 +25,8 @@ class ReleaseServerTests(unittest.TestCase):
             (root / 'release').mkdir()
             for name in ('verify-release.py', 'server-readiness.mjs'):
                 shutil.copyfile(ROOT / 'scripts' / name, root / 'scripts' / name)
-            files = {'dist/maps/index.html': PAGE, 'scripts/serve.mjs': server_source}
-            manifest = {name: hashlib.sha256(body).hexdigest() for name, body in files.items()}
+            files = {'dist/index.html': b'<!doctype html><title>Synthetic reader fixture</title>', 'dist/maps/index.html': PAGE, 'scripts/serve.mjs': server_source}
+            manifest = manifest_for(files)
             with zipfile.ZipFile(root / 'release/dmz-guide-static.zip', 'w') as archive:
                 for name, body in files.items():
                     archive.writestr(name, body)
@@ -131,9 +132,60 @@ class ReleaseWatchdogTests(unittest.TestCase):
             path = self.root / name
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text('Explicitly synthetic packaging fixture.')
+        output_files = {path.relative_to(self.root).as_posix(): path.read_bytes() for path in (self.root / 'dist').rglob('*') if path.is_file()}
+        identity = identity_for(output_files)
+        for folder in ('src', 'schemas', 'content'):
+            (self.root / folder).mkdir(exist_ok=True)
+        for name in ('content/site.json', 'package.json', 'package-lock.json'):
+            (self.root / name).write_text('{}')
+        source_paths = [self.root / name for name in ('content/site.json', 'package.json', 'package-lock.json')]
+        source_paths += [path for folder in ('src', 'schemas', 'scripts') for path in (self.root / folder).rglob('*') if path.is_file() and '__pycache__' not in path.parts and path.suffix not in ('.pyc', '.pyo')]
+        identity.pop('buildId')
+        identity['sourceFiles'] = {path.relative_to(self.root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest() for path in source_paths}
+        identity['buildId'] = hashlib.sha256(json.dumps(identity, ensure_ascii=False, separators=(',', ':')).encode()).hexdigest()
+        (self.root / 'dist/assets').mkdir(exist_ok=True)
+        (self.root / 'dist/assets/build-identity.json').write_text(json.dumps(identity))
         result = subprocess.run([sys.executable, str(self.root / 'scripts/package-release.py')],
                                 capture_output=True, text=True, timeout=5)
         self.assertEqual(result.returncode, 0, result.stderr)
         with zipfile.ZipFile(self.root / 'release/dmz-guide-static.zip') as archive:
             self.assertIn('scripts/serve.mjs', archive.namelist())
             self.assertFalse(any('server-readiness' in name for name in archive.namelist()))
+        # Fresh payload hashing must not disguise stale or changed build output.
+        target = self.root / 'dist/index.html'
+        target.write_bytes(PAGE + b' tampered')
+        result = subprocess.run([sys.executable, str(self.root / 'scripts/package-release.py')], capture_output=True, text=True, timeout=5)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Build output missing, extra or changed', result.stderr)
+        target.write_bytes(PAGE)
+        extra = self.root / 'dist/extra.json'
+        extra.write_text('{}')
+        result = subprocess.run([sys.executable, str(self.root / 'scripts/package-release.py')], capture_output=True, text=True, timeout=5)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Build output missing, extra or changed', result.stderr)
+        extra.unlink()
+        old_launcher = (self.root / 'scripts/serve.mjs').read_bytes()
+        (self.root / 'scripts/serve.mjs').write_text('changed source')
+        result = subprocess.run([sys.executable, str(self.root / 'scripts/package-release.py')], capture_output=True, text=True, timeout=5)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Build source changed', result.stderr)
+        (self.root / 'scripts/serve.mjs').write_bytes(old_launcher)
+        document = self.root / 'docs/release.md'
+        original_document = document.read_bytes()
+        document.unlink()
+        try:
+            document.symlink_to(self.root / 'LICENSE')
+        except OSError:
+            document.write_bytes(original_document)
+        else:
+            result = subprocess.run([sys.executable, str(self.root / 'scripts/package-release.py')], capture_output=True, text=True, timeout=5)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('Refusing symlink', result.stderr)
+            document.unlink()
+            document.write_bytes(original_document)
+        identity_path = self.root / 'dist/assets/build-identity.json'
+        with identity_path.open('wb') as stream:
+            stream.truncate(16 * 1024 * 1024 + 1)
+        result = subprocess.run([sys.executable, str(self.root / 'scripts/package-release.py')], capture_output=True, text=True, timeout=5)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('File byte safety limit exceeded', result.stderr)

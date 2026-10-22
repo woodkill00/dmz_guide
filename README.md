@@ -6,7 +6,9 @@ A community field guide being built around trustworthy game data and explainable
 
 ## Start here
 
-- **Building the project?** Follow the [developer quickstart](docs/quickstart.md), then the [first-feature tutorial](docs/tutorials/first-feature.md).
+- **Reading or editing content?** Use the short [reader/author quickstart](docs/quickstart.md); it explains private browser editing versus repository files.
+
+- **Building the project?** Follow the [developer quickstart](docs/developer-quickstart.md), then the [first-feature tutorial](docs/tutorials/first-feature.md).
 - **Editing repository JSON and media?** See the [Content Studio guide](docs/content-studio.md) and its explicit local-only scope.
 - **Reporting a wrong fact or contributing a guide?** Start with [contributing](CONTRIBUTING.md) and the [content guide](docs/content-contributing.md). Coding is not required to submit evidence.
 - **Understanding the direction?** Read the [roadmap](docs/roadmap.md), [decision summary](decision-summary.md), and [foundation specification](specs/001-guide-foundation/spec.md).

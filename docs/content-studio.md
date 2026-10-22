@@ -112,3 +112,13 @@ Legacy reviewed JPEG/WebP sources retain their original source metadata and exis
 ## Testing and boundaries
 
 See [feature acceptance](../specs/009-repository-content-studio/acceptance.md) for exact tested commits, CI runs, screenshots and remaining limitations. Browser checks are not physical-device testing or formal accessibility certification. This is not a multi-user hosted database, cloud sync, an account system or automatic public deployment.
+
+## Navigation, version review and recovery drafts
+
+Use Authoring, Pictures, Review & save and Import & recovery links to move within the same page. These links do not replace controls or discard unsaved fields/rights choices. The compact summary distinguishes an unsaved draft, reviewed candidate and confirmed repository save. Rebuild and publication remain manual.
+
+In Review & save, enter a content version and choose Change draft version. This explicitly changes the draft and expires the old preview. Choose Validate and preview draft again; only a fresh reviewed candidate can be saved.
+
+Download draft remains available for invalid unfinished work. To restore a valid version-1 repository recovery export, select its explicit destination and use Repository recovery draft. The importer checks format, identity, schema, rights, image signatures/hashes/dimensions and current source media before showing an inert preview. Limits are 20 MiB envelope, 8 MiB catalog, 32 pictures, 2 MiB per picture and 8 MiB image bytes before and after normalization. Review differences and rights, then explicitly Apply import to draft. Repository saving is a separate reviewed action.
+
+Recovery exports are not portable public packs. Existing-media references require matching current repository bytes; a recovery file with missing media or unfinished invalid fields cannot bypass validation. Preserve the original and repair a copy or reattach authorized source pictures. The original exported revision is historical context, never permission to overwrite a newer repository revision. Cancelling, changing destination, switching catalogs or editing the draft expires the preview.

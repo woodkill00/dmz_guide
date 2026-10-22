@@ -150,6 +150,26 @@ export function validatePack(pack, schema, { profile = "portable" } = {}) {
       );
       for (const id of r.assetIds) ref(id, "assets", r);
     }
+    if (r.imageDescriptions) {
+      const attached = new Set(
+        [r.assetId, ...(r.assetIds || [])].filter(Boolean),
+      );
+      const seen = new Set();
+      for (const description of r.imageDescriptions) {
+        assert(
+          attached.has(description.assetId),
+          "Image description must reference an attached picture",
+        );
+        assert(!seen.has(description.assetId), "Duplicate image description");
+        seen.add(description.assetId);
+        assert(
+          description.decorative
+            ? description.text === ""
+            : description.text.trim().length > 0,
+          "Decorative pictures require empty text; meaningful pictures require a description",
+        );
+      }
+    }
     if (["verified", "observed", "disputed", "stale"].includes(r.status))
       assert(r.sourceIds?.length || r.sourceId, `Evidence required ${r.id}`);
     if (pack.game.id === "fictional-training" && r.status)

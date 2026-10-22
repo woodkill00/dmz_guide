@@ -181,6 +181,121 @@ async function isolation({ browser, base, baseline, evidence }) {
   }
 }
 
+async function preservedDrafts({ browser, base, evidence }) {
+  const context = await browser.newContext();
+  await context.addInitScript(() => {
+    const put = IDBObjectStore.prototype.put;
+    IDBObjectStore.prototype.put = function (...args) {
+      if (window.scaleFailSave)
+        throw new DOMException("Injected scale quota", "QuotaExceededError");
+      return put.apply(this, args);
+    };
+  });
+  let failCatalog = true;
+  await context.route(`**${unrelatedPath}`, (route) =>
+    failCatalog
+      ? route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"schemaVersion":1}',
+        })
+      : route.continue(),
+  );
+  const page = await context.newPage();
+  const wire = page.locator('[data-field="inventory"][data-id="demo:wire"]');
+  const reserve = page.locator('[data-field="reserves"][data-id="demo:wire"]');
+  try {
+    await page.goto(`${base}/inventory/?pack=${encodeURIComponent(training)}`);
+    await ready(page);
+    await wire.fill("");
+    await reserve.fill("4");
+    await page.fill("#inventory-query", "cell");
+    assert.equal(await wire.isVisible(), false);
+    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await page.click("#draft-discard");
+    await page.waitForFunction(() =>
+      document
+        .querySelector("#save-status")
+        .textContent.includes("switch failed"),
+    );
+    assert.equal(await page.locator("#pack-select").inputValue(), training);
+    assert.equal(await wire.inputValue(), "");
+    assert.equal(await reserve.inputValue(), "4");
+    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await page.click("#draft-stay");
+    assert.equal(await wire.inputValue(), "");
+    // Re-show only to enter a valid value; hiding it again must not change its checkpoint.
+    await page.fill("#inventory-query", "");
+    await wire.fill("29");
+    await page.fill("#inventory-query", "cell");
+    await page.evaluate(() => {
+      window.scaleFailSave = true;
+      document.querySelector("#error").hidden = true;
+    });
+    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await page.click("#draft-save");
+    await page.waitForSelector("#error:not([hidden])");
+    assert.equal(await wire.inputValue(), "29");
+    assert.equal(await reserve.inputValue(), "4");
+    assert.equal(await page.locator("#pack-select").inputValue(), training);
+    await page.evaluate(() => {
+      window.scaleFailSave = false;
+    });
+    failCatalog = false;
+    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await page.click("#draft-save");
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#pack-select").value ===
+          "official:mw4-dmz-starter" &&
+        document.querySelector("main").getAttribute("aria-busy") === "false",
+    );
+    await page.selectOption("#pack-select", training);
+    await page.waitForSelector(
+      '[data-field="inventory"][data-id="demo:wire"]',
+      { state: "attached" },
+    );
+    await ready(page);
+    assert.equal(await wire.inputValue(), "29");
+    assert.equal(await reserve.inputValue(), "4");
+    await page.reload();
+    await ready(page);
+    assert.equal(
+      await wire.inputValue(),
+      "29",
+      "Hidden saved value is durable after reload",
+    );
+    assert.equal(await reserve.inputValue(), "4");
+    await wire.fill("");
+    await page.fill("#inventory-query", "cell");
+    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await page.click("#draft-discard");
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#pack-select").value ===
+          "official:mw4-dmz-starter" &&
+        document.querySelector("main").getAttribute("aria-busy") === "false",
+    );
+    await page.selectOption("#pack-select", training);
+    await page.waitForSelector(
+      '[data-field="inventory"][data-id="demo:wire"]',
+      { state: "attached" },
+    );
+    await ready(page);
+    assert.equal(
+      await wire.inputValue(),
+      "29",
+      "Successful Discard restores durable hidden entry",
+    );
+    assert.equal(await reserve.inputValue(), "4");
+    evidence.push(
+      "Failed Discard switch retains hidden invalid raw draft/checkpoint; Stay and failed Save retain values; successful full Save survives reload and includes hidden entries; successful Discard restores durable values; explicit catalog retry recovers",
+    );
+  } finally {
+    await context.close();
+  }
+}
+
 async function measure({ browser, base, count, kind }) {
   const fixture = measuredFixture(count, kind);
   const context = await browser.newContext({
@@ -344,13 +459,33 @@ export async function runMeasuredScaleTests({
     scenarios: [],
     measurements: [],
   };
-  await isolation({ browser, base, baseline, evidence: evidence.scenarios });
-  for (const kind of ["inventory", "native-selector"])
-    for (const count of [100, 1000, 5000])
-      evidence.measurements.push(await measure({ browser, base, count, kind }));
-  await writeFile(
-    `test-results/${prefix}-measured-scale-${baseline ? "baseline-reproduction" : "acceptance"}.json`,
-    JSON.stringify(evidence, null, 2),
-  );
-  return evidence;
+  evidence.complete = false;
+  const checkpoint = () =>
+    writeFile(
+      `test-results/${prefix}-measured-scale-${baseline ? "baseline-reproduction" : "acceptance"}.json`,
+      JSON.stringify(evidence, null, 2),
+    );
+  await checkpoint();
+  try {
+    await isolation({ browser, base, baseline, evidence: evidence.scenarios });
+    await checkpoint();
+    if (!baseline) {
+      await preservedDrafts({ browser, base, evidence: evidence.scenarios });
+      await checkpoint();
+    }
+    for (const kind of ["inventory", "native-selector"])
+      for (const count of [100, 1000, 5000]) {
+        evidence.measurements.push(
+          await measure({ browser, base, count, kind }),
+        );
+        await checkpoint();
+      }
+    evidence.complete = true;
+    await checkpoint();
+    return evidence;
+  } catch (reason) {
+    evidence.failure = { name: reason.name, message: reason.message };
+    await checkpoint();
+    throw reason;
+  }
 }

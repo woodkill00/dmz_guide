@@ -1,3 +1,4 @@
+import { getCatalog } from "./common.mjs";
 import { createGuidedEditor } from "./guided-editor.mjs";
 import {
   loadBundledPayloads,
@@ -548,8 +549,9 @@ async function importFile() {
   if (token !== generation) return;
   const existing =
     record?.value?.pack ||
-    state.packs.find((p) => p.id === parsed.pack.id) ||
+    (await getCatalog(parsed.pack.id, { publishedOnly: true })) ||
     null;
+  if (token !== generation) return;
   const targetPayloads = parsed.selfContained
     ? parsed.payloads
     : (record?.value?.payloads || []).filter((p) =>
