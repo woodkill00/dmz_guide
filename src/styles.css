@@ -1303,6 +1303,7 @@ main :where(p, li, a, ul, ol, section, article, div) {
 #draft-navigation {
   box-sizing: border-box;
   width: min(34rem, calc(100% - 24px));
+  max-width: calc(100% - 24px);
   max-height: calc(100% - 24px);
   overflow: auto;
   padding: 16px;
