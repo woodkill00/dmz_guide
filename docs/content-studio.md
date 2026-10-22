@@ -34,6 +34,18 @@ Open `http://127.0.0.1:4173`. That server and the static ZIP have no authoring w
 
 The checked-in starter migration is already complete in this feature. A new pull/clone receives canonical files directly and must not re-run migration just to start Studio. Preserve and review any older custom whole-pack content separately; the portable import preview can bring compatible packs into a selected catalog without creating competing editable source trees.
 
+## Edit directly from a record page
+
+Every public item (including weapon), recipe, objective, guide, map and location detail now has **Edit this item/record** and **Add/change image** actions beside its heading. On the read-only website these open a record-specific startup page, not a public editor. Start `npm run author` in your current source checkout, then explicitly choose **Open this record in local Content Studio** or **Open picture controls in local Content Studio**. The link uses `http://127.0.0.1:4174`; it never probes or starts a local server automatically. If it fails to open, check that your terminal still has the author server running. For `npm run author -- --port 4175` or another port, expand the custom-port instructions and append the displayed exact destination to the printed address.
+
+The destination contains both the catalog key and immutable catalog ID plus the record's stable ID. Renaming the record does not break its link. Missing, mismatched, duplicate or invalid targets are rejected rather than silently editing the first record. Update an older checkout or open Studio without a query to choose a record manually. No arbitrary return address is accepted.
+
+In a saved local preview, both actions open Studio directly on the same local server. The image action focuses the upload control without opening your file chooser. The **Opened from this record** banner gives its original stable identity and **Return to saved record** link; it continues to refer to the entry record if you manually select another record. The usual **View saved preview** link follows your current selection. Returning shows saved source only, not unsaved fields or a prepared image.
+
+All six public record groups support a primary image and up to eight additional images. Choosing **Primary picture** replaces only this record's attachment, not the old image bytes or other records that use them. Choose **Add additional picture** to retain the primary, or use an existing library picture. Rights, privacy, image-size and usage checks still apply. Cancel a prepared image to abandon it; otherwise attach it before previewing or saving other fields. Leaving with unsaved fields or a prepared picture warns about losing work. No navigation or cancellation saves files automatically.
+
+Sources, claims and asset metadata are supporting Studio records, not public detail pages. Their saved previews offer ordinary editing, not unsupported picture attachments.
+
 ## Add a record and its pictures
 
 1. Select a catalog, or create a new one. A stable ID is generated from its title; advanced users can override it before first save. Record identity is not a display name and should stay stable after references exist.

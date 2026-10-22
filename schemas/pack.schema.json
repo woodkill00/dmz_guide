@@ -1201,6 +1201,16 @@
         },
         "spoiler": {
           "type": "boolean"
+        },
+        "assetId": {
+          "$ref": "#/$defs/item/properties/assetId"
+        },
+        "assetIds": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/item/properties/assetId"
+          }
         }
       },
       "required": [

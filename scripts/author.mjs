@@ -1,3 +1,7 @@
+import {
+  parseAuthorTarget,
+  resolveAuthorTarget,
+} from "../src/content/author-target.mjs";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { resolve, dirname, join, extname } from "node:path";
@@ -21,6 +25,7 @@ const staticFiles = new Set([
   "src/client/raster-editor.mjs",
   "src/client/theme.mjs",
   "src/content/limits.mjs",
+  "src/content/author-target.mjs",
   "src/content/json.mjs",
   "src/content/validate.mjs",
   "src/content/portable.mjs",
@@ -165,10 +170,19 @@ export async function createAuthorServer({
             "Only the local Studio address is accepted",
             403,
           );
+        // Only an explicit top-level document navigation may enter a targeted
+        // editor from the static guide. APIs, subresources, frames and writes
+        // retain the same-origin boundary, even with a copied target query.
+        const editorNavigation =
+          req.method === "GET" &&
+          req.url?.startsWith("/?") &&
+          req.headers["sec-fetch-mode"] === "navigate" &&
+          req.headers["sec-fetch-dest"] === "document";
         if (
           (req.headers.origin && req.headers.origin !== origin) ||
           (req.headers["sec-fetch-site"] &&
-            !["same-origin", "none"].includes(req.headers["sec-fetch-site"]))
+            !["same-origin", "none"].includes(req.headers["sec-fetch-site"]) &&
+            !editorNavigation)
         )
           throw new AuthorError(
             "FORBIDDEN",
@@ -192,7 +206,22 @@ export async function createAuthorServer({
           throw new AuthorError("INVALID_REQUEST", "Invalid request path", 400);
         const head = req.method === "HEAD";
         if (["GET", "HEAD"].includes(req.method)) {
-          if (url.pathname === "/" && !url.search)
+          if (url.pathname === "/") {
+            if (editorNavigation && (!url.search || url.hash))
+              throw new AuthorError(
+                "INVALID_TARGET",
+                "Use the complete editor link from the record page.",
+                400,
+              );
+            if (url.search) {
+              try {
+                const target = parseAuthorTarget(url.searchParams);
+                if (!target) throw new Error("Editor target is missing");
+                resolveAuthorTarget((await store.read()).entries, target);
+              } catch (error) {
+                throw new AuthorError("INVALID_TARGET", error.message, 400);
+              }
+            }
             return respond(
               res,
               200,
@@ -200,6 +229,7 @@ export async function createAuthorServer({
               "text/html; charset=utf-8",
               head,
             );
+          }
           if (url.pathname === "/docs/content-studio.md" && !url.search)
             return respond(
               res,

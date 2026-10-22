@@ -69,7 +69,7 @@ const auth = (app, session) => ({
 });
 function raw(app, { path = "/api/session", method = "GET", headers = {} }) {
   return new Promise((resolve, reject) => {
-    const req = request(app.url + path, { method, headers }, (res) => {
+    const req = request(app.url, { path, method, headers }, (res) => {
       const chunks = [];
       res.on("data", (b) => chunks.push(b));
       res.on("end", () =>
@@ -246,6 +246,54 @@ test("FR-004: author preview serves only validated saved record selectors", asyn
     }),
   });
   assert.equal(save.status, 200);
+  const target =
+    "/?packKey=test&packId=test%3Acatalog&id=test%3Apreview&intent=images";
+  const beforeNavigation = (await call(app, "/api/catalog")).data.revision;
+  const navigation = {
+    "Sec-Fetch-Site": "cross-site",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Dest": "document",
+  };
+  assert.equal((await call(app, target)).status, 200);
+  assert.equal(
+    (await raw(app, { path: target, headers: navigation })).status,
+    200,
+  );
+  for (const path of [
+    "/api/session",
+    "/api/catalog",
+    "/api/media?packKey=test&assetId=test:preview",
+    "/assets/src/client/studio.mjs",
+    "/",
+    "/preview?packKey=test&id=test:preview",
+  ])
+    assert.equal((await raw(app, { path, headers: navigation })).status, 403);
+  for (const headers of [
+    { ...navigation, "Sec-Fetch-Dest": "iframe" },
+    { ...navigation, "Sec-Fetch-Mode": "cors" },
+    { ...navigation, Origin: "https://untrusted.invalid" },
+  ])
+    assert.equal((await raw(app, { path: target, headers })).status, 403);
+  assert.equal(
+    (await raw(app, { path: target, method: "POST", headers: navigation }))
+      .status,
+    403,
+  );
+  for (const path of [
+    target + "&id=test:other",
+    target + "&return=https://untrusted.invalid",
+    target.replace("test%3Acatalog", "test%3Awrong"),
+    target.replace("test%3Apreview", "test%3Amissing"),
+    "/?intent=images",
+    "/?unknown=1",
+    "/?",
+    "/?#fragment",
+  ])
+    assert.equal((await raw(app, { path, headers: navigation })).status, 400);
+  assert.equal(
+    (await call(app, "/api/catalog")).data.revision,
+    beforeNavigation,
+  );
   const preview = await call(app, "/preview?packKey=test&id=test%3Apreview");
   assert.equal(preview.status, 200);
   assert.match(preview.data, /Fictional saved preview/);

@@ -247,9 +247,14 @@ export function createStudioMedia({
   function canAttach() {
     const selected = getSelection();
     return selected &&
-      ["items", "recipes", "objectives", "guides", "maps"].includes(
-        selected.group,
-      )
+      [
+        "items",
+        "recipes",
+        "objectives",
+        "guides",
+        "maps",
+        "locations",
+      ].includes(selected.group)
       ? selected
       : null;
   }
@@ -258,7 +263,7 @@ export function createStudioMedia({
     const selected = canAttach();
     assert(
       selected,
-      "Select an item, recipe, objective, guide or map, or choose Library only",
+      "Select an item, recipe, objective, guide, map or location, or choose Library only",
     );
     const record = draft[selected.group][selected.index];
     if (method === "primary") record.assetId = assetId;
@@ -449,7 +454,7 @@ export function createStudioMedia({
     const selected = canAttach();
     $("#picture-target").textContent = selected
       ? `Selected record: ${selected.record.name || selected.record.title || selected.record.id}. Primary: ${selected.record.assetId || "none"}. Additional: ${(selected.record.assetIds || []).join(", ") || "none"}.`
-      : "Select an item, weapon, recipe, objective, guide or map to attach pictures. Other records can add images to the library only.";
+      : "Select an item, weapon, recipe, objective, guide, map or location to attach pictures. Other records can add images to the library only.";
     const query = $("#media-search").value.trim().toLowerCase();
     const matches = pack.assets.filter((a) =>
       `${a.id} ${a.attribution} ${a.rightsHolder}`
@@ -622,5 +627,6 @@ export function createStudioMedia({
       cancelPicture();
     },
     cancelPicture,
+    hasPending: () => !!source || !!working,
   };
 }

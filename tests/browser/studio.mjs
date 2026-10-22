@@ -21,6 +21,7 @@ import { serializeCatalog, catalogAssetPath } from "../../scripts/catalog.mjs";
 import { GROUPS } from "../../src/content/portable.mjs";
 import { monitorBrowser, expectResponseErrors } from "./health.mjs";
 import { runRasterEditorTests } from "./raster-editor.mjs";
+import { runPageEditTests } from "./page-edit.mjs";
 
 const run = promisify(execFile);
 const project = fileURLToPath(new URL("../../", import.meta.url));
@@ -524,6 +525,14 @@ export async function runStudioTests({
       "Synthetic unrelated file. Never show in managed change review.\n",
     );
     author = await createAuthorServer({ root: repository, port: 0 });
+    await runPageEditTests({
+      browser,
+      repository,
+      author,
+      prefix,
+      captureScreenshots,
+      startReader,
+    });
     context = await browser.newContext({
       viewport: { width: 1280, height: 900 },
       colorScheme: "light",

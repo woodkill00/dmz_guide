@@ -371,3 +371,7 @@ footer {
 :root[data-theme="light"] .drop-zone.dragover {
   background: #e9ebdf;
 }
+
+#entry-identity {
+  overflow-wrap: anywhere;
+}
