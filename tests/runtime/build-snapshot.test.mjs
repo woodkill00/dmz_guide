@@ -11,7 +11,7 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, dirname, relative, basename, sep } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { deflateSync } from "node:zlib";
@@ -454,7 +454,7 @@ async function build(root, gates = [], onGate = async () => {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(
       process.execPath,
-      ["--import", script, "scripts/build.mjs"],
+      ["--import", pathToFileURL(script).href, "scripts/build.mjs"],
       {
         cwd: root,
         env: { ...process.env, SNAPSHOT_GATES: JSON.stringify(gates) },

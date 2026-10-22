@@ -11,7 +11,7 @@ import {
 } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 
 const source = fileURLToPath(new URL("../..", import.meta.url));
@@ -28,7 +28,10 @@ async function fixture(t) {
 function build(root, preload) {
   return spawnSync(
     process.execPath,
-    [...(preload ? ["--import", preload] : []), "scripts/build.mjs"],
+    [
+      ...(preload ? ["--import", pathToFileURL(preload).href] : []),
+      "scripts/build.mjs",
+    ],
     { cwd: root, encoding: "utf8", timeout: 30000 },
   );
 }

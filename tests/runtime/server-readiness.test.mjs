@@ -12,7 +12,7 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { startOwnedServer } from "../../scripts/server-readiness.mjs";
 
@@ -195,7 +195,7 @@ test("spawn errors fail with diagnostics instead of hanging", async (t) => {
 async function runEntry(entry, cwd, env) {
   const child = spawn(
     process.execPath,
-    ["--import", join(cwd, "register.mjs"), entry],
+    ["--import", pathToFileURL(join(cwd, "register.mjs")).href, entry],
     {
       cwd,
       env,
