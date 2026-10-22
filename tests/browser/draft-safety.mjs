@@ -221,6 +221,44 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
       await plannerLink().evaluate((n) => document.activeElement === n),
       "Escape restores initiating link focus",
     );
+    // A full current-page link is a real reload, not a fragment-only no-op.
+    await page.locator('a[href*="/inventory/"]').first().click();
+    await page.waitForSelector("#draft-navigation:visible");
+    await page.click("#draft-stay");
+    assert.equal(await page.locator(wire).inputValue(), "23");
+    assert.equal(await page.locator(reserve).inputValue(), "5");
+    if (browser.browserType().name() === "chromium") {
+      // Simulate a second unload participant cancelling an explicitly approved
+      // departure. It must not permanently disable this app's next guard.
+      await page.evaluate(() => {
+        window.cancelTestDeparture = (event) => {
+          event.preventDefault();
+          event.returnValue = "";
+        };
+        window.addEventListener("beforeunload", window.cancelTestDeparture);
+      });
+      let cancelled = false;
+      page.once("dialog", async (dialog) => {
+        assert.equal(dialog.type(), "beforeunload");
+        cancelled = true;
+        await dialog.dismiss();
+      });
+      await plannerLink().click();
+      await page.click("#draft-discard");
+      assert(
+        cancelled,
+        "Synthetic second unload participant actually cancels navigation",
+      );
+      assert.equal(new URL(page.url()).pathname, "/inventory/");
+      assert.equal(await page.locator(wire).inputValue(), "23");
+      await page.evaluate(() => {
+        window.removeEventListener("beforeunload", window.cancelTestDeparture);
+        delete window.cancelTestDeparture;
+      });
+      await plannerLink().click();
+      await page.waitForSelector("#draft-navigation:visible");
+      await page.click("#draft-stay");
+    }
     // Export does not save the draft or clear departure protection.
     const backup = await exportBackup(page, "#export-current-profile");
     assert.equal(backup.inventory["demo:wire"], 23);

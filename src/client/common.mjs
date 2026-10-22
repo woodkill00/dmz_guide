@@ -75,7 +75,7 @@ export function exportProfile() {
     error(reason);
   }
 }
-async function requestDeparture(proceed, origin) {
+async function requestDeparture(proceed, origin, documentNavigation = false) {
   if (departurePending || state.loading || state.saving) return;
   if (!hasUnsavedDraft()) return proceed();
   departurePending = true;
@@ -112,14 +112,33 @@ async function requestDeparture(proceed, origin) {
     try {
       await proceed();
     } finally {
-      leaving = false;
+      if (documentNavigation)
+        setTimeout(() => {
+          leaving = false;
+        }, 1000);
+      else leaving = false;
     }
   } finally {
     departurePending = false;
   }
 }
+window.addEventListener("pageshow", () => {
+  leaving = false;
+});
+for (const type of ["pointerdown", "keydown"])
+  document.addEventListener(
+    type,
+    (event) => {
+      if (event.isTrusted) leaving = false;
+    },
+    true,
+  );
 window.addEventListener("beforeunload", (event) => {
-  if (!leaving && hasUnsavedDraft()) {
+  if (leaving) {
+    leaving = false;
+    return;
+  }
+  if (hasUnsavedDraft()) {
     event.preventDefault();
     event.returnValue = "";
   }
@@ -143,17 +162,15 @@ document.addEventListener("click", (event) => {
     !["http:", "https:"].includes(target.protocol) ||
     (target.origin === location.origin &&
       target.pathname === location.pathname &&
-      target.search === location.search)
+      target.search === location.search &&
+      target.hash)
   )
     return;
   if (!hasUnsavedDraft()) return;
   event.preventDefault();
-  requestDeparture(() => {
-    // Keep unload suppression until the browser commits this approved navigation.
-    leaving = true;
-    location.assign(target.href);
-    return new Promise(() => {});
-  }, anchor).catch(error);
+  requestDeparture(() => location.assign(target.href), anchor, true).catch(
+    error,
+  );
 });
 let generation = 0;
 let disabledControls = [];
