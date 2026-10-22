@@ -206,6 +206,7 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
     await page.fill("#inventory-query", "wire");
     await plannerLink().click();
     await page.waitForURL("**/planner/**");
+    await ready(page);
     assert.equal(await page.locator("#draft-navigation:visible").count(), 0);
     await page.goto(inventoryUrl);
     await ready(page);
@@ -327,6 +328,7 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
     await plannerLink().click();
     await page.click("#draft-save");
     await page.waitForURL("**/planner/**");
+    await ready(page);
     await page.goto(inventoryUrl);
     await ready(page);
     assert.equal(await page.locator(wire).inputValue(), "29");
@@ -334,6 +336,7 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
     await plannerLink().click();
     await page.click("#draft-discard");
     await page.waitForURL("**/planner/**");
+    await ready(page);
     await page.goto(inventoryUrl);
     await ready(page);
     assert.equal(await page.locator(wire).inputValue(), "29");
@@ -394,6 +397,19 @@ async function visualJourneys({ page, base, prefix }) {
             () => document.documentElement.scrollWidth <= innerWidth + 1,
           ),
           "Dirty dialog has no horizontal page overflow",
+        );
+        assert(
+          await page.locator("#draft-navigation-title").evaluate((heading) => {
+            const title = heading.getBoundingClientRect();
+            const dialog = heading.closest("dialog").getBoundingClientRect();
+            return (
+              title.top >= dialog.top &&
+              title.bottom <= dialog.bottom &&
+              title.top >= 0 &&
+              title.bottom <= innerHeight
+            );
+          }),
+          "The complete dirty-dialog title is visible on opening, including at 200% text",
         );
         for (const id of ["draft-save", "draft-discard", "draft-stay"]) {
           const button = page.locator(`#${id}`);
