@@ -2,10 +2,17 @@
 from pathlib import Path
 import hashlib
 import os
+import platform
+import sys
 import stat
 import json
 import zipfile
 from release_paths import is_author_only
+
+print('Package runtime: ' + json.dumps({
+    'python': sys.version[:200], 'executable': sys.executable[:300],
+    'platform': platform.platform()[:200], 'osName': os.name,
+}, ensure_ascii=True), flush=True)
 
 root = Path(__file__).resolve().parent.parent
 def safe_stat(path):
@@ -47,6 +54,8 @@ def bounded_read(path, budget, limit=64 * 1024 * 1024, *, phase="unspecified"):
         raise SystemExit('File byte safety limit exceeded.')
     signature = lambda value: (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns, value.st_ctime_ns)
     fd = os.open(path, os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0))
+    path_open = None
+    path_after = None
     def changed(point, opened, after=None, read_bytes=None):
         detail = {
             'path': path.relative_to(root).as_posix()[:256],
@@ -55,16 +64,27 @@ def bounded_read(path, budget, limit=64 * 1024 * 1024, *, phase="unspecified"):
             'before': signature(info), 'open': signature(opened),
             'after': signature(after) if after is not None else None,
             'readBytes': read_bytes,
+            'pathOpen': signature(path_open) if path_open is not None else None,
+            'pathAfter': signature(path_after) if path_after is not None else None,
         }
         raise SystemExit('File changed during packaging. ' + json.dumps(detail, ensure_ascii=True)[:4000])
     with os.fdopen(fd, 'rb') as stream:
         opened = os.fstat(stream.fileno())
-        if signature(opened) != signature(info):
+        # CPython Windows path and fd APIs can assign different meanings to ctime.
+        # Compare compatible fields across APIs; retain full ctime checks within each.
+        cross_fields = 4 if os.name == 'nt' else 5
+        if signature(opened)[:cross_fields] != signature(info)[:cross_fields]:
             changed('open', opened)
+        path_open = safe_stat(path)
+        if signature(path_open) != signature(info):
+            changed('path-open', opened)
         data = stream.read(info.st_size + 1)
         after = os.fstat(stream.fileno())
-        if len(data) != info.st_size or signature(after) != signature(info):
+        if len(data) != info.st_size or signature(after) != signature(opened):
             changed('read', opened, after, len(data))
+        path_after = safe_stat(path)
+        if signature(path_after) != signature(info):
+            changed('path-read', opened, after, len(data))
     budget[0] -= len(data)
     return data
 
