@@ -16,6 +16,13 @@ try {
     const browser = await engine.launch({ headless: true });
     const health = monitorBrowser(browser);
     try {
+      const { runMetadataFloorTests } = await import("./metadata-floor.mjs");
+      await runMetadataFloorTests({
+        browser,
+        base,
+        mode: "baseline",
+        captureScreenshots: name !== "webkit",
+      });
       const context = await browser.newContext({
           viewport: { width: 390, height: 844 },
         }),
