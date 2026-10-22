@@ -41,7 +41,7 @@ Both complete functional JSONs retain selected-only readiness and explicit ident
 
 For each Chrome platform, the independent journey validator verified16 full-document coverage manifests against actual PNG tile dimensions and total area:12 middle-page combinations (320/390/1280 widths, dark/light themes, normal/true200% text) plus four320px empty-state combinations. This includes approximately43,000px-tall narrow200% documents. Eight additional first/last-boundary locator screenshots exist per platform. Representative native pixels inspected included Linux320dark200 middle,390lightnormal,1280light200 and dark/light200 first/last/empty; Windows320dark200 and320light200 middle. Reported findings were readable controls, visible focus and no overlap. This does not claim manual inspection of every pixel of every document.
 
-## Conditional decisions and outstanding gates
+## Historical c0b conditional decisions and outstanding gates
 
 Inventory pagination: retain the reviewed fixed50-row implementation. It was justified before implementation by all three engines' after-index residual-budget failures; current Chrome observations meet the budgets with full raw/checkpoint semantics intact. Firefox/WebKit after-pagination confirmation remains pending.
 
@@ -51,7 +51,7 @@ At14:12UTC, the five non-engine jobs were terminal success, while engines job119
 
 ## Subsequent c0b Firefox failure, superseding the installation snapshot
 
-Engines job119868679990 subsequently executed Firefox and failed final strict health at health.mjs169: three invalid-form-control-not-focusable console errors concerned reserve:demo:scale-item-75 and owned:demo:scale-item-76 (the latter twice). The first native invalid callback synchronously replaced all fieldsets, detaching later controls still being visited by native validation. This is an actual current-feature defect, not an assumed preexisting issue. WebKit did not execute.
+Engines job119868679990 subsequently executed Firefox and failed final strict health at health.mjs169: three invalid-form-control-not-focusable console errors concerned reserve:demo:scale-item-75 and owned:demo:scale-item-76 (the latter twice). The first native invalid callback synchronously replaced all fieldsets, detaching later controls still being visited by native validation. This was an actual defect in c0b, not an assumed preexisting issue. WebKit did not execute.
 
 Independently verified engine artifact12433490434 has archive SHA2562bbfd24bbbd4fc2d207269f7a4f3286bfec93f37c1f217cbcf6c3b552b6a51b6. Preserved evidence/failed-candidate-c0b-firefox-observations.json reports complete:true because six fixtures/five samples finished before the runner's final shared-health check. That flag does NOT establish functional acceptance. Firefox146.0.1 on four logical AMD7763 CPUs observed inventory100/1000/5000 initialization148/187/257ms and filtering13/14/16ms; native5000 initialization312ms/key34ms. These are failed-candidate timing observations only. The validator separately verified16 Firefox full-document coverage manifests and12 geometry records, with representative320dark/light200 pixels; that visual facet does not override failed functional health. No WebKit evidence exists for this candidate.
 

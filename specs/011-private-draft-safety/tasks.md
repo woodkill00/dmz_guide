@@ -23,4 +23,4 @@ T001 → T002/T003 → T004/T007 → T005/T006/T008 → T009 → T010. Tests are
 
 ## Verified receipt reconciliation, 2026-10-22
 
-T010, T011 are marked complete from the exact historical/candidate evidence now recorded in acceptance.md and the delivery ledger. This separate documentation/implementation pass does not claim a new test execution or approval of this uncommitted documentation head. Any remaining combined convergence, publication, merge or exact-main obligations remain unchecked; historical success is not a guarantee for a later main revision.
+T010, T011 are marked complete from the exact historical/candidate evidence now recorded in acceptance.md and the delivery ledger. This separate documentation/implementation pass does not claim a new test execution or approval of this documentation head. Any remaining combined convergence, publication, merge or exact-main obligations remain unchecked; historical success is not a guarantee for a later main revision.

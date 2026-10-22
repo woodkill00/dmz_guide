@@ -60,6 +60,10 @@ T019 gates T020–T022 production repair; synthetic assessment remains allowed. 
 
 These source-review corrections are within approved paths and requirements. Reverify final code and return all to independent reviewer; do not treat focused green tests as final acceptance.
 
+## Historical assessment note for Phases 10–15
+
+The assessment prose in these phases preserves its original checkpoint, including then-open tasks and references to the then-current main. It is not the current task inventory. Checkbox states and later acceptance receipts reconcile the completed product/maintenance gates through candidate482c6c and main26158; only T029 retains the final PR21 publication/checks/merge/main gate.
+
 ## Phase 10: Convergence
 
 - [x] T026 Obtain exact integrated-head Linux22/Windows22 and Linux24 CI evidence, including full existing browsers/Studio, actual Windows promotion/fault operations and the native exclusive-open-file probe; disclose any platform limitation rather than infer success from Linux. [SC-001–003, FR-006] (partial)
@@ -119,7 +123,7 @@ T038/T039 exact-review refinement: compose the generic outer watchdog against th
 
 ## Verified receipt reconciliation, 2026-10-22
 
-T031, T032, T034 are marked complete from the exact historical/candidate evidence now recorded in acceptance.md and the delivery ledger. This separate documentation/implementation pass does not claim a new test execution or approval of this uncommitted documentation head. Any remaining combined convergence, publication, merge or exact-main obligations remain unchecked; historical success is not a guarantee for a later main revision.
+T031, T032, T034 are marked complete from the exact historical/candidate evidence now recorded in acceptance.md and the delivery ledger. This separate documentation/implementation pass does not claim a new test execution or approval of this documentation head. Any remaining combined convergence, publication, merge or exact-main obligations remain unchecked; historical success is not a guarantee for a later main revision.
 
 ## Phase 16: Bounded CI dependency setup budget
 

@@ -41,7 +41,7 @@ Dependencies: T001→T002; T003/T004→T005–T007; T007→T008→T009; conditio
 
 Dependencies: T008/T009 evidence→T014→T015→T016/T017→T018→T019→T010/T011/T012. No optional native-picker work. T013 integration warning repair remains independently testable and can publish without waiting for this amendment.
 
-## Partial hosted progress,2026-10-22
+## Historical c0b partial hosted progress,2026-10-22
 
 Run39791556454 at c0b2542c establishes independently verified Linux/Windows Chrome functional, six-fixture measurement and real-page visual coverage; details and limitations are in acceptance.md. T010/T011/T013/T019 remain unchecked because required current-candidate engines and final integration acceptance are incomplete. T012 remains pending parent approval, actual merge and exact-main CI. No task is marked complete solely from one platform's passing artifact.
 
