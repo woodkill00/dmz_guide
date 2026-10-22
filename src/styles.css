@@ -427,6 +427,11 @@ main,
   font-weight: 650;
   color: var(--accent);
 }
+.radar-figure {
+  width: 100%;
+  max-width: 460px;
+  margin: 0;
+}
 .radar-art {
   aspect-ratio: 1;
   max-width: 460px;
@@ -517,25 +522,11 @@ main,
   left: 59%;
   top: 67%;
 }
-.radar-label {
-  position: absolute;
-  left: 7%;
-  top: 66%;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  line-height: 1.8;
-  background: var(--bg);
-  padding: 0.4rem 0.7rem;
-}
-.radar-label strong {
-  color: var(--text);
-}
 .art-caption {
-  position: absolute;
-  bottom: 7%;
-  left: 17%;
-  font-size: 0.48rem;
-  letter-spacing: 0.12em;
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  letter-spacing: 0.025em;
   color: var(--muted);
 }
 .trust-strip {
@@ -925,7 +916,7 @@ main,
   .hero h1 {
     font-size: clamp(3rem, 12vw, 4.3rem);
   }
-  .radar-art {
+  .radar-figure {
     width: 100%;
     max-width: 320px;
     justify-self: center;
@@ -997,9 +988,6 @@ main,
   }
   .notice {
     padding: 1rem;
-  }
-  .art-caption {
-    font-size: 0.4rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1333,4 +1321,54 @@ main :where(p, li, a, ul, ol, section, article, div) {
 }
 #draft-navigation .draft-actions {
   gap: 12px;
+}
+
+/* Wave 2: readable functional metadata; density comes from spacing, not small text. */
+.card-meta,
+.card-foot,
+.provenance dt,
+.site-nav a,
+.theme-toggle {
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
+}
+.badge {
+  color: var(--text);
+}
+.record-card {
+  padding: 1rem;
+}
+.record-card h3 {
+  margin-top: 0.75rem;
+}
+.evidence-caveat {
+  margin-block: 0.75rem 1rem;
+}
+.map-layout.list-only {
+  grid-template-columns: 1fr;
+}
+@media (max-width: 600px) {
+  .hero {
+    min-height: 0;
+    padding-block: 1.5rem;
+    gap: 1rem;
+  }
+  .radar-figure,
+  .radar-art {
+    max-width: 200px;
+    margin-top: 0;
+  }
+  .page-heading {
+    padding-block: 1.5rem 1rem;
+  }
+  .feature-card {
+    min-height: 0;
+    padding: 1rem;
+  }
+  .feature-card h3 {
+    margin-top: 1rem;
+  }
+  .section {
+    margin-top: 2rem;
+  }
 }

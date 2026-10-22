@@ -1,10 +1,11 @@
 import { firefox, webkit } from "playwright";
 import { startBrowserServer } from "./server.mjs";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { runEditorTests } from "./editor.mjs";
 import { runLocalNetworkTests } from "./offline.mjs";
 import { monitorBrowser } from "./health.mjs";
+await writeFile("dist/__test-text-zoom.css", ":root{font-size:200%}");
 const server = await startBrowserServer();
 const { base } = server;
 const passed = [];
@@ -55,6 +56,12 @@ try {
         "./recovery-truthfulness.mjs"
       );
       await runRecoveryTruthfulnessTests({
+        browser,
+        base,
+        captureScreenshots: name !== "webkit",
+      });
+      const { runReaderFlowTests } = await import("./reader-flow.mjs");
+      await runReaderFlowTests({
         browser,
         base,
         captureScreenshots: name !== "webkit",

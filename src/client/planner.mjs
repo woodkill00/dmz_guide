@@ -1,3 +1,4 @@
+import { createReaderContext } from "../domain/reader-flow.mjs";
 import { init, state, $, esc, error, persist, status } from "./common.mjs";
 import { planShared } from "../domain/shared-plan.mjs";
 let mode = "strict";
@@ -67,11 +68,47 @@ function safeText(value) {
         text = text.split(name).join("Spoiler-protected record");
   return text;
 }
+function shortage(item, includeName = true) {
+  const record = state.pack.items.find((r) => r.id === item.id);
+  const name = includeName ? esc(safeText(item.name || item.id)) : "";
+  if (!record || (record.spoiler && !state.profile.spoilers)) return name;
+  const relations = state.pack.locations.some(
+    (l) =>
+      l.itemIds.includes(item.id) && (!l.spoiler || state.profile.spoilers),
+  );
+  return `${name} <button type="button" data-need-item="${esc(item.id)}" data-need-destination="local">View item here</button> ${relations ? `<button type="button" data-need-item="${esc(item.id)}" data-need-destination="maps">Known locations here</button>` : "(Acquisition locations unknown)"}`;
+}
+$("#plan-output").addEventListener("click", async (event) => {
+  const control = event.target.closest("button[data-need-item]");
+  if (!control) return;
+  event.preventDefault();
+  try {
+    const pack = state.pack;
+    const url = await createReaderContext(
+      pack,
+      control.dataset.needItem,
+      control.dataset.needDestination,
+    );
+    if (pack !== state.pack)
+      throw new Error("Selected pack changed. Open the need again.");
+    location.assign(url);
+  } catch (reason) {
+    error(reason);
+  }
+});
 function renderPlan() {
+  if (!state.profile.goals.length) {
+    $("#plan-output").innerHTML =
+      `<section class="panel empty-state"><h2>Start with a goal</h2><p>Choose what you want to make or complete, then compare its requirements with your private inventory.</p><button type="button" id="add-first-goal">Add a goal</button> <a href="/inventory/?pack=${encodeURIComponent(state.pack.id)}">Update inventory and reserves</a></section>`;
+    $("#add-first-goal").addEventListener("click", () =>
+      $("#goal-select").focus(),
+    );
+    return;
+  }
   try {
     const p = planShared(state.pack, state.profile, { mode });
     $("#plan-output").innerHTML =
-      `<section class="panel"><h2>Collect now / later</h2>${p.goals.map((g) => `<article><h3>${esc(safeText(g.name || allName(g.id)))}</h3><ul>${g.reasons.map((x) => `<li>${esc(safeText(x))}</li>`).join("")}</ul><p>Now: ${g.collectNow.map((x) => `${esc(x.name || x.id)} ${x.missing} consumed + ${x.retainedMissing || 0} retained (${esc(x.unit)})`).join(", ") || "No current shortage"}</p><p>Later: ${g.collectLater.map((x) => `${esc(x.name || x.id)} ${x.missing} consumed + ${x.retainedMissing || 0} retained (${esc(x.unit)})`).join(", ") || "No later shortage"}</p></article>`).join("")}</section><details class="panel"><summary>Full allocation and contingent-supply detail</summary><p class="eyebrow">SHARED REQUIREMENTS / NOT A GUARANTEE</p><h2>Your collection ledger</h2><p>Priority: ${mode === "strict" ? "strict reservations protect higher goals" : "work-conserving may use stock reserved for blocked higher goals"}. Projected surplus is not owned inventory. No profile stock is consumed.</p><div class="card-grid">${p.ledger.map((r) => `<article class="panel"><h3>${esc(r.name || r.id)}</h3><p>Unit ${esc(r.unit)} · owned ${r.owned} · protected ${r.reserved}</p><p>Consume ${r.consumed} · retain ${r.retained} · allocated ${r.allocated}</p><p><strong>Missing ${r.missing}</strong> · retained missing ${r.retainedMissing}</p><p>Projected produced ${r.produced || 0} · contingent surplus ${r.surplus || 0}</p><details><summary>Per-goal allocation</summary><ul>${r.perGoal.map((g) => `<li>${esc(allName(g.goalId))}: demand ${g.demand}, allocated ${g.allocated}, missing ${g.missing}</li>`).join("")}</ul></details></article>`).join("") || "<p>Add goals to calculate shared demand.</p>"}</div></details><section class="panel"><h2>Executable-now trial schedule</h2><p>This simulates whole goals against a copy of owned stock. Failed goals consume nothing.</p>${p.schedule.map((g) => `<article><h3>${esc(allName(g.goalId))}: ${g.executable ? "Executable in this manual model" : "Blocked"}</h3><ul>${g.reasons.map((x) => `<li>${esc(safeText(x))}</li>`).join("")}</ul><ol>${g.actions.map((a) => `<li>${esc(safeText(a.name || a.id))} · ${esc(a.type)} ${a.batches ?? ""}</li>`).join("")}</ol></article>`).join("")}</section>`;
+      `<section class="panel"><h2>Collect now / later</h2><p>These controls open the matching active-catalog view in this tab. Private context is kept only for this tab.</p>${p.goals.map((g) => `<article><h3>${esc(safeText(g.name || allName(g.id)))}</h3><ul>${g.reasons.map((x) => `<li>${esc(safeText(x))}</li>`).join("")}</ul><p>Now: ${g.collectNow.map((x) => `${shortage(x)} ${x.missing} consumed + ${x.retainedMissing || 0} retained (${esc(x.unit)})`).join(", ") || "No current shortage"}</p><p>Later: ${g.collectLater.map((x) => `${shortage(x)} ${x.missing} consumed + ${x.retainedMissing || 0} retained (${esc(x.unit)})`).join(", ") || "No later shortage"}</p></article>`).join("")}</section><details class="panel"><summary>Full allocation and contingent-supply detail</summary><p class="eyebrow">SHARED REQUIREMENTS / NOT A GUARANTEE</p><h2>Your collection ledger</h2><p>Priority: ${mode === "strict" ? "strict reservations protect higher goals" : "work-conserving may use stock reserved for blocked higher goals"}. Projected surplus is not owned inventory. No profile stock is consumed.</p><div class="card-grid">${p.ledger.map((r) => `<article class="panel"><h3>${esc(safeText(r.name || r.id))}</h3><p>${shortage(r, false)}</p><p>Unit ${esc(r.unit)} · owned ${r.owned} · protected ${r.reserved}</p><p>Consume ${r.consumed} · retain ${r.retained} · allocated ${r.allocated}</p><p><strong>Missing ${r.missing}</strong> · retained missing ${r.retainedMissing}</p><p>Projected produced ${r.produced || 0} · contingent surplus ${r.surplus || 0}</p><details><summary>Per-goal allocation</summary><ul>${r.perGoal.map((g) => `<li>${esc(allName(g.goalId))}: demand ${g.demand}, allocated ${g.allocated}, missing ${g.missing}</li>`).join("")}</ul></details></article>`).join("") || "<p>Add goals to calculate shared demand.</p>"}</div></details><section class="panel"><h2>Executable-now trial schedule</h2><p>This simulates whole goals against a copy of owned stock. Failed goals consume nothing.</p>${p.schedule.map((g) => `<article><h3>${esc(allName(g.goalId))}: ${g.executable ? "Executable in this manual model" : "Blocked"}</h3><ul>${g.reasons.map((x) => `<li>${esc(safeText(x))}</li>`).join("")}</ul><ol>${g.actions.map((a) => `<li>${esc(safeText(a.name || a.id))} · ${esc(a.type)} ${a.batches ?? ""}</li>`).join("")}</ol></article>`).join("")}</section>`;
   } catch (e) {
     $("#plan-output").textContent = e.message;
   }
