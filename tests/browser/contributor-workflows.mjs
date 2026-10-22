@@ -420,9 +420,28 @@ export async function runContributorWorkflows({
     for (const width of [320, 390, 1280])
       for (const theme of ["dark", "light"]) {
         await page.setViewportSize({ width, height: 900 });
-        await page.evaluate(
-          (value) => (document.documentElement.dataset.theme = value),
+        const themeToggle = page.locator("#theme-toggle");
+        if ((await page.locator("html").getAttribute("data-theme")) !== theme) {
+          await themeToggle.focus();
+          assert(
+            await themeToggle.evaluate(
+              (node) => node === document.activeElement,
+            ),
+            "The actual theme control owns keyboard focus",
+          );
+          await page.keyboard.press("Enter");
+        }
+        await page.waitForFunction(
+          (value) => document.documentElement.dataset.theme === value,
           theme,
+        );
+        assert.equal(
+          await themeToggle.getAttribute("aria-label"),
+          `Switch to ${theme === "dark" ? "light" : "dark"} theme`,
+        );
+        assert.equal(
+          await themeToggle.textContent(),
+          theme === "dark" ? "Light mode" : "Dark mode",
         );
         const baseline = await page
           .locator("body")

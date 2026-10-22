@@ -41,18 +41,30 @@ def bounded_files(folder, *, caches=False):
     return sorted(found)
 
 
-def bounded_read(path, budget, limit=64 * 1024 * 1024):
+def bounded_read(path, budget, limit=64 * 1024 * 1024, *, phase="unspecified"):
     info = safe_stat(path)
     if not stat.S_ISREG(info.st_mode) or info.st_size > limit or info.st_size > budget[0]:
         raise SystemExit('File byte safety limit exceeded.')
     signature = lambda value: (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns, value.st_ctime_ns)
     fd = os.open(path, os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0))
+    def changed(point, opened, after=None, read_bytes=None):
+        detail = {
+            'path': path.relative_to(root).as_posix()[:256],
+            'phase': phase, 'point': point,
+            'signatureFields': ['dev', 'ino', 'size', 'mtime_ns', 'ctime_ns'],
+            'before': signature(info), 'open': signature(opened),
+            'after': signature(after) if after is not None else None,
+            'readBytes': read_bytes,
+        }
+        raise SystemExit('File changed during packaging. ' + json.dumps(detail, ensure_ascii=True)[:4000])
     with os.fdopen(fd, 'rb') as stream:
-        if signature(os.fstat(stream.fileno())) != signature(info):
-            raise SystemExit('File changed during packaging.')
+        opened = os.fstat(stream.fileno())
+        if signature(opened) != signature(info):
+            changed('open', opened)
         data = stream.read(info.st_size + 1)
-        if len(data) != info.st_size or signature(os.fstat(stream.fileno())) != signature(info):
-            raise SystemExit('File changed during packaging.')
+        after = os.fstat(stream.fileno())
+        if len(data) != info.st_size or signature(after) != signature(info):
+            changed('read', opened, after, len(data))
     budget[0] -= len(data)
     return data
 
@@ -72,7 +84,7 @@ for path in files:
 identity_path = dist / 'assets/build-identity.json'
 if identity_path not in files:
     raise SystemExit('Build identity missing; rebuild before packaging.')
-identity_bytes = bounded_read(identity_path, [16 * 1024 * 1024], 16 * 1024 * 1024)
+identity_bytes = bounded_read(identity_path, [16 * 1024 * 1024], 16 * 1024 * 1024, phase="identity")
 identity = json.loads(identity_bytes)
 build_id = identity.pop('buildId', None)
 encoded = json.dumps(identity, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
@@ -80,7 +92,7 @@ if identity.get('format') != 'dmz-build-identity' or identity.get('version') != 
     raise SystemExit('Invalid build identity; rebuild before packaging.')
 identity['buildId'] = build_id
 budget = [496 * 1024 * 1024]
-payload = {path.relative_to(root).as_posix(): bounded_read(path, budget) for path in files}
+payload = {path.relative_to(root).as_posix(): bounded_read(path, budget, phase="output") for path in files}
 if payload['dist/assets/build-identity.json'] != identity_bytes:
     raise SystemExit('Build identity changed during packaging.')
 actual_output = {name.removeprefix('dist/'): hashlib.sha256(data).hexdigest() for name, data in payload.items() if name != 'dist/assets/build-identity.json'}
@@ -93,10 +105,10 @@ if len(source_paths) > 50000 or {path.relative_to(root).as_posix() for path in s
     raise SystemExit('Build source inventory changed; rebuild before packaging.')
 source_budget = [128 * 1024 * 1024]
 for path in source_paths:
-    if hashlib.sha256(bounded_read(path, source_budget)).hexdigest() != identity['sourceFiles'][path.relative_to(root).as_posix()]:
+    if hashlib.sha256(bounded_read(path, source_budget, phase="source")).hexdigest() != identity['sourceFiles'][path.relative_to(root).as_posix()]:
         raise SystemExit('Build source changed; rebuild before packaging.')
 for relative in ('scripts/serve.mjs', 'LICENSE', 'docs/release.md', 'docs/content-studio.md', 'specs/009-repository-content-studio/acceptance.md'):
-    payload[relative] = bounded_read(root / relative, budget)
+    payload[relative] = bounded_read(root / relative, budget, phase="auxiliary")
 payload['START-HERE.txt'] = b'Install Node.js 22.x or 24.x. Extract this archive, then run: node scripts/serve.mjs\nOpen http://127.0.0.1:4173 . Keep the server running. No npm install is needed.\nHost-root static output only. Read docs/release.md for backups, rights and limits.\nHashes show internal consistency, not authorship or authenticity.\n'
 if len(payload) > 49999 or sum(map(len, payload.values())) > 496 * 1024 * 1024 or any(len(data) > 64 * 1024 * 1024 for data in payload.values()):
     raise SystemExit('Release payload safety limit exceeded.')
