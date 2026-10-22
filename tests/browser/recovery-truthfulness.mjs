@@ -336,6 +336,17 @@ async function fixedJourneys({ browser, base, captureScreenshots }) {
     );
     await page.reload();
     await ready(page);
+    // Selected readiness is intentionally independent of deferred catalog discovery.
+    await page.waitForFunction(() => {
+      const warning = document.querySelector("#error");
+      return (
+        warning &&
+        !warning.hidden &&
+        warning.textContent.startsWith(
+          "An invalid local catalog was retained but not listed.",
+        )
+      );
+    });
     assert.match(
       await page.locator("#save-status").textContent(),
       /storage available.*content warning/i,
