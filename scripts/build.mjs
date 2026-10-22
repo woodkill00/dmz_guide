@@ -1,4 +1,9 @@
 import {
+  guidancePath,
+  renderAuthorActions,
+  renderAuthorGuidance,
+} from "../src/ui/author-actions.mjs";
+import {
   readFile,
   readdir,
   mkdir,
@@ -60,16 +65,32 @@ for (const [path, title, type] of [
     page: path === "items" || path === "weapons" ? "catalog" : path,
     scripts: ["/assets/src/client/catalog.mjs"],
   });
-for (const record of allRecords(packs))
+for (const record of allRecords(packs)) {
+  const entry = catalog.entries.find(
+    (entry) => entry.pack.id === record.pack.id,
+  );
+  const guidance = guidancePath(entry.key, record.id);
   pages.push({
     path: recordUrl(record),
     title: publicTitle(record),
-    body: renderDetail(record, packs),
+    body: renderDetail(record, packs, {
+      authorActions: renderAuthorActions(record, {
+        edit: guidance + "#edit",
+        images: guidance + "#images",
+      }),
+    }),
     page:
       { item: "catalog", recipe: "recipes", guide: "guides" }[
         record.recordType
       ] || record.recordType,
   });
+  pages.push({
+    path: guidance,
+    title: "Edit " + publicTitle(record),
+    body: renderAuthorGuidance(record, entry.key),
+    page: "contribute",
+  });
+}
 for (const moduleName of [
   "private-pages",
   "features",
@@ -137,6 +158,8 @@ await writeFile(
 );
 await mkdir(join(dist, "assets"), { recursive: true });
 const authorOnly = new Set([
+  "src/content/author-target.mjs",
+  "src/ui/author-actions.mjs",
   "src/client/studio.mjs",
   "src/client/studio-media.mjs",
   "src/client/raster-editor.mjs",

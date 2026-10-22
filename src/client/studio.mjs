@@ -1,3 +1,8 @@
+import {
+  parseAuthorTarget,
+  resolveAuthorTarget,
+  previewPath,
+} from "../content/author-target.mjs";
 import { createGuidedEditor } from "./guided-editor.mjs";
 import { createStudioMedia, recordUses } from "./studio-media.mjs";
 import { decodeRaster, normalizeRaster } from "./raster-editor.mjs";
@@ -25,6 +30,8 @@ const node = (tag, text) => {
   if (text !== undefined) n.textContent = text;
   return n;
 };
+let initialTarget = null,
+  initialTargetApplied = false;
 let schema,
   entries = [],
   repositoryRevision = "",
@@ -302,6 +309,10 @@ function showDiff(root, before, after) {
   }
 }
 function preview() {
+  assert(
+    !media?.hasPending(),
+    "Attach or cancel the prepared picture before previewing a repository save.",
+  );
   assert(draft, "Choose or create a catalog first");
   assert(!busy, "Wait for the current operation to finish");
   validate(draft);
@@ -344,6 +355,10 @@ function preview() {
   status("Validated save preview ready. Nothing has been written yet.");
 }
 async function save() {
+  assert(
+    !media?.hasPending(),
+    "Attach or cancel the prepared picture before saving other changes.",
+  );
   assert(
     !blocked,
     "Resolve repository recovery before saving; download the draft first",
@@ -441,7 +456,7 @@ function downloadDraft() {
 function discardAllowed(
   message = "Discard the unsaved draft? Download it first if needed.",
 ) {
-  return !dirty || confirm(message);
+  return (!dirty && !media?.hasPending()) || confirm(message);
 }
 function newCatalog() {
   const title = $("#new-catalog-title").value.trim();
@@ -656,7 +671,26 @@ async function loadCatalog() {
       onSelect: selectRecord,
     });
   }
-  loadEntry(entries.find((entry) => entry.key === key) || entries[0] || null);
+  // Resolve before loading any draft: stale or hostile links never fall back.
+  const target =
+    initialTarget && !initialTargetApplied
+      ? resolveAuthorTarget(entries, initialTarget)
+      : null;
+  loadEntry(
+    target?.entry ||
+      entries.find((entry) => entry.key === key) ||
+      entries[0] ||
+      null,
+  );
+  if (target) {
+    selectRecord(target.group, target.index);
+    const context = $("#entry-context");
+    context.hidden = false;
+    $("#entry-identity").textContent =
+      `${target.entry.pack.id} · ${target.record.id}`;
+    $("#return-record").href = previewPath(initialTarget);
+    initialTargetApplied = true;
+  }
   $("#recovery-help").hidden = !blocked;
   if (blocked) {
     const reason = new Error(
@@ -667,6 +701,7 @@ async function loadCatalog() {
   }
 }
 async function start() {
+  initialTarget = parseAuthorTarget(new URLSearchParams(location.search));
   $("#pack-select").addEventListener("change", () => {
     if (
       busy ||
@@ -683,7 +718,7 @@ async function start() {
     if (entry) loadEntry(entry);
   });
   window.addEventListener("beforeunload", (event) => {
-    if (dirty || busy) {
+    if (dirty || busy || media?.hasPending()) {
       event.preventDefault();
       event.returnValue = "";
     }
@@ -840,6 +875,13 @@ async function start() {
     $("#import-content").focus();
   });
   await withBusy(loadCatalog);
+  if (initialTarget) {
+    const focus = $(
+      initialTarget.intent === "images" ? "#picture-file" : "#editor-record",
+    );
+    focus.scrollIntoView({ block: "center" });
+    focus.focus({ preventScroll: true });
+  }
   await changes();
 }
 start().catch(fail);

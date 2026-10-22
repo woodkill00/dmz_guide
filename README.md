@@ -15,6 +15,7 @@ A community field guide being built around trustworthy game data and explainable
 
 ## Current implementation and boundaries
 
+- Contextual edit and image actions on every public content detail lead to explicit local Studio startup; saved local previews open the exact record directly. Location records support primary/additional pictures too.
 - Opt-in local Content Studio saves guided records, sourced weapon stats and categorized pictures directly to the checkout, with saved previews, conflict recovery and manual Git review.
 - Native searchable catalog/detail routes, typed weapon stats, recipes and guides.
 - Shared single/multi-goal planning with reserves, prerequisites, retained tools, now/later shortages and executable-now trials.

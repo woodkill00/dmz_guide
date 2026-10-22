@@ -57,6 +57,7 @@ h3 {
 }
 p {
   max-width: 85ch;
+  overflow-wrap: anywhere;
 }
 .eyebrow {
   color: var(--accent);
@@ -286,6 +287,8 @@ ul {
   overflow-wrap: anywhere;
 }
 .media-card button {
+  max-width: 100%;
+  overflow-wrap: anywhere;
   margin: 0.2rem 0;
 }
 .skip-link {
@@ -370,4 +373,8 @@ footer {
 }
 :root[data-theme="light"] .drop-zone.dragover {
   background: #e9ebdf;
+}
+
+#entry-identity {
+  overflow-wrap: anywhere;
 }

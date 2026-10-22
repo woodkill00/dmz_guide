@@ -1283,3 +1283,19 @@ main :where(p, li, a, ul, ol, section, article, div) {
 .nav-more:not([open]) > div {
   display: none;
 }
+
+.record-author-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block: 1rem 2rem;
+}
+.record-author-actions p {
+  flex-basis: 100%;
+  margin: 0;
+}
+.author-destination {
+  display: block;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
