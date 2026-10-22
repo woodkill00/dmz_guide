@@ -9,6 +9,12 @@ export async function checkPictureDescriptionLayout(
   { prefix, captureScreenshots },
 ) {
   const viewport = page.viewportSize();
+  const originalURL = page.url();
+  assert.equal(
+    new URL(originalURL).hash,
+    "",
+    "Workbench matrix begins at the document history entry",
+  );
   const originalTheme = await page.locator("html").getAttribute("data-theme");
   const css = new URL("/__picture-description-text200.css", page.url()).href;
   const selectors = [
@@ -54,6 +60,7 @@ export async function checkPictureDescriptionLayout(
   );
   await mkdir("test-results", { recursive: true });
   let style;
+  let sectionNavigations = 0;
   try {
     for (const theme of ["dark", "light"]) {
       await setTheme(theme);
@@ -64,10 +71,23 @@ export async function checkPictureDescriptionLayout(
         if (enlarged) style = await page.addStyleTag({ url: css });
         for (const width of [320, 390, 1280]) {
           await page.setViewportSize({ width, height: 900 });
+          assert.equal(page.url(), originalURL);
           for (const target of ["studio-review", "studio-pictures"]) {
+            const targetURL = new URL(`#${target}`, originalURL).href;
+            assert.notEqual(page.url(), targetURL);
             await page.locator(`#studio-nav a[href="#${target}"]`).focus();
             await page.keyboard.press("Enter");
+            await page.waitForURL(targetURL);
+            sectionNavigations++;
           }
+          // Restore this helper-owned fragment pair promptly. Keep the later
+          // single Back aimed at the real preceding preview document, not a
+          // section fragment; do not accumulate history across visual cases.
+          await Promise.all([
+            page.waitForURL(originalURL),
+            page.evaluate(() => history.go(-2)),
+          ]);
+          assert.equal(page.url(), originalURL);
           const retainedState = await retained.evaluate((entries) =>
             entries.every(
               ({ selector, node, value, checked }) =>
@@ -155,6 +175,11 @@ export async function checkPictureDescriptionLayout(
         }
       }
     }
+    assert.equal(
+      sectionNavigations,
+      24,
+      "Two real section navigations per visual case",
+    );
   } finally {
     if (style) await style.evaluate((node) => node.remove());
     await setTheme(originalTheme);

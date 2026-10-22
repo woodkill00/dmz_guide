@@ -2,6 +2,114 @@ import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { captureDocumentEvidence } from "./page-edit.mjs";
 
+async function assertRadarCaption(page, { scale, label }) {
+  const evidence = await page.evaluate(() => {
+    const figure = document.querySelector(".radar-figure");
+    const drawing = document.querySelector(".radar-art");
+    const caption = document.querySelector(".art-caption");
+    if (!figure || !drawing || !caption) return { missing: true };
+    const rect = (node) => {
+      const { left, right, top, bottom, width, height } =
+        node.getBoundingClientRect();
+      return { left, right, top, bottom, width, height };
+    };
+    const captionRect = rect(caption);
+    const range = document.createRange();
+    range.selectNodeContents(caption);
+    const textRects = [...range.getClientRects()].filter(
+      (r) => r.width && r.height,
+    );
+    const maskedAncestors = [],
+      clippedAncestors = [];
+    for (let node = caption; node; node = node.parentElement) {
+      const style = getComputedStyle(node),
+        bounds = rect(node);
+      if (style.maskImage !== "none" || style.clipPath !== "none")
+        maskedAncestors.push(node.className || node.tagName);
+      if (
+        textRects.some(
+          (r) =>
+            (["hidden", "clip"].includes(style.overflowX) &&
+              (r.left < bounds.left - 1 || r.right > bounds.right + 1)) ||
+            (["hidden", "clip"].includes(style.overflowY) &&
+              (r.top < bounds.top - 1 || r.bottom > bounds.bottom + 1)),
+        )
+      )
+        clippedAncestors.push(node.className || node.tagName);
+    }
+    return {
+      viewport: innerWidth,
+      figure: rect(figure),
+      drawing: rect(drawing),
+      caption: captionRect,
+      captionText: caption.textContent,
+      captionFont: parseFloat(getComputedStyle(caption).fontSize),
+      captionPosition: getComputedStyle(caption).position,
+      outsideDrawing: !drawing.contains(caption) && figure.contains(caption),
+      marketingLabels: document.querySelectorAll(".radar-label").length,
+      textFits:
+        textRects.length > 0 &&
+        textRects.every(
+          (r) =>
+            r.left >= captionRect.left - 1 &&
+            r.right <= captionRect.right + 1 &&
+            r.top >= captionRect.top - 1 &&
+            r.bottom <= captionRect.bottom + 1,
+        ),
+      maskedAncestors,
+      clippedAncestors,
+    };
+  });
+  await writeFile(
+    `test-results/${label}-radar-caption.json`,
+    JSON.stringify(evidence, null, 2),
+  );
+  assert(!evidence.missing, "Radar has an honest visible figure caption");
+  assert.match(evidence.captionText, /ORIGINAL ILLUSTRATION \/ NOT A GAME MAP/);
+  assert.equal(
+    evidence.marketingLabels,
+    0,
+    "Redundant overlapping marketing label is removed",
+  );
+  assert(
+    evidence.outsideDrawing &&
+      evidence.caption.top >= evidence.drawing.bottom - 1,
+    "Caption is outside and below the masked drawing",
+  );
+  assert(
+    ["static", "relative"].includes(evidence.captionPosition),
+    "Caption remains in normal flow",
+  );
+  assert(
+    evidence.captionFont >= 14 * scale,
+    "Caption scales without small-screen text shrinkage",
+  );
+  assert(
+    evidence.caption.width > 0 &&
+      evidence.caption.height > 0 &&
+      evidence.caption.left >= -1 &&
+      evidence.caption.right <= evidence.viewport + 1,
+  );
+  assert(evidence.textFits, "Every caption text line fits its visible box");
+  assert.deepEqual(
+    evidence.maskedAncestors,
+    [],
+    "Caption has no masking or clipping-path ancestor",
+  );
+  assert.deepEqual(
+    evidence.clippedAncestors,
+    [],
+    "Caption text is not clipped by any ancestor",
+  );
+  if (evidence.viewport <= 390) {
+    assert(
+      evidence.drawing.width <= 200 && evidence.figure.width <= 200,
+      "Decorative art retains its mobile size cap",
+    );
+  }
+  return evidence;
+}
+
 async function probeReloadSemantics({ browser, base }) {
   const results = [];
   const engine = browser.browserType().name();
@@ -533,6 +641,13 @@ export async function runReaderFlowTests({
               page,
               `test-results/reader-normal-${width}-${theme}-${route === "/" ? "home" : route === detailRoute ? "detail" : route.startsWith("/maps") ? "maps" : "catalog"}.png`,
             );
+          normal.radarCaption =
+            route === "/"
+              ? await assertRadarCaption(page, {
+                  scale: 1,
+                  label: `${browser.browserType().name()}-reader-home-${width}-${theme}-normal`,
+                })
+              : null;
           const before = await page
             .locator("body")
             .evaluate((n) => parseFloat(getComputedStyle(n).fontSize));
@@ -551,6 +666,13 @@ export async function runReaderFlowTests({
           const label = `reader-${route.startsWith("/maps") ? "maps" : route === "/" ? "home" : route === detailRoute ? "detail" : "catalog"}-${width}-${theme}-text200`;
           if (captureScreenshots)
             await captureDocumentEvidence(page, `test-results/${label}.png`);
+          const radarCaption =
+            route === "/"
+              ? await assertRadarCaption(page, {
+                  scale: 2,
+                  label: `${browser.browserType().name()}-${label}`,
+                })
+              : null;
           const height = await page.evaluate(
             () => document.documentElement.scrollHeight,
           );
@@ -578,6 +700,7 @@ export async function runReaderFlowTests({
             route,
             height,
             normal,
+            radarCaption,
             ...dimensions,
           });
         }
