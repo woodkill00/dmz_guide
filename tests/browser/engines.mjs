@@ -20,7 +20,7 @@ try {
       await runMetadataFloorTests({
         browser,
         base,
-        mode: "baseline",
+        mode: "fixed",
         captureScreenshots: name !== "webkit",
       });
       const context = await browser.newContext({

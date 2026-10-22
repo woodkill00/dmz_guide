@@ -159,7 +159,7 @@ li {
   margin: 0.4rem 0;
 }
 dt {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted);
@@ -320,6 +320,7 @@ main,
 .site-footer p {
   max-width: 75ch;
   margin: 0.3rem 0;
+  font-size: 0.875rem;
 }
 .site-footer > a:last-child {
   display: inline-flex;
@@ -334,6 +335,14 @@ main,
   text-transform: uppercase;
   color: var(--accent);
   line-height: 1.6;
+}
+/* Source/type and private-status metadata, not decorative section labels. */
+.catalog-section .eyebrow,
+.breadcrumbs ~ .page-heading > .eyebrow,
+body[data-page="inventory"] .page-heading > .eyebrow,
+body[data-page="editor"] .page-heading > .eyebrow,
+body[data-page="local"] .page-heading > .eyebrow {
+  font-size: 0.875rem;
 }
 .lede {
   font-size: clamp(1rem, 2vw, 1.2rem);
@@ -674,7 +683,7 @@ main,
   background: var(--surface);
   padding: 1.2rem 1.4rem;
   margin: 2rem 0;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 .notice p {
   color: var(--muted);
@@ -698,7 +707,7 @@ main,
   justify-self: start;
 }
 .result-count {
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--muted);
   padding: 0.7rem 0;
 }
@@ -719,7 +728,7 @@ main,
   gap: 0.7rem;
   align-items: center;
   flex-wrap: wrap;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: var(--muted);
   margin-top: 2rem;
 }
@@ -754,12 +763,12 @@ main,
   font-size: 1.35rem;
 }
 .provenance dl {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 .source-list {
   list-style: none;
   padding: 0;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 .source-list li {
   border-top: 1px solid var(--line);
@@ -768,7 +777,7 @@ main,
   overflow-wrap: anywhere;
 }
 .source-list p {
-  font-size: 0.8rem;
+  font-size: 0.875rem;
 }
 .muted {
   color: var(--muted);
@@ -787,6 +796,7 @@ main,
 .requirements small {
   display: block;
   color: var(--muted);
+  font-size: 0.875rem;
 }
 .stat-row,
 .claim {
@@ -1035,7 +1045,7 @@ section.panel > button + button {
 }
 #save-status {
   padding: 0.6rem 0;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--muted);
 }
 #inventory-fields fieldset {

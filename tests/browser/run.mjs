@@ -23,7 +23,7 @@ try {
   const checkHealth = monitorBrowser(browser);
   await mkdir("test-results", { recursive: true });
   const { runMetadataFloorTests } = await import("./metadata-floor.mjs");
-  await runMetadataFloorTests({ browser, base, mode: "baseline" });
+  await runMetadataFloorTests({ browser, base, mode: "fixed" });
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
   });
