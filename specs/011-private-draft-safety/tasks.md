@@ -12,8 +12,11 @@
 - [x] T007 [US2] Add startup and both-export regression cases in tests/browser/draft-safety.mjs (FR-005–006).
 - [x] T008 [US2] Centralize validation/naming and startup locking in src/client/common.mjs, src/client/profile.mjs and src/ui/private-pages.mjs (FR-005–006).
 ## Phase 5: Verification
-- [ ] T009 Integrate tests in tests/browser/run.mjs; execute check/format/browser/engines/studio and record exact results in acceptance.md (FR-007, SC-001–004).
+- [x] T009 Integrate tests in tests/browser/run.mjs; execute check/format/browser/engines/studio and record exact results in acceptance.md (FR-007, SC-001–004).
 - [ ] T010 Execute converge and independent review; record exact candidate CI, parent merge gate and exact-main CI in acceptance.md.
 
 ## Dependencies and implementation strategy
 T001 → T002/T003 → T004/T007 → T005/T006/T008 → T009 → T010. Tests are independent-owned; shared client files have one integrator. No parallel production-file ownership. US1 is the smallest protective outcome; US2 shares startup/common contracts and ships in this bounded batch. Completion requires evidence, not checked tasks alone.
+
+## Phase 6: Convergence
+- [ ] T011 Obtain parent approval for the exact independently reviewed green candidate, merge only that candidate, and verify exact-main CI; record evidence in acceptance.md per plan: validation and rollback / T010 (partial external delivery gate).
