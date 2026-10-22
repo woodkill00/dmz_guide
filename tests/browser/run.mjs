@@ -411,7 +411,7 @@ try {
   const { runShowcase } = await import("./showcase.mjs");
   await runShowcase({ browser, base });
   const { runDraftSafetyTests } = await import("./draft-safety.mjs");
-  await runDraftSafetyTests({ browser, base, baseline: true });
+  await runDraftSafetyTests({ browser, base });
   checkHealth();
   console.log(
     "Browser acceptance passed: direct routes, persistence, planning, backup/reset/cancel/restore, hostile import, tab conflict, 320/390px, no-JS and console.",

@@ -54,7 +54,11 @@ try {
         captureScreenshots: name !== "webkit",
       });
       const { runDraftSafetyTests } = await import("./draft-safety.mjs");
-      await runDraftSafetyTests({ browser, base, baseline: true });
+      await runDraftSafetyTests({
+        browser,
+        base,
+        captureScreenshots: name !== "webkit",
+      });
       health();
       console.log(
         `${name}: native navigation, narrow maps, IndexedDB portable raster roundtrip and local-network tests passed`,

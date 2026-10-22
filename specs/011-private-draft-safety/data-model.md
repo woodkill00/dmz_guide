@@ -1,0 +1,2 @@
+# Data model
+No stored schema change. Inventory checkpoint maps each field name to its last loaded/successfully saved raw string. Current fields remain DOM-owned through cancelled navigation. Pending departure is ephemeral, at most one action. Save checkpoint advances only after successful persist; failed/uncertain storage does not clear it. Existing profile revision, snapshot and validation contracts remain authoritative.

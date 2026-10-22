@@ -20,7 +20,7 @@ export const state = {
   profile: null,
   revision: 0,
   packs: [],
-  loading: false,
+  loading: true,
   saving: false,
 };
 export function error(reason) {
@@ -46,9 +46,128 @@ export function download(name, data, type = "application/json") {
   anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+let draftGuard = null;
+let departurePending = false;
+let leaving = false;
+export function registerDraftGuard(guard) {
+  draftGuard = guard;
+}
+export function hasUnsavedDraft() {
+  return Boolean(draftGuard?.isDirty());
+}
+export function exportProfile() {
+  try {
+    if (state.loading || !state.pack || !state.profile)
+      throw new Error("Wait for the selected pack to load.");
+    validateProfile(state.profile);
+    if (state.profile.packId !== state.pack.id)
+      throw new Error("Profile and selected pack do not match.");
+    const safe = (value, length) =>
+      String(value)
+        .replace(/[^a-zA-Z0-9_.-]/g, "-")
+        .slice(0, length);
+    const name = `dmz-${safe(state.pack.id, 48)}-${safe(state.profile.contentVersion, 80)}-r${state.profile.revision}-${new Date().toISOString().replace(/[:]/g, "-")}.json`;
+    download(name, state.profile);
+    status(
+      `${hasUnsavedDraft() ? "Unsaved edits remain · " : ""}Backup download requested. Check your browser downloads; this does not save the profile locally.`,
+    );
+  } catch (reason) {
+    error(reason);
+  }
+}
+async function requestDeparture(proceed, origin) {
+  if (departurePending || state.loading || state.saving) return;
+  if (!hasUnsavedDraft()) return proceed();
+  departurePending = true;
+  let dialog = $("#draft-navigation");
+  if (!dialog) {
+    dialog = document.createElement("dialog");
+    dialog.id = "draft-navigation";
+    dialog.setAttribute("aria-labelledby", "draft-navigation-title");
+    dialog.innerHTML = `<h2 id="draft-navigation-title">Keep your unsaved inventory?</h2><p>Save locally before leaving, discard these edits, or stay on this page.</p><div class="draft-actions"><button id="draft-save" type="button">Save</button><button id="draft-discard" type="button" class="secondary">Discard</button><button id="draft-stay" type="button" autofocus>Stay</button></div>`;
+    document.body.append(dialog);
+  }
+  const decision = await new Promise((resolve) => {
+    const choose = (value) => {
+      dialog.oncancel = null;
+      dialog.close();
+      resolve(value);
+    };
+    $("#draft-save").onclick = () => choose("save");
+    $("#draft-discard").onclick = () => choose("discard");
+    $("#draft-stay").onclick = () => choose("stay");
+    dialog.oncancel = (event) => {
+      event.preventDefault();
+      choose("stay");
+    };
+    dialog.showModal();
+  });
+  try {
+    if (decision === "stay") {
+      origin?.focus();
+      return;
+    }
+    if (decision === "save" && !(await persist())) return;
+    leaving = true;
+    try {
+      await proceed();
+    } finally {
+      leaving = false;
+    }
+  } finally {
+    departurePending = false;
+  }
+}
+window.addEventListener("beforeunload", (event) => {
+  if (!leaving && hasUnsavedDraft()) {
+    event.preventDefault();
+    event.returnValue = "";
+  }
+});
+document.addEventListener("click", (event) => {
+  const anchor = event.target.closest?.("a[href]");
+  if (
+    !anchor ||
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.ctrlKey ||
+    event.metaKey ||
+    event.shiftKey ||
+    event.altKey ||
+    anchor.hasAttribute("download") ||
+    (anchor.target && anchor.target !== "_self")
+  )
+    return;
+  const target = new URL(anchor.href, location.href);
+  if (
+    !["http:", "https:"].includes(target.protocol) ||
+    (target.origin === location.origin &&
+      target.pathname === location.pathname &&
+      target.search === location.search)
+  )
+    return;
+  if (!hasUnsavedDraft()) return;
+  event.preventDefault();
+  requestDeparture(() => {
+    // Keep unload suppression until the browser commits this approved navigation.
+    leaving = true;
+    location.assign(target.href);
+    return new Promise(() => {});
+  }, anchor).catch(error);
+});
 let generation = 0;
 let disabledControls = [];
 export async function init(render) {
+  disabledControls = [
+    ...document.querySelectorAll("main button, main input, main select"),
+  ].map((node) => [
+    node,
+    node.hasAttribute("data-startup-disabled") ? false : node.disabled,
+  ]);
+  for (const [node] of disabledControls) node.disabled = true;
+  document.querySelector("main").setAttribute("aria-busy", "true");
+  for (const id of ["export-current-profile", "export-profile"])
+    $(`#${id}`)?.addEventListener("click", exportProfile);
   const schemaResponse = await fetch("/assets/schemas/pack.schema.json");
   if (!schemaResponse.ok) throw new Error("Content schema unavailable.");
   const schema = await schemaResponse.json();
@@ -83,15 +202,6 @@ export async function init(render) {
       Number(a.id === "official:mw4-dmz-starter"),
   );
   let contentWarning = null;
-  $("#export-current-profile")?.addEventListener("click", () => {
-    try {
-      if (state.loading) throw new Error("Wait for the selected pack to load.");
-      validateProfile(state.profile);
-      download("dmz-private-profile.json", state.profile);
-    } catch (reason) {
-      error(reason);
-    }
-  });
   try {
     for (const record of await listRecords("content")) {
       const pack = record.value?.pack;
@@ -209,7 +319,14 @@ export async function init(render) {
     if (token !== generation) return;
     if (warning) error(warning);
   }
-  select.addEventListener("change", () => change().catch(error));
+  select.addEventListener("change", () => {
+    const requestedPack = select.value;
+    select.value = state.pack?.id || requestedPack;
+    requestDeparture(async () => {
+      select.value = requestedPack;
+      await change();
+    }, select).catch(error);
+  });
   await change();
   return state;
 }
@@ -234,6 +351,7 @@ export async function persist(candidate = state.profile) {
     if (token !== generation || state.pack.id !== packId) return false;
     state.profile = saved;
     state.revision = saved.revision;
+    document.dispatchEvent(new Event("profile-saved"));
     status(`Saved locally · revision ${saved.revision}`);
     $("#error").hidden = true;
     return true;
