@@ -12,3 +12,5 @@ Reviewer convergence: same-tab action amendment independently approved; concrete
 Independent source reviewer approved bounded candidate after inspecting three concrete fixes and independently passing11/11focused tests on2026-10-22. Exact remote/full browser/visual approval remains pending.
 
 Convergence candidate after failed4007 hosted run: heading repair and diagnostic-only Firefox delta independently reviewed and approved for hosted rerun. Focused12/12 and full286total285pass0fail1existing skip;154-route build and formatting passed. Firefox Back defect remains unresolved pending actual failing-state evidence; this is not release approval.
+
+Test-only convergence after493dc3: independently approved current-clock expiry fixture correction and bounded stage-history diagnostics. Focused13/13; full287total286pass0fail1existing skip; format clean. No production policy changes. Firefox single Back after refresh remains failing and unchanged pending history evidence; no browser success claimed.

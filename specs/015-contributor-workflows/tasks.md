@@ -27,3 +27,7 @@ T001–003 gate all production work. Each story's reproduction precedes implemen
 - [x] T015 Preserve the author-only static boundary for the new parser via exact exclusions in scripts/build.mjs and scripts/release_paths.py and corresponding tests (FR-006; plan local-only scope); integrator authorized exact exclusions only.
 - [ ] T016 Execute expanded actual-raster/rights/rejection/delayed-decode cancellation cases in tests/browser/contributor-workflows.mjs on hosted Chrome/Firefox/WebKit and retain strict-health plus full-page/tiled actual200% artifacts (FR-007–008, SC-005). Local launch is unavailable, not passed.
 - [x] T017 Keep016 image controls out of the independently usable015 candidate; transfer working controls and optional recovery-storage diagnostics to016 with its owned helpers. No inert description input is shipped in015 (coordinated ownership boundary).
+
+## Phase 8: Actual hosted visual repairs
+- [ ] T018 Repair native checkbox flex shrink in src/ui/studio.css after actual Chrome320px/200% artifact showed the rights control reduced to a near-invisible speck; retain1.2em dimensions and validate real geometry/full-page evidence across engines.
+- [ ] T019 Diagnose actual Firefox320px/200% horizontal overflow using validator-owned tests/browser/contributor-workflows.mjs geometry before any further CSS repair; preserve existing strict reflow threshold and source review.

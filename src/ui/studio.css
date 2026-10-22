@@ -96,6 +96,7 @@ textarea {
   width: 100%;
 }
 input[type="checkbox"] {
+  flex-shrink: 0;
   width: 1.2em;
   height: 1.2em;
   accent-color: var(--accent);

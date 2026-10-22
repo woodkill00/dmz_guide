@@ -11,7 +11,7 @@ export async function runReaderFlowTests({
   });
   const navigationEvents = [];
   const recordNavigation = (event) => {
-    navigationEvents.push(event);
+    navigationEvents.push({ timestamp: Date.now(), ...event });
     if (navigationEvents.length > 100) navigationEvents.shift();
   };
   await context.addInitScript(() => {
@@ -36,6 +36,23 @@ export async function runReaderFlowTests({
     if (message.text().startsWith("reader-lifecycle "))
       recordNavigation(JSON.parse(message.text().slice(17)));
   });
+  const checkpoint = async (stage) =>
+    recordNavigation(
+      await page.evaluate(
+        (stage) => ({
+          type: "checkpoint",
+          stage,
+          url: location.href,
+          historyLength: history.length,
+          readyState: document.readyState,
+          navigation: performance
+            .getEntriesByType("navigation")
+            .slice(-10)
+            .map(({ type, name }) => ({ type, name })),
+        }),
+        stage,
+      ),
+    );
   const ready = () =>
     page.waitForFunction(
       () =>
@@ -81,16 +98,20 @@ export async function runReaderFlowTests({
     const targetSize = await itemControl.boundingBox();
     assert(targetSize.width >= 44 && targetSize.height >= 44);
     await itemControl.focus();
+    await checkpoint("before-item-activation");
     await itemControl.press("Enter");
     await page.waitForURL(/\/local\/\?context=/);
     await page.waitForSelector("#local-records h2");
     assert(!page.url().includes("wire") && !page.url().includes("pack="));
     assert.match(await page.locator("#local-records").textContent(), /wire/i);
     const itemURL = page.url();
+    await checkpoint("before-local-reload");
     await page.reload();
     await page.waitForSelector("#local-records h2");
     assert.equal(page.url(), itemURL);
+    await checkpoint("after-local-reload");
     await page.goBack();
+    await checkpoint("after-back");
     try {
       await page.waitForSelector('[data-need-item="demo:wire"]');
     } catch (failure) {
@@ -206,9 +227,15 @@ export async function runReaderFlowTests({
       const { createReaderContext } = await import(
         "/assets/src/domain/reader-flow.mjs"
       );
-      return createReaderContext(state.pack, "demo:wire", "local", {
-        now: Date.now() - 31 * 60_000,
-      });
+      // Preserve the real clock for existing entries; age only this synthetic token.
+      const url = await createReaderContext(state.pack, "demo:wire", "local");
+      const token = new URL(url, location.origin).searchParams.get("context");
+      const entries = JSON.parse(
+        sessionStorage.getItem("dmz-reader-context-v1"),
+      );
+      entries[token].expiresAt = Date.now() - 60_000;
+      sessionStorage.setItem("dmz-reader-context-v1", JSON.stringify(entries));
+      return url;
     });
     await page.goto(base + expiredURL);
     await page.waitForSelector("#error:not([hidden])");

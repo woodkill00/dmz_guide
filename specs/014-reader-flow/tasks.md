@@ -31,3 +31,6 @@ T005/T008/T010/T017 checkmarks mean test coverage authored and available runtime
 
 - [x] T018 Reproduce and repair ledger accessible heading contamination; add regression preserving exact heading/sibling controls (FR-003,008).
 - [ ] T019 Diagnose actual Firefox Back failure using bounded hosted failure artifacts, then repair confirmed cause and rerun unchanged browser assertions (FR-003,009).
+
+- [x] T020 Correct mixed-clock expiry test fixture without changing production validation; regression protects malformed future-entry rejection and existing tokens (FR-003,009).
+- [ ] T021 Locate Firefox history-entry growth using stage checkpoints and actual hosted evidence before changing source or assertions (FR-003,009).
