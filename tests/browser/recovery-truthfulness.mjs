@@ -468,8 +468,21 @@ async function fixedJourneys({ browser, base, captureScreenshots }) {
       window.failRecoverySave = false;
     });
     const quantity = page.locator(`[data-goal-quantity="${goals[0]}"]`);
+    const savedQuantity = async (value) =>
+      page.waitForFunction(
+        async ({ id, value }) => {
+          const { state } = await import("/assets/src/client/common.mjs");
+          return (
+            !state.saving &&
+            state.profile.goals.find((goal) => goal.id === id)?.quantity ===
+              value
+          );
+        },
+        { id: goals[0], value },
+      );
     await quantity.fill("2");
     await quantity.press("Tab");
+    await savedQuantity(2);
     await page.waitForFunction(
       () =>
         document.activeElement?.dataset.move === "0" &&
@@ -477,6 +490,7 @@ async function fixedJourneys({ browser, base, captureScreenshots }) {
     );
     await quantity.fill("3");
     await quantity.press("Shift+Tab");
+    await savedQuantity(3);
     await page.waitForFunction(
       () =>
         document.activeElement ===
@@ -484,6 +498,7 @@ async function fixedJourneys({ browser, base, captureScreenshots }) {
     );
     await quantity.fill("4");
     await page.locator("#goal-select").click();
+    await savedQuantity(4);
     await page.waitForFunction(
       () => document.activeElement?.id === "goal-select",
     );
@@ -491,6 +506,7 @@ async function fixedJourneys({ browser, base, captureScreenshots }) {
     await quantity.press("Tab");
     await quantity.fill("5");
     await page.locator("#goal-select").click();
+    await savedQuantity(5);
     await page.waitForFunction(
       () => document.activeElement?.id === "goal-select",
     );
