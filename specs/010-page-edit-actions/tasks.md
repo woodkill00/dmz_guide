@@ -48,3 +48,5 @@ Execution note: T009/T010 mark authored browser coverage and documentation, not 
 - [x] T018 [CONV-005] Allow long Studio paragraph words to wrap normally at 320px/200% text; preserve actual size, content and layout assertions. Hosted verification remains T011/T012.
 
 - [x] T019 [CONV-006] Restore no-build precondition after page-edit helper: verify dist absent before its owned build, stop reader, remove only that generated build, and verify absent in cleanup. Preserve existing saved-preview assertion unchanged; complete-suite rerun remains T011/T012.
+
+- [x] T020 [CONV-007] Reuse bounded complete-document screenshot capture in existing Studio layout evidence; preserve existing assertions. Add bounded failure diagnostics for module/network loading without exemptions or forced focus; rerun hosted matrix.

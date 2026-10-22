@@ -339,6 +339,76 @@ export async function runPageEditTests({
     ownsPublicBuild = false,
     phase = "public detail targets";
   const page = await context.newPage();
+  // Diagnostic-only listeners: strict global health monitoring remains unchanged.
+  // Keep bounded recent events and explicit truncation counts, including aborted
+  // requests, so a startup failure is distinguishable from a focus regression.
+  const browserDiagnostics = {
+    pageErrors: [],
+    console: [],
+    requestFailed: [],
+    httpErrors: [],
+    navigations: [],
+    dropped: {},
+  };
+  const pendingRequests = new Map();
+  const recordDiagnostic = (kind, data) => {
+    const events = browserDiagnostics[kind];
+    if (events.length === 100) {
+      events.shift();
+      browserDiagnostics.dropped[kind] =
+        (browserDiagnostics.dropped[kind] || 0) + 1;
+    }
+    events.push({ at: new Date().toISOString(), ...data });
+  };
+  page.on("pageerror", (error) =>
+    recordDiagnostic("pageErrors", {
+      message: error.message,
+      stack: error.stack,
+    }),
+  );
+  page.on("console", (message) =>
+    recordDiagnostic("console", {
+      type: message.type(),
+      text: message.text().slice(0, 4096),
+      location: message.location(),
+    }),
+  );
+  page.on("framenavigated", (frame) => {
+    if (frame === page.mainFrame())
+      recordDiagnostic("navigations", { url: frame.url() });
+  });
+  page.on("request", (request) => {
+    if (pendingRequests.size === 100) {
+      pendingRequests.delete(pendingRequests.keys().next().value);
+      browserDiagnostics.dropped.pendingRequests =
+        (browserDiagnostics.dropped.pendingRequests || 0) + 1;
+    }
+    pendingRequests.set(request, {
+      at: new Date().toISOString(),
+      url: request.url(),
+      method: request.method(),
+      resourceType: request.resourceType(),
+    });
+  });
+  page.on("requestfinished", (request) => pendingRequests.delete(request));
+  page.on("requestfailed", (request) => {
+    pendingRequests.delete(request);
+    recordDiagnostic("requestFailed", {
+      url: request.url(),
+      method: request.method(),
+      resourceType: request.resourceType(),
+      failure: request.failure(),
+    });
+  });
+  page.on("response", (response) => {
+    if (response.status() < 200 || response.status() >= 300)
+      recordDiagnostic("httpErrors", {
+        url: response.url(),
+        status: response.status(),
+        method: response.request().method(),
+        resourceType: response.request().resourceType(),
+      });
+  });
   const snapshot = async () => {
     const response = await fetch(author.url + "/api/catalog");
     assert.equal(response.status, 200);
@@ -875,6 +945,8 @@ export async function runPageEditTests({
           message: error.message,
           stack: error.stack,
           url: page.url(),
+          browserDiagnostics,
+          pendingRequests: [...pendingRequests.values()],
           layout: await page
             .evaluate(() => ({
               width: innerWidth,
@@ -883,6 +955,24 @@ export async function runPageEditTests({
               rootFontSize: getComputedStyle(document.documentElement).fontSize,
               bodyFontSize: getComputedStyle(document.body).fontSize,
               scrollWidth: document.documentElement.scrollWidth,
+              readyState: document.readyState,
+              activeElement: {
+                tag: document.activeElement?.tagName,
+                id: document.activeElement?.id,
+              },
+              status: document.querySelector("#save-status")?.textContent,
+              error: {
+                hidden: document.querySelector("#error")?.hidden,
+                text: document.querySelector("#error")?.textContent,
+              },
+              catalogOptionCount:
+                document.querySelector("#pack-select")?.options.length,
+              selectedIdentity:
+                document.querySelector("#entry-identity")?.textContent,
+              scripts: [...document.scripts].map((script) => ({
+                src: script.src,
+                type: script.type,
+              })),
             }))
             .catch(() => null),
           state: await page
