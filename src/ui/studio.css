@@ -96,6 +96,7 @@ textarea {
   width: 100%;
 }
 input[type="checkbox"] {
+  flex-shrink: 0;
   width: 1.2em;
   height: 1.2em;
   accent-color: var(--accent);
@@ -219,6 +220,7 @@ details {
   margin: 0.8rem 0;
 }
 summary {
+  overflow-wrap: anywhere;
   cursor: pointer;
   min-height: 44px;
   font-weight: 650;

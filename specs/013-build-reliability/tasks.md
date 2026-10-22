@@ -35,9 +35,9 @@
 
 ## Phase 7: Verification and convergence
 
-- [ ] T016 Run focused and full documented checks against final code; record command, head, OS/runtime, counts and any unavailable evidence in acceptance.md. [FR-001–008, SC-001–004]
+- [x] T016 Run focused and full documented checks against final code; record command, head, OS/runtime, counts and any unavailable evidence in acceptance.md. [FR-001–008, SC-001–004]
 - [x] T017 Perform pinned convergence assessment, append unmet work as new tasks without rewriting prior task intent, and complete/reverify any authorized remaining work. [FR-001–008]
-- [ ] T018 Obtain independent exact-head implementation review and Linux/Windows runtime/browser/clean-release CI through integration owner; no publish or merge from this worker. [SC-001–004]
+- [x] T018 Obtain independent exact-head implementation review and Linux/Windows runtime/browser/clean-release CI through integration owner; no publish or merge from this worker. [SC-001–004]
 
 ## Dependencies and parallel opportunities
 
@@ -48,7 +48,7 @@ T001 precedes reproduction. T003 and T004 are safe parallel synthetic-only resea
 - [x] T019 Obtain independent review and integration-owner grant for FR-009 snapshot-boundary amendment in spec.md/plan.md before shared production edits. [FR-007/009]
 - [x] T020 [US4] Add tests/runtime/build-snapshot.test.mjs covering root normalization, owner-only release on success/error, other/dead lock refusal, pending journals, separate-process writer exclusion, media materialization and exact ABA outcome. [FR-009, SC-004]
 - [x] T021 [US4] Add narrow withRepositorySnapshot export in scripts/author-store.mjs and use it only around readCatalog/prepareBundledAssets in scripts/build.mjs; no catalog.mjs or author.mjs edits and no recursive queued store operations. [FR-009]
-- [ ] T022 Repeat original A4 controls and full relevant author-store/catalog/build tests; update acceptance.md and perform convergence plus independent final-head review. [FR-009, SC-004]
+- [x] T022 Repeat original A4 controls and full relevant author-store/catalog/build tests; update acceptance.md and perform convergence plus independent final-head review. [FR-009, SC-004]
 
 T019 gates T020–T022 production repair; synthetic assessment remains allowed. Final acceptance T016–T018 must be rerun after this amendment if approved. The amendment is not self-approved by appended tasks.
 
@@ -62,7 +62,33 @@ These source-review corrections are within approved paths and requirements. Reve
 
 ## Phase 10: Convergence
 
-- [ ] T026 Obtain exact integrated-head Linux22/Windows22 and Linux24 CI evidence, including full existing browsers/Studio, actual Windows promotion/fault operations and the native exclusive-open-file probe; disclose any platform limitation rather than infer success from Linux. [SC-001–003, FR-006] (partial)
+- [x] T026 Obtain exact integrated-head Linux22/Windows22 and Linux24 CI evidence, including full existing browsers/Studio, actual Windows promotion/fault operations and the native exclusive-open-file probe; disclose any platform limitation rather than infer success from Linux. [SC-001–003, FR-006] (partial)
 - [ ] T027 Obtain independent exact-head source approval after the T023–T025 corrections and approved A4 repair, then integration-owner final-main verification; update acceptance with actual head/results without publishing from this worker. [SC-004, FR-008/009] (partial)
 
 Convergence assessed 9 FR, 4 SC, 17 story acceptance scenarios, 5 technical decisions, all 10 constitution principles and T001–T025. No additional production-code gap identified in the approved scope. Two acceptance-evidence gaps remain, so this is `tasks_appended`, not a claim of final convergence. Local browser failures are documented in acceptance.md; they are not waived. T016/T018/T022 remain open until their full exact-head/platform/review obligations are met by integration.
+
+## Phase 11: Convergence
+
+- [x] T028 Record the independently confirmed hosted run 39764754220 for exact source head b54b2312e27a008b75bad04ab7f342ae4ef68ba6, distinguish synthetic merge checkout from identical source tree, and reconcile satisfied source/runtime task evidence in acceptance.md. [FR-006/008/009, SC-001–004] (partial)
+- [ ] T029 Have the integration owner publish the documentation-only closeout, obtain independent review and fresh checks for that documentation head, then perform any separately gated parent merge and exact-main verification; do not mark final-main work complete from candidate-tree evidence. [FR-008, plan: verification and rollout] (partial)
+
+2026-10-22 assessment: 9 FR, 4 SC, 17 story acceptance scenarios, 5 technical decisions, all 10 constitution principles and T001–T027 assessed. No production implementation gap or new scope identified. Two evidence/process gaps remain: the acceptance document has not yet captured the now-confirmed hosted source/runtime results (MEDIUM), and documentation-head/parent merge/exact-main gates are not yet established (HIGH). This append-only convergence pass added T028/T029 and changed no prior task or owning artifact. The subsequent implement pass may update evidence and satisfied task markers separately; it cannot infer completion of pending release gates. No extension hooks are configured.
+
+### Separate implement closeout after Phase 11
+
+T016/T018/T022/T026/T028 are satisfied for reviewed source head `b54b2312e27a008b75bad04ab7f342ae4ef68ba6` and identical tree `5e2f740641da336bcb2cf65ead3f208e18cc9529`, with exact hosted evidence recorded in acceptance.md. The independent reviewer confirmed all six terminal statuses, the four runtime/browser job logs and source/runtime approval; the implementation worker also inspected both repository/Python job logs. These marker/evidence updates are the separate implement pass, not writes performed by converge. T027 and T029 remain unchecked: publication/review/checks for this new documentation head, parent merge and exact-main evidence are not complete. No product/test changes or parent-gate approval are implied.
+
+## Phase 12: Hosted native-handle fixture repair
+
+- [x] T030 Assess the actual documentation-head Windows READY failure; update only tests/runtime/build-windows.test.mjs with the reviewed available-host selection, bounded lifecycle diagnostics and exit-confirmed cleanup while retaining all native rename/OLD assertions and deadlines. Obtain independent exact-diff review before committing. [FR-001–003/008, SC-001/003]
+- [ ] T031 Obtain actual Windows execution for the repaired exact head, including READY timings, native file-sharing denial, normal helper exit and all retained assertions; preserve earlier pass/failure chronology in acceptance.md. Do not infer Windows success from a Linux skip. [SC-001/003]
+
+Read-only repair analysis: the new fixture criteria refine existing Windows evidence obligations, without adding production scope or changing FR/SC intent. T030 owns one test file plus 013 artifacts; T031 remains integration-owned hosted verification. Existing custom requirements gates remain intact. The reviewer approved the bounded diagnostic direction before implementation, expressly not certifying cold-start root cause. No optional bug extension, workflow or hooks were invoked.
+
+## Phase 13: Convergence
+
+- [ ] T032 After the bounded Windows fixture correction and separately owned Studio correction are integrated, obtain full exact-head platform/browser CI and independent evidence review before any parent merge/final-main gate can advance. Keep historical b54 success and later documentation-head failures distinct. [FR-008, SC-001–003] (partial)
+
+Convergence on the reviewed fixture delta found no further implementation or assertion gap. One HIGH evidence gap remains: actual Windows behavior of the changed helper and full acceptance of the combined next candidate are not yet observed. This append-only pass adds the final combined-candidate gate and does not mark T031 or any prior release gate complete.
+
+Separate implement verification: independent source review approved the exact test-only delta before commit. Local Linux Node24.19.0 syntax, focused tests (71 passed plus one Windows-only skip), full runtime tests (274 total, 273 passed, zero failed, one Windows-only skip), existing pinned formatter, repository check and diff check passed. T031/T032 and parent release gates remain open; no Windows proof or WebKit repair is claimed here.

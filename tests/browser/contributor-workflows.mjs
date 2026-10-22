@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, cp, rm, mkdir } from "node:fs/promises";
+import { mkdtemp, cp, rm, mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, basename, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -340,6 +340,83 @@ export async function runContributorWorkflows({
       route.fulfill({ contentType: "text/css", body: ":root{font-size:200%}" }),
     );
     await mkdir("test-results", { recursive: true });
+    const assertReflow = async (mode, width, theme) => {
+      const geometry = await page.evaluate(() => ({
+        url: location.href,
+        viewport: { width: innerWidth, height: innerHeight },
+        documentWidth: document.documentElement.scrollWidth,
+        bodyWidth: document.body.scrollWidth,
+        rootFontSize: getComputedStyle(document.documentElement).fontSize,
+        bodyFontSize: getComputedStyle(document.body).fontSize,
+        activeElement: document.activeElement?.id,
+        rightsCheckbox: (() => {
+          const node = document.querySelector("#import-rights");
+          const rect = node.getBoundingClientRect();
+          return {
+            width: rect.width,
+            height: rect.height,
+            fontSize: parseFloat(getComputedStyle(node).fontSize),
+          };
+        })(),
+        overflowing: [...document.querySelectorAll("body *")]
+          .flatMap((node) => {
+            const rect = node.getBoundingClientRect();
+            if (
+              !rect.width ||
+              !rect.height ||
+              (rect.left >= -1 && rect.right <= innerWidth + 1)
+            )
+              return [];
+            const style = getComputedStyle(node);
+            return [
+              {
+                tag: node.tagName,
+                id: node.id,
+                className: String(node.className),
+                text: node.textContent?.slice(0, 120),
+                left: rect.left,
+                right: rect.right,
+                width: rect.width,
+                minWidth: style.minWidth,
+                maxWidth: style.maxWidth,
+                overflowX: style.overflowX,
+                display: style.display,
+                whiteSpace: style.whiteSpace,
+              },
+            ];
+          })
+          .slice(0, 100),
+      }));
+      const fits = geometry.documentWidth <= geometry.viewport.width + 1;
+      const rightsVisible =
+        geometry.rightsCheckbox.width >= geometry.rightsCheckbox.fontSize &&
+        geometry.rightsCheckbox.height >= geometry.rightsCheckbox.fontSize;
+      if (!fits || !rightsVisible) {
+        const path = `test-results/${engineName}-contributor-${width}-${theme}-${mode}-failure`;
+        await writeFile(
+          path + ".json",
+          JSON.stringify({ mode, width, theme, geometry }, null, 2),
+        );
+        if (captureScreenshots) {
+          try {
+            await captureDocumentEvidence(page, path + ".png");
+          } catch (error) {
+            await writeFile(
+              path + "-capture-error.json",
+              JSON.stringify({ message: error.message }, null, 2),
+            );
+          }
+        }
+      }
+      assert(
+        fits,
+        `${mode} reflow: ${JSON.stringify({ width, theme, viewport: geometry.viewport.width, documentWidth: geometry.documentWidth, overflowing: geometry.overflowing })}`,
+      );
+      assert(
+        rightsVisible,
+        `${mode} rights checkbox remains discernible: ${JSON.stringify({ width, theme, ...geometry.rightsCheckbox })}`,
+      );
+    };
     for (const width of [320, 390, 1280])
       for (const theme of ["dark", "light"]) {
         await page.setViewportSize({ width, height: 900 });
@@ -350,12 +427,7 @@ export async function runContributorWorkflows({
         const baseline = await page
           .locator("body")
           .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
-        assert(
-          await page.evaluate(
-            () => document.documentElement.scrollWidth <= innerWidth + 1,
-          ),
-          "Normal-width reflow",
-        );
+        await assertReflow("normal", width, theme);
         await retainAcrossNavigation();
         if (captureScreenshots)
           await captureDocumentEvidence(
@@ -367,12 +439,7 @@ export async function runContributorWorkflows({
           .locator("body")
           .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
         assert(actual >= baseline * 1.99, "Actual text size doubles");
-        assert(
-          await page.evaluate(
-            () => document.documentElement.scrollWidth <= innerWidth + 1,
-          ),
-          "Actual200% reflow",
-        );
+        await assertReflow("200", width, theme);
         assert(await page.locator("#import-stage").isVisible());
         await retainAcrossNavigation();
         if (captureScreenshots)

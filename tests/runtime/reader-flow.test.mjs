@@ -353,3 +353,35 @@ test("ledger preserves item-only headings and sibling navigation controls", () =
   for (const heading of markup.matchAll(/<h3>(.*?)<\/h3>/gs))
     assert.doesNotMatch(heading[1], /<(?:button|a)\b/);
 });
+
+test("expiry fixture ages only its token without rewinding existing context clock", async () => {
+  const storage = memory(),
+    pack = fixture(),
+    now = 2_000_000;
+  const existing = await createReaderContext(pack, pack.items[0].id, "local", {
+    storage,
+    now,
+  });
+  await assert.rejects(
+    createReaderContext(pack, pack.items[0].id, "local", {
+      storage,
+      now: now - 31 * 60_000,
+    }),
+    /unavailable/,
+  );
+  const expired = await createReaderContext(pack, pack.items[0].id, "local", {
+    storage,
+    now,
+  });
+  const entries = JSON.parse(storage.getItem("dmz-reader-context-v1"));
+  entries[tokenOf(expired)].expiresAt = now - 60_000;
+  storage.setItem("dmz-reader-context-v1", JSON.stringify(entries));
+  assert.throws(
+    () => readReaderContext(tokenOf(expired), "local", { storage, now }),
+    /unavailable/,
+  );
+  assert.equal(
+    readReaderContext(tokenOf(existing), "local", { storage, now }).targetId,
+    pack.items[0].id,
+  );
+});

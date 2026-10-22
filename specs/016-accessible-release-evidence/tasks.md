@@ -38,3 +38,7 @@ T001→T002/T003→T004→T005→T006/T007. T008→T009 after gate. T010→T011�
 - [x] T021 [US2] Preserve first observed stat signature, reject impossible empty receipt operations and add deterministic race/oversize/symlink/count-limit tests in scripts/author-store.mjs and tests/runtime/recovery-inventory.test.mjs.
 - [x] T022 [US3] Bound and validate all package inputs before reading, including documents/identity/source ancestors; reject symlink/nonregular/oversize inputs in scripts/package-release.py and tests/test_release_server.py.
 - [ ] T023 [US1] Apply shared usage-description semantics to private blob raster rendering in src/client/local.mjs and add private-path regression coverage without changing014/017 catalog loading ownership.
+
+## Phase10: Hosted import-fixture repair
+- [x] T024 [US1] Preserve the production changed-content version guard by incrementing the synthetic described-transfer version in tests/browser/bundled-assets.mjs; assert stored version and both image-description arrays, and capture bounded failure feedback without relaxing stage/alt/strict-health assertions.
+- [ ] T025 [US1] Integrator reruns actual hosted Windows/Linux browser matrix for the corrected described-transfer fixture and records exact-head evidence in acceptance.md.

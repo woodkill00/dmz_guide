@@ -570,6 +570,8 @@ export async function runBundledAssetTests({
     await p.goto(base + "/editor/");
     await p.waitForSelector('[data-path="contentVersion"]');
     const describedTransfer = JSON.parse(text);
+    // Description changes are content edits, so preserve the existing version guard.
+    describedTransfer.pack.contentVersion = "bundled-described-private-1";
     const describedItem = describedTransfer.pack.items.find(
       (record) => record.id === item.id,
     );
@@ -591,7 +593,23 @@ export async function runBundledAssetTests({
       mimeType: "application/json",
       buffer: Buffer.from(JSON.stringify(describedTransfer)),
     });
-    await p.waitForSelector("#content-stage:not([hidden])");
+    try {
+      await p.waitForSelector("#content-stage:not([hidden])");
+    } catch (cause) {
+      const feedback = await p.evaluate(() =>
+        ["#error", "#save-status"].map((selector) => ({
+          selector,
+          text: (document.querySelector(selector)?.textContent || "").slice(
+            0,
+            1000,
+          ),
+        })),
+      );
+      throw new Error(
+        `Described picture import did not stage: ${JSON.stringify(feedback)}`,
+        { cause },
+      );
+    }
     await p.click("#apply-content");
     await p.waitForFunction(() =>
       document
@@ -607,6 +625,14 @@ export async function runBundledAssetTests({
       return (await readRecord("content", id)).value;
     }, pack.id);
     assert.deepEqual(stored.payloads, JSON.parse(text).payloads);
+    assert.equal(
+      stored.pack.contentVersion,
+      describedTransfer.pack.contentVersion,
+    );
+    assert.deepEqual(
+      stored.pack.maps.find((record) => record.id === map.id).imageDescriptions,
+      decorativeMap.imageDescriptions,
+    );
     await p.goto(
       base + "/local/?pack=" + query + "&id=" + encodeURIComponent(item.id),
     );

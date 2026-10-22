@@ -14,7 +14,10 @@
 - [x] T009 [US3] Catch guided nested events and wire both hosts in src/client/guided-editor.mjs/src/client/editor.mjs/src/client/studio.mjs (FR-005).
 - [x] T010 [US3] Implement successful planner identity-based focus in src/client/planner.mjs and focused browser tests (FR-006).
 ## Phase5: Verification
-- [ ] T011 Run check/format/browser/engines/studio/visual gates and record acceptance.md (SC-001–004).
+- [x] T011 Run check/format/browser/engines/studio/visual gates and record acceptance.md (SC-001–004).
 - [ ] T012 Execute converge, independent source review, exact-head CI, approved merge and exact-main CI; update docs/roundtable-delivery.md.
 
 Dependencies: T001→T002/T003→T004/T006→T005/T007/T008/T009/T010→T011→T012. Tests before repair; shared files single integration owner. No parallel file ownership. No migration; revert bounded patch if necessary.
+
+## Phase6: Convergence
+- [ ] T013 Complete documentation-only exact-head CI, obtain parent approval for the exact reviewed green candidate, merge and verify exact-main CI per SC-004/T012 (partial external delivery gate; source, functional and visual acceptance already evidenced in acceptance.md). Do not equate successful PR tests with merged/main completion.

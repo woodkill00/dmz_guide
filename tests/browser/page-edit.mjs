@@ -154,6 +154,13 @@ async function layoutEvidence(page, { prefix, label, captureScreenshots }) {
   for (const theme of ["dark", "light"]) {
     if ((await page.locator("html").getAttribute("data-theme")) !== theme) {
       await page.locator("#theme-toggle").focus();
+      assert.equal(
+        await page
+          .locator("#theme-toggle")
+          .evaluate((node) => node === document.activeElement),
+        true,
+        "Theme keyboard activation starts on the actual toggle",
+      );
       await page.keyboard.press("Enter");
     }
     await page.waitForFunction(
@@ -846,7 +853,15 @@ export async function runPageEditTests({
       label: "public-detail",
       captureScreenshots,
     });
-    await page.locator("[data-edit-images]").click();
+    const guidanceLink = page.locator("[data-edit-images]");
+    const guidanceURL = new URL(
+      await guidanceLink.getAttribute("href"),
+      page.url(),
+    ).href;
+    await Promise.all([
+      page.waitForURL(guidanceURL, { waitUntil: "load" }),
+      guidanceLink.click(),
+    ]);
     await layoutEvidence(page, {
       prefix,
       label: "guidance",
