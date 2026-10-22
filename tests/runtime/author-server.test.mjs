@@ -379,17 +379,25 @@ test("FR-009: expired sessions cannot save", async (t) => {
   assert.equal(response.data.code, "SESSION_EXPIRED");
 });
 test("FR-001: ordinary website server rejects author writes", async (t) => {
+  const readerRoot = await mkdtemp(join(tmpdir(), "dmz-reader-security-"));
+  t.after(() => rm(readerRoot, { recursive: true, force: true }));
+  await mkdir(join(readerRoot, "scripts"));
+  await mkdir(join(readerRoot, "dist"));
+  await writeFile(
+    join(readerRoot, "dist/index.html"),
+    "Synthetic reader fixture",
+  );
+  await writeFile(
+    join(readerRoot, "scripts/serve.mjs"),
+    await readFile(new URL("../../scripts/serve.mjs", import.meta.url)),
+  );
   const probe = createTCPServer();
   await new Promise((r) => probe.listen(0, "127.0.0.1", r));
   const port = probe.address().port;
   await new Promise((r) => probe.close(r));
   const child = spawn(
     process.execPath,
-    [
-      fileURLToPath(new URL("../../scripts/serve.mjs", import.meta.url)),
-      "--port",
-      String(port),
-    ],
+    [join(readerRoot, "scripts/serve.mjs"), "--port", String(port)],
     {
       env: { ...process.env, HOST: "127.0.0.1", PORT: String(port) },
       stdio: ["ignore", "pipe", "pipe"],
@@ -406,6 +414,10 @@ test("FR-001: ordinary website server rejects author writes", async (t) => {
       resolve();
     });
     child.once("error", reject);
+    child.once("exit", (code) => {
+      clearTimeout(timer);
+      reject(new Error(`Read-only server exited before readiness: ${code}`));
+    });
   });
   const response = await fetch(`http://127.0.0.1:${port}/api/save`, {
     method: "POST",

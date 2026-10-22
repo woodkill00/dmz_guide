@@ -96,6 +96,7 @@ textarea {
   width: 100%;
 }
 input[type="checkbox"] {
+  flex-shrink: 0;
   width: 1.2em;
   height: 1.2em;
   accent-color: var(--accent);
@@ -219,6 +220,7 @@ details {
   margin: 0.8rem 0;
 }
 summary {
+  overflow-wrap: anywhere;
   cursor: pointer;
   min-height: 44px;
   font-weight: 650;
@@ -377,4 +379,25 @@ footer {
 
 #entry-identity {
   overflow-wrap: anywhere;
+}
+
+/* Stable section navigation never replaces draft controls. */
+.studio-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block: 1rem;
+}
+.studio-nav a {
+  display: inline-block;
+  padding: 0.65rem;
+}
+#workflow-summary {
+  overflow-wrap: anywhere;
+}
+#studio-authoring,
+#studio-review,
+#studio-pictures,
+#studio-recovery {
+  scroll-margin-top: 1rem;
 }
