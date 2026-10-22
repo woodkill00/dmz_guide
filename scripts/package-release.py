@@ -126,8 +126,15 @@ archive = output / 'dmz-guide-static.zip'
 manifest_bytes = (json.dumps(manifest, indent=2) + '\n').encode()
 if len(manifest_bytes) > 16 * 1024 * 1024:
     raise SystemExit('Manifest safety limit exceeded.')
-with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as bundle:
-    for name, data in sorted(payload.items()):
-        bundle.writestr(name, data)
-    bundle.writestr('PRODUCTION-MANIFEST.json', manifest_bytes)
+# Canonical serialization only: validated payload/identity bytes stay unchanged.
+# Compressed-byte equality is scoped to the same Python/zlib toolchain.
+with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as bundle:
+    for name, data in sorted({**payload, 'PRODUCTION-MANIFEST.json': manifest_bytes}.items()):
+        entry = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+        entry.create_system = 3  # Portable, explicitly Unix regular-file metadata.
+        entry.external_attr = (stat.S_IFREG | 0o644) << 16
+        entry.internal_attr = 0
+        entry.extra = b''
+        entry.comment = b''
+        bundle.writestr(entry, data, compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
 print(f'Packaged {len(payload)} fully inventoried payload files: {archive}')

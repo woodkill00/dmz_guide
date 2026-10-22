@@ -1,0 +1,2 @@
+# Data model
+No application/content migration. Archive member name and bytes come only from016 validated payload; manifest remains v2. Metadata normalized:1980-01-01T00:00:00 (ZIP tuple, no timezone), Unix regular0644, internal0, no extras/comments, DEFLATE9. Complete member order is Python lexical order. Comparison evidence records revision/clean state, tool versions, member map, manifest equality and SHA256 of full ZIP. A mismatch is a failed comparison, never discarded metadata in the payload.
