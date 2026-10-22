@@ -24,7 +24,7 @@ class ReleaseServerTests(unittest.TestCase):
             (root / 'release').mkdir()
             for name in ('verify-release.py', 'server-readiness.mjs'):
                 shutil.copyfile(ROOT / 'scripts' / name, root / 'scripts' / name)
-            files = {'dist/maps/index.html': PAGE, 'scripts/serve.mjs': server_source}
+            files = {'dist/index.html': b'<!doctype html><title>Synthetic reader fixture</title>', 'dist/maps/index.html': PAGE, 'scripts/serve.mjs': server_source}
             manifest = {name: hashlib.sha256(body).hexdigest() for name, body in files.items()}
             with zipfile.ZipFile(root / 'release/dmz-guide-static.zip', 'w') as archive:
                 for name, body in files.items():

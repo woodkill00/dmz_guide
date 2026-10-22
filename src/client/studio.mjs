@@ -1,3 +1,4 @@
+import { parseRecoveryDraft } from "../content/studio-recovery.mjs";
 import {
   parseAuthorTarget,
   resolveAuthorTarget,
@@ -52,8 +53,14 @@ let dirty = false,
   imported = null,
   removal = null,
   operation = new AbortController();
+let savedHere = false;
+function workflowSummary() {
+  $("#workflow-summary").textContent =
+    `Draft: ${dirty ? "unsaved changes" : "unchanged"} · Review: ${stage?.generation === generation ? "ready" : "required before save"} · Repository: ${savedHere ? "saved this session" : "no save confirmed this session"} · Rebuild/publication: manual, not published by Studio.`;
+}
 const status = (text) => {
   $("#save-status").textContent = text;
+  workflowSummary();
 };
 function fail(reason) {
   const message = reason.message || String(reason),
@@ -174,6 +181,7 @@ function render() {
     return;
   }
   guided.renderRecords();
+  $("#review-version").value = draft.contentVersion;
   $("#pack-note").textContent =
     `${draft.title} · ${draft.id} · ${draft.contentVersion} · ${baseline ? "Existing repository catalog" : "New unsaved catalog"}`;
   $("#new-record-controls").hidden = $("#editor-section").value === "metadata";
@@ -378,6 +386,7 @@ async function save() {
         typeof result.revision === "string",
       "Save response was incomplete. Reload only after downloading your draft and checking the repository",
     );
+    savedHere = true;
     repositoryRevision = result.revision;
     const i = entries.findIndex((entry) => entry.key === result.entry.key);
     if (i < 0) entries.push(result.entry);
@@ -438,7 +447,7 @@ function downloadDraft() {
     format: "dmz-repository-draft-recovery",
     version: 1,
     warning:
-      "Unvalidated recovery draft; not a public pack import. Recover pack fields through Advanced JSON and reattach or import original picture bytes after review.",
+      "Unvalidated recovery draft; not a public pack import or successful save. Use Repository recovery draft import for strict preview. Preserve this original if validation fails.",
     packKey: key,
     expectedRevision,
     pack: draft,
@@ -515,8 +524,8 @@ function newCatalog() {
     `New unsaved catalog ${id}. Add records, then validate and save explicitly.`,
   );
 }
-async function importFile() {
-  const file = $("#import-content").files[0];
+async function importFile(recovery = false) {
+  const file = $(recovery ? "#import-recovery" : "#import-content").files[0];
   if (!file) return;
   assert(!busy, "Wait for the current operation to finish");
   assert(
@@ -530,10 +539,19 @@ async function importFile() {
   status(
     "Validating import and normalizing bundled images. The current draft is unchanged.",
   );
-  const parsed = await parseTransfer(await file.text(), schema, {
-    decodeRaster,
-    signal,
-  });
+  const text = await file.text();
+  if (workspace !== generation) return;
+  const parsed = recovery
+    ? await parseRecoveryDraft(text, schema, {
+        destination,
+        key,
+        currentPack: baseline,
+        assetSources,
+        entries,
+        decodeRaster,
+        signal,
+      })
+    : await parseTransfer(text, schema, { decodeRaster, signal });
   if (workspace !== generation) return;
   if (destination === "existing")
     assert(
@@ -547,7 +565,11 @@ async function importFile() {
     );
   const next = clone(parsed.pack),
     nextUploads = new Map(),
-    nextSources = destination === "existing" ? clone(assetSources) : {};
+    nextSources = recovery
+      ? clone(parsed.sources)
+      : destination === "existing"
+        ? clone(assetSources)
+        : {};
   const rights = next.assets.filter(
     (asset) =>
       asset.redistributionAllowed !== true ||
@@ -580,7 +602,7 @@ async function importFile() {
       category: "other",
     });
   }
-  if (!parsed.selfContained && destination === "existing") {
+  if (!recovery && !parsed.selfContained && destination === "existing") {
     for (const asset of next.assets) {
       const previousAsset = draft.assets.find((entry) => entry.id === asset.id);
       if (!previousAsset || previousAsset.sha256 !== asset.sha256)
@@ -590,6 +612,14 @@ async function importFile() {
     }
   }
   validatePack(next, schema, { profile: "published" });
+  assert(
+    [...nextUploads.values()].reduce(
+      (sum, upload) => sum + bytesFromBase64(upload.base64).length,
+      0,
+    ) <= LIMITS.totalAssetBytes,
+    "Normalized pictures exceed 8 MiB",
+  );
+  if (workspace !== generation || signal.aborted) return;
   const missing = next.assets.filter(
     (asset) => !nextUploads.has(asset.id) && !nextSources[asset.id],
   );
@@ -602,7 +632,7 @@ async function importFile() {
     key: destination === "existing" ? key : uniqueKey(next.title || next.id),
   };
   $("#import-summary").textContent =
-    `${next.title} · ${next.id}. ${GROUPS.reduce((n, group) => n + next[group].length, 0)} records; ${next.assets.length} pictures; ${nextUploads.size} normalized image payloads. ${missing.length ? `${missing.length} pictures have no bytes and will block repository save until supplied.` : "Image bytes are available."} Apply changes only the draft; review rights and visible image content before repository saving.`;
+    `${recovery ? "Recovery draft · " : ""}${next.title} · ${next.id} · version ${next.contentVersion}. ${recovery ? `Historical revision (abbreviated) ${parsed.historicalRevision.slice(0, 12)}; current revision protection retained. ` : ""}${GROUPS.reduce((n, group) => n + next[group].length, 0)} records; ${next.assets.length} pictures; ${nextUploads.size} normalized image payloads. ${missing.length ? `${missing.length} pictures have no bytes and will block repository save until supplied.` : "Image bytes are available."} Apply changes only the draft; review rights and visible image content before repository saving.`;
   showDiff($("#import-diff"), destination === "existing" ? draft : null, next);
   $("#import-rights").checked = false;
   $("#import-rights-label").hidden = next.assets.length === 0;
@@ -789,6 +819,22 @@ async function start() {
     $("#remove-stage").hidden = true;
     $("#remove-record").focus();
   });
+  action("#review-again", preview);
+  action("#apply-review-version", () => {
+    const version = $("#review-version").value.trim();
+    assert(
+      version && version.length <= 80,
+      "Enter a content version, up to 80 characters",
+    );
+    mutateDraft((pack) => {
+      pack.contentVersion = version;
+    });
+    $("#pack-note").textContent =
+      `${draft.title} · ${draft.id} · ${draft.contentVersion} · Unsaved repository draft`;
+    status(
+      "Draft version changed. Old preview expired; validate and preview again before saving.",
+    );
+  });
   action("#save-repository", save);
   action("#cancel-content", () => {
     stage = null;
@@ -830,12 +876,19 @@ async function start() {
     });
     render();
   });
-  $("#import-content").addEventListener("change", () => {
-    const pending = importFile(),
-      initiated = generation;
-    pending.catch((reason) => {
-      if (initiated === generation) fail(reason);
+  for (const selector of ["#import-content", "#import-recovery"])
+    $(selector).addEventListener("change", () => {
+      const pending = importFile(selector === "#import-recovery"),
+        initiated = generation;
+      pending.catch((reason) => {
+        if (initiated === generation) fail(reason);
+      });
     });
+  $("#import-destination").addEventListener("change", () => {
+    invalidate();
+    status(
+      "Import destination changed. Choose the file again for a fresh preview.",
+    );
   });
   action("#apply-import", () => {
     const candidate = imported;
@@ -872,6 +925,7 @@ async function start() {
     invalidate();
     $("#import-stage").hidden = true;
     $("#import-content").value = "";
+    $("#import-recovery").value = "";
     status("Import canceled; prior draft and repository unchanged.");
     $("#import-content").focus();
   });
