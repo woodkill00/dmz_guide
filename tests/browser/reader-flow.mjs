@@ -1,11 +1,123 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 
+async function probeReloadSemantics({ browser, base }) {
+  const results = [];
+  const engine = browser.browserType().name();
+  for (const scenario of ["static", "reader"])
+    for (const method of ["playwright", "native"]) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      try {
+        if (scenario === "static") {
+          await page.route("**/__reader-reload-control.html", (route) =>
+            route.fulfill({
+              status: 200,
+              contentType: "text/html",
+              body: "<!doctype html><html><head><title>Reload control</title></head><body><h1>Static reload control</h1></body></html>",
+            }),
+          );
+          await page.goto(base + "/__reader-reload-control.html");
+        } else {
+          await page.goto(base + "/planner/?pack=demo%3Atraining-pack");
+          await page.waitForFunction(
+            () =>
+              document.querySelector("main")?.getAttribute("aria-busy") ===
+              "false",
+          );
+          await page.selectOption("#goal-select", "demo:board-batch");
+          await page.locator("#goal-quantity").fill("3");
+          await page.locator('#goal-form button[type="submit"]').click();
+          const control = page
+            .locator(
+              '[data-need-item="demo:wire"][data-need-destination="local"]',
+            )
+            .first();
+          await control.focus();
+          await control.press("Enter");
+          await page.waitForURL(/\/local\/\?context=/);
+          await page.waitForSelector("#local-records h2");
+        }
+        const snapshot = () =>
+          page.evaluate(() => ({
+            url: location.href,
+            historyLength: history.length,
+            readyState: document.readyState,
+            navigation: performance
+              .getEntriesByType("navigation")
+              .map(({ type, name }) => ({ type, name })),
+          }));
+        const before = await snapshot();
+        if (method === "playwright") await page.reload();
+        else
+          await Promise.all([
+            page.waitForNavigation({ waitUntil: "load" }),
+            page.evaluate(() => {
+              setTimeout(() => location.reload(), 0);
+            }),
+          ]);
+        let reader = null;
+        if (scenario === "reader") {
+          await page.waitForSelector("#local-records h2");
+          reader = await page.evaluate(async () => {
+            const { state } = await import("/assets/src/client/common.mjs");
+            return {
+              packId: state.pack?.id,
+              goals: state.profile?.goals,
+              revision: state.revision,
+              target: document.querySelector("#local-records h2")?.textContent,
+              error: document.querySelector("#error")?.textContent,
+            };
+          });
+        }
+        const after = await snapshot();
+        results.push({ engine, scenario, method, before, after, reader });
+        console.log(
+          "Reader reload controlled experiment",
+          JSON.stringify(results.at(-1)),
+        );
+        await writeFile(
+          `test-results/reader-reload-controls-${engine}.json`,
+          JSON.stringify(results, null, 2),
+        );
+      } finally {
+        await context.close();
+      }
+    }
+  for (const result of results) {
+    assert.equal(result.after.url, result.before.url);
+    assert.equal(result.after.readyState, "complete");
+    if (result.method === "native") {
+      assert.equal(
+        result.after.historyLength,
+        result.before.historyLength,
+        "Native refresh must not add history",
+      );
+      assert.equal(
+        result.after.navigation[0]?.type,
+        "reload",
+        "Native refresh must really reload",
+      );
+    }
+    if (result.reader) {
+      assert.equal(result.reader.packId, "demo:training-pack");
+      assert.equal(result.reader.revision, 1);
+      assert.deepEqual(result.reader.goals, [
+        { id: "demo:board-batch", quantity: 3 },
+      ]);
+      assert.match(result.reader.target, /wire/i);
+      assert.equal(result.reader.error, "");
+    }
+  }
+}
+
 export async function runReaderFlowTests({
   browser,
   base,
   captureScreenshots = true,
 }) {
+  await mkdir("test-results", { recursive: true });
+  await probeReloadSemantics({ browser, base });
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
   });
