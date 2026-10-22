@@ -1,3 +1,9 @@
+import {
+  INVENTORY_PAGE_SIZE,
+  createInventoryDraft,
+  filterInventoryIds,
+  inventoryPage,
+} from "./inventory-window.mjs";
 import { profileChangeSummary } from "../domain/profile-preview.mjs";
 import { planShared } from "../domain/shared-plan.mjs";
 import {
@@ -31,29 +37,67 @@ document.addEventListener("pack-changing", () => {
   if ($("#reset-confirm")) $("#reset-confirm").hidden = true;
   if ($("#restore-preview")) $("#restore-preview").hidden = true;
 });
-let inventoryCheckpoint = new Map();
+let inventoryDraft = null;
+let pendingInventoryInvalid = null;
+let inventoryIndex = new Map();
+let inventoryPageNumber = 0;
 function checkpointInventory() {
-  inventoryCheckpoint = new Map(
-    [...document.querySelectorAll("#inventory-form [data-field]")].map(
-      (input) => [input.name, input.value],
-    ),
-  );
+  inventoryDraft?.checkpoint();
+}
+function revealInvalidInventory() {
+  const invalid = inventoryDraft?.firstInvalid();
+  if (!invalid || !$("#inventory-fields")) return;
+  $("#inventory-query").value = "";
+  $("#inventory-view").value = "all";
+  inventoryPageNumber = Math.floor(invalid.index / INVENTORY_PAGE_SIZE);
+  filterInventory(false);
+  $("#error").textContent +=
+    " Review the focused inventory quantity; all other edits are retained.";
+  for (const input of document.querySelectorAll("#inventory-form [data-field]"))
+    if (input.name === invalid.name) {
+      input.focus();
+      break;
+    }
 }
 registerDraftGuard({
-  isDirty: () =>
-    [...document.querySelectorAll("#inventory-form [data-field]")].some(
-      (input) => input.value !== inventoryCheckpoint.get(input.name),
-    ),
+  isDirty: () => inventoryDraft?.isDirty() || false,
+  revealInvalid: revealInvalidInventory,
 });
 document.addEventListener("profile-saved", checkpointInventory);
+function renderInventoryPage(matches) {
+  const page = inventoryPage(matches, inventoryPageNumber);
+  inventoryPageNumber = page.page;
+  const small = state.pack.items.length <= INVENTORY_PAGE_SIZE;
+  const ids = small ? [...inventoryIndex.keys()] : page.ids;
+  const visible = new Set(matches);
+  $("#inventory-fields").innerHTML = ids
+    .map((id) => {
+      const r = inventoryIndex.get(id);
+      return `<fieldset class="panel" data-inventory-item="${esc(r.id)}" ${small && !visible.has(id) ? "hidden" : ""}><legend>${esc(r.name)} <small>(${esc(r.unit)})</small></legend><label>Owned quantity<input name="owned:${esc(r.id)}" data-id="${esc(r.id)}" data-field="inventory" type="number" min="0" max="1000000" value="${esc(inventoryDraft.raw.get(`owned:${r.id}`))}" required></label><label>Protected reserve<input name="reserve:${esc(r.id)}" data-id="${esc(r.id)}" data-field="reserves" type="number" min="0" max="1000000" value="${esc(inventoryDraft.raw.get(`reserve:${r.id}`))}" required></label></fieldset>`;
+    })
+    .join("");
+  $("#inventory-pagination").hidden = small;
+  $("#inventory-page-status").textContent =
+    `Items ${page.first}–${page.last} of ${matches.length} matches. Page ${page.page + 1} of ${page.pages}.`;
+  $("#inventory-previous").setAttribute(
+    "aria-disabled",
+    String(page.page === 0),
+  );
+  $("#inventory-next").setAttribute(
+    "aria-disabled",
+    String(page.page === page.pages - 1),
+  );
+  $("#inventory-previous").textContent =
+    `Previous page${!matches.length ? " (no matches)" : page.page === 0 ? " (first page)" : ""}`;
+  $("#inventory-next").textContent =
+    `Next page${!matches.length ? " (no matches)" : page.page === page.pages - 1 ? " (last page)" : ""}`;
+}
 function render() {
+  pendingInventoryInvalid = null;
   if ($("#inventory-fields")) {
-    $("#inventory-fields").innerHTML = state.pack.items
-      .map(
-        (r) =>
-          `<fieldset class="panel" data-inventory-item="${esc(r.id)}"><legend>${esc(r.name)} <small>(${esc(r.unit)})</small></legend><label>Owned quantity<input name="owned:${esc(r.id)}" data-id="${esc(r.id)}" data-field="inventory" type="number" min="0" max="1000000" value="${state.profile.inventory[r.id] || 0}" required></label><label>Protected reserve<input name="reserve:${esc(r.id)}" data-id="${esc(r.id)}" data-field="reserves" type="number" min="0" max="1000000" value="${state.profile.reserves[r.id] || 0}" required></label></fieldset>`,
-      )
-      .join("");
+    inventoryIndex = new Map(state.pack.items.map((item) => [item.id, item]));
+    inventoryDraft = createInventoryDraft(state.pack.items, state.profile);
+    inventoryPageNumber = 0;
     $("#completion-fields").innerHTML = state.pack.objectives
       .filter((r) => !r.spoiler)
       .map(
@@ -77,8 +121,12 @@ function render() {
 $("#inventory-form")?.addEventListener("input", (e) => {
   const input = e.target;
   if (input.dataset.field) {
-    state.profile[input.dataset.field][input.dataset.id] =
-      input.value === "" ? NaN : Number(input.value);
+    inventoryDraft.set(
+      input.dataset.field,
+      input.dataset.id,
+      input.value,
+      state.profile,
+    );
     status(
       hasUnsavedDraft()
         ? "Unsaved inventory edits · save locally or export a validated backup."
@@ -86,11 +134,43 @@ $("#inventory-form")?.addEventListener("input", (e) => {
     );
   }
 });
+$("#inventory-form")?.addEventListener(
+  "invalid",
+  (event) => {
+    if (!event.target.dataset.field) return;
+    event.preventDefault();
+    if (pendingInventoryInvalid) return;
+    const pending = { draft: inventoryDraft, pack: state.pack };
+    pendingInventoryInvalid = pending;
+    // Native validation may invoke several invalid callbacks before finishing.
+    // Keep all original controls mounted until a later task, not a microtask.
+    setTimeout(() => {
+      if (pendingInventoryInvalid !== pending) return;
+      pendingInventoryInvalid = null;
+      if (
+        inventoryDraft !== pending.draft ||
+        state.pack !== pending.pack ||
+        state.loading ||
+        state.saving ||
+        !inventoryDraft?.firstInvalid()
+      )
+        return;
+      error(new Error("Quantity must be an integer from 0 to 1000000."));
+      revealInvalidInventory();
+    }, 0);
+  },
+  true,
+);
+for (const event of ["input", "pointerdown", "keydown"])
+  document.addEventListener(
+    event,
+    () => {
+      pendingInventoryInvalid = null;
+    },
+    true,
+  );
 $("#inventory-form")?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  for (const input of document.querySelectorAll("[data-field]"))
-    state.profile[input.dataset.field][input.dataset.id] =
-      input.value === "" ? NaN : Number(input.value);
   await persist();
 });
 $("#completion-fields")?.addEventListener("change", async (e) => {
@@ -187,7 +267,8 @@ $("#confirm-reset")?.addEventListener("click", async () => {
 });
 init(render).catch(error);
 
-function filterInventory() {
+function filterInventory(reset = true) {
+  if (reset) inventoryPageNumber = 0;
   if (!$("#inventory-query")) return;
   const q = $("#inventory-query").value.trim().toLowerCase(),
     mode = $("#inventory-view").value;
@@ -205,20 +286,27 @@ function filterInventory() {
         " Planning unavailable; clear the filter or resolve profile/content mismatch.";
     }
   }
-  let count = 0;
-  for (const node of document.querySelectorAll("[data-inventory-item]")) {
-    const id = node.dataset.inventoryItem,
-      item = state.pack.items.find((r) => r.id === id);
-    node.hidden =
-      ![item.name, item.category, id].join(" ").toLowerCase().includes(q) ||
-      (mode === "owned" &&
-        !state.profile.inventory[id] &&
-        !state.profile.reserves[id]) ||
-      (mode === "needed" && !needed.has(id));
-    if (!node.hidden) count++;
-  }
+  const matches = filterInventoryIds(
+    inventoryIndex,
+    state.profile,
+    q,
+    mode,
+    needed,
+  );
+  renderInventoryPage(matches);
   $("#inventory-count").textContent =
-    `${count} of ${state.pack.items.length} items shown.` + warning;
+    `${matches.length} of ${state.pack.items.length} items match.` + warning;
 }
+for (const [id, direction] of [
+  ["inventory-previous", -1],
+  ["inventory-next", 1],
+])
+  $(`#${id}`)?.addEventListener("click", (event) => {
+    if (state.loading || state.saving) return;
+    event.currentTarget.focus();
+    if (event.currentTarget.getAttribute("aria-disabled") === "true") return;
+    inventoryPageNumber += direction;
+    filterInventory(false);
+  });
 $("#inventory-query")?.addEventListener("input", filterInventory);
 $("#inventory-view")?.addEventListener("change", filterInventory);

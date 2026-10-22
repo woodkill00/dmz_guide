@@ -1311,6 +1311,12 @@ main :where(p, li, a, ul, ol, section, article, div) {
   min-width: 4.5rem;
   min-height: 44px;
 }
+#inventory-pagination button[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+#inventory-pagination button[aria-disabled="true"]:not(:focus-visible) {
+  opacity: 0.65;
+}
 
 #draft-navigation-title {
   font-size: 1.25rem;

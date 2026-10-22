@@ -233,6 +233,11 @@ async function generate(dist) {
         packs: catalog.entries.map(
           ({ key }) => `/assets/content/packs/${key}.json`,
         ),
+        catalogs: catalog.entries.map(({ key, pack }) => ({
+          id: pack.id,
+          title: pack.title,
+          path: `/assets/content/packs/${key}.json`,
+        })),
       },
       null,
       2,
