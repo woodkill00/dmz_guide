@@ -6,7 +6,8 @@ import {
   esc,
   error,
   persist,
-  download,
+  registerDraftGuard,
+  hasUnsavedDraft,
   status,
 } from "./common.mjs";
 import {
@@ -29,6 +30,21 @@ document.addEventListener("pack-changing", () => {
   if ($("#reset-confirm")) $("#reset-confirm").hidden = true;
   if ($("#restore-preview")) $("#restore-preview").hidden = true;
 });
+let inventoryCheckpoint = new Map();
+function checkpointInventory() {
+  inventoryCheckpoint = new Map(
+    [...document.querySelectorAll("#inventory-form [data-field]")].map(
+      (input) => [input.name, input.value],
+    ),
+  );
+}
+registerDraftGuard({
+  isDirty: () =>
+    [...document.querySelectorAll("#inventory-form [data-field]")].some(
+      (input) => input.value !== inventoryCheckpoint.get(input.name),
+    ),
+});
+document.addEventListener("profile-saved", checkpointInventory);
 function render() {
   if ($("#inventory-fields")) {
     $("#inventory-fields").innerHTML = state.pack.items
@@ -44,6 +60,7 @@ function render() {
           `<label>${esc(r.name)}<select data-completion="${esc(r.id)}">${["unknown", "locked", "unlocked", "completed"].map((v) => `<option ${state.profile.completion[r.id] === v ? "selected" : ""}>${v}</option>`).join("")}</select></label>`,
       )
       .join("");
+    checkpointInventory();
     filterInventory();
   }
   if ($("#version-status")) {
@@ -58,14 +75,17 @@ $("#inventory-form")?.addEventListener("input", (e) => {
     state.profile[input.dataset.field][input.dataset.id] =
       input.value === "" ? NaN : Number(input.value);
     status(
-      "Unsaved inventory edits · save locally or export a validated backup.",
+      hasUnsavedDraft()
+        ? "Unsaved inventory edits · save locally or export a validated backup."
+        : "Saved values unchanged · no unsaved inventory edits.",
     );
   }
 });
 $("#inventory-form")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   for (const input of document.querySelectorAll("[data-field]"))
-    state.profile[input.dataset.field][input.dataset.id] = Number(input.value);
+    state.profile[input.dataset.field][input.dataset.id] =
+      input.value === "" ? NaN : Number(input.value);
   await persist();
 });
 $("#completion-fields")?.addEventListener("change", async (e) => {
@@ -74,9 +94,6 @@ $("#completion-fields")?.addEventListener("change", async (e) => {
     await persist();
   }
 });
-$("#export-profile")?.addEventListener("click", () =>
-  download("dmz-private-profile.json", state.profile),
-);
 function preview(p) {
   const summary = previewProfile(p, state.pack);
   const changes = {};

@@ -1299,3 +1299,38 @@ main :where(p, li, a, ul, ol, section, article, div) {
   overflow-wrap: anywhere;
   white-space: normal;
 }
+
+#draft-navigation {
+  box-sizing: border-box;
+  width: min(34rem, calc(100% - 24px));
+  max-width: calc(100% - 24px);
+  max-height: calc(100% - 24px);
+  overflow: auto;
+  padding: 16px;
+  color: var(--text);
+  background: var(--surface);
+  border: 2px solid var(--line);
+}
+#draft-navigation::backdrop {
+  background: rgb(0 0 0 / 65%);
+}
+.draft-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.draft-actions button {
+  min-width: 4.5rem;
+  min-height: 44px;
+}
+
+#draft-navigation-title {
+  font-size: 1.25rem;
+  margin: 0 0 16px;
+}
+#draft-navigation p {
+  margin: 0 0 16px;
+}
+#draft-navigation .draft-actions {
+  gap: 12px;
+}

@@ -11,7 +11,7 @@ export function featurePages(packs) {
 <header class="page-heading"><p class="eyebrow">SEPARATE TRACKS / CLEAR CHOICES</p><h1>Progress without the spoilers.</h1><p>DMZ Orders, upgrades and campaign are separate. Manual completion never consumes your inventory or proves a game unlock.</p></header>
 <noscript><p class="notice">Private progress and filters require JavaScript. <a href="/guides/">Read public field guides</a> instead. Spoiler records there use a separate, manual disclosure.</p></noscript>
 <label>Content pack<select id="pack-select">${packs.map((p) => option(p.id, p.title)).join("")}</select></label>
-<button id="export-current-profile">Export current private profile</button><p id="pack-note" class="notice"></p><p id="save-status" role="status" aria-live="polite"></p><p id="error" role="alert" tabindex="-1" hidden></p>
+<button disabled data-startup-disabled id="export-current-profile">Export current private profile</button><p id="pack-note" class="notice"></p><p id="save-status" role="status" aria-live="polite"></p><p id="error" role="alert" tabindex="-1" hidden></p>
 <form id="progress-filters" class="filter-bar">
 <label>Track<select id="progress-track">${option("", "All tracks (not a shared unlock system)")}${[
         ["dmz-order", "DMZ Orders"],
