@@ -1,0 +1,147 @@
+{
+  "publishedHead": "4d6a2ecfa2f789e8a946e595b8302391e53f5f96",
+  "artifacts": [
+    {
+      "platform": "linux-chromium",
+      "artifactId": 12433783229,
+      "archiveSha256": "c6ecfe00c735593e3fe5c57ac47de9c5f943502e9ebf8b33060aaf18ce4a0986",
+      "file": "evidence/after-pagination-final-linux-chromium.json",
+      "fileSha256": "45c00735239a423bc853385dd50bd34e6f7219cf9e9d175223305af22c9fa7ef",
+      "environment": {
+        "browser": "chromium",
+        "version": "156.0.8078.47",
+        "os": "linux",
+        "osRelease": "7.0.0-1017-azure",
+        "node": "v22.23.4",
+        "cpu": "AMD EPYC 7763 64-Core Processor",
+        "logicalCpus": 4,
+        "memoryBytes": 16760344576,
+        "runner": "GitHub Actions 1000015972",
+        "runnerOS": "Linux"
+      },
+      "complete": true,
+      "fixtures": 6,
+      "samplesPerFixture": 5,
+      "warmupsPerFixture": 1,
+      "artifactJsonSha256": "6a02ebdd442b82ea19db612630528a65bd24b58baac003cf40a57c67ff4eb5ae"
+    },
+    {
+      "platform": "windows-chromium",
+      "artifactId": 12434492207,
+      "archiveSha256": "b8822ab2975af4e6a61939a02dd73b6ee46ba2995f75d52011b30c8ac278a145",
+      "file": "evidence/after-pagination-final-windows-chromium.json",
+      "fileSha256": "6a4aed2a7548fbcb20632cec89acaf962ae508306106735a1324d9a7c988bc2f",
+      "environment": {
+        "browser": "chromium",
+        "version": "155.0.8059.40",
+        "os": "win32",
+        "osRelease": "10.0.26100",
+        "node": "v22.23.3",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logicalCpus": 4,
+        "memoryBytes": 17174360064,
+        "runner": "GitHub Actions 1000015973",
+        "runnerOS": "Windows"
+      },
+      "complete": true,
+      "fixtures": 6,
+      "samplesPerFixture": 5,
+      "warmupsPerFixture": 1,
+      "artifactJsonSha256": "fd29f8171b4e2eac4619f521fa8c8f3df52959284cb2bd65e85f55601a98b45b"
+    },
+    {
+      "platform": "linux-firefox",
+      "artifactId": 12433608827,
+      "archiveSha256": "f4408af8088a5f5e174926c3eff61d6d74fb8a73ba2f77a31ef4a397ab44fe2e",
+      "file": "evidence/after-pagination-final-linux-firefox.json",
+      "fileSha256": "eae4a0bde6cea49d0042632846d4944a49bd7ef18852f4210779bc3d54e63051",
+      "environment": {
+        "browser": "firefox",
+        "version": "146.0.1",
+        "os": "linux",
+        "osRelease": "6.17.0-1022-azure",
+        "node": "v22.23.3",
+        "cpu": "AMD EPYC 9V45 96-Core Processor",
+        "logicalCpus": 4,
+        "memoryBytes": 16766414848,
+        "runner": "GitHub Actions 1000015970",
+        "runnerOS": "Linux"
+      },
+      "complete": true,
+      "fixtures": 6,
+      "samplesPerFixture": 5,
+      "warmupsPerFixture": 1,
+      "artifactJsonSha256": "7f24c6047c2fe87a789a804eb8844ce06c2acc3249f528e10d18e9cf45072a4d"
+    },
+    {
+      "platform": "linux-webkit",
+      "artifactId": 12433608827,
+      "archiveSha256": "f4408af8088a5f5e174926c3eff61d6d74fb8a73ba2f77a31ef4a397ab44fe2e",
+      "file": "evidence/after-pagination-final-linux-webkit.json",
+      "fileSha256": "430e05e73010722aa50245547395633bfb7a12af79757e327d854d8d3b3e2048",
+      "environment": {
+        "browser": "webkit",
+        "version": "26.0",
+        "os": "linux",
+        "osRelease": "6.17.0-1022-azure",
+        "node": "v22.23.3",
+        "cpu": "AMD EPYC 9V45 96-Core Processor",
+        "logicalCpus": 4,
+        "memoryBytes": 16766414848,
+        "runner": "GitHub Actions 1000015970",
+        "runnerOS": "Linux"
+      },
+      "complete": true,
+      "fixtures": 6,
+      "samplesPerFixture": 5,
+      "warmupsPerFixture": 1,
+      "artifactJsonSha256": "b9e7af1aeaedb03131926c9472818386ffc79e1ecd09f14fcb7023a35119790a"
+    }
+  ],
+  "verified": "Four repository-formatted JSON copies are value-identical to the artifact JSONs, retaining every sample and environment field. Both original artifact-JSON and repository-file hashes are recorded. Archive digests and browser/visual acceptance were independently verified by the journey reviewer; fixture, sample, row bounds and stored medians were separately checked.",
+  "acceptance": "Exact-candidate source, browser, visual, performance and all six CI jobs accepted independently. Final documentation reconciliation, merge approval, actual merge and exact-main verification remain pending.",
+  "publishedTree": "efc75ae955164e1345a5fbff64736e53a26e13d7",
+  "localSourceHead": "52512c1b6cd8ab0c293f6a0d5c33d8fb14b624f6",
+  "runId": 39797010157,
+  "runUrl": "https://github.com/woodkill00/dmz_guide/actions/runs/39797010157",
+  "visual": {
+    "fullDocumentCoverageManifests": 48,
+    "coveragePlatforms": ["Linux Chrome", "Windows Chrome", "Firefox"],
+    "middlePageGeometryStateCases": 48,
+    "geometryPlatforms": [
+      "Linux Chrome",
+      "Windows Chrome",
+      "Firefox",
+      "WebKit"
+    ],
+    "manualPixels": "Fresh representative 320px dark/light, actual 200% text views on all three screenshot platforms; not every pixel. No WebKit screenshots."
+  },
+  "recoveryTruthfulness": [
+    {
+      "platform": "Linux Chrome",
+      "jobId": 119886710271,
+      "utc": "2026-10-22T14:39:07Z"
+    },
+    {
+      "platform": "Windows Chrome",
+      "jobId": 119886710292,
+      "utc": "2026-10-22T14:39:58Z"
+    },
+    {
+      "platform": "Firefox",
+      "jobId": 119886710241,
+      "utc": "2026-10-22T14:38:02Z"
+    },
+    {
+      "platform": "WebKit",
+      "jobId": 119886710241,
+      "utc": "2026-10-22T14:39:02Z"
+    }
+  ],
+  "terminalCI": {
+    "status": "all six jobs terminal success",
+    "verifiedBy": "Integration reviewer using the latest-jobs endpoint",
+    "verifiedAtUTC": "2026-10-22T14:48:00Z",
+    "runId": 39797010157
+  }
+}

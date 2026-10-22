@@ -1,0 +1,154 @@
+{
+  "baseline": false,
+  "status": "focused checks, broader release gates remain",
+  "environment": {
+    "browser": "chromium",
+    "version": "156.0.8078.47",
+    "os": "linux",
+    "osRelease": "7.0.0-1017-azure",
+    "node": "v22.23.4",
+    "cpu": "AMD EPYC 7763 64-Core Processor",
+    "logicalCpus": 4,
+    "memoryBytes": 16760344576,
+    "runner": "GitHub Actions 1000015972",
+    "runnerOS": "Linux"
+  },
+  "method": "One warmup and five samples per valid fixture. Initialization uses navigation time origin to ready plus double animation frame. Filter dispatch measures synchronous work and next painted frame; native keydown measures next painted frame and verifies selected option. Routed HTTP200 fixture payloads isolate browser work from network variability. Warm process/context; no universal latency claims, native popup opening or user study claims. No timing pass/fail assertions.",
+  "budgetsMs": {
+    "initialization": 1000,
+    "filter": 100,
+    "nativeSelection": 100
+  },
+  "scenarios": [
+    "Selected readiness independent of unrelated payload",
+    "Failed Discard switch retains hidden invalid raw draft/checkpoint; Stay and failed Save retain values; successful full Save survives reload and includes hidden entries; successful Discard restores durable values; explicit catalog retry recovers",
+    "Pagination: bounded stable pages/counts, keyboard boundary focus, full raw/checkpoint retention, invalid Save/export/departure recovery, quota failure preserves view, full Save/export/reload, failed Discard/Stay retain offscreen values, successful Discard restores durable values; page/filter actions do not fetch catalogs"
+  ],
+  "measurements": [
+    {
+      "count": 100,
+      "kind": "inventory",
+      "renderedRows": 50,
+      "bytes": 23877,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        97.40000000002328, 96.90000000002328, 97.59999999997672, 97.5,
+        97.39999999999418
+      ],
+      "interactionToPaintMs": [
+        18.699999999982538, 17.10000000000582, 18.79999999998836,
+        19.199999999982538, 16.800000000017462
+      ],
+      "synchronousFilterMs": [1, 1.1000000000058208, 1, 1, 1.2000000000116415],
+      "medianInitializationMs": 97.40000000002328,
+      "medianInteractionMs": 18.699999999982538
+    },
+    {
+      "count": 1000,
+      "kind": "inventory",
+      "renderedRows": 50,
+      "bytes": 232677,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        114.5, 130.59999999997672, 130.39999999999418, 147.39999999999418,
+        115.20000000001164
+      ],
+      "interactionToPaintMs": [
+        19.60000000000582, 18.39999999999418, 19.300000000017462,
+        19.300000000017462, 19.5
+      ],
+      "synchronousFilterMs": [
+        1.1000000000058208, 1.2000000000116415, 1.3000000000174623,
+        1.1000000000058208, 1.3000000000174623
+      ],
+      "medianInitializationMs": 130.39999999999418,
+      "medianInteractionMs": 19.300000000017462
+    },
+    {
+      "count": 5000,
+      "kind": "inventory",
+      "renderedRows": 50,
+      "bytes": 1164677,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        234.39999999999418, 240.5, 255.10000000000582, 215.89999999999418,
+        209.60000000000582
+      ],
+      "interactionToPaintMs": [
+        19, 17.70000000001164, 18.29999999998836, 10.299999999988358, 19
+      ],
+      "synchronousFilterMs": [
+        2, 2.1000000000058208, 3.2999999999883585, 2.6999999999825377,
+        2.1000000000058208
+      ],
+      "medianInitializationMs": 234.39999999999418,
+      "medianInteractionMs": 18.29999999998836
+    },
+    {
+      "count": 100,
+      "kind": "native-selector",
+      "renderedRows": null,
+      "bytes": 32977,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        94.70000000001164, 94.90000000002328, 95.19999999998254, 95,
+        95.29999999998836
+      ],
+      "interactionToPaintMs": [
+        30.800000000017462, 31.199999999982538, 30.79999999998836,
+        29.60000000000582, 30
+      ],
+      "synchronousFilterMs": [],
+      "medianInitializationMs": 95,
+      "medianInteractionMs": 30.79999999998836
+    },
+    {
+      "count": 1000,
+      "kind": "native-selector",
+      "renderedRows": null,
+      "bytes": 323677,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        131.5, 130.5, 129.20000000001164, 135.70000000001164, 129.39999999999418
+      ],
+      "interactionToPaintMs": [
+        28.699999999982538, 29.300000000017462, 28.800000000017462,
+        30.89999999999418, 30.800000000017462
+      ],
+      "synchronousFilterMs": [],
+      "medianInitializationMs": 130.5,
+      "medianInteractionMs": 29.300000000017462
+    },
+    {
+      "count": 5000,
+      "kind": "native-selector",
+      "renderedRows": null,
+      "bytes": 1619677,
+      "validation": "parseBounded and validatePack published passed; unchanged limits",
+      "warmups": 1,
+      "samples": 5,
+      "initializationMs": [
+        316.20000000001164, 324.79999999998836, 292, 309.8999999999942,
+        306.3999999999942
+      ],
+      "interactionToPaintMs": [
+        33.89999999999418, 30.89999999999418, 28.60000000000582, 33,
+        33.60000000000582
+      ],
+      "synchronousFilterMs": [],
+      "medianInitializationMs": 309.8999999999942,
+      "medianInteractionMs": 33
+    }
+  ],
+  "complete": true
+}

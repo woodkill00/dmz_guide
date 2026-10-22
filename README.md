@@ -13,6 +13,7 @@ A community field guide being built around trustworthy game data and explainable
 - **Reporting a wrong fact or contributing a guide?** Start with [contributing](CONTRIBUTING.md) and the [content guide](docs/content-contributing.md). Coding is not required to submit evidence.
 - **Understanding the direction?** Read the [roadmap](docs/roadmap.md), [decision summary](decision-summary.md), and [foundation specification](specs/001-guide-foundation/spec.md).
 - **Maintaining the repository?** Read the [maintainer runbook](docs/maintainer-runbook.md) and [Spec Kit lifecycle](docs/spec-kit-cycle.md).
+- **Reviewing the delivered improvements?** See the [roundtable delivery ledger](docs/roundtable-delivery.md) for accepted workpackages, exact test and merge evidence, conditional decisions and documented limits.
 - **Looking for something else?** Browse the [documentation index](docs/README.md).
 
 ## Current implementation and boundaries

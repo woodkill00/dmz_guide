@@ -60,10 +60,14 @@ T019 gates T020–T022 production repair; synthetic assessment remains allowed. 
 
 These source-review corrections are within approved paths and requirements. Reverify final code and return all to independent reviewer; do not treat focused green tests as final acceptance.
 
+## Historical assessment note for Phases 10–15
+
+The assessment prose in these phases preserves its original checkpoint, including then-open tasks and references to the then-current main. It is not the current task inventory. Checkbox states and later acceptance receipts reconcile the completed product/maintenance gates through candidate482c6c and main26158; only T029 retains the final PR21 publication/checks/merge/main gate.
+
 ## Phase 10: Convergence
 
 - [x] T026 Obtain exact integrated-head Linux22/Windows22 and Linux24 CI evidence, including full existing browsers/Studio, actual Windows promotion/fault operations and the native exclusive-open-file probe; disclose any platform limitation rather than infer success from Linux. [SC-001–003, FR-006] (partial)
-- [ ] T027 Obtain independent exact-head source approval after the T023–T025 corrections and approved A4 repair, then integration-owner final-main verification; update acceptance with actual head/results without publishing from this worker. [SC-004, FR-008/009] (partial)
+- [x] T027 Obtain independent exact-head source approval after the T023–T025 corrections and approved A4 repair, then integration-owner final-main verification; update acceptance with actual head/results without publishing from this worker. [SC-004, FR-008/009] (partial)
 
 Convergence assessed 9 FR, 4 SC, 17 story acceptance scenarios, 5 technical decisions, all 10 constitution principles and T001–T025. No additional production-code gap identified in the approved scope. Two acceptance-evidence gaps remain, so this is `tasks_appended`, not a claim of final convergence. Local browser failures are documented in acceptance.md; they are not waived. T016/T018/T022 remain open until their full exact-head/platform/review obligations are met by integration.
 
@@ -81,13 +85,13 @@ T016/T018/T022/T026/T028 are satisfied for reviewed source head `b54b2312e27a008
 ## Phase 12: Hosted native-handle fixture repair
 
 - [x] T030 Assess the actual documentation-head Windows READY failure; update only tests/runtime/build-windows.test.mjs with the reviewed available-host selection, bounded lifecycle diagnostics and exit-confirmed cleanup while retaining all native rename/OLD assertions and deadlines. Obtain independent exact-diff review before committing. [FR-001–003/008, SC-001/003]
-- [ ] T031 Obtain actual Windows execution for the repaired exact head, including READY timings, native file-sharing denial, normal helper exit and all retained assertions; preserve earlier pass/failure chronology in acceptance.md. Do not infer Windows success from a Linux skip. [SC-001/003]
+- [x] T031 Obtain actual Windows execution for the repaired exact head, including READY timings, native file-sharing denial, normal helper exit and all retained assertions; preserve earlier pass/failure chronology in acceptance.md. Do not infer Windows success from a Linux skip. [SC-001/003]
 
 Read-only repair analysis: the new fixture criteria refine existing Windows evidence obligations, without adding production scope or changing FR/SC intent. T030 owns one test file plus 013 artifacts; T031 remains integration-owned hosted verification. Existing custom requirements gates remain intact. The reviewer approved the bounded diagnostic direction before implementation, expressly not certifying cold-start root cause. No optional bug extension, workflow or hooks were invoked.
 
 ## Phase 13: Convergence
 
-- [ ] T032 After the bounded Windows fixture correction and separately owned Studio correction are integrated, obtain full exact-head platform/browser CI and independent evidence review before any parent merge/final-main gate can advance. Keep historical b54 success and later documentation-head failures distinct. [FR-008, SC-001–003] (partial)
+- [x] T032 After the bounded Windows fixture correction and separately owned Studio correction are integrated, obtain full exact-head platform/browser CI and independent evidence review before any parent merge/final-main gate can advance. Keep historical b54 success and later documentation-head failures distinct. [FR-008, SC-001–003] (partial)
 
 Convergence on the reviewed fixture delta found no further implementation or assertion gap. One HIGH evidence gap remains: actual Windows behavior of the changed helper and full acceptance of the combined next candidate are not yet observed. This append-only pass adds the final combined-candidate gate and does not mark T031 or any prior release gate complete.
 
@@ -96,7 +100,7 @@ Separate implement verification: independent source review approved the exact te
 ## Phase 14: Convergence
 
 - [x] T033 Record the actual hosted readiness-fixture EBUSY failure separately from the earlier unresolved missing-marker liveness failure; document the reviewed test-only bounded removal retries, retained rejection diagnostics, simulated reproduction and local verification in the owning 013 artifacts. [FR-004/005/008, plan: verification and rollout] (partial)
-- [ ] T034 Obtain independent exact-integrated-head Windows readiness/teardown evidence after this test-only correction, retain fatal retry exhaustion and all existing process-death/deadline assertions, and investigate any recurring missing-marker liveness failure using the retained original error before proposing a separate repair. Preserve parent merge/main gates and prior failed-run chronology. [SC-002/003, FR-008] (partial)
+- [x] T034 Obtain independent exact-integrated-head Windows readiness/teardown evidence after this test-only correction, retain fatal retry exhaustion and all existing process-death/deadline assertions, and investigate any recurring missing-marker liveness failure using the retained original error before proposing a separate repair. Preserve parent merge/main gates and prior failed-run chronology. [SC-002/003, FR-008] (partial)
 
 2026-10-22 bounded convergence assessment retained the existing 9 FR, 4 SC, 17 story acceptance scenarios, five technical decisions, ten constitution principles and T001–T032 as the intent inventory. No new production-code gap is established by these test-harness findings. Two partial gaps remain: recording the newly reviewed repair evidence (MEDIUM), and obtaining exact integrated Windows evidence, including any recurrence of the separate unresolved liveness failure (HIGH). This append-only pass writes only these tasks. Updating the owning evidence and satisfied marker is a separate implement pass. Existing parent release gates are not completed by local Linux results; no hooks or optional extension commands were invoked.
 
@@ -104,7 +108,7 @@ Separate implement verification: independent source review approved the exact te
 
 - [x] T035 Implement the independently approved two-fixture bootstrap/outcome separation and actual-owned-PID cleanup proof only in tests/runtime/server-readiness.test.mjs, preserving exact occupied-port/cancellation outcomes, unrelated-listener safety and existing complete-failure/cleanup bounds; T038 separately owns amended semantic startup allowances. [FR-004/005/008]
 - [x] T036 Verify the original controlled 1.1s bootstrap-delay failures now pass, add fatal setup/outcome-deadline controls with owned-PID death proof, run relevant regressions and obtain independent exact-diff review; record evidence separately from the unresolved older liveness incident. [SC-002/003]
-- [ ] T037 Integrate the reviewed bounded test/evidence changes onto the current main tree, obtain actual exact-head Windows and full applicable CI, then independent parent merge/exact-main review. Do not publish this older local source tree. [FR-008, SC-003]
+- [x] T037 Integrate the reviewed bounded test/evidence changes onto the current main tree, obtain actual exact-head Windows and full applicable CI, then independent parent merge/exact-main review. Do not publish this older local source tree. [FR-008, SC-003]
 
 Read-only assessment: current main's occupied-port failure happened before its expected bind collision, while cancellation observed a missing post-bootstrap PID file after a blind timer. Both signatures reproduce with delayed child bootstrap; this establishes brittle fixture assumptions, not a production defect or a particular Windows scheduling cause. Exact scope and budget composition were independently approved before implementation. Parent owns current-main integration and all remote operations.
 
@@ -116,3 +120,13 @@ Read-only assessment: current main's occupied-port failure happened before its e
 Amendment analysis: the audit establishes fixture setup masking, not a Windows scheduling root cause or production failure. This deliberately replaces the semantic cases' old 700ms total startup allowance, while preserving the original generic 3s complete-failure bound and adding a distinct 700ms cold-deadline regression. The two reported semantic cases remain separately bounded as specified in T035. Requirements, plan, task ownership and verification composition were independently reviewed before dependent source edits; no production contract change or additional dependency is needed.
 
 T038/T039 exact-review refinement: compose the generic outer watchdog against the same 3000ms attempt origin, not a redundant 2500ms post-bootstrap timer that could mask allowed close confirmation. Verify a simulated delayed-close boundary and fatal true-3s exhaustion while retaining the original semantic diagnostic and strict actual-owned-PID death proof. The two-case 5000ms/700ms contract is unaffected.
+
+## Verified receipt reconciliation, 2026-10-22
+
+T031, T032, T034 are marked complete from the exact historical/candidate evidence now recorded in acceptance.md and the delivery ledger. This separate documentation/implementation pass does not claim a new test execution or approval of this documentation head. Any remaining combined convergence, publication, merge or exact-main obligations remain unchecked; historical success is not a guarantee for a later main revision.
+
+## Phase 16: Bounded CI dependency setup budget
+
+- [x] T040 Record the two actual setup-starvation outcomes and successful unchanged retries in reproduction/ci-setup-budget.md; obtain independent requirements approval and analyze this separate spec/plan amendment before workflow edits. [FR-006/008, SC-003]
+- [x] T041 Apply only the reviewed 40-minute engine-job and 25-minute existing-install-step settings in .github/workflows/quality.yml; verify the exact structural diff and unchanged commands, assertions, matrix, permissions and product/test deadlines, then run applicable local checks and obtain independent exact-source review. [FR-005/006/008, SC-003]
+- [x] T042 Record the local verification and independent review in acceptance.md, together with explicit still-required final-head CI, normal merge and exact-main gates. This task records the release conditions, not future success; actual external outcomes must be recorded truthfully in PR/main receipts without a recursive documentation-only closure commit. [FR-008, SC-003]
