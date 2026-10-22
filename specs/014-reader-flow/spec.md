@@ -40,3 +40,6 @@ Search scope is public catalog and private record listing, not map/progression f
 
 ## Interaction clarification — 2026-10-22
 Integration owner approves explicit same-tab navigation buttons instead of anchors for per-tab shortage handoffs: “View item here” and “Known locations here”, type=button, keyboard accessible, minimum44px targets. Adjacent explanation says these open the matching active-catalog view in this tab. This avoids misleading placeholder hrefs/native modifier behavior and preserves20-entry bounds. Storage/token failure shows actionable error without navigation or wrong fallback. FR-003 “links” means these explicit navigation controls for shortages; ordinary public/existing private links retain native semantics. No new mode.
+
+## Visual convergence clarification
+Actual320px/200% evidence shows decorative marketing text overlapping the honest radar disclosure. Independently approved repair removes redundant marketing copy and places the unchanged original/not-game-map disclosure in visible, normal-flow figcaption outside the masked circle. Functional caption minimum14px scales normally; mobile drawing remains capped200px. No body text reduction or new mode.
