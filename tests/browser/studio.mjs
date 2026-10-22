@@ -20,6 +20,7 @@ import { allRecords, recordUrl } from "../../src/ui/render.mjs";
 import { serializeCatalog, catalogAssetPath } from "../../scripts/catalog.mjs";
 import { GROUPS } from "../../src/content/portable.mjs";
 import { monitorBrowser, expectResponseErrors } from "./health.mjs";
+import { runGuidedLimitAcceptance } from "./recovery-truthfulness.mjs";
 import { runRasterEditorTests } from "./raster-editor.mjs";
 import { runPageEditTests, captureDocumentEvidence } from "./page-edit.mjs";
 
@@ -598,6 +599,15 @@ export async function runStudioTests({
     await page.waitForSelector('[data-path="contentVersion"]');
     phase = "dark-default palette and accessible persistent light toggle";
     await checkStudioThemes(page, { prefix, captureScreenshots });
+    const limitContext = await browser.newContext();
+    try {
+      const limitPage = await limitContext.newPage();
+      await limitPage.goto(author.url);
+      await limitPage.waitForSelector('[data-path="contentVersion"]');
+      await runGuidedLimitAcceptance(limitPage);
+    } finally {
+      await limitContext.close();
+    }
     phase = "guided catalog and sourced typed records";
     await page.locator("#new-catalog-panel summary").first().click();
     await page.fill("#new-catalog-title", "Studio Acceptance Fixture");

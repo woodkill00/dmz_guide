@@ -38,6 +38,25 @@ function render() {
     .join("");
   renderPlan();
 }
+function focusGoal(id, action = "quantity", delta = null) {
+  const input = [...document.querySelectorAll("[data-goal-quantity]")].find(
+    (node) => node.dataset.goalQuantity === id,
+  );
+  if (!input) {
+    $("#goal-select").focus();
+    return;
+  }
+  const row = input.closest("li");
+  const control =
+    action === "remove"
+      ? row.querySelector("[data-remove]")
+      : action === "move"
+        ? [...row.querySelectorAll("[data-move]")].find(
+            (node) => node.dataset.delta === delta && !node.disabled,
+          )
+        : input;
+  (control || input).focus();
+}
 function safeText(value) {
   let text = String(value ?? "");
   if (!state.profile.spoilers)
@@ -79,42 +98,102 @@ $("#goal-form").addEventListener("submit", async (e) => {
     const candidate = structuredClone(state.profile);
     candidate.goals.push({ id, quantity: Number($("#goal-quantity").value) });
     planShared(state.pack, candidate, { mode });
-    state.profile = candidate;
-    await persist();
-    render();
+    if (await persist(candidate)) {
+      render();
+      focusGoal(id);
+    }
   } catch (e) {
     error(e);
   }
 });
 $("#goals-list").addEventListener("click", async (e) => {
   const b = e.target.closest("button");
-  if (!b) return;
+  if (!b || state.saving) return;
   const candidate = structuredClone(state.profile);
-  if (b.dataset.remove)
-    candidate.goals = candidate.goals.filter((g) => g.id !== b.dataset.remove);
-  else if (b.dataset.move) {
+  let focusId;
+  if (b.dataset.remove) {
+    const index = candidate.goals.findIndex(
+      (goal) => goal.id === b.dataset.remove,
+    );
+    candidate.goals = candidate.goals.filter(
+      (goal) => goal.id !== b.dataset.remove,
+    );
+    focusId = candidate.goals[Math.min(index, candidate.goals.length - 1)]?.id;
+  } else if (b.dataset.move) {
     const i = Number(b.dataset.move),
       j = i + Number(b.dataset.delta);
+    focusId = candidate.goals[i].id;
     [candidate.goals[i], candidate.goals[j]] = [
       candidate.goals[j],
       candidate.goals[i],
     ];
   }
-  state.profile = candidate;
-  await persist();
-  render();
+  if (await persist(candidate)) {
+    render();
+    focusGoal(focusId, b.dataset.remove ? "remove" : "move", b.dataset.delta);
+  }
+});
+const quantityDepartures = new WeakMap();
+function focusDescriptor(node) {
+  return {
+    node,
+    id: node?.id,
+    goal: node?.closest("li")?.querySelector("[data-goal-quantity]")?.dataset
+      .goalQuantity,
+    action: node?.dataset.remove
+      ? "remove"
+      : node?.dataset.move !== undefined
+        ? "move"
+        : "quantity",
+    delta: node?.dataset.delta,
+  };
+}
+for (const type of ["focusin", "input"])
+  $("#goals-list").addEventListener(type, (event) =>
+    quantityDepartures.delete(event.target),
+  );
+document.addEventListener(
+  "pointerdown",
+  (event) => {
+    const input = document.activeElement;
+    if (!input?.dataset.goalQuantity) return;
+    const target = event.target.closest(
+      'a[href],button,input,select,textarea,[tabindex="0"]',
+    );
+    if (target && target !== input && !target.disabled)
+      quantityDepartures.set(input, focusDescriptor(target));
+  },
+  true,
+);
+$("#goals-list").addEventListener("keydown", (event) => {
+  if (!event.target.dataset.goalQuantity || event.key !== "Tab") return;
+  const controls = [
+    ...document.querySelectorAll(
+      'a[href],button,input,select,textarea,[tabindex="0"]',
+    ),
+  ].filter((node) => !node.disabled && node.getClientRects().length);
+  const index = controls.indexOf(event.target) + (event.shiftKey ? -1 : 1);
+  quantityDepartures.set(event.target, focusDescriptor(controls[index]));
 });
 $("#goals-list").addEventListener("change", async (e) => {
   if (!e.target.dataset.goalQuantity) return;
+  const destination =
+    quantityDepartures.get(e.target) || focusDescriptor(document.activeElement);
+  quantityDepartures.delete(e.target);
   try {
     const candidate = structuredClone(state.profile);
     candidate.goals.find(
-      (g) => g.id === e.target.dataset.goalQuantity,
+      (goal) => goal.id === e.target.dataset.goalQuantity,
     ).quantity = Number(e.target.value);
     planShared(state.pack, candidate, { mode });
-    state.profile = candidate;
-    await persist();
-    render();
+    if (await persist(candidate)) {
+      render();
+      if (destination.node?.isConnected && !destination.node.disabled)
+        destination.node.focus();
+      else if (destination.id) document.getElementById(destination.id)?.focus();
+      else if (destination.goal)
+        focusGoal(destination.goal, destination.action, destination.delta);
+    }
   } catch (e) {
     error(e);
   }
@@ -127,9 +206,7 @@ $("#route-fields").addEventListener("change", async (e) => {
       candidate.routes[e.target.dataset.route] = e.target.value;
     else delete candidate.routes[e.target.dataset.route];
     planShared(state.pack, candidate, { mode });
-    state.profile = candidate;
-    await persist();
-    renderPlan();
+    if (await persist(candidate)) renderPlan();
   } catch (e) {
     error(e);
   }

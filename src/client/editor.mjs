@@ -589,6 +589,7 @@ async function start() {
   );
   schema = await response.json();
   guided = createGuidedEditor({
+    onError: error,
     schema,
     getDraft: () => draft,
     mutateDraft: (mutator) => {

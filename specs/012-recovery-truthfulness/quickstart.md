@@ -1,0 +1,2 @@
+# Validation
+Node22+, npm ci; npm run check and format:check; existing browser/engines/studio. Run new focused Node lifecycle fixtures before repair and record expected failing assertions. Browser baseline mode reproduces warnings, spoiler omission, limit error and focus loss before fixed-mode assertions. Use only demo/synthetic catalogs. Inspect restore summary at320/390/desktop dark/light/actual200% and full-page tiles. Exact-head tests/review and approved merge/exact-main are mandatory.
