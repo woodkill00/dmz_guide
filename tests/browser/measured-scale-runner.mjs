@@ -2,6 +2,7 @@ import { chromium, firefox, webkit } from "playwright";
 import { startBrowserServer } from "./server.mjs";
 import { monitorBrowser } from "./health.mjs";
 import { runMeasuredScaleTests } from "./measured-scale.mjs";
+import { runInventoryPaginationLayout } from "./inventory-pagination-layout.mjs";
 const server = await startBrowserServer();
 let failure;
 try {
@@ -18,6 +19,7 @@ try {
     const health = monitorBrowser(browser);
     try {
       await runMeasuredScaleTests({ browser, base: server.base, prefix: name });
+      await runInventoryPaginationLayout(browser, server.base, name);
       health();
       server.assertAlive();
       console.log(

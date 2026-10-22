@@ -9,11 +9,24 @@
 - [x] T006 Integrate selected-only initialization, failure rollback, explicit retry and local discovery in src/client/common.mjs; update private import full-baseline lookup in src/client/editor.mjs (FR001–004).
 - [x] T007 Replace per-item repeated find with per-pack ID index in src/client/profile.mjs; retain raw checkpoints/filter order/counts (FR005/008).
 ## Phase3: Measured conditional decisions
-- [ ] T008 Run actual after-index hosted measurements with identical valid fixtures and record samples/medians/environment/limitations (FR006).
-- [ ] T009 Record separate pagination/native-selector implement-or-no-change decisions; if needed amend owning artifacts and obtain independent gate before adding conditional tasks/code (FR007/008).
+- [x] T008 Run actual after-index hosted measurements with identical valid fixtures and record samples/medians/environment/limitations (FR006).
+- [x] T009 Record separate pagination/native-selector implement-or-no-change decisions; if needed amend owning artifacts and obtain independent gate before adding conditional tasks/code (FR007/008).
 ## Phase4: Acceptance
 - [ ] T010 Run fixed selected identity, dirty/invalid/failed save/offscreen tests and applicable fullpage/true200 visual matrix with strict health intact (FR003/008/009,SC001–004).
 - [ ] T011 Complete independent exact source/visual review and append-only converge; update accepted scope ledger with evidence and conditional outcomes (SC003/004).
 - [ ] T012 Obtain parent exact-green merge approval, merge only reviewed candidate and verify exact-main CI; keep pending until actually done (SC004).
 
 Dependencies: T001→T002; T003/T004→T005–T007; T007→T008→T009; conditional code only after amended requirements gate; T010→T011→T012. No parallel edits to shared common/profile/build contracts. Integrator owns runner/publication changes. A timing result is evidence, not a pass assertion.
+
+## Integration convergence repair
+- [ ] T013 Preserve the existing healthy-storage/content-warning status contract after deferred invalid-catalog discovery without blocking selected readiness or overwriting later dirty/save status; verify focused red/green runtime and exact hosted recovery journey (FR003/009).
+
+## Conditional inventory pagination, evidence-triggered amendment
+- [x] T014 Record actual9dd after-index residual-budget evidence and explicit NO CHANGE native-picker decision; amend spec/plan/data-model before code (FR006/007/010–014).
+- [x] T015 Obtain independent pagination requirements checklist and read-only consistency analysis, then reproduce unbounded mounted rows in test-only current-source harness (FR010–014).
+- [x] T016 Add narrow src/client/inventory-window.mjs pure raw/checkpoint/filter/page helper with red-first tests in tests/runtime/measured-scale.test.mjs or an owning inventory-window test (FR010/011).
+- [x] T017 Wire profile.mjs full raw draft, delegated inputs, bounded row rendering, all-entry checkpoints and static private-pages.mjs page controls; optional common.mjs draft-guard invalid recovery for failed Save/export only (FR010–013).
+- [x] T018 Add browser page/boundary/filter/invalid/failedSave/Stay/failedDiscard/fullSave/export/successfulDiscard journeys in measured-scale.mjs, preserve unchanged fixture measurements and capture row counts (FR011–014).
+- [ ] T019 Obtain exact-source independent review; publish via parent and collect unchanged actual five-sample after-pagination measurements plus full keyboard/both-theme/true200% evidence on required platforms; no timing assertions (FR014/SC002–004).
+
+Dependencies: T008/T009 evidence→T014→T015→T016/T017→T018→T019→T010/T011/T012. No optional native-picker work. T013 integration warning repair remains independently testable and can publish without waiting for this amendment.

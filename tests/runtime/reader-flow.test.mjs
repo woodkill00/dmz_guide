@@ -12,7 +12,11 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import { featurePages } from "../../src/ui/private-pages.mjs";
 import { featurePages as mapPages } from "../../src/ui/maps-page.mjs";
-import { renderLayout, setNavigation } from "../../src/ui/render.mjs";
+import {
+  renderHome,
+  renderLayout,
+  setNavigation,
+} from "../../src/ui/render.mjs";
 const source = (name) =>
   readFileSync(new URL(`../../${name}`, import.meta.url), "utf8");
 test("Wave2 quantity is additional output, not target stock", () => {
@@ -384,4 +388,18 @@ test("expiry fixture ages only its token without rewinding existing context cloc
     readReaderContext(tokenOf(existing), "local", { storage, now }).targetId,
     pack.items[0].id,
   );
+});
+
+test("home honest radar caption remains outside clipped decoration", () => {
+  const markup = renderHome([]);
+  assert.doesNotMatch(markup, /radar-label|YOUR NEXT MOVE|STARTS HERE/);
+  assert.match(
+    markup,
+    /<figure class="radar-figure"><div class="radar-art"[^>]*>.*?<\/div><figcaption class="art-caption">ORIGINAL ILLUSTRATION \/ NOT A GAME MAP<\/figcaption><\/figure>/s,
+  );
+  const css = source("src/styles.css");
+  const caption = css.match(/\.art-caption\s*\{([^}]+)\}/)[1];
+  assert.match(caption, /font-size:\s*0\.875rem/);
+  assert.doesNotMatch(caption, /position:\s*absolute|overflow:\s*hidden|mask/);
+  assert.equal([...css.matchAll(/\.art-caption\s*\{/g)].length, 1);
 });

@@ -211,6 +211,16 @@ async function preservedDrafts({ browser, base, evidence }) {
     await reserve.fill("4");
     await page.fill("#inventory-query", "cell");
     assert.equal(await wire.isVisible(), false);
+    await page
+      .getByRole("button", { name: "Save inventory", exact: true })
+      .click();
+    assert.equal(
+      await page.evaluate(() => document.activeElement?.name),
+      "owned:demo:wire",
+      "Native invalid event reveals hidden small-catalog field",
+    );
+    assert.equal(await wire.inputValue(), "");
+    await page.fill("#inventory-query", "cell");
     await page.selectOption("#pack-select", "official:mw4-dmz-starter");
     await page.click("#draft-discard");
     await page.waitForFunction(() =>
@@ -296,7 +306,259 @@ async function preservedDrafts({ browser, base, evidence }) {
   }
 }
 
-async function measure({ browser, base, count, kind }) {
+async function pagedDrafts({ browser, base, evidence }) {
+  const fixture = measuredFixture(101);
+  const context = await browser.newContext();
+  let failCatalog = true,
+    payloadRequests = 0,
+    downloads = 0;
+  await context.route("**/assets/content/manifest.json", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        packs: [selectedPath, unrelatedPath],
+        catalogs: [
+          { id: training, title: fixture.pack.title, path: selectedPath },
+          {
+            id: "official:mw4-dmz-starter",
+            title: "Starter",
+            path: unrelatedPath,
+          },
+        ],
+      }),
+    }),
+  );
+  await context.route(`**${selectedPath}`, (route) => {
+    payloadRequests++;
+    return route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: fixture.body,
+    });
+  });
+  await context.route(`**${unrelatedPath}`, (route) =>
+    failCatalog
+      ? route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"schemaVersion":1}',
+        })
+      : route.continue(),
+  );
+  await context.addInitScript(() => {
+    const put = IDBObjectStore.prototype.put;
+    IDBObjectStore.prototype.put = function (...args) {
+      if (window.scaleFailSave)
+        throw new DOMException("Injected paging quota", "QuotaExceededError");
+      return put.apply(this, args);
+    };
+  });
+  const page = await context.newPage();
+  page.on("download", () => downloads++);
+  const field = (i, kind = "inventory") =>
+    page.locator(`[data-field="${kind}"][data-id="demo:scale-item-${i}"]`);
+  const range = async (expected) =>
+    assert.equal(
+      await page.locator("#inventory-page-status").textContent(),
+      expected,
+    );
+  const focus = async (selector) =>
+    assert.equal(
+      await page.evaluate(
+        (s) => document.activeElement === document.querySelector(s),
+        selector,
+      ),
+      true,
+    );
+  const next = () => page.click("#inventory-next");
+  try {
+    await page.goto(`${base}/inventory/?pack=${encodeURIComponent(training)}`);
+    await ready(page);
+    assert.equal(await page.locator("[data-inventory-item]").count(), 50);
+    await range("Items 1–50 of 101 matches. Page 1 of 3.");
+    await page.click("#inventory-previous");
+    await page.keyboard.press("Enter");
+    await focus("#inventory-previous");
+    await range("Items 1–50 of 101 matches. Page 1 of 3.");
+    await next();
+    await page.click("#inventory-previous");
+    await page.fill("#inventory-query", "item 00075");
+    await page.fill("#inventory-query", "");
+    assert.equal(
+      await page.evaluate(async () =>
+        (await import("/assets/src/client/common.mjs")).hasUnsavedDraft(),
+      ),
+      false,
+      "View-only page/filter changes keep the full raw checkpoint clean",
+    );
+    await field(0).fill("");
+    await field(0, "reserves").fill("4");
+    await page.locator("#inventory-next").focus();
+    await page.keyboard.press("Enter");
+    await focus("#inventory-next");
+    await range("Items 51–100 of 101 matches. Page 2 of 3.");
+    await field(75).fill("0007");
+    await field(75, "reserves").fill("5");
+    await next();
+    await field(100).fill("8");
+    await range("Items 101–101 of 101 matches. Page 3 of 3.");
+    assert.equal(await page.locator("[data-inventory-item]").count(), 1);
+    assert.equal(
+      await page.locator("#inventory-next").getAttribute("aria-disabled"),
+      "true",
+    );
+    await next();
+    await page.keyboard.press("Enter");
+    await focus("#inventory-next");
+    assert.equal(await field(100).inputValue(), "8");
+    await range("Items 101–101 of 101 matches. Page 3 of 3.");
+    await page.fill("#inventory-query", "item 00075");
+    await focus("#inventory-query");
+    await range("Items 1–1 of 1 matches. Page 1 of 1.");
+    assert.equal(await field(75).inputValue(), "0007");
+    await page.fill("#inventory-query", "no such fictional item");
+    assert.equal(await page.locator("[data-inventory-item]").count(), 0);
+    await range("Items 0–0 of 0 matches. Page 1 of 1.");
+    await page.fill("#inventory-query", "");
+    await next();
+    assert.equal(
+      payloadRequests,
+      1,
+      "Paging/filtering does not request catalogs",
+    );
+    await page.click("#export-current-profile");
+    await focus('[data-field="inventory"][data-id="demo:scale-item-0"]');
+    assert.equal(await field(0).inputValue(), "");
+    assert.equal(downloads, 0);
+    await field(0).fill("3");
+    await field(0, "reserves").fill("");
+    await next();
+    await page
+      .getByRole("button", { name: "Save inventory", exact: true })
+      .click();
+    await focus('[data-field="reserves"][data-id="demo:scale-item-0"]');
+    assert.equal(await field(0, "reserves").inputValue(), "");
+    await field(0, "reserves").fill("4");
+    await next();
+    await field(75).fill("2.5");
+    await page
+      .getByRole("button", { name: "Save inventory", exact: true })
+      .click();
+    await focus('[data-field="inventory"][data-id="demo:scale-item-75"]');
+    assert.equal(
+      await field(75).inputValue(),
+      "2.5",
+      "Native mounted invalid-event recovery retains raw fractional value",
+    );
+    await next();
+    await page
+      .getByRole("button", { name: "Save inventory", exact: true })
+      .click();
+    await focus('[data-field="inventory"][data-id="demo:scale-item-75"]');
+    assert.equal(await field(75).inputValue(), "2.5");
+    await field(75).fill("0007");
+    await page.fill("#inventory-query", "FICTIONAL");
+    await next();
+    await page.evaluate(() => {
+      window.scaleFailSave = true;
+      document.querySelector("#error").hidden = true;
+    });
+    await page
+      .getByRole("button", { name: "Save inventory", exact: true })
+      .click();
+    await page.waitForSelector("#error:not([hidden])");
+    assert.match(
+      await page.locator("#error").textContent(),
+      /Injected paging quota/,
+    );
+    await range("Items 51–100 of 101 matches. Page 2 of 3.");
+    assert.equal(
+      await page.locator("#inventory-query").inputValue(),
+      "FICTIONAL",
+    );
+    assert.equal(await field(75).inputValue(), "0007");
+    await page.evaluate(() => {
+      window.scaleFailSave = false;
+    });
+    await page
+      .getByRole("button", { name: "Save inventory", exact: true })
+      .click();
+    await page.waitForFunction(() =>
+      document
+        .querySelector("#save-status")
+        .textContent.includes("Saved locally · revision"),
+    );
+    assert.equal(
+      await field(75).inputValue(),
+      "0007",
+      "Successful save does not normalize raw draft strings",
+    );
+    const downloadPromise = page.waitForEvent("download");
+    await page.click("#export-current-profile");
+    const downloaded = JSON.parse(
+      await readFile(await (await downloadPromise).path(), "utf8"),
+    );
+    assert.equal(downloaded.inventory["demo:scale-item-0"], 3);
+    assert.equal(downloaded.inventory["demo:scale-item-75"], 7);
+    assert.equal(downloaded.inventory["demo:scale-item-100"], 8);
+    assert.equal(downloaded.reserves["demo:scale-item-0"], 4);
+    assert.equal(downloaded.reserves["demo:scale-item-75"], 5);
+    await page.reload();
+    await ready(page);
+    assert.equal(await field(0).inputValue(), "3");
+    assert.equal(await field(0, "reserves").inputValue(), "4");
+    await next();
+    assert.equal(await field(75).inputValue(), "7");
+    assert.equal(await field(75, "reserves").inputValue(), "5");
+    await field(75).fill("");
+    await next();
+    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await page.click("#draft-stay");
+    await range("Items 101–101 of 101 matches. Page 3 of 3.");
+    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await page.click("#draft-discard");
+    await page.waitForFunction(() =>
+      document
+        .querySelector("#save-status")
+        .textContent.includes("switch failed"),
+    );
+    await range("Items 101–101 of 101 matches. Page 3 of 3.");
+    await page.click("#inventory-previous");
+    assert.equal(await field(75).inputValue(), "");
+    await next();
+    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await page.click("#draft-save");
+    await focus('[data-field="inventory"][data-id="demo:scale-item-75"]');
+    assert.equal(await page.locator("#pack-select").inputValue(), training);
+    assert.equal(await field(75).inputValue(), "");
+    failCatalog = false;
+    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await page.click("#draft-discard");
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#pack-select").value ===
+          "official:mw4-dmz-starter" &&
+        document.querySelector("main").getAttribute("aria-busy") === "false",
+    );
+    await page.selectOption("#pack-select", training);
+    await page.waitForSelector('[data-id="demo:scale-item-0"]');
+    await ready(page);
+    await next();
+    assert.equal(
+      await field(75).inputValue(),
+      "7",
+      "Successful Discard restores durable offscreen checkpoint",
+    );
+    evidence.push(
+      "Pagination: bounded stable pages/counts, keyboard boundary focus, full raw/checkpoint retention, invalid Save/export/departure recovery, quota failure preserves view, full Save/export/reload, failed Discard/Stay retain offscreen values, successful Discard restores durable values; page/filter actions do not fetch catalogs",
+    );
+  } finally {
+    await context.close();
+  }
+}
+
+async function measure({ browser, base, count, kind, baseline }) {
   const fixture = measuredFixture(count, kind);
   const context = await browser.newContext({
     viewport: { width: 1280, height: 900 },
@@ -354,7 +616,11 @@ async function measure({ browser, base, count, kind }) {
       if (kind === "inventory") {
         assert.equal(
           await page.locator("[data-inventory-item]").count(),
-          count,
+          baseline ? count : Math.min(50, count),
+        );
+        assert.equal(
+          await page.locator("#inventory-count").textContent(),
+          `${count} of ${count} items ${baseline ? "shown" : "match"}.`,
         );
         result = await page.evaluate(async () => {
           const input = document.querySelector("#inventory-query");
@@ -414,6 +680,8 @@ async function measure({ browser, base, count, kind }) {
     return {
       count,
       kind,
+      renderedRows:
+        kind === "inventory" ? (baseline ? count : Math.min(50, count)) : null,
       bytes: fixture.bytes,
       validation: fixture.validation,
       warmups: 1,
@@ -473,11 +741,13 @@ export async function runMeasuredScaleTests({
     if (!baseline) {
       await preservedDrafts({ browser, base, evidence: evidence.scenarios });
       await checkpoint();
+      await pagedDrafts({ browser, base, evidence: evidence.scenarios });
+      await checkpoint();
     }
     for (const kind of ["inventory", "native-selector"])
       for (const count of [100, 1000, 5000]) {
         evidence.measurements.push(
-          await measure({ browser, base, count, kind }),
+          await measure({ browser, base, count, kind, baseline }),
         );
         await checkpoint();
       }

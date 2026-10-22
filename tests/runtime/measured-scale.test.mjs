@@ -3,70 +3,38 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 
-const profileSource = await readFile("src/client/profile.mjs", "utf8");
-const filterSource = profileSource.slice(
-  profileSource.indexOf("function filterInventory()"),
-  profileSource.indexOf('$("#inventory-query")?.addEventListener'),
+const { filterInventoryIds } = await import(
+  "../../src/client/inventory-window.mjs"
 );
-
 for (const count of [100, 1000, 5000]) {
-  test(`inventory filter ${count} records preserves stable results with bounded indexed lookup work`, () => {
-    let comparisons = 0,
-      lookups = 0;
+  test(`inventory filter ${count} preserves stable full-catalog results with one indexed lookup per record`, () => {
     const items = Array.from({ length: count }, (_, i) => ({
-      get id() {
-        comparisons++;
-        return `demo:item-${i}`;
-      },
+      id: `demo:item-${i}`,
       name: `Fixture ${i}`,
       category: "fictional",
     }));
-    const nodes = items.map((item, i) => ({
-      dataset: { inventoryItem: item.id },
-      hidden: false,
-      raw: i % 2 ? "" : "0003",
-    }));
-    const inventoryIndex = new Map(items.map((item) => [item.id, item]));
-    const get = inventoryIndex.get.bind(inventoryIndex);
-    inventoryIndex.get = (id) => {
+    const index = new Map(items.map((item) => [item.id, item]));
+    const get = index.get.bind(index);
+    let lookups = 0;
+    index.get = (id) => {
       lookups++;
       return get(id);
     };
-    comparisons = 0;
-    const elements = {
-      "#inventory-query": { value: "Fixture 1" },
-      "#inventory-view": { value: "all" },
-      "#inventory-count": { textContent: "" },
-    };
-    vm.runInNewContext(`${filterSource}\nfilterInventory();`, {
-      $: (selector) => elements[selector],
-      document: { querySelectorAll: () => nodes },
-      state: { pack: { items }, profile: { inventory: {}, reserves: {} } },
-      inventoryIndex,
-      planShared: () => ({ ledger: [] }),
-    });
-    const sourceComparisons = comparisons;
+    const profile = { inventory: {}, reserves: {} };
     assert.deepEqual(
-      nodes
-        .filter((node) => !node.hidden)
-        .map((node) => node.dataset.inventoryItem),
+      filterInventoryIds(index, profile, "Fixture 1", "all"),
       items
         .filter((item) => item.name.includes("Fixture 1"))
         .map((item) => item.id),
     );
-    assert(
-      nodes.every((node, i) => node.raw === (i % 2 ? "" : "0003")),
-      "View filtering does not rewrite raw values",
-    );
-    // Exclude the independent expected-output calculation above from source work.
-    assert.equal(
-      lookups,
-      count,
-      `Each fieldset needs exactly one indexed lookup; observed${lookups}, linear comparisons${sourceComparisons}`,
-    );
-    assert(
-      sourceComparisons <= count,
-      `No repeated full-list searches: ${sourceComparisons}`,
+    assert.equal(lookups, count);
+    profile.reserves[items[count - 1].id] = 2;
+    assert.deepEqual(filterInventoryIds(index, profile, "", "owned"), [
+      items[count - 1].id,
+    ]);
+    assert.deepEqual(
+      filterInventoryIds(index, profile, "", "needed", new Set([items[2].id])),
+      [items[2].id],
     );
   });
 }
@@ -206,18 +174,24 @@ async function initializationHarness({
     setAttribute(name, value) {
       this[name] = value;
     },
+    focus() {
+      if (context.document.activeElement !== this) focusChanges++;
+      context.document.activeElement = this;
+    },
   });
   const select = element(true, true),
     input = element(),
     backup = element(true, true),
     main = element(),
     errorNode = element(),
-    note = element();
+    note = element(),
+    saveStatus = element();
   const controls = [select, input, backup];
   const calls = [],
     events = [],
     statuses = [];
-  let renders = 0;
+  let renders = 0,
+    focusChanges = 0;
   const state = {
     pack: null,
     profile: null,
@@ -231,9 +205,12 @@ async function initializationHarness({
     "#export-current-profile": backup,
     "#error": errorNode,
     "#pack-note": note,
+    "#save-status": saveStatus,
   };
   const context = vm.createContext({
     state,
+    statusRevision: 0,
+    hasUnsavedDraft: () => false,
     createCatalogLoader: (options) =>
       createCatalogLoader({ ...options, fetcher: context.fetch }),
     parseCatalogManifest,
@@ -249,10 +226,13 @@ async function initializationHarness({
       errorNode.textContent = reason.message;
     },
     status(value) {
+      context.statusRevision++;
+      saveStatus.textContent = value;
       statuses.push(value);
     },
     requestDeparture: async (proceed) => proceed(),
     document: {
+      activeElement: input,
       querySelectorAll: (selector) => (selector === "a[href]" ? [] : controls),
       querySelector: () => main,
       dispatchEvent: (event) => events.push(event.type),
@@ -284,7 +264,7 @@ async function initializationHarness({
     },
   });
   vm.runInContext(
-    `${source}\nglobalThis.start = () => init(render); globalThis.getBaseline = (id) => getCatalog(id, { publishedOnly: true });`,
+    `${common.slice(common.indexOf("export function error(reason)"), common.indexOf("let statusRevision = 0;")).replaceAll("export ", "")}\n${source}\nglobalThis.start = () => init(render); globalThis.getBaseline = (id) => getCatalog(id, { publishedOnly: true });`,
     context,
   );
   await context.start();
@@ -299,6 +279,15 @@ async function initializationHarness({
     errorNode,
     renders: () => renders,
     getBaseline: context.getBaseline,
+    focus: (node) => {
+      context.document.activeElement = node;
+    },
+    activeElement: () => context.document.activeElement,
+    focusChanges: () => focusChanges,
+    setStatus: context.status,
+    setDirty: (value) => {
+      context.hasUnsavedDraft = () => value;
+    },
   };
 }
 
@@ -389,3 +378,86 @@ test("deferred discovery failure never claims an unavailable startup catalog is 
     /current catalog remains available/,
   );
 });
+
+async function delayedInvalidCatalog() {
+  let finish;
+  const pending = new Promise((resolve) => {
+    finish = resolve;
+  });
+  const harness = await initializationHarness({ listing: () => pending });
+  return {
+    harness,
+    finish: async () => {
+      finish([{ value: { pack: { id: "local:invalid-probe" } } }]);
+      await new Promise((resolve) => setImmediate(resolve));
+    },
+  };
+}
+test("deferred invalid catalog marks otherwise unchanged healthy selected status without delaying readiness", async () => {
+  const { harness, finish } = await delayedInvalidCatalog();
+  assert.equal(harness.state.loading, false);
+  assert.equal(harness.statuses.at(-1), "Saved locally · no account or sync");
+  await finish();
+  assert.match(
+    harness.errorNode.textContent,
+    /^An invalid local catalog was retained but not listed/,
+  );
+  assert.match(harness.statuses.at(-1), /storage available.*content warning/i);
+  assert.doesNotMatch(harness.statuses.at(-1), /storage unavailable/i);
+});
+for (const laterStatus of [
+  "Unsaved inventory edits",
+  "Saved locally · revision 3",
+  "Saved locally · no account or sync",
+]) {
+  test(`deferred invalid catalog preserves newer user status: ${laterStatus}`, async () => {
+    const { harness, finish } = await delayedInvalidCatalog();
+    harness.setStatus(laterStatus);
+    const count = harness.statuses.length;
+    await finish();
+    assert.equal(harness.statuses.at(-1), laterStatus);
+    assert.equal(
+      harness.statuses.length,
+      count,
+      "Even equal-text later status must not be overwritten",
+    );
+  });
+}
+test("deferred invalid catalog cannot overwrite a dirty draft even before its status handler", async () => {
+  const { harness, finish } = await delayedInvalidCatalog();
+  harness.setDirty(true);
+  const count = harness.statuses.length;
+  await finish();
+  assert.equal(harness.statuses.length, count);
+});
+
+test("deferred invalid catalog does not replace status while a save is in flight", async () => {
+  const { harness, finish } = await delayedInvalidCatalog();
+  harness.state.saving = true;
+  const count = harness.statuses.length;
+  await finish();
+  assert.equal(harness.statuses.length, count);
+});
+
+for (const target of ["input", "backup"]) {
+  test(`delayed discovery warning does not steal ${target} focus or change its raw draft/model`, async () => {
+    const { harness, finish } = await delayedInvalidCatalog();
+    harness.input.value = "";
+    harness.state.profile.inventory = { "demo:wire": NaN };
+    const profile = harness.state.profile;
+    harness.setDirty(true);
+    harness.focus(harness[target]);
+    const count = harness.focusChanges();
+    await finish();
+    assert.equal(harness.activeElement(), harness[target]);
+    assert.equal(
+      harness.focusChanges(),
+      count,
+      "No forced focus/blur side effects",
+    );
+    assert.equal(harness.input.value, "");
+    assert.equal(harness.state.profile, profile);
+    assert(Number.isNaN(profile.inventory["demo:wire"]));
+    assert.match(harness.errorNode.textContent, /invalid local catalog/);
+  });
+}

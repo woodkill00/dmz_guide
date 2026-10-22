@@ -57,7 +57,32 @@ else {
 `;
 async function fixture(t, mode = "valid") {
   const cwd = await mkdtemp(join(tmpdir(), "dmz-readiness-"));
-  t.after(() => rm(cwd, { recursive: true, force: true }));
+  t.after(async () => {
+    const started = performance.now();
+    try {
+      // Retry only test-owned filesystem teardown, never child-death checks.
+      await rm(cwd, {
+        recursive: true,
+        force: true,
+        maxRetries: 3,
+        retryDelay: 100,
+      });
+    } catch (error) {
+      t.diagnostic(
+        "Owned fixture teardown failed: " +
+          JSON.stringify({
+            mode,
+            cwd,
+            elapsedMs: Math.round(performance.now() - started),
+            code: error.code,
+            syscall: error.syscall,
+            path: error.path,
+            message: error.message.slice(0, 4096),
+          }),
+      );
+      throw error;
+    }
+  });
   await mkdir(join(cwd, "scripts"));
   await mkdir(join(cwd, "dist"));
   await writeFile(join(cwd, "scripts/serve.mjs"), fixtureSource);
@@ -74,14 +99,44 @@ async function fixture(t, mode = "valid") {
 }
 async function assertGone(cwd) {
   const pid = Number(await readFile(join(cwd, "child.pid"), "utf8"));
-  assert.throws(() => process.kill(pid, 0), { code: "ESRCH" });
+  assert.throws(
+    () => process.kill(pid, 0),
+    { code: "ESRCH" },
+    `Owned fixture PID ${pid} must be absent after cleanup`,
+  );
 }
 async function failure(t, mode, pattern) {
   const options = await fixture(t, mode);
   const started = performance.now();
-  await assert.rejects(startOwnedServer(options), pattern);
-  assert(performance.now() - started < 3000, "failure and cleanup are bounded");
-  await assertGone(options.cwd);
+  let rejection;
+  try {
+    await assert.rejects(async () => {
+      try {
+        await startOwnedServer(options);
+      } catch (error) {
+        rejection = error;
+        throw error;
+      }
+    }, pattern);
+    assert(
+      performance.now() - started < 3000,
+      "failure and cleanup are bounded",
+    );
+    await assertGone(options.cwd);
+  } catch (error) {
+    // Keep the original startup/cleanup error when a later assertion fails.
+    // Its prefix includes phase, elapsed time, PID, exit code and signal.
+    t.diagnostic(
+      "Owned readiness failure evidence: " +
+        JSON.stringify({
+          mode,
+          elapsedMs: Math.round(performance.now() - started),
+          startupError: rejection?.message.slice(0, 4096),
+          assertionError: error.message.slice(0, 1024),
+        }),
+    );
+    throw error;
+  }
 }
 
 test("readiness accepts exact content from a live owned child and awaits idempotent cleanup", async (t) => {

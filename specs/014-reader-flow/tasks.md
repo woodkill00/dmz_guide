@@ -39,3 +39,6 @@ T005/T008/T010/T017 checkmarks mean test coverage authored and available runtime
 - [x] T023 Execute controls hosted, independently interpret actual differential, then separately review any primary refresh test-contract change. Preserve one Back and exact target/profile (FR-003,009). Actual151301f/artifact12422153749 independently confirms native refresh contract.
 
 - [ ] T024 Independently review primary native refresh delta and run exact-head hosted journey with stable history/type plus original single Back (FR-003,009).
+
+- [x] T025 Inspect actual clipped/overlapping radar caption evidence, independently approve and implement bounded template/CSS repair with structural runtime regression (FR-008,009).
+- [ ] T026 Run validator-owned caption geometry/nonoverlap and independent normal/200 pixel review across widths/themes on exact candidate (FR-008,009).

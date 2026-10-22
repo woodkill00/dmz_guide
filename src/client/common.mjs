@@ -36,7 +36,9 @@ export function error(reason) {
     element.focus();
   } else console.error(reason);
 }
+let statusRevision = 0;
 export function status(text) {
+  statusRevision++;
   if ($("#save-status")) $("#save-status").textContent = text;
 }
 export function download(name, data, type = "application/json") {
@@ -78,6 +80,7 @@ export function exportProfile() {
     );
   } catch (reason) {
     error(reason);
+    draftGuard?.revealInvalid?.();
   }
 }
 async function requestDeparture(proceed, origin, documentNavigation = false) {
@@ -410,8 +413,13 @@ export async function init(
   });
   await change(requested ?? (opaqueContext ? null : choices[0]?.id));
   // Discovery is informative and never delays selected readiness or rerenders drafts.
+  const discoveryGeneration = generation;
+  const discoveryStatusRevision = statusRevision;
+  const discoveryStartedHealthy =
+    $("#save-status")?.textContent === "Saved locally · no account or sync";
   void (async () => {
-    let warning = null;
+    let warning = null,
+      contentWarning = false;
     try {
       const records = await listRecords("content");
       for (const record of records.slice(0, 32)) {
@@ -421,15 +429,18 @@ export async function init(
           validatePack(pack, schema);
           choices.push({ id: pack.id, title: pack.title });
         } catch {
+          contentWarning = true;
           warning = new Error(
             "An invalid local catalog was retained but not listed. Restore its original exported bundle in the editor; no stored data was deleted.",
           );
         }
       }
-      if (records.length > 32)
+      if (records.length > 32) {
+        contentWarning = true;
         warning = new Error(
           "Only the first 32 saved local catalogs are listed. Other stored data was retained; an exact catalog link can still open it.",
         );
+      }
       refreshChoices(state.pack?.id);
     } catch {
       warning = new Error(
@@ -438,7 +449,25 @@ export async function init(
           : "Some local catalogs could not be listed. No catalog is active; choose an available published catalog. Stored data retained.",
       );
     }
-    if (warning && !state.loading && $("#error").hidden) error(warning);
+    if (warning && !state.loading && $("#error").hidden) {
+      if (
+        contentWarning &&
+        discoveryStartedHealthy &&
+        state.pack &&
+        generation === discoveryGeneration &&
+        statusRevision === discoveryStatusRevision &&
+        !state.saving &&
+        !hasUnsavedDraft()
+      )
+        status(
+          "Browser storage available · content warning; stored data retained.",
+        );
+      // This is background discovery, not a user-triggered failed operation.
+      // Announce through the existing alert without forcing focus/blur side effects.
+      const alert = $("#error");
+      alert.textContent = warning.message;
+      alert.hidden = false;
+    }
   })();
   return state;
 }
@@ -470,6 +499,7 @@ export async function persist(candidate = state.profile) {
   } catch (reason) {
     status("Unsaved changes remain in this page. Export before reload.");
     error(reason);
+    if (candidate === state.profile) draftGuard?.revealInvalid?.();
     return false;
   } finally {
     state.saving = false;
