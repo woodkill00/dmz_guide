@@ -218,9 +218,27 @@ export async function runReaderFlowTests({
     assert.match(await page.locator("#local-records").textContent(), /wire/i);
     const itemURL = page.url();
     await checkpoint("before-local-reload");
-    await page.reload();
+    const historyBeforeRefresh = await page.evaluate(() => history.length);
+    // Hosted static and reader controls prove Firefox's automation reload adds
+    // history; exercise the actual user-equivalent browser refresh instead.
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: "load" }),
+      page.evaluate(() => {
+        setTimeout(() => location.reload(), 0);
+      }),
+    ]);
     await page.waitForSelector("#local-records h2");
     assert.equal(page.url(), itemURL);
+    assert.equal(
+      await page.evaluate(() => history.length),
+      historyBeforeRefresh,
+    );
+    assert.equal(
+      await page.evaluate(
+        () => performance.getEntriesByType("navigation")[0]?.type,
+      ),
+      "reload",
+    );
     await checkpoint("after-local-reload");
     await page.goBack();
     await checkpoint("after-back");
