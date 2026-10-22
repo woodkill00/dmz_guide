@@ -19,6 +19,104 @@ const build = (cwd) =>
     maxBuffer: 4 * 1024 * 1024,
   });
 
+export async function captureDocumentEvidence(page, path) {
+  await page.evaluate(() => document.fonts.ready);
+  const measure = () =>
+    page.evaluate(() => ({
+      width: Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.body.clientWidth,
+        document.documentElement.clientWidth,
+      ),
+      height: Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight,
+        document.body.clientHeight,
+        document.documentElement.clientHeight,
+      ),
+    }));
+  const dimensions = await measure();
+  assert(dimensions.width > 0 && dimensions.height > 0);
+  const tiled = dimensions.width > 32000 || dimensions.height > 32000;
+  const slices = [];
+  const maxSlice = 12000;
+  const widthStep = tiled ? maxSlice : dimensions.width;
+  const heightStep = tiled ? maxSlice : dimensions.height;
+  // Playwright 1.58 screenshotter trims fullPage+clip in DOCUMENT coordinates;
+  // Firefox passes that documentRect directly to Page.screenshot. Keep the
+  // original viewport/layout unchanged and bound each actual PNG, not the page.
+  for (let y = 0; y < dimensions.height; y += heightStep) {
+    for (let x = 0; x < dimensions.width; x += widthStep) {
+      const clip = {
+        x,
+        y,
+        width: Math.min(widthStep, dimensions.width - x),
+        height: Math.min(heightStep, dimensions.height - y),
+      };
+      const file = tiled
+        ? path.replace(
+            /\.png$/,
+            `-tile-${String(slices.length + 1).padStart(3, "0")}.png`,
+          )
+        : path;
+      const png = await page.screenshot({
+        path: file,
+        fullPage: true,
+        scale: "css",
+        ...(tiled ? { clip } : {}),
+      });
+      assert.equal(png.subarray(1, 4).toString(), "PNG");
+      assert.equal(
+        png.readUInt32BE(16),
+        clip.width,
+        "Evidence PNG spans its full declared width",
+      );
+      assert.equal(
+        png.readUInt32BE(20),
+        clip.height,
+        "Evidence PNG spans its full declared height",
+      );
+      slices.push({ file, clip });
+    }
+  }
+  assert.deepEqual(
+    await measure(),
+    dimensions,
+    "Document geometry stays stable across evidence tiles",
+  );
+  const coveredPixels = slices.reduce(
+    (sum, { clip }) => sum + clip.width * clip.height,
+    0,
+  );
+  assert.equal(
+    coveredPixels,
+    dimensions.width * dimensions.height,
+    "Tiles cover the complete document without gaps or overlap",
+  );
+  await writeFile(
+    path.replace(/\.png$/, "-coverage.json"),
+    JSON.stringify(
+      {
+        url: page.url(),
+        mode: tiled ? "document-tiles" : "full-page",
+        coordinateSpace: "CSS document pixels",
+        dimensions,
+        maxTileHeight: tiled ? maxSlice : null,
+        coveredPixels,
+        complete: true,
+        slices,
+      },
+      null,
+      2,
+    ),
+  );
+}
+
 async function layoutEvidence(page, { prefix, label, captureScreenshots }) {
   if (label === "selected-editor") {
     // Test painted disclosure contents too: ignoring closed details must never
@@ -180,10 +278,10 @@ async function layoutEvidence(page, { prefix, label, captureScreenshots }) {
             await image.evaluate((image) => image.decode());
           }
           await page.evaluate(() => scrollTo(0, 0));
-          await page.screenshot({
-            path: `test-results/${prefix}-page-edit-${label}-${theme}-${width}-${enlarged ? "text200" : "normal"}.png`,
-            fullPage: true,
-          });
+          await captureDocumentEvidence(
+            page,
+            `test-results/${prefix}-page-edit-${label}-${theme}-${width}-${enlarged ? "text200" : "normal"}.png`,
+          );
         }
       }
       if (style) {
@@ -782,13 +880,19 @@ export async function runPageEditTests({
         2,
       ),
     );
-    if (captureScreenshots)
-      await page
-        .screenshot({
-          path: `test-results/${prefix}-page-edit-failure.png`,
-          fullPage: true,
-        })
-        .catch(() => {});
+    if (captureScreenshots) {
+      try {
+        await captureDocumentEvidence(
+          page,
+          `test-results/${prefix}-page-edit-failure.png`,
+        );
+      } catch (captureError) {
+        throw new AggregateError(
+          [error, captureError],
+          `Page-edit acceptance failed during ${phase}; diagnostic capture also failed: ${captureError.message}`,
+        );
+      }
+    }
     throw new Error(
       `Page-edit acceptance failed during ${phase}: ${error.message}`,
       { cause: error },

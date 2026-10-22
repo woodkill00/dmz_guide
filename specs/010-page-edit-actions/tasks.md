@@ -42,3 +42,7 @@ Execution note: T009/T010 mark authored browser coverage and documentation, not 
 - [x] T015 [CONV-003] Make text-range evidence exclude unpainted closed-disclosure descendants while retaining their first summary and all open-disclosure content. Add precise theme/viewport/enlargement diagnostics and opened-disclosure coverage. Hosted acceptance remains T011/T012.
 
 - [x] T016 [SC-004] Constrain media-card action buttons to their card and allow long labels to wrap at enlarged text sizes, without clipping or horizontal-scroll workarounds. Verify in opened-disclosure visual matrix under T011.
+
+- [x] T017 [CONV-004] Capture tall enlarged editor pages as complete bounded-height tiles with document dimensions and tile geometry, avoiding Firefox's 32767px bitmap limit without skipping visual coverage. Keep all reflow/pixel checks.
+
+- [x] T018 [CONV-005] Allow long Studio paragraph words to wrap normally at 320px/200% text; preserve actual size, content and layout assertions. Hosted verification remains T011/T012.

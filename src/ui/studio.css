@@ -57,6 +57,7 @@ h3 {
 }
 p {
   max-width: 85ch;
+  overflow-wrap: anywhere;
 }
 .eyebrow {
   color: var(--accent);
