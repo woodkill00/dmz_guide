@@ -1,0 +1,5 @@
+# Data model
+CatalogDescriptor: id matching existing bounded namespace identity, title length1..200, path matching /assets/content/packs/[a-z0-9-]+.json; unique id/path; at most32; exactly covers manifest.packs. CatalogCache maps exactID to successfully validated full pack, never a metadata placeholder; explicit failed fetch is not retained as success. Local descriptors derive only from validated stored catalog.
+Selection states: initial unavailable/loading→validated active; activeA→loadingB→activeB only after exact validation and generation match; failureB→activeA with explicit error and untouched raw draft. Initial unknown→unavailable with explicit known choices. No profile writes from loading.
+Inventory index: pack-scoped Map(id,item), rebuilt on active catalog render. Existing raw input checkpoint remains authoritative until an independently reviewed pagination amendment. Query/view change is not a save and not dirty.
+Measurement: fixtureID/count/bytes/validation result, browser/OS/Node/runner description, warmup/sample arrays, medians, method, decision budgets and limitations. Separate pagination/native-filter outcomes initially pending.

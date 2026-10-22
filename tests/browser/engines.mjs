@@ -59,6 +59,13 @@ try {
         base,
         captureScreenshots: name !== "webkit",
       });
+      const { runMeasuredScaleTests } = await import("./measured-scale.mjs");
+      await runMeasuredScaleTests({
+        browser,
+        base,
+        baseline: true,
+        prefix: name,
+      });
       health();
       server.assertAlive();
       passed.push(

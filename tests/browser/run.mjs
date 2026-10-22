@@ -406,6 +406,8 @@ try {
     "./recovery-truthfulness.mjs"
   );
   await runRecoveryTruthfulnessTests({ browser, base });
+  const { runMeasuredScaleTests } = await import("./measured-scale.mjs");
+  await runMeasuredScaleTests({ browser, base, baseline: true });
   checkHealth();
   server.assertAlive();
 } catch (error) {

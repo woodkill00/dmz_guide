@@ -1,0 +1,7 @@
+# Research decisions
+- Decision: additive validated catalog index and selected on-demand payload loading. Evidence: common.mjs eagerly awaits Promise.all and assumes a full pack array; a path-only manifest cannot honestly identify the selected payload. Alternative filename heuristics rejected because identity is not derivable safely.
+- Decision: separate descriptor choices from full pack cache; explicit asynchronous baseline lookup for private imports. Evidence: editor.mjs compares imported media against state.packs full objects. Metadata placeholders would break that invariant.
+- Decision: fail a missing/stale index visibly rather than silently eager-loading every catalog. Build and JS ship together; backward data/profile compatibility is unchanged. No automatic wrong-pack fallback.
+- Decision: per-pack ID map first, optional windowing only after measurement. Evidence: profile filter executes items.find per fieldset; raw checkpoint currently lives in DOM and cannot be discarded casually. No pagination claim before hosted data.
+- Decision: keep strict health. Malformed unrelated catalog data can be fulfilled200 in isolated tests; actual transport errors remain genuine failures rather than blanket allowances.
+- Research unknowns resolved by source inspection. Performance outcome remains the planned measured conditional decision, not a blocking contract ambiguity or an asserted defect.

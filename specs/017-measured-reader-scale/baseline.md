@@ -1,0 +1,11 @@
+# Baseline harness, not hosted evidence
+
+Test-only harness exports runMeasuredScaleTests({browser, base, baseline=false, prefix=browser.browserType().name()}) from tests/browser/measured-scale.mjs. The integration owner must run baseline=true against unmodified loading/indexing code and retain test-results/*-measured-scale-baseline-reproduction.json. No hosted execution is claimed here.
+
+Independent reviewer approved CHK001–006 after explicit descriptor bounds, native-selector budget and failed-Discard retention clarification. Actual pinned analyze prerequisite ran with SPECIFY_FEATURE_DIRECTORY=specs/017-measured-reader-scale; read-only artifact analysis found13 FR/SC mapped to12 tasks, no unresolved critical/high findings. Built-in requirements4/4 and independent scale6/6 criteria are checked. These are requirements-quality gates, not implementation acceptance.
+
+Harness covers controlled unrelated-response withholding until selected response finishes, HTTP200 schema-invalid unrelated data without network/console suppression, and unknown-ID fallback. Measurements use separate valid fictional inventory and native-option populations100/1000/5000 with one warmup and five measured samples each, unchanged schema/resource limits, disclosed runner/browser metadata, arrays and medians, and no timing pass/fail assertions. Native keyboard observations concern settled ArrowDown selection and next painted frame, not popup-opening latency or user studies.
+
+Local fixture generation and parseBounded/validatePack(published) executed successfully: inventory100/1000/5000 payloads23877/232677/1164677 bytes; native-option100/1000/5000 payloads32977/323677/1619677 bytes. Local fixture validity is not actual browser evidence. Hosted baseline, production implementation, post-index measurement, separate optional-control decisions and all acceptance gates remain pending.
+
+Local test-only candidate checks: npm ci --ignore-scripts with a writable temporary cache succeeded; node --check passed; npm run check passed (repository0 failures; runtime274 tests,273 pass,0 fail,1 existing skip; build154 routes); npm run format:check and git diff --check passed. Browser execution is deliberately left to the authorized hosted matrix because the local sandbox cannot run the required browser safely.
