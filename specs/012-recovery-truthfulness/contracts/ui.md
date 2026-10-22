@@ -1,0 +1,4 @@
+# UI/storage contracts
+#restore-summary is readable text/structured HTML rather than primary JSON; optional #restore-raw in details shows spoiler-safe projected values. Review is non-mutating and apply/reset revision gates stay unchanged. Invalid content warning is not browser storage unavailable. createGuidedEditor accepts onError(error), passed by both hosts. Store exported methods and rejection behavior stay compatible; reconnection is for the next caller, never transaction replay.
+
+Unknown imported references use neutral unresolved labels/counts, not raw IDs. Mask all displayed keys, values and metadata (including catalog/version and version-status/unresolved text), not just record names. Optional raw detail is a safe projection and cannot reveal original imported identifiers under a collapsed disclosure.
