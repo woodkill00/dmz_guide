@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { cpus, platform, release, totalmem } from "node:os";
 import { loadFixturePack } from "../helpers/catalog.mjs";
 import { validatePack } from "../../src/content/validate.mjs";
@@ -465,6 +465,7 @@ export async function runMeasuredScaleTests({
       `test-results/${prefix}-measured-scale-${baseline ? "baseline-reproduction" : "acceptance"}.json`,
       JSON.stringify(evidence, null, 2),
     );
+  await mkdir("test-results", { recursive: true });
   await checkpoint();
   try {
     await isolation({ browser, base, baseline, evidence: evidence.scenarios });

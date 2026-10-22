@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
+import { captureDocumentEvidence } from "./page-edit.mjs";
 
 async function probeReloadSemantics({ browser, base }) {
   const results = [];
@@ -479,9 +480,31 @@ export async function runReaderFlowTests({
           await page.setViewportSize({ width, height: 844 });
           await page.goto(base + route);
           if (route.startsWith("/maps")) await ready();
-          await page.evaluate(
-            (value) => (document.documentElement.dataset.theme = value),
+          const themeToggle = page.locator("#theme-toggle");
+          if (
+            (await page.locator("html").getAttribute("data-theme")) !== theme
+          ) {
+            await themeToggle.focus();
+            assert(
+              await themeToggle.evaluate(
+                (node) => node === document.activeElement,
+              ),
+              "The actual theme control owns keyboard focus",
+            );
+            await page.keyboard.press("Enter");
+          }
+          await page.waitForFunction(
+            (value) => document.documentElement.dataset.theme === value,
             theme,
+          );
+          const nextTheme = theme === "dark" ? "light" : "dark";
+          assert.equal(
+            await themeToggle.getAttribute("aria-label"),
+            `Switch to ${nextTheme} theme`,
+          );
+          assert.equal(
+            await themeToggle.textContent(),
+            theme === "dark" ? "Light mode" : "Dark mode",
           );
           if (route === detailRoute)
             assert(await page.locator(".evidence-caveat").isVisible());
@@ -506,10 +529,10 @@ export async function runReaderFlowTests({
           if (width <= 390 && normal.radarWidth !== null)
             assert(normal.radarWidth <= 200);
           if (captureScreenshots)
-            await page.screenshot({
-              path: `test-results/reader-normal-${width}-${theme}-${route === "/" ? "home" : route === detailRoute ? "detail" : route.startsWith("/maps") ? "maps" : "catalog"}.png`,
-              fullPage: true,
-            });
+            await captureDocumentEvidence(
+              page,
+              `test-results/reader-normal-${width}-${theme}-${route === "/" ? "home" : route === detailRoute ? "detail" : route.startsWith("/maps") ? "maps" : "catalog"}.png`,
+            );
           const before = await page
             .locator("body")
             .evaluate((n) => parseFloat(getComputedStyle(n).fontSize));
@@ -527,10 +550,7 @@ export async function runReaderFlowTests({
           );
           const label = `reader-${route.startsWith("/maps") ? "maps" : route === "/" ? "home" : route === detailRoute ? "detail" : "catalog"}-${width}-${theme}-text200`;
           if (captureScreenshots)
-            await page.screenshot({
-              path: `test-results/${label}.png`,
-              fullPage: true,
-            });
+            await captureDocumentEvidence(page, `test-results/${label}.png`);
           const height = await page.evaluate(
             () => document.documentElement.scrollHeight,
           );

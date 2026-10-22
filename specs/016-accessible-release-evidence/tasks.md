@@ -42,3 +42,7 @@ T001→T002/T003→T004→T005→T006/T007. T008→T009 after gate. T010→T011�
 ## Phase10: Hosted import-fixture repair
 - [x] T024 [US1] Preserve the production changed-content version guard by incrementing the synthetic described-transfer version in tests/browser/bundled-assets.mjs; assert stored version and both image-description arrays, and capture bounded failure feedback without relaxing stage/alt/strict-health assertions.
 - [ ] T025 [US1] Integrator reruns actual hosted Windows/Linux browser matrix for the corrected described-transfer fixture and records exact-head evidence in acceptance.md.
+
+## Phase11: Windows packaging diagnostic repair
+- [x] T026 [US3] Preserve exact remote b8c278 and reviewed5d5c6d7 visual helper, reproduce uninformative mutation rejection, and add bounded relative path/phase/before-open-after signature diagnostics in scripts/package-release.py without weakening any rejection; verify deterministic mutation/escaping tests in tests/test_package_diagnostics.py.
+- [ ] T027 [US3] Integrator reruns actual Windows packaging and records observed failing signatures or success before proposing any platform-specific behavior change in acceptance.md; no normalization assumption or bypass is authorized by diagnostics.

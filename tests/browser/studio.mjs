@@ -22,6 +22,7 @@ import { GROUPS } from "../../src/content/portable.mjs";
 import { monitorBrowser, expectResponseErrors } from "./health.mjs";
 import { runGuidedLimitAcceptance } from "./recovery-truthfulness.mjs";
 import { runRasterEditorTests } from "./raster-editor.mjs";
+import { checkPictureDescriptionLayout } from "./picture-description-layout.mjs";
 import { runPageEditTests, captureDocumentEvidence } from "./page-edit.mjs";
 
 const run = promisify(execFile);
@@ -709,6 +710,7 @@ export async function runStudioTests({
       "#picture-description",
       "Gold synthetic grid showing the test rifle silhouette.",
     );
+    await checkPictureDescriptionLayout(page, { prefix, captureScreenshots });
     const pictureId = await page.locator("#picture-id").inputValue();
     await page.click("#attach-picture");
     await page.waitForSelector(`#media-library [data-asset-id="${pictureId}"]`);
