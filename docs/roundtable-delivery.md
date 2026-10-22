@@ -4,9 +4,9 @@ Approved 2026-10-22 against db8a6e237aa822205ed346b178a3c7dc8fafea5c. This is an
 
 | Wave/workpackage | Accepted scope / proposal trace | Owning batch | Status/evidence |
 | --- | --- | --- | --- |
-| 1/1 | Dirty inventory/reserve Save/Discard/Stay; startup and shared validated export; safe filenames; visible save state (C1 C3 U1 U11 U10 portion) | 011-private-draft-safety | Requirements independently approved; baseline reproduction pending hosted PR11; not implemented |
-| 1/2 | Human-readable restore/rebind quantities/goals/progress/catalog/version/spoilers; optional raw JSON (C4 U2) | Backup truthfulness batch | Pending |
-| 1/3 | Content/storage warning taxonomy; safe IndexedDB reconnect; guided limit errors; planner focus (C2 C5 C6 C7 A7) | Backup truthfulness batch | Pending |
+| 1/1 | Dirty inventory/reserve Save/Discard/Stay; startup and shared validated export; safe filenames; visible save state (C1 C3 U1 U11 U10 portion) | 011-private-draft-safety | Implemented and independently accepted at 3779ac0; all five CI jobs and 36 actual visual variants passed in run39762441195. Parent merge / exact-main CI pending; see specs/011-private-draft-safety/acceptance.md |
+| 1/2 | Human-readable restore/rebind quantities/goals/progress/catalog/version/spoilers; optional raw JSON (C4 U2) | 012-recovery-truthfulness | Exact1ac4116 source/functional/visual accepted; all5 hosted jobs green,36 coverage variants; final docs/merge/main gate pending |
+| 1/3 | Content/storage warning taxonomy; safe IndexedDB reconnect; guided limit errors; planner focus (C2 C5 C6 C7 A7) | 012-recovery-truthfulness | Exact1ac4116 source/functional/visual accepted; all5 hosted jobs green,36 coverage variants; final docs/merge/main gate pending |
 | 1/4 | Spawned-process/content readiness, bounded diagnostics; staged build retains OLD; explicit bounded Node matrix (C12 A1 A2 A3) | 013-build-reliability | Investigation/planning |
 | 1/5 | Controlled concurrent build/author save and pending-recovery experiments (A4) | 013-build-reliability | Conditional: no defect asserted; coordination only after reproduced defect |
 | 2/6 | Additional-output semantics, useful empty goals, exact active-record/known location shortage links (U3 U4 V5) | Reader planning clarity batch | Pending |
