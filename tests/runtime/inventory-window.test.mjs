@@ -230,3 +230,100 @@ for (const boundary of [true, false]) {
     assert.equal(context.inventoryPageNumber, boundary ? 0 : 1);
   });
 }
+
+function nativeInvalidHarness() {
+  const callbacks = [],
+    documentListeners = {};
+  let listener,
+    prevented = 0,
+    errors = 0,
+    reveals = 0;
+  const draft = { firstInvalid: () => ({ id: "demo:item-75" }) };
+  const context = {
+    inventoryDraft: draft,
+    pendingInventoryInvalid: null,
+    state: { pack: { id: "demo:pack" }, loading: false, saving: false },
+    $: () => ({
+      addEventListener(_event, callback) {
+        listener = callback;
+      },
+    }),
+    document: {
+      addEventListener(event, callback) {
+        documentListeners[event] = callback;
+      },
+    },
+    setTimeout(callback) {
+      callbacks.push(callback);
+    },
+    error() {
+      errors++;
+    },
+    revealInvalidInventory() {
+      reveals++;
+    },
+  };
+  const start = source.indexOf(
+    '$("#inventory-form")?.addEventListener(\n  "invalid"',
+  );
+  const end = source.indexOf(
+    '$("#inventory-form")?.addEventListener("submit"',
+    start,
+  );
+  vm.runInNewContext(source.slice(start, end), context);
+  return {
+    context,
+    callbacks,
+    documentListeners,
+    invalid() {
+      listener({
+        target: { dataset: { field: "inventory" } },
+        preventDefault() {
+          prevented++;
+        },
+      });
+    },
+    counts: () => ({ prevented, errors, reveals }),
+  };
+}
+test("native multi-invalid traversal cancels every event before one next-task recovery", () => {
+  const h = nativeInvalidHarness();
+  h.invalid();
+  h.invalid();
+  h.invalid();
+  assert.deepEqual(h.counts(), { prevented: 3, errors: 0, reveals: 0 });
+  assert.equal(h.callbacks.length, 1);
+  h.callbacks[0]();
+  assert.deepEqual(h.counts(), { prevented: 3, errors: 1, reveals: 1 });
+});
+for (const superseding of [
+  "draft",
+  "pack",
+  "input",
+  "pointerdown",
+  "keydown",
+]) {
+  test(`queued native invalid recovery ignores superseding ${superseding}`, () => {
+    const h = nativeInvalidHarness();
+    h.invalid();
+    assert.equal(h.callbacks.length, 1);
+    if (superseding === "draft") h.context.inventoryDraft = {};
+    else if (superseding === "pack")
+      h.context.state.pack = { id: "demo:other" };
+    else h.documentListeners[superseding]();
+    h.callbacks[0]();
+    assert.deepEqual(h.counts(), { prevented: 1, errors: 0, reveals: 0 });
+  });
+}
+
+test("superseded invalid task cannot consume a newer failed-Save recovery", () => {
+  const h = nativeInvalidHarness();
+  h.invalid();
+  h.documentListeners.input();
+  h.invalid();
+  assert.equal(h.callbacks.length, 2);
+  h.callbacks[0]();
+  assert.deepEqual(h.counts(), { prevented: 2, errors: 0, reveals: 0 });
+  h.callbacks[1]();
+  assert.deepEqual(h.counts(), { prevented: 2, errors: 1, reveals: 1 });
+});

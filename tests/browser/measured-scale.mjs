@@ -214,6 +214,9 @@ async function preservedDrafts({ browser, base, evidence }) {
     await page
       .getByRole("button", { name: "Save inventory", exact: true })
       .click();
+    await page.waitForFunction(
+      () => document.activeElement?.name === "owned:demo:wire",
+    );
     assert.equal(
       await page.evaluate(() => document.activeElement?.name),
       "owned:demo:wire",
@@ -371,6 +374,13 @@ async function pagedDrafts({ browser, base, evidence }) {
       ),
       true,
     );
+  const invalidFocus = async (selector) => {
+    await page.waitForFunction(
+      (s) => document.activeElement === document.querySelector(s),
+      selector,
+    );
+    await focus(selector);
+  };
   const next = () => page.click("#inventory-next");
   // Intentionally aria-disabled boundaries remain focusable and accept pointer
   // events. Playwright locator.click correctly refuses them, so verify the hit
@@ -467,7 +477,7 @@ async function pagedDrafts({ browser, base, evidence }) {
       "Paging/filtering does not request catalogs",
     );
     await page.click("#export-current-profile");
-    await focus('[data-field="inventory"][data-id="demo:scale-item-0"]');
+    await invalidFocus('[data-field="inventory"][data-id="demo:scale-item-0"]');
     assert.equal(await field(0).inputValue(), "");
     assert.equal(downloads, 0);
     await field(0).fill("3");
@@ -476,7 +486,7 @@ async function pagedDrafts({ browser, base, evidence }) {
     await page
       .getByRole("button", { name: "Save inventory", exact: true })
       .click();
-    await focus('[data-field="reserves"][data-id="demo:scale-item-0"]');
+    await invalidFocus('[data-field="reserves"][data-id="demo:scale-item-0"]');
     assert.equal(await field(0, "reserves").inputValue(), "");
     await field(0, "reserves").fill("4");
     await next();
@@ -486,7 +496,9 @@ async function pagedDrafts({ browser, base, evidence }) {
     await page
       .getByRole("button", { name: "Save inventory", exact: true })
       .click();
-    await focus('[data-field="inventory"][data-id="demo:scale-item-75"]');
+    await invalidFocus(
+      '[data-field="inventory"][data-id="demo:scale-item-75"]',
+    );
     assert.equal(
       await field(75).inputValue(),
       "2.5",
@@ -498,7 +510,7 @@ async function pagedDrafts({ browser, base, evidence }) {
     await page
       .getByRole("button", { name: "Save inventory", exact: true })
       .click();
-    await focus('[data-field="reserves"][data-id="demo:scale-item-75"]');
+    await invalidFocus('[data-field="reserves"][data-id="demo:scale-item-75"]');
     assert.equal(await field(75).inputValue(), "0007");
     assert.equal(await field(75, "reserves").inputValue(), "");
     assert.equal(await field(76).inputValue(), "-1");
@@ -506,7 +518,9 @@ async function pagedDrafts({ browser, base, evidence }) {
     await page
       .getByRole("button", { name: "Save inventory", exact: true })
       .click();
-    await focus('[data-field="inventory"][data-id="demo:scale-item-76"]');
+    await invalidFocus(
+      '[data-field="inventory"][data-id="demo:scale-item-76"]',
+    );
     assert.equal(await field(75).inputValue(), "0007");
     assert.equal(await field(75, "reserves").inputValue(), "5");
     assert.equal(await field(76).inputValue(), "-1");
@@ -516,7 +530,9 @@ async function pagedDrafts({ browser, base, evidence }) {
     await page
       .getByRole("button", { name: "Save inventory", exact: true })
       .click();
-    await focus('[data-field="inventory"][data-id="demo:scale-item-75"]');
+    await invalidFocus(
+      '[data-field="inventory"][data-id="demo:scale-item-75"]',
+    );
     assert.equal(await field(75).inputValue(), "2.5");
     await field(75).fill("0007");
     await page.fill("#inventory-query", "FICTIONAL");
@@ -590,7 +606,9 @@ async function pagedDrafts({ browser, base, evidence }) {
     await next();
     await page.selectOption("#pack-select", "official:mw4-dmz-starter");
     await page.click("#draft-save");
-    await focus('[data-field="inventory"][data-id="demo:scale-item-75"]');
+    await invalidFocus(
+      '[data-field="inventory"][data-id="demo:scale-item-75"]',
+    );
     assert.equal(await page.locator("#pack-select").inputValue(), training);
     assert.equal(await field(75).inputValue(), "");
     failCatalog = false;

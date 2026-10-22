@@ -30,3 +30,9 @@ Dependencies: T001→T002; T003/T004→T005–T007; T007→T008→T009; conditio
 - [ ] T019 Obtain exact-source independent review; publish via parent and collect unchanged actual five-sample after-pagination measurements plus full keyboard/both-theme/true200% evidence on required platforms; no timing assertions (FR014/SC002–004).
 
 Dependencies: T008/T009 evidence→T014→T015→T016/T017→T018→T019→T010/T011/T012. No optional native-picker work. T013 integration warning repair remains independently testable and can publish without waiting for this amendment.
+
+## Partial hosted progress,2026-10-22
+Run39791556454 at c0b2542c establishes independently verified Linux/Windows Chrome functional, six-fixture measurement and real-page visual coverage; details and limitations are in acceptance.md. T010/T011/T013/T019 remain unchecked because required current-candidate engines and final integration acceptance are incomplete. T012 remains pending parent approval, actual merge and exact-main CI. No task is marked complete solely from one platform's passing artifact.
+
+## Actual Firefox native-validation convergence
+- [ ] T020 Record c0b Firefox strict-health reproduction; add controlled invalid-dispatch/coalescing/stale-intent tests before the narrow profile.mjs next-task repair; obtain independent exact-source review and actual strict-health cross-engine rerun without weakening multi-invalid assertions (FR011/013/014).

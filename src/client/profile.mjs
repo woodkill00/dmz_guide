@@ -38,6 +38,7 @@ document.addEventListener("pack-changing", () => {
   if ($("#restore-preview")) $("#restore-preview").hidden = true;
 });
 let inventoryDraft = null;
+let pendingInventoryInvalid = null;
 let inventoryIndex = new Map();
 let inventoryPageNumber = 0;
 function checkpointInventory() {
@@ -92,6 +93,7 @@ function renderInventoryPage(matches) {
     `Next page${!matches.length ? " (no matches)" : page.page === page.pages - 1 ? " (last page)" : ""}`;
 }
 function render() {
+  pendingInventoryInvalid = null;
   if ($("#inventory-fields")) {
     inventoryIndex = new Map(state.pack.items.map((item) => [item.id, item]));
     inventoryDraft = createInventoryDraft(state.pack.items, state.profile);
@@ -137,11 +139,36 @@ $("#inventory-form")?.addEventListener(
   (event) => {
     if (!event.target.dataset.field) return;
     event.preventDefault();
-    error(new Error("Quantity must be an integer from 0 to 1000000."));
-    revealInvalidInventory();
+    if (pendingInventoryInvalid) return;
+    const pending = { draft: inventoryDraft, pack: state.pack };
+    pendingInventoryInvalid = pending;
+    // Native validation may invoke several invalid callbacks before finishing.
+    // Keep all original controls mounted until a later task, not a microtask.
+    setTimeout(() => {
+      if (pendingInventoryInvalid !== pending) return;
+      pendingInventoryInvalid = null;
+      if (
+        inventoryDraft !== pending.draft ||
+        state.pack !== pending.pack ||
+        state.loading ||
+        state.saving ||
+        !inventoryDraft?.firstInvalid()
+      )
+        return;
+      error(new Error("Quantity must be an integer from 0 to 1000000."));
+      revealInvalidInventory();
+    }, 0);
   },
   true,
 );
+for (const event of ["input", "pointerdown", "keydown"])
+  document.addEventListener(
+    event,
+    () => {
+      pendingInventoryInvalid = null;
+    },
+    true,
+  );
 $("#inventory-form")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   await persist();
