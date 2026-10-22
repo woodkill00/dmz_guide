@@ -20,6 +20,31 @@ const build = (cwd) =>
   });
 
 async function layoutEvidence(page, { prefix, label, captureScreenshots }) {
+  if (label === "selected-editor") {
+    // Test painted disclosure contents too: ignoring closed details must never
+    // conceal wrapping failures that appear when a contributor opens them.
+    const disclosures = [
+      ...(await page
+        .locator(
+          '#new-catalog-panel, #new-catalog-panel details, #media-library details[data-media-action="where-used"]',
+        )
+        .all()),
+      page.locator("details").filter({
+        has: page.getByText("Advanced JSON draft", { exact: true }),
+      }),
+    ];
+    for (const disclosure of disclosures) {
+      if ((await disclosure.getAttribute("open")) !== null) continue;
+      const summary = disclosure.locator(":scope > summary").first();
+      await summary.focus();
+      await page.keyboard.press("Enter");
+      assert.notEqual(
+        await disclosure.getAttribute("open"),
+        null,
+        "Keyboard opens evidence disclosure",
+      );
+    }
+  }
   for (const theme of ["dark", "light"]) {
     if ((await page.locator("html").getAttribute("data-theme")) !== theme) {
       await page.locator("#theme-toggle").focus();
@@ -73,18 +98,53 @@ async function layoutEvidence(page, { prefix, label, captureScreenshots }) {
                   !node.textContent.trim()
                 )
                   return false;
+                // Firefox can retain Range boxes for unpainted descendants of
+                // closed details. Only the first direct summary is rendered;
+                // inspect every ancestor so nested summaries stay hidden when
+                // an outer disclosure is closed. Open disclosures remain tested.
+                for (
+                  let ancestor = node.parentElement;
+                  ancestor;
+                  ancestor = ancestor.parentElement
+                ) {
+                  if (ancestor.tagName !== "DETAILS" || ancestor.open) continue;
+                  const summary = [...ancestor.children].find(
+                    (child) => child.tagName === "SUMMARY",
+                  );
+                  if (!summary?.contains(node)) return false;
+                }
                 const range = document.createRange();
                 range.selectNodeContents(node);
                 return [...range.getClientRects()].some(outside);
               })
-              .map((node) => node.textContent.slice(0, 160)),
+              .map((node) => {
+                const range = document.createRange();
+                range.selectNodeContents(node);
+                return {
+                  tag: node.tagName,
+                  id: node.id,
+                  text: node.textContent.slice(0, 160),
+                  rects: [...range.getClientRects()].map(
+                    ({ left, right, top, bottom }) => ({
+                      left,
+                      right,
+                      top,
+                      bottom,
+                    }),
+                  ),
+                };
+              }),
           };
         });
         assert(
           overflow.scrollWidth <= width + 1,
           `${label} ${theme} ${width} text200=${enlarged}: ${JSON.stringify(overflow)}`,
         );
-        assert.deepEqual(overflow.text, [], `${label}: text does not overflow`);
+        assert.deepEqual(
+          overflow.text,
+          [],
+          `${label} ${theme} width=${width} text200=${enlarged}: visible text does not overflow`,
+        );
         if (captureScreenshots) {
           // Cleared workbench placeholders remain mounted but intentionally hidden.
           // Capture only rendered images; do not exclude broken visible images by src
@@ -703,6 +763,16 @@ export async function runPageEditTests({
           message: error.message,
           stack: error.stack,
           url: page.url(),
+          layout: await page
+            .evaluate(() => ({
+              width: innerWidth,
+              height: innerHeight,
+              theme: document.documentElement.dataset.theme,
+              rootFontSize: getComputedStyle(document.documentElement).fontSize,
+              bodyFontSize: getComputedStyle(document.body).fontSize,
+              scrollWidth: document.documentElement.scrollWidth,
+            }))
+            .catch(() => null),
           state: await page
             .locator("body")
             .textContent()

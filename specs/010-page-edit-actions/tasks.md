@@ -38,3 +38,7 @@ First deliver exact record edit navigation end-to-end, then extend all-group ima
 Execution note: T009/T010 mark authored browser coverage and documentation, not executed browser acceptance. T011/T012 retain the actual hosted/visual/release gate; see acceptance.md.
 
 - [x] T014 [CONV-002] Correct screenshot readiness to inspect visible images only; hidden image-workbench placeholders are not rendered evidence. Preserve visible natural-dimension/decode and real-pixel assertions. Full hosted rerun remains pending under T011/T012.
+
+- [x] T015 [CONV-003] Make text-range evidence exclude unpainted closed-disclosure descendants while retaining their first summary and all open-disclosure content. Add precise theme/viewport/enlargement diagnostics and opened-disclosure coverage. Hosted acceptance remains T011/T012.
+
+- [x] T016 [SC-004] Constrain media-card action buttons to their card and allow long labels to wrap at enlarged text sizes, without clipping or horizontal-scroll workarounds. Verify in opened-disclosure visual matrix under T011.

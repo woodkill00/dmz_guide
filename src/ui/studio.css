@@ -286,6 +286,8 @@ ul {
   overflow-wrap: anywhere;
 }
 .media-card button {
+  max-width: 100%;
+  overflow-wrap: anywhere;
   margin: 0.2rem 0;
 }
 .skip-link {
