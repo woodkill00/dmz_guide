@@ -483,6 +483,7 @@ export async function runStudioTests({
     clone = join(sandbox, "fresh-clone");
   let author, reader, context, activePage;
   let phase = "prepare isolated repository";
+  let lifecycleDiagnostics, timeoutDiagnostics;
   const prefix = engineName.replace(/[^a-z0-9-]/gi, "-");
   const git = (args, cwd = repository) =>
     run(
@@ -854,29 +855,205 @@ export async function runStudioTests({
     await preparePicture(512, "cancel-picture.png", "library");
     await page.click("#cancel-picture");
     await assertWorkbenchCleared();
-    let previousWorkbenchUrl;
-    for (let repeat = 0; repeat < 2; repeat++) {
-      await page.setInputFiles("#picture-file", {
-        name: "rapid-reselect.png",
-        mimeType: "image/png",
-        buffer: Buffer.from(original, "base64"),
+    const exportDraft = async (targetPage = page) => {
+      const download = targetPage.waitForEvent("download");
+      await targetPage.click("#export-draft");
+      const file = await download;
+      return JSON.parse(await readFile(await file.path(), "utf8"));
+    };
+    // T028 covers same-file cancellation and object-URL ownership, not resize
+    // throughput. The 1024 × 768 crop/rights/attachment fixture above stays real.
+    const lifecycleRaster = await page.evaluate(() => {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 16;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#e4c16d";
+      ctx.fillRect(0, 0, 16, 16);
+      return canvas.toDataURL("image/png").split(",")[1];
+    });
+    const lifecycleFile = (name) => ({
+      name,
+      mimeType: "image/png",
+      buffer: Buffer.from(lifecycleRaster, "base64"),
+    });
+    const libraryState = () => page.locator("#media-library").innerHTML();
+    const lifecycleDraft = await exportDraft();
+    await page.evaluate(() => {
+      const input = document.querySelector("#picture-file");
+      const probe = { changes: 0, observations: [] };
+      probe.listener = () => {
+        probe.changes++;
+        probe.observations.push({
+          stage: "file change",
+          name: input.files[0]?.name,
+          at: performance.now(),
+        });
+      };
+      input.addEventListener("change", probe.listener);
+      window.__studioLifecycleProbe = probe;
+    });
+    try {
+      let previousWorkbenchUrl;
+      for (let repeat = 0; repeat < 2; repeat++) {
+        phase = `same-file lifecycle repeat ${repeat + 1}: select`;
+        assert.equal(await page.locator("#picture-file").inputValue(), "");
+        await page.setInputFiles(
+          "#picture-file",
+          lifecycleFile("rapid-reselect.png"),
+        );
+        assert.equal(
+          await page.evaluate(() => window.__studioLifecycleProbe.changes),
+          repeat + 1,
+        );
+        phase = `same-file lifecycle repeat ${repeat + 1}: await workbench`;
+        await page.waitForSelector("#picture-workbench:not([hidden])");
+        const current = await page
+          .locator("#picture-working")
+          .getAttribute("src");
+        assert.match(current, /^blob:/);
+        assert.notEqual(current, previousWorkbenchUrl);
+        previousWorkbenchUrl = current;
+        phase = `same-file lifecycle repeat ${repeat + 1}: cancel`;
+        await page.click("#cancel-picture");
+        await assertWorkbenchCleared();
+        assert.equal(await page.locator("#picture-file").inputValue(), "");
+        assert.equal(await uploadedImage.getAttribute("src"), uploadPreviewUrl);
+      }
+      assert.deepEqual(await exportDraft(), lifecycleDraft);
+    } finally {
+      lifecycleDiagnostics = await page.evaluate(() => {
+        const probe = window.__studioLifecycleProbe;
+        document
+          .querySelector("#picture-file")
+          .removeEventListener("change", probe.listener);
+        delete window.__studioLifecycleProbe;
+        return {
+          changes: probe.changes,
+          observations: probe.observations,
+          observedAt: performance.now(),
+        };
       });
-      await page.waitForSelector("#picture-workbench:not([hidden])");
-      const current = await page
-        .locator("#picture-working")
-        .getAttribute("src");
-      assert.match(current, /^blob:/);
-      assert.notEqual(current, previousWorkbenchUrl);
-      previousWorkbenchUrl = current;
-      await page.click("#cancel-picture");
-      await assertWorkbenchCleared();
-      assert.equal(await uploadedImage.getAttribute("src"), uploadPreviewUrl);
     }
     assert.equal(
       await page.locator("#media-library .media-card").count(),
       3,
       "Canceling a prepared picture retains the existing draft",
     );
+
+    phase = "processing timeout: install held native bitmap decode";
+    const beforeTimeoutDraft = await exportDraft();
+    const beforeTimeoutLibrary = await libraryState();
+    await page.evaluate(() => {
+      const native = window.createImageBitmap;
+      const probe = { native, startedAt: performance.now(), calls: 0 };
+      window.__studioTimeoutProbe = probe;
+      window.createImageBitmap = (...args) => {
+        probe.calls++;
+        probe.decodeStartedAt = performance.now();
+        const gate = new Promise((resolve) => {
+          probe.release = resolve;
+        });
+        // Decode real pixels, but hold delivery beyond the unchanged deadline.
+        probe.work = native.apply(window, args).then((bitmap) => {
+          probe.bitmap = bitmap;
+          probe.decodedAt = performance.now();
+          return gate.then(() => bitmap);
+        });
+        return probe.work;
+      };
+    });
+    try {
+      assert.equal(await page.locator("#picture-workbench").isVisible(), false);
+      await page.setInputFiles(
+        "#picture-file",
+        lifecycleFile("held-timeout.png"),
+      );
+      phase = "processing timeout: wait for native decode held at delivery";
+      await page.waitForFunction(
+        () => window.__studioTimeoutProbe.bitmap?.width === 16,
+      );
+      assert.equal(await page.locator("#picture-workbench").isVisible(), false);
+      phase = "processing timeout: await real five-second guard";
+      await page.waitForFunction(() => {
+        const error = document.querySelector("#error");
+        return (
+          !error.hidden &&
+          error.textContent === "Picture processing timed out; no changes saved"
+        );
+      });
+      await page.evaluate(() => {
+        window.__studioTimeoutProbe.errorObservedAt = performance.now();
+      });
+      assert.equal(
+        await page.evaluate(() => window.__studioTimeoutProbe.calls),
+        1,
+      );
+      assert.equal(await page.locator("#picture-workbench").isVisible(), false);
+      await assertWorkbenchCleared();
+      assert.deepEqual(
+        await exportDraft(),
+        beforeTimeoutDraft,
+        "Timeout retains exact draft and pending upload bytes",
+      );
+      assert.equal(await libraryState(), beforeTimeoutLibrary);
+      assert.equal(await uploadedImage.getAttribute("src"), uploadPreviewUrl);
+      phase = "processing timeout: release and close late native bitmap";
+      await page.evaluate(() => window.__studioTimeoutProbe.release());
+      await page.waitForFunction(() => {
+        const bitmap = window.__studioTimeoutProbe.bitmap;
+        return bitmap.width === 0 && bitmap.height === 0;
+      });
+      assert.deepEqual(
+        await exportDraft(),
+        beforeTimeoutDraft,
+        "Late decode cannot mutate the retained draft or uploads",
+      );
+      assert.equal(await libraryState(), beforeTimeoutLibrary);
+    } finally {
+      timeoutDiagnostics = await page.evaluate(() => {
+        const probe = window.__studioTimeoutProbe;
+        window.createImageBitmap = probe.native;
+        probe.release?.();
+        const result = {
+          calls: probe.calls,
+          startedAt: probe.startedAt,
+          decodeStartedAt: probe.decodeStartedAt,
+          decodedAt: probe.decodedAt,
+          errorObservedAt: probe.errorObservedAt,
+          observedAt: performance.now(),
+          bitmapWidth: probe.bitmap?.width,
+          inputValue: document.querySelector("#picture-file").value,
+        };
+        // Cleanup must not await a stalled native decoder after a failed test.
+        // The success path already proved closure before this fallback cleanup.
+        probe.bitmap?.close();
+        void probe.work?.then(
+          (bitmap) => bitmap.close(),
+          () => {},
+        );
+        delete window.__studioTimeoutProbe;
+        return result;
+      });
+    }
+
+    // A fresh filename tests recovery, not an unsupported claim that a native
+    // chooser emits change when reselecting an uncleared identical file.
+    phase = "processing timeout: restored decoder fresh selection and cancel";
+    await page.setInputFiles(
+      "#picture-file",
+      lifecycleFile("after-timeout.png"),
+    );
+    await page.waitForSelector("#picture-workbench:not([hidden])");
+    await page.click("#cancel-picture");
+    await assertWorkbenchCleared();
+    assert.equal(await page.locator("#picture-file").inputValue(), "");
+    assert.deepEqual(await exportDraft(), beforeTimeoutDraft);
+    assert.equal(await libraryState(), beforeTimeoutLibrary);
+    await writeFile(
+      `test-results/${prefix}-studio-lifecycle.json`,
+      JSON.stringify({ lifecycleDiagnostics, timeoutDiagnostics }, null, 2),
+    );
+    phase = "recipe creation after picture lifecycle and timeout recovery";
 
     const recipeIndex = await add("recipes", "Assemble Studio Rifle");
     const recipeId = await field(`recipes.${recipeIndex}.id`).inputValue();
@@ -1061,12 +1238,6 @@ export async function runStudioTests({
       "A safe unchanged repeat-save is idempotent",
     );
     assert.equal((await git(["rev-parse", "HEAD"])).stdout.trim(), initialHead);
-    const exportDraft = async (targetPage = page) => {
-      const download = targetPage.waitForEvent("download");
-      await targetPage.click("#export-draft");
-      const file = await download;
-      return JSON.parse(await readFile(await file.path(), "utf8"));
-    };
     const imported = structuredClone(entry.pack);
     imported.title = "Imported original studio fixture";
     imported.contentVersion = "studio-import-2";
@@ -1547,6 +1718,8 @@ export async function runStudioTests({
   } catch (error) {
     const details = {
       phase,
+      lifecycleDiagnostics,
+      timeoutDiagnostics,
       message: error.message,
       stack: error.stack,
       browserState: await activePage

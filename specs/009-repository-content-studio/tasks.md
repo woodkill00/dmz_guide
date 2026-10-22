@@ -62,3 +62,7 @@ Deliver the smallest real repository save journey first, then complete media/imp
 
 ## Phase 11: Convergence
 - [x] T029 [US1] Resolve CONV-004 (HIGH, partial FR-005/013 and SC-004): serialize same-process repository read/media/change-summary operations with active saves in scripts/author-store.mjs. Hosted Firefox and Windows completed functional workflows but exposed a transient HTTP 422 summary while a following save was in progress. Add a deterministic prepared-journal overlap test in tests/runtime/author-store.test.mjs. Preserve external-edit detection and strict browser health; do not return a partially installed snapshot or suppress failures.
+
+## Phase 12: Bounded lifecycle acceptance repair
+- [x] T030 [US2] Separate the same-file cancel/object-URL fixture from the unchanged large crop/rights/attachment coverage in tests/browser/studio.mjs; preserve both repeats and all lifecycle assertions and add real change-event/input-reset and exact draft checks (FR-006/013; T028).
+- [ ] T031 [US2] Exercise the actual unchanged processing timeout with a held native bitmap in tests/browser/studio.mjs, exact draft/upload/library retention, late-result cleanup, restored API and successful fresh selection/cancel; record independent source review and hosted reproduction evidence in acceptance.md (FR-006/012/013; SC-004/005).

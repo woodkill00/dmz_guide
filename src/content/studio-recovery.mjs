@@ -126,9 +126,10 @@ export async function parseRecoveryDraft(
   const payloads = input.uploads.map((upload) => {
     exact(upload, ["assetId", "base64", "category"], "recovery upload");
     assert(
-      /^(items|weapons|recipes|objectives|guides|maps|locations|other)$/.test(
-        upload.category,
-      ),
+      typeof upload.category === "string" &&
+        /^(items|weapons|recipes|objectives|guides|maps|locations|other)$/.test(
+          upload.category,
+        ),
       "Invalid recovery picture category",
     );
     return { assetId: upload.assetId, base64: upload.base64 };
