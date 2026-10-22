@@ -3,6 +3,7 @@ import {
   readReaderContext,
   verifyReaderContext,
 } from "../domain/reader-flow.mjs";
+import { imageDescription } from "../content/image-description.mjs";
 import { loadBundledPayloads } from "../content/bundled-assets.mjs";
 import { init, state, $, esc, error } from "./common.mjs";
 import { readRecord } from "../storage/store.mjs";
@@ -140,7 +141,7 @@ async function render() {
         imageURLs.push(imageURL);
         const image = document.createElement("img");
         image.src = imageURL;
-        image.alt = `Private pack illustration for ${publicTitle(chosen)}`;
+        image.alt = imageDescription(chosen, assetId, publicTitle(chosen));
         image.width = asset.width;
         image.height = asset.height;
         image.className = "local-raster";

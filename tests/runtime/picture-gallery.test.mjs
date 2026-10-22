@@ -76,8 +76,8 @@ test("public primary and additional illustrations deduplicate and remain lazy", 
   const html = renderDetail(record, [pack]);
   assert.equal((html.match(/data-public-image/g) || []).length, 2);
   assert.equal((html.match(/loading="lazy"/g) || []).length, 2);
-  assert.match(html, /primary rights-cleared illustration/);
-  assert.match(html, /additional rights-cleared illustration/);
+  assert.match(html, /picture \(description not provided\)/);
+  assert.doesNotMatch(html, /rights-cleared illustration/);
   assert.equal(
     (html.match(/Image availability does not verify game facts/g) || []).length,
     2,

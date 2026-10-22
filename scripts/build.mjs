@@ -1,3 +1,8 @@
+import {
+  captureBuildSources,
+  createBuildIdentity,
+  describeGit,
+} from "./build-identity.mjs";
 import { withRepositorySnapshot } from "./author-store.mjs";
 import { createHash } from "node:crypto";
 import { publishBuild } from "./build-output.mjs";
@@ -34,6 +39,8 @@ import { prepareBundledAssets, writeBundledAssets } from "./bundled-assets.mjs";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 async function generate(dist) {
+  const sourceFiles = await captureBuildSources(root);
+  const gitIdentity = await describeGit(root);
   const inventory = new Map();
   const expected = (file, bytes) =>
     inventory.set(relative(dist, file), digest(bytes));
@@ -237,6 +244,23 @@ async function generate(dist) {
     JSON.stringify(bundled.manifest, null, 2),
   );
   await writeBundledAssets({ dist, ...bundled });
+  const afterSources = await captureBuildSources(root);
+  if (JSON.stringify(sourceFiles) !== JSON.stringify(afterSources))
+    throw new Error(
+      "Build source inputs changed during generation; previous build retained",
+    );
+  const identity = createBuildIdentity({
+    sourceFiles,
+    git: gitIdentity,
+    catalogFiles: catalog.files,
+    packs: catalog.entries.map(({ key, pack }) => [key, catalogJSON(pack)]),
+    mediaFiles: bundled.files,
+    outputFiles: inventory,
+  });
+  await emit(
+    join(dist, "assets/build-identity.json"),
+    JSON.stringify(identity, null, 2) + "\n",
+  );
   return { count: pages.length, inventory };
 }
 

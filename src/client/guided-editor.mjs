@@ -33,6 +33,10 @@ export function createGuidedEditor({
   const label = (k) =>
     k.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^./, (s) => s.toUpperCase());
   const help = {
+    imageDescriptions:
+      "Describe each attached picture in this record's context. Use its asset ID. Decorative pictures require empty text; meaningful descriptions must be nonempty. Omission keeps the legacy generic label. Rights belong in picture attribution.",
+    decorative:
+      "Check only when this picture adds no information here; leave its description text empty.",
     id: "Stable namespaced ID, such as my-pack:wire. References use this exact ID.",
     contentVersion:
       "Change this whenever facts change. Existing profiles must explicitly rebind; historical references are retained.",

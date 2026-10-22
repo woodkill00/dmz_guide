@@ -1,3 +1,4 @@
+import { imageDescription } from "../content/image-description.mjs";
 import { bundledAssetURL } from "../content/bundled-assets.mjs";
 import { spoilerGuard, projectSpoilerValue } from "../domain/progression.mjs";
 /** Pure HTML rendering. Content text is always escaped; only authored UI is markup. */
@@ -239,7 +240,7 @@ export function renderDetail(
         const caption = record.spoiler
           ? asset.attribution
           : guardFor(pack).text(asset.attribution);
-        return `<figure class="panel"><img data-public-image class="local-raster" loading="lazy" decoding="async" src="${e(url)}" width="${asset.width}" height="${asset.height}" alt="${e(publicTitle(record))} — ${index ? "additional" : "primary"} rights-cleared illustration"><figcaption>${e(caption)} · ${e(asset.license)}. Image availability does not verify game facts.</figcaption></figure>`;
+        return `<figure class="panel"><img data-public-image class="local-raster" loading="lazy" decoding="async" src="${e(url)}" width="${asset.width}" height="${asset.height}" alt="${e(imageDescription(record, assetId, publicTitle(record)))}"><figcaption>${e(caption)} · ${e(asset.license)}. Image availability does not verify game facts.</figcaption></figure>`;
       })
       .join("");
   }

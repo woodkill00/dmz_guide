@@ -18,7 +18,15 @@ const source = fileURLToPath(new URL("../..", import.meta.url));
 async function fixture(t) {
   const root = await mkdtemp(join(tmpdir(), "dmz-build-cli-"));
   t.after(() => rm(root, { recursive: true, force: true }));
-  for (const part of ["scripts", "src", "content", "schemas", "media"])
+  for (const part of [
+    "scripts",
+    "src",
+    "content",
+    "schemas",
+    "media",
+    "package.json",
+    "package-lock.json",
+  ])
     await cp(join(source, part), join(root, part), { recursive: true });
   await mkdir(join(root, "dist"));
   await writeFile(join(root, "dist/index.html"), "OLD usable reader");

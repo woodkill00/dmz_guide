@@ -569,10 +569,27 @@ export async function runBundledAssetTests({
     const p = await imported.newPage();
     await p.goto(base + "/editor/");
     await p.waitForSelector('[data-path="contentVersion"]');
+    const describedTransfer = JSON.parse(text);
+    const describedItem = describedTransfer.pack.items.find(
+      (record) => record.id === item.id,
+    );
+    describedItem.imageDescriptions = [
+      {
+        assetId: item.assetId,
+        text: "Synthetic grid used in this private item.",
+        decorative: false,
+      },
+    ];
+    const decorativeMap = describedTransfer.pack.maps.find(
+      (record) => record.id === map.id,
+    );
+    decorativeMap.imageDescriptions = [
+      { assetId: map.assetId, text: "", decorative: true },
+    ];
     await p.setInputFiles("#import-content", {
       name: "bundled-pictures.json",
       mimeType: "application/json",
-      buffer: Buffer.from(text),
+      buffer: Buffer.from(JSON.stringify(describedTransfer)),
     });
     await p.waitForSelector("#content-stage:not([hidden])");
     await p.click("#apply-content");
@@ -597,6 +614,23 @@ export async function runBundledAssetTests({
       [...document.querySelectorAll("main img")].some(
         (i) => i.complete && i.naturalWidth === 8 && i.naturalHeight === 6,
       ),
+    );
+    assert.equal(
+      await p.locator("#private-picture img").first().getAttribute("alt"),
+      "Synthetic grid used in this private item.",
+    );
+    assert.deepEqual(
+      stored.pack.items.find((record) => record.id === item.id)
+        .imageDescriptions,
+      describedItem.imageDescriptions,
+    );
+    await p.goto(
+      base + "/local/?pack=" + query + "&id=" + encodeURIComponent(map.id),
+    );
+    await p.waitForSelector("#private-picture img", { state: "attached" });
+    assert.equal(
+      await p.locator("#private-picture img").first().getAttribute("alt"),
+      "",
     );
     // A changed reference-only overlay must not borrow stale public pixels.
     await p.evaluate(async (id) => {

@@ -425,3 +425,12 @@ test("FR-001: ordinary website server rejects author writes", async (t) => {
   });
   assert.equal(response.status, 405);
 });
+test("Studio image semantics module is available through real author HTTP allowlist", async (t) => {
+  const { app } = await fixture(t);
+  const response = await fetch(
+    app.url + "/assets/src/content/image-description.mjs",
+  );
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type"), /javascript/);
+  assert.match(await response.text(), /export function imageDescription/);
+});

@@ -1,3 +1,4 @@
+import { inspectRecoveryStorage } from "./author-store.mjs";
 import { access } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -41,6 +42,17 @@ export async function diagnose({
     );
     await required("schemas/pack.schema.json", "Catalog schema");
     await required("scripts/author.mjs", "Repository Content Studio");
+    const retained = await inspectRecoveryStorage({ root });
+    add(
+      retained.complete ? "OK" : "WARN",
+      `${retained.complete ? "Complete" : "Partial"} retained recovery inventory: ${retained.transactionCount} transactions, ${retained.fileCount} files, ${retained.bytes} bytes.`,
+    );
+    for (const tx of retained.transactions)
+      add(
+        "WARN",
+        `${tx.transactionId}: ${tx.bytes} bytes; ${tx.archiveEligible ? "eligible for manual archival review only (not deletion)" : "not eligible: " + tx.reasons.join("; ")}.`,
+      );
+    for (const warning of retained.warnings) add("WARN", warning);
   }
   if (role === "contributor") {
     await required(
