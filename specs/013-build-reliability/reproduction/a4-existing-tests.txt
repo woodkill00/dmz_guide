@@ -1,0 +1,46 @@
+✔ FR-005: staged file plans publish last marker and preserve unrelated files (41.524755ms)
+✔ FR-005: interruption at prepared is recoverable and bounded (49.180309ms)
+✔ FR-005: interruption at applied is recoverable and bounded (47.272315ms)
+✔ FR-005: interruption at committed is recoverable and bounded (40.546471ms)
+✔ FR-005: real process exit at prepared leaves a dead lock and recoverable journal (122.587513ms)
+✔ FR-005: real process exit at applied leaves a dead lock and recoverable journal (125.247998ms)
+✔ FR-005: real process exit at committed leaves a dead lock and recoverable journal (137.923448ms)
+✔ FR-005: recovery never overwrites independently changed bytes (26.144143ms)
+✔ FR-005: final publish guard detects edits made while staged bytes are being prepared (12.743895ms)
+✔ FR-008: traversal, arbitrary writes, symlinks and case collisions are rejected (18.444194ms)
+✔ FR-005: stale before bytes and live locks are never overwritten (9.593833ms)
+✔ FR-008: recovery rejects modified backup bytes (10.629854ms)
+✔ FR-008: recovery rejects an outcome receipt inconsistent with its journal (32.774164ms)
+✔ FR-008: malformed, oversized and out-of-scope journals fail closed (13.774555ms)
+✔ FR-008: schema reads are bounded and never follow a symlink (4.342712ms)
+✔ FR-008: symlinked journal cannot be used for recovery (9.611081ms)
+✔ FR-008: symlinked backup cannot be used for recovery (12.744606ms)
+✔ FR-008: symlinked target cannot be used for recovery (9.347527ms)
+✔ FR-008: normalized PNG pixels pass and hidden metadata/corruption fail (10.720258ms)
+✔ FR-003/005/010: save persists, enforces versions/stale guards and rejects private data (69.001689ms)
+✔ FR-006/007: image bytes persist separately and dangling picture references fail (87.569185ms)
+✔ FR-011: Git summary includes managed changes, excludes unknown files and does not execute filters (90.357508ms)
+✔ FR-011: completed receipts retain deleted managed paths across store restart (109.272911ms)
+✔ FR-011: receipt history has one total byte budget and reports truncation (174.931643ms)
+✔ FR-005/011: cooperative reads wait for an in-flight save instead of seeing its journal (126.55927ms)
+✔ canonical snapshot preserves all ordered packs and serializes deterministically (248.783069ms)
+✔ generated paths reject traversal, Windows devices, bad categories and identities (0.561174ms)
+✔ canonical membership, duplicate order and immutable identity fail closed (141.147264ms)
+✔ canonical rejects source traversal, symlinks, changed media and provenance (353.028554ms)
+✔ pending recovery and ambiguous legacy data block public snapshots (21.907785ms)
+✔ metadata bytes and directory depth are bounded before unbounded traversal (47.19482ms)
+✔ 1000 published metadata assets work while portable budgets stay unchanged (3163.153471ms)
+✔ single selected bundled image loads from a published pack larger than portable size (6.102384ms)
+✔ additional picture IDs are unique, bounded and reference existing assets (0.885265ms)
+✔ explicit migration previews exact ordered equivalence and preserves provenance without writes (208.393083ms)
+✔ migration refuses unknown legacy files rather than deleting them (6.413372ms)
+✔ targeted media reader reads only selected bytes and returns no write snapshot (402.222282ms)
+✔ canonical root symlinks and changed provenance are rejected (102.469972ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5020.378083

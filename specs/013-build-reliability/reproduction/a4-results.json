@@ -1,0 +1,140 @@
+{
+  "baseline": "db8a6e237aa822205ed346b178a3c7dc8fafea5c",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "root": "/tmp/dmz-a4-6B0BJp",
+  "hashes": {
+    "scripts/build.mjs": "39885d322ec91988e76d8fcd4aa796a759d2488e76a888ea02702f60e9f3d21b",
+    "scripts/catalog.mjs": "27f8c8c2c191a7ca00c86aed6b811c20f512fcf17f1cb817876baae4e146f226",
+    "scripts/author-store.mjs": "09787edaac8cc6486bd3dc85db5c44e810c0209d9b06f09b6ca1d162724dc4b4"
+  },
+  "scenarios": [
+    {
+      "name": "baseline-old-revision",
+      "status": 0,
+      "signal": null,
+      "stdout": "Built 18 independent HTML routes and 404 page in dist/.",
+      "stderr": "",
+      "gates": [],
+      "output": {
+        "version": "0",
+        "alpha": "SYNTHETIC alpha revision 0",
+        "beta": "SYNTHETIC beta revision 0"
+      }
+    },
+    {
+      "name": "pending-before-build",
+      "status": 1,
+      "signal": null,
+      "stdout": "",
+      "stderr": "file:///tmp/dmz-a4-6B0BJp/pending-before-build/src/content/limits.mjs:27\n  if (!condition) throw new Error(message);\n                        ^\n\nError: Repository recovery pending; run author:recover before reading or building\n    at assert (file:///tmp/dmz-a4-6B0BJp/pending-before-build/src/content/limits.mjs:27:25)\n    at readCatalog (file:///tmp/dmz-a4-6B0BJp/pending-before-build/scripts/catalog.mjs:474:3)\n    at async file:///tmp/dmz-a4-6B0BJp/pending-before-build/scripts/build.mjs:36:17\n\nNode.js v24.19.0",
+      "gates": [],
+      "recovery": {
+        "pending": true,
+        "transactionId": "d24a0088e4a27d403702651b46771636",
+        "revision": "50c7bf34b9064212dbdeb046ad4d504f4039395643d49b0d1a32c3bab5c9dd7e",
+        "paths": [
+          "content/catalog/a4-synthetic/items/a4_alpha.json",
+          "content/catalog/a4-synthetic/items/a4_beta.json",
+          "content/catalog/a4-synthetic/pack.json"
+        ],
+        "conflicts": [],
+        "lock": null
+      },
+      "recoveryTreeUnchanged": true,
+      "journalUnchanged": true,
+      "lastGoodSentinelPreserved": true
+    },
+    {
+      "name": "pending-after-process-exit",
+      "status": 1,
+      "signal": null,
+      "stdout": "",
+      "stderr": "file:///tmp/dmz-a4-6B0BJp/pending-after-process-exit/src/content/limits.mjs:27\n  if (!condition) throw new Error(message);\n                        ^\n\nError: Repository recovery pending; run author:recover before reading or building\n    at assert (file:///tmp/dmz-a4-6B0BJp/pending-after-process-exit/src/content/limits.mjs:27:25)\n    at readCatalog (file:///tmp/dmz-a4-6B0BJp/pending-after-process-exit/scripts/catalog.mjs:474:3)\n    at async file:///tmp/dmz-a4-6B0BJp/pending-after-process-exit/scripts/build.mjs:36:17\n\nNode.js v24.19.0",
+      "gates": [],
+      "writerExitStatus": 29,
+      "recovery": {
+        "pending": true,
+        "transactionId": "6e3a57fb0f237e355cfcf62cd55434eb",
+        "revision": "11f95d11e710e202d52578a140af46d4039e3ff6934472cc356ebc1c288d52c1",
+        "paths": [
+          "content/catalog/a4-synthetic/items/a4_alpha.json",
+          "content/catalog/a4-synthetic/items/a4_beta.json",
+          "content/catalog/a4-synthetic/pack.json"
+        ],
+        "conflicts": [],
+        "lock": {
+          "state": "dead",
+          "pid": 44
+        }
+      },
+      "recoveryTreeUnchanged": true,
+      "journalUnchanged": true,
+      "lastGoodSentinelPreserved": true
+    },
+    {
+      "name": "writer-active-mid-read",
+      "status": 1,
+      "signal": null,
+      "stdout": "",
+      "stderr": "file:///tmp/dmz-a4-6B0BJp/writer-active-mid-read/src/content/limits.mjs:27\n  if (!condition) throw new Error(message);\n                        ^\n\nError: Repository changed during read; recovery or retry required\n    at assert (file:///tmp/dmz-a4-6B0BJp/writer-active-mid-read/src/content/limits.mjs:27:25)\n    at readCatalog (file:///tmp/dmz-a4-6B0BJp/writer-active-mid-read/scripts/catalog.mjs:630:3)\n    at async file:///tmp/dmz-a4-6B0BJp/writer-active-mid-read/scripts/build.mjs:36:17\n\nNode.js v24.19.0",
+      "gates": [
+        "start-writer"
+      ],
+      "journalUnchanged": true,
+      "lastGoodSentinelPreserved": true
+    },
+    {
+      "name": "single-completed-save-mid-read",
+      "status": 1,
+      "signal": null,
+      "stdout": "",
+      "stderr": "file:///tmp/dmz-a4-6B0BJp/single-commit-mid-read/src/content/limits.mjs:27\n  if (!condition) throw new Error(message);\n                        ^\n\nError: Catalog source changed during snapshot; retry\n    at assert (file:///tmp/dmz-a4-6B0BJp/single-commit-mid-read/src/content/limits.mjs:27:25)\n    at readCatalog (file:///tmp/dmz-a4-6B0BJp/single-commit-mid-read/scripts/catalog.mjs:640:5)\n    at async file:///tmp/dmz-a4-6B0BJp/single-commit-mid-read/scripts/build.mjs:36:17\n\nNode.js v24.19.0",
+      "gates": [
+        "commit-new"
+      ],
+      "lastGoodSentinelPreserved": true
+    },
+    {
+      "name": "repeated-completed-saves-aba",
+      "status": 0,
+      "signal": null,
+      "stdout": "Built 18 independent HTML routes and 404 page in dist/.",
+      "stderr": "",
+      "gates": [
+        "commit-1",
+        "commit-0",
+        "commit-1-again"
+      ],
+      "committedRevisions": [
+        {
+          "version": "0",
+          "alpha": "SYNTHETIC alpha revision 0",
+          "beta": "SYNTHETIC beta revision 0"
+        },
+        {
+          "version": "1",
+          "alpha": "SYNTHETIC alpha revision 1",
+          "beta": "SYNTHETIC beta revision 1"
+        },
+        {
+          "version": "0",
+          "alpha": "SYNTHETIC alpha revision 0",
+          "beta": "SYNTHETIC beta revision 0"
+        },
+        {
+          "version": "1",
+          "alpha": "SYNTHETIC alpha revision 1",
+          "beta": "SYNTHETIC beta revision 1"
+        }
+      ],
+      "output": {
+        "version": "0",
+        "alpha": "SYNTHETIC alpha revision 0",
+        "beta": "SYNTHETIC beta revision 1"
+      },
+      "outputMatchesNoCommittedRevision": true,
+      "pendingRecovery": false
+    }
+  ]
+}

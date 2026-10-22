@@ -2,7 +2,7 @@
 
 ## What you can run today
 
-The native multipage application is runnable without an agent or external runtime service. Development currently uses Node24.19.0; hosted Chrome checks have used Node22.23.3 on Linux and Windows.
+The native multipage application is runnable without an agent or external runtime service. Supported runtimes are Node 22.x (baseline, Linux/Windows CI) and Node 24.x (development and Linux compatibility CI). Existing Chromium/Firefox/WebKit coverage stays on the baseline; other Node majors are not a support promise.
 
 ### Website, Linux/macOS shell or Windows PowerShell
 
@@ -73,6 +73,6 @@ The active-feature pointer is machine-local and intentionally untracked. `script
 A passing repository check confirms only the checks it implements. It does not validate future app functionality, game data, rights, or a release. Capture actual commands and outcomes in your change evidence.
 
 ## Runnable guide development
-Node22 or later is required. From a clean checkout run `npm ci`, `npm run build`, then `npm start`. Open http://127.0.0.1:4173. The server binds loopback by default; do not use file:// because browser modules and local content need an HTTP origin. Stop with Ctrl+C. `dist/` contains static output and no server-side app or mandatory paid service. No deployment is performed.
+Node 22.x or 24.x is required. From a clean checkout run `npm ci`, `npm run build`, then `npm start`. Open http://127.0.0.1:4173. The server binds loopback by default; do not use file:// because browser modules and local content need an HTTP origin. Stop with Ctrl+C. `dist/` contains static output and no server-side app or mandatory paid service. No deployment is performed.
 
 Run `npm test` for pure unit/security contracts. Run `npx playwright install chromium` then `npm run test:browser` for browser acceptance. Tests may use `CHROMIUM_PATH` when a supported installed browser is available. `npm run build` needs no network; npm dependency installation/browser setup does. Local browser sandbox restrictions may block launch; report NOT RUN, never pass. Development dependencies are pinned in package-lock.json. Application code uses native JavaScript and system fonts only.

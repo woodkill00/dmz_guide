@@ -1,23 +1,13 @@
 import { chromium } from "playwright";
-import { spawn } from "node:child_process";
+import { startBrowserServer } from "./server.mjs";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 await writeFile("dist/__test-text-zoom.css", ":root{font-size:200%}");
-const port = process.env.TEST_PORT || "4174",
-  base = `http://127.0.0.1:${port}`;
-const server = spawn(process.execPath, ["scripts/serve.mjs"], {
-  env: { ...process.env, PORT: port },
-  stdio: "pipe",
-});
-let browser;
+const server = await startBrowserServer();
+const { base } = server;
+let browser, failure;
 try {
-  for (let n = 0; n < 80; n++) {
-    try {
-      if ((await fetch(base)).ok) break;
-    } catch {}
-    await new Promise((r) => setTimeout(r, 100));
-  }
   browser = await chromium.launch({
     headless: true,
     chromiumSandbox: true,
@@ -417,10 +407,22 @@ try {
   );
   await runRecoveryTruthfulnessTests({ browser, base });
   checkHealth();
-  console.log(
-    "Browser acceptance passed: direct routes, persistence, planning, backup/reset/cancel/restore, hostile import, tab conflict, 320/390px, no-JS and console.",
-  );
+  server.assertAlive();
+} catch (error) {
+  failure = error;
+  throw error;
 } finally {
-  await browser?.close();
-  server.kill();
+  try {
+    await browser?.close();
+  } catch (error) {
+    if (!failure) {
+      failure = error;
+      throw error;
+    }
+  } finally {
+    await server.stop(failure);
+  }
 }
+console.log(
+  "Browser acceptance passed: direct routes, persistence, planning, backup/reset/cancel/restore, hostile import, tab conflict, 320/390px, no-JS and console.",
+);

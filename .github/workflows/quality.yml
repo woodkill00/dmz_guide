@@ -25,6 +25,10 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.11'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22.x'
+          package-manager-cache: false
       - name: Check repository contracts and provenance
         run: python scripts/check.py
       - name: Run positive and negative tests
@@ -35,8 +39,8 @@ jobs:
           python scripts/select-feature.py 002-repository-bootstrap
           for script in .specify/scripts/bash/*.sh; do bash -n "$script"; done
           bash .specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks
-          for feature in 003-runnable-guide 004-shared-planning 005-portable-editor 006-location-intelligence 007-progression-guides 008-community-release 009-repository-content-studio 010-page-edit-actions; do
-            SPECIFY_FEATURE="$feature" bash .specify/scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks
+          for feature in 003-runnable-guide 004-shared-planning 005-portable-editor 006-location-intelligence 007-progression-guides 008-community-release 009-repository-content-studio 010-page-edit-actions 011-private-draft-safety 012-recovery-truthfulness 013-build-reliability; do
+            SPECIFY_FEATURE_DIRECTORY="specs/$feature" bash .specify/scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks
           done
 
   runtime-checks:
@@ -51,7 +55,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - name: Report installed Node
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22.x'
+          package-manager-cache: false
+      - name: Report selected Node
         run: node --version
       - run: npm ci --ignore-scripts
       - run: npm run format:check
@@ -77,6 +85,25 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+  runtime-compatibility:
+    name: runtime-compatibility (Ubuntu, Node 24)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24.x'
+          package-manager-cache: false
+      - run: node --version
+      - run: npm ci --ignore-scripts
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+      - run: npm run package && python scripts/verify-release.py
+
   browser-engines:
     name: Firefox and WebKit smoke (Ubuntu)
     runs-on: ubuntu-latest
@@ -85,6 +112,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22.x'
+          package-manager-cache: false
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: npx playwright install --with-deps firefox webkit

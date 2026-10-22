@@ -1,0 +1,8 @@
+{"actual_serve_error": "EADDRINUSE", "actual_serve_exit": 1, "case": "release-verifier-unrelated-http200", "child_failed_before_http200": true, "port": 4189, "request_count": 1, "serve_source_sha256": "69fd9d754fa2d3276ae0899b54d0c455201860c5da0958e97054c6e90b9c7bd1", "test_local_port_substitution": null, "verifier_exit": 0, "verifier_source_unchanged": true, "verifier_stdout": "Clean extraction verified: 2 file hashes, native links, Node-only loopback HTTP200."}
+{"attempts": 80, "case": "run.mjs", "continued_without_asserted_readiness": true, "mode": "HTTP503"}
+{"attempts": 80, "case": "run.mjs", "continued_without_asserted_readiness": true, "mode": "connection-rejected"}
+{"attempts": 1, "case": "run.mjs", "continued_without_asserted_readiness": true, "mode": "unrelated-HTTP200"}
+{"attempts": 100, "case": "engines.mjs", "continued_without_asserted_readiness": true, "mode": "HTTP503"}
+{"attempts": 100, "case": "engines.mjs", "continued_without_asserted_readiness": true, "mode": "connection-rejected"}
+{"attempts": 1, "case": "engines.mjs", "continued_without_asserted_readiness": true, "mode": "unrelated-HTTP200"}
+{"assessment": "defects reproduced", "cases": 7, "elapsed_seconds": 0.429, "full_browser_suites_run": false, "temporary_fixture_removed": true}

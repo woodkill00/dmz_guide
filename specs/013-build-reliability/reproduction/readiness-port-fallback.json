@@ -1,0 +1,8 @@
+{
+  "case": "occupied-default-port-fallback",
+  "fallback_port": 37139,
+  "existing_listener_contacted": false,
+  "verifier_exit": 0,
+  "actual_serve_exit": 1,
+  "test_local_port_substitution": "4189 -> 37139 (two references to one port)"
+}

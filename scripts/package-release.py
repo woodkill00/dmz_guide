@@ -28,5 +28,5 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as bundle:
     for relative in ('scripts/serve.mjs', 'LICENSE', 'docs/release.md', 'docs/content-studio.md', 'specs/009-repository-content-studio/acceptance.md'):
         bundle.write(root / relative, relative)
     bundle.writestr('PRODUCTION-MANIFEST.json', json.dumps(manifest, indent=2) + '\n')
-    bundle.writestr('START-HERE.txt', 'Install Node.js 22 or newer. Extract this archive, then run: node scripts/serve.mjs\nOpen http://127.0.0.1:4173 . Keep the server running. No npm install is needed.\nHost-root static output only. Read docs/release.md for backups, rights and limits.\n')
+    bundle.writestr('START-HERE.txt', 'Install Node.js 22.x or 24.x. Extract this archive, then run: node scripts/serve.mjs\nOpen http://127.0.0.1:4173 . Keep the server running. No npm install is needed.\nHost-root static output only. Read docs/release.md for backups, rights and limits.\n')
 print(f'Packaged {len(files)} public production files: {archive}')
