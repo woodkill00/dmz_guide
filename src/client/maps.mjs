@@ -1,3 +1,7 @@
+import {
+  readReaderContext,
+  verifyReaderContext,
+} from "../domain/reader-flow.mjs";
 import { projectMapPack } from "../domain/progression.mjs";
 import { loadBundledPayloads } from "../content/bundled-assets.mjs";
 import { $, esc, state, init, error } from "./common.mjs";
@@ -13,6 +17,7 @@ import {
 } from "../domain/locations.mjs";
 const NS = "http://www.w3.org/2000/svg";
 let viewPack = null;
+let navigationContext = null;
 let filters = {},
   selectedId = "",
   camera = { x: 0, y: 0, size: 100 },
@@ -29,7 +34,7 @@ const svg = (tag, attributes = {}) => {
 };
 const option = (value, label) =>
   `<option value="${esc(value)}">${esc(label)}</option>`;
-const currentMap = () => viewPack.maps.find((m) => m.id === filters.mapId);
+const currentMap = () => viewPack?.maps.find((m) => m.id === filters.mapId);
 let assetController = new AbortController();
 function releaseImage() {
   assetController.abort();
@@ -136,8 +141,15 @@ function selectLocation(id, focus = false) {
   if (focus) $("#location-detail").focus();
 }
 function renderResults() {
+  if (!viewPack) return;
   const map = currentMap(),
     records = filterLocations(viewPack, filters, needed);
+  const hasCoordinates = viewPack.locations.some(
+    (record) => record.mapId === map?.id && projectLocation(map, record),
+  );
+  $("#map-visual").hidden = !hasCoordinates;
+  $("#map-unavailable").hidden = hasCoordinates;
+  $("#map-layout").classList.toggle("list-only", !hasCoordinates);
   if (!records.some((l) => l.id === selectedId)) selectedId = "";
   const markers = $("#map-markers");
   markers.replaceChildren();
@@ -328,6 +340,13 @@ async function loadImage(token) {
   }
 }
 async function loadNeeds(token) {
+  if (navigationContext) {
+    needed = [navigationContext.targetId];
+    goalMessage =
+      "Declared locations for the selected shortage in this exact catalog. Availability is not guaranteed; missing relations remain unknown.";
+    renderResults();
+    return;
+  }
   needed = [];
   goalMessage =
     "No active goal. Add one in the planner to see declared item relations.";
@@ -353,6 +372,7 @@ async function loadNeeds(token) {
   if (token === generation) renderResults();
 }
 function mapChanged() {
+  if (!viewPack) return;
   generation++;
   selectedId = "";
   filters.floor = "";
@@ -373,18 +393,32 @@ function mapChanged() {
   loadImage(generation);
   loadNeeds(generation);
 }
-function packChanged() {
+async function packChanged() {
+  const token = generation;
+  if (navigationContext)
+    await verifyReaderContext(
+      state.pack,
+      navigationContext,
+      Boolean(state.profile.spoilers),
+    );
+  if (token !== generation) return;
   viewPack = projectMapPack(state.pack, Boolean(state.profile.spoilers));
   generation++;
   releaseImage();
   filters = {
-    mapId: viewPack.maps[0]?.id || "",
+    mapId:
+      (navigationContext &&
+        viewPack.locations.find((l) =>
+          l.itemIds.includes(navigationContext.targetId),
+        )?.mapId) ||
+      viewPack.maps[0]?.id ||
+      "",
     floor: "",
     category: "",
     query: "",
     sourceId: "",
     coordinateVersion: "",
-    goalOnly: false,
+    goalOnly: Boolean(navigationContext?.needsOnly),
     reveal: Boolean(state.profile.spoilers),
   };
   selectedId = "";
@@ -406,7 +440,7 @@ function packChanged() {
       .map((v) => option(v, v))
       .join("");
   $("#location-search").value = "";
-  $("#goal-locations").checked = false;
+  $("#goal-locations").checked = filters.goalOnly;
   mapChanged();
 }
 $("#map-select").addEventListener("change", (e) => {
@@ -454,6 +488,10 @@ $("#location-map").addEventListener("keydown", (e) => {
   }
 });
 document.addEventListener("pack-changing", () => {
+  viewPack = null;
+  $("#location-list").replaceChildren();
+  $("#location-detail").replaceChildren();
+  $("#map-visual").hidden = true;
   generation++;
   releaseImage();
 });
@@ -461,4 +499,18 @@ window.addEventListener("pagehide", () => {
   generation++;
   releaseImage();
 });
-init(packChanged).catch(error);
+async function start() {
+  const token = new URL(location.href).searchParams.get("context");
+  if (token !== null) navigationContext = readReaderContext(token, "maps");
+  await init(packChanged, {
+    requestedPack: navigationContext?.packId,
+    opaqueContext: token !== null,
+  });
+}
+start().catch((reason) => {
+  $("#location-list").replaceChildren();
+  $("#map-visual").hidden = true;
+  $("#location-detail").innerHTML =
+    '<p><a href="/planner/">Return to the planner</a> and open the shortage again.</p>';
+  error(reason);
+});

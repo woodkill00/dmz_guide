@@ -1,3 +1,8 @@
+import {
+  matchesTokens,
+  readReaderContext,
+  verifyReaderContext,
+} from "../domain/reader-flow.mjs";
 import { loadBundledPayloads } from "../content/bundled-assets.mjs";
 import { init, state, $, esc, error } from "./common.mjs";
 import { readRecord } from "../storage/store.mjs";
@@ -15,6 +20,7 @@ import {
   imageInfo,
   TRANSFER_LIMITS,
 } from "../content/portable.mjs";
+let navigationContext = null;
 let imageURLs = [],
   generation = 0,
   pendingDecode = null;
@@ -55,8 +61,18 @@ function decodeImage(image) {
 async function render() {
   const token = ++generation;
   releaseImage();
+  $("#local-records").replaceChildren();
+  if (navigationContext)
+    await verifyReaderContext(
+      state.pack,
+      navigationContext,
+      Boolean(state.profile.spoilers),
+    );
+  if (token !== generation) return;
   const records = allRecords([state.pack]).map(displayRecord);
-  const id = new URL(location.href).searchParams.get("id");
+  const id =
+    navigationContext?.targetId ||
+    new URL(location.href).searchParams.get("id");
   const chosen = records.find((r) => r.id === id);
   const link = (r) =>
     `/local/?pack=${encodeURIComponent(state.pack.id)}&id=${encodeURIComponent(r.id)}`;
@@ -79,7 +95,7 @@ async function render() {
   $("#local-query")?.addEventListener("input", (e) => {
     const q = e.target.value.trim().toLowerCase();
     for (const card of document.querySelectorAll("[data-local-search]"))
-      card.hidden = !card.dataset.localSearch.includes(q);
+      card.hidden = !matchesTokens(card.dataset.localSearch, q);
   });
   const pictureIds = [
     ...new Set([chosen?.assetId, ...(chosen?.assetIds || [])].filter(Boolean)),
@@ -160,6 +176,7 @@ async function render() {
   }
 }
 document.addEventListener("pack-changing", () => {
+  $("#local-records").replaceChildren();
   generation++;
   releaseImage();
 });
@@ -167,4 +184,16 @@ window.addEventListener("pagehide", () => {
   generation++;
   releaseImage();
 });
-init(() => render().catch(error)).catch(error);
+async function start() {
+  const token = new URL(location.href).searchParams.get("context");
+  if (token !== null) navigationContext = readReaderContext(token, "local");
+  await init(render, {
+    requestedPack: navigationContext?.packId,
+    opaqueContext: token !== null,
+  });
+}
+start().catch((reason) => {
+  $("#local-records").innerHTML =
+    '<p><a href="/planner/">Return to the planner</a> and open the item again.</p>';
+  error(reason);
+});

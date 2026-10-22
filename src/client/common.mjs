@@ -174,7 +174,10 @@ document.addEventListener("click", (event) => {
 });
 let generation = 0;
 let disabledControls = [];
-export async function init(render) {
+export async function init(
+  render,
+  { requestedPack, opaqueContext = false } = {},
+) {
   disabledControls = [
     ...document.querySelectorAll("main button, main input, main select"),
   ].map((node) => [
@@ -237,13 +240,21 @@ export async function init(render) {
   } catch (reason) {
     listingFailure = reason;
   }
-  const requested = new URL(location.href).searchParams.get("pack"),
+  const requested =
+      requestedPack ?? new URL(location.href).searchParams.get("pack"),
     select = $("#pack-select");
   select.innerHTML = state.packs
     .map(
       (pack) => `<option value="${esc(pack.id)}">${esc(pack.title)}</option>`,
     )
     .join("");
+  if (
+    opaqueContext &&
+    (!requested || !state.packs.some((pack) => pack.id === requested))
+  )
+    throw new Error(
+      "Private navigation context unavailable. Return to the planner; no different pack was substituted.",
+    );
   if (requested && state.packs.some((pack) => pack.id === requested))
     select.value = requested;
   async function change() {
@@ -329,11 +340,14 @@ export async function init(render) {
     $("#pack-note").textContent =
       `${pack.title} · ${pack.contentVersion}. ${pack.coverage.note}`;
     const url = new URL(location.href);
-    url.searchParams.set("pack", pack.id);
-    history.replaceState(null, "", url);
+    if (!opaqueContext) {
+      url.searchParams.set("pack", pack.id);
+      history.replaceState(null, "", url);
+    }
     for (const anchor of document.querySelectorAll("a[href]")) {
       const target = new URL(anchor.href, location.href);
       if (
+        !opaqueContext &&
         target.origin === location.origin &&
         [
           "/planner/",

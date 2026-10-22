@@ -406,6 +406,8 @@ try {
     "./recovery-truthfulness.mjs"
   );
   await runRecoveryTruthfulnessTests({ browser, base });
+  const { runReaderFlowTests } = await import("./reader-flow.mjs");
+  await runReaderFlowTests({ browser, base });
   checkHealth();
   server.assertAlive();
 } catch (error) {
