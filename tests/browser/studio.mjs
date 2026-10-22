@@ -22,6 +22,7 @@ import { GROUPS } from "../../src/content/portable.mjs";
 import { monitorBrowser, expectResponseErrors } from "./health.mjs";
 import { runGuidedLimitAcceptance } from "./recovery-truthfulness.mjs";
 import { runRasterEditorTests } from "./raster-editor.mjs";
+import { checkPictureDescriptionLayout } from "./picture-description-layout.mjs";
 import { runPageEditTests, captureDocumentEvidence } from "./page-edit.mjs";
 
 const run = promisify(execFile);
@@ -705,6 +706,11 @@ export async function runStudioTests({
     await page.check("#picture-private");
     await page.check("#picture-thumbnail");
     await page.selectOption("#picture-attachment", "primary");
+    await page.fill(
+      "#picture-description",
+      "Gold synthetic grid showing the test rifle silhouette.",
+    );
+    await checkPictureDescriptionLayout(page, { prefix, captureScreenshots });
     const pictureId = await page.locator("#picture-id").inputValue();
     await page.click("#attach-picture");
     await page.waitForSelector(`#media-library [data-asset-id="${pictureId}"]`);
@@ -776,6 +782,7 @@ export async function runStudioTests({
       "original-green-fixture.png",
       "additional",
     );
+    await page.check("#picture-decorative");
     await page.click("#attach-picture");
     await page.waitForSelector(
       `#media-library [data-asset-id="${additionalId}"]`,
@@ -791,6 +798,10 @@ export async function runStudioTests({
     );
     await section("items", itemIndex);
     await preparePicture(0, "same-gold-pixels.png", "primary");
+    await page.fill(
+      "#picture-description",
+      "The same gold synthetic grid used as an item example.",
+    );
     await page.click("#attach-picture");
     await page.waitForSelector("#duplicate-stage:not([hidden])");
     assert.match(
@@ -953,6 +964,19 @@ export async function runStudioTests({
     assert.deepEqual(weapon.stats[0].sourceIds, [sourceId]);
     assert.equal(weapon.assetId, pictureId);
     assert.deepEqual(weapon.assetIds, [additionalId]);
+    assert.deepEqual(weapon.imageDescriptions, [
+      {
+        assetId: pictureId,
+        text: "Gold synthetic grid showing the test rifle silhouette.",
+        decorative: false,
+      },
+      { assetId: additionalId, text: "", decorative: true },
+    ]);
+    assert.equal(
+      entry.pack.items.find((item) => item.id === itemId).imageDescriptions[0]
+        .text,
+      "The same gold synthetic grid used as an item example.",
+    );
     assert.equal(
       entry.pack.items.find((item) => item.id === itemId).assetId,
       pictureId,
@@ -1013,6 +1037,14 @@ export async function runStudioTests({
         if (image.naturalWidth !== 384)
           throw new Error("Saved preview image width mismatch");
       });
+    assert.equal(
+      await savedPreview.locator("main img").first().getAttribute("alt"),
+      "Gold synthetic grid showing the test rifle silhouette.",
+    );
+    assert.equal(
+      await savedPreview.locator("main img").nth(1).getAttribute("alt"),
+      "",
+    );
     await savedPreview.close();
     await assert.rejects(
       fsStat(join(repository, "dist")),

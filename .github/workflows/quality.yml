@@ -39,7 +39,7 @@ jobs:
           python scripts/select-feature.py 002-repository-bootstrap
           for script in .specify/scripts/bash/*.sh; do bash -n "$script"; done
           bash .specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks
-          for feature in 003-runnable-guide 004-shared-planning 005-portable-editor 006-location-intelligence 007-progression-guides 008-community-release 009-repository-content-studio 010-page-edit-actions 011-private-draft-safety 012-recovery-truthfulness 013-build-reliability 014-reader-flow 015-contributor-workflows; do
+          for feature in 003-runnable-guide 004-shared-planning 005-portable-editor 006-location-intelligence 007-progression-guides 008-community-release 009-repository-content-studio 010-page-edit-actions 011-private-draft-safety 012-recovery-truthfulness 013-build-reliability 014-reader-flow 015-contributor-workflows 016-accessible-release-evidence; do
             SPECIFY_FEATURE_DIRECTORY="specs/$feature" bash .specify/scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks
           done
 
@@ -69,6 +69,8 @@ jobs:
       - run: node tests/browser/contributor-workflows.mjs
       - run: npm run test:browser
       - run: npm run test:studio
+      - name: Verify packaging guards with the actual runtime Python
+        run: python -m unittest discover -s tests -p test_package_diagnostics.py -v
       - name: Rebuild and verify clean distributable
         run: npm run package && python scripts/verify-release.py
       - name: Save clean static release

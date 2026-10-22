@@ -1,0 +1,4 @@
+# Data model
+Image-bearing records optionally add imageDescriptions: array of at most9 {assetId,text,decorative}. IDs unique and attached via assetId/assetIds. Text<=1000; decorative true iff text empty; meaningful text must trim nonempty. Legacy absent allowed; unknown fields rejected. Current schema version remains compatible additive metadata for new readers; old strict readers may reject enriched packs, documented rather than claiming old-reader support.
+Recovery inventory: complete, transactionCount, fileCount, bytes, transactions[{transactionId,fileCount,bytes,archiveEligible,reasons}], warnings. Incomplete totals explicitly partial. Read-only bounded snapshot, races prevent positive eligibility.
+Release manifest v2: format/version, files mapping member to {sha256,bytes}, archiveMembers sorted list, manifestSelfDigestExcluded, identity. Identity source revision and dirty/unknown state plus actual source/schema/build hashes. No signature/authorship assertion.

@@ -25,6 +25,7 @@ const staticFiles = new Set([
   "src/client/raster-editor.mjs",
   "src/client/theme.mjs",
   "src/content/limits.mjs",
+  "src/content/image-description.mjs",
   "src/content/author-target.mjs",
   "src/content/studio-recovery.mjs",
   "src/content/json.mjs",
