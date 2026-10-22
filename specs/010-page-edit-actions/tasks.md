@@ -23,8 +23,8 @@ Independent test: primary replacement/additional images survive save/rebuild; sh
 
 ## Phase 5: Polish and release
 - [x] T010 Add action/guidance/target-context dark/light desktop/mobile/320px enlarged-text evidence in tests/browser/studio.mjs and keep hosted matrix in .github/workflows/quality.yml; document workflow in docs/content-studio.md and README.md (FR-008/009; SC-004).
-- [ ] T011 Run full documented checks and pinned converge; record actual results and missing checks in specs/010-page-edit-actions/acceptance.md and convergence.md; append repairs rather than invent completion (FR-009; SC-004).
-- [ ] T012 Publish draft PR, obtain exact-head green hosted CI plus independent implementation/visual review and report evidence to parent before any merge in specs/010-page-edit-actions/acceptance.md (SC-004).
+- [x] T011 Run full documented checks and pinned converge; record actual results and missing checks in specs/010-page-edit-actions/acceptance.md and convergence.md; append repairs rather than invent completion (FR-009; SC-004).
+- [x] T012 Publish draft PR, obtain exact-head green hosted CI plus independent implementation/visual review and report evidence to parent before any merge in specs/010-page-edit-actions/acceptance.md (SC-004).
 
 ## Dependencies and parallelism
 T001→T002→T003. T004/T005/T006 share target contract and are serialized by implementation owner. T007/T008 follow foundation and feed T009. Tests may be authored in parallel with disjoint documentation after contracts settle; all code stays under one owner, independent reviewer alone edits safety-usability.md. T009/T010→T011→T012. No partial implementation is release-ready.
@@ -50,3 +50,5 @@ Execution note: T009/T010 mark authored browser coverage and documentation, not 
 - [x] T019 [CONV-006] Restore no-build precondition after page-edit helper: verify dist absent before its owned build, stop reader, remove only that generated build, and verify absent in cleanup. Preserve existing saved-preview assertion unchanged; complete-suite rerun remains T011/T012.
 
 - [x] T020 [CONV-007] Reuse bounded complete-document screenshot capture in existing Studio layout evidence; preserve existing assertions. Add bounded failure diagnostics for module/network loading without exemptions or forced focus; rerun hosted matrix.
+
+Closeout: T011/T012 complete on reviewed implementation8864ef4 and green run39717287943; all20 tasks are implemented/verified. The documentation-only final head still requires normal exact-head CI and parent confirmation before merge, as recorded in acceptance.md.
