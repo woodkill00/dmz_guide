@@ -29,7 +29,7 @@
 ## Phase 6: Verification
 
 - [x] T012 Run tests/check/build/format/Python and focused acceptance; record exact outcomes in specs/015-contributor-workflows/acceptance.md.
-- [ ] T013 Converge artifacts and source, append missing tasks in specs/015-contributor-workflows/tasks.md and obtain independent source/visual review.
+- [x] T013 Converge artifacts and source, append missing tasks in specs/015-contributor-workflows/tasks.md and obtain independent source/visual review.
 - [x] T014 Integrator runs actual Windows/Linux Chrome/Firefox/WebKit, strict health, full-page/tiled/200% exact-head CI; record in specs/015-contributor-workflows/acceptance.md. No merge/publish by worker.
 
 ## Dependencies and strategy
@@ -49,7 +49,7 @@ T001–003 gate all production work. Each story's reproduction precedes implemen
 
 ## Verified receipt reconciliation, 2026-10-22
 
-T014, T016, T018, T019 are marked complete from the exact historical/candidate evidence now recorded in acceptance.md and the delivery ledger. This separate documentation/implementation pass does not claim a new test execution or approval of this uncommitted documentation head. Any remaining combined convergence, publication, merge or exact-main obligations remain unchecked; historical success is not a guarantee for a later main revision.
+T014, T016, T018, T019 are marked complete from the exact historical/candidate evidence now recorded in acceptance.md and the delivery ledger. This separate documentation/implementation pass does not claim a new test execution or independent approval or hosted execution of this documentation head. Any remaining combined convergence, publication, merge or exact-main obligations remain unchecked; historical success is not a guarantee for a later main revision.
 
 ## Phase 9: Convergence
 
@@ -58,3 +58,5 @@ T014, T016, T018, T019 are marked complete from the exact historical/candidate e
 ## Phase 10: Recovery category boundary repair
 
 - [x] T021 [US1] Reproduce malformed recovery upload category acceptance with actual valid PNG bytes in tests/runtime/recovery-category-shape.test.mjs; verify every existing allowed string and reject JSON primitive/object/array category shapes plus whitespace/newline variants before raster decode. Repair only the category type/enum boundary in src/content/studio-recovery.mjs, preserve stripped payloads and normalized downstream uploads, rerun focused/existing parser checks, and obtain independent exact-source review before commit. Record actual red/green and the remaining exact-head integration gate in acceptance.md. [FR-006, FR-007–008; SC-001]
+
+Final reconciliation at 20:24 UTC closes T013 only after its feature-specific source/visual/convergence and integrated-main clauses were executed and independently reviewed. The owning acceptance receipt records the exact candidate and main results. Only 013 T029 retains the final documentation/infrastructure PR’s own future publication/checks/merge/main gate.

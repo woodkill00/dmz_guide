@@ -1,5 +1,9 @@
-# Acceptance evidence (in progress)
+# Accessible release evidence acceptance chronology
+
+These entries preserve historical checkpoints. Later dated receipts supersede earlier pending or failed verdicts without erasing their chronology. Final combined closeout is a separate gate.
+
 Baseline b54b2312e27a008b75bad04ab7f342ae4ef68ba6. No release/completion claim.
+
 - Pinned constitution reviewed unchanged; specify/clarify/plan executed with explicit feature directory, no extension hooks. Built-in requirements check complete. Reviewer partial checklist permits image/recovery only; identity initially pending.
 - Read-only analyze: all FR001–009 mapped to T005–014; no constitution violations. HIGH identity contract isolated behind T010–012 gate, other work may proceed per independent scoped checklist. Tasks updated to remove conflicting whole-feature prerequisite.
 - Baseline `node --test tests/runtime/image-descriptions.test.mjs`: 3 failed,1 passed. Valid new metadata rejected, renderer ignored descriptions/decorative. Earlier fixture setup mistake (no demo asset) corrected before reproduction; not counted as source defect evidence.
@@ -7,6 +11,7 @@ Baseline b54b2312e27a008b75bad04ab7f342ae4ef68ba6. No release/completion claim.
 - Local browser unavailable in sandbox; hosted exact-head Windows/Linux Chromium, Firefox/WebKit, Studio and visual evidence remains required.
 
 ## Local candidate evidence
+
 - Reviewer CHK006 approved concrete identity/output inventory contract after corrections. Read-only analyze rerun: requirement coverage complete; no remaining artifact contradiction; integration/hosted acceptance remains open.
 - Baseline full package inspection: launcher, LICENSE, docs/release.md, docs/content-studio.md, prior acceptance and START-HERE omitted from hashes; manifest also unlisted. New archive verifier rejects changed/missing/extra/duplicate/case-collision/unsafe/symlink entries and rehashed payload inconsistent with captured build.
 - `npm test` after core corrections: 286 tests,285 passed,0 failed,1 pre-existing skip. New later author HTTP allowlist test separately recorded below; rerun required after final hooks.
@@ -22,14 +27,17 @@ Baseline b54b2312e27a008b75bad04ab7f342ae4ef68ba6. No release/completion claim.
 - Studio module real-HTTP regression: before allowlist hook404, after one-line explicitly granted allowlist addition1/1 pass. Correct URL `/assets/src/content/image-description.mjs`; an earlier wrong-URL probe was corrected before recording baseline. Final repository check0failures and final format check passes.
 
 ## Reviewed local candidate
+
 Independent reviewer approved source at b5506f3d09bd8d8a64d55c65001950fc2316344a, conditional on integration and exact remote/actual acceptance. Reviewer independently ran12 Node image/recovery/identity tests and4 archive tests successfully; no source blocker remains in that reviewed tree.
 Exact candidate local verification: `npm test`287 total,286 passed,0 failed,1 pre-existing skip; Python discovery29/29; repository check0failures; full format check passed; build154 routes; package/extract verification205 hashes plus owned Node child/native content passed. No browser run or Python3.11 runtime is implied by these results.
 Remaining: integrate015 diagnostics with inspectRecoveryStorage, preserve015 author-only recovery module exclusions and017 additive catalog descriptors; run hosted exact-head Windows/Linux Node22/24, Chromium, Firefox/WebKit, Studio image/private bundle assertions, strict health/full-page/actual200%; independent visual review; exact merge/main evidence. Workpackage15c deterministic ZIP remains separate and unimplemented here.
 
 ## Integrated015 checkpoint
+
 Stacked onto exact015 bc2f2c7. Resolved two narrow integration conflicts by retaining015 synthetic root index plus016 v2 manifest fixture, and retaining both014 private-context imports plus016 image-description import. Image alternative text receives the existing projected chosen record.015 author-only recovery parser exclusions remain. Added the approved read-only role diagnostics hook using inspectRecoveryStorage; no pruning or repository mutation. Integrated local Node305 total,304 pass/1 Windows-only skip, Python29/29,154 routes,format and full extracted206-file hash/owned-server verification passed. Actual hosted Windows/Python3.11/browser/images/visual gates remain pending.
 
 ## Hosted described-transfer fixture repair
+
 Run39769642880 jobs119793664422 (Linux) and119793664551 (Windows) timed out at bundled-assets.mjs594 waiting for content staging. The newly added fixture changed imageDescriptions but retained the published contentVersion. Existing editor.mjs stageCandidate rejects changed existing content at an unchanged version; that guard is correct and remains unchanged. Bounded local reproduction with the actual bundled fixture passed parseTransfer/schema validation, then reproduced the exact version-guard rejection, and passed that guard after a synthetic version increment. This is a parser/source guard reproduction, not a local browser run.
 Test-only repair sets bundled-described-private-1, asserts stored version/decorative-map descriptions alongside existing item-description/actual-alt/payload assertions, and rethrows unexpected staging failures with at most1000 characters each of error/save-status feedback. Existing timeouts, assertions and strict health remain intact. Node syntax and Prettier pass. Full local runtime result and independent source review recorded below; hosted corrected-head confirmation remains pending T025.
 Independent reviewer approved the exact test-only diff: unchanged deadline/stage guard, bounded diagnostics and stronger stored metadata assertions. Hosted success is still pending; no production behavior changed.
@@ -37,7 +45,22 @@ Independent reviewer approved the exact test-only diff: unchanged deadline/stage
 Local full runtime:305 total,304 passed,0 failed,1 existing skip. Repository checks:0 failures. Browser corrected-head run remains unexecuted locally.
 
 ## Windows packaging diagnostic investigation
+
 Actual Windows job119799894042 at remote b8c27896263619027aa088324da04734be487b7d passed reader and Studio, rebuilt154 routes, then failed packaging at11:41:54 with only `File changed during packaging.` Validator confirmed no filename/phase was exposed. Local5d5c6d7 open-workbench visual coverage was preserved while merging exact remote b8c278 as1a886b9; conflict resolution retained both the remote version-fixture repair and the visual helper, with diff versus remote limited to the helper and two Studio hook lines.
 Injected open-stat mismatch reproduced the bare baseline message. Diagnostic-only change records a root-relative path capped256 characters, phase(identity/output/source/auxiliary), open/read point, unchanged dev/ino/size/mtime_ns/ctime_ns signatures before/open/after, and bytes read; after/readBytes are explicitly null when open fails. JSON escaping and a4000-character detail cap bound output. No file bytes or absolute root are printed. Equality, byte/count limits, hashing and no-follow behavior remain unchanged; no Windows timestamp/identity normalization is inferred.
 Three deterministic tests pass: open mismatch still rejects, post-read mismatch still rejects, and long/newline Unicode path diagnostics remain bounded/escaped. The Windows cause remains unresolved until a diagnostic-bearing actual rerun (T027). This is not a packaging-success claim for Windows.
 Independent reviewer approved exact diagnostics: strict five-field comparisons and every size/hash/no-follow guard unchanged. Local Python32/32; runtime306total,305passed,0failed,1existing skip; check0failures; diff whitespace clean; Python3.11 grammar parse using actual3.12 passed. Actual local rebuild154routes, package206payload files, clean extraction206hashes/native links/owned child verification passed. No actual Windows corrected-head success is claimed.
+
+## Later native Windows and exact candidate acceptance, 2026-10-22
+
+The integration ledger records source/native Windows package acceptance at `cd2774bc`, followed by independently accepted maintenance-integrated candidate `92402ecf6bc448ae5a7336d58e33a2f868c03cf1` with all six jobs successful in [run 39796837939](https://github.com/woodkill00/dmz_guide/actions/runs/39796837939). The actual native probe identifies Python 3.12.10 and demonstrates a stable cross-API ctime difference. The repair retains device/inode/size/mtime across APIs and all five fields within each path/descriptor API before and after reads. Ten guard tests include real append rejection; 206 payloads were packaged and clean-extraction verified. These results supersede the earlier pending corrected-Windows snapshot without converting the original uninstrumented failure into a known-interpreter claim.
+
+Usage-specific description/decorative semantics, private/repository editing and transfer, escaped/spoiler-safe public/private rendering, read-only recovery inventory and complete manifest/build identity passed their exact candidate gates. 36 open-workbench coverage records and 48 state/geometry cases include true 16/32px text and visible native checkboxes, with independent visual acceptance. Hashes establish consistency, not authorship; archival eligibility remains review information, not permission to prune. PR 17 was normally merged as `681242d0e93a9809025aa91d6c110033a00dc748`, with the exact accepted tree. At 17:07 UTC, all six latest check-runs at that SHA and all six latest-attempt jobs in run `39811432187` were completed SUCCESS, independently verified by implementation and review. The original engine attempt stalled during official dependency installation and was cancelled before browser tests; only that job was retried, and it passed. Aggregate metadata temporarily retained the prior cancelled conclusion, so this receipt relies on the exact-head check-runs and latest job results instead. Final closeout convergence/publication remains a separate gate.
+
+## Final feature convergence receipt, 2026-10-22 20:24 UTC
+
+The late bounded corrective slice and its reviewed Studio test-only follow-up passed all six exact-candidate checks in [run 39844947628](https://github.com/woodkill00/dmz_guide/actions/runs/39844947628) at `482c6c8418a73ab1295839d85744059dc2c84ef8`, tree `f80e5076f9e0013f20a4a9915c7871973b0bf959`. Independent acceptance covered all four lifecycle environments and the unchanged metadata surface: 336 fresh normative cases passed, with prior representative-pixel evidence transferred only after source/helper identity verification. The 009 owning receipt retains the actual earlier timeout, unknown original cause and unverified native identical-file-after-timeout behavior; no production deadline or assertion was relaxed.
+
+PR20 was normally merged as `26158bae45934658f8104d77a8a17e1a3553d08a` with the same accepted tree. Automatic exact-main [run 39846987185](https://github.com/woodkill00/dmz_guide/actions/runs/39846987185) subsequently completed all six required latest jobs and exact-head checks successfully, freshly verified at20:24 UTC. The independent final clause/traceability assessment found no new unowned buildable gap, and the accepted-scope ledger now records the actual conditional outcomes and all prior main receipts without replacing failed-history evidence.
+
+This completes the feature-specific source/visual/convergence and integrated-main clauses recorded here. The separately authorized documentation/infrastructure closeout's own publication, candidate CI, normal merge and exact-main result remain governed by 013 T029 and must be recorded externally after they occur; no self-referential future gate is preclosed.
