@@ -34,3 +34,8 @@ T005/T008/T010/T017 checkmarks mean test coverage authored and available runtime
 
 - [x] T020 Correct mixed-clock expiry test fixture without changing production validation; regression protects malformed future-entry rejection and existing tokens (FR-003,009).
 - [ ] T021 Locate Firefox history-entry growth using stage checkpoints and actual hosted evidence before changing source or assertions (FR-003,009).
+
+- [x] T022 Author independently approved isolated static/reader×Playwright/native refresh controls with strict native semantics and profile/target preservation (FR-003,009).
+- [x] T023 Execute controls hosted, independently interpret actual differential, then separately review any primary refresh test-contract change. Preserve one Back and exact target/profile (FR-003,009). Actual151301f/artifact12422153749 independently confirms native refresh contract.
+
+- [ ] T024 Independently review primary native refresh delta and run exact-head hosted journey with stable history/type plus original single Back (FR-003,009).

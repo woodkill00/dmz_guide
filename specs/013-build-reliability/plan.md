@@ -71,3 +71,7 @@ Reproduce before repair; retain baseline evidence. Unit/fault tests cover first 
 ## Complexity Tracking
 
 One built-in-only Node readiness implementation is reused by Python verification and Node browser harnesses. No cross-language framework or broad orchestrator extraction. The build lock is isolated from author transaction semantics; no speculative shared coordination.
+
+## Bounded Windows fixture diagnosis after documentation-head failure
+
+Only tests/runtime/build-windows.test.mjs changes: select the installed Program Files/PowerShell/7/pwsh.exe if it exists (the actual runner shell logged this path), else the existing powershell.exe; never retry a failed host with another executable. Preserve the same no-profile/noninteractive native FileShare.None operation and five-second READY deadline. Add bounded stdout/stderr and monotonic spawn/script/READY/exit timings, observe the helper still alive during promotion, and await owned-child exit after the existing two-second graceful period with at most one additional second to confirm forced termination. Require normal helper completion for a passing native test. No product deadline, rename/OLD assertion, workflow concurrency, browser assertion or filesystem-based skip policy changes. Cold legacy-host startup is an unproven hypothesis; actual exact-head Windows execution is required.
