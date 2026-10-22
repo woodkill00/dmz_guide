@@ -86,12 +86,37 @@ async function layoutEvidence(page, { prefix, label, captureScreenshots }) {
         );
         assert.deepEqual(overflow.text, [], `${label}: text does not overflow`);
         if (captureScreenshots) {
-          for (const image of await page.locator("main img").all()) {
-            await image.scrollIntoViewIfNeeded();
-            await page.waitForFunction(
-              (image) => image.complete && image.naturalWidth > 0,
-              await image.elementHandle(),
+          // Cleared workbench placeholders remain mounted but intentionally hidden.
+          // Capture only rendered images; do not exclude broken visible images by src
+          // or completion state, which would conceal real media failures.
+          const images = page.locator("main img:visible");
+          if (label === "selected-editor")
+            assert.equal(
+              await page.locator("#media-library img:visible").count(),
+              3,
+              "All three authored library pictures remain visible for evidence",
             );
+          for (const image of await images.all()) {
+            assert(
+              await image.getAttribute("src"),
+              "Visible evidence image has a source",
+            );
+            await image.scrollIntoViewIfNeeded();
+            const element = await image.elementHandle();
+            assert(element, "Visible evidence image remains mounted");
+            try {
+              await page.waitForFunction(
+                (image) =>
+                  image.isConnected &&
+                  image.currentSrc.length > 0 &&
+                  image.complete &&
+                  image.naturalWidth > 0 &&
+                  image.naturalHeight > 0,
+                element,
+              );
+            } finally {
+              await element.dispose();
+            }
             await image.evaluate((image) => image.decode());
           }
           await page.evaluate(() => scrollTo(0, 0));

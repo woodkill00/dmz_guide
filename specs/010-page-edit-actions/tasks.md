@@ -36,3 +36,5 @@ First deliver exact record edit navigation end-to-end, then extend all-group ima
 - [x] T013 Resolve CONV-001 (HIGH, partial FR-001/002 and SC-001): use the existing filesystem-safe colon-to-double-hyphen route encoding in src/ui/author-actions.mjs, add explicit guidance path regression in tests/runtime/page-edit.test.mjs and rerun package/release verification. The first release verifier rejected percent-encoded catalog record directories after URL decoding.
 
 Execution note: T009/T010 mark authored browser coverage and documentation, not executed browser acceptance. T011/T012 retain the actual hosted/visual/release gate; see acceptance.md.
+
+- [x] T014 [CONV-002] Correct screenshot readiness to inspect visible images only; hidden image-workbench placeholders are not rendered evidence. Preserve visible natural-dimension/decode and real-pixel assertions. Full hosted rerun remains pending under T011/T012.
