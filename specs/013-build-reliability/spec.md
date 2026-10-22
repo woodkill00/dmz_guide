@@ -104,3 +104,7 @@ A maintainer needs controlled evidence about a build overlapping an author save 
 ### Session 2026-10-22
 
 No new user questions are required. Accepted scope answers the critical intent questions. OLD means honest command/Studio rebuild diagnostics while retained bytes remain unchanged. A4 investigation is complete; its minimum repair is approved for the narrow owner-token snapshot boundary. Shared-file ownership and reviewer approval are implementation gates, not unspecified product behavior.
+
+### Native Windows fixture clarification after hosted recurrence
+
+The native exclusive-open-file test is evidence for FR-001–003/008 and SC-001/003, not a product startup requirement. Its existing 5-second READY limit and 15-second test limit remain unchanged. Before asserting a filesystem result, the helper must report READY after acquiring the same FileShare.None handle and remain alive through the promotion attempt. Prefer the observed, preinstalled PowerShell 7 host when present; otherwise retain the existing Windows PowerShell dependency. Record bounded startup/output/exit evidence, and do not represent a killed-but-unobserved process as cleaned up. A missed fixture deadline is a failure, not a new skip or a reason to weaken OLD preservation. The previous successful run remains historical evidence; the later failure must be repaired and verified on Windows before the new head is accepted.

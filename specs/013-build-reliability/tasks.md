@@ -77,3 +77,18 @@ Convergence assessed 9 FR, 4 SC, 17 story acceptance scenarios, 5 technical deci
 ### Separate implement closeout after Phase 11
 
 T016/T018/T022/T026/T028 are satisfied for reviewed source head `b54b2312e27a008b75bad04ab7f342ae4ef68ba6` and identical tree `5e2f740641da336bcb2cf65ead3f208e18cc9529`, with exact hosted evidence recorded in acceptance.md. The independent reviewer confirmed all six terminal statuses, the four runtime/browser job logs and source/runtime approval; the implementation worker also inspected both repository/Python job logs. These marker/evidence updates are the separate implement pass, not writes performed by converge. T027 and T029 remain unchecked: publication/review/checks for this new documentation head, parent merge and exact-main evidence are not complete. No product/test changes or parent-gate approval are implied.
+
+## Phase 12: Hosted native-handle fixture repair
+
+- [x] T030 Assess the actual documentation-head Windows READY failure; update only tests/runtime/build-windows.test.mjs with the reviewed available-host selection, bounded lifecycle diagnostics and exit-confirmed cleanup while retaining all native rename/OLD assertions and deadlines. Obtain independent exact-diff review before committing. [FR-001–003/008, SC-001/003]
+- [ ] T031 Obtain actual Windows execution for the repaired exact head, including READY timings, native file-sharing denial, normal helper exit and all retained assertions; preserve earlier pass/failure chronology in acceptance.md. Do not infer Windows success from a Linux skip. [SC-001/003]
+
+Read-only repair analysis: the new fixture criteria refine existing Windows evidence obligations, without adding production scope or changing FR/SC intent. T030 owns one test file plus 013 artifacts; T031 remains integration-owned hosted verification. Existing custom requirements gates remain intact. The reviewer approved the bounded diagnostic direction before implementation, expressly not certifying cold-start root cause. No optional bug extension, workflow or hooks were invoked.
+
+## Phase 13: Convergence
+
+- [ ] T032 After the bounded Windows fixture correction and separately owned Studio correction are integrated, obtain full exact-head platform/browser CI and independent evidence review before any parent merge/final-main gate can advance. Keep historical b54 success and later documentation-head failures distinct. [FR-008, SC-001–003] (partial)
+
+Convergence on the reviewed fixture delta found no further implementation or assertion gap. One HIGH evidence gap remains: actual Windows behavior of the changed helper and full acceptance of the combined next candidate are not yet observed. This append-only pass adds the final combined-candidate gate and does not mark T031 or any prior release gate complete.
+
+Separate implement verification: independent source review approved the exact test-only delta before commit. Local Linux Node24.19.0 syntax, focused tests (71 passed plus one Windows-only skip), full runtime tests (274 total, 273 passed, zero failed, one Windows-only skip), existing pinned formatter, repository check and diff check passed. T031/T032 and parent release gates remain open; no Windows proof or WebKit repair is claimed here.
