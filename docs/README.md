@@ -1,6 +1,7 @@
 # Documentation
 
 ## Get started
+- [Local map workspace](local-map-workspace.md): opt-in Hajin viewer, interactive key/source layers, local-only asset boundaries and synthetic validation.
 - [Reader and author quickstart](quickstart.md): read the guide, distinguish private editing from repository authoring, and diagnose startup.
 - [Developer quickstart](developer-quickstart.md): optional coding tools, active feature and development checks.
 - [First feature](tutorials/first-feature.md): a bounded Spec Kit walkthrough.

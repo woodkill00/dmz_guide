@@ -6,6 +6,8 @@ A community field guide being built around trustworthy game data and explainable
 
 ## Start here
 
+- **Using the optional local Hajin viewer?** See the [local map workspace](docs/local-map-workspace.md). Run `npm run map:install`, then `npm run map:dev`. It retains the separate interactive key/source-layer viewer without replacing the native guide; downloaded game assets are not bundled.
+
 - **Reading or editing content?** Use the short [reader/author quickstart](docs/quickstart.md); it explains private browser editing versus repository files.
 
 - **Building the project?** Follow the [developer quickstart](docs/developer-quickstart.md), then the [first-feature tutorial](docs/tutorials/first-feature.md).
