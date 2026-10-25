@@ -15,7 +15,7 @@
 
 ## Verification and merge
 - [x] T008 Run root structural/Python/Node/build and available native browser checks; run tool unit/typecheck/build/browser checks. Audit tracked files and public outputs for downloaded assets. Record exact outcomes/limits in acceptance.md. SC-001–004.
-- [ ] T009 Run convergence, obtain independent final code/visual review, repair findings, and record review evidence. No implementer approval of reviewer checklists.
+- [x] T009 Run convergence, obtain independent final code/visual review, repair findings, and record review evidence. No implementer approval of reviewer checklists.
 - [ ] T010 Commit/push a feature branch, open PR, wait required CI, normally merge without bypassing protections, verify main and report actual result. User authorization includes push/merge, not deployment.
 
 ## Dependencies and strategy
