@@ -21,3 +21,7 @@
 ## Dependencies and strategy
 
 T001 → T002 → T003/T004 → T005 → T006 → T007 → T008 → T009 → T010. Keep shared root contracts serialized. Independent review may run while unrelated read-only environment checks continue; implementation itself is sequential. MVP is an independently buildable viewer with missing-file recovery; then prove key/source behavior using original synthetic fixtures. Do not claim a source-asset launch from code-only integration.
+
+## Phase 5: Convergence
+
+- [x] T011 Align the new synthetic runner's CI browser channel with the existing native runner's installed Chrome selection while retaining chromiumSandbox=true. Reproduce the original hosted startup failure, rerun local browser checks and obtain independent delta review before pushing. FR-008; no production assertion or sandbox weakening.

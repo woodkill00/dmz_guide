@@ -30,6 +30,10 @@ Local evidence is retained in root `test-results/integration-*.log`, native brow
 
 ## Failed-history qualification
 
+The first hosted workspace jobs (Node 22/24, run 40244704149) passed install, unit/input checks and build but failed before browser assertions because the downloaded Chromium headless shell could not use Ubuntu's sandbox policy. The bounded correction uses the same installed-Chrome CI channel as the existing native browser runner and retains `chromiumSandbox: true`. No failure is relabeled as passing; local rerun, independent delta review and new hosted results are required.
+
+The corrected runner passed the complete local synthetic suite at `2026-10-25T23:27:49.429Z`, with zero page errors/external requests. Independent delta review accepted the one-line test-launch selection after inspecting the actual failure logs and native-runner parity; assertions, production source, deadlines and sandbox setting are unchanged. Fresh hosted checks remain open. Additional local native release verification passed after a fresh build: 208 payload hashes, native links and exact owned-child served content passed extraction verification (`py -3 scripts/package-release.py`, `py -3 scripts/verify-release.py`).
+
 The first in-progress Python run had three failures because the planned workspace guide had not yet been created; after the document was added, the complete 40-test suite passed. The first native build hit a Windows directory-rename EPERM. The owned original preview watcher was visibly watching the nested integration candidate directory; stopping that preview and rerunning the unchanged native build succeeded. This is an observed recovery, not a proven general diagnosis. No native production code, assertion, timeout or gate was weakened to obtain a pass.
 
 ## Requirement trace and convergence

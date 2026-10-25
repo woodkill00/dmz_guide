@@ -11,7 +11,7 @@ const checks = [];
   server = await createServer({ server: { host: '127.0.0.1', port: 5275, strictPort: true } });
   await server.listen();
   const base = 'http://127.0.0.1:5275';
-  browser = await chromium.launch({ headless: true, chromiumSandbox: true, ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
+  browser = await chromium.launch({ headless: true, chromiumSandbox: true, ...(process.env.CI ? { channel: 'chrome' } : process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
   const painter = await browser.newPage();
   const image = Buffer.from(await painter.evaluate(() => {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
