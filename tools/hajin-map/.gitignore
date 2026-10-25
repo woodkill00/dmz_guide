@@ -1,0 +1,16 @@
+# Downloaded third-party research material and generated browser captures.
+# Keep authored reports, scripts, and the provenance manifest reviewable.
+research/hajin/source/
+research/hajin/tiles/
+research/hajin/*.png
+research/hajin/*.webp
+research/hajin/audit*.json
+node_modules/
+dist/
+.env
+.env.*
+.local/
+# Local development imagery; public redistribution has not been verified.
+public/maps/hajin/v1/background.webp
+public/maps/hajin/official/
+research/

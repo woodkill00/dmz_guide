@@ -8,4 +8,6 @@ Spec Kit is MIT licensed. Its original license and copyright notice are retained
 
 ## Game content and other assets
 
+The opt-in `tools/hajin-map` workspace declares its own pinned npm dependencies and lock: Leaflet 1.9.4 (BSD-2-Clause), Vite 7.3.7 (MIT), TypeScript 5.9.3 (Apache-2.0), Playwright 1.64.1 (Apache-2.0), and Leaflet type definitions (MIT). Their installed package license/notice files apply; the [Leaflet license](tools/hajin-map/third_party/leaflet-LICENSE) is retained and local viewer builds include `leaflet-LICENSE.txt`. These tooling/code licenses do not license map imagery, icons or third-party location datasets. The native guide dependency set is unchanged.
+
 The project-code MIT license does not grant rights to game artwork, maps, trademarks, third-party datasets or private screenshots. No such assets are approved by this notice. Maintain source-specific rights and attribution in the [asset register](docs/licensing-and-assets.md) before adding assets. An external link in research is not a license to copy its contents.
