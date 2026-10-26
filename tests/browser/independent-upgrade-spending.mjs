@@ -141,10 +141,51 @@ async function focusIs(page, selector) {
     `Spending modal returns focus: ${JSON.stringify(result)}`,
   );
 }
+async function previewEntry(page) {
+  await page.locator("#upgrade-spend-confirm").waitFor({ state: "visible" });
+  await focusIs(page, "#upgrade-spend-title");
+  const entry = await page
+    .locator("#upgrade-spend-confirm")
+    .evaluate((dialog) => {
+      const box = dialog.getBoundingClientRect(),
+        title = dialog
+          .querySelector("#upgrade-spend-title")
+          .getBoundingClientRect();
+      const purposeNode = dialog.querySelector("#upgrade-spend-purpose"),
+        purpose = purposeNode.getBoundingClientRect();
+      return {
+        scrollTop: dialog.scrollTop,
+        top: box.top + dialog.clientTop,
+        bottom: box.top + dialog.clientTop + dialog.clientHeight,
+        title: { top: title.top, bottom: title.bottom },
+        purpose: {
+          top: purpose.top,
+          height: purpose.height,
+          lineHeight: parseFloat(getComputedStyle(purposeNode).lineHeight),
+        },
+      };
+    });
+  assert.equal(
+    entry.scrollTop,
+    0,
+    "A long purchase/reversal preview opens at its beginning, not at footer confirmation",
+  );
+  assert(
+    entry.title.top >= entry.top - 1 && entry.title.bottom <= entry.bottom + 1,
+    `Preview heading is fully visible at entry: ${JSON.stringify(entry)}`,
+  );
+  assert(
+    entry.purpose.top >= entry.top - 1 &&
+      entry.purpose.top +
+        Math.min(entry.purpose.height, entry.purpose.lineHeight) <=
+        entry.bottom + 1,
+    `Preview purpose begins visibly before any scrolling at entry: ${JSON.stringify(entry)}`,
+  );
+}
 async function openPurchase(page, id = FIRST) {
   await page.locator(spend(id)).focus();
   await page.keyboard.press("Enter");
-  await page.locator("#upgrade-spend-confirm").waitFor({ state: "visible" });
+  await previewEntry(page);
   assert.equal(
     await page.locator("#upgrade-spend-ack").isChecked(),
     false,
@@ -690,9 +731,7 @@ export async function runIndependentUpgradeSpending({
       });
       await refused(page, reverse(event.id), /latest|recent|last/i);
       await page.click(reverse(secondId));
-      await page
-        .locator("#upgrade-spend-confirm")
-        .waitFor({ state: "visible" });
+      await previewEntry(page);
       assert.match(
         await page.locator("#upgrade-spend-confirm").textContent(),
         /not.*game.*refund|bookkeeping|guide.*correction/i,
@@ -720,9 +759,7 @@ export async function runIndependentUpgradeSpending({
       });
       await refused(page, reverse(secondId), /already|reversed|latest/i);
       await page.click(reverse(event.id));
-      await page
-        .locator("#upgrade-spend-confirm")
-        .waitFor({ state: "visible" });
+      await previewEntry(page);
       const reversedFirst = await apply(page, { purchase: false });
       await focusIs(page, "#upgrade-spending-title");
       assert.deepEqual(reversedFirst.inventory, initial.inventory);
@@ -933,9 +970,7 @@ export async function runIndependentUpgradeSpending({
       await page.locator(owned(A)).fill("7");
       await saveInventory(page);
       await page.click(reverse(bought.spendHistory[0].id));
-      await page
-        .locator("#upgrade-spend-confirm")
-        .waitFor({ state: "visible" });
+      await previewEntry(page);
       const undone = await apply(page, { purchase: false });
       assert.deepEqual(undone.inventory, initial.inventory);
       assert.equal(
@@ -1225,9 +1260,7 @@ export async function runIndependentUpgradeSpending({
           ),
         );
         await page.click(reverse(purchase.id));
-        await page
-          .locator("#upgrade-spend-confirm")
-          .waitFor({ state: "visible" });
+        await previewEntry(page);
         assert.match(
           await page.locator("#upgrade-spend-details").textContent(),
           /current catalog costs are not used/i,
@@ -1697,9 +1730,7 @@ export async function runIndependentUpgradeSpending({
         reversed: 0,
       });
       await page.click(reverse(after.spendHistory[0].id));
-      await page
-        .locator("#upgrade-spend-confirm")
-        .waitFor({ state: "visible" });
+      await previewEntry(page);
       const restored = await apply(page, {
         purchase: false,
         packId: observedPack,

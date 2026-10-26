@@ -122,7 +122,7 @@ function ensureDialog() {
   dialog.className = "panel";
   dialog.setAttribute("aria-labelledby", "upgrade-spend-title");
   dialog.setAttribute("aria-describedby", "upgrade-spend-purpose");
-  dialog.innerHTML = `<h2 id="upgrade-spend-title"></h2><p id="upgrade-spend-purpose"></p><div id="upgrade-spend-details"></div><label id="upgrade-spend-ack-label"><input id="upgrade-spend-ack" type="checkbox">My saved stock is from before this purchase; these costs have not already been deducted.</label><p id="upgrade-spend-result" role="alert"></p><div class="draft-actions"><button type="button" id="upgrade-spend-apply">Confirm purchase record</button><button type="button" id="upgrade-spend-cancel" class="secondary" autofocus>Cancel</button><button type="button" id="upgrade-spend-status-only" class="secondary">Use status-only correction (no spending recorded)</button><button type="button" id="upgrade-spend-export" class="secondary" hidden>Export unsaved spending candidate</button></div>`;
+  dialog.innerHTML = `<h2 id="upgrade-spend-title" tabindex="-1"></h2><p id="upgrade-spend-purpose"></p><div id="upgrade-spend-details"></div><label id="upgrade-spend-ack-label"><input id="upgrade-spend-ack" type="checkbox">My saved stock is from before this purchase; these costs have not already been deducted.</label><p id="upgrade-spend-result" role="alert"></p><div class="draft-actions"><button type="button" id="upgrade-spend-apply">Confirm purchase record</button><button type="button" id="upgrade-spend-cancel" class="secondary">Cancel</button><button type="button" id="upgrade-spend-status-only" class="secondary">Use status-only correction (no spending recorded)</button><button type="button" id="upgrade-spend-export" class="secondary" hidden>Export unsaved spending candidate</button></div>`;
   document.querySelector("main").append(dialog);
   return dialog;
 }
@@ -248,8 +248,10 @@ function showPreview(target) {
   $("#upgrade-spend-export").hidden = true;
   setBusy(false);
   dialogGeneration++;
-  ensureDialog().showModal();
-  $("#upgrade-spend-cancel").focus();
+  const dialog = ensureDialog();
+  dialog.showModal();
+  $("#upgrade-spend-title").focus();
+  dialog.scrollTop = 0;
 }
 function stage(kind, id) {
   if (saving || state.saving || state.loading || pending) return;

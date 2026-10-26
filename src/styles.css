@@ -1311,6 +1311,10 @@ main :where(p, li, a, ul, ol, section, article, div) {
   background: var(--surface);
   border: 2px solid var(--line);
 }
+/* Native modal centering must not inherit the panel’s one-sided spacing. */
+#upgrade-spend-confirm {
+  margin: auto;
+}
 #draft-navigation::backdrop,
 #upgrade-progress-confirm::backdrop,
 #upgrade-spend-confirm::backdrop {

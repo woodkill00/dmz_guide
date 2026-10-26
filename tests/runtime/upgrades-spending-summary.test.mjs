@@ -70,3 +70,78 @@ test("empty visible projection preserves protected notice without hidden amounts
   assert(full.includes("spend-history-next"));
   assert(full.includes("spend-items-next"));
 });
+
+test("purchase and reversal previews initially focus their review heading, not a footer action", () => {
+  const pack = upgradeFixture(),
+    profile = newProfile(pack);
+  profile.inventory[pack.items[0].id] = 100;
+  const purchase = recordUpgradePurchase(pack, profile, "test:first", {
+    operationId: "spend:entry-focus",
+    recordedAt: "2026-10-26T20:00:00.000Z",
+    expectedRevision: 0,
+  });
+  for (const kind of ["purchase", "reversal"]) {
+    const nodes = new Map();
+    let markup;
+    const document = {
+      activeElement: null,
+      createElement: () => ({
+        setAttribute() {},
+        set innerHTML(value) {
+          markup = value;
+          for (const match of value.matchAll(/id="([^"]+)"/g)) {
+            const node = {
+              focus() {
+                document.activeElement = this;
+              },
+            };
+            nodes.set(`#${match[1]}`, node);
+          }
+        },
+        showModal() {
+          this.open = true;
+        },
+      }),
+      querySelector: () => ({
+        append(node) {
+          nodes.set(`#${node.id}`, node);
+        },
+      }),
+    };
+    const state = {
+      pack,
+      profile: kind === "purchase" ? profile : purchase.candidate,
+    };
+    const before = JSON.stringify(state.profile);
+    const target = {
+      kind,
+      snapshot: purchase.event,
+      warnings: [],
+      revision: 0,
+      candidate: kind === "purchase" ? purchase.candidate : profile,
+    };
+    vm.runInNewContext(
+      `${source}\nensureDialog(); pending=target; showPreview(target);`,
+      {
+        document,
+        state,
+        target,
+        $: (selector) => nodes.get(selector),
+        esc: String,
+        spendingView,
+        spoilerGuard,
+      },
+    );
+    assert.match(markup, /id="upgrade-spend-title" tabindex="-1"/);
+    assert(!markup.includes("autofocus"));
+    assert.equal(document.activeElement, nodes.get("#upgrade-spend-title"));
+    assert.equal(nodes.get("#upgrade-spend-confirm").scrollTop, 0);
+    assert.equal(nodes.get("#upgrade-spend-ack").checked, false);
+    assert.equal(
+      nodes.get("#upgrade-spend-apply").disabled,
+      kind === "purchase",
+    );
+    assert.equal(nodes.get("#upgrade-spend-cancel").disabled, false);
+    assert.equal(JSON.stringify(state.profile), before);
+  }
+});
