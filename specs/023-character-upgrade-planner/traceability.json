@@ -7,7 +7,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-002": {
     "tasks": [
@@ -21,7 +23,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-003": {
     "tasks": [
@@ -34,7 +38,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-004": {
     "tasks": [
@@ -47,7 +53,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-005": {
     "tasks": [
@@ -59,7 +67,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-006": {
     "tasks": [
@@ -72,7 +82,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-007": {
     "tasks": [
@@ -84,7 +96,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-008": {
     "tasks": [
@@ -99,7 +113,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-009": {
     "tasks": [
@@ -109,7 +125,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-010": {
     "tasks": [
@@ -120,7 +138,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-011": {
     "tasks": [
@@ -134,7 +154,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-012": {
     "tasks": [
@@ -147,7 +169,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-013": {
     "tasks": [
@@ -160,7 +184,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-014": {
     "tasks": [
@@ -174,7 +200,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-015": {
     "tasks": [
@@ -192,7 +220,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "FR-016": {
     "tasks": [
@@ -207,7 +237,9 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "SC-001": {
     "tasks": [
@@ -220,7 +252,9 @@
       "T020"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "SC-002": {
     "tasks": [
@@ -236,7 +270,9 @@
       "T020"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "SC-003": {
     "tasks": [
@@ -250,7 +286,9 @@
       "T020"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "SC-004": {
     "tasks": [
@@ -262,7 +300,9 @@
       "T020"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "SC-005": {
     "tasks": [
@@ -271,7 +311,9 @@
       "T020"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
   "SC-006": {
     "tasks": [
@@ -283,6 +325,8 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "implementation-candidate-awaiting-hosted-acceptance"
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/007-convergence.md",
+    "independent_acceptance": "analysis/006-functional-acceptance.md"
   }
 }

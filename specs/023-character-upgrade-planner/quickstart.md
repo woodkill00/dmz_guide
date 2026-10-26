@@ -1,5 +1,11 @@
 # Validation quickstart
 
+## Use the implemented branch
+
+Run the ordinary reader setup (`npm ci`, `npm run build`, `npm start`) from this feature-branch checkout. Open `http://127.0.0.1:4173/progression/?pack=observed%3Aupgrade-review-20261026`, or select **Observed upgrade requirements · build unverified** in the content chooser. Inventory and Planner share that selected per-pack profile. This is a local branch build, not a deployed site.
+
+For an older profile, export its private backup first, then use Settings → **Preview upgrade progress migration** → review → **Apply replacement** or **Cancel**. The original saved profile remains recoverable. Complete/Undo never changes stock; consumption and readiness gates remain unknown. See [acceptance](acceptance.md) for exact tested source and limits.
+
 ## Historical planning verification
 
 The following initial planning commands remain useful; implementation evidence is now recorded in acceptance.md. From the repository root with feature023 selected:

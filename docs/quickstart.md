@@ -41,7 +41,7 @@ Optional coding/agent workflow setup is in the separate [developer quickstart](d
 
 ## Observed upgrades and private progress
 
-The **Observed upgrade requirements · build unverified** catalog is a separate eight-definition snapshot, not the official starter or a complete/current game catalog. Select it on Progression, Inventory or Planner. It contains required amounts and observed effects only; no photographed player stock or progress is imported.
+The **Observed upgrade requirements · build unverified** catalog is a separate eight-definition snapshot, not the official starter or a complete/current game catalog. After building this feature branch, open `/progression/?pack=observed%3Aupgrade-review-20261026` on your running local guide, or select that catalog on Progression, Inventory or Planner. Use `/inventory/` for manual holdings and `/planner/` for Keep/Search; retain the same selected catalog. It contains required amounts and observed effects only; no photographed player stock or progress is imported.
 
 - **Availability** and **completion** are separate. Available is not purchased. “Not marked complete” includes unknown completion. Higher tiers do not complete lower tiers.
 - Confirming or correcting progress records history only: **Recording progress only; update inventory after an in-game purchase.** It never spends/refunds cash or items, changes reserves, or changes focus goals.
@@ -53,7 +53,7 @@ The observed catalog's consumption rules are still unconfirmed, so its numeric K
 
 ### Older backups and recovery
 
-Export a private backup before migration. Settings offers an explicit v1→v2 preview: legacy completed stays completed; locked records availability only; ambiguous unlocked requires review and is not purchased. Cancel changes nothing. Successful revision-checked migration keeps the original saved profile as the previous snapshot. Backups include upgrade progress and pins, never publish them as content.
+Export a private backup before migration. In Settings with the same catalog selected, choose **Preview upgrade progress migration**, inspect the summary, then **Apply replacement** (or **Cancel**). This is an explicit v1→v2 preview: legacy completed stays completed; locked records availability only; ambiguous unlocked requires review and is not purchased. Cancel changes nothing. Successful revision-checked migration keeps the original saved profile as the previous snapshot. Backups include upgrade progress and pins, never publish them as content.
 
 Content-version changes require explicit rebind. Changed or unavailable prior evidence requires review while stable historical completion and retired references remain recoverable; new tiers start unknown. Failed/stale saves do not retry automatically. Export the retained unsaved candidate before reloading or explicitly reconciling. Older clients must reject v2 rather than drop new fields.
 

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `023-character-upgrade-planner`
 **Created**: 2026-10-26
-**Status**: Authorized implementation candidate; local runtime checks pass, independent reanalysis and actual browser/CI acceptance pending
+**Status**: Implemented and independently accepted within the documented evidence limits; draft PR remains unmerged and undeployed. Exact-source verification is in acceptance.md.
 **Input**: Use the supplied upgrade photographs to define upgrade costs, track what a player has not completed, and explain what to keep and look for.
 
 ## User Scenarios & Testing

@@ -1,3 +1,24 @@
+# Final implementation analysis
+
+**Implemented and independently accepted within explicit evidence limits.** All 16 functional requirements and 6 measurable criteria map to the 22 completed tasks. The 10 story acceptance scenarios, 7 grouped architecture decisions and 10 constitution principles were assessed; no remaining buildable convergence task or constitutional exception was found.
+
+Accepted runtime publication: `a5212fc496e234d32e6e9a1097f24852d210c25a`, tree `1c8aa1ca96a70bcfd8d53ce9af9473616978c3dd`. All eight current hosted checks pass, including native and Firefox/WebKit browser/Studio strict health. Independent source/domain/privacy findings are closed; functional/recovery/visual acceptance is signed separately. The original unexplained Windows theme-toggle timeout and its single successful same-head repeat are retained, not called a root-cause fix.
+
+- [Full implementation/convergence mapping](analysis/007-convergence.md)
+- [Acceptance ledger and limitations](acceptance.md)
+- [Independent domain/privacy source review](analysis/004-source-domain-privacy.md)
+- [Independent causal focus review](analysis/005-source-focus-domain.md)
+- [Independent hosted functional/recovery/visual acceptance](analysis/006-functional-acceptance.md)
+- [Reviewer-owned implementation checklist](checklists/implementation-acceptance.md)
+
+Real consumption/current-build/prerequisite/capture facts remain unknown and affected exact advice stays gated. WebKit has functional/computed-layout evidence, not screenshots under the existing CSP policy. No physical-device/manual-screen-reader/WCAG certification, merge or deployment is claimed. The final records-only freeze leaves runtime unchanged; its exact CI outcome belongs in the draft PR ledger, avoiding recursive proof commits.
+
+---
+
+# Historical planning analysis retained
+
+The following records describe planning acceptance before implementation authorization, not current runtime status.
+
 > Historical planning review below remains intact. Authorized implementation is now in progress; current source repairs and verification gates are recorded in [acceptance](acceptance.md), [implementation register](implementation-register.md) and [implementation remediation](analysis/003-implementation-remediation.md). Planning approval is not runtime acceptance.
 
 # Specification analysis summary

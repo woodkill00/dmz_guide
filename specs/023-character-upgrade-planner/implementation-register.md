@@ -1,23 +1,24 @@
 # Implementation work register
 
-Owner: integration writer for all feature023 implementation, tests and documentation except the explicitly delegated UI lane below. Independent domain/privacy and QA reviewers are read-only; no overlapping writers.
+Owner: sole integration writer. All delegated files were handed back; no overlapping active writers. Domain/privacy and functional/visual reviewers remained independent and read-only in the integration checkout.
 
-## Exclusive file ownership
+## Exclusive ownership and handback
 
-- Progress UI writer handed back both source files, `tests/browser/progression.mjs` and `tests/browser/upgrades-rebind.mjs`. All files now belong to the integration writer; no other active writers.
-- Integration writer: all other implementation paths, tests and docs; sole committer/publisher.
-- QA and domain reviewers: read-only checkout; their probes stay outside checkout.
+- UI writer authored only the reserved progression UI pair, then the reserved legacy progression browser adaptation, then the reserved rebind browser helper. All were returned before integration.
+- Integration writer owns all current source, tests and records and is the only committer/publisher.
+- Reviewer-authored probes/modules/reports were prepared outside the checkout and integrated with explicit owner attribution and byte-identity checks.
 
-## Active queue
-1. Review and publish the narrow WebKit-confirmed manual-progress focus repair. Integration writer owns the shared dialog helper, both progress surfaces and regression tests; independent reviewers remain read-only.
-2. Run fresh exact-head native/engine/Studio journeys, inspect compact synthetic artifacts, then make one final records-only convergence freeze (CI evidence for that freeze goes in the PR ledger, not another recursive proof commit).
+## Final queue
 
-Passed: remote/main/tree reconciliation, explicit feature context, reviewed definition, sanitized8/31/22 evidence, dual-version contract and progress tests, direct-advice vectors, full first-checkpoint runtime536passed/0failed/1platformskip, build214routes and structural gates. Corrected-head focused47tests pass. First-checkpoint independent findings are repaired with dedicated regressions; reanalysis pending.
+1. Publish the independently reviewed final records-only freeze and verify its exact-head existing CI. No source change is planned.
+2. Record that final CI result in draft PR 24, report usable routes and evidence limits, then stop implementation monitoring. No recursive proof commit, merge or deployment.
 
-Discovery: deliberate temporary failing browser module imported by both native and engine harnesses caused exit1 before browser startup; deliberate runtime sentinel was found by npm test and caused exactly1failure. Both deliberate failures removed. This proves discovery, not browser acceptance.
+## Gate ledger
 
-Missing: actual browser/Studio/engine execution and synthetic pixel inspection, independent final acceptance. Corrected checkpoint 2 full tests passed544/0failed/1platformskip; checkpoint 3 full tests passed548/0failed/1platformskip; final source rerun passed552/0failed/1platformskip. Real consumption/capture/build/prerequisite completeness remain evidence gates; exact affected advice and readiness remain withheld.
+PASS: approved definition and 8/31/22 source scope; dual-version contracts; manual progress and non-consuming correction; unknown-aware shared advice; v1 migration/restore/rebind; all source/domain/privacy findings; focused-planner compatibility; recovery and bounded work;564 local Node passes + 1 platform skip;40 Python passes;214-route build; all eight hosted checks on a5212fc; actual native/engine/Studio journeys; independently inspected Chrome/Firefox pixels; reviewer implementation checklist; negative discovery and cleaned-up sentinels.
 
-Source ownership: all paths returned to sole integration writer. No feature020, tools/hajin-map, root dependency or constitution changes. Compact artifact upload added to existing quality workflow with the same pinned action and no permission/credential change.
+Retained limitation: first Windows pre-023 theme-toggle timeout was not reproduced in the one authorized same-head repeat, but its cause remains unknown. WebKit screenshots are unavailable under the baseline pinned-tool/CSP policy; full functional/computed-layout and strict-health checks passed. No physical-device/manual-screen-reader certification is claimed.
 
-Latest hosted gate: d009829 native Ubuntu/Windows full browser and Studio health pass with independently inspected synthetic pixels. Firefox completed the engine retry; WebKit keyboard Undo lost initiating focus. Original failing assertion remains required. New production focus delta is not yet browser-verified.
+Evidence-dependent game facts remain unknown by design. No gameplay confirmation is required to finish this approved requirements/progress/gated-advice implementation. No additional observations are admitted automatically. Feature 020, tools/hajin-map, root dependencies, credentials, permissions and constitution remain unchanged.
+
+Exact source, run/artifact identities, failures and signed review references are in acceptance.md. Final records-only CI is the sole remaining publication gate at this freeze.

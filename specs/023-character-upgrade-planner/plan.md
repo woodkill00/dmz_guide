@@ -5,7 +5,7 @@
 
 ## Summary
 
-Extend the native guide's existing catalog, `dmz-upgrade` objectives, private per-pack profile, progression and shared planning ledger. First ship sourced definitions and truthful manual progress; then expose a derived Keep/Search advisory view over all known unfinished upgrades or existing focused goals. Do not build a second character manager or independent arithmetic engine. The accepted planning checkpoint contained only planning documents and a sanitized observation fixture. Authorized implementation now follows this design; current execution and independent-review gates are recorded in acceptance.md.
+Extend the native guide's existing catalog, `dmz-upgrade` objectives, private per-pack profile, progression and shared planning ledger. First ship sourced definitions and truthful manual progress; then expose a derived Keep/Search advisory view over all known unfinished upgrades or existing focused goals. Do not build a second character manager or independent arithmetic engine. The accepted planning checkpoint contained only planning documents and a sanitized observation fixture. Authorized implementation follows this design and has completed the recorded runtime/hosted review gates. Gameplay evidence limits remain in force; acceptance.md records exact source, residuals and publication boundaries.
 
 ## Technical Context
 

@@ -1,5 +1,29 @@
 # Acceptance and verification ledger
 
+## Current implementation acceptance — 2026-10-26
+
+**Implemented; independently accepted within explicit limits. Draft PR 24 remains unmerged and undeployed.** Production was accepted through published `a5212fc496e234d32e6e9a1097f24852d210c25a`, tree `1c8aa1ca96a70bcfd8d53ce9af9473616978c3dd`; CI merge `5f8b4031522847ba8e3c0458b33e568bf875c7a3` was fetched and verified tree-identical. The final records-only freeze changes no application/content/test behavior; its exact final CI result belongs in the PR ledger, not another recursive evidence commit.
+
+- [Repository quality run 40356453421](https://github.com/woodkill00/dmz_guide/actions/runs/40356453421): six current jobs successful, including native Ubuntu/Windows browser + Studio, Firefox/WebKit browser + Studio strict health, repository checks and Node 24 compatibility.
+- [Map run 40356453627](https://github.com/woodkill00/dmz_guide/actions/runs/40356453627): both Node 22/24 jobs successful. No feature 020 or map source was changed.
+- Frozen local source: **564 Node tests passed, 0 failed, 1 Windows-only platform skip**; Python **40 passed**; format, structural/provenance and full-range whitespace checks passed; build **214 routes plus 404**. Supported Windows CI executed **565 passed, 0 failed, 0 skipped**. Native clean extraction verified **274 file hashes**, native links, exact content and owned runtime child.
+- Actual browser reference p95, five warmups + 50 measured runs at the maximum-valid synthetic fixture shape of 5,766 roots: Ubuntu Chromium **16.1 ms**, Windows Chromium **29.2 ms**, Firefox **57 ms**, WebKit **32 ms** (all below250 ms). Actual 121-material keyboard paging is 50/50/21 with at most 50 rendered rows and no inserted goals. Exact versions/logical-CPU metadata are in the independent report and artifacts.
+- Independent [source/domain/privacy review](analysis/004-source-domain-privacy.md), [causal focus source addendum](analysis/005-source-focus-domain.md), [functional focus review](analysis/005-source-focus-functional.md), [hosted functional/recovery/visual report](analysis/006-functional-acceptance.md) and [reviewer-owned implementation checklist](checklists/implementation-acceptance.md) are attributed records, not implementer self-approval. [Convergence](analysis/007-convergence.md) maps all 16 FR + 6 SC and 10 story acceptance scenarios.
+
+### Actual UI/pixel evidence
+
+Current compact artifact IDs: Ubuntu 12665818344, Windows 12668420959 (authorized repeat), Firefox 12665633997, WebKit 12666441943. Independent download digests, exact source identity, actual Studio v1/v2 roundtrips and recovery/accounting cases are in the signed report. Chromium/Firefox actual pixels cover 320/390 px and 200% text; full-height tile/overlap audits and 239-PNG continuity were independently checked. **WebKit is functional/computed-layout evidence only**, following the existing pinned-Playwright/CSP policy; no security policy or health assertion was weakened to obtain screenshots. Screen-reader labels/keyboard tests are not manual screen-reader, physical-device or full WCAG certification.
+
+### Retained failures and residual limits
+
+The first Windows attempt on this accepted head timed out in unchanged pre-feature inventory pagination during dark→light keyboard activation after removing 200% CSS. Artifact 12666725686 establishes the phase, not the cause. One parent-authorized same-head Windows-only diagnostic repeat passed Node, browser, Studio, strict health and packaging. **The original timeout remains unexplained and is a test-stability residual, not a claimed fix or proven infrastructure error.** Earlier actual failures and their repairs remain below, including the native-focus diagnosis; successful reruns never retroactively turn failed attempts into passes.
+
+Real consumption, capture date, current-build applicability and exhaustive prerequisite knowledge remain **UNKNOWN**. Requirements/manual progress work; affected exact numeric advice/readiness stays gated. No original private screenshots, owner holdings, private source IDs or additional unreviewed observations were published. No merge, deployment, credential, permission, dependency or constitution change is implied.
+
+## Historical planning and implementation records
+
+The sections below preserve their original checkpoint claims. Statements that implementation had not run describe the historical planning checkpoint, not the current accepted implementation above.
+
 ## Planning deliverable
 
 Base: `407fa56afa43104c3342f4ed73b800f292bacf33` on main, verified2026-10-26. Scope: `specs/023-character-upgrade-planner/**` only. Pinned Spec Kit v1.2.2 instructions/templates were used manually; no claim that merely reading a skill ran an autonomous lifecycle command. Feature creation script ran explicit number23, then separate local Git branch creation and ignored active-feature selection. Setup-plan, checklist context and setup-tasks scripts ran. No extension hooks file was present. Clarification scan resolved behavior under unknown facts; gameplay gates remain open.
