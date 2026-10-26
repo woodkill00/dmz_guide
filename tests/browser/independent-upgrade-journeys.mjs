@@ -366,7 +366,33 @@ async function setProgress(
     );
     return after;
   } finally {
-    await page.evaluate(() => window.__qaUpgradeFocusTrace?.restore());
+    try {
+      const timeline = await page.evaluate(
+        () => window.__qaUpgradeFocusTrace?.events,
+      );
+      const engine = page.context().browser().browserType().name();
+      const route = new URL(page.url()).pathname.replace(/[^a-z0-9]+/gi, "-");
+      const activation = cancel ? "cancel" : double ? "double" : "keyboard";
+      await writeFile(
+        `test-results/upgrade023-independent/focus-${engine}-${route}-${field}-${value}-r${before.revision}-${activation}.json`,
+        JSON.stringify(
+          {
+            source: process.env.GITHUB_SHA || "local",
+            syntheticStateOnly: true,
+            diagnosticOnly: true,
+            field,
+            value,
+            revision: before.revision,
+            activation,
+            timeline,
+          },
+          null,
+          2,
+        ),
+      );
+    } finally {
+      await page.evaluate(() => window.__qaUpgradeFocusTrace?.restore());
+    }
   }
 }
 async function exportCurrent(page) {
