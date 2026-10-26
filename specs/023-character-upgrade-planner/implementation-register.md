@@ -1,24 +1,28 @@
 # Implementation work register
 
-Owner: sole integration writer. All delegated files were handed back; no overlapping active writers. Domain/privacy and functional/visual reviewers remained independent and read-only in the integration checkout.
+## Active amendment — 2026-10-26
 
-## Exclusive ownership and handback
+Accepted baseline: b935b40b, tree2d4d5b93. Runtime/source and all eight hosted checks passed before the owner requested confirmed purchase recording and recorded usage counters. That historical acceptance remains in acceptance.md; it is not acceptance of this new scope.
 
-- UI writer authored only the reserved progression UI pair, then the reserved legacy progression browser adaptation, then the reserved rebind browser helper. All were returned before integration.
-- Integration writer owns all current source, tests and records and is the only committer/publisher.
-- Reviewer-authored probes/modules/reports were prepared outside the checkout and integrated with explicit owner attribution and byte-identity checks.
+Owner: sole integration writer for all existing source/contracts/tests and publication. Independent domain/privacy and functional/browser reviewers remain read-only in this checkout. The UI writer handed back the new `src/client/upgrade-spending.mjs`; the integrator now owns its integration and all source changes. The integrator owns all existing files and all domain/profile/tests except the three reviewer-owned browser modules. No overlapping writers.
 
-## Final queue
+## Next two steps
 
-1. Publish the independently reviewed final records-only freeze and verify its exact-head existing CI. No source change is planned.
-2. Record that final CI result in draft PR 24, report usable routes and evidence limits, then stop implementation monitoring. No recursive proof commit, merge or deployment.
+1. Independent frozen domain/identity/accounting and integrated-UI source review after first-review repairs.
+2. Integrate reviewer-authored browser journeys, run discovery/capacity checks, then exact-head hosted acceptance.
 
-## Gate ledger
+## Gates
 
-PASS: approved definition and 8/31/22 source scope; dual-version contracts; manual progress and non-consuming correction; unknown-aware shared advice; v1 migration/restore/rebind; all source/domain/privacy findings; focused-planner compatibility; recovery and bounded work;564 local Node passes + 1 platform skip;40 Python passes;214-route build; all eight hosted checks on a5212fc; actual native/engine/Studio journeys; independently inspected Chrome/Firefox pixels; reviewer implementation checklist; negative discovery and cleaned-up sentinels.
+PASS: fresh remote PR24/main check b935b40b/407fa56; reconstructed feature checkout tree-identical after workspace reset; no existing unrelated checkout overwritten; active feature explicitly023; no extension hooks. Owner consumption clarification is scoped to8 definitions/31costs and separate from original images.
 
-Retained limitation: first Windows pre-023 theme-toggle timeout was not reproduced in the one authorized same-head repeat, but its cause remains unknown. WebKit screenshots are unavailable under the baseline pinned-tool/CSP policy; full functional/computed-layout and strict-health checks passed. No physical-device/manual-screen-reader certification is claimed.
+PASS: amended definition review at d6cc168 by both independent lanes; original amount/effect/ID preservation and separate source admission tests5/5; focused domain/profile/progress/spending tests27/27. Restored baseline564passes/1platformskip.
 
-Evidence-dependent game facts remain unknown by design. No gameplay confirmation is required to finish this approved requirements/progress/gated-advice implementation. No additional observations are admitted automatically. Feature 020, tools/hajin-map, root dependencies, credentials, permissions and constitution remain unchanged.
+PASS: latest local full Node suite581 passes/0 failures/1 Windows platform skip (582 total); exact post-increment storage/compact-backup bounds, prospective purchase+reversal revisions, actual eight-upgrade purchase/reversal and 2M currency regressions. Structural/build/format pass. Earlier Node harness failures from new imported helpers were repaired without removing inventory assertions.
 
-Exact source, run/artifact identities, failures and signed review references are in acceptance.md. Final records-only CI is the sole remaining publication gate at this freeze.
+REVIEW: first frozen domain6d5defb HOLD exposed partial-coverage admission and stored-revision byte bounds; current source repairs both plus true immediate-reversal capacity. Shared UI/reset/restore/rebind implemented; independent source/runtime re-review pending.
+
+PENDING: reviewer browser integration and T025–T030 acceptance; exact-head Node/Python/browser/engine/Studio/package gates and synthetic pixel review; final convergence and independent source/domain/privacy/functional approval.
+
+Historical limits remain: original Windows theme timeout unexplained; WebKit no automated pixels under existing pinned-tool/CSP policy; no physical-device/manual-screen-reader certification. New owner-confirmed consumption closes only that scoped arithmetic gate, not build/prerequisite/capture completeness. No account sync or actual game action. Parent owns a later authorized merge; this lane must not merge or deploy.
+
+All legacy final ownership handbacks remain complete. No active writes to feature020, tools/hajin-map, dependencies, credentials, permissions or constitution.

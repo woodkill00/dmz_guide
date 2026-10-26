@@ -89,7 +89,7 @@ export async function runIndependentUpgradeAdviceUI({
       (await observedRow.locator("[data-advice-search]").textContent()).trim(),
       "Not known",
     );
-    // Deliberately synthetic private stock cannot certify the observed unknown consumption.
+    // Scoped owner confirmation permits known-direct-cost arithmetic, not build/readiness proof.
     await page.evaluate(async () => {
       const { state } = await import("/assets/src/client/common.mjs");
       const { saveProfile } = await import("/assets/src/storage/store.mjs");
@@ -101,15 +101,23 @@ export async function runIndependentUpgradeAdviceUI({
     await ready(page);
     assert.equal(
       (await observedRow.locator("[data-advice-keep]").textContent()).trim(),
-      "Not known",
+      "6",
     );
     assert.equal(
       (await observedRow.locator("[data-advice-search]").textContent()).trim(),
-      "Not known",
+      "9",
     );
-    assert.match(await observedRow.textContent(), /Consumption not confirmed/);
+    assert.match(
+      await page.locator("#upgrade-advice-output").textContent(),
+      /Known requirements only.*additional costs may exist/s,
+    );
+    assert.match(
+      await page.locator("#upgrade-advice-output").textContent(),
+      /not current-build|not.*current.*build/i,
+    );
+    assert(!/Consumption not confirmed/.test(await observedRow.textContent()));
     evidence.scenarios.push(
-      "Real observed definitions remain numeric-gated before and after synthetic entered stock; manual stock never verifies consumption",
+      "Owner-confirmed observed consumption plus synthetic entered stock gives known-direct Keep6/Search9; absent stock remains unknown and build/prerequisite completeness stays unverified",
     );
     // Create a validated *separate* local pack; never relabel real observations as confirmed mechanics.
     await page.evaluate(
@@ -442,6 +450,48 @@ export async function runIndependentUpgradeAdviceUI({
     );
 
     await failedWatchPinRecovery();
+    // Preserve the old unknown-consumption gate on a separate explicitly fictional pack.
+    const unknownPack = "qa023:unknown-consumption";
+    await page.evaluate(
+      async ({ unknownPack, ITEM }) => {
+        const { state } = await import("/assets/src/client/common.mjs");
+        const { validatePack } = await import(
+          "/assets/src/content/validate.mjs"
+        );
+        const { newProfile } = await import("/assets/src/domain/profile.mjs");
+        const { commitRecord, saveProfile } = await import(
+          "/assets/src/storage/store.mjs"
+        );
+        const p = structuredClone(state.pack);
+        p.id = unknownPack;
+        p.title = "FICTIONAL unknown-consumption gate";
+        p.objectives = p.objectives.filter((o) => o.id === "qa023:first");
+        p.objectives[0].requirements[0].consumption = "unknown";
+        validatePack(
+          p,
+          await (await fetch("/assets/schemas/pack.schema.json")).json(),
+        );
+        await commitRecord("content", p.id, { pack: p, revision: 0 }, 0);
+        const f = newProfile(p);
+        f.inventory[ITEM] = 6;
+        await saveProfile(f, 0);
+      },
+      { unknownPack, ITEM },
+    );
+    await page.goto(`${base}/planner/?pack=${encodeURIComponent(unknownPack)}`);
+    await ready(page);
+    assert.equal(
+      (await row(page).locator("[data-advice-keep]").textContent()).trim(),
+      "Not known",
+    );
+    assert.equal(
+      (await row(page).locator("[data-advice-search]").textContent()).trim(),
+      "Not known",
+    );
+    assert.match(await row(page).textContent(), /Consumption not confirmed/);
+    evidence.scenarios.push(
+      "A separate fictional unknown-consumption fixture remains numeric-gated despite entered stock; scoped owner confirmation never certifies other packs",
+    );
 
     async function failedWatchPinRecovery() {
       const observedPack = "observed:upgrade-review-20261026",

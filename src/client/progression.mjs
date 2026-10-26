@@ -1,3 +1,8 @@
+import {
+  spendingActions,
+  renderSpendingSummary,
+  installSpending,
+} from "./upgrade-spending.mjs";
 import { init, state, $, esc, error, persist, download } from "./common.mjs";
 import { closeDialog } from "./dialog-focus.mjs";
 import {
@@ -36,7 +41,7 @@ function setBusy(value) {
 }
 function upgradeControls(row, guard) {
   const upgrade = row.upgrade,
-    readonly = state.profile.schemaVersion !== 2,
+    readonly = state.profile.schemaVersion < 2,
     settings = `/settings/?pack=${encodeURIComponent(state.pack.id)}`,
     select = (field, values) =>
       `<label>Manual ${field} for ${esc(row.name)}<select data-upgrade-id="${esc(row.id)}" data-upgrade-field="${field}"${readonly ? " disabled data-upgrade-readonly" : ""}>${values.map((value) => `<option value="${value}"${upgrade[field] === value ? " selected" : ""}>${value === "completed" ? "Recorded completed" : value}</option>`).join("")}</select></label>`;
@@ -46,7 +51,8 @@ ${upgrade.tierLabel ? `<p>Observed tier: ${esc(guard.text(upgrade.tierLabel))}. 
 ${upgrade.reviewRequired ? '<p class="notice">Review required: check the recorded completion and availability against current evidence. Legacy ambiguity or changed content may need attention; historical completion is not automatically changed.</p>' : ""}
 ${readonly ? `<p class="notice">This older profile is read-only for upgrade progress. <a href="${esc(settings)}">Preview and confirm profile migration in Settings</a> before editing.</p>` : ""}
 ${select("completion", upgradeCompletionStates)}${select("availability", upgradeAvailabilityStates)}
-<p>Recording progress only; update inventory after an in-game purchase. To undo or correct a record, select the previous state and confirm. No inventory is spent or refunded.</p>
+<p>These manual controls correct status only; they never change stock or recorded spending. Use Record in-game purchase below only when saved stock still predates the purchase.</p>
+${spendingActions(state.pack, state.profile, row.id)}
 <h3>Listed requirements</h3><ul>${row.requirements.map((requirement) => (requirement.hidden ? "<li>Spoiler-protected requirement. Reveal spoilers to inspect it.</li>" : `<li>${reference(requirement)}: ${requirement.quantity === null ? "Quantity unknown" : esc(requirement.quantity)} · ${requirement.consumption === "unknown" ? "Consumption unknown" : esc(requirement.consumption)}</li>`)).join("") || "<li>No requirements listed; this is not evidence of zero cost.</li>"}</ul>
 <p>Listed requirements are not a remaining shopping budget. Unknown consumption or quantities prevent exact affected advice; recorded progress does not update held stock.</p>`;
 }
@@ -121,6 +127,7 @@ ${r.url ? `<p><a href="${esc(r.url)}">Open selected private record</a></p>` : ""
       )
       .join("") ||
     '<section class="panel"><h2>No matching records.</h2><p>This starter pack may not contain a verified catalog for this track. Clear filters or add a sourced record in the editor.</p></section>';
+  renderSpendingSummary();
   setBusy(saving);
 }
 // One save at a time avoids local controls racing the revision used by persist.
@@ -181,7 +188,7 @@ function requestUpgrade(control) {
   control.value = row.upgrade[field];
   if (saving || state.loading || upgradeTarget || value === row.upgrade[field])
     return;
-  if (state.profile.schemaVersion !== 2) return;
+  if (state.profile.schemaVersion < 2) return;
   upgradeTarget = {
     id,
     field,
@@ -368,4 +375,5 @@ window.addEventListener("popstate", () => {
   navigation++;
   dismissUpgrade({ focus: false });
 });
+installSpending({ onSaved: render, isDirty: () => saving });
 init(render).catch(error);

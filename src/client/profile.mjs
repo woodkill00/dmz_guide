@@ -1,4 +1,9 @@
 import {
+  spendingActions,
+  renderSpendingSummary,
+  installSpending,
+} from "./upgrade-spending.mjs";
+import {
   upgradeProgressFor,
   setUpgradeProgress,
   upgradeCompletionStates,
@@ -14,6 +19,7 @@ import {
 } from "./inventory-window.mjs";
 import {
   profileChangeSummary,
+  safeReferenceCount,
   previewContentRebind,
 } from "../domain/profile-preview.mjs";
 import { planShared } from "../domain/shared-plan.mjs";
@@ -31,6 +37,8 @@ import {
 } from "./common.mjs";
 import {
   newProfile,
+  resetProfile,
+  stockLimit,
   parseProfile,
   previewProfile,
   previewUpgradeMigration,
@@ -86,7 +94,7 @@ function renderInventoryPage(matches) {
   $("#inventory-fields").innerHTML = ids
     .map((id) => {
       const r = inventoryIndex.get(id);
-      return `<fieldset class="panel" data-inventory-item="${esc(r.id)}" ${small && !visible.has(id) ? "hidden" : ""}><legend>${esc(r.name)} <small>(${esc(r.unit)})</small></legend><label>Owned quantity<input name="owned:${esc(r.id)}" data-id="${esc(r.id)}" data-field="inventory" type="number" min="0" max="1000000" value="${esc(inventoryDraft.raw.get(`owned:${r.id}`))}" placeholder="Not entered"></label><button type="button" data-clear-stock="${esc(r.id)}">Clear stock (not entered)</button><label>Protected reserve<input name="reserve:${esc(r.id)}" data-id="${esc(r.id)}" data-field="reserves" type="number" min="0" max="1000000" value="${esc(inventoryDraft.raw.get(`reserve:${r.id}`))}" required></label></fieldset>`;
+      return `<fieldset class="panel" data-inventory-item="${esc(r.id)}" ${small && !visible.has(id) ? "hidden" : ""}><legend>${esc(r.name)} <small>(${esc(r.unit)})</small></legend><label>Owned quantity<input name="owned:${esc(r.id)}" data-id="${esc(r.id)}" data-field="inventory" type="number" min="0" max="${stockLimit(state.profile, r)}" value="${esc(inventoryDraft.raw.get(`owned:${r.id}`))}" placeholder="Not entered"></label><button type="button" data-clear-stock="${esc(r.id)}">Clear stock (not entered)</button><label>Protected reserve<input name="reserve:${esc(r.id)}" data-id="${esc(r.id)}" data-field="reserves" type="number" min="0" max="${stockLimit(state.profile, r)}" value="${esc(inventoryDraft.raw.get(`reserve:${r.id}`))}" required></label></fieldset>`;
     })
     .join("");
   $("#inventory-pagination").hidden = small;
@@ -122,8 +130,9 @@ function render() {
     checkpointInventory();
     filterInventory();
   }
+  renderSpendingSummary();
   if ($("#migrate-upgrade-profile"))
-    $("#migrate-upgrade-profile").hidden = state.profile.schemaVersion === 2;
+    $("#migrate-upgrade-profile").hidden = state.profile.schemaVersion === 3;
   if ($("#version-status")) {
     const summary = profileChangeSummary(
       state.profile,
@@ -171,7 +180,11 @@ $("#inventory-form")?.addEventListener(
         !inventoryDraft?.firstInvalid()
       )
         return;
-      error(new Error("Quantity must be an integer from 0 to 1000000."));
+      error(
+        new Error(
+          "Quantity must be a nonnegative integer within this field’s displayed limit (1000000, or 2000000 for v3 currency).",
+        ),
+      );
       revealInvalidInventory();
     }, 0);
   },
@@ -225,7 +238,7 @@ function preview(p) {
   stagedPack = state.pack.id;
   stagedRevision = state.revision;
   $("#restore-summary").innerHTML =
-    `<p><strong>Replace this profile, not add quantities.</strong></p><p>Catalog: ${esc(summary.catalog)}. Current version: ${esc(summary.currentVersion)}. Proposed version: ${esc(summary.proposedVersion)}.</p><p>${summary.versionMismatch ? "Different content version: planning remains blocked until explicit rebind." : "Content versions match."} Unresolved references: ${summary.unresolvedCount}.</p><p>Unknown version text is withheld while spoilers are hidden. Use the existing spoiler preference before previewing if you want to inspect it.</p>` +
+    `<p><strong>Replace this profile, not add quantities.</strong></p>${summary.historyChanged ? '<p class="notice"><strong>Recorded spending history will be replaced.</strong> Restoring a backup never replays purchases or deducts stock. Earlier/manual game spending may be absent; keep an export and the previous snapshot before replacement.</p>' : ""}<p>Catalog: ${esc(summary.catalog)}. Current version: ${esc(summary.currentVersion)}. Proposed version: ${esc(summary.proposedVersion)}.</p><p>${summary.versionMismatch ? "Different content version: planning remains blocked until explicit rebind." : "Content versions match."} Unresolved references: ${summary.unresolvedCount}.</p><p>Unknown version text is withheld while spoilers are hidden. Use the existing spoiler preference before previewing if you want to inspect it.</p>` +
     summary.sections
       .map(
         (section) =>
@@ -283,9 +296,20 @@ $("#rebind-profile")?.addEventListener("click", async () => {
       content?.previous?.pack || null,
     );
     preview(review.candidate);
+    const count = (ids, noun) => {
+      const visible = safeReferenceCount(
+        ids,
+        pack,
+        state.profile.spoilers,
+        content?.previous?.pack,
+      );
+      return visible === null
+        ? `Protected or unresolved ${noun} (count withheld)`
+        : `${visible} ${noun}`;
+    };
     $("#restore-summary").insertAdjacentHTML(
       "afterbegin",
-      `<p>Upgrade evidence review: ${review.changed.length} saved records require review; ${review.retired.length} retired references remain recoverable; ${review.added.length} new definitions have no inferred progress. ${review.comparisonKnown ? "Compared with the retained prior content snapshot." : "Prior content facts unavailable: compare the current requirements and sources manually; no unchanged-cost claim is made."} Historical completion and stock are retained.</p>`,
+      `<p>Upgrade evidence review: ${count(review.changed, "saved records require review")}; ${count(review.retired, "retired references remain recoverable")}; ${count(review.added, "new definitions have no inferred progress")}. ${review.comparisonKnown ? "Compared with the retained prior content snapshot." : "Prior content facts unavailable: compare the current requirements and sources manually; no unchanged-cost claim is made."} Historical completion and stock are retained.</p>`,
     );
   } catch (reason) {
     error(reason);
@@ -305,7 +329,7 @@ $("#reset-profile")?.addEventListener("click", () => {
   resetRevision = state.revision;
   $("#reset-confirm").hidden = false;
   $("#reset-confirm p").textContent =
-    `Clear inventory, reserves, goals and progress for ${state.pack.title}? A previous snapshot is retained.`;
+    `Clear inventory, reserves, goals and progress for ${state.pack.title}? Recorded spending history and duplicate-purchase guards stay unchanged. A previous snapshot is retained.`;
 });
 $("#cancel-reset")?.addEventListener(
   "click",
@@ -317,7 +341,10 @@ $("#confirm-reset")?.addEventListener("click", async () => {
     error(new Error("Reset confirmation is stale. Review the target again."));
     return;
   }
-  const candidate = { ...newProfile(state.pack), revision: state.revision };
+  const candidate = {
+    ...resetProfile(state.profile, state.pack),
+    revision: state.revision,
+  };
   if (await persist(candidate)) {
     $("#reset-confirm").hidden = true;
     render();
@@ -327,9 +354,23 @@ $("#migrate-upgrade-profile")?.addEventListener("click", () => {
   try {
     const migration = previewUpgradeMigration(state.profile, state.pack);
     preview(migration.candidate);
+    const moved = safeReferenceCount(
+        migration.moved,
+        state.pack,
+        state.profile.spoilers,
+      ),
+      ambiguous = safeReferenceCount(
+        migration.ambiguous,
+        state.pack,
+        state.profile.spoilers,
+      );
+    const detail =
+      moved === null || ambiguous === null
+        ? "Protected migration details withheld; reveal spoilers to inspect. Legacy ambiguity still requires review."
+        : `${moved} resolved entries; ${ambiguous} ambiguous legacy unlocked entries require review.`;
     $("#restore-summary").insertAdjacentHTML(
       "afterbegin",
-      `<p>Upgrade format migration: ${migration.moved.length} resolved entries; ${migration.ambiguous.length} ambiguous legacy unlocked entries require review. Inventory is unchanged. Cancel leaves the original profile untouched.</p>`,
+      `<p>Upgrade format migration: ${detail} Profile v3 enables future spending records only; earlier/manual spending remains unrecorded. Inventory is unchanged. Cancel leaves the original profile untouched.</p>`,
     );
   } catch (reason) {
     error(reason);
@@ -359,7 +400,7 @@ $("#inventory-fields")?.addEventListener("click", (event) => {
 });
 function upgradeControls(record) {
   const progress = upgradeProgressFor(state.pack, state.profile, record.id);
-  if (state.profile.schemaVersion !== 2)
+  if (state.profile.schemaVersion < 2)
     return `<p>${esc(record.name)}: ${esc(progress.completion)} · ${progress.reviewRequired ? "Legacy unlocked needs review. " : ""}<a href="/settings/?pack=${encodeURIComponent(state.pack.id)}">Preview and confirm upgrade progress migration</a></p>`;
   return `<fieldset><legend>${esc(record.name)}</legend>${[
     ["completion", upgradeCompletionStates],
@@ -371,7 +412,7 @@ function upgradeControls(record) {
     )
     .join(
       "",
-    )}<p>Recording progress only; update inventory after an in-game purchase.${progress.reviewRequired ? " Legacy unlocked requires review." : ""}</p></fieldset>`;
+    )}<p>These manual controls correct status only; stock and recorded spending remain unchanged.${progress.reviewRequired ? " Review required against current evidence." : ""}</p>${spendingActions(state.pack, state.profile, record.id)}</fieldset>`;
 }
 let pendingUpgrade = null;
 function dismissUpgradeProgress({ focus = true } = {}) {
@@ -418,7 +459,7 @@ function stageUpgradeProgress(control) {
     dialog.id = "upgrade-progress-confirm";
     dialog.setAttribute("aria-labelledby", "upgrade-progress-title");
     dialog.innerHTML =
-      '<h2 id="upgrade-progress-title">Confirm manual progress</h2><p>Recording progress only; update inventory after an in-game purchase.</p><p id="upgrade-progress-target"></p><button id="upgrade-progress-apply">Record progress</button><button id="upgrade-progress-cancel">Cancel</button><p id="upgrade-progress-result" role="status"></p><button id="upgrade-progress-export" hidden>Export unsaved progress candidate</button>';
+      '<h2 id="upgrade-progress-title">Confirm manual progress</h2><p>Status-only correction: no stock deduction, refund or spending record. If stock already reflects the purchase, this avoids recording it twice.</p><p id="upgrade-progress-target"></p><button id="upgrade-progress-apply">Record progress</button><button id="upgrade-progress-cancel">Cancel</button><p id="upgrade-progress-result" role="status"></p><button id="upgrade-progress-export" hidden>Export unsaved progress candidate</button>';
     document.body.append(dialog);
     $("#upgrade-progress-cancel").onclick = () => {
       if (state.saving) return;
@@ -479,6 +520,7 @@ function stageUpgradeProgress(control) {
 document.addEventListener("pack-changing", () => {
   dismissUpgradeProgress({ focus: false });
 });
+installSpending({ onSaved: render, isDirty: hasUnsavedDraft });
 init(render).catch(error);
 
 function filterInventory(reset = true) {

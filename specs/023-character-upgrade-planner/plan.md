@@ -3,6 +3,10 @@
 **Branch**: `023-character-upgrade-planner` | **Date**: 2026-10-26 | **Spec**: [spec.md](spec.md)
 **Reviewed baseline**: `main` at `407fa56afa43104c3342f4ed73b800f292bacf33`
 
+## Scope amendment — 2026-10-26
+
+Owner requested confirmed consumption bookkeeping and recorded usage counters after baseline b935b40b passed. Extend this same feature/PR, not a new account system. New T023–T032 are pending; baseline evidence is historical, not acceptance of the amendment. Strict profile v3, pure transaction/snapshot validation and a shared native dialog/summary controller are defined in [upgrade-spending](contracts/upgrade-spending.md). Independent definition review precedes dependent code. No new dependency, service, game action or deployment; parent alone owns merge after updated gates.
+
 ## Summary
 
 Extend the native guide's existing catalog, `dmz-upgrade` objectives, private per-pack profile, progression and shared planning ledger. First ship sourced definitions and truthful manual progress; then expose a derived Keep/Search advisory view over all known unfinished upgrades or existing focused goals. Do not build a second character manager or independent arithmetic engine. The accepted planning checkpoint contained only planning documents and a sanitized observation fixture. Authorized implementation follows this design and has completed the recorded runtime/hosted review gates. Gameplay evidence limits remain in force; acceptance.md records exact source, residuals and publication boundaries.
@@ -16,7 +20,7 @@ Extend the native guide's existing catalog, `dmz-upgrade` objectives, private pe
 **Target**: Native static guide; local private state, no server/account/game synchronization.
 **Performance**: Derived advice p95 <=250ms on recorded Chromium reference environment at supported limits; 20,000 total pack records, 500,000 work steps, safe aggregate <=10^12. Existing 100 active execution goals remains unchanged.
 **Scope**: Eight new observed definitions, 31 requirement rows, 22 labels; not an exhaustive or current-build verified catalog.
-**Constraints**: Unknown consumption/prerequisites/build cannot be normalized into invented truth. No original screenshots or private player state published.
+**Constraints**: Scoped owner-confirmed consumption is separate from still-unknown prerequisites/build; other unknown consumption cannot be normalized into invented truth. No original screenshots or private player state published.
 
 ## Constitution Check
 
@@ -39,7 +43,7 @@ Pre-design and post-design: no constitutional exception requested. The constitut
 3. **Progress schema evolution.** Profile v2 adds authoritative `upgradeProgress` and private `watchPins`; existing generic completion remains authoritative only for non-upgrade objectives. Preview v1→v2 migration and retain original state in a recovery snapshot plus bounded legacy-state annotations. A shared accessor/mutator is used by progression, the inventory page’s existing prerequisite-state controls, single planner and shared planner, preventing the current `unlocked`/`completed` inconsistency. Only explicit upgrade completion suppresses its costs. Legacy `unlocked` upgrades require review, not auto-purchase inference. See [progress contract](contracts/upgrade-progress.md).
 4. **One ledger, two uses.** Extract/reuse bounded pure demand/stock allocation logic from `src/domain/shared-plan.mjs`; do not sum per-goal deficits or duplicate it in UI. `src/domain/upgrade-advice.mjs` selects all-known or focused upgrade roots and projects explanations. All-known advice uses a transient root set and bounded graph traversal, never pushes all records into `profile.goals`. It reuses shared prerequisite deduplication and the direct stock-allocation kernel (consumed sums, retained floors and reserves). Advisory calculation explicitly disables crafting-route expansion; direct required items are the pickup targets. Existing route/batch crafting remains an optional separate focused-planner journey, never simultaneously charged as mandatory ingredient pickups. Execution simulation remains capped at 100 active goals and separately labeled. Advice is not an executable purchase plan or global optimum.
 5. **Unknowns fail closed.** Requirements/usage/progress remain available with unknown mechanics. Exact known-cost Keep/Search numbers are withheld for affected items when consumption, amount or inventory is unresolved, and incompatible scope joins are rejected. Missing prerequisites/tiers and unknown live-build applicability instead label valid arithmetic as partial observed-scope totals/gaps (“Known requirements only — additional costs may exist”). They block ready-now/current/exhaustive claims, not calculations over known direct costs. Show typed uncertainty, included/excluded records and missing-information reasons. Confirming user inventory does not verify a source or mechanic.
-6. **Safe completion.** Manual completion is metadata only. Do not implement a purchase/consume/turn-in action. Completing or undoing never changes stock. All relevant views explain that stock must reflect the player's latest in-game purchase; saved stock is a manual snapshot, not live inventory.
+6. **Safe completion and spending.** Status-only correction remains metadata-only. A distinct explicit purchase-recording transaction consumes known direct costs once from saved pre-purchase stock, marks completion and appends an immutable snapshot. Existing CAS persistence is the atomic boundary. Unknown build/prerequisites do not prevent recording a user-confirmed event; no readiness assertion is made. Safe latest-event reversal is separately confirmed, append-only and snapshot-based; no silent refund. See the transaction contract for exact identity, bounds and reserve policy.
 7. **Native UI reuse.** Add an upgrade view to the existing progression journey and Keep/Search to existing planner/item details, preserving pack selection, source display, focused goals, inventory window and local detail links. The inventory page must show absence as blank/Not entered, accept explicit0 as a real change, and provide deliberate clear/unset with cancel/save/paging preservation; update its inventory-window draft controller, not just the form. Existing location/list links may be reused only when supported; feature020/map ingestion is not a dependency.
 
 ## Project Structure
@@ -82,10 +86,14 @@ tests/browser/upgrades.mjs                       # proposed end-to-end journeys
 
 - Global pack/profile versioning touches multiple readers: serialize shared-contract ownership and test both versions through catalog/editor/import/export/build, not only the new page.
 - Legacy unlocked meant different things in two planners: central accessor plus explicit migration review and existing non-upgrade tests.
-- Incorrect apparent availability after historical completion: stock remains untouched with prominent manual-reconciliation copy; do not simulate automatic spending.
+- Double debit after manual stock reconciliation: purchase acknowledgement explicitly requires pre-purchase stock; status-only correction remains separate. Active ledger identity prevents re-debit after completion correction/reset. Missing/reserved stock and stale previews refuse safely.
 - Unknown mechanics limits immediate numeric usefulness: show definitions/usage now; after quantity/consumption/stock confirmation, show known direct-cost calculations with partial observed-scope warnings rather than wait for a complete game database.
 - Catalog growth exceeds execution cap: bounded advisory engine reuses ledger internals, never invokes execution by splitting into batches with reused stock. Refuse over-budget advisory calculation rather than return partial exact totals.
 
 ## Complexity Tracking
 
-No constitutional violation. Two explicit version adapters are justified by strict current schemas and backward compatibility. A separate database, account system, second planner, automated screenshot import and consumption transaction were rejected as unnecessary scope.
+No constitutional violation. Two explicit version adapters are justified by strict current schemas and backward compatibility. A separate database, account system, second planner, automated screenshot import were rejected as unnecessary scope. The later authorized transaction extends the existing profile with v3 rather than introducing another store; append-only snapshots are required for safe accounting and recovery.
+
+## Amended implementation order
+
+T023 definition/independent review → T024 scoped source admission → T025 strict v3 migration/readers → T026 pure snapshot transactions/totals → T027 shared UI → T028 restore/rebind/history replacement → T029 independent UI/adversarial journeys → T030 capacity/discovery/performance → T031 full exact-head native/engine/Studio gates/docs → T032 convergence/reviews. The integration owner serializes source/contracts; a separately reserved new UI module may be delegated after APIs freeze. No overlapping writers.

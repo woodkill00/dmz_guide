@@ -11,6 +11,7 @@ test("migration preview preserves ambiguous unlocked and missing inventory witho
   const before = { ...newProfile(p), schemaVersion: 1 };
   delete before.upgradeProgress;
   delete before.watchPins;
+  delete before.spendHistory;
   before.completion = {
     "test:first": "unlocked",
     "test:second": "completed",
@@ -19,7 +20,7 @@ test("migration preview preserves ambiguous unlocked and missing inventory witho
   const original = structuredClone(before),
     result = previewUpgradeMigration(before, p);
   assert.deepEqual(before, original);
-  assert.equal(result.candidate.schemaVersion, 2);
+  assert.equal(result.candidate.schemaVersion, 3);
   assert.deepEqual(result.candidate.upgradeProgress["test:first"], {
     completion: "unknown",
     availability: "unknown",
@@ -37,9 +38,11 @@ test("migration preview preserves ambiguous unlocked and missing inventory witho
   );
   validateProfile(result.candidate);
 });
-test("strict v2 values, byte bounds, pins and missing/zero roundtrip", () => {
+test("strict v2/v3 values, byte bounds, pins and missing/zero roundtrip", () => {
   const pack = upgradeFixture(),
     p = newProfile(pack);
+  p.schemaVersion = 2;
+  delete p.spendHistory;
   p.inventory[pack.items[0].id] = 0;
   p.watchPins = [pack.items[0].id];
   validateProfile(p);
@@ -114,7 +117,7 @@ test("same source ID with changed provenance flags historical completion for rev
     "completed",
   );
 });
-test("all four archival legacy states map explicitly; v2 remains idempotent and unresolved IDs survive", () => {
+test("all four archival legacy states map explicitly; v3 remains idempotent and unresolved IDs survive", () => {
   for (const [legacy, completion, availability, reviewRequired] of [
     ["unknown", "unknown", "unknown", false],
     ["locked", "unknown", "locked", false],
@@ -125,6 +128,7 @@ test("all four archival legacy states map explicitly; v2 remains idempotent and 
       profile = { ...newProfile(pack), schemaVersion: 1 };
     delete profile.upgradeProgress;
     delete profile.watchPins;
+    delete profile.spendHistory;
     profile.completion = { "test:first": legacy, "retired:keep": "unlocked" };
     const result = previewUpgradeMigration(profile, pack);
     assert.deepEqual(result.candidate.upgradeProgress["test:first"], {

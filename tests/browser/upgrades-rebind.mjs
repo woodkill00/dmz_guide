@@ -391,10 +391,10 @@ export async function runUpgradeRebindTests({
     await ready(page);
     assert.match(
       await page.locator("#version-status").textContent(),
-      /Versions match.*Unresolved references: 1/,
+      /Versions match.*Unresolved references: Withheld while private details are protected/,
     );
-    const v2Backup = await backup(page);
-    assert.deepEqual(v2Backup, rebound.value);
+    const v3Backup = await backup(page);
+    assert.deepEqual(v3Backup, rebound.value);
 
     // Recovery restores the old binding, not imaginary inventory or a silent rebind.
     await stage(page, "#recover-profile");
@@ -414,17 +414,18 @@ export async function runUpgradeRebindTests({
       /Planning blocked until explicit rebind/,
     );
     await stage(page, "#recover-profile");
-    const restoredV2 = await apply(page, recovered.value);
+    const restoredV3 = await apply(page, recovered.value);
     assert.deepEqual(
-      withoutRevision(restoredV2.value),
-      withoutRevision(v2Backup),
+      withoutRevision(restoredV3.value),
+      withoutRevision(v3Backup),
     );
 
     // Real file-input v1 replacement is explicit and recoverable; no migration on load.
-    const v1Backup = structuredClone(restoredV2.value);
+    const v1Backup = structuredClone(restoredV3.value);
     v1Backup.schemaVersion = 1;
     delete v1Backup.upgradeProgress;
     delete v1Backup.watchPins;
+    delete v1Backup.spendHistory;
     v1Backup.completion = {
       [ids.order]: "completed",
       [ids.cost]: "unlocked",
@@ -436,12 +437,12 @@ export async function runUpgradeRebindTests({
     await page.locator("#restore-preview").waitFor({ state: "visible" });
     assert.match(
       await page.locator("#restore-summary").textContent(),
-      /Schema version.*2.*1/,
+      /Schema version.*3.*1/,
     );
-    await cancel(page, restoredV2);
+    await cancel(page, restoredV3);
     await upload(page, v1Backup, "synthetic-rebind-v1-restore.json");
     await page.locator("#restore-preview").waitFor({ state: "visible" });
-    const acceptedV1 = await apply(page, restoredV2.value);
+    const acceptedV1 = await apply(page, restoredV3.value);
     assert.deepEqual(
       withoutRevision(acceptedV1.value),
       withoutRevision(v1Backup),
@@ -477,14 +478,14 @@ export async function runUpgradeRebindTests({
     assert.deepEqual(migrated.value.inventory, acceptedV1.value.inventory);
     assert.deepEqual(migrated.value.reserves, acceptedV1.value.reserves);
 
-    // Invalid replacements cannot erase the recovered history or silently drop v2 fields.
-    const malformed = structuredClone(v2Backup);
+    // Invalid replacements cannot erase the recovered history or silently drop v3 fields.
+    const malformed = structuredClone(v3Backup);
     delete malformed.watchPins;
     for (const [name, value, pattern] of [
-      ["synthetic-missing-v2-field.json", malformed, /Invalid profile fields/],
+      ["synthetic-missing-v3-field.json", malformed, /Invalid profile fields/],
       [
         "synthetic-cross-pack.json",
-        { ...v2Backup, id: "test:other-pack", packId: "test:other-pack" },
+        { ...v3Backup, id: "test:other-pack", packId: "test:other-pack" },
         /different pack/,
       ],
     ]) {
@@ -505,16 +506,16 @@ export async function runUpgradeRebindTests({
       assert.deepEqual(await durable(page), migrated);
       assert.deepEqual(await active(page), migrated.value);
     }
-    await upload(page, v2Backup, "synthetic-rebind-v2-cancel.json");
+    await upload(page, v3Backup, "synthetic-rebind-v3-cancel.json");
     await page.locator("#restore-preview").waitFor({ state: "visible" });
     await cancel(page, migrated);
-    await upload(page, v2Backup, "synthetic-rebind-v2-restore.json");
+    await upload(page, v3Backup, "synthetic-rebind-v3-restore.json");
     await page.locator("#restore-preview").waitFor({ state: "visible" });
     const roundtrip = await apply(page, migrated.value);
     assert.deepEqual(
       withoutRevision(roundtrip.value),
-      withoutRevision(v2Backup),
-      "v2 restore retains review flags, completion history, pins and explicit zero versus missing stock",
+      withoutRevision(v3Backup),
+      "v3 restore retains review flags, completion history, pins and explicit zero versus missing stock",
     );
     assert.deepEqual(await content(page), originalContent);
     await page.reload();
@@ -568,6 +569,6 @@ export async function runUpgradeRebindTests({
     await unknownContext.close();
   }
   console.log(
-    "Upgrade rebind browser acceptance passed: changed cost/objective/requirement evidence, retained completion/pins, retired/new IDs, cancel/CAS/recovery, v1/v2 file restore and unavailable prior content.",
+    "Upgrade rebind browser acceptance passed: changed cost/objective/requirement evidence, retained completion/pins, retired/new IDs, cancel/CAS/recovery, v1/v3 file restore and unavailable prior content.",
   );
 }

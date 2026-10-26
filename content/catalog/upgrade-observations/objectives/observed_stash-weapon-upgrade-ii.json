@@ -7,45 +7,50 @@
   "prerequisites": [],
   "requirements": [
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:cash",
       "quantity": 100000,
       "sourceIds": [
-        "source:upgrade-observation-08"
+        "source:upgrade-observation-08",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:structural-alloy",
       "quantity": 20,
       "sourceIds": [
-        "source:upgrade-observation-08"
+        "source:upgrade-observation-08",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:high-tenacity-fibers",
       "quantity": 20,
       "sourceIds": [
-        "source:upgrade-observation-08"
+        "source:upgrade-observation-08",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:turned-components",
       "quantity": 10,
       "sourceIds": [
-        "source:upgrade-observation-08"
+        "source:upgrade-observation-08",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     }
   ],
   "requirementsKnown": false,
   "sourceIds": [
-    "source:upgrade-observation-08"
+    "source:upgrade-observation-08",
+    "source:upgrade-consumption-confirmation-20261026"
   ],
   "spoiler": false,
   "status": "observed",

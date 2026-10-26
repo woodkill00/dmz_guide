@@ -3,7 +3,7 @@ import {
   upgradeReadinessReasons,
 } from "./upgrade-progress.mjs";
 import { assert, ID } from "../content/limits.mjs";
-import { validateProfile } from "./profile.mjs";
+import { validateProfile, validateInventoryForPack } from "./profile.mjs";
 import { scopeOf } from "../content/validate.mjs";
 
 const MAX = 1e12;
@@ -656,6 +656,7 @@ export function planShared(pack, profile, { mode = "strict" } = {}) {
 
 /** Explicit numeric projection: unknown v2 facts can never become false/zero in legacy arithmetic. */
 export function planningProjection(pack, profile, { single = false } = {}) {
+  validateInventoryForPack(profile, pack);
   if (pack.schemaVersion !== 2) return pack;
   const records = new Map(
       [...pack.recipes, ...pack.objectives].map((r) => [r.id, r]),

@@ -43,7 +43,7 @@ export function setUpgradeProgress(
     "Progress confirmation expired",
   );
   assert(
-    profile.schemaVersion === 2,
+    profile.schemaVersion >= 2,
     "Preview and confirm profile migration in Settings before editing upgrades.",
   );
   assert(
@@ -68,7 +68,7 @@ export function setUpgradeProgress(
 export function setWatchPin(pack, profile, id, pinned) {
   validateProfile(profile);
   assert(
-    profile.schemaVersion === 2,
+    profile.schemaVersion >= 2,
     "Preview and confirm profile migration in Settings before adding watch pins.",
   );
   assert(

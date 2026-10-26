@@ -62,7 +62,7 @@ async function confirmUpgrade(page, field, value) {
   await page.waitForSelector("#upgrade-progress-confirm[open]");
   assert.match(
     await page.locator("#upgrade-progress-confirm").textContent(),
-    /Recording progress only; update inventory after an in-game purchase\./,
+    /Status-only correction: no stock deduction, refund or spending record/,
   );
   await page.click("#upgrade-progress-apply");
 }
@@ -168,7 +168,7 @@ export async function runProgressionTests({ browser, base }) {
     await page.reload();
     await page.waitForSelector("#progress-rows article");
     const inventoryBaseline = (await profile(page)).value;
-    assert.equal(inventoryBaseline.schemaVersion, 2);
+    assert.equal(inventoryBaseline.schemaVersion, 3);
     assert.deepEqual(inventoryBaseline.upgradeProgress, {});
     // Exercise the real private reader and map UI, not only pure projections.
     const probe = await context.newPage();

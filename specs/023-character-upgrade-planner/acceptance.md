@@ -1,4 +1,19 @@
+> **Active scope amendment (2026-10-26):** the owner requested confirmed purchase recording and usage counters after the accepted b935b40b baseline. The records below remain historical acceptance of that baseline; T023–T032 and the new [spending contract](contracts/upgrade-spending.md) require fresh definition/runtime review. Consumption is now owner-confirmed for the eight observed definitions, not independently build-verified.
+
 # Acceptance and verification ledger
+
+## Spending amendment checkpoint — verification in progress
+
+This section is not final acceptance. The prior accepted implementation below remains historical. The amended contract was independently approved at d6cc168; the narrow 2M v3 currency input/partial-cost clarification at603dc766 is an engineering policy under the tracking request, not an invented numeric user confirmation.
+
+At source1149df4, independent domain probes25/25 passed, including160 seeded conservation vectors, actual admitted eight-upgrade purchases, alias/reversal identity, 2M cash and exact post-CAS/compact-backup boundaries. The first frozen6d5defb HOLD is retained in [the first domain report](analysis/009-spending-first-domain-review.md), not erased. Later source review found protected migration/unresolved summary counts and planning kind-bound integration gaps; the next freeze repairs those and adds regressions. Independent final re-review is still pending.
+
+Local executed checkpoints: full Node581pass/0fail/1Windows skip at1149df4; extended accounting/mixed-unit/498→499→500 capacity suite and full583pass/0fail/1skip after test additions; Python40pass; structural, pinned formatting,214-route build and whitespace gates pass. Earlier extracted inventory VM harness failures were fixed by supplying the new real stock-limit import and a summary-only stub, without removing inventory row assertions. These are local software checks, not fresh browser acceptance.
+
+The three reviewer-owned browser modules are integrated byte-identically with updated v3/source attribution, a separate fictional unknown-consumption regression, original status-only/native-focus paths, and new purchase/reversal/counter/hidden-history journeys. Isolated discovery probes injected a uniquely labeled throw into the new spending module: native and engine entrypoints each failed exit1 before browser startup; removing it restored registered-module import. The targeted runtime file also failed exit1 with its deliberate sentinel. No sentinel was put in the integration worktree; retained logs remain available to the independent reviewer. This proves discovery only, not UI execution.
+
+New synthetic spending artifacts use a separate compact folder. Existing Chromium/Firefox captures are split by Inventory/Progression/other surfaces with JSON metadata copied into each artifact to remain below the transfer bound. WebKit retains the existing functional/computed-layout-only policy and strict CSP/health. Actual amendment browser/Studio/package/engine execution and pixel review are pending hosted CI. No further local browser launch or sandbox workaround is attempted. Parent owns any later approved merge; this lane does not merge or deploy.
+
 
 ## Current implementation acceptance — 2026-10-26
 

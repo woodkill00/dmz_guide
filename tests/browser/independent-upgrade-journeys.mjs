@@ -161,7 +161,7 @@ async function setProgress(
   await page.locator("#upgrade-progress-confirm").waitFor({ state: "visible" });
   assert.match(
     await page.locator("#upgrade-progress-confirm").textContent(),
-    /Recording progress only; update inventory after an in-game purchase\./,
+    /Status-only correction: no stock deduction, refund or spending record\./,
   );
   if (cancel) {
     await page.locator("#upgrade-progress-cancel").focus();
@@ -398,6 +398,10 @@ export async function runIndependentUpgradeJourneys({
         const items = new Map(state.pack.items.map((i) => [i.id, i.name]));
         return {
           profile: structuredClone(state.profile),
+          contentVersion: state.pack.contentVersion,
+          prerequisites: state.pack.objectives.map(
+            (o) => o.upgrade?.prerequisiteStatus,
+          ),
           rows: state.pack.objectives
             .filter((o) => o.track === "dmz-upgrade")
             .map((o) => [
@@ -420,10 +424,42 @@ export async function runIndependentUpgradeJourneys({
         new Set(actual.rows.flatMap((r) => r[3].map((row) => row[0]))).size,
         22,
       );
-      assert(
-        actual.requirements.every((r) => r.consumption === "unknown"),
-        "Observed consumption stays unknown",
+      assert.equal(actual.contentVersion, "2026.10.26.2");
+      const confirmations = actual.sources.filter((s) =>
+        /owner.*consumption/i.test(s.title),
       );
+      assert.equal(
+        confirmations.length,
+        1,
+        "Consumption has one separately attributed owner report",
+      );
+      const confirmation = confirmations[0];
+      assert.equal(confirmation.type, "observation");
+      assert.equal(confirmation.url, null);
+      assert.equal(confirmation.reviewedAt, "2026-10-26");
+      assert(
+        actual.sources.every(
+          (s) =>
+            s.provenance.captureDate === null &&
+            s.provenance.buildStatus === "unknown",
+        ),
+        "Consumption confirmation does not invent capture date or build proof",
+      );
+      assert(
+        actual.prerequisites.every((v) => v === "unknown"),
+        "Unknown prerequisite completeness is preserved",
+      );
+      assert(
+        actual.requirements.every(
+          (r) =>
+            r.consumption === "consumed" &&
+            r.sourceIds.includes(confirmation.id) &&
+            r.sourceIds.some((id) => id !== confirmation.id),
+        ),
+        "Exactly the reviewed 31 costs cite separate amount and consumption evidence",
+      );
+      assert.equal(actual.profile.schemaVersion, 3);
+      assert.deepEqual(actual.profile.spendHistory, []);
       assert.deepEqual(actual.profile.inventory, {});
       assert.deepEqual(actual.profile.reserves, {});
       assert.deepEqual(actual.profile.upgradeProgress, {});
@@ -468,7 +504,7 @@ export async function runIndependentUpgradeJourneys({
         /Not entered/i,
       );
       evidence.scenarios.push(
-        "Fresh observed pack:8 exact definitions/31 rows/22 labels, unknown mechanics/progress and empty holdings; requirements visibly rendered",
+        "Fresh observed pack:8 exact definitions/31 rows/22 labels; scoped owner-reported consumption with unknown build/prerequisites/progress, empty holdings and no spending history",
       );
     } finally {
       await context.close();
@@ -768,6 +804,7 @@ export async function runIndependentUpgradeJourneys({
         p.schemaVersion = 1;
         delete p.upgradeProgress;
         delete p.watchPins;
+        delete p.spendHistory;
         p.inventory["observed:power-regulator"] = 6;
         p.inventory["observed:cash"] = 0;
         p.reserves["observed:power-regulator"] = 9;
@@ -815,7 +852,12 @@ export async function runIndependentUpgradeJourneys({
       await page.click("#apply-restore");
       await waitSaved(page, original.value.revision);
       const migrated = await durable(page);
-      assert.equal(migrated.value.schemaVersion, 2);
+      assert.equal(migrated.value.schemaVersion, 3);
+      assert.deepEqual(
+        migrated.value.spendHistory,
+        [],
+        "Migration invents no historical spending",
+      );
       assert.deepEqual(
         migrated.previous,
         original.value,
@@ -886,7 +928,7 @@ export async function runIndependentUpgradeJourneys({
         "Cross-pack import rejected atomically",
       );
       await page.setInputFiles("#import-profile", {
-        name: "synthetic-v2-roundtrip.json",
+        name: "synthetic-v3-roundtrip.json",
         mimeType: "application/json",
         buffer: Buffer.from(JSON.stringify(exported)),
       });
@@ -897,10 +939,10 @@ export async function runIndependentUpgradeJourneys({
       assert.deepEqual(
         { ...roundtrip, revision: exported.revision },
         exported,
-        "Real backup/restore preserves complete v2 state and missing versus0",
+        "Real backup/restore preserves complete v3 state and missing versus0",
       );
       evidence.scenarios.push(
-        "Real v1 preview/cancel/commit mapping+original snapshot recovery; legacy ambiguity/unresolved references preserved; actual backup v2 restore and cross-pack rejection",
+        "Real v1 preview/cancel/commit mapping+original snapshot recovery; legacy ambiguity/unresolved references preserved; actual backup v3 restore and cross-pack rejection",
       );
     } finally {
       await context.close();

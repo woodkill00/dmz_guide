@@ -1,3 +1,4 @@
+import { stockLimit } from "../../src/domain/profile.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -35,6 +36,8 @@ for (const count of [100, 1000, 5000]) {
     };
     vm.runInNewContext(`${render}\n${filter}\nrender();`, {
       ...helper,
+      stockLimit,
+      renderSpendingSummary() {}, // this extraction exercises inventory rows only
       registerDraftGuard() {},
       document: { addEventListener() {} },
       $: (selector) => nodes[selector],
@@ -326,4 +329,23 @@ test("superseded invalid task cannot consume a newer failed-Save recovery", () =
   assert.deepEqual(h.counts(), { prevented: 2, errors: 0, reveals: 0 });
   h.callbacks[1]();
   assert.deepEqual(h.counts(), { prevented: 2, errors: 1, reveals: 1 });
+});
+
+test("v3 cash draft accepts 2M but noncurrency and legacy drafts retain 1M bounds", () => {
+  const items = [
+    { id: "test:cash", kind: "currency" },
+    { id: "test:item", kind: "item" },
+  ];
+  for (const schemaVersion of [1, 2, 3]) {
+    const profile = { schemaVersion, inventory: {}, reserves: {} };
+    const draft = helper.createInventoryDraft(items, profile);
+    draft.set("inventory", "test:cash", "2000000", profile);
+    assert.equal(draft.firstInvalid() === null, schemaVersion === 3);
+    draft.set("inventory", "test:cash", "1000000", profile);
+    draft.set("reserves", "test:cash", "2000000", profile);
+    assert.equal(draft.firstInvalid() === null, schemaVersion === 3);
+    draft.set("reserves", "test:cash", "1000000", profile);
+    draft.set("inventory", "test:item", "1000001", profile);
+    assert.equal(draft.firstInvalid().id, "test:item");
+  }
 });

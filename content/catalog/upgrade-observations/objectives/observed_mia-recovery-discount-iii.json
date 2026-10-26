@@ -7,45 +7,50 @@
   "prerequisites": [],
   "requirements": [
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:wmd-manifest",
       "quantity": 5,
       "sourceIds": [
-        "source:upgrade-observation-05"
+        "source:upgrade-observation-05",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:foreign-intelligence-targets",
       "quantity": 5,
       "sourceIds": [
-        "source:upgrade-observation-05"
+        "source:upgrade-observation-05",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:power-regulator",
       "quantity": 10,
       "sourceIds": [
-        "source:upgrade-observation-05"
+        "source:upgrade-observation-05",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:comms-module",
       "quantity": 10,
       "sourceIds": [
-        "source:upgrade-observation-05"
+        "source:upgrade-observation-05",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     }
   ],
   "requirementsKnown": false,
   "sourceIds": [
-    "source:upgrade-observation-05"
+    "source:upgrade-observation-05",
+    "source:upgrade-consumption-confirmation-20261026"
   ],
   "spoiler": false,
   "status": "observed",

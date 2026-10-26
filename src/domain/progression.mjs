@@ -374,6 +374,6 @@ export function setCompletion(pack, profile, id, value) {
 export function resetProgress(profile) {
   const next = clone(profile);
   next.completion = {};
-  if (next.schemaVersion === 2) next.upgradeProgress = {};
+  if (next.schemaVersion >= 2) next.upgradeProgress = {};
   return next;
 }

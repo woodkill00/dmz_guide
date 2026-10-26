@@ -41,7 +41,7 @@ test("v1 does not silently accept v2 facts or nullable source", () => {
   p.schemaVersion = 1;
   assert.throws(() => validatePack(p, schema));
 });
-test("observed catalog has exactly admitted public facts, no invented consumption or prerequisites", () => {
+test("observed catalog preserves 8/31/22 facts with separate scoped consumption confirmation, not verified prerequisites", () => {
   const p = loadFixturePack("upgrade-observations");
   validatePack(p, schema);
   assert.equal(p.schemaVersion, 2);
@@ -56,7 +56,13 @@ test("observed catalog has exactly admitted public facts, no invented consumptio
       (o) =>
         o.prerequisites.length === 0 &&
         o.upgrade.prerequisiteStatus === "unknown" &&
-        o.requirements.every((r) => r.consumption === "unknown"),
+        o.requirements.every(
+          (r) =>
+            r.consumption === "consumed" &&
+            r.sourceIds.includes(
+              "source:upgrade-consumption-confirmation-20261026",
+            ),
+        ),
     ),
   );
   assert(
@@ -67,4 +73,36 @@ test("observed catalog has exactly admitted public facts, no invented consumptio
         s.provenance.buildStatus === "unknown",
     ),
   );
+});
+
+test("consumption amendment preserves original amounts/effects and observation identity", async () => {
+  const pack = loadFixturePack("upgrade-observations");
+  const seed = JSON.parse(
+    await readFile(
+      new URL(
+        "../../specs/023-character-upgrade-planner/evidence/upgrade-observations.json",
+        import.meta.url,
+      ),
+    ),
+  );
+  assert.equal(pack.contentVersion, "2026.10.26.2");
+  assert.equal(pack.sources.length, 9);
+  for (const old of seed.upgrades) {
+    const current = pack.objectives.find((r) => r.id === `observed:${old.id}`);
+    assert.equal(current.name, old.name);
+    assert.equal(current.description, old.description);
+    assert.deepEqual(current.upgrade.observationKeys, [old.evidenceKey]);
+    assert.deepEqual(
+      current.requirements.map((c) => [
+        pack.items.find((i) => i.id === c.itemId).name,
+        c.quantity,
+      ]),
+      old.requirements.map((c) => [c.itemName, c.required]),
+    );
+  }
+  const confirmation = pack.sources.find(
+    (s) => s.id === "source:upgrade-consumption-confirmation-20261026",
+  );
+  assert.match(confirmation.supports, /owner reports/);
+  assert.match(confirmation.supports, /not independent gameplay corroboration/);
 });

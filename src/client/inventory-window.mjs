@@ -1,3 +1,4 @@
+import { stockLimit } from "../domain/profile.mjs";
 export const INVENTORY_PAGE_SIZE = 50;
 const fields = [
   ["inventory", "owned"],
@@ -42,7 +43,7 @@ export function createInventoryDraft(items, profile) {
             (value === "" && field !== "inventory") ||
             !Number.isInteger(quantity) ||
             quantity < 0 ||
-            quantity > 1000000
+            quantity > stockLimit(profile, items[index])
           )
             return { id, field, name, index };
         }

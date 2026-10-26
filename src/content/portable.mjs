@@ -452,6 +452,11 @@ export function profileImpact(profile, before, after) {
     ...Object.values(profile.routes || {}),
     ...(profile.goals || []).map((g) => g.id),
   ]);
+  const spendingRefs = new Set(
+    (profile.spendHistory || [])
+      .filter((e) => e.kind === "purchase")
+      .flatMap((e) => [e.upgradeId, ...e.costs.map((c) => c.itemId)]),
+  );
   const diff = diffPacks(before, after),
     changed = new Set([...diff.changed, ...diff.removed].map((x) => x.id));
   return {
@@ -460,6 +465,8 @@ export function profileImpact(profile, before, after) {
       profile.contentVersion !== after.contentVersion ||
       JSON.stringify(before?.game) !== JSON.stringify(after.game),
     unresolved: [...refs].filter((id) => !known.has(id)),
+    spendingUnresolved: [...spendingRefs].filter((id) => !known.has(id)),
+    spendingHistoryPreserved: true,
     affectedGoals: (profile.goals || [])
       .filter(
         (g) =>

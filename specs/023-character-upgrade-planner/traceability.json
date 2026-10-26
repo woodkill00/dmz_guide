@@ -20,10 +20,13 @@
       "T010",
       "T017",
       "T021",
-      "T022"
+      "T022",
+      "T023",
+      "T024",
+      "T031"
     ],
     "acceptance": "acceptance.md",
-    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "status": "amendment-pending",
     "implementation_evidence": "analysis/007-convergence.md",
     "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
@@ -50,10 +53,13 @@
       "T014",
       "T018",
       "T021",
-      "T022"
+      "T022",
+      "T023",
+      "T027",
+      "T031"
     ],
     "acceptance": "acceptance.md",
-    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "status": "amendment-pending",
     "implementation_evidence": "analysis/007-convergence.md",
     "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
@@ -166,10 +172,12 @@
       "T017",
       "T018",
       "T021",
-      "T022"
+      "T022",
+      "T028",
+      "T031"
     ],
     "acceptance": "acceptance.md",
-    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "status": "amendment-pending",
     "implementation_evidence": "analysis/007-convergence.md",
     "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
@@ -197,10 +205,12 @@
       "T015",
       "T016",
       "T020",
-      "T022"
+      "T022",
+      "T027",
+      "T029"
     ],
     "acceptance": "acceptance.md",
-    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "status": "amendment-pending",
     "implementation_evidence": "analysis/007-convergence.md",
     "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
@@ -217,10 +227,11 @@
       "T018",
       "T019",
       "T020",
-      "T022"
+      "T022",
+      "T030"
     ],
     "acceptance": "acceptance.md",
-    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "status": "amendment-pending",
     "implementation_evidence": "analysis/007-convergence.md",
     "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
@@ -308,10 +319,11 @@
     "tasks": [
       "T013",
       "T019",
-      "T020"
+      "T020",
+      "T030"
     ],
     "acceptance": "acceptance.md",
-    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "status": "amendment-pending",
     "implementation_evidence": "analysis/007-convergence.md",
     "independent_acceptance": "analysis/006-functional-acceptance.md"
   },
@@ -322,11 +334,161 @@
       "T009",
       "T020",
       "T021",
-      "T022"
+      "T022",
+      "T023",
+      "T031",
+      "T032"
     ],
     "acceptance": "acceptance.md",
-    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "status": "amendment-pending",
     "implementation_evidence": "analysis/007-convergence.md",
     "independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-017": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "amendment-pending",
+    "contract": "contracts/upgrade-spending.md"
+  },
+  "FR-018": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "amendment-pending",
+    "contract": "contracts/upgrade-spending.md"
+  },
+  "FR-019": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "amendment-pending",
+    "contract": "contracts/upgrade-spending.md"
+  },
+  "FR-020": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "amendment-pending",
+    "contract": "contracts/upgrade-spending.md"
+  },
+  "FR-021": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "amendment-pending",
+    "contract": "contracts/upgrade-spending.md"
+  },
+  "FR-022": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "amendment-pending",
+    "contract": "contracts/upgrade-spending.md"
+  },
+  "FR-023": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "amendment-pending",
+    "contract": "contracts/upgrade-spending.md"
+  },
+  "SC-007": {
+    "tasks": [
+      "T025",
+      "T026",
+      "T028",
+      "T030",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "amendment-pending",
+    "contract": "contracts/upgrade-spending.md"
+  },
+  "SC-008": {
+    "tasks": [
+      "T027",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "amendment-pending",
+    "contract": "contracts/upgrade-spending.md"
+  },
+  "SC-009": {
+    "tasks": [
+      "T023",
+      "T024",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "amendment-pending",
+    "contract": "contracts/upgrade-spending.md"
   }
 }

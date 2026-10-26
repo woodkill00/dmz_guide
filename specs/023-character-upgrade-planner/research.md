@@ -9,7 +9,7 @@ Baseline inspection: current main `407fa56afa43104c3342f4ed73b800f292bacf33`, 20
 | Typed private observation with nullable URL | Current source URL is mandatory HTTP(S); originals must stay private | Fake URL, screenshot upload, or confusing public transcription with primary evidence |
 | V2 adapters at content/profile boundaries | Current schemas reject extra fields; unknown row quantity/consumption and separate progress need truthful representation | Silent optional fields under an unchanged strict contract |
 | Explicit completion vs availability | `planShared` currently treats unlocked as done; `planSingle` only suppresses own costs when completed | Overload existing unlocked as newly available/unpurchased |
-| Completion metadata only | Existing progression tests require inventory/reserves/goals unchanged | Implicit stock consumption or refunds |
+| Two explicit completion routes | Preserve manual status-only invariants; owner later authorized confirmed purchase recording | Implicit debit on a select change or replaying old completion as spending |
 | All-known advice separately from persistent focus | Existing active goals cap is 100; user's wish includes currently unfocused upgrades | Insert every upgrade into goals or sum independently calculated deficits |
 | Common direct stock-allocation kernel | Existing planner already deduplicates shared prerequisites and separates retained floors; new advice uses direct requirements only | New arithmetic copy, optimizer, or charging crafted output plus leaf inputs together |
 | Unknown is visible and scoped | Unknown amount/consumption/stock blocks affected numbers; missing prerequisite/build proof limits readiness/completeness, not valid known direct-cost arithmetic | Infer mechanics or suppress all useful arithmetic until a full game tree exists |
@@ -25,6 +25,10 @@ Baseline inspection: current main `407fa56afa43104c3342f4ed73b800f292bacf33`, 20
 
 ## Unknown game facts retained
 
-Source game/build and capture dates; consumption/retained semantics; prerequisite completeness; missing tiers; vendor purchase options; additive/cumulative discount rules; player state; exact locations and full catalog denominator. “Reviewed 2026-10-26” dates transcription, not gameplay capture. No cumulative benefit arithmetic is performed.
+Source game/build and capture dates; consumption/retained semantics outside the owner-confirmed observed scope; prerequisite completeness; missing tiers; vendor purchase options; additive/cumulative discount rules; player state; exact locations and full catalog denominator. “Reviewed 2026-10-26” dates transcription, not gameplay capture. No cumulative benefit arithmetic is performed.
 
 See [source inventory](source-inventory.md) for overlap reconciliation, [clarifications](clarifications.md) for release evidence gates and [data model](data-model.md) for the selected contract. Technical architecture choices are resolved; factual unknowns have explicit blocked behavior.
+
+## 2026-10-26 amendment decisions
+
+Strict profile v3 is necessary because v2 rejects unknown fields; old readers must fail closed. Reuse the atomic profile CAS transaction, not a second event store. Immutable snapshots rather than recomputation preserve changed/retired IDs and costs. Reserved stock cannot be overridden inside a purchase; edit reserves separately. Net recorded usage is the primary counter, with gross and reversed values visible; count material units and each cash identity remain separate. Manual reconciliation and old completions never fabricate history. Bounded latest-safe reversal is narrower than arbitrary historical refund and preserves audit entries. No arbitrary expense editor or ledger truncation is added.

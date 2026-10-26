@@ -1,3 +1,5 @@
+> **Active scope amendment (2026-10-26):** the owner requested confirmed purchase recording and usage counters after the accepted b935b40b baseline. The records below remain historical acceptance of that baseline; T023–T032 and the new [spending contract](contracts/upgrade-spending.md) require fresh definition/runtime review. Consumption is now owner-confirmed for the eight observed definitions, not independently build-verified.
+
 # Final implementation analysis
 
 **Implemented and independently accepted within explicit evidence limits.** All 16 functional requirements and 6 measurable criteria map to the 22 completed tasks. The 10 story acceptance scenarios, 7 grouped architecture decisions and 10 constitution principles were assessed; no remaining buildable convergence task or constitutional exception was found.

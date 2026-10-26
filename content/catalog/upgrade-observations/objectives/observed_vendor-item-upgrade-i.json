@@ -7,45 +7,50 @@
   "prerequisites": [],
   "requirements": [
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:electronic-sensors",
       "quantity": 20,
       "sourceIds": [
-        "source:upgrade-observation-03"
+        "source:upgrade-observation-03",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:cpu",
       "quantity": 10,
       "sourceIds": [
-        "source:upgrade-observation-03"
+        "source:upgrade-observation-03",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:printed-circuit-board",
       "quantity": 10,
       "sourceIds": [
-        "source:upgrade-observation-03"
+        "source:upgrade-observation-03",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:prototype-rf-module",
       "quantity": 2,
       "sourceIds": [
-        "source:upgrade-observation-03"
+        "source:upgrade-observation-03",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     }
   ],
   "requirementsKnown": false,
   "sourceIds": [
-    "source:upgrade-observation-03"
+    "source:upgrade-observation-03",
+    "source:upgrade-consumption-confirmation-20261026"
   ],
   "spoiler": false,
   "status": "observed",

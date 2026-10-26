@@ -1299,7 +1299,8 @@ main :where(p, li, a, ul, ol, section, article, div) {
 }
 
 #draft-navigation,
-#upgrade-progress-confirm {
+#upgrade-progress-confirm,
+#upgrade-spend-confirm {
   box-sizing: border-box;
   width: min(34rem, calc(100% - 24px));
   max-width: calc(100% - 24px);
@@ -1311,7 +1312,8 @@ main :where(p, li, a, ul, ol, section, article, div) {
   border: 2px solid var(--line);
 }
 #draft-navigation::backdrop,
-#upgrade-progress-confirm::backdrop {
+#upgrade-progress-confirm::backdrop,
+#upgrade-spend-confirm::backdrop {
   background: rgb(0 0 0 / 65%);
 }
 .draft-actions {

@@ -7,45 +7,50 @@
   "prerequisites": [],
   "requirements": [
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:cash",
       "quantity": 100000,
       "sourceIds": [
-        "source:upgrade-observation-06"
+        "source:upgrade-observation-06",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:nitro-compounds",
       "quantity": 20,
       "sourceIds": [
-        "source:upgrade-observation-06"
+        "source:upgrade-observation-06",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:comms-module",
       "quantity": 10,
       "sourceIds": [
-        "source:upgrade-observation-06"
+        "source:upgrade-observation-06",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     },
     {
-      "consumption": "unknown",
+      "consumption": "consumed",
       "itemId": "observed:military-composites",
       "quantity": 10,
       "sourceIds": [
-        "source:upgrade-observation-06"
+        "source:upgrade-observation-06",
+        "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
     }
   ],
   "requirementsKnown": false,
   "sourceIds": [
-    "source:upgrade-observation-06"
+    "source:upgrade-observation-06",
+    "source:upgrade-consumption-confirmation-20261026"
   ],
   "spoiler": false,
   "status": "observed",

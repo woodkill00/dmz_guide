@@ -1,3 +1,5 @@
+> **2026-10-26 scope update:** this inventory documents original photographic evidence, whose amounts/effects and unknown capture/build remain unchanged. A separate later owner-confirmation source establishes consumed semantics for the eight definitions/all31 costs under the [spending amendment](contracts/upgrade-spending.md); it does not retroactively make the photographs consumption proof.
+
 # Sanitized source inventory and reconciliation
 
 Review date: 2026-10-26, not a capture date. Eight private upgrade-detail images were independently visually transcribed. The seed contains only displayed names, effects, tier markers and **required amounts**. Public-safe keys identify observations, not storage locations. Original pixels, Library/file IDs, hashes, private paths, held amounts, cash balance and player progress are deliberately absent.

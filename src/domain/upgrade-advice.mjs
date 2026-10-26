@@ -1,6 +1,10 @@
 import { assert } from "../content/limits.mjs";
 import { scopeOf, requirementFacts } from "../content/validate.mjs";
-import { validateProfile, legacyUpgradeState } from "./profile.mjs";
+import {
+  validateProfile,
+  legacyUpgradeState,
+  validateInventoryForPack,
+} from "./profile.mjs";
 import { allocateDirectStock } from "./shared-plan.mjs";
 import { spoilerGuard } from "./progression.mjs";
 const groups = [
@@ -31,6 +35,7 @@ export function upgradeAdvice(
   };
   try {
     validateProfile(profile);
+    validateInventoryForPack(profile, pack);
     assert(
       ["all-known-incomplete", "focused"].includes(scope),
       "Unknown advice scope",

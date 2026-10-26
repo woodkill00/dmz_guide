@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "reportedAt": "2026-10-26",
+  "sourceId": "source:upgrade-consumption-confirmation-20261026",
+  "scope": "The eight existing observed upgrade definitions and all 31 listed material/cash requirements only.",
+  "upgradeIds": [
+    "observed:bank-upgrade-iv",
+    "observed:dog-tag-case-upgrade-ii",
+    "observed:gunsmith-upgrade-ii",
+    "observed:mia-recovery-discount-iii",
+    "observed:stash-item-upgrade-iii",
+    "observed:stash-weapon-upgrade-i",
+    "observed:stash-weapon-upgrade-ii",
+    "observed:vendor-item-upgrade-i"
+  ],
+  "consumption": "consumed",
+  "status": "owner-reported; not independently gameplay-verified",
+  "unchangedUnknowns": [
+    "capture date",
+    "current build applicability",
+    "prerequisite completeness",
+    "unobserved tiers",
+    "player inventory and historical spending"
+  ],
+  "privacy": "Public-safe summary only; no original message identifiers, private source identifiers, player values or pixels."
+}

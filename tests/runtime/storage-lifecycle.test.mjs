@@ -197,3 +197,125 @@ test("C5: aborted uncertain write is never replayed", async () => {
   assert.equal(writes, 1);
   assert.equal(opens, 1);
 });
+
+// Minimal atomic IDB model: writes become durable only on completion, abort
+// retains both current and previous. This exercises the real store module.
+async function atomicStore(initial) {
+  let record = structuredClone(initial),
+    puts = 0;
+  const store = await freshStore({
+    open() {
+      const r = {};
+      queueMicrotask(() => {
+        r.result = {
+          close() {},
+          transaction() {
+            const tx = {
+              abort() {
+                queueMicrotask(() => tx.onabort());
+              },
+              objectStore() {
+                return {
+                  get() {
+                    const request = {};
+                    queueMicrotask(() => {
+                      request.result = structuredClone(record);
+                      request.onsuccess();
+                    });
+                    return request;
+                  },
+                  put(value) {
+                    puts++;
+                    queueMicrotask(() => {
+                      record = structuredClone(value);
+                      tx.oncomplete();
+                    });
+                  },
+                };
+              },
+            };
+            return tx;
+          },
+        };
+        r.onsuccess();
+      });
+      return r;
+    },
+  });
+  return { store, read: () => structuredClone(record), puts: () => puts };
+}
+test("B12 exact post-CAS revision byte boundary refuses atomically", async () => {
+  const { newProfile, validateProfile } = await import(
+    "../../src/domain/profile.mjs"
+  );
+  const { LIMITS } = await import("../../src/content/limits.mjs");
+  const p = newProfile({
+    schemaVersion: 2,
+    id: "test:limit",
+    contentVersion: "x",
+  });
+  p.revision = 9;
+  const bytes = () => Buffer.byteLength(JSON.stringify(p));
+  const count = Math.floor((LIMITS.profileBytes - bytes() + 1) / 105);
+  for (let index = 0; index < count; index++)
+    p.inventory[`item:${String(index).padStart(95, "0")}`] = 0;
+  const remaining = LIMITS.profileBytes - bytes();
+  if (remaining) p.inventory[`i:${"x".repeat(remaining - 7)}`] = 0;
+  assert.equal(bytes(), LIMITS.profileBytes);
+  validateProfile(p);
+  const { readFile } = await import("node:fs/promises");
+  const vm = await import("node:vm");
+  const common = await readFile("src/client/common.mjs", "utf8");
+  const download = common
+    .slice(
+      common.indexOf("export function download("),
+      common.indexOf("let draftGuard ="),
+    )
+    .replace("export function", "function");
+  let blob;
+  vm.runInNewContext(`${download}; download("private.json", profile);`, {
+    profile: p,
+    Blob,
+    URL: {
+      createObjectURL(value) {
+        blob = value;
+        return "blob:synthetic";
+      },
+      revokeObjectURL() {},
+    },
+    document: {
+      createElement() {
+        return { click() {} };
+      },
+    },
+    setTimeout() {},
+  });
+  assert.equal(blob.size, LIMITS.profileBytes);
+  const { parseProfile } = await import("../../src/domain/profile.mjs");
+  assert.deepEqual(parseProfile(await blob.text()), p);
+  const before = { value: p, previous: { original: "retained" } };
+  const db = await atomicStore(before);
+  await assert.rejects(db.store.saveProfile(p, 9), /byte limit/i);
+  assert.equal(db.puts(), 0);
+  assert.deepEqual(db.read(), before);
+  const small = structuredClone(p);
+  delete small.inventory[Object.keys(small.inventory)[0]];
+  const saved = await db.store.saveProfile(small, 9);
+  assert.equal(saved.revision, 10);
+  validateProfile(saved);
+  assert.deepEqual(db.read().previous, p);
+});
+test("B12 exhausted revision refuses without replacing current or previous", async () => {
+  const { newProfile } = await import("../../src/domain/profile.mjs");
+  const p = newProfile({
+    schemaVersion: 2,
+    id: "test:limit",
+    contentVersion: "x",
+  });
+  p.revision = Number.MAX_SAFE_INTEGER;
+  const before = { value: p, previous: { original: "retained" } };
+  const db = await atomicStore(before);
+  await assert.rejects(db.store.saveProfile(p, p.revision), /revision limit/i);
+  assert.equal(db.puts(), 0);
+  assert.deepEqual(db.read(), before);
+});

@@ -392,6 +392,10 @@ async function stageCandidate(
     warnings.push(
       `Historical references retained, not deleted: ${impact.unresolved.join(", ")}`,
     );
+  if (impact.spendingUnresolved?.length)
+    warnings.push(
+      "Recorded spending snapshots retain their original costs and identities. Some historical references no longer resolve; review safely in Settings. History is not rewritten or replayed.",
+    );
   if (impact.affectedGoals.length)
     warnings.push(`Affected saved goals: ${impact.affectedGoals.join(", ")}`);
   if (candidate.assets.length !== candidatePayloads.length)

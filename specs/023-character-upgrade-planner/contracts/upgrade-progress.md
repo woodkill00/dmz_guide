@@ -29,3 +29,7 @@ Use [data-model.md](../data-model.md) v1→v2 mapping. Preserve original legacy 
 | migrated ambiguous unlocked | unknown, reviewRequired | Included with review warning | No |
 
 Setting a higher tier completed does not change lower tier entries. Conflicting evidence remains disputed after manual completion; user progress cannot verify a recipe.
+
+## Authorized spending amendment (2026-10-26)
+
+The mutation rules above remain the **status-only correction** path. A separately labeled and acknowledged purchase-recording action now follows [upgrade-spending.md](upgrade-spending.md): it atomically deducts costs, marks completion and appends immutable history. Profile v3 is required for that action; v1/v2 stay readable and migrate explicitly. Ordinary progress correction/reset never creates a purchase or refund and preserves spendHistory/active-purchase duplicate guards. Whole-profile reset also preserves spending history; explicit backup replacement previews any history loss. The earlier v2-only text describes the accepted baseline, not a restriction on the new v3 format.
