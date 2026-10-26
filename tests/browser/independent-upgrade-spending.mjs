@@ -18,6 +18,7 @@ const MIXED = "qa023:purchase-mixed",
 const HIDDEN = "qa023:purchase-hidden-cost",
   SECRET = "qa023:secret-item";
 const ALIAS = "qa023:purchase-alias";
+const purchaseInitiators = new WeakMap();
 const pathFor = (base, page) =>
   `${base}/${page}/?pack=${encodeURIComponent(PACK)}`;
 const spend = (id) => `[data-upgrade-spend="${id}"]`;
@@ -101,6 +102,18 @@ async function totals(page, { net, gross, reversed, cash }) {
   );
 }
 async function focusIs(page, selector) {
+  // Native dialog cleanup may post one cancellable restoration task. Observe
+  // its exact completion target; do not mistake a closed DOM for completed focus.
+  let failure;
+  try {
+    await page.waitForFunction(
+      (selector) => document.querySelector(selector) === document.activeElement,
+      selector,
+      { timeout: 2000 },
+    );
+  } catch (error) {
+    failure = error.message;
+  }
   const result = await page.locator(selector).evaluate((n) => ({
     focused: n === document.activeElement,
     connected: n.isConnected,
@@ -112,8 +125,16 @@ async function focusIs(page, selector) {
           dataset: { ...document.activeElement.dataset },
         }
       : null,
-    dialogOpen: document.querySelector("#upgrade-spend-confirm")?.open,
+    dialogs: [...document.querySelectorAll("dialog")].map((n) => ({
+      id: n.id,
+      open: n.open,
+    })),
   }));
+  assert.equal(
+    failure,
+    undefined,
+    `Exact focus endpoint did not arrive within 2000ms: ${JSON.stringify({ selector, ...result, failure })}`,
+  );
   assert.equal(
     result.focused,
     true,
@@ -133,6 +154,14 @@ async function openPurchase(page, id = FIRST) {
     await page.locator("#upgrade-spend-confirm").textContent(),
     /before this purchase.*not already been deducted/is,
   );
+  purchaseInitiators.set(page, spend(id));
+}
+async function cancelPurchase(page) {
+  const target = purchaseInitiators.get(page);
+  assert(target, "Cancelled preview has an exact recorded initiating control");
+  await page.click("#upgrade-spend-cancel");
+  await page.locator("#upgrade-spend-confirm").waitFor({ state: "hidden" });
+  await focusIs(page, target);
 }
 async function apply(
   page,
@@ -177,6 +206,11 @@ async function apply(
     before.revision + 1,
     "Exactly one successful atomic revision",
   );
+  const target = purchase
+    ? purchaseInitiators.get(page)
+    : "#upgrade-spending-title";
+  assert(target, "Successful transition has an exact recorded focus endpoint");
+  await focusIs(page, target);
   return after;
 }
 async function saveInventory(page, packId = PACK) {
@@ -194,10 +228,6 @@ async function correct(page, id, completion) {
   await page.locator("#upgrade-progress-confirm").waitFor({ state: "hidden" });
   // Completion includes native-close focus restoration, not just hidden DOM.
   // Observe that documented endpoint before the next synthetic focus/Enter.
-  await page.waitForFunction(
-    (selector) => document.querySelector(selector) === document.activeElement,
-    progress(id),
-  );
   await focusIs(page, progress(id));
   const after = await active(page);
   assert.deepEqual(
@@ -710,7 +740,7 @@ export async function runIndependentUpgradeSpending({
       });
       await refused(page, reverse(event.id), /already|reversed|latest/i);
       await openPurchase(page);
-      await page.click("#upgrade-spend-cancel");
+      await cancelPurchase(page);
       assert.deepEqual(
         await active(page),
         reversedFirst,
@@ -797,7 +827,7 @@ export async function runIndependentUpgradeSpending({
           storedBefore,
           "Explicit stale retry never rebases silently",
         );
-        await page.click("#upgrade-spend-cancel");
+        await cancelPurchase(page);
         await page.reload();
         await ready(page);
         await openPurchase(page);
@@ -892,7 +922,7 @@ export async function runIndependentUpgradeSpending({
       await page.locator(reserved(A)).fill("3");
       await saveInventory(page);
       await openPurchase(page, SECOND);
-      await page.click("#upgrade-spend-cancel");
+      await cancelPurchase(page);
       await page.locator(owned(A)).fill("8");
       await saveInventory(page);
       await refused(
@@ -1009,10 +1039,11 @@ export async function runIndependentUpgradeSpending({
       await page.goto(pathFor(base, "progression"));
       await ready(page);
       await totals(page, { net: 0, gross: 0, reversed: 0 });
-      assert.match(
-        await page.locator("#upgrade-spending-summary").textContent(),
-        /not lifetime|not.*past|spending not recorded/i,
-      );
+      const migratedSummary = await page
+        .locator("#upgrade-spending-summary")
+        .textContent();
+      assert.match(migratedSummary, /not.*lifetime/i);
+      assert.match(migratedSummary, /Earlier spending is not recorded\./);
       await refused(page, spend(FIRST), /completed|already/i);
       await openPurchase(page, SECOND);
       const purchased = await apply(page);
@@ -1335,16 +1366,27 @@ export async function runIndependentUpgradeSpending({
       const summary = await page
         .locator("#upgrade-spending-summary")
         .innerHTML();
-      for (const hidden of [
-        "Hidden spending vault core",
-        "747",
-        "753",
-        full.spendHistory[2].id,
-      ])
-        assert(
-          !summary.includes(hidden),
-          `Protected history does not expose ${hidden}`,
-        );
+      const summaryText = await page
+        .locator("#upgrade-spending-summary")
+        .textContent();
+      assert(
+        !summary.includes("Hidden spending vault core"),
+        "Protected history does not expose the hidden material name in any markup",
+      );
+      assert(
+        !/\b(?:747|753)\b/.test(summaryText),
+        "Protected history does not expose hidden cost or full-private total amounts",
+      );
+      // Numeric boundaries avoid arbitrary substrings inside UUID segments while
+      // retaining every DOM attribute/metadata value in the privacy assertion.
+      assert(
+        !/\b(?:747|753)\b/.test(summary),
+        "Protected quantities are absent from all summary markup, not merely visible text",
+      );
+      assert(
+        !summary.includes(full.spendHistory[2].id),
+        "Protected history omits the complete hidden event identity from DOM attributes",
+      );
       assert.match(summary, /omitted|visible records|spoiler/i);
       assert.equal(
         await page
@@ -1543,7 +1585,7 @@ export async function runIndependentUpgradeSpending({
         "Changing packs never writes the failed candidate into the other pack",
       );
       await openPurchase(page);
-      await page.click("#upgrade-spend-cancel");
+      await cancelPurchase(page);
       assert.deepEqual(await durable(page), before);
       evidence.scenarios.push(
         `${surface}: failed candidate survives same-page pack navigation for explicit export/reconciliation; no automatic replay, no other-pack mutation, pending recovery blocks a new operation until explicit discard`,
