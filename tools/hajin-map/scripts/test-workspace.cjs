@@ -152,6 +152,8 @@ const checks = [];
   await delayed.locator('#retry').click(); await delayed.locator('#zoom-in:enabled').waitFor();
   await delayed.close();
   checks.push('15-second image-decode deadline produces recoverable failure');
+  const { runWorkspaceBrowser } = await import('../tests/workspace.browser.ts');
+  checks.push(...await runWorkspaceBrowser(page, base));
   await page.locator('#toggle-key').click();
   await page.evaluate(() => {
     const banner = document.createElement('div'); banner.textContent = 'SYNTHETIC TEST FIXTURE — NOT GAME DATA';
