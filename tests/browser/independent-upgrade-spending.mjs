@@ -18,7 +18,6 @@ const MIXED = "qa023:purchase-mixed",
 const HIDDEN = "qa023:purchase-hidden-cost",
   SECRET = "qa023:secret-item";
 const ALIAS = "qa023:purchase-alias";
-const openPurchaseDiagnostics = [];
 const pathFor = (base, page) =>
   `${base}/${page}/?pack=${encodeURIComponent(PACK)}`;
 const spend = (id) => `[data-upgrade-spend="${id}"]`;
@@ -121,122 +120,19 @@ async function focusIs(page, selector) {
     `Spending modal returns focus: ${JSON.stringify(result)}`,
   );
 }
-async function installPurchaseTrace(page) {
-  // Install before navigation, not between a preceding close and focus→Enter.
-  // Bounded passive observation persists until page/context disposal.
-  await page.addInitScript(() => {
-    const tokens = new WeakMap();
-    let token = 0;
-    const describe = (node) => {
-      if (!node) return null;
-      if (!tokens.has(node)) tokens.set(node, ++token);
-      return {
-        token: tokens.get(node),
-        tag: node.tagName,
-        id: node.id,
-        dataset: { ...node.dataset },
-        connected: node.isConnected,
-        disabled: node.disabled,
-      };
-    };
-    const trace = { started: performance.now(), records: [] };
-    const log = (type, event) => {
-      trace.records.push({
-        at: performance.now() - trace.started,
-        type,
-        key: event?.key,
-        target: describe(event?.target),
-        active: describe(document.activeElement),
-        dialogs: [...document.querySelectorAll("dialog")].map((n) => ({
-          id: n.id,
-          open: n.open,
-        })),
-      });
-      if (trace.records.length > 400) trace.records.shift();
-    };
-    const listener = (event) => log(event.type, event);
-    const types = [
-      "focus",
-      "blur",
-      "keydown",
-      "keyup",
-      "click",
-      "close",
-      "cancel",
-    ];
-    for (const type of types) document.addEventListener(type, listener, true);
-    const observer = new MutationObserver((records) => {
-      if (
-        records.some((r) =>
-          ["progress-rows", "completion-fields"].includes(r.target.id),
-        )
-      )
-        log("rows-replaced");
-    });
-    observer.observe(document, { childList: true, subtree: true });
-    const cleanup = () => {
-      observer.disconnect();
-      for (const type of types)
-        document.removeEventListener(type, listener, true);
-    };
-    window.addEventListener("pagehide", cleanup, { once: true });
-    window.__qaSpendOpenTrace = {
-      snapshot: (id) => {
-        log("snapshot");
-        const result = {
-          id,
-          started: trace.started,
-          records: trace.records,
-          selected: describe(
-            document.querySelector(`[data-upgrade-spend="${CSS.escape(id)}"]`),
-          ),
-        };
-        trace.records = [];
-        return result;
-      },
-    };
-    log("document-start");
-  });
-}
 async function openPurchase(page, id = FIRST) {
-  // Original focus → Enter → visible assertion, with no added awaited setup.
-  let failure;
-  try {
-    await page.locator(spend(id)).focus();
-    await page.keyboard.press("Enter");
-    await page.locator("#upgrade-spend-confirm").waitFor({ state: "visible" });
-    assert.equal(
-      await page.locator("#upgrade-spend-ack").isChecked(),
-      false,
-      "Pre-purchase stock acknowledgement is never prechecked",
-    );
-    assert.match(
-      await page.locator("#upgrade-spend-confirm").textContent(),
-      /before this purchase.*not already been deducted/is,
-    );
-  } catch (error) {
-    failure = error;
-    throw error;
-  } finally {
-    const result = await page.evaluate(async (id) => {
-      const trace = window.__qaSpendOpenTrace.snapshot(id);
-      const { state } = await import("/assets/src/client/common.mjs");
-      return {
-        ...trace,
-        location: location.href,
-        state: {
-          loading: state.loading,
-          saving: state.saving,
-          revision: state.revision,
-          packId: state.pack?.id,
-          profile: structuredClone(state.profile),
-        },
-        error: document.querySelector("#error")?.textContent,
-        result: document.querySelector("#upgrade-spend-result")?.textContent,
-      };
-    }, id);
-    openPurchaseDiagnostics.push({ ...result, passed: !failure });
-  }
+  await page.locator(spend(id)).focus();
+  await page.keyboard.press("Enter");
+  await page.locator("#upgrade-spend-confirm").waitFor({ state: "visible" });
+  assert.equal(
+    await page.locator("#upgrade-spend-ack").isChecked(),
+    false,
+    "Pre-purchase stock acknowledgement is never prechecked",
+  );
+  assert.match(
+    await page.locator("#upgrade-spend-confirm").textContent(),
+    /before this purchase.*not already been deducted/is,
+  );
 }
 async function apply(
   page,
@@ -296,6 +192,13 @@ async function correct(page, id, completion) {
   await page.click("#upgrade-progress-apply");
   await saved(page, before.revision);
   await page.locator("#upgrade-progress-confirm").waitFor({ state: "hidden" });
+  // Completion includes native-close focus restoration, not just hidden DOM.
+  // Observe that documented endpoint before the next synthetic focus/Enter.
+  await page.waitForFunction(
+    (selector) => document.querySelector(selector) === document.activeElement,
+    progress(id),
+  );
+  await focusIs(page, progress(id));
   const after = await active(page);
   assert.deepEqual(
     after.inventory,
@@ -328,7 +231,6 @@ async function refused(page, selector, explanation, packId = PACK) {
   );
 }
 async function seed(page, base, { legacyVersion = 3, many = false } = {}) {
-  await installPurchaseTrace(page);
   await page.goto(
     `${base}/progression/?pack=observed%3Aupgrade-review-20261026`,
   );
@@ -572,10 +474,7 @@ export async function runIndependentUpgradeSpending({
   prefix = browser.browserType().name(),
 }) {
   await mkdir("test-results/upgrade023-spending", { recursive: true });
-  openPurchaseDiagnostics.length = 0;
   const evidence = {
-    diagnosticOnlyOpenPurchaseObservation: true,
-    openPurchaseDiagnostics,
     owner: "verify_upgrade_player_journeys",
     source: execFileSync("git", ["rev-parse", "HEAD"], {
       encoding: "utf8",
@@ -945,6 +844,10 @@ export async function runIndependentUpgradeSpending({
         "Purchase never hitchhikes the unsaved draft into committed or previous storage",
       );
       await page.click("#cancel-inventory");
+      await page.waitForFunction(
+        (selector) => document.querySelector(selector)?.value === "10",
+        owned(A),
+      );
       assert.equal(await page.locator(owned(A)).inputValue(), "10");
       assert.deepEqual(
         await active(page),
@@ -1702,7 +1605,6 @@ export async function runIndependentUpgradeSpending({
         observedPack = "observed:upgrade-review-20261026",
         cash = "observed:cash",
         bank = "observed:bank-upgrade-iv";
-      await installPurchaseTrace(page);
       await page.goto(
         `${base}/inventory/?pack=${encodeURIComponent(observedPack)}`,
       );
@@ -1799,6 +1701,46 @@ export async function runIndependentUpgradeSpending({
                 .evaluate((n) => parseFloat(getComputedStyle(n).fontSize)),
               zoom === 200 ? 32 : 16,
             );
+            await totals(page, { net: 0, gross: 0, reversed: 0 });
+            const empty = page.locator("#upgrade-spending-summary");
+            const emptyText = await empty.textContent();
+            assert.match(emptyText, /not.*lifetime/i);
+            assert.match(
+              emptyText,
+              /unrecorded|not recorded|prior|earlier|past|history/i,
+            );
+            assert.equal(
+              await empty
+                .locator('[id^="spend-items-"], [id^="spend-history-"]')
+                .count(),
+              0,
+              "Fresh empty history omits nonfunctional breakdown/history pager scaffolding",
+            );
+            assert.equal(
+              await empty
+                .locator(
+                  "[data-spend-item], [data-spend-currency], [data-spend-event]",
+                )
+                .count(),
+              0,
+            );
+            const emptyBounds = await empty.evaluate((n) => ({
+              height: n.getBoundingClientRect().height,
+              width: n.getBoundingClientRect().width,
+              clientWidth: n.clientWidth,
+              scrollWidth: n.scrollWidth,
+            }));
+            assert(
+              emptyBounds.height <= 3 * 844 &&
+                emptyBounds.width <= width &&
+                emptyBounds.scrollWidth <= emptyBounds.clientWidth + 1,
+              `Compact empty spending summary stays within three enlarged viewport heights: ${JSON.stringify(emptyBounds)}`,
+            );
+            if (captureScreenshots) {
+              const path = `test-results/upgrade023-spending/${prefix}-empty-summary-${surface}-${width}-${theme}-${zoom}.png`;
+              await empty.screenshot({ path });
+              evidence.screenshots.push(path);
+            }
             await openPurchase(page);
             assert.equal(
               await page.locator("#upgrade-spend-apply").isDisabled(),
@@ -1902,13 +1844,15 @@ export async function runIndependentUpgradeSpending({
             assert(
               size.width > 0 &&
                 size.width <= width &&
-                size.height < 8192 &&
+                size.height > 0 &&
                 size.scrollWidth <= size.clientWidth + 1,
             );
             if (captureScreenshots) {
-              const path = `test-results/upgrade023-spending/${prefix}-summary-${surface}-${width}-${theme}-${zoom}.png`;
-              await summary.screenshot({ path });
-              evidence.screenshots.push(path);
+              await captureSummary(
+                page,
+                summary,
+                `${prefix}-summary-${surface}-${width}-${theme}-${zoom}`,
+              );
             }
           } finally {
             await context.close();
@@ -1917,8 +1861,85 @@ export async function runIndependentUpgradeSpending({
     evidence.scenarios.push(
       "Purchase acknowledgement/confirmation and visible counters exercised by keyboard at 320/390px, dark100/light200 actual text, reduced motion and scrollable non-overflowing native dialogs; " +
         (captureScreenshots
-          ? "bounded full-dialog scroll tiles and summary pixels captured"
+          ? "compact empty-state, bounded full-dialog scroll tiles and populated summary pixels captured"
           : "functional/computed-layout only; WebKit pixels not captured under existing pinned-tool/CSP policy"),
+    );
+  }
+
+  async function captureSummary(page, summary, name) {
+    const original = await summary.evaluate((n) => {
+      const r = n.getBoundingClientRect();
+      const x = Math.floor(r.left + scrollX),
+        y = Math.floor(r.top + scrollY);
+      return {
+        box: {
+          x,
+          y,
+          width: Math.ceil(r.right + scrollX) - x,
+          height: Math.ceil(r.bottom + scrollY) - y,
+        },
+        viewport: { width: innerWidth, height: innerHeight },
+        rootFontSize: getComputedStyle(document.documentElement).fontSize,
+      };
+    });
+    const tileHeight = 8192,
+      overlap = 256,
+      tiles = [];
+    let y = 0;
+    for (let i = 0; y < original.box.height; i++) {
+      const height = Math.min(tileHeight, original.box.height - y);
+      const clip = {
+        x: original.box.x,
+        y: original.box.y + y,
+        width: original.box.width,
+        height,
+      };
+      const path = `test-results/upgrade023-spending/${name}-tile${String(i + 1).padStart(2, "0")}.png`;
+      const scrollBefore = await page.evaluate(() => ({
+        x: scrollX,
+        y: scrollY,
+      }));
+      await page.screenshot({ path, fullPage: true, clip, scale: "css" });
+      const scrollAfter = await page.evaluate(() => ({
+        x: scrollX,
+        y: scrollY,
+      }));
+      evidence.screenshots.push(path);
+      tiles.push({ path, clip, offsetY: y, scrollBefore, scrollAfter });
+      if (y + height === original.box.height) break;
+      y += height - overlap;
+    }
+    assert.equal(tiles[0].offsetY, 0);
+    for (let i = 1; i < tiles.length; i++)
+      assert(
+        tiles[i].offsetY <= tiles[i - 1].offsetY + tiles[i - 1].clip.height,
+      );
+    assert.equal(
+      tiles.at(-1).offsetY + tiles.at(-1).clip.height,
+      original.box.height,
+    );
+    const after = await page.evaluate(() => ({
+      viewport: { width: innerWidth, height: innerHeight },
+      rootFontSize: getComputedStyle(document.documentElement).fontSize,
+    }));
+    assert.deepEqual(after, {
+      viewport: original.viewport,
+      rootFontSize: original.rootFontSize,
+    });
+    await writeFile(
+      `test-results/upgrade023-spending/${name}-summary-capture.json`,
+      JSON.stringify(
+        {
+          method: "full-summary-clipped-css-pixel-tiles",
+          fullSummaryVerticalCoverage: true,
+          ...original,
+          tileHeight,
+          overlap,
+          tiles,
+        },
+        null,
+        2,
+      ),
     );
   }
 

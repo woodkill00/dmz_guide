@@ -69,6 +69,12 @@ function totalsMarkup(view) {
   return `<dl><dt>Net recorded material units (non-currency count)</dt><dd data-spend-metric="materials-net">${amount(view.materials.net)}</dd><dt>Gross recorded material units</dt><dd data-spend-metric="materials-gross">${amount(view.materials.gross)}</dd><dt>Reversed recorded material units</dt><dd data-spend-metric="materials-reversed">${amount(view.materials.reversed)}</dd></dl>`;
 }
 
+function recoveryMarkup() {
+  return retained
+    ? '<section id="upgrade-spend-recovery" class="notice" tabindex="-1"><h3>Spending candidate retained for reconciliation</h3><p>The old preview cannot be applied after navigation or another saved change. Check the current saved history before replacing or recording anything; a save interrupted by navigation may already have committed. Export its private candidate for explicit reconciliation, or discard it. Nothing is retried automatically.</p><button type="button" data-spend-recovery-export>Export unsaved spending candidate</button><button type="button" data-spend-recovery-discard>Discard unsaved spending candidate</button></section>'
+    : "";
+}
+
 export function renderSpendingSummary() {
   const root = $("#upgrade-spending-summary");
   if (!root || !state.pack || !state.profile) return;
@@ -84,6 +90,10 @@ export function renderSpendingSummary() {
   itemsOffset = pageStart(itemsOffset, rows.length);
   historyOffset = pageStart(historyOffset, history.length);
   root.setAttribute("tabindex", "-1");
+  if (!history.length && !rows.length) {
+    root.innerHTML = `<h2 id="upgrade-spending-title" tabindex="-1">Recorded usage / spending</h2><p>No visible spending recorded. Earlier spending is not recorded. Older completions and manual stock edits do not reconstruct lifetime gameplay spending.</p><dl><dt>Net recorded item units</dt><dd data-spend-metric="materials-net">0</dd><dt>Gross recorded item units</dt><dd data-spend-metric="materials-gross">0</dd><dt>Reversed item units</dt><dd data-spend-metric="materials-reversed">0</dd></dl><p>Count-unit materials only; currencies stay separate. Net = gross − reversed.</p>${view.partial ? '<p class="notice">Some private history is omitted to protect spoilers. Zero here covers visible records only; reveal spoilers to inspect the full private history.</p>' : ""}${state.profile.schemaVersion !== 3 ? `<p><a href="${esc(settingsURL(state.pack))}">Preview spending-history migration in Settings</a>. Past spending remains unrecorded.</p>` : ""}${recoveryMarkup()}`;
+    return;
+  }
   root.innerHTML = `<h2 id="upgrade-spending-title" tabindex="-1">Recorded usage / spending</h2><p>Net = gross recorded purchases − recorded reversals. These are private guide records, not lifetime gameplay totals. Zero recorded usage does not mean nothing was spent in the game. Old or manually completed upgrades and gaps in imported backups are spending not recorded; inventory edits never add spending.</p>${view.partial ? '<p class="notice">Some private history is omitted to protect spoilers. These totals cover visible records only; reveal spoilers to inspect the full private history.</p>' : ""}${state.profile.schemaVersion !== 3 ? `<p><a href="${esc(settingsURL(state.pack))}">Preview spending-history migration in Settings</a>. Migration creates no historical purchases.</p>` : ""}${totalsMarkup(view)}<h3>Per-item and separate currency totals</h3><p>Only non-currency count units enter the overall material counter. Each currency identity and every other resource unit stays separate; amounts with different units are never added together.</p><ul class="source-list">${
     rows
       .slice(itemsOffset, itemsOffset + PAGE_SIZE)
@@ -101,7 +111,7 @@ export function renderSpendingSummary() {
           `<li data-spend-event="${esc(entry.id)}"><h4>${esc(entry.upgradeName)}</h4><p>${entry.kind === "purchase" ? (entry.reversed ? "Recorded purchase · reversed in the guide" : "Recorded purchase") : "Bookkeeping reversal · not a game refund"} · <time datetime="${esc(entry.recordedAt)}">${esc(entry.recordedAt)}</time></p>${entry.kind === "purchase" ? `<p>Recorded content version: ${esc(guard.text(entry.contentVersion))}</p>${entry.id === view.latestPurchaseId && !entry.reversed ? `<button type="button" data-upgrade-reverse="${esc(entry.id)}">Reverse latest guide entry…</button>` : ""}` : ""}</li>`,
       )
       .join("") || "<li>No visible spending history recorded.</li>"
-  }</ol>${pager("history", historyOffset, history.length, "history entries")}${retained ? '<section id="upgrade-spend-recovery" class="notice" tabindex="-1"><h3>Spending candidate retained for reconciliation</h3><p>The old preview cannot be applied after navigation or another saved change. Check the current saved history before replacing or recording anything; a save interrupted by navigation may already have committed. Export its private candidate for explicit reconciliation, or discard it. Nothing is retried automatically.</p><button type="button" data-spend-recovery-export>Export unsaved spending candidate</button><button type="button" data-spend-recovery-discard>Discard unsaved spending candidate</button></section>' : ""}`;
+  }</ol>${pager("history", historyOffset, history.length, "history entries")}${recoveryMarkup()}`;
 }
 
 function ensureDialog() {
