@@ -1393,7 +1393,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     sourceOverview.append(
       field("Show duplicate markers for comparison", inspectDuplicates),
       note(
-        "* marks likely matching locations. Copies are hidden, never deleted. Different categories and known floors/builds remain separate.",
+        "* marks matching names at the same map location (within 24 image pixels). Copies are hidden, never deleted. Different names, categories and known floors/builds remain separate.",
       ),
     );
     if (duplicatePlan.truncated)

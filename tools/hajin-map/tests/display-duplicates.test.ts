@@ -97,3 +97,26 @@ test("dense ambiguous input stops matching at a bounded work cap without droppin
   assert.equal(result.suppressed.size, 0);
   assert.equal(input.length, 20000);
 });
+test("both marker name and map location must match, including facilities at identical coordinates", () => {
+  const a = record("o", "official", { title: "Police Station" });
+  for (const b of [
+    record("x", "codcentral", { title: "District Police Station" }),
+    record("x", "codcentral", { title: "Police Stations" }),
+    record("x", "codcentral", { title: "Police Station", x: 125 }),
+  ])
+    assert.equal(displayDuplicates([a, b]).suppressed.size, 0);
+  assert.equal(
+    displayDuplicates([
+      a,
+      record("x", "codcentral", { title: "  POLICE   STATION ", x: 105 }),
+    ]).suppressed.size,
+    1,
+  );
+  assert.equal(
+    displayDuplicates([
+      record("o", "official", { title: "北站" }),
+      record("x", "codcentral", { title: "南站" }),
+    ]).suppressed.size,
+    0,
+  );
+});

@@ -57,3 +57,5 @@ Foundation -> source/reference MVP -> private custom-point MVP -> review/curatio
 
 - [x] T023 Add bounded deterministic source display matching with explicit category aliases, canonical distances/names, known floor/build exclusions, official-first representation and visible-source fallback. Preserve all raw evidence and avoid transitive proximity chains. FR-002, FR-006, FR-007, FR-013.
 - [x] T024 Suppress matching raw marker copies across loaded and promoted snapshots; mark category rows with `*` counts/grey text and provide a Show duplicate markers inspection control. Verify site/category selection, reload, fallback, comparison mode and unchanged curation/custom data. FR-002, FR-006, FR-010, FR-012.
+
+- [x] T025 Tighten display matching to require both marker name and location for every category; remove the facility-distance fallback and singular/plural inference. Preserve distinct Unicode names. Reproduce the previous failure and verify same-position/different-name and same-name/different-position regressions. User-requested correction to T023; FR-002, FR-006.

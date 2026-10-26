@@ -70,3 +70,9 @@ Follow-up production capacity rerun passed (2026-10-26T20:44:54Z): toggle first-
 Actual ignored-capture smoke:245 drawn from543 raw records,298 likely cross-site duplicate copies hidden; comparison mode restored543. Fresh360px view measured document width360, key width334, no overflowing category rows. These are reversible display candidates, not merged records or verified-equivalence claims. Original site data, annotations and review history remain intact. The inspection switch is session-only and source masks retain their normal persistence.
 
 Duplicate-display production capacity rerun2026-10-26T20:57:44Z passed: toggle first-paint p95=95.5ms, search p95=55.7ms, five20,000-record worker runs151.7–170.4ms. Same four-core/512MiB renderer constraint on64GiB host, no physical8GiB certification. Durable saves separately verified; prior measurements remain historical.
+
+## Strict name-and-location correction (T025)
+
+User clarified that every display match must compare BOTH name and location. The previous facility-only8px exception and plural stemming are removed. A regression reproduced the old failure before repair.46 unit tests and strict build passed; focused independent review clean. The local capture calculation is now370 shown/543 raw,173 matching copies hidden. Previous245/298 counts are historical. Browser regression result follows after execution.
+
+Final correction verification:46 unit tests and strict build passed;33 browser groups passed2026-10-26T21:42:18Z with0 runtime errors and0 external requests. Actual local browser showed370 selected markers with all four source controls available. T025 complete.

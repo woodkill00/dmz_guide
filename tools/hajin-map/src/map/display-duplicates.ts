@@ -41,10 +41,11 @@ function kind(category: string) {
     : (kinds.get(normalize(category)) ?? normalize(category));
 }
 const title = (s: string) =>
-  normalize(s)
-    .split(" ")
-    .map((w) => (w.endsWith("s") && !w.endsWith("ss") ? w.slice(0, -1) : w))
-    .join(" ");
+  s
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
 const priority = (a: DisplayRecord, b: DisplayRecord) =>
   Number(b.sourceId === "official") - Number(a.sourceId === "official") ||
   a.sourceId.localeCompare(b.sourceId, "en") ||
@@ -91,21 +92,8 @@ export function displayDuplicates(input: DisplayRecord[], showAll = false) {
               (r.build !== null && g.builds.size && !g.builds.has(r.build))
             )
               continue;
-            const sameName = title(r.title) === title(g.anchor.title),
-              facility = [
-                "police",
-                "clinic",
-                "fire",
-                "gas",
-                "marine",
-                "cache",
-                "uav",
-                "hunt",
-                "sam",
-                "compound",
-                "exfil",
-              ].includes(k);
-            if (!sameName && !(facility && distance <= 8)) continue;
+            const name = title(r.title);
+            if (!name || name !== title(g.anchor.title)) continue;
             if (distance < best) {
               match = index;
               best = distance;
