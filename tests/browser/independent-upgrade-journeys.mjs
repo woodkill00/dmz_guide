@@ -150,97 +150,6 @@ async function saveInventory(page) {
   await waitSaved(page, before);
   return (await durable(page)).value;
 }
-// Temporary diagnostic instrumentation: forward focus exactly, never wait or retry.
-async function installFocusTrace(page, selector) {
-  await page.evaluate((selector) => {
-    window.__qaUpgradeFocusTrace?.restore();
-    const events = [],
-      identities = new WeakMap();
-    let nextIdentity = 0;
-    const describe = (node) => {
-      if (!node) return null;
-      if (!identities.has(node)) identities.set(node, ++nextIdentity);
-      return {
-        identity: identities.get(node),
-        tag: node.tagName,
-        id: node.id,
-        dataset: { ...node.dataset },
-        connected: node.isConnected,
-        disabled: node.disabled,
-      };
-    };
-    const record = (type, target, detail = {}) => {
-      if (events.length < 200)
-        events.push({
-          at: performance.now(),
-          type,
-          target: describe(target),
-          active: describe(document.activeElement),
-          selected: describe(document.querySelector(selector)),
-          dialogOpen: document.querySelector("#upgrade-progress-confirm")?.open,
-          ...detail,
-        });
-    };
-    const types = [
-      "focus",
-      "blur",
-      "focusin",
-      "focusout",
-      "keydown",
-      "keyup",
-      "close",
-    ];
-    const listener = (event) =>
-      record(event.type, event.target, {
-        key: event.key,
-        trusted: event.isTrusted,
-      });
-    for (const type of types) document.addEventListener(type, listener, true);
-    const original = Object.getOwnPropertyDescriptor(
-      HTMLElement.prototype,
-      "focus",
-    );
-    Object.defineProperty(HTMLElement.prototype, "focus", {
-      ...original,
-      value: function (...args) {
-        record("focus-call", this, {
-          stack: new Error().stack?.split("\n").slice(1, 6),
-        });
-        try {
-          return Reflect.apply(original.value, this, args);
-        } finally {
-          record("focus-return", this);
-        }
-      },
-    });
-    let selected = document.querySelector(selector);
-    const observer = new MutationObserver((mutations) => {
-      if (mutations.some((m) => m.target.id === "progress-rows"))
-        record(
-          "progress-rows-replaced",
-          document.querySelector("#progress-rows"),
-        );
-      const current = document.querySelector(selector);
-      if (current !== selected) {
-        selected = current;
-        record("selected-node-replaced", current);
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-    window.__qaUpgradeFocusTrace = {
-      events,
-      mark: (type) => record(type, document.activeElement),
-      restore() {
-        observer.disconnect();
-        for (const type of types)
-          document.removeEventListener(type, listener, true);
-        Object.defineProperty(HTMLElement.prototype, "focus", original);
-        delete window.__qaUpgradeFocusTrace;
-      },
-    };
-    record("trace-start", selected);
-  }, selector);
-}
 async function setProgress(
   page,
   field,
@@ -248,152 +157,84 @@ async function setProgress(
   { double = false, cancel = false } = {},
 ) {
   const before = await active(page);
-  await installFocusTrace(page, upgrade(field));
-  try {
-    await page.locator(upgrade(field)).selectOption(value);
-    await page
-      .locator("#upgrade-progress-confirm")
-      .waitFor({ state: "visible" });
-    assert.match(
-      await page.locator("#upgrade-progress-confirm").textContent(),
-      /Recording progress only; update inventory after an in-game purchase\./,
-    );
-    if (cancel) {
-      await page.locator("#upgrade-progress-cancel").focus();
-      await page.keyboard.press("Enter");
-      await page
-        .locator("#upgrade-progress-confirm")
-        .waitFor({ state: "hidden" });
-      assert.deepEqual(
-        await active(page),
-        before,
-        "Cancel leaves the active profile unchanged",
-      );
-      return before;
-    }
-    if (double) {
-      const pendingControls = await page
-        .locator("#upgrade-progress-apply")
-        .evaluate((button) => {
-          button.click();
-          const locked = {
-            apply: button.disabled,
-            cancel: document.querySelector("#upgrade-progress-cancel").disabled,
-          };
-          button.click();
-          return locked;
-        });
-      assert.deepEqual(
-        pendingControls,
-        { apply: true, cancel: true },
-        "Pending progress save disables repeated Apply and misleading Cancel",
-      );
-    } else {
-      await page.locator("#upgrade-progress-apply").focus();
-      await page.keyboard.press("Enter");
-    }
-    await waitSaved(page, before.revision);
+  await page.locator(upgrade(field)).selectOption(value);
+  await page.locator("#upgrade-progress-confirm").waitFor({ state: "visible" });
+  assert.match(
+    await page.locator("#upgrade-progress-confirm").textContent(),
+    /Recording progress only; update inventory after an in-game purchase\./,
+  );
+  if (cancel) {
+    await page.locator("#upgrade-progress-cancel").focus();
+    await page.keyboard.press("Enter");
     await page
       .locator("#upgrade-progress-confirm")
       .waitFor({ state: "hidden" });
-    const after = (await durable(page)).value;
     assert.deepEqual(
-      untouched(after),
-      untouched(before),
-      "Progress saves never change stock, reserves, goals, routes or pins",
+      await active(page),
+      before,
+      "Cancel leaves the active profile unchanged",
     );
-    assert.equal(
-      after.revision,
-      before.revision + 1,
-      "One explicit confirmation commits once",
-    );
-    assert.equal(after.upgradeProgress[UPGRADE][field], value);
-    const focusState = await page.locator(upgrade(field)).evaluate((n) => ({
-      at: performance.now(),
-      focused: n === document.activeElement,
-      selected: {
-        tag: n.tagName,
-        id: n.id,
-        dataset: { ...n.dataset },
-        disabled: n.disabled,
-        connected: n.isConnected,
-      },
-      active: document.activeElement
-        ? {
-            tag: document.activeElement.tagName,
-            id: document.activeElement.id,
-            dataset: { ...document.activeElement.dataset },
-          }
-        : null,
-      dialogOpen: document.querySelector("#upgrade-progress-confirm")?.open,
-      timeline: window.__qaUpgradeFocusTrace?.events,
-    }));
-    if (!focusState.focused) {
-      // Diagnostic only: retain the original false result even if native focus arrives later.
-      await page.evaluate(() =>
-        window.__qaUpgradeFocusTrace?.mark("failed-snapshot-probe-start"),
-      );
-      const started = Date.now();
-      try {
-        await page.waitForFunction(
-          (selector) =>
-            document.querySelector(selector) === document.activeElement,
-          upgrade(field),
-          { timeout: 1000 },
-        );
-        focusState.eventualFocus = {
-          observed: true,
-          elapsedMs: Date.now() - started,
-        };
-      } catch (reason) {
-        focusState.eventualFocus = {
-          observed: false,
-          elapsedMs: Date.now() - started,
-          error: reason.name,
-        };
-      }
-      await page.evaluate(() =>
-        window.__qaUpgradeFocusTrace?.mark("failed-snapshot-probe-end"),
-      );
-      focusState.timeline = await page.evaluate(
-        () => window.__qaUpgradeFocusTrace?.events,
-      );
-    }
-    assert.equal(
-      focusState.focused,
-      true,
-      `Progress save restores initiating control focus: ${JSON.stringify(focusState)}`,
-    );
-    return after;
-  } finally {
-    try {
-      const timeline = await page.evaluate(
-        () => window.__qaUpgradeFocusTrace?.events,
-      );
-      const engine = page.context().browser().browserType().name();
-      const route = new URL(page.url()).pathname.replace(/[^a-z0-9]+/gi, "-");
-      const activation = cancel ? "cancel" : double ? "double" : "keyboard";
-      await writeFile(
-        `test-results/upgrade023-independent/focus-${engine}-${route}-${field}-${value}-r${before.revision}-${activation}.json`,
-        JSON.stringify(
-          {
-            source: process.env.GITHUB_SHA || "local",
-            syntheticStateOnly: true,
-            diagnosticOnly: true,
-            field,
-            value,
-            revision: before.revision,
-            activation,
-            timeline,
-          },
-          null,
-          2,
-        ),
-      );
-    } finally {
-      await page.evaluate(() => window.__qaUpgradeFocusTrace?.restore());
-    }
+    return before;
   }
+  if (double) {
+    const pendingControls = await page
+      .locator("#upgrade-progress-apply")
+      .evaluate((button) => {
+        button.click();
+        const locked = {
+          apply: button.disabled,
+          cancel: document.querySelector("#upgrade-progress-cancel").disabled,
+        };
+        button.click();
+        return locked;
+      });
+    assert.deepEqual(
+      pendingControls,
+      { apply: true, cancel: true },
+      "Pending progress save disables repeated Apply and misleading Cancel",
+    );
+  } else {
+    await page.locator("#upgrade-progress-apply").focus();
+    await page.keyboard.press("Enter");
+  }
+  await waitSaved(page, before.revision);
+  await page.locator("#upgrade-progress-confirm").waitFor({ state: "hidden" });
+  const after = (await durable(page)).value;
+  assert.deepEqual(
+    untouched(after),
+    untouched(before),
+    "Progress saves never change stock, reserves, goals, routes or pins",
+  );
+  assert.equal(
+    after.revision,
+    before.revision + 1,
+    "One explicit confirmation commits once",
+  );
+  assert.equal(after.upgradeProgress[UPGRADE][field], value);
+  const focusState = await page.locator(upgrade(field)).evaluate((n) => ({
+    focused: n === document.activeElement,
+    selected: {
+      tag: n.tagName,
+      id: n.id,
+      dataset: { ...n.dataset },
+      disabled: n.disabled,
+      connected: n.isConnected,
+    },
+    active: document.activeElement
+      ? {
+          tag: document.activeElement.tagName,
+          id: document.activeElement.id,
+          dataset: { ...document.activeElement.dataset },
+        }
+      : null,
+    dialogOpen: document.querySelector("#upgrade-progress-confirm")?.open,
+  }));
+  assert.equal(
+    focusState.focused,
+    true,
+    `Progress save restores initiating control focus: ${JSON.stringify(focusState)}`,
+  );
+  return after;
 }
 async function exportCurrent(page) {
   const next = page.waitForEvent("download");
