@@ -7,9 +7,21 @@ export async function runUpgradeStudioRoundtrip({
   author,
   createAuthorServer,
 }) {
-  const context = await browser.newContext(),
-    page = await context.newPage(),
-    evidence = [];
+  let context, page, failure;
+  const evidence = [];
+  const closeOwnedAuthor = async () => {
+    const owned = author;
+    author = null;
+    await owned?.close();
+  };
+  const combine = (first, cleanup) =>
+    first
+      ? new AggregateError(
+          [first, cleanup],
+          `${first.message}; cleanup also failed: ${cleanup.message}`,
+          { cause: first },
+        )
+      : cleanup;
   const snapshot = async () => {
     const response = await fetch(author.url + "/api/catalog");
     assert.equal(response.status, 200);
@@ -64,6 +76,8 @@ export async function runUpgradeStudioRoundtrip({
     );
   };
   try {
+    context = await browser.newContext();
+    page = await context.newPage();
     for (const key of ["demo-training", "upgrade-observations"]) {
       const original = (await snapshot()).entries.find(
         (e) => e.key === key,
@@ -84,13 +98,28 @@ export async function runUpgradeStudioRoundtrip({
           "unknown",
         );
         assert.equal(
-          await page
-            .locator('[data-path="objectives.0.requirements.0.consumption"]')
-            .inputValue(),
-          "unknown",
+          original.objectives[0].requirements[0].consumption,
+          "consumed",
+          "The separately confirmed observed source remains consumed",
         );
+        const consumption = page.locator(
+          '[data-path="objectives.0.requirements.0.consumption"]',
+        );
+        assert.equal(
+          await consumption.inputValue(),
+          original.objectives[0].requirements[0].consumption,
+          "Guided Studio preserves the admitted source's consumption value",
+        );
+        // A deliberately fictional edit keeps unknown-mechanics coverage even
+        // though the separately confirmed observed costs are now consumed.
+        await consumption.selectOption("unknown");
       }
       const expected = await exportDraft();
+      if (original.schemaVersion === 2)
+        assert.equal(
+          expected.objectives[0].requirements[0].consumption,
+          "unknown",
+        );
       expected.contentVersion = "synthetic-studio-v" + original.schemaVersion;
       expected.description += " Synthetic advanced edit.";
       await jsonEdit(expected);
@@ -100,7 +129,7 @@ export async function runUpgradeStudioRoundtrip({
         expected,
       );
       await page.goto("about:blank");
-      await author.close();
+      await closeOwnedAuthor();
       author = await createAuthorServer({ root: repository, port: 0 });
       await open(key);
       assert.deepEqual(await exportDraft(), expected);
@@ -143,8 +172,21 @@ export async function runUpgradeStudioRoundtrip({
         2,
       ),
     );
-    return author;
-  } finally {
-    await context.close();
+  } catch (error) {
+    failure = error;
   }
+  try {
+    await context?.close();
+  } catch (error) {
+    failure = combine(failure, error);
+  }
+  if (failure) {
+    try {
+      await closeOwnedAuthor();
+    } catch (error) {
+      failure = combine(failure, error);
+    }
+    throw failure;
+  }
+  return author;
 }
