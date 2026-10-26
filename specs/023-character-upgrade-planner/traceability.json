@@ -1,0 +1,288 @@
+{
+  "FR-001": {
+    "tasks": [
+      "T002",
+      "T005",
+      "T010",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-002": {
+    "tasks": [
+      "T002",
+      "T003",
+      "T004",
+      "T005",
+      "T010",
+      "T017",
+      "T021",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-003": {
+    "tasks": [
+      "T003",
+      "T006",
+      "T007",
+      "T010",
+      "T013",
+      "T017",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-004": {
+    "tasks": [
+      "T007",
+      "T008",
+      "T010",
+      "T014",
+      "T018",
+      "T021",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-005": {
+    "tasks": [
+      "T011",
+      "T012",
+      "T013",
+      "T014",
+      "T019",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-006": {
+    "tasks": [
+      "T003",
+      "T004",
+      "T011",
+      "T012",
+      "T013",
+      "T014",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-007": {
+    "tasks": [
+      "T006",
+      "T011",
+      "T013",
+      "T014",
+      "T016",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-008": {
+    "tasks": [
+      "T004",
+      "T007",
+      "T010",
+      "T011",
+      "T013",
+      "T014",
+      "T015",
+      "T017",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-009": {
+    "tasks": [
+      "T015",
+      "T016",
+      "T021",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-010": {
+    "tasks": [
+      "T006",
+      "T011",
+      "T016",
+      "T018",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-011": {
+    "tasks": [
+      "T003",
+      "T006",
+      "T007",
+      "T008",
+      "T010",
+      "T012",
+      "T018",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-012": {
+    "tasks": [
+      "T006",
+      "T008",
+      "T009",
+      "T017",
+      "T018",
+      "T021",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-013": {
+    "tasks": [
+      "T002",
+      "T003",
+      "T004",
+      "T005",
+      "T017",
+      "T021",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-014": {
+    "tasks": [
+      "T009",
+      "T010",
+      "T013",
+      "T014",
+      "T015",
+      "T016",
+      "T020",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-015": {
+    "tasks": [
+      "T002",
+      "T003",
+      "T004",
+      "T005",
+      "T006",
+      "T008",
+      "T011",
+      "T013",
+      "T018",
+      "T019",
+      "T020",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "FR-016": {
+    "tasks": [
+      "T001",
+      "T005",
+      "T007",
+      "T009",
+      "T012",
+      "T015",
+      "T020",
+      "T021",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "SC-001": {
+    "tasks": [
+      "T002",
+      "T003",
+      "T004",
+      "T005",
+      "T010",
+      "T017",
+      "T020"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "SC-002": {
+    "tasks": [
+      "T003",
+      "T004",
+      "T007",
+      "T011",
+      "T012",
+      "T013",
+      "T014",
+      "T015",
+      "T016",
+      "T020"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "SC-003": {
+    "tasks": [
+      "T006",
+      "T007",
+      "T008",
+      "T009",
+      "T010",
+      "T017",
+      "T018",
+      "T020"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "SC-004": {
+    "tasks": [
+      "T009",
+      "T010",
+      "T014",
+      "T015",
+      "T016",
+      "T020"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "SC-005": {
+    "tasks": [
+      "T013",
+      "T019",
+      "T020"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  },
+  "SC-006": {
+    "tasks": [
+      "T001",
+      "T005",
+      "T009",
+      "T020",
+      "T021",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "planned-not-implemented"
+  }
+}
