@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "id": "observed:power-regulator",
+  "kind": "item",
+  "name": "Power Regulator",
+  "sourceIds": [
+    "source:upgrade-observation-01",
+    "source:upgrade-observation-05"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

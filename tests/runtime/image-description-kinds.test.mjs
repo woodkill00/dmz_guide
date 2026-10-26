@@ -27,7 +27,9 @@ const imageGroups = Object.entries(schema.properties)
   .filter(
     ([, value]) =>
       value.type === "array" &&
-      resolveSchema(value.items).properties?.imageDescriptions,
+      (value.items.anyOf || [value.items]).some(
+        (variant) => resolveSchema(variant).properties?.imageDescriptions,
+      ),
   )
   .map(([group]) => group);
 const primaryId = "demo:kind-primary";

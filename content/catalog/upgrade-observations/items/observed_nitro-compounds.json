@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "id": "observed:nitro-compounds",
+  "kind": "item",
+  "name": "Nitro Compounds",
+  "sourceIds": [
+    "source:upgrade-observation-06"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

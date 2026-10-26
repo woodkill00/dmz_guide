@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "id": "observed:electronic-sensors",
+  "kind": "item",
+  "name": "Electronic Sensors",
+  "sourceIds": [
+    "source:upgrade-observation-03"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

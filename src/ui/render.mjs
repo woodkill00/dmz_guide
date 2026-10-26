@@ -246,8 +246,10 @@ export function renderDetail(
   }
   let detail = "";
   if (record.recordType === "item") {
-    const uses = records.filter((r) =>
-      (r.inputs || r.requirements || []).some((x) => x.itemId === record.id),
+    const uses = records.filter(
+      (r) =>
+        !r.spoiler &&
+        (r.inputs || r.requirements || []).some((x) => x.itemId === record.id),
     );
     const produces = records.filter((r) => r.output?.itemId === record.id);
     const locations = records.filter((r) => r.itemIds?.includes(record.id));
@@ -276,8 +278,22 @@ export function renderDetail(
             .join("")
         : "<p>No numeric statistics verified for this record. Missing values are unknown, not zero.</p>"
     }</section>`;
+  if (record.recordType === "item") {
+    const uses = pack.objectives.filter(
+      (o) =>
+        o.track === "dmz-upgrade" &&
+        !o.spoiler &&
+        o.requirements.some((c) => c.itemId === record.id),
+    );
+    detail += `<section class="panel"><h2>Known upgrade uses</h2><ul>${
+      uses
+        .slice(0, 32)
+        .map((o) => `<li>${ref(o.id)}</li>`)
+        .join("") || "<li>No known need in this catalog scope.</li>"
+    }</ul><p>Catalog requirements are not your remaining demand. <a href="/local/?pack=${encodeURIComponent(pack.id)}&amp;id=${encodeURIComponent(record.id)}">Open private progress-aware Keep/Search and watch pin</a>.</p><p>Locations are unknown unless supported by the selected catalog. No discard recommendation is implied.</p></section>`;
+  }
   if (record.inputs || record.requirements)
-    detail += `<section class="panel"><h2>${record.inputs ? "Ingredients & retained tools" : "Requirements"}</h2>${record.station ? `<p>Station: ${e(record.station)}. Eligible game inventory: ${e(record.eligibility)}.</p>` : ""}${record.output ? `<p>Output: ${e(record.output.quantity)} × ${ref(record.output.itemId)}</p>` : ""}<ul class="requirements">${(record.inputs || record.requirements).map((input) => `<li><span>${ref(input.itemId)}<small>${input.consumed ? "Consumed material" : "Retained tool"} · ${e(find(input.itemId)?.unit || "unknown unit")}</small></span><strong>${e(input.quantity)}</strong></li>`).join("") || ((record.ingredientsKnown ?? record.requirementsKnown) ? "<li>No listed material requirements.</li>" : "<li>Unknown cost. Requirements have not been verified.</li>")}</ul><p>Requirement completeness: ${(record.ingredientsKnown ?? record.requirementsKnown) ? "Known for this scoped record" : "Unknown; do not assume complete"}.</p><h3>Prerequisites</h3><ul>${(record.prerequisites || []).map((id) => `<li>${ref(id)}</li>`).join("") || "<li>No listed prerequisites.</li>"}</ul>${showPlanner ? `<a class="button primary" href="/planner/?pack=${encodeURIComponent(pack.id)}&amp;goal=${encodeURIComponent(record.id)}">Open planner ↗</a>` : ""}</section>`;
+    detail += `<section class="panel"><h2>${record.inputs ? "Ingredients & retained tools" : "Requirements"}</h2>${record.station ? `<p>Station: ${e(record.station)}. Eligible game inventory: ${e(record.eligibility)}.</p>` : ""}${record.output ? `<p>Output: ${e(record.output.quantity)} × ${ref(record.output.itemId)}</p>` : ""}<ul class="requirements">${(record.inputs || record.requirements).map((input) => `<li><span>${ref(input.itemId)}<small>${input.consumption === "unknown" ? "Consumption unknown" : input.consumption === "consumed" || input.consumed === true ? "Consumed material" : "Retained tool"} · ${e(find(input.itemId)?.unit || "unknown unit")}</small></span><strong>${e(input.quantity ?? "Unknown")}</strong></li>`).join("") || ((record.ingredientsKnown ?? record.requirementsKnown) ? "<li>No listed material requirements.</li>" : "<li>Unknown cost. Requirements have not been verified.</li>")}</ul><p>Requirement completeness: ${(record.ingredientsKnown ?? record.requirementsKnown) ? "Known for this scoped record" : "Unknown; do not assume complete"}.</p><h3>Prerequisites</h3><ul>${(record.prerequisites || []).map((id) => `<li>${ref(id)}</li>`).join("") || "<li>No listed prerequisites; completeness is not established unless explicitly sourced.</li>"}</ul>${showPlanner ? `<a class="button primary" href="/planner/?pack=${encodeURIComponent(pack.id)}&amp;goal=${encodeURIComponent(record.id)}">Open planner ↗</a>` : ""}</section>`;
   if (record.recordType === "location" || record.recordType === "map")
     detail += `<section class="panel"><h2>Location evidence</h2><p>Grid: ${e(record.grid ?? "Unknown")}. Coordinates: ${e(record.coordinates ? JSON.stringify(record.coordinates) : "Unknown")}. Spawn evidence: ${e(record.spawnKind || "Unknown")}.</p><p>No calibrated game map image is provided. A named location does not imply guaranteed loot.</p>${record.mapId ? `<p>Map: ${ref(record.mapId)}</p>` : ""}</section>`;
   if (record.effects?.length)

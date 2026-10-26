@@ -1,0 +1,558 @@
+{
+  "FR-001": {
+    "tasks": [
+      "T002",
+      "T005",
+      "T010",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-002": {
+    "tasks": [
+      "T002",
+      "T003",
+      "T004",
+      "T005",
+      "T010",
+      "T017",
+      "T021",
+      "T022",
+      "T023",
+      "T024",
+      "T031"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-003": {
+    "tasks": [
+      "T003",
+      "T006",
+      "T007",
+      "T010",
+      "T013",
+      "T017",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-004": {
+    "tasks": [
+      "T007",
+      "T008",
+      "T010",
+      "T014",
+      "T018",
+      "T021",
+      "T022",
+      "T023",
+      "T027",
+      "T031"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-005": {
+    "tasks": [
+      "T011",
+      "T012",
+      "T013",
+      "T014",
+      "T019",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-006": {
+    "tasks": [
+      "T003",
+      "T004",
+      "T011",
+      "T012",
+      "T013",
+      "T014",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-007": {
+    "tasks": [
+      "T006",
+      "T011",
+      "T013",
+      "T014",
+      "T016",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-008": {
+    "tasks": [
+      "T004",
+      "T007",
+      "T010",
+      "T011",
+      "T013",
+      "T014",
+      "T015",
+      "T017",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-009": {
+    "tasks": [
+      "T015",
+      "T016",
+      "T021",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-010": {
+    "tasks": [
+      "T006",
+      "T011",
+      "T016",
+      "T018",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-011": {
+    "tasks": [
+      "T003",
+      "T006",
+      "T007",
+      "T008",
+      "T010",
+      "T012",
+      "T018",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-012": {
+    "tasks": [
+      "T006",
+      "T008",
+      "T009",
+      "T017",
+      "T018",
+      "T021",
+      "T022",
+      "T028",
+      "T031"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-013": {
+    "tasks": [
+      "T002",
+      "T003",
+      "T004",
+      "T005",
+      "T017",
+      "T021",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-014": {
+    "tasks": [
+      "T009",
+      "T010",
+      "T013",
+      "T014",
+      "T015",
+      "T016",
+      "T020",
+      "T022",
+      "T027",
+      "T029"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-015": {
+    "tasks": [
+      "T002",
+      "T003",
+      "T004",
+      "T005",
+      "T006",
+      "T008",
+      "T011",
+      "T013",
+      "T018",
+      "T019",
+      "T020",
+      "T022",
+      "T030"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-016": {
+    "tasks": [
+      "T001",
+      "T005",
+      "T007",
+      "T009",
+      "T012",
+      "T015",
+      "T020",
+      "T021",
+      "T022"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "SC-001": {
+    "tasks": [
+      "T002",
+      "T003",
+      "T004",
+      "T005",
+      "T010",
+      "T017",
+      "T020"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "SC-002": {
+    "tasks": [
+      "T003",
+      "T004",
+      "T007",
+      "T011",
+      "T012",
+      "T013",
+      "T014",
+      "T015",
+      "T016",
+      "T020"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "SC-003": {
+    "tasks": [
+      "T006",
+      "T007",
+      "T008",
+      "T009",
+      "T010",
+      "T017",
+      "T018",
+      "T020"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "SC-004": {
+    "tasks": [
+      "T009",
+      "T010",
+      "T014",
+      "T015",
+      "T016",
+      "T020"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "SC-005": {
+    "tasks": [
+      "T013",
+      "T019",
+      "T020",
+      "T030"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "SC-006": {
+    "tasks": [
+      "T001",
+      "T005",
+      "T009",
+      "T020",
+      "T021",
+      "T022",
+      "T023",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md",
+    "baseline_implementation_evidence": "analysis/007-convergence.md",
+    "baseline_independent_acceptance": "analysis/006-functional-acceptance.md"
+  },
+  "FR-017": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "contract": "contracts/upgrade-spending.md",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md"
+  },
+  "FR-018": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "contract": "contracts/upgrade-spending.md",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md"
+  },
+  "FR-019": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "contract": "contracts/upgrade-spending.md",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md"
+  },
+  "FR-020": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "contract": "contracts/upgrade-spending.md",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md"
+  },
+  "FR-021": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "contract": "contracts/upgrade-spending.md",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md"
+  },
+  "FR-022": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "contract": "contracts/upgrade-spending.md",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md"
+  },
+  "FR-023": {
+    "tasks": [
+      "T023",
+      "T025",
+      "T026",
+      "T027",
+      "T028",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "contract": "contracts/upgrade-spending.md",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md"
+  },
+  "SC-007": {
+    "tasks": [
+      "T025",
+      "T026",
+      "T028",
+      "T030",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "contract": "contracts/upgrade-spending.md",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md"
+  },
+  "SC-008": {
+    "tasks": [
+      "T027",
+      "T029",
+      "T030",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "contract": "contracts/upgrade-spending.md",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md"
+  },
+  "SC-009": {
+    "tasks": [
+      "T023",
+      "T024",
+      "T031",
+      "T032"
+    ],
+    "acceptance": "acceptance.md",
+    "status": "implemented-and-verified-with-documented-evidence-limits",
+    "contract": "contracts/upgrade-spending.md",
+    "implementation_evidence": "analysis/012-spending-convergence.md",
+    "independent_acceptance": "analysis/011-spending-functional-acceptance.md"
+  }
+}

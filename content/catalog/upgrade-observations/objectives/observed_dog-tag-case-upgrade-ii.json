@@ -1,0 +1,65 @@
+{
+  "description": "Increases Dog Tag Case storage capacity by 20.",
+  "effects": [],
+  "id": "observed:dog-tag-case-upgrade-ii",
+  "name": "Dog Tag Case Upgrade II",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "consumed",
+      "itemId": "observed:cash",
+      "quantity": 50000,
+      "sourceIds": [
+        "source:upgrade-observation-01",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:detonators",
+      "quantity": 20,
+      "sourceIds": [
+        "source:upgrade-observation-01",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:nylon-cloth",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-01",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:power-regulator",
+      "quantity": 5,
+      "sourceIds": [
+        "source:upgrade-observation-01",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:upgrade-observation-01",
+    "source:upgrade-consumption-confirmation-20261026"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "upgrade-observation-01"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "II"
+  }
+}

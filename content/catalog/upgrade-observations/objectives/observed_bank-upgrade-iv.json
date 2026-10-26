@@ -1,0 +1,55 @@
+{
+  "description": "Increases the amount of cash your bank can hold to 2 Million.",
+  "effects": [],
+  "id": "observed:bank-upgrade-iv",
+  "name": "Bank Upgrade IV",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "consumed",
+      "itemId": "observed:cash",
+      "quantity": 200000,
+      "sourceIds": [
+        "source:upgrade-observation-04",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:ballistic-flight-logs",
+      "quantity": 5,
+      "sourceIds": [
+        "source:upgrade-observation-04",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:regional-combat-notes",
+      "quantity": 5,
+      "sourceIds": [
+        "source:upgrade-observation-04",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:upgrade-observation-04",
+    "source:upgrade-consumption-confirmation-20261026"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "upgrade-observation-04"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "IV"
+  }
+}

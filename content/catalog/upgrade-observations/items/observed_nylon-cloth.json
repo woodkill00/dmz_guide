@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "id": "observed:nylon-cloth",
+  "kind": "item",
+  "name": "Nylon Cloth",
+  "sourceIds": [
+    "source:upgrade-observation-01"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

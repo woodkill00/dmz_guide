@@ -37,3 +37,13 @@ For an approved schema, copy a similar validated record, preserve stable IDs, ed
 - Affected planning outputs, migration needs and stale records are considered.
 
 Private editing and public publishing are different actions. Local changes must never silently become public contributions. See [patch review](content-maintenance.md) for ongoing maintenance.
+
+## Upgrade observation schema v2
+
+V1 packs remain readable without a disk rewrite. V2 requirements represent `quantity: null` and `consumption: unknown` explicitly; never substitute zero, `false`, or an assumed consumed flag. Each row keeps evidence status and source IDs. Upgrade objectives remain one-time `dmz-upgrade` records with separate tier text, observation lineage and known/unknown prerequisite completeness. A missing lower tier is not an inferred edge.
+
+A v2 source uses typed provenance. Web sources require safe HTTP(S) URLs. Private observations may have a null URL; a non-null link is a labeled public transcription, never an invented original image. Public-safe observation/lineage keys are not storage IDs or source hashes. Capture/build unknowns remain explicit. Original screenshots, personal balances, progress, Library IDs and private paths must not enter the public pack or Git history.
+
+The admitted observed pack is exactly eight definitions/31 requirement rows/22 labels. Earlier research remains separate; its one matching Stash Weapon I observation is not another purchase, and the combined14-name research inventory is not a verified compatible catalog. Further admission and mechanic changes need separate scoped evidence review. Studio guided fields, advanced JSON, repository saves and portable exports preserve v2; changing a catalog's format identity through an ordinary advanced edit is not a migration shortcut.
+
+The observed catalog now cites a separate dated owner-report source for consumption of its existing31 costs. Original observation/capture uncertainty remains; do not relabel the screenshots as proof of consumption or current eligibility. New profiles for v2 packs use private profile v3 (the content schema stays v2). Purchase history snapshots preserve original upgrade/item IDs, full game/mode/build scope, observation keys, item kind/unit, cost and stock arithmetic. Shared provenance lineage alone is not purchase identity. Editing current costs/units or retiring records never rewrites prior recorded spending. Private profiles/history are not repository content or publishable observations.

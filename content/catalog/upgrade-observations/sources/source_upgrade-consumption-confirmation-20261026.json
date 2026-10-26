@@ -1,0 +1,16 @@
+{
+  "id": "source:upgrade-consumption-confirmation-20261026",
+  "title": "Owner-reported upgrade consumption \u00b7 2026-10-26",
+  "type": "observation",
+  "url": null,
+  "publishedAt": "Reported 2026-10-26",
+  "reviewedAt": "2026-10-26",
+  "supports": "The owner reports that all listed material and cash requirements of the eight observed upgrades are consumed on completion. This scoped report is not independent gameplay corroboration and does not establish current-build applicability, prerequisites, missing tiers or any player inventory/history. Original observations establish displayed amounts and effects separately.",
+  "provenance": {
+    "kind": "private-observation",
+    "observationKey": "upgrade-consumption-confirmation-20261026",
+    "lineageKey": "upgrade-consumption-confirmation-20261026",
+    "captureDate": null,
+    "buildStatus": "unknown"
+  }
+}

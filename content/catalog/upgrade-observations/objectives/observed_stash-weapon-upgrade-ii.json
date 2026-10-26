@@ -1,0 +1,65 @@
+{
+  "description": "Increases Stash weapon capacity by 6.",
+  "effects": [],
+  "id": "observed:stash-weapon-upgrade-ii",
+  "name": "Stash Weapon Upgrade II",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "consumed",
+      "itemId": "observed:cash",
+      "quantity": 100000,
+      "sourceIds": [
+        "source:upgrade-observation-08",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:structural-alloy",
+      "quantity": 20,
+      "sourceIds": [
+        "source:upgrade-observation-08",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:high-tenacity-fibers",
+      "quantity": 20,
+      "sourceIds": [
+        "source:upgrade-observation-08",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:turned-components",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-08",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:upgrade-observation-08",
+    "source:upgrade-consumption-confirmation-20261026"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "upgrade-observation-08"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "II"
+  }
+}

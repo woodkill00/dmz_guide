@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "catalogScope": "Eight visually verified upgrade recipe definitions from user-provided evidence; not a complete game catalog.",
+  "dataStatus": "recipe requirements transcribed; prerequisite edges and live completion states not established",
+  "upgrades": [
+    {
+      "id": "dog-tag-case-upgrade-ii",
+      "name": "Dog Tag Case Upgrade II",
+      "tierRoman": "II",
+      "description": "Increases Dog Tag Case storage capacity by 20.",
+      "prerequisites": null,
+      "prerequisitesStatus": "not_shown_in_evidence",
+      "requirements": [
+        {
+          "itemName": "Cash",
+          "required": 50000,
+          "kind": "currency"
+        },
+        {
+          "itemName": "Detonators",
+          "required": 20,
+          "kind": "item"
+        },
+        {
+          "itemName": "Nylon Cloth",
+          "required": 10,
+          "kind": "item"
+        },
+        {
+          "itemName": "Power Regulator",
+          "required": 5,
+          "kind": "item"
+        }
+      ],
+      "evidenceKey": "upgrade-observation-01",
+      "consumptionStatus": "unknown",
+      "verificationStatus": "observed; independently transcribed, live-build-unverified"
+    },
+    {
+      "id": "stash-weapon-upgrade-i",
+      "name": "Stash Weapon Upgrade I",
+      "tierRoman": "I",
+      "description": "Increases Stash weapon capacity by 6.",
+      "prerequisites": null,
+      "prerequisitesStatus": "not_shown_in_evidence",
+      "requirements": [
+        {
+          "itemName": "Cash",
+          "required": 50000,
+          "kind": "currency"
+        },
+        {
+          "itemName": "Reactive Metals",
+          "required": 20,
+          "kind": "item"
+        },
+        {
+          "itemName": "Stock Rod",
+          "required": 10,
+          "kind": "item"
+        },
+        {
+          "itemName": "Comms Module",
+          "required": 5,
+          "kind": "item"
+        }
+      ],
+      "evidenceKey": "upgrade-observation-02",
+      "consumptionStatus": "unknown",
+      "verificationStatus": "observed; independently transcribed, live-build-unverified"
+    },
+    {
+      "id": "vendor-item-upgrade-i",
+      "name": "Vendor Item Upgrade I",
+      "tierRoman": "I",
+      "description": "Unlocks additional purchase options at the vendor.",
+      "prerequisites": null,
+      "prerequisitesStatus": "not_shown_in_evidence",
+      "requirements": [
+        {
+          "itemName": "Electronic Sensors",
+          "required": 20,
+          "kind": "item"
+        },
+        {
+          "itemName": "CPU",
+          "required": 10,
+          "kind": "item"
+        },
+        {
+          "itemName": "Printed Circuit Board",
+          "required": 10,
+          "kind": "item"
+        },
+        {
+          "itemName": "Prototype RF Module",
+          "required": 2,
+          "kind": "item"
+        }
+      ],
+      "evidenceKey": "upgrade-observation-03",
+      "consumptionStatus": "unknown",
+      "verificationStatus": "observed; independently transcribed, live-build-unverified"
+    },
+    {
+      "id": "bank-upgrade-iv",
+      "name": "Bank Upgrade IV",
+      "tierRoman": "IV",
+      "description": "Increases the amount of cash your bank can hold to 2 Million.",
+      "prerequisites": null,
+      "prerequisitesStatus": "not_shown_in_evidence",
+      "requirements": [
+        {
+          "itemName": "Cash",
+          "required": 200000,
+          "kind": "currency"
+        },
+        {
+          "itemName": "Ballistic Flight Logs",
+          "required": 5,
+          "kind": "item"
+        },
+        {
+          "itemName": "Regional Combat Notes",
+          "required": 5,
+          "kind": "item"
+        }
+      ],
+      "evidenceKey": "upgrade-observation-04",
+      "consumptionStatus": "unknown",
+      "verificationStatus": "observed; independently transcribed, live-build-unverified"
+    },
+    {
+      "id": "mia-recovery-discount-iii",
+      "name": "MIA Recovery Discount III",
+      "tierRoman": "III",
+      "description": "Reduces the cost of recovering an operator who is Missing In Action by 5%.",
+      "prerequisites": null,
+      "prerequisitesStatus": "not_shown_in_evidence",
+      "requirements": [
+        {
+          "itemName": "W.M.D. Manifest",
+          "required": 5,
+          "kind": "item"
+        },
+        {
+          "itemName": "Foreign Intelligence Targets",
+          "required": 5,
+          "kind": "item"
+        },
+        {
+          "itemName": "Power Regulator",
+          "required": 10,
+          "kind": "item"
+        },
+        {
+          "itemName": "Comms Module",
+          "required": 10,
+          "kind": "item"
+        }
+      ],
+      "evidenceKey": "upgrade-observation-05",
+      "consumptionStatus": "unknown",
+      "verificationStatus": "observed; independently transcribed, live-build-unverified"
+    },
+    {
+      "id": "gunsmith-upgrade-ii",
+      "name": "Gunsmith Upgrade II",
+      "tierRoman": "II",
+      "description": "Reduces the cost of Gunsmith purchases by 5%.",
+      "prerequisites": null,
+      "prerequisitesStatus": "not_shown_in_evidence",
+      "requirements": [
+        {
+          "itemName": "Cash",
+          "required": 100000,
+          "kind": "currency"
+        },
+        {
+          "itemName": "Nitro Compounds",
+          "required": 20,
+          "kind": "item"
+        },
+        {
+          "itemName": "Comms Module",
+          "required": 10,
+          "kind": "item"
+        },
+        {
+          "itemName": "Military Composites",
+          "required": 10,
+          "kind": "item"
+        }
+      ],
+      "evidenceKey": "upgrade-observation-06",
+      "consumptionStatus": "unknown",
+      "verificationStatus": "observed; independently transcribed, live-build-unverified"
+    },
+    {
+      "id": "stash-item-upgrade-iii",
+      "name": "Stash Item Upgrade III",
+      "tierRoman": "III",
+      "description": "Increases Stash item capacity by 18.",
+      "prerequisites": null,
+      "prerequisitesStatus": "not_shown_in_evidence",
+      "requirements": [
+        {
+          "itemName": "Cash",
+          "required": 100000,
+          "kind": "currency"
+        },
+        {
+          "itemName": "Binding Catalyst",
+          "required": 20,
+          "kind": "item"
+        },
+        {
+          "itemName": "Stock Rod",
+          "required": 20,
+          "kind": "item"
+        },
+        {
+          "itemName": "Alloyed Plating",
+          "required": 10,
+          "kind": "item"
+        }
+      ],
+      "evidenceKey": "upgrade-observation-07",
+      "consumptionStatus": "unknown",
+      "verificationStatus": "observed; independently transcribed, live-build-unverified"
+    },
+    {
+      "id": "stash-weapon-upgrade-ii",
+      "name": "Stash Weapon Upgrade II",
+      "tierRoman": "II",
+      "description": "Increases Stash weapon capacity by 6.",
+      "prerequisites": null,
+      "prerequisitesStatus": "not_shown_in_evidence",
+      "requirements": [
+        {
+          "itemName": "Cash",
+          "required": 100000,
+          "kind": "currency"
+        },
+        {
+          "itemName": "Structural Alloy",
+          "required": 20,
+          "kind": "item"
+        },
+        {
+          "itemName": "High-Tenacity Fibers",
+          "required": 20,
+          "kind": "item"
+        },
+        {
+          "itemName": "Turned Components",
+          "required": 10,
+          "kind": "item"
+        }
+      ],
+      "evidenceKey": "upgrade-observation-08",
+      "consumptionStatus": "unknown",
+      "verificationStatus": "observed; independently transcribed, live-build-unverified"
+    }
+  ],
+  "reviewedAt": "2026-10-26",
+  "captureDate": null,
+  "gameIdentityStatus": "user-context-only; not independently established by the images",
+  "build": null,
+  "consumptionStatus": "unknown",
+  "sourceKind": "private-screenshot-observation",
+  "evidenceSet": "upgrade-observations-2026-10-review",
+  "liveCatalogEligible": false
+}

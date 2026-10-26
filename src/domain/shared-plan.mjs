@@ -1,5 +1,9 @@
+import {
+  isObjectiveCompleted,
+  upgradeReadinessReasons,
+} from "./upgrade-progress.mjs";
 import { assert, ID } from "../content/limits.mjs";
-import { validateProfile } from "./profile.mjs";
+import { validateProfile, validateInventoryForPack } from "./profile.mjs";
 import { scopeOf } from "../content/validate.mjs";
 
 const MAX = 1e12;
@@ -13,9 +17,8 @@ const number = (n, max = MAX) => {
 };
 const add = (a, b) => number(a + b);
 const mul = (a, b) => number(a * b);
-const done = (profile, id) =>
-  ["completed", "unlocked"].includes(profile.completion[id]);
-const warnings = (r) => [
+const done = (pack, profile, id) => isObjectiveCompleted(pack, profile, id);
+const evidenceWarnings = (r) => [
   ...(badStatuses.has(r.status)
     ? [`${r.name || r.id}: content is ${r.status}`]
     : []),
@@ -34,8 +37,13 @@ export function planShared(pack, profile, { mode = "strict" } = {}) {
     "Unknown scheduling mode",
   );
   validateProfile(profile);
+  pack = planningProjection(pack, profile);
+  const warnings = (r) => [
+    ...evidenceWarnings(r),
+    ...upgradeReadinessReasons(pack, profile, r),
+  ];
   assert(
-    pack?.schemaVersion === 1 &&
+    [1, 2].includes(pack?.schemaVersion) &&
       profile.packId === pack.id &&
       profile.contentVersion === pack.contentVersion,
     "Content version mismatch. Preview and rebind in settings.",
@@ -130,6 +138,7 @@ export function planShared(pack, profile, { mode = "strict" } = {}) {
     }
     for (const c of r.inputs || r.requirements) {
       join(items, c.itemId, r);
+      if (pack.schemaVersion === 2 && !pack.planningCostIds.has(r.id)) continue;
       assert(
         number(c.quantity, 1e6) > 0 && typeof c.consumed === "boolean",
         "Invalid input quantity/consumption",
@@ -260,7 +269,7 @@ export function planShared(pack, profile, { mode = "strict" } = {}) {
     for (const id of r.prerequisites)
       for (const i of contributors) {
         nodes.get(id).owners.add(i);
-        if (!done(profile, id))
+        if (!done(pack, profile, id))
           reason(
             i,
             `${objectives.get(id).name || id}: unfinished prerequisite`,
@@ -269,7 +278,8 @@ export function planShared(pack, profile, { mode = "strict" } = {}) {
     const later =
       warnings(r).length > 0 ||
       r.prerequisites.some(
-        (id) => !done(profile, id) || warnings(objectives.get(id)).length > 0,
+        (id) =>
+          !done(pack, profile, id) || warnings(objectives.get(id)).length > 0,
       );
     for (const c of r.inputs || r.requirements)
       for (const [slot, count] of slots(batches)) {
@@ -296,7 +306,7 @@ export function planShared(pack, profile, { mode = "strict" } = {}) {
       for (const i of n.owners)
         for (const text of warnings(n.record)) reason(i, text);
       // Evidence uncertainty survives manual completion; completed costs do not.
-      if (done(profile, id)) continue;
+      if (done(pack, profile, id)) continue;
       const first = Math.min(...n.owners);
       expand(n, new Map([[first * 2, 1]]));
       continue;
@@ -306,8 +316,13 @@ export function planShared(pack, profile, { mode = "strict" } = {}) {
       reserved = profile.reserves[id] || 0,
       available = Math.max(0, owned - reserved);
     const retained = Math.max(0, ...n.retained.values());
-    const retainedMissing = Math.max(0, retained - available);
-    let stock = Math.max(0, available - retained),
+    const direct = allocateDirectStock({
+      retained,
+      held: owned,
+      reserve: reserved,
+    });
+    const retainedMissing = retained - direct.retainedAllocated;
+    let stock = Math.max(0, direct.available - retained),
       consumed = 0,
       allocated = 0,
       produced = 0,
@@ -423,7 +438,7 @@ export function planShared(pack, profile, { mode = "strict" } = {}) {
   let fresh = new Map(),
     delivered = new Map();
   let completed = new Set(
-    [...objectives.keys()].filter((id) => done(profile, id)),
+    [...objectives.keys()].filter((id) => done(pack, profile, id)),
   );
   const protectedStock = new Map(),
     schedule = [];
@@ -636,5 +651,104 @@ export function planShared(pack, profile, { mode = "strict" } = {}) {
     remainingInventory,
     completedObjectives: [...completed],
     work,
+  };
+}
+
+/** Explicit numeric projection: unknown v2 facts can never become false/zero in legacy arithmetic. */
+export function planningProjection(pack, profile, { single = false } = {}) {
+  validateInventoryForPack(profile, pack);
+  if (pack.schemaVersion !== 2) return pack;
+  const records = new Map(
+      [...pack.recipes, ...pack.objectives].map((r) => [r.id, r]),
+    ),
+    routes = new Map(Object.entries(profile.routes));
+  for (const goal of profile.goals) {
+    const r = records.get(goal.id);
+    if (r?.output) routes.set(r.output.itemId, r.id);
+  }
+  const relevant = new Set(),
+    visited = new Set(),
+    pending = profile.goals.map((g) => g.id);
+  let work = 0;
+  while (pending.length) {
+    assert(++work <= 500000, "Planning projection work limit exceeded");
+    const id = pending.pop();
+    if (visited.has(id)) continue;
+    visited.add(id);
+    const r = records.get(id);
+    assert(r, "Unknown goal/prerequisite/route reference");
+    const completed =
+      single && r.track !== "dmz-upgrade"
+        ? profile.completion[id] === "completed"
+        : isObjectiveCompleted(pack, profile, id);
+    if (!r.output && completed) continue;
+    relevant.add(id);
+    if (!single) {
+      for (const id of r.prerequisites) {
+        assert(++work <= 500000, "Planning projection work limit exceeded");
+        pending.push(id);
+      }
+      for (const row of r.inputs || r.requirements) {
+        assert(++work <= 500000, "Planning projection work limit exceeded");
+        if (routes.has(row.itemId)) pending.push(routes.get(row.itemId));
+      }
+    }
+  }
+  const project = (r) =>
+    !relevant.has(r.id)
+      ? r
+      : {
+          ...r,
+          [r.inputs ? "inputs" : "requirements"]: (
+            r.inputs || r.requirements
+          ).map((c) => {
+            assert(
+              Number.isSafeInteger(c.quantity) &&
+                c.quantity > 0 &&
+                c.quantity <= 1e6 &&
+                ["consumed", "retained"].includes(c.consumption) &&
+                !badStatuses.has(c.status),
+              "Exact focused planning unavailable: requirement quantity/consumption/evidence is unknown. Read requirements and Keep/Search evidence instead.",
+            );
+            assert(
+              Object.hasOwn(profile.inventory, c.itemId),
+              "Exact focused planning unavailable: inventory not entered for a selected input. Enter held quantities (including explicit zero) in Inventory; known requirements remain available in Keep/Search.",
+            );
+            return { ...c, consumed: c.consumption === "consumed" };
+          }),
+        };
+  return {
+    ...pack,
+    planningCostIds: relevant,
+    recipes: pack.recipes.map(project),
+    objectives: pack.objectives.map(project),
+  };
+}
+
+/** Shared direct stock kernel. Protect the retained floor before consumed allocation. */
+export function allocateDirectStock({
+  consumed = 0,
+  retained = 0,
+  held = 0,
+  reserve = 0,
+}) {
+  [consumed, retained, held, reserve].forEach((n) => number(n));
+  const required = add(consumed, retained),
+    available = Math.max(0, held - reserve);
+  const retainedAllocated = Math.min(retained, available);
+  const allocated = Math.min(consumed, Math.max(0, available - retained));
+  const upgradeGap = required - retainedAllocated - allocated,
+    reserveGap = Math.max(0, reserve - held);
+  return {
+    required,
+    available,
+    retainedAllocated,
+    allocated,
+    keep: retainedAllocated + allocated,
+    upgradeGap,
+    reserveGap,
+    search: add(upgradeGap, reserveGap),
+    reserveProtected: Math.min(held, reserve),
+    protectedHeld: Math.min(held, reserve) + retainedAllocated + allocated,
   };
 }

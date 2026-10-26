@@ -81,20 +81,34 @@ export async function runSharedPlanTests({ browser, base }) {
   await page.waitForFunction(() =>
     document.querySelector("#save-status").textContent.includes("revision"),
   );
-  await page.selectOption('[data-completion="demo:bench-unlock"]', "completed");
+  await page.goto(base + "/settings/?pack=demo%3Atraining-pack");
+  await page.waitForSelector("#migrate-upgrade-profile:not([hidden])");
+  await page.click("#migrate-upgrade-profile");
+  await page.click("#apply-restore");
+  await page.waitForSelector("#restore-preview[hidden]", { state: "attached" });
+  await page.goto(base + "/inventory/?pack=demo%3Atraining-pack");
+  await page.waitForSelector(
+    '[data-upgrade-id="demo:bench-unlock"][data-upgrade-field="completion"]',
+  );
+  await page.selectOption(
+    '[data-upgrade-id="demo:bench-unlock"][data-upgrade-field="completion"]',
+    "completed",
+  );
+  await page.click("#upgrade-progress-apply");
   await page.waitForFunction(
     () =>
       document.querySelector("main").getAttribute("aria-busy") !== "true" &&
-      !document.querySelector('[data-completion="demo:bench-unlock"]')
-        .disabled &&
+      !document.querySelector(
+        '[data-upgrade-id="demo:bench-unlock"][data-upgrade-field="completion"]',
+      ).disabled &&
       document.querySelector("#save-status").textContent.includes("revision"),
   );
   assert.equal(
     await page.evaluate(async () => {
       const { loadProfile } = await import("/assets/src/storage/store.mjs");
-      return (await loadProfile("demo:training-pack")).value.completion[
+      return (await loadProfile("demo:training-pack")).value.upgradeProgress[
         "demo:bench-unlock"
-      ];
+      ].completion;
     }),
     "completed",
   );

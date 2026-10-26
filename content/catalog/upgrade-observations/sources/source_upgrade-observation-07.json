@@ -1,0 +1,16 @@
+{
+  "id": "source:upgrade-observation-07",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "private-observation",
+    "lineageKey": "upgrade-observation-07",
+    "observationKey": "upgrade-observation-07"
+  },
+  "publishedAt": "Capture date unknown",
+  "reviewedAt": "2026-10-26",
+  "supports": "Displayed name, effect and required amounts only. This original observation alone does not establish consumption, prerequisites or current-build applicability; later owner-reported consumption is attributed separately. Transcription review is not independent gameplay corroboration.",
+  "title": "Private observation \u00b7 Stash Item Upgrade III (public transcription)",
+  "type": "observation",
+  "url": null
+}

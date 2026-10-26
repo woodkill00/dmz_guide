@@ -1,3 +1,7 @@
+import { spoilerGuard } from "../domain/progression.mjs";
+import { adviceMarkup } from "./upgrade-advice-view.mjs";
+import { saveWatchPin } from "./watch-pin.mjs";
+import { validateProfile } from "../domain/profile.mjs";
 import { createReaderContext } from "../domain/reader-flow.mjs";
 import { init, state, $, esc, error, persist, status } from "./common.mjs";
 import { planShared } from "../domain/shared-plan.mjs";
@@ -8,11 +12,15 @@ function records() {
   );
 }
 function render() {
-  const all = records();
+  const all = records(),
+    guard = spoilerGuard(state.pack, state.profile.spoilers);
   $("#goal-select").innerHTML =
     '<option value="">Choose a goal</option>' +
     all
-      .map((r) => `<option value="${esc(r.id)}">${esc(r.name)}</option>`)
+      .map(
+        (r) =>
+          `<option value="${esc(r.id)}">${esc(guard.text(r.name))}</option>`,
+      )
       .join("");
   const requested = new URL(location.href).searchParams.get("goal");
   if (requested && all.some((r) => r.id === requested))
@@ -37,6 +45,7 @@ function render() {
           .join("")}</select></label>`,
     )
     .join("");
+  renderAdvice();
   renderPlan();
 }
 function focusGoal(id, action = "quantity", delta = null) {
@@ -108,7 +117,7 @@ function renderPlan() {
   try {
     const p = planShared(state.pack, state.profile, { mode });
     $("#plan-output").innerHTML =
-      `<section class="panel"><h2>Collect now / later</h2><p>These controls open the matching active-catalog view in this tab. Private context is kept only for this tab.</p>${p.goals.map((g) => `<article><h3>${esc(safeText(g.name || allName(g.id)))}</h3><ul>${g.reasons.map((x) => `<li>${esc(safeText(x))}</li>`).join("")}</ul><p>Now: ${g.collectNow.map((x) => `${shortage(x)} ${x.missing} consumed + ${x.retainedMissing || 0} retained (${esc(x.unit)})`).join(", ") || "No current shortage"}</p><p>Later: ${g.collectLater.map((x) => `${shortage(x)} ${x.missing} consumed + ${x.retainedMissing || 0} retained (${esc(x.unit)})`).join(", ") || "No later shortage"}</p></article>`).join("")}</section><details class="panel"><summary>Full allocation and contingent-supply detail</summary><p class="eyebrow">SHARED REQUIREMENTS / NOT A GUARANTEE</p><h2>Your collection ledger</h2><p>Priority: ${mode === "strict" ? "strict reservations protect higher goals" : "work-conserving may use stock reserved for blocked higher goals"}. Projected surplus is not owned inventory. No profile stock is consumed.</p><div class="card-grid">${p.ledger.map((r) => `<article class="panel"><h3>${esc(safeText(r.name || r.id))}</h3><p>${shortage(r, false)}</p><p>Unit ${esc(r.unit)} · owned ${r.owned} · protected ${r.reserved}</p><p>Consume ${r.consumed} · retain ${r.retained} · allocated ${r.allocated}</p><p><strong>Missing ${r.missing}</strong> · retained missing ${r.retainedMissing}</p><p>Projected produced ${r.produced || 0} · contingent surplus ${r.surplus || 0}</p><details><summary>Per-goal allocation</summary><ul>${r.perGoal.map((g) => `<li>${esc(allName(g.goalId))}: demand ${g.demand}, allocated ${g.allocated}, missing ${g.missing}</li>`).join("")}</ul></details></article>`).join("") || "<p>Add goals to calculate shared demand.</p>"}</div></details><section class="panel"><h2>Executable-now trial schedule</h2><p>This simulates whole goals against a copy of owned stock. Failed goals consume nothing.</p>${p.schedule.map((g) => `<article><h3>${esc(allName(g.goalId))}: ${g.executable ? "Executable in this manual model" : "Blocked"}</h3><ul>${g.reasons.map((x) => `<li>${esc(safeText(x))}</li>`).join("")}</ul><ol>${g.actions.map((a) => `<li>${esc(safeText(a.name || a.id))} · ${esc(a.type)} ${a.batches ?? ""}</li>`).join("")}</ol></article>`).join("")}</section>`;
+      `${state.pack.schemaVersion === 1 ? '<p class="notice">Legacy v1 focused planner: unset inventory is assumed zero for compatibility. Enter explicit held quantities before relying on its shortages. Keep/Search separately labels missing stock as Not entered.</p>' : ""}<section class="panel"><h2>Collect now / later</h2><p>These controls open the matching active-catalog view in this tab. Private context is kept only for this tab.</p>${p.goals.map((g) => `<article><h3>${esc(safeText(g.name || allName(g.id)))}</h3><ul>${g.reasons.map((x) => `<li>${esc(safeText(x))}</li>`).join("")}</ul><p>Now: ${g.collectNow.map((x) => `${shortage(x)} ${x.missing} consumed + ${x.retainedMissing || 0} retained (${esc(x.unit)})`).join(", ") || "No current shortage"}</p><p>Later: ${g.collectLater.map((x) => `${shortage(x)} ${x.missing} consumed + ${x.retainedMissing || 0} retained (${esc(x.unit)})`).join(", ") || "No later shortage"}</p></article>`).join("")}</section><details class="panel"><summary>Full allocation and contingent-supply detail</summary><p class="eyebrow">SHARED REQUIREMENTS / NOT A GUARANTEE</p><h2>Your collection ledger</h2><p>Priority: ${mode === "strict" ? "strict reservations protect higher goals" : "work-conserving may use stock reserved for blocked higher goals"}. Projected surplus is not owned inventory. No profile stock is consumed.</p><div class="card-grid">${p.ledger.map((r) => `<article class="panel"><h3>${esc(safeText(r.name || r.id))}</h3><p>${shortage(r, false)}</p><p>Unit ${esc(r.unit)} · owned ${r.owned} · protected ${r.reserved}</p><p>Consume ${r.consumed} · retain ${r.retained} · allocated ${r.allocated}</p><p><strong>Missing ${r.missing}</strong> · retained missing ${r.retainedMissing}</p><p>Projected produced ${r.produced || 0} · contingent surplus ${r.surplus || 0}</p><details><summary>Per-goal allocation</summary><ul>${r.perGoal.map((g) => `<li>${esc(allName(g.goalId))}: demand ${g.demand}, allocated ${g.allocated}, missing ${g.missing}</li>`).join("")}</ul></details></article>`).join("") || "<p>Add goals to calculate shared demand.</p>"}</div></details><section class="panel"><h2>Executable-now trial schedule</h2><p>This simulates whole goals against a copy of owned stock. Failed goals consume nothing.</p>${p.schedule.map((g) => `<article><h3>${esc(allName(g.goalId))}: ${g.executable ? "Executable in this manual model" : "Blocked"}</h3><ul>${g.reasons.map((x) => `<li>${esc(safeText(x))}</li>`).join("")}</ul><ol>${g.actions.map((a) => `<li>${esc(safeText(a.name || a.id))} · ${esc(a.type)} ${a.batches ?? ""}</li>`).join("")}</ol></article>`).join("")}</section>`;
   } catch (e) {
     $("#plan-output").textContent = e.message;
   }
@@ -134,7 +143,9 @@ $("#goal-form").addEventListener("submit", async (e) => {
       throw new Error("Maximum 100 goals. Remove one first.");
     const candidate = structuredClone(state.profile);
     candidate.goals.push({ id, quantity: Number($("#goal-quantity").value) });
-    planShared(state.pack, candidate, { mode });
+    validateProfile(candidate);
+    if (state.pack.schemaVersion !== 2)
+      planShared(state.pack, candidate, { mode });
     if (await persist(candidate)) {
       render();
       focusGoal(id);
@@ -222,7 +233,9 @@ $("#goals-list").addEventListener("change", async (e) => {
     candidate.goals.find(
       (goal) => goal.id === e.target.dataset.goalQuantity,
     ).quantity = Number(e.target.value);
-    planShared(state.pack, candidate, { mode });
+    validateProfile(candidate);
+    if (state.pack.schemaVersion !== 2)
+      planShared(state.pack, candidate, { mode });
     if (await persist(candidate)) {
       render();
       if (destination.node?.isConnected && !destination.node.disabled)
@@ -242,7 +255,9 @@ $("#route-fields").addEventListener("change", async (e) => {
     if (e.target.value)
       candidate.routes[e.target.dataset.route] = e.target.value;
     else delete candidate.routes[e.target.dataset.route];
-    planShared(state.pack, candidate, { mode });
+    validateProfile(candidate);
+    if (state.pack.schemaVersion !== 2)
+      planShared(state.pack, candidate, { mode });
     if (await persist(candidate)) renderPlan();
   } catch (e) {
     error(e);
@@ -251,5 +266,76 @@ $("#route-fields").addEventListener("change", async (e) => {
 $("#planning-mode").addEventListener("change", (e) => {
   mode = e.target.value;
   renderPlan();
+});
+let adviceOffset = 0;
+function renderAdvice() {
+  $("#upgrade-advice-output").innerHTML = adviceMarkup(
+    state.pack,
+    state.profile,
+    { scope: $("#upgrade-scope").value, offset: adviceOffset },
+  );
+  const query = $("#watch-query").value.trim().toLowerCase(),
+    guard = spoilerGuard(state.pack, state.profile.spoilers);
+  $("#watch-item").innerHTML = state.pack.items
+    .filter(
+      (r) =>
+        (!r.spoiler || state.profile.spoilers) &&
+        guard.text(r.name).toLowerCase().includes(query),
+    )
+    .slice(0, 50)
+    .map(
+      (r) => `<option value="${esc(r.id)}">${esc(guard.text(r.name))}</option>`,
+    )
+    .join("");
+}
+$("#upgrade-scope").addEventListener("change", () => {
+  adviceOffset = 0;
+  renderAdvice();
+});
+$("#watch-query").addEventListener("input", renderAdvice);
+$("#watch-add").addEventListener("click", async () => {
+  try {
+    if (await saveWatchPin($("#watch-item").value, true)) renderAdvice();
+  } catch (reason) {
+    error(reason);
+  }
+});
+$("#upgrade-advice-output").addEventListener("click", async (event) => {
+  const target = event.target.closest("button");
+  if (!target || state.saving) return;
+  try {
+    if (target.dataset.advicePage !== undefined) {
+      adviceOffset = Number(target.dataset.advicePage);
+      renderAdvice();
+      $("#upgrade-scope").focus();
+      return;
+    }
+    if (target.dataset.watchPin) {
+      const id = target.dataset.watchPin;
+      if (
+        await saveWatchPin(id, !(state.profile.watchPins || []).includes(id))
+      ) {
+        renderAdvice();
+        document.querySelector(`[data-watch-pin="${CSS.escape(id)}"]`)?.focus();
+      }
+      return;
+    }
+    const id = target.dataset.adviceDetail || target.dataset.adviceLocation;
+    if (id) {
+      const pack = state.pack;
+      const url = await createReaderContext(
+        pack,
+        id,
+        target.dataset.adviceLocation ? "maps" : "local",
+        { needsOnly: false },
+      );
+      if (pack === state.pack) location.assign(url);
+    }
+  } catch (reason) {
+    error(reason);
+  }
+});
+document.addEventListener("pack-changing", () => {
+  adviceOffset = 0;
 });
 init(render).catch(error);

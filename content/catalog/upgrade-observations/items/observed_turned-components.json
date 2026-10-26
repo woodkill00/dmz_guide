@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "id": "observed:turned-components",
+  "kind": "item",
+  "name": "Turned Components",
+  "sourceIds": [
+    "source:upgrade-observation-08"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

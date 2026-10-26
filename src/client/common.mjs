@@ -4,7 +4,11 @@ import {
 } from "../content/catalog-loader.mjs";
 import { ID } from "../content/limits.mjs";
 import { validatePack } from "../content/validate.mjs";
-import { newProfile, validateProfile } from "../domain/profile.mjs";
+import {
+  newProfile,
+  validateProfile,
+  validateInventoryForPack,
+} from "../domain/profile.mjs";
 import {
   loadProfile,
   saveProfile,
@@ -43,7 +47,7 @@ export function status(text) {
 }
 export function download(name, data, type = "application/json") {
   const blob = new Blob(
-    [typeof data === "string" ? data : JSON.stringify(data, null, 2)],
+    [typeof data === "string" ? data : JSON.stringify(data)],
     { type },
   );
   const url = URL.createObjectURL(blob),
@@ -67,6 +71,7 @@ export function exportProfile() {
     if (state.loading || !state.pack || !state.profile)
       throw new Error("Wait for the selected pack to load.");
     validateProfile(state.profile);
+    validateInventoryForPack(state.profile, state.pack);
     if (state.profile.packId !== state.pack.id)
       throw new Error("Profile and selected pack do not match.");
     const safe = (value, length) =>
@@ -484,6 +489,7 @@ export async function persist(candidate = state.profile) {
   try {
     if (state.loading) throw new Error("Wait for the selected pack to load.");
     validateProfile(candidate);
+    validateInventoryForPack(candidate, state.pack);
     if (candidate.packId !== state.pack.id)
       throw new Error("Profile pack changed. Preview again before applying.");
     const packId = state.pack.id,

@@ -1,4 +1,8 @@
 import {
+  validateProgressEntry,
+  validateSpendHistory,
+} from "./spend-history.mjs";
+import {
   LIMITS,
   ID,
   assert,
@@ -7,9 +11,46 @@ import {
 } from "../content/limits.mjs";
 const validID = (id) =>
   typeof id === "string" && id.length <= 100 && ID.test(id);
+export const stockLimit = (profile, item) =>
+  profile.schemaVersion === 3 && item?.kind === "currency"
+    ? 2000000
+    : LIMITS.quantity;
+export function validateInventoryForPack(profile, pack) {
+  // A mismatched backup retains its historical stock; rebind validates against the new known kinds.
+  if (profile.contentVersion !== pack.contentVersion) return profile;
+  for (const item of pack.items)
+    for (const field of ["inventory", "reserves"]) {
+      const value = profile[field][item.id];
+      assert(
+        value === undefined ||
+          (Number.isSafeInteger(value) &&
+            value >= 0 &&
+            value <= stockLimit(profile, item)),
+        "Known item stock/reserve exceeds its input bound",
+      );
+    }
+  return profile;
+}
+export function resetProfile(profile, pack) {
+  previewProfile(profile, pack);
+  const candidate = structuredClone(profile);
+  candidate.contentVersion = pack.contentVersion;
+  for (const field of ["inventory", "reserves", "completion", "routes"])
+    candidate[field] = {};
+  candidate.goals = [];
+  candidate.spoilers = false;
+  if (candidate.schemaVersion >= 2) {
+    candidate.upgradeProgress = {};
+    candidate.watchPins = [];
+  }
+  return validateProfile(candidate);
+}
 export function newProfile(pack) {
   return {
-    schemaVersion: 1,
+    schemaVersion: pack.schemaVersion === 2 ? 3 : 1,
+    ...(pack.schemaVersion === 2
+      ? { upgradeProgress: {}, watchPins: [], spendHistory: [] }
+      : {}),
     id: pack.id,
     packId: pack.id,
     contentVersion: pack.contentVersion,
@@ -38,12 +79,14 @@ export function validateProfile(p) {
     "spoilers",
     "routes",
   ];
+  if (p.schemaVersion >= 2) keys.push("upgradeProgress", "watchPins");
+  if (p.schemaVersion === 3) keys.push("spendHistory");
   assert(
     Object.keys(p).every((k) => keys.includes(k)) &&
       keys.every((k) => Object.hasOwn(p, k)),
     "Invalid profile fields",
   );
-  assert(p.schemaVersion === 1, "Unsupported profile version");
+  assert([1, 2, 3].includes(p.schemaVersion), "Unsupported profile version");
   assert(validID(p.id) && validID(p.packId), "Invalid profile ID");
   assert(
     typeof p.contentVersion === "string" && p.contentVersion.length <= 80,
@@ -65,8 +108,12 @@ export function validateProfile(p) {
       assert(validID(id), "Invalid reference ID");
       if (["inventory", "reserves"].includes(key))
         assert(
-          Number.isSafeInteger(v) && v >= 0 && v <= LIMITS.quantity,
-          "Quantity must be an integer from 0 to 1000000",
+          Number.isSafeInteger(v) &&
+            v >= 0 &&
+            v <= (p.schemaVersion === 3 ? 2000000 : LIMITS.quantity),
+          p.schemaVersion === 3
+            ? "Quantity must be an integer from 0 to 2000000; known non-currency items remain capped at 1000000"
+            : "Quantity must be an integer from 0 to 1000000",
         );
       else if (key === "completion")
         assert(
@@ -95,6 +142,38 @@ export function validateProfile(p) {
     new Set(p.goals.map((g) => g.id)).size === p.goals.length,
     "Duplicate goals",
   );
+  if (p.schemaVersion >= 2) {
+    const map = p.upgradeProgress;
+    assert(
+      map &&
+        typeof map === "object" &&
+        !Array.isArray(map) &&
+        Object.keys(map).length <= 10000,
+      "Invalid upgrade progress",
+    );
+    for (const [id, entry] of Object.entries(map)) {
+      assert(
+        validID(id) &&
+          entry &&
+          typeof entry === "object" &&
+          !Array.isArray(entry),
+        "Invalid upgrade entry",
+      );
+      validateProgressEntry(entry);
+    }
+    assert(
+      Array.isArray(p.watchPins) &&
+        p.watchPins.length <= 1000 &&
+        p.watchPins.every(validID) &&
+        new Set(p.watchPins).size === p.watchPins.length,
+      "Invalid watch pins",
+    );
+  }
+  if (p.schemaVersion === 3) validateSpendHistory(p.spendHistory);
+  assert(
+    new TextEncoder().encode(JSON.stringify(p)).length <= LIMITS.profileBytes,
+    "Profile exceeds byte limit",
+  );
   return p;
 }
 export function parseProfile(text) {
@@ -109,6 +188,7 @@ export function parseProfile(text) {
 export function previewProfile(p, pack) {
   validateProfile(p);
   assert(p.packId === pack.id, "Backup belongs to a different pack");
+  validateInventoryForPack(p, pack);
   const known = new Set(
     [...pack.items, ...pack.recipes, ...pack.objectives].map((r) => r.id),
   );
@@ -116,6 +196,11 @@ export function previewProfile(p, pack) {
     ...Object.keys(p.inventory),
     ...Object.keys(p.reserves),
     ...Object.keys(p.completion),
+    ...Object.keys(p.upgradeProgress || {}),
+    ...(p.watchPins || []),
+    ...(p.spendHistory || [])
+      .filter((e) => e.kind === "purchase")
+      .flatMap((e) => [e.upgradeId, ...e.costs.map((c) => c.itemId)]),
     ...p.goals.map((g) => g.id),
     ...Object.keys(p.routes),
     ...Object.values(p.routes),
@@ -125,5 +210,62 @@ export function previewProfile(p, pack) {
     unresolved: [...refs].filter((id) => !known.has(id)),
     inventoryEntries: Object.keys(p.inventory).length,
     goals: p.goals.length,
+  };
+}
+
+export function legacyUpgradeState(state = "unknown") {
+  return {
+    completion: state === "completed" ? "completed" : "unknown",
+    availability: state === "locked" ? "locked" : "unknown",
+    reviewRequired: state === "unlocked",
+    legacyState: state,
+  };
+}
+export function previewUpgradeMigration(profile, pack) {
+  previewProfile(profile, pack);
+  assert(
+    profile.contentVersion === pack.contentVersion,
+    "Rebind content before migrating progress",
+  );
+  const candidate = structuredClone(profile);
+  if (profile.schemaVersion === 3)
+    return {
+      candidate,
+      changed: false,
+      moved: [],
+      ambiguous: [],
+      unresolved: previewProfile(profile, pack).unresolved,
+    };
+  candidate.schemaVersion = 3;
+  candidate.spendHistory = [];
+  if (profile.schemaVersion === 2)
+    return {
+      candidate: validateProfile(candidate),
+      changed: true,
+      moved: [],
+      ambiguous: [],
+      unresolved: previewProfile(candidate, pack).unresolved,
+    };
+  candidate.upgradeProgress = {};
+  candidate.watchPins = [];
+  const ids = new Set(
+    pack.objectives.filter((r) => r.track === "dmz-upgrade").map((r) => r.id),
+  );
+  const moved = [],
+    ambiguous = [];
+  for (const [id, state] of Object.entries(candidate.completion))
+    if (ids.has(id)) {
+      candidate.upgradeProgress[id] = legacyUpgradeState(state);
+      delete candidate.completion[id];
+      moved.push(id);
+      if (state === "unlocked") ambiguous.push(id);
+    }
+  validateProfile(candidate);
+  return {
+    candidate,
+    changed: true,
+    moved,
+    ambiguous,
+    unresolved: previewProfile(candidate, pack).unresolved,
   };
 }

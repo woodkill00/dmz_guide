@@ -107,3 +107,37 @@ test("C4: current explicit reveal permits distinct inert historical versions", (
   assert(!JSON.stringify(hidden).includes("old-1"));
   assert(!JSON.stringify(hidden).includes("old-2"));
 });
+
+test("B10 migration/rebind counts never disclose protected or unresolved references", async () => {
+  const { safeReferenceCount } = await import(
+    "../../src/domain/profile-preview.mjs"
+  );
+  assert.equal(safeReferenceCount(["demo:secret"], pack, false), null);
+  assert.equal(safeReferenceCount(["retired:unknown"], pack, false), null);
+  assert.equal(safeReferenceCount(["demo:secret"], pack, true), 1);
+  const previous = {
+    ...pack,
+    objectives: [{ id: "retired:known", name: "Known previous upgrade" }],
+  };
+  assert.equal(safeReferenceCount(["retired:known"], pack, false, previous), 1);
+  assert.equal(safeReferenceCount([], pack, false), 0);
+});
+
+test("B10 unchanged unresolved private references do not expose counts", () => {
+  const profile = newProfile(pack);
+  profile.inventory["old:unresolved"] = 42;
+  const summary = profileChangeSummary(profile, profile, pack);
+  assert.equal(
+    summary.unresolvedCount,
+    "Withheld while private details are protected",
+  );
+  assert(!JSON.stringify(summary).includes("42"));
+  assert.equal(
+    profileChangeSummary(
+      { ...profile, spoilers: true },
+      { ...profile, spoilers: true },
+      pack,
+    ).unresolvedCount,
+    1,
+  );
+});
