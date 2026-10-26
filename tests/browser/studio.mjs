@@ -1,3 +1,4 @@
+import { runUpgradeStudioRoundtrip } from "./upgrades-studio.mjs";
 import assert from "node:assert/strict";
 import {
   cp,
@@ -528,6 +529,12 @@ export async function runStudioTests({
       "Synthetic unrelated file. Never show in managed change review.\n",
     );
     author = await createAuthorServer({ root: repository, port: 0 });
+    author = await runUpgradeStudioRoundtrip({
+      browser,
+      repository,
+      author,
+      createAuthorServer,
+    });
     await runPageEditTests({
       browser,
       repository,

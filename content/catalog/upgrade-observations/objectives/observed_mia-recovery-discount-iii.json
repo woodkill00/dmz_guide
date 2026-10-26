@@ -1,0 +1,60 @@
+{
+  "description": "Reduces the cost of recovering an operator who is Missing In Action by 5%.",
+  "effects": [],
+  "id": "observed:mia-recovery-discount-iii",
+  "name": "MIA Recovery Discount III",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "observed:wmd-manifest",
+      "quantity": 5,
+      "sourceIds": [
+        "source:upgrade-observation-05"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:foreign-intelligence-targets",
+      "quantity": 5,
+      "sourceIds": [
+        "source:upgrade-observation-05"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:power-regulator",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-05"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:comms-module",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-05"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:upgrade-observation-05"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "upgrade-observation-05"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "III"
+  }
+}

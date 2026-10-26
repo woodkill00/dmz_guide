@@ -1,3 +1,4 @@
+import { schemaForVersion } from "../content/validate.mjs";
 import { LIMITS, assert } from "../content/limits.mjs";
 import { GROUPS, defaultFieldValue } from "../content/portable.mjs";
 
@@ -86,7 +87,7 @@ export function createGuidedEditor({
   }
   function defaultValue(s, key = "") {
     return defaultFieldValue(
-      schema,
+      schemaForVersion(schema, getDraft()?.schemaVersion),
       s,
       { fictional: getDraft()?.game?.id === "fictional-training" },
       key,
@@ -430,12 +431,20 @@ export function createGuidedEditor({
     $("#add-record").hidden = group === "metadata";
     $("#remove-record").hidden = group === "metadata";
     if (group === "metadata") {
-      for (const [k, s] of Object.entries(schema.properties))
+      for (const [k, s] of Object.entries(
+        schemaForVersion(schema, draft.schemaVersion).properties,
+      ))
         if (!GROUPS.includes(k)) root.append(control(s, [k]));
     } else {
       const index = Number($("#editor-record").value || 0);
       if (draft[group][index])
-        root.append(control(schema.properties[group].items, [group, index]));
+        root.append(
+          control(
+            schemaForVersion(schema, draft.schemaVersion).properties[group]
+              .items,
+            [group, index],
+          ),
+        );
       else root.append(node("p", "No records yet. Add one to start."));
     }
     onRender();

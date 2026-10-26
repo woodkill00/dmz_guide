@@ -5,7 +5,7 @@
 
 ## Summary
 
-Extend the native guide's existing catalog, `dmz-upgrade` objectives, private per-pack profile, progression and shared planning ledger. First ship sourced definitions and truthful manual progress; then expose a derived Keep/Search advisory view over all known unfinished upgrades or existing focused goals. Do not build a second character manager or independent arithmetic engine. This branch contains only planning documents and a sanitized observation fixture.
+Extend the native guide's existing catalog, `dmz-upgrade` objectives, private per-pack profile, progression and shared planning ledger. First ship sourced definitions and truthful manual progress; then expose a derived Keep/Search advisory view over all known unfinished upgrades or existing focused goals. Do not build a second character manager or independent arithmetic engine. The accepted planning checkpoint contained only planning documents and a sanitized observation fixture. Authorized implementation now follows this design; current execution and independent-review gates are recorded in acceptance.md.
 
 ## Technical Context
 

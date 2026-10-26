@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "id": "observed:alloyed-plating",
+  "kind": "item",
+  "name": "Alloyed Plating",
+  "sourceIds": [
+    "source:upgrade-observation-07"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

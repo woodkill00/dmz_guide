@@ -1,8 +1,15 @@
+import {
+  isObjectiveCompleted,
+  isPrerequisiteSatisfied,
+  upgradeReadinessReasons,
+} from "./upgrade-progress.mjs";
+import { planningProjection } from "./shared-plan.mjs";
 import { checkGraph } from "../content/validate.mjs";
 import { assert, LIMITS } from "../content/limits.mjs";
 import { validateProfile } from "./profile.mjs";
 export function planSingle(pack, profile) {
   validateProfile(profile);
+  pack = planningProjection(pack, profile, { single: true });
   assert(
     profile.packId === pack.id &&
       profile.contentVersion === pack.contentVersion,
@@ -26,7 +33,11 @@ export function planSingle(pack, profile) {
   const objective = !record.output;
   if (objective)
     assert(goal.quantity === 1, "One-time objective quantity must be 1");
-  const completed = objective && profile.completion[record.id] === "completed";
+  const completed =
+    objective &&
+    (record.track === "dmz-upgrade"
+      ? isObjectiveCompleted(pack, profile, record.id)
+      : profile.completion[record.id] === "completed");
   const batches = completed
     ? 0
     : objective
@@ -68,7 +79,7 @@ export function planSingle(pack, profile) {
     assert(p, "Unknown prerequisite");
     if (["disputed", "unknown", "unverified", "stale"].includes(p.status))
       reasons.push(`${p.name}: prerequisite evidence is ${p.status}`);
-    if (["completed", "unlocked"].includes(profile.completion[id])) continue;
+    if (isPrerequisiteSatisfied(pack, profile, id)) continue;
     reasons.push(
       `${p.name}: ${profile.completion[id] || "unknown"} prerequisite`,
     );
@@ -76,6 +87,7 @@ export function planSingle(pack, profile) {
   }
 
   if (!completed) {
+    reasons.push(...upgradeReadinessReasons(pack, profile, record));
     if (record.ingredientsKnown === false || record.requirementsKnown === false)
       reasons.push("Requirements are not fully verified");
     if (record.eligibility === "unknown")

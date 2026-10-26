@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "id": "observed:wmd-manifest",
+  "kind": "item",
+  "name": "W.M.D. Manifest",
+  "sourceIds": [
+    "source:upgrade-observation-05"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

@@ -80,6 +80,14 @@ jobs:
           name: static-release-${{ matrix.os }}
           path: release/dmz-guide-static.zip
           retention-days: 14
+      - name: Save compact upgrade acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-evidence-${{ matrix.os }}
+          path: test-results/upgrade023-independent/
+          retention-days: 14
+          if-no-files-found: warn
       - name: Save browser evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -128,6 +136,14 @@ jobs:
       - run: node tests/browser/contributor-workflows.mjs --engines
       - run: npm run test:engines
       - run: npm run test:studio -- --engines
+      - name: Save compact upgrade acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-evidence-engines
+          path: test-results/upgrade023-independent/
+          retention-days: 14
+          if-no-files-found: warn
       - name: Save engine evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9

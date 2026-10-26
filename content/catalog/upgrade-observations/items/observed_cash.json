@@ -1,0 +1,19 @@
+{
+  "aliases": [],
+  "category": "currency",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "id": "observed:cash",
+  "kind": "currency",
+  "name": "Cash",
+  "sourceIds": [
+    "source:upgrade-observation-01",
+    "source:upgrade-observation-02",
+    "source:upgrade-observation-04",
+    "source:upgrade-observation-06",
+    "source:upgrade-observation-07",
+    "source:upgrade-observation-08"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "dmz-cash"
+}

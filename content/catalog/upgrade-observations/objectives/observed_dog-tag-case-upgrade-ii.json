@@ -1,0 +1,60 @@
+{
+  "description": "Increases Dog Tag Case storage capacity by 20.",
+  "effects": [],
+  "id": "observed:dog-tag-case-upgrade-ii",
+  "name": "Dog Tag Case Upgrade II",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "observed:cash",
+      "quantity": 50000,
+      "sourceIds": [
+        "source:upgrade-observation-01"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:detonators",
+      "quantity": 20,
+      "sourceIds": [
+        "source:upgrade-observation-01"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:nylon-cloth",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-01"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:power-regulator",
+      "quantity": 5,
+      "sourceIds": [
+        "source:upgrade-observation-01"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:upgrade-observation-01"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "upgrade-observation-01"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "II"
+  }
+}

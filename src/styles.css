@@ -1298,7 +1298,8 @@ main :where(p, li, a, ul, ol, section, article, div) {
   white-space: normal;
 }
 
-#draft-navigation {
+#draft-navigation,
+#upgrade-progress-confirm {
   box-sizing: border-box;
   width: min(34rem, calc(100% - 24px));
   max-width: calc(100% - 24px);
@@ -1309,7 +1310,8 @@ main :where(p, li, a, ul, ol, section, article, div) {
   background: var(--surface);
   border: 2px solid var(--line);
 }
-#draft-navigation::backdrop {
+#draft-navigation::backdrop,
+#upgrade-progress-confirm::backdrop {
   background: rgb(0 0 0 / 65%);
 }
 .draft-actions {

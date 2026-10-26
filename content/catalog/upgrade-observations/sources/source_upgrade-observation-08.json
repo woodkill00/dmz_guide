@@ -1,0 +1,16 @@
+{
+  "id": "source:upgrade-observation-08",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "private-observation",
+    "lineageKey": "upgrade-observation-08",
+    "observationKey": "upgrade-observation-08"
+  },
+  "publishedAt": "Capture date unknown",
+  "reviewedAt": "2026-10-26",
+  "supports": "Displayed name, effect and required amounts only. Transcription review is not independent gameplay corroboration; consumption, prerequisites and current-build applicability unknown.",
+  "title": "Private observation · Stash Weapon Upgrade II (public transcription)",
+  "type": "observation",
+  "url": null
+}

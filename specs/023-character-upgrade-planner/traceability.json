@@ -7,7 +7,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-002": {
     "tasks": [
@@ -21,7 +21,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-003": {
     "tasks": [
@@ -34,7 +34,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-004": {
     "tasks": [
@@ -47,7 +47,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-005": {
     "tasks": [
@@ -59,7 +59,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-006": {
     "tasks": [
@@ -72,7 +72,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-007": {
     "tasks": [
@@ -84,7 +84,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-008": {
     "tasks": [
@@ -99,7 +99,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-009": {
     "tasks": [
@@ -109,7 +109,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-010": {
     "tasks": [
@@ -120,7 +120,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-011": {
     "tasks": [
@@ -134,7 +134,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-012": {
     "tasks": [
@@ -147,7 +147,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-013": {
     "tasks": [
@@ -160,7 +160,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-014": {
     "tasks": [
@@ -174,7 +174,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-015": {
     "tasks": [
@@ -192,7 +192,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "FR-016": {
     "tasks": [
@@ -207,7 +207,7 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "SC-001": {
     "tasks": [
@@ -220,7 +220,7 @@
       "T020"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "SC-002": {
     "tasks": [
@@ -236,7 +236,7 @@
       "T020"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "SC-003": {
     "tasks": [
@@ -250,7 +250,7 @@
       "T020"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "SC-004": {
     "tasks": [
@@ -262,7 +262,7 @@
       "T020"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "SC-005": {
     "tasks": [
@@ -271,7 +271,7 @@
       "T020"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   },
   "SC-006": {
     "tasks": [
@@ -283,6 +283,6 @@
       "T022"
     ],
     "acceptance": "acceptance.md",
-    "status": "planned-not-implemented"
+    "status": "implementation-candidate-awaiting-hosted-acceptance"
   }
 }

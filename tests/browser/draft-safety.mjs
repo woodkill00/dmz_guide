@@ -202,7 +202,7 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
     await ready(page);
     // A reverted quantity and unrelated search text do not create dirty work.
     await page.locator(wire).fill("9");
-    await page.locator(wire).fill("0");
+    await page.locator(wire).fill("");
     await page.fill("#inventory-query", "wire");
     await plannerLink().click();
     await page.waitForURL("**/planner/**");
@@ -288,8 +288,8 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
       assert.equal(await page.locator(wire).inputValue(), "23");
       assert.equal(await page.locator(reserve).inputValue(), "5");
     }
-    // Invalid raw input remains empty, never coerced to zero by failed Save.
-    await page.locator(wire).fill("");
+    // Genuinely invalid raw input remains invalid; blank now deliberately unsets stock.
+    await page.locator(wire).fill("-1");
     const downloads = [];
     page.on("download", (value) => downloads.push(value));
     await page.click("#export-current-profile");
@@ -301,7 +301,7 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
     await plannerLink().click();
     await page.click("#draft-save");
     await page.waitForSelector("#error:not([hidden])");
-    assert.equal(await page.locator(wire).inputValue(), "");
+    assert.equal(await page.locator(wire).inputValue(), "-1");
     assert.equal(await page.locator(reserve).inputValue(), "5");
     assert.equal(new URL(page.url()).pathname, "/inventory/");
     if (await page.locator("#draft-navigation:visible").count())

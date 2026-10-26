@@ -1,0 +1,60 @@
+{
+  "description": "Increases Stash item capacity by 18.",
+  "effects": [],
+  "id": "observed:stash-item-upgrade-iii",
+  "name": "Stash Item Upgrade III",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "observed:cash",
+      "quantity": 100000,
+      "sourceIds": [
+        "source:upgrade-observation-07"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:binding-catalyst",
+      "quantity": 20,
+      "sourceIds": [
+        "source:upgrade-observation-07"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:stock-rod",
+      "quantity": 20,
+      "sourceIds": [
+        "source:upgrade-observation-07"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:alloyed-plating",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-07"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:upgrade-observation-07"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "upgrade-observation-07"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "III"
+  }
+}

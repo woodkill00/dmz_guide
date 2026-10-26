@@ -1,3 +1,5 @@
+> Historical planning review below remains intact. Authorized implementation is now in progress; current source repairs and verification gates are recorded in [acceptance](acceptance.md), [implementation register](implementation-register.md) and [implementation remediation](analysis/003-implementation-remediation.md). Planning approval is not runtime acceptance.
+
 # Specification analysis summary
 
 ## Verdict

@@ -8,7 +8,14 @@ export function createInventoryDraft(items, profile) {
   const raw = new Map();
   for (const item of items)
     for (const [field, prefix] of fields)
-      raw.set(`${prefix}:${item.id}`, String(profile[field][item.id] || 0));
+      raw.set(
+        `${prefix}:${item.id}`,
+        Object.hasOwn(profile[field], item.id)
+          ? String(profile[field][item.id])
+          : field === "inventory"
+            ? ""
+            : "0",
+      );
   let saved = new Map(raw);
   return {
     raw,
@@ -17,7 +24,8 @@ export function createInventoryDraft(items, profile) {
       const key = `${prefix}:${id}`;
       if (!prefix || !raw.has(key)) return;
       raw.set(key, value);
-      model[field][id] = value === "" ? NaN : Number(value);
+      if (field === "inventory" && value === "") delete model[field][id];
+      else model[field][id] = value === "" ? NaN : Number(value);
     },
     isDirty: () => [...raw].some(([key, value]) => saved.get(key) !== value),
     checkpoint() {
@@ -31,7 +39,7 @@ export function createInventoryDraft(items, profile) {
             value = raw.get(name),
             quantity = Number(value);
           if (
-            value === "" ||
+            (value === "" && field !== "inventory") ||
             !Number.isInteger(quantity) ||
             quantity < 0 ||
             quantity > 1000000

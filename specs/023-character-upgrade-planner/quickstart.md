@@ -1,8 +1,8 @@
 # Validation quickstart
 
-## Planning-only branch
+## Historical planning verification
 
-No runtime behavior is added here. From the repository root with feature023 selected:
+The following initial planning commands remain useful; implementation evidence is now recorded in acceptance.md. From the repository root with feature023 selected:
 
 ```bash
 python3 scripts/select-feature.py 023-character-upgrade-planner
@@ -14,9 +14,9 @@ npm run build
 git diff 407fa56afa43104c3342f4ed73b800f292bacf33..HEAD --check
 ```
 
-These commands check artifact wiring and unchanged baseline behavior, **not** acceptance of an unimplemented feature. Review [source inventory](source-inventory.md), [progress contract](contracts/upgrade-progress.md), [advice vectors](contracts/keep-recommendations.md) and traceability. Keep `.specify/feature.json` machine-local.
+At the planning checkpoint these commands checked artifact wiring and unchanged baseline behavior. On implementation source they exercise registered runtime behavior, but do not replace the browser/Studio/accessibility gates below. Review [source inventory](source-inventory.md), [progress contract](contracts/upgrade-progress.md), [advice vectors](contracts/keep-recommendations.md) and traceability. Keep `.specify/feature.json` machine-local.
 
-## Future implementation environment and gates
+## Implementation environment and gates
 
 Node22.x or24.x; `npm ci`; supported Playwright browsers per repository setup. Existing documented aggregate/release checks:
 
@@ -30,7 +30,7 @@ npm run test:engines
 
 Register the new browser file in the existing harness before relying on these commands. Add deliberate failing fixtures briefly to confirm discovery, remove them and rerun. Record exact head/runtime/platform/exit codes; mark blocked or never-run gates honestly. Existing passing suites do not verify a missing feature. Also run `npm run test:studio` for the actual v1/v2 Studio guided/advanced-JSON/save/restart/export/reimport journeys, not merely the generic editor path.
 
-## Manual acceptance journeys (future, synthetic state only)
+## Manual acceptance journeys (synthetic state only)
 
 1. Select observed pack: eight definitions, required rows, source observation/review metadata, unknown build/prerequisites/consumption, no prefilled holdings. Check exact “to” versus “by” effects.
 2. Edit the same upgrade state from /inventory and /progression and confirm a single state. Mark availability available while completion unknown: record stays not marked complete. Mark completed; verify stock/reserve/goals unchanged and reminder; reload, undo and repeat clicks.

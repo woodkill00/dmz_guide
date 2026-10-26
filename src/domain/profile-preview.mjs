@@ -27,22 +27,25 @@ export function profileChangeSummary(before, after, pack) {
     ["inventory", "Inventory"],
     ["reserves", "Protected reserves"],
     ["completion", "Progress"],
+    ["upgradeProgress", "Upgrade progress"],
     ["routes", "Crafting routes"],
   ]) {
     const changes = [];
     for (const id of new Set([
-      ...Object.keys(before[field]),
-      ...Object.keys(after[field]),
+      ...Object.keys(before[field] || {}),
+      ...Object.keys(after[field] || {}),
     ])) {
-      const old = before[field][id],
-        next = after[field][id];
-      if (old === next) continue;
+      const old = before[field]?.[id],
+        next = after[field]?.[id];
+      if (JSON.stringify(old) === JSON.stringify(next)) continue;
       const display = (value) =>
         value === undefined
           ? "Not set"
           : field === "routes"
             ? name(value)
-            : String(value);
+            : field === "upgradeProgress"
+              ? `${value.completion} / ${value.availability}${value.reviewRequired ? " · review required" : ""}${value.legacyState ? " · legacy " + value.legacyState : ""}`
+              : String(value);
       changes.push({
         label: name(id),
         before: display(old),
@@ -51,6 +54,32 @@ export function profileChangeSummary(before, after, pack) {
     }
     section(title, changes);
   }
+  section(
+    "Watch pins",
+    [...new Set([...(before.watchPins || []), ...(after.watchPins || [])])]
+      .filter(
+        (id) =>
+          (before.watchPins || []).includes(id) !==
+          (after.watchPins || []).includes(id),
+      )
+      .map((id) => ({
+        label: name(id),
+        before: (before.watchPins || []).includes(id) ? "Pinned" : "Not pinned",
+        after: (after.watchPins || []).includes(id) ? "Pinned" : "Not pinned",
+      })),
+  );
+  section(
+    "Profile format",
+    before.schemaVersion === after.schemaVersion
+      ? []
+      : [
+          {
+            label: "Schema version",
+            before: String(before.schemaVersion),
+            after: String(after.schemaVersion),
+          },
+        ],
+  );
   const goals = [];
   for (let i = 0; i < Math.max(before.goals.length, after.goals.length); i++) {
     const old = before.goals[i],
@@ -106,4 +135,65 @@ export function profileChangeSummary(before, after, pack) {
     unresolvedCount: validation.unresolved.length,
     sections,
   };
+}
+
+/** Changed evidence triggers review, never revokes historical completion or infers tiers. */
+export function previewContentRebind(profile, pack, previousPack = null) {
+  previewProfile(profile, pack);
+  const candidate = structuredClone(profile);
+  candidate.contentVersion = pack.contentVersion;
+  const current = new Map(
+    pack.objectives
+      .filter((r) => r.track === "dmz-upgrade")
+      .map((r) => [r.id, r]),
+  );
+  const old = new Map(
+    (previousPack?.id === pack.id ? previousPack.objectives : [])
+      .filter((r) => r.track === "dmz-upgrade")
+      .map((r) => [r.id, r]),
+  );
+  const comparisonKnown =
+    previousPack?.id === pack.id &&
+    previousPack.contentVersion === profile.contentVersion;
+  const oldSources = new Map(
+    (previousPack?.sources || []).map((s) => [s.id, s]),
+  );
+  const newSources = new Map((pack.sources || []).map((s) => [s.id, s]));
+  const signature = (r, sources) =>
+    JSON.stringify([
+      r.requirements,
+      r.sourceIds,
+      [
+        ...new Set([
+          ...(r.sourceIds || []),
+          ...(r.requirements || []).flatMap((row) => row.sourceIds || []),
+        ]),
+      ]
+        .sort()
+        .map((id) => sources.get(id)),
+      r.status,
+      r.prerequisites,
+      r.upgrade,
+      r.effects,
+    ]);
+  const changed = [],
+    retired = [],
+    added = [];
+  for (const [id, entry] of Object.entries(candidate.upgradeProgress || {})) {
+    if (!current.has(id)) {
+      retired.push(id);
+      entry.reviewRequired = true;
+    } else if (
+      !comparisonKnown ||
+      !old.has(id) ||
+      signature(old.get(id), oldSources) !==
+        signature(current.get(id), newSources)
+    ) {
+      changed.push(id);
+      entry.reviewRequired = true;
+    }
+  }
+  if (comparisonKnown)
+    for (const id of current.keys()) if (!old.has(id)) added.push(id);
+  return { candidate, comparisonKnown, changed, retired, added };
 }

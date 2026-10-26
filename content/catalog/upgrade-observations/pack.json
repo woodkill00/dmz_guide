@@ -1,0 +1,70 @@
+{
+  "order": {
+    "assets": [],
+    "claims": [],
+    "guides": [],
+    "items": [
+      "observed:cash",
+      "observed:detonators",
+      "observed:nylon-cloth",
+      "observed:power-regulator",
+      "observed:reactive-metals",
+      "observed:stock-rod",
+      "observed:comms-module",
+      "observed:electronic-sensors",
+      "observed:cpu",
+      "observed:printed-circuit-board",
+      "observed:prototype-rf-module",
+      "observed:ballistic-flight-logs",
+      "observed:regional-combat-notes",
+      "observed:wmd-manifest",
+      "observed:foreign-intelligence-targets",
+      "observed:nitro-compounds",
+      "observed:military-composites",
+      "observed:binding-catalyst",
+      "observed:alloyed-plating",
+      "observed:structural-alloy",
+      "observed:high-tenacity-fibers",
+      "observed:turned-components"
+    ],
+    "locations": [],
+    "maps": [],
+    "objectives": [
+      "observed:dog-tag-case-upgrade-ii",
+      "observed:stash-weapon-upgrade-i",
+      "observed:vendor-item-upgrade-i",
+      "observed:bank-upgrade-iv",
+      "observed:mia-recovery-discount-iii",
+      "observed:gunsmith-upgrade-ii",
+      "observed:stash-item-upgrade-iii",
+      "observed:stash-weapon-upgrade-ii"
+    ],
+    "recipes": [],
+    "sources": [
+      "source:upgrade-observation-01",
+      "source:upgrade-observation-02",
+      "source:upgrade-observation-03",
+      "source:upgrade-observation-04",
+      "source:upgrade-observation-05",
+      "source:upgrade-observation-06",
+      "source:upgrade-observation-07",
+      "source:upgrade-observation-08"
+    ]
+  },
+  "pack": {
+    "contentVersion": "2026.10.26.1",
+    "coverage": {
+      "expectedTotal": null,
+      "note": "Eight observed definitions only. Unknown capture/build, missing tiers, prerequisite completeness and consumption mechanics. Not a live or exhaustive catalog."
+    },
+    "description": "Eight privately observed definitions, independently transcribed. Requirements only; no original images or player state. Review date is not capture date. Game identity is user-context/unverified.",
+    "game": {
+      "build": "unknown-observed-snapshot-20261026",
+      "id": "mw4-user-context-unverified",
+      "mode": "dmz"
+    },
+    "id": "observed:upgrade-review-20261026",
+    "schemaVersion": 2,
+    "title": "Observed upgrade requirements · build unverified"
+  }
+}

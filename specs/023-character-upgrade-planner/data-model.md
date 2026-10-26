@@ -1,6 +1,6 @@
 # Data model and migration
 
-All structures below are planned contracts, not implemented schemas. Namespaced stable IDs follow the existing `prefix:value` pattern, maximum 100 characters. Display text and imported data remain inert. Existing pack limits (8MiB portable JSON, 20,000 total records, depth16, 150,000 nodes), profile limits (1MiB, depth12, 20,000 nodes) and per-map reference cap10,000 remain enforced. New fields count against the same limits; no limit is silently raised.
+These are the reviewed contracts implemented by the current candidate; acceptance evidence is tracked separately. Namespaced stable IDs follow the existing `prefix:value` pattern, maximum 100 characters. Display text and imported data remain inert. Existing pack limits (8MiB portable JSON, 20,000 total records, depth16, 150,000 nodes), profile limits (1MiB, depth12, 20,000 nodes) and per-map reference cap10,000 remain enforced. New fields count against the same limits; no limit is silently raised.
 
 ## Public definition layer
 

@@ -1,0 +1,16 @@
+{
+  "id": "source:upgrade-observation-06",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "private-observation",
+    "lineageKey": "upgrade-observation-06",
+    "observationKey": "upgrade-observation-06"
+  },
+  "publishedAt": "Capture date unknown",
+  "reviewedAt": "2026-10-26",
+  "supports": "Displayed name, effect and required amounts only. Transcription review is not independent gameplay corroboration; consumption, prerequisites and current-build applicability unknown.",
+  "title": "Private observation · Gunsmith Upgrade II (public transcription)",
+  "type": "observation",
+  "url": null
+}

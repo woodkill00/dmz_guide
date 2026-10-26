@@ -207,7 +207,7 @@ async function preservedDrafts({ browser, base, evidence }) {
   try {
     await page.goto(`${base}/inventory/?pack=${encodeURIComponent(training)}`);
     await ready(page);
-    await wire.fill("");
+    await wire.fill("-1");
     await reserve.fill("4");
     await page.fill("#inventory-query", "cell");
     assert.equal(await wire.isVisible(), false);
@@ -222,7 +222,7 @@ async function preservedDrafts({ browser, base, evidence }) {
       "owned:demo:wire",
       "Native invalid event reveals hidden small-catalog field",
     );
-    assert.equal(await wire.inputValue(), "");
+    assert.equal(await wire.inputValue(), "-1");
     await page.fill("#inventory-query", "cell");
     await page.selectOption("#pack-select", "official:mw4-dmz-starter");
     await page.click("#draft-discard");
@@ -232,11 +232,11 @@ async function preservedDrafts({ browser, base, evidence }) {
         .textContent.includes("switch failed"),
     );
     assert.equal(await page.locator("#pack-select").inputValue(), training);
-    assert.equal(await wire.inputValue(), "");
+    assert.equal(await wire.inputValue(), "-1");
     assert.equal(await reserve.inputValue(), "4");
     await page.selectOption("#pack-select", "official:mw4-dmz-starter");
     await page.click("#draft-stay");
-    assert.equal(await wire.inputValue(), "");
+    assert.equal(await wire.inputValue(), "-1");
     // Re-show only to enter a valid value; hiding it again must not change its checkpoint.
     await page.fill("#inventory-query", "");
     await wire.fill("29");
@@ -441,7 +441,7 @@ async function pagedDrafts({ browser, base, evidence }) {
       false,
       "View-only page/filter changes keep the full raw checkpoint clean",
     );
-    await field(0).fill("");
+    await field(0).fill("-1");
     await field(0, "reserves").fill("4");
     await page.locator("#inventory-next").focus();
     await page.keyboard.press("Enter");
@@ -478,7 +478,7 @@ async function pagedDrafts({ browser, base, evidence }) {
     );
     await page.click("#export-current-profile");
     await invalidFocus('[data-field="inventory"][data-id="demo:scale-item-0"]');
-    assert.equal(await field(0).inputValue(), "");
+    assert.equal(await field(0).inputValue(), "-1");
     assert.equal(downloads, 0);
     await field(0).fill("3");
     await field(0, "reserves").fill("");

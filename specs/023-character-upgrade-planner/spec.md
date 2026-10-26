@@ -2,7 +2,7 @@
 
 **Feature Branch**: `023-character-upgrade-planner`
 **Created**: 2026-10-26
-**Status**: Planning only; no runtime implementation or content ingestion
+**Status**: Authorized implementation candidate; local runtime checks pass, independent reanalysis and actual browser/CI acceptance pending
 **Input**: Use the supplied upgrade photographs to define upgrade costs, track what a player has not completed, and explain what to keep and look for.
 
 ## User Scenarios & Testing
@@ -87,7 +87,7 @@ Upgrade definition; observed requirement; evidence reference; compatible catalog
 
 ## Assumptions and Clarifications
 
-- This branch delivers a reviewable plan and sanitized observation seed only. Runtime implementation, public content migration, merging and deployment require their own approved execution; none is performed here.
+- The accepted planning checkpoint delivered a reviewable plan and sanitized observation seed. The user subsequently authorized implementation and updates to the same draft PR; current evidence is in acceptance.md. Merge and deployment remain unauthorized.
 - “Character” means the player's existing local per-pack profile. Multiple operators/accounts and live game synchronization are out of scope.
 - Images establish displayed requirements and effects, not spending behavior, complete tier trees, capture date, build identity, current player state or exhaustive catalog coverage.
 - Consumption remains an explicit unknown. The specification resolves behavior under that unknown: requirements-first/readiness-blocked, not guessed numerical advice. Enabling exact real-data allocation is gated by evidence in [clarifications.md](clarifications.md).

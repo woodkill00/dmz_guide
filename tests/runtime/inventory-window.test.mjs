@@ -72,14 +72,14 @@ test("all-page raw draft, checkpoint and deterministic invalid recovery contract
   draft.checkpoint();
   assert.equal(draft.isDirty(), false);
   draft.set("reserves", items[75].id, "1000001", profile);
-  draft.set("inventory", items[75].id, "", profile);
+  draft.set("inventory", items[75].id, "-1", profile);
   assert.deepEqual(draft.firstInvalid(), {
     id: items[75].id,
     field: "inventory",
     name: `owned:${items[75].id}`,
     index: 75,
   });
-  assert(Number.isNaN(profile.inventory[items[75].id]));
+  assert.equal(profile.inventory[items[75].id], -1);
   draft.set("inventory", items[75].id, "2.5", profile);
   assert.equal(draft.raw.get(`owned:${items[75].id}`), "2.5");
   assert(draft.isDirty(), "Failed save does not call checkpoint");

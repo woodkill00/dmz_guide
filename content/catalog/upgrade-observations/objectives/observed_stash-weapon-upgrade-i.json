@@ -1,0 +1,60 @@
+{
+  "description": "Increases Stash weapon capacity by 6.",
+  "effects": [],
+  "id": "observed:stash-weapon-upgrade-i",
+  "name": "Stash Weapon Upgrade I",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "observed:cash",
+      "quantity": 50000,
+      "sourceIds": [
+        "source:upgrade-observation-02"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:reactive-metals",
+      "quantity": 20,
+      "sourceIds": [
+        "source:upgrade-observation-02"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:stock-rod",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-02"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:comms-module",
+      "quantity": 5,
+      "sourceIds": [
+        "source:upgrade-observation-02"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:upgrade-observation-02"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "upgrade-observation-02"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "I"
+  }
+}

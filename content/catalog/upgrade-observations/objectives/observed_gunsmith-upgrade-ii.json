@@ -1,0 +1,60 @@
+{
+  "description": "Reduces the cost of Gunsmith purchases by 5%.",
+  "effects": [],
+  "id": "observed:gunsmith-upgrade-ii",
+  "name": "Gunsmith Upgrade II",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "observed:cash",
+      "quantity": 100000,
+      "sourceIds": [
+        "source:upgrade-observation-06"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:nitro-compounds",
+      "quantity": 20,
+      "sourceIds": [
+        "source:upgrade-observation-06"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:comms-module",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-06"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:military-composites",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-06"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:upgrade-observation-06"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "upgrade-observation-06"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "II"
+  }
+}

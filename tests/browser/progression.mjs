@@ -2,6 +2,70 @@ import assert from "node:assert/strict";
 import { readFile, mkdir } from "node:fs/promises";
 const packId = "demo:training-pack";
 const progressURL = "/progression/?pack=demo%3Atraining-pack";
+const upgradeControl = (field) =>
+  `[data-upgrade-id="demo:bench-unlock"][data-upgrade-field="${field}"]`;
+// These explicit v2 mechanics belong only to the fictional training fixture.
+// This is fixture construction, not an implicit migration of a user's profile.
+function syntheticUpgradePack(input) {
+  const pack = structuredClone(input);
+  assert.equal(pack.id, packId);
+  assert.equal(pack.schemaVersion, 1);
+  pack.schemaVersion = 2;
+  pack.sources = pack.sources.map((source, index) => ({
+    ...source,
+    provenance: {
+      kind: "web",
+      observationKey: `synthetic-progression-${index}`,
+      lineageKey: `synthetic-progression-${index}`,
+      captureDate: null,
+      buildStatus: "known",
+    },
+  }));
+  const requirements = (rows, sourceIds) =>
+    rows.map(({ consumed, ...row }) => ({
+      ...row,
+      consumption: consumed ? "consumed" : "retained",
+      status: "fictional",
+      sourceIds: [...sourceIds],
+    }));
+  for (const recipe of pack.recipes)
+    recipe.inputs = requirements(recipe.inputs, recipe.sourceIds);
+  for (const objective of pack.objectives) {
+    objective.requirements = requirements(
+      objective.requirements,
+      objective.sourceIds,
+    );
+    if (objective.track === "dmz-upgrade")
+      objective.upgrade = {
+        tierLabel: null,
+        prerequisiteStatus: "known",
+        observationKeys: ["synthetic-progression-upgrade"],
+      };
+  }
+  return pack;
+}
+async function installUpgradeFixture(context) {
+  await context.route(
+    "**/assets/content/packs/demo-training.json",
+    async (route) => {
+      const response = await route.fetch();
+      assert(response.ok(), "The training fixture must load successfully");
+      await route.fulfill({
+        response,
+        json: syntheticUpgradePack(await response.json()),
+      });
+    },
+  );
+}
+async function confirmUpgrade(page, field, value) {
+  await page.selectOption(upgradeControl(field), value);
+  await page.waitForSelector("#upgrade-progress-confirm[open]");
+  assert.match(
+    await page.locator("#upgrade-progress-confirm").textContent(),
+    /Recording progress only; update inventory after an in-game purchase\./,
+  );
+  await page.click("#upgrade-progress-apply");
+}
 async function profile(page) {
   return page.evaluate(
     async (id) =>
@@ -28,6 +92,7 @@ export async function runProgressionTests({ browser, base }) {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
   });
+  await installUpgradeFixture(context);
   const page = await context.newPage(),
     errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
@@ -97,11 +162,14 @@ export async function runProgressionTests({ browser, base }) {
       next.inventory["demo:wire"] = 17;
       next.reserves["demo:wire"] = 3;
       next.goals = [{ id: "demo:board-batch", quantity: 2 }];
+      next.watchPins = ["demo:wire"];
       await saveProfile(next, 0);
     });
     await page.reload();
     await page.waitForSelector("#progress-rows article");
     const inventoryBaseline = (await profile(page)).value;
+    assert.equal(inventoryBaseline.schemaVersion, 2);
+    assert.deepEqual(inventoryBaseline.upgradeProgress, {});
     // Exercise the real private reader and map UI, not only pure projections.
     const probe = await context.newPage();
     probe.on("pageerror", (e) => errors.push(e.message));
@@ -301,20 +369,35 @@ export async function runProgressionTests({ browser, base }) {
     );
     await waitRevision(page, ++revision);
     assert.equal(
-      await page.locator('[data-progress-id="demo:bench-unlock"]').inputValue(),
+      await page.locator(upgradeControl("completion")).inputValue(),
       "unknown",
     );
     revision = (await profile(page)).value.revision;
-    await page.selectOption(
-      '[data-progress-id="demo:bench-unlock"]',
+    await confirmUpgrade(page, "completion", "completed");
+    await waitRevision(page, revision);
+    assert.equal(
+      (await profile(page)).value.upgradeProgress["demo:bench-unlock"]
+        .completion,
       "completed",
     );
-    await waitRevision(page, revision);
+    assert.equal(
+      Object.hasOwn(
+        (await profile(page)).value.completion,
+        "demo:bench-unlock",
+      ),
+      false,
+    );
     await page.selectOption("#progress-state", "completed");
     assert.equal(await page.locator("#progress-rows article").count(), 2);
     await page.click("#progress-clear");
     const beforeReset = (await profile(page)).value;
-    for (const field of ["inventory", "reserves", "goals"])
+    for (const field of [
+      "inventory",
+      "reserves",
+      "goals",
+      "routes",
+      "watchPins",
+    ])
       assert.deepEqual(beforeReset[field], inventoryBaseline[field]);
     await page.locator("#progress-reset").focus();
     await page.keyboard.press("Enter");
@@ -348,8 +431,15 @@ export async function runProgressionTests({ browser, base }) {
     await waitRevision(page, beforeReset.revision);
     const afterReset = await profile(page);
     assert.deepEqual(afterReset.value.completion, {});
+    assert.deepEqual(afterReset.value.upgradeProgress, {});
     assert.deepEqual(afterReset.previous, beforeReset);
-    for (const field of ["inventory", "reserves", "goals"])
+    for (const field of [
+      "inventory",
+      "reserves",
+      "goals",
+      "routes",
+      "watchPins",
+    ])
       assert.deepEqual(afterReset.value[field], beforeReset[field]);
     assert.equal(
       await page
@@ -359,7 +449,7 @@ export async function runProgressionTests({ browser, base }) {
     );
     // Same-tab mutation invalidates a captured reset revision.
     await page.click("#progress-reset");
-    await page.selectOption('[data-progress-id="demo:bench-unlock"]', "locked");
+    await confirmUpgrade(page, "availability", "locked");
     await waitRevision(page, afterReset.value.revision);
     await page.click("#progress-reset-yes");
     assert.match(await page.locator("#error").textContent(), /expired/);
@@ -371,10 +461,7 @@ export async function runProgressionTests({ browser, base }) {
     await stale.click("#progress-reset");
     const staleCopy = await downloadProfile(stale);
     revision = (await profile(page)).value.revision;
-    await page.selectOption(
-      '[data-progress-id="demo:bench-unlock"]',
-      "completed",
-    );
+    await confirmUpgrade(page, "completion", "completed");
     await waitRevision(page, revision);
     const savedNewer = await profile(page);
     await stale.click("#progress-reset-yes");
@@ -385,10 +472,12 @@ export async function runProgressionTests({ browser, base }) {
       /Export before reload/,
     );
     assert.equal(
-      await stale
-        .locator('[data-progress-id="demo:bench-unlock"]')
-        .inputValue(),
+      await stale.locator(upgradeControl("availability")).inputValue(),
       "locked",
+    );
+    assert.equal(
+      await stale.locator(upgradeControl("completion")).inputValue(),
+      "unknown",
     );
     assert.equal(
       await stale
@@ -410,7 +499,7 @@ export async function runProgressionTests({ browser, base }) {
       false,
     );
     await page.selectOption("#pack-select", packId);
-    await page.waitForSelector('[data-progress-id="demo:bench-unlock"]');
+    await page.waitForSelector(upgradeControl("completion"));
     assert.deepEqual(await profile(page), savedNewer);
     revision = savedNewer.value.revision;
     await page.locator("#spoiler-toggle").focus();
@@ -457,6 +546,7 @@ export async function runProgressionTests({ browser, base }) {
   }
   // Storage failure still keeps explicit spoiler choice and manual edits exportable.
   const denied = await browser.newContext();
+  await installUpgradeFixture(denied);
   await denied.addInitScript(() =>
     Object.defineProperty(window, "indexedDB", {
       get() {
@@ -476,27 +566,67 @@ export async function runProgressionTests({ browser, base }) {
         !document.querySelector("#spoiler-toggle").disabled,
     );
     await page.selectOption(
-      '[data-progress-id="demo:bench-unlock"]',
+      '[data-progress-id="demo:campaign-chapter"]',
       "completed",
     );
     await page.waitForFunction(
       () => !document.querySelector("[data-progress-id]").disabled,
     );
+    const beforeUpgrade = await downloadProfile(page);
+    assert.equal(
+      beforeUpgrade.completion["demo:campaign-chapter"],
+      "completed",
+    );
+    assert.deepEqual(beforeUpgrade.upgradeProgress, {});
+    await confirmUpgrade(page, "completion", "completed");
+    await page.waitForSelector("#upgrade-progress-export:not([hidden])");
+    assert.match(
+      await page.locator("#upgrade-progress-result").textContent(),
+      /Not saved.*committed progress has not changed/,
+    );
+    assert.equal(
+      await page.locator(upgradeControl("completion")).inputValue(),
+      "unknown",
+    );
+    const pendingCandidate = page.waitForEvent("download");
+    await page.click("#upgrade-progress-export");
+    const candidateDownload = await pendingCandidate;
+    const candidate = JSON.parse(
+      await readFile(await candidateDownload.path(), "utf8"),
+    );
+    assert.equal(
+      candidate.upgradeProgress["demo:bench-unlock"].completion,
+      "completed",
+    );
+    assert.deepEqual(candidate.completion, beforeUpgrade.completion);
+    for (const field of [
+      "inventory",
+      "reserves",
+      "goals",
+      "routes",
+      "watchPins",
+    ])
+      assert.deepEqual(candidate[field], beforeUpgrade[field]);
+    await page.click("#upgrade-progress-cancel");
+    assert.deepEqual(await downloadProfile(page), beforeUpgrade);
     await page.click("#progress-reset");
     await page.click("#progress-reset-yes");
     await page.waitForSelector("#error:not([hidden])");
     assert.equal(
-      await page.locator('[data-progress-id="demo:bench-unlock"]').inputValue(),
+      await page
+        .locator('[data-progress-id="demo:campaign-chapter"]')
+        .inputValue(),
       "completed",
     );
     assert.equal(
-      (await downloadProfile(page)).completion["demo:bench-unlock"],
+      (await downloadProfile(page)).completion["demo:campaign-chapter"],
       "completed",
     );
+    assert.deepEqual((await downloadProfile(page)).upgradeProgress, {});
   } finally {
     await denied.close();
   }
   console.log(
-    "Progression acceptance passed: filters, scoped links, source provenance, spoiler masking/persistence/focus, reset/cancel/snapshot/tab conflict, export recovery and 320/390px.",
+    "Progression acceptance passed: v2 upgrade controls/confirmation, separate campaign progress, filters, scoped links, source provenance, spoiler masking/persistence/focus, reset/cancel/snapshot/tab conflict, failed candidate export recovery and 320/390px.",
   );
 }

@@ -9,7 +9,8 @@ const validID = (id) =>
   typeof id === "string" && id.length <= 100 && ID.test(id);
 export function newProfile(pack) {
   return {
-    schemaVersion: 1,
+    schemaVersion: pack.schemaVersion === 2 ? 2 : 1,
+    ...(pack.schemaVersion === 2 ? { upgradeProgress: {}, watchPins: [] } : {}),
     id: pack.id,
     packId: pack.id,
     contentVersion: pack.contentVersion,
@@ -38,12 +39,13 @@ export function validateProfile(p) {
     "spoilers",
     "routes",
   ];
+  if (p.schemaVersion === 2) keys.push("upgradeProgress", "watchPins");
   assert(
     Object.keys(p).every((k) => keys.includes(k)) &&
       keys.every((k) => Object.hasOwn(p, k)),
     "Invalid profile fields",
   );
-  assert(p.schemaVersion === 1, "Unsupported profile version");
+  assert([1, 2].includes(p.schemaVersion), "Unsupported profile version");
   assert(validID(p.id) && validID(p.packId), "Invalid profile ID");
   assert(
     typeof p.contentVersion === "string" && p.contentVersion.length <= 80,
@@ -95,6 +97,60 @@ export function validateProfile(p) {
     new Set(p.goals.map((g) => g.id)).size === p.goals.length,
     "Duplicate goals",
   );
+  if (p.schemaVersion === 2) {
+    const map = p.upgradeProgress;
+    assert(
+      map &&
+        typeof map === "object" &&
+        !Array.isArray(map) &&
+        Object.keys(map).length <= 10000,
+      "Invalid upgrade progress",
+    );
+    for (const [id, entry] of Object.entries(map)) {
+      assert(
+        validID(id) &&
+          entry &&
+          typeof entry === "object" &&
+          !Array.isArray(entry),
+        "Invalid upgrade entry",
+      );
+      assert(
+        Object.keys(entry).every((k) =>
+          [
+            "completion",
+            "availability",
+            "reviewRequired",
+            "legacyState",
+          ].includes(k),
+        ),
+        "Invalid upgrade fields",
+      );
+      assert(
+        ["unknown", "incomplete", "completed"].includes(entry.completion) &&
+          ["unknown", "locked", "available"].includes(entry.availability) &&
+          typeof entry.reviewRequired === "boolean",
+        "Invalid upgrade state",
+      );
+      assert(
+        !Object.hasOwn(entry, "legacyState") ||
+          ["unknown", "locked", "unlocked", "completed"].includes(
+            entry.legacyState,
+          ),
+        "Invalid archival state",
+      );
+    }
+    assert(
+      Array.isArray(p.watchPins) &&
+        p.watchPins.length <= 1000 &&
+        p.watchPins.every(validID) &&
+        new Set(p.watchPins).size === p.watchPins.length,
+      "Invalid watch pins",
+    );
+  }
+  assert(
+    new TextEncoder().encode(JSON.stringify(p)).length <= LIMITS.profileBytes,
+    "Profile exceeds byte limit",
+  );
   return p;
 }
 export function parseProfile(text) {
@@ -116,6 +172,8 @@ export function previewProfile(p, pack) {
     ...Object.keys(p.inventory),
     ...Object.keys(p.reserves),
     ...Object.keys(p.completion),
+    ...Object.keys(p.upgradeProgress || {}),
+    ...(p.watchPins || []),
     ...p.goals.map((g) => g.id),
     ...Object.keys(p.routes),
     ...Object.values(p.routes),
@@ -125,5 +183,53 @@ export function previewProfile(p, pack) {
     unresolved: [...refs].filter((id) => !known.has(id)),
     inventoryEntries: Object.keys(p.inventory).length,
     goals: p.goals.length,
+  };
+}
+
+export function legacyUpgradeState(state = "unknown") {
+  return {
+    completion: state === "completed" ? "completed" : "unknown",
+    availability: state === "locked" ? "locked" : "unknown",
+    reviewRequired: state === "unlocked",
+    legacyState: state,
+  };
+}
+export function previewUpgradeMigration(profile, pack) {
+  previewProfile(profile, pack);
+  assert(
+    profile.contentVersion === pack.contentVersion,
+    "Rebind content before migrating progress",
+  );
+  const candidate = structuredClone(profile);
+  if (profile.schemaVersion === 2)
+    return {
+      candidate,
+      changed: false,
+      moved: [],
+      ambiguous: [],
+      unresolved: previewProfile(profile, pack).unresolved,
+    };
+  candidate.schemaVersion = 2;
+  candidate.upgradeProgress = {};
+  candidate.watchPins = [];
+  const ids = new Set(
+    pack.objectives.filter((r) => r.track === "dmz-upgrade").map((r) => r.id),
+  );
+  const moved = [],
+    ambiguous = [];
+  for (const [id, state] of Object.entries(candidate.completion))
+    if (ids.has(id)) {
+      candidate.upgradeProgress[id] = legacyUpgradeState(state);
+      delete candidate.completion[id];
+      moved.push(id);
+      if (state === "unlocked") ambiguous.push(id);
+    }
+  validateProfile(candidate);
+  return {
+    candidate,
+    changed: true,
+    moved,
+    ambiguous,
+    unresolved: previewProfile(candidate, pack).unresolved,
   };
 }

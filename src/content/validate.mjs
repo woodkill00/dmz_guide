@@ -75,7 +75,9 @@ export function validateSchema(value, schema, root = schema, path = "$") {
       assert(new RegExp(schema.pattern).test(value), `${path}: invalid format`);
     if (schema.format === "date")
       assert(
-        /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)),
+        /^\d{4}-\d{2}-\d{2}$/.test(value) &&
+          Number.isFinite(Date.parse(value)) &&
+          new Date(value).toISOString().slice(0, 10) === value,
         `${path}: invalid date`,
       );
   }
@@ -111,6 +113,10 @@ export function validatePack(pack, schema, { profile = "portable" } = {}) {
   );
   const mediaLimits = profile === "published" ? PUBLISHED_LIMITS : LIMITS;
   boundedWalk(pack);
+  assert(
+    new TextEncoder().encode(JSON.stringify(pack)).length <= LIMITS.packBytes,
+    "Pack exceeds byte limit",
+  );
   validateSchema(pack, schema);
   const groups = [
     "sources",
@@ -137,8 +143,19 @@ export function validatePack(pack, schema, { profile = "portable" } = {}) {
       assert(scopeOf(pack, r) === scopeOf(pack, from), `Scope mismatch ${id}`);
     return r;
   };
-  for (const s of pack.sources)
-    assert(safeURL(s.url), `Unsafe source URL ${s.id}`);
+  for (const s of pack.sources) {
+    const privateObservation =
+      pack.schemaVersion === 2 && s.provenance?.kind === "private-observation";
+    assert(
+      (privateObservation && s.url === null) || safeURL(s.url),
+      `Unsafe source URL ${s.id}`,
+    );
+    if (privateObservation)
+      assert(
+        s.type === "observation",
+        "Private observation must be labeled observation",
+      );
+  }
   for (const r of all) {
     for (const id of r.sourceIds || []) ref(id, "sources", r);
     if (r.assetId) ref(r.assetId, "assets", r);
@@ -179,8 +196,15 @@ export function validatePack(pack, schema, { profile = "portable" } = {}) {
       );
   }
   for (const r of [...pack.recipes, ...pack.objectives]) {
-    for (const c of r.inputs || r.requirements || [])
+    for (const c of r.inputs || r.requirements || []) {
       ref(c.itemId, "items", r, true);
+      for (const id of c.sourceIds || []) ref(id, "sources", r);
+      if (
+        pack.schemaVersion === 2 &&
+        ["observed", "verified", "disputed", "stale"].includes(c.status)
+      )
+        assert(c.sourceIds.length, "Requirement evidence missing");
+    }
     for (const id of r.prerequisites) ref(id, "objectives", r, true);
     if (r.output) ref(r.output.itemId, "items", r, true);
   }
@@ -299,4 +323,32 @@ export function checkGraph(graph) {
       if (color.get(child) !== 2) stack.push({ id: child, next: 0 });
     }
   }
+}
+
+/** Version-specific authoring view; validation still uses the complete dual-version schema. */
+export function schemaForVersion(schema, version = 1) {
+  const properties = {
+    ...schema.properties,
+    schemaVersion: { const: version },
+  };
+  for (const [group, name] of [
+    ["sources", "source"],
+    ["objectives", "objective"],
+    ["recipes", "recipe"],
+  ])
+    properties[group] = {
+      ...properties[group],
+      items: { $ref: `#/$defs/${name}${version === 2 ? "V2" : ""}` },
+    };
+  return { ...schema, properties };
+}
+/** Normalize a legacy requirement without rewriting its published evidence. */
+export function requirementFacts(pack, row) {
+  return pack.schemaVersion === 1
+    ? {
+        ...row,
+        consumption: row.consumed ? "consumed" : "retained",
+        status: "legacy",
+      }
+    : row;
 }
