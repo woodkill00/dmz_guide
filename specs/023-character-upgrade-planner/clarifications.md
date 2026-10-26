@@ -21,6 +21,6 @@ G2: Before a readiness/current-build or exhaustive remaining-budget claim, prere
 
 G3: Before current-game publication, maintainer reviews evidence applicability, rights and sanitized provenance. Publishing this planning transcription does not certify a live catalog or redistribute original assets.
 
-No pending gameplay answer blocks authoring/reviewing this plan. It does block dependent runtime assertions. No user answer has been invented. The new purchase/spending decisions are specified in [the transaction contract](contracts/upgrade-spending.md); gross/net semantics and bounded safe reversal are implementation policy, not additional game claims.
+No pending gameplay answer blocks the specified known-cost bookkeeping. Remaining unknown build/prerequisite/capture facts still block dependent readiness/current/exhaustive claims. No user answer has been invented. The new purchase/spending decisions are specified in [the transaction contract](contracts/upgrade-spending.md); gross/net semantics and bounded safe reversal are implementation policy, not additional game claims.
 
 The observed Bank IV capacity is2,000,000. The v3 input policy supports a currency stock/reserve allowance of2,000,000 so this can be tracked; no holding or universal live-game capacity is inferred. Non-currency/cost/goal and v1/v2 limits remain1,000,000. Legacy requirementsKnown=false coverage does not block recording exact listed costs when each row is confirmed; preview warns that additional costs may exist.

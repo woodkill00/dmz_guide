@@ -5,7 +5,7 @@
 
 ## Scope amendment — 2026-10-26
 
-Owner requested confirmed consumption bookkeeping and recorded usage counters after baseline b935b40b passed. Extend this same feature/PR, not a new account system. New T023–T032 are pending; baseline evidence is historical, not acceptance of the amendment. Strict profile v3, pure transaction/snapshot validation and a shared native dialog/summary controller are defined in [upgrade-spending](contracts/upgrade-spending.md). Independent definition review precedes dependent code. No new dependency, service, game action or deployment; parent alone owns merge after updated gates.
+Owner requested confirmed consumption bookkeeping and recorded usage counters after baseline b935b40b passed. Extend this same feature/PR, not a new account system. T023–T032 now have separate source, actual hosted and independent acceptance at16442d9; baseline evidence remains historical. See acceptance.md for exact results and limits. Strict profile v3, pure transaction/snapshot validation and a shared native dialog/summary controller are defined in [upgrade-spending](contracts/upgrade-spending.md). Independent definition review precedes dependent code. No new dependency, service, game action or deployment; parent alone owns merge after updated gates.
 
 ## Summary
 
@@ -40,7 +40,7 @@ Pre-design and post-design: no constitutional exception requested. The constitut
 
 1. **Catalog admission and scope.** Extend existing objective representation (`track: dmz-upgrade`, one-time) rather than modeling upgrades as produced inventory items. Put newly admitted observations in a clearly labeled observed snapshot pack with unknown build, never silently in `official:mw4-dmz-starter`. At implementation start, reuse an equivalent observed pack if one has since appeared; otherwise create one. Reuse stable item identities only inside the compatible pack; do not bridge inventory between packs. The first seed admits only these eight reviewed observations. Earlier research remains a separate follow-on evidence review, not automatically promoted data.
 2. **Content schema evolution.** Introduce explicit pack schema v2 with a dual-version validator and an in-memory v1 normalization adapter. Preserve existing v1 packs and their exact legacy behavior. V2 adds typed source provenance, nullable URL for `private-observation`, and upgrade evidence metadata for prerequisite completeness, requirement quantity/consumption certainty and observation lineage. Null values are not passed as false/zero into the numeric planner. Update schema, actual Studio controller/author boundary (including its schema-v1-only advanced JSON gate), guided authoring, catalog, portable import, rendering and both planners together; no undocumented partial adoption.
-3. **Progress schema evolution.** Profile v2 adds authoritative `upgradeProgress` and private `watchPins`; existing generic completion remains authoritative only for non-upgrade objectives. Preview v1→v2 migration and retain original state in a recovery snapshot plus bounded legacy-state annotations. A shared accessor/mutator is used by progression, the inventory page’s existing prerequisite-state controls, single planner and shared planner, preventing the current `unlocked`/`completed` inconsistency. Only explicit upgrade completion suppresses its costs. Legacy `unlocked` upgrades require review, not auto-purchase inference. See [progress contract](contracts/upgrade-progress.md).
+3. **Progress schema evolution.** Profile v2 adds authoritative `upgradeProgress` and private `watchPins`; existing generic completion remains authoritative only for non-upgrade objectives. The baseline introduced v1→v2 mapping; the spending amendment now previews v1/v2→v3 with the same progress mapping, empty spending history and bounded legacy-state annotations. Rebind a mismatched content version first; retain a private exported original because each save advances the immediate previous-snapshot slot. A shared accessor/mutator is used by progression, the inventory page’s existing prerequisite-state controls, single planner and shared planner, preventing the current `unlocked`/`completed` inconsistency. Only explicit upgrade completion suppresses its costs. Legacy `unlocked` upgrades require review, not auto-purchase inference. See [progress contract](contracts/upgrade-progress.md).
 4. **One ledger, two uses.** Extract/reuse bounded pure demand/stock allocation logic from `src/domain/shared-plan.mjs`; do not sum per-goal deficits or duplicate it in UI. `src/domain/upgrade-advice.mjs` selects all-known or focused upgrade roots and projects explanations. All-known advice uses a transient root set and bounded graph traversal, never pushes all records into `profile.goals`. It reuses shared prerequisite deduplication and the direct stock-allocation kernel (consumed sums, retained floors and reserves). Advisory calculation explicitly disables crafting-route expansion; direct required items are the pickup targets. Existing route/batch crafting remains an optional separate focused-planner journey, never simultaneously charged as mandatory ingredient pickups. Execution simulation remains capped at 100 active goals and separately labeled. Advice is not an executable purchase plan or global optimum.
 5. **Unknowns fail closed.** Requirements/usage/progress remain available with unknown mechanics. Exact known-cost Keep/Search numbers are withheld for affected items when consumption, amount or inventory is unresolved, and incompatible scope joins are rejected. Missing prerequisites/tiers and unknown live-build applicability instead label valid arithmetic as partial observed-scope totals/gaps (“Known requirements only — additional costs may exist”). They block ready-now/current/exhaustive claims, not calculations over known direct costs. Show typed uncertainty, included/excluded records and missing-information reasons. Confirming user inventory does not verify a source or mechanic.
 6. **Safe completion and spending.** Status-only correction remains metadata-only. A distinct explicit purchase-recording transaction consumes known direct costs once from saved pre-purchase stock, marks completion and appends an immutable snapshot. Existing CAS persistence is the atomic boundary. Unknown build/prerequisites do not prevent recording a user-confirmed event; no readiness assertion is made. Safe latest-event reversal is separately confirmed, append-only and snapshot-based; no silent refund. See the transaction contract for exact identity, bounds and reserve policy.
@@ -50,22 +50,24 @@ Pre-design and post-design: no constitutional exception requested. The constitut
 
 Planning deliverables are confined to `specs/023-character-upgrade-planner/`: spec, clarifications, plan, research, data model, source inventory, sanitized evidence, contracts, quickstart, tasks, traceability, quality/reviewer checklists, acceptance and analysis.
 
-Future implementation ownership (not changed here):
+Implemented ownership map (baseline paths plus the spending modules listed below):
 
 ```text
 schemas/pack.schema.json                         # dual-version source/upgrade contracts
 src/content/validate.mjs                         # schema-aware boundaries
-src/domain/profile.mjs                          # v1/v2 validation and migration preview
-src/domain/upgrade-progress.mjs                  # proposed shared upgrade state accessor
+src/domain/profile.mjs                          # v1/v2/v3 validation and migration preview
+src/domain/upgrade-progress.mjs                  # shared upgrade state accessor
+src/domain/spend-history.mjs, upgrade-spending.mjs # strict snapshot transactions and safe totals
+src/client/upgrade-spending.mjs                   # shared acknowledged preview/counters
 src/domain/shared-plan.mjs, planner.mjs           # common progress + allocation semantics
-src/domain/upgrade-advice.mjs                    # proposed bounded advisory selector/projection
+src/domain/upgrade-advice.mjs                    # bounded advisory selector/projection
 src/domain/progression.mjs                       # unified mutations and spoiler-safe projection
 src/storage/store.mjs                           # existing CAS/snapshot integration
 src/client/progression.mjs, planner.mjs, profile.mjs
 src/client/catalog.mjs, common.mjs, guided-editor.mjs, studio.mjs
 src/client/inventory-window.mjs                   # missing/zero/unset draft semantics
 src/ui/progression-page.mjs, private-pages.mjs, render.mjs
-content/catalog/upgrade-observations/             # proposed reviewed observed pack, not official starter
+content/catalog/upgrade-observations/             # reviewed observed pack, not official starter
 scripts/catalog.mjs, scripts/build.mjs, scripts/author.mjs # version-aware load/build/author boundary
 src/content/portable.mjs, src/client/editor.mjs   # preserve v2 evidence on round-trip
 src/styles.css

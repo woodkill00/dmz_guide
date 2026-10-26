@@ -2,7 +2,7 @@
 
 **Feature Branch**: `023-character-upgrade-planner`
 **Created**: 2026-10-26
-**Status**: Accepted baseline b935b40b is being extended under the owner’s 2026-10-26 consumption/spending request. Revised definition review precedes runtime changes; new acceptance is pending. PR remains draft and unmerged; parent owns any later merge.
+**Status**: Implemented and independently accepted at16442d9 with explicit evidence limits; see acceptance.md. The final records-only head receives exact CI in the PR ledger. PR remains draft/unmerged; parent owns any later merge.
 **Input**: Use the supplied upgrade photographs to define upgrade costs, track what a player has not completed, and explain what to keep and look for.
 
 ## Clarifications
@@ -25,7 +25,7 @@ As a player, I can read a photographed upgrade's benefit and required items, the
 **Acceptance Scenarios**:
 1. Given an observed definition, when I inspect it, then its exact title, effect, required amounts, evidence limitations and unknown prerequisites are visible; an unobserved lower tier is not invented.
 2. Given an upgrade marked available, when I have not marked it completed, then it remains in “Not marked complete”; availability is not purchase completion.
-3. Given a manual completion change, when I confirm it, then only progress changes; inventory, cash, reserves and focus goals do not change. The guide says “Recording progress only; update inventory after an in-game purchase.” Undo restores progress, not imaginary refunded items.
+3. Given a manual completion change, when I confirm it, then only progress changes; inventory, cash, reserves and focus goals do not change. The guide explicitly says this is a status-only correction with no stock deduction, refund or spending record. Undo restores progress, not imaginary refunded items.
 
 ### User Story 2 - Know what to keep and search for (Priority: P1)
 

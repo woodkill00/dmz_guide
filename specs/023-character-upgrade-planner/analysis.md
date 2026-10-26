@@ -1,6 +1,17 @@
-> **Active scope amendment (2026-10-26):** the owner requested confirmed purchase recording and usage counters after the accepted b935b40b baseline. The records below remain historical acceptance of that baseline; T023–T032 and the new [spending contract](contracts/upgrade-spending.md) require fresh definition/runtime review. Consumption is now owner-confirmed for the eight observed definitions, not independently build-verified.
+# Current implementation analysis — spending amendment
 
-# Final implementation analysis
+The32 approved tasks and23 functional requirements/9 success criteria are implemented and independently accepted within the limits of [acceptance.md](acceptance.md), at publication16442d9/treec02bb8f7. All eight exact-head hosted quality/map jobs passed, including actual native/engine Studio and packaging. The separately dated owner confirmation enables known direct quantities for31 costs with entered stock, without certifying build/prerequisite/capture facts. Status-only corrections remain no-spend; acknowledged purchase recording and safe reversal are explicit guide bookkeeping.
+
+- [Current scoped convergence and coverage](analysis/012-spending-convergence.md)
+- [Independent source/domain/privacy review](analysis/010-spending-source-domain.md)
+- [Independent functional/pixel acceptance](analysis/011-spending-functional-acceptance.md)
+- [Reviewer-owned amendment checklist](checklists/spending-implementation-acceptance.md)
+
+The final records-only publication changes no runtime behavior; exact-head CI belongs in the PR ledger. No merge/deploy by this lane. The following analysis is retained as dated pre-amendment evidence, not a current unknown-consumption or no-purchase restriction.
+
+---
+
+# Historical pre-spending implementation analysis
 
 **Implemented and independently accepted within explicit evidence limits.** All 16 functional requirements and 6 measurable criteria map to the 22 completed tasks. The 10 story acceptance scenarios, 7 grouped architecture decisions and 10 constitution principles were assessed; no remaining buildable convergence task or constitutional exception was found.
 
