@@ -19,7 +19,7 @@ export function sourcePanel(services: UIServices) {
   panel.append(
     el("h3", "Sources and immutable snapshots"),
     note(
-      "Each site has its own layer and category masks. Reference-only sources have no imported data. Collection remains disabled.",
+      "Each site has its own layer and category masks. Owner-enabled local captures can be previewed for review below. Reference-only sources stay unavailable; the viewer never fetches source websites.",
     ),
   );
   for (const policy of Object.values(sourcePolicies)) {
@@ -92,6 +92,28 @@ export function sourcePanel(services: UIServices) {
       "preview-loaded-official",
     ),
   );
+  for (const policy of Object.values(sourcePolicies)) {
+    if (policy.id === "official" || !services.legacySnapshot(policy.id))
+      continue;
+    panel.append(
+      button(
+        `Preview loaded ${policy.name} locations`,
+        async () => {
+          try {
+            await preview(
+              JSON.stringify(
+                adaptOfficial(services.legacySnapshot(policy.id), policy.id),
+              ),
+              policy.id,
+            );
+          } catch (error) {
+            services.error(error);
+          }
+        },
+        `preview-loaded-${policy.id}`,
+      ),
+    );
+  }
   async function preview(
     json: string | ((signal: AbortSignal) => Promise<string>),
     sourceId: string,

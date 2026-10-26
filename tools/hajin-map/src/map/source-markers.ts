@@ -258,7 +258,12 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       const response = await fetch(source.snapshot, { signal: request.signal });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('Expected a JSON snapshot.');
-      const data = parseSnapshot(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await boundedBytes(response, 2 * 1024 * 1024))), source);
+      const bytes = await boundedBytes(response, 2 * 1024 * 1024);
+      if (source.snapshotDigest) {
+        const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes as Uint8Array<ArrayBuffer>)), b => b.toString(16).padStart(2, '0')).join('');
+        if (digest !== source.snapshotDigest) throw new Error('Local snapshot changed; review its coordinate registration again.');
+      }
+      const data = parseSnapshot(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)), source);
       if (disposed || controller !== request) return;
       snapshot = data; restoringSnapshot = true; try { addRecords(); } finally { restoringSnapshot = false; }
     } catch {
@@ -278,7 +283,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     } finally { clearTimeout(timeout); }
   }
   load();
-  return { reload: load, setAll,
+  return { id: source.id, reload: load, setAll,
     getSnapshot: () => snapshot,
     getFilters: () => ({master, enabled: [...enabled], categories: snapshot?.categories.map(c => c.id) ?? []}),
     setFilters(value: {master: boolean; enabled: string[]; query?: string; persistLegacy?: boolean}) { master = value.master; enabled.clear(); const valid = new Set(snapshot ? available().map(category => category.id) : []); value.enabled.forEach(id => { if (valid.has(id)) enabled.add(id); }); query = value.query ?? query; update(value.persistLegacy ?? false); },

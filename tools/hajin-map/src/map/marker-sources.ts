@@ -10,6 +10,7 @@ export interface MarkerSource {
   labelCategories: Record<string, 'major' | 'minor'>;
   recordLink: (id: string) => string;
   policy?: Readonly<SourcePolicy>;
+  snapshotDigest?: string;
 }
 
 // Reference-only providers are displayed without creating acquisition requests.

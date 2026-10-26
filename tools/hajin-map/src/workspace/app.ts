@@ -322,7 +322,8 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
       validateWorkspace(old);
       return old;
     },
-    legacySnapshot: () => legacy[0]?.getSnapshot(),
+    legacySnapshot: (sourceId = "official") =>
+      legacy.find((source) => source.id === sourceId)?.getSnapshot(),
     focus: (x, y) => {
       viewer.map.setView([y, x], Math.max(viewer.map.getZoom(), 1), {
         animate: false,
@@ -587,6 +588,38 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     if (!dialog.open) dialog.showModal();
   };
   viewer.map.on("click", mapPick);
+  const rightClickPoint = (event: L.LeafletMouseEvent) => {
+    if (!hydrated || disposed || interactionLocks || processing) return;
+    L.DomEvent.preventDefault(event.originalEvent);
+    if (picking) {
+      mapPick(event);
+      return;
+    }
+    if (dirty || detailActive || unsaved) {
+      if (!dialog.open) dialog.showModal();
+      error(
+        "Save or cancel your current draft/preview before adding another point.",
+      );
+      return;
+    }
+    const x = Math.round(event.latlng.lng * 100) / 100,
+      y = Math.round(event.latlng.lat * 100) / 100;
+    if (x < 0 || y < 0 || x > 4096 || y > 4096) {
+      error("Choose a point inside the canonical map.");
+      return;
+    }
+    active = "points";
+    editing = undefined;
+    draftPosition = { x, y };
+    renderPanel();
+    dirty = true;
+    if (!dialog.open) dialog.showModal();
+    body.querySelector<HTMLInputElement>("#point-title")?.focus();
+    notice(
+      "New point location selected. Complete the details and save, or cancel.",
+    );
+  };
+  viewer.map.on("contextmenu", rightClickPoint);
   function renderIcons() {
     body.append(
       el("h3", "My icon library"),
@@ -1129,8 +1162,15 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
             `Reviewed · ${e.freshness} · ${e.refs.length} source records · upstream lineages ${e.independentLineages ?? "unknown"}`,
           );
     const latest = placedRecords(state, selectedSnapshots);
-    const officialIcons = new Map(
-      legacy[0]?.getSnapshot()?.categories.map((c) => [c.id, c.icon]) ?? [],
+    const sourceIcons = new Map(
+      legacy.flatMap(
+        (source) =>
+          source
+            .getSnapshot()
+            ?.categories.map(
+              (c) => [`${source.id}:${c.id}`, c.icon] as const,
+            ) ?? [],
+      ),
     );
     const entries = new Map(
       state.snapshots.map((e) => [
@@ -1174,7 +1214,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
           "#9bb6dc",
           `${sourcePolicies[p.sourceId].name} · ${p.category} · ${p.activity} · source claim`,
           undefined,
-          p.sourceId === "official" ? officialIcons.get(category) : undefined,
+          sourceIcons.get(`${p.sourceId}:${category}`),
           p.sourceId === "official"
             ? markerSources[0].labelCategories[category]
             : undefined,
@@ -1188,19 +1228,21 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
       const entry = state.snapshots.find((e) => e.key === key);
       if (entry) activeEntries.set(source, entry);
     }
-    const legacySnapshot = legacy[0]?.getSnapshot(),
-      legacyFilters = legacy[0]?.getFilters();
-    const legacyTotal = !activeEntries.has("official")
-      ? (legacySnapshot?.records.length ?? 0)
-      : 0;
-    const legacyShown =
-      legacyTotal && legacyFilters?.master
-        ? legacySnapshot!.records.filter(
+    let legacyTotal = 0,
+      legacyShown = 0;
+    for (const source of legacy) {
+      if (activeEntries.has(source.id)) continue;
+      const snapshot = source.getSnapshot(),
+        filters = source.getFilters();
+      legacyTotal += snapshot?.records.length ?? 0;
+      if (filters.master)
+        legacyShown +=
+          snapshot?.records.filter(
             (r) =>
-              legacyFilters.enabled.includes(r.category) &&
+              filters.enabled.includes(r.category) &&
               `${r.name} ${r.category}`.toLocaleLowerCase().includes(q),
-          ).length
-        : 0;
+          ).length ?? 0;
+    }
     const totalRaw = [...activeEntries.values()].reduce(
         (n, e) => n + e.snapshot.records.length,
         legacyTotal,
@@ -1241,6 +1283,9 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
       count.textContent = `${state.annotations.length} private points · ${state.entities.filter((e) => e.acceptance === "accepted").length} reviewed entities`;
   }
   const keySlots = new Map<string, HTMLElement>();
+  const sourceOverview = el("fieldset");
+  sourceOverview.id = "key-website-layers";
+  document.querySelector("#map-key-content")!.prepend(sourceOverview);
   const extras = el("section");
   extras.id = "workspace-key-layers";
   document.querySelector("#map-key-content")!.append(extras);
@@ -1250,7 +1295,8 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
   function renderKey() {
     const focused =
       document.activeElement instanceof HTMLElement &&
-      (extras.contains(document.activeElement) ||
+      (sourceOverview.contains(document.activeElement) ||
+        extras.contains(document.activeElement) ||
         dialogExtras.contains(document.activeElement))
         ? {
             id: document.activeElement.id,
@@ -1264,8 +1310,34 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
                 : null,
           }
         : undefined;
+    sourceOverview.replaceChildren(el("legend", "Website layers"));
+    for (const source of legacy) {
+      const snapshot = source.getSnapshot();
+      if (!snapshot) continue;
+      const master = input("", "checkbox");
+      master.id = `key-loaded-source-master-${source.id}`;
+      master.checked = visibility().sourceEnabled[source.id] !== false;
+      master.indeterminate =
+        master.checked &&
+        sourceSelection(
+          visibility(),
+          source.id,
+          snapshot.categories.map((c) => c.id),
+        ) === "mixed";
+      master.addEventListener("change", () => {
+        void changeVisibility("Source visibility saved", (value) => {
+          value.sourceEnabled[source.id] = master.checked;
+        }).catch(error);
+      });
+      sourceOverview.append(
+        field(
+          `${sourcePolicies[source.id]?.name ?? source.id} · ${snapshot.records.length} captured locations`,
+          master,
+        ),
+      );
+    }
     for (const policy of Object.values(sourcePolicies)) {
-      if (policy.id === "official") continue;
+      if (legacy.some((source) => source.id === policy.id)) continue;
       for (const parent of [
         document.querySelector("#source-controls")!,
         document.querySelector("#map-key-content")!,
@@ -1560,7 +1632,11 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
   const sourceEvent = (event: Event) => {
     if (applyingFilters || !store) return;
     const detail = (event as CustomEvent).detail;
-    if (detail.sourceId !== "official" || detail.origin !== "user") return;
+    if (
+      !legacy.some((source) => source.id === detail.sourceId) ||
+      detail.origin !== "user"
+    )
+      return;
     if (retainedFailure) {
       applyLegacyFilters();
       return;
@@ -1573,8 +1649,8 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
         ]),
       );
     const value = structuredClone(visibility());
-    value.sourceEnabled.official = master;
-    value.categoryMask.official = mask;
+    value.sourceEnabled[detail.sourceId] = master;
+    value.categoryMask[detail.sourceId] = mask;
     pendingVisibility = value;
     clearTimeout(filterTimer);
     clearTimeout(searchTimer);
@@ -1621,11 +1697,10 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     try {
       for (const source of legacy) {
         const filters = source.getFilters();
+        const id = source.id;
         const selected =
-          selectedSnapshots.get("official") ??
-          state.snapshots
-            .filter((e) => e.snapshot.sourceId === "official")
-            .at(-1)?.key;
+          selectedSnapshots.get(id) ??
+          state.snapshots.filter((e) => e.snapshot.sourceId === id).at(-1)?.key;
         const workspaceSource = state.snapshots.find((e) => e.key === selected);
         const replaced = !!workspaceSource && !workspaceSource.legacy;
         source.setLegacyPersistence(
@@ -1633,18 +1708,20 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
             !state.migrations.includes("source-masks-v1") &&
             !replaced,
         );
-        document.querySelector<HTMLElement>(
-          "[data-key-source=official]",
-        )!.hidden = replaced;
-        document.querySelector<HTMLElement>(
-          "#source-controls > .source-slot",
-        )!.hidden = replaced;
+        const keySlot = document.querySelector<HTMLElement>(
+          `[data-key-source="${id}"]`,
+        );
+        const layerSlot = document.querySelector<HTMLElement>(
+          `[data-source-slot="${id}"]`,
+        );
+        if (keySlot) keySlot.hidden = replaced;
+        if (layerSlot) layerSlot.hidden = replaced;
         source.setFilters({
           master:
             (!workspaceSource || workspaceSource.legacy) &&
-            visibility().sourceEnabled.official !== false,
+            visibility().sourceEnabled[id] !== false,
           enabled: filters.categories.filter(
-            (id) => visibility().categoryMask.official?.[id] !== false,
+            (id) => visibility().categoryMask[source.id]?.[id] !== false,
           ),
           query: visibility().query,
           persistLegacy,
@@ -1656,9 +1733,9 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
   }
   const bulk = (show: boolean) => {
     clearTimeout(filterTimer);
-    const categories: Record<string, string[]> = {
-      official: legacy[0]?.getFilters().categories ?? [],
-    };
+    const categories: Record<string, string[]> = Object.fromEntries(
+      legacy.map((source) => [source.id, source.getFilters().categories]),
+    );
     for (const entry of state.snapshots)
       categories[entry.snapshot.sourceId] = entry.snapshot.categories.map(
         (c) => c.id,
@@ -1731,6 +1808,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
       preparer.destroy();
       store?.close();
       viewer.map.off("click", mapPick);
+      viewer.map.off("contextmenu", rightClickPoint);
       viewer.map.off("zoomend moveend", zoom);
       document.removeEventListener("workspace-error", errorListener);
       document.removeEventListener("map-source-filters", sourceEvent);
@@ -1747,6 +1825,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
       dialog.remove();
       openButton.remove();
       extras.remove();
+      sourceOverview.remove();
       dialogExtras.remove();
       keySlots.forEach((slot) => slot.remove());
       toast.remove();

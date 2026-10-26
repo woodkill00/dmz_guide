@@ -15,6 +15,51 @@ export async function runAuthoringBrowser(parent, base) {
   await page.goto(base);
   await page.locator("#workspace-open:enabled").waitFor();
   await page.locator("#zoom-in:enabled").waitFor();
+  const bounds = await page
+    .locator(".leaflet-image-layer")
+    .first()
+    .boundingBox();
+  assert.ok(bounds);
+  const rightClick = () =>
+    page.mouse.click(
+      bounds.x + bounds.width / 2,
+      bounds.y + bounds.height / 2,
+      { button: "right" },
+    );
+  await rightClick();
+  assert.equal(
+    await page.locator("#workspace-dialog").evaluate((d) => d.open),
+    true,
+  );
+  assert.ok(
+    Math.abs(Number(await page.locator("#point-x").inputValue()) - 2048) < 3,
+  );
+  assert.ok(
+    Math.abs(Number(await page.locator("#point-y").inputValue()) - 2048) < 3,
+  );
+  assert.equal(await page.locator("#point-kind").inputValue(), "POI");
+  assert.equal((await read())?.annotations.length ?? 0, 0);
+  await page
+    .locator("#point-title")
+    .fill("SYNTHETIC retained right-click draft");
+  await page.locator("#close-workspace").click();
+  await rightClick();
+  assert.equal(
+    await page.locator("#point-title").inputValue(),
+    "SYNTHETIC retained right-click draft",
+  );
+  await page.locator("#pick-point-position").click();
+  await rightClick();
+  assert.equal(
+    await page.locator("#point-title").inputValue(),
+    "SYNTHETIC retained right-click draft",
+  );
+  await page.locator("#cancel-point").click();
+  assert.equal(await page.locator("#point-title").inputValue(), "");
+  checks.push(
+    "right-click opens an unsaved POI at canonical coordinates and preserves existing drafts/pick mode",
+  );
+  await page.locator("#close-workspace").click();
   await page.locator("#workspace-open").click();
   const title = "SYNTHETIC owned point <img onerror=alert(1)>";
   await page.locator("#point-title").fill(title);

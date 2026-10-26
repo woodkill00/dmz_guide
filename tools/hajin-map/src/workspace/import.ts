@@ -108,11 +108,14 @@ export function consumePreview(
 }
 
 /** Compatibility adapter for the existing owner-local schema019. Does not fetch anything. */
-export function adaptOfficial(raw: unknown): SourceSnapshot {
+export function adaptOfficial(
+  raw: unknown,
+  sourceId = "official",
+): SourceSnapshot {
   const v = raw as any;
   if (
     v?.schemaVersion !== 1 ||
-    v.sourcePage !== sourcePolicies.official.page ||
+    v.sourcePage !== sourcePolicies[sourceId]?.page ||
     !Array.isArray(v.records) ||
     !Array.isArray(v.categories)
   )
@@ -127,8 +130,8 @@ export function adaptOfficial(raw: unknown): SourceSnapshot {
   return parseSnapshot(
     JSON.stringify({
       schemaVersion: 1,
-      sourceId: "official",
-      snapshotId: `official-${String(date).replace(/[^\w-]/g, "-")}`,
+      sourceId,
+      snapshotId: `${sourceId}-${String(date).replace(/[^\w-]/g, "-")}`,
       capturedAt: date,
       sourceRevision: String(date),
       frame: {
@@ -167,18 +170,25 @@ export function adaptOfficial(raw: unknown): SourceSnapshot {
           categoryId: r.category,
           title: r.name,
           rawGeometry: { kind: "point", x: r.x * 4096, y: r.y * 4096 },
-          applicability,
+          applicability: {
+            ...applicability,
+            floor:
+              typeof r.floor === "number" && Number.isFinite(r.floor)
+                ? String(r.floor)
+                : null,
+          },
           activityClaim: { state: "unknown", observedAt: null },
-          upstreamRefs: ["activision-official-guide"],
+          upstreamRefs:
+            sourceId === "official" ? ["activision-official-guide"] : [],
           evidence: [
             {
-              note: "Imported owner-local official guide claim; not independently verified.",
-              url: sourcePolicies.official.page,
+              note: `Imported owner-local ${sourcePolicies[sourceId].name} claim; not independently verified.${typeof r.notes === "string" ? " " + r.notes.slice(0, 3500) : ""}`,
+              url: sourcePolicies[sourceId].page,
             },
           ],
         };
       }),
     }),
-    "official",
+    sourceId,
   );
 }

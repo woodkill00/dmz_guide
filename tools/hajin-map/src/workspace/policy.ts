@@ -54,10 +54,26 @@ const definitions: SourcePolicy[] = [
     localBasemap: false,
   },
 ];
-export const sourcePolicies: Readonly<Record<string, Readonly<SourcePolicy>>> =
+export let sourcePolicies: Readonly<Record<string, Readonly<SourcePolicy>>> =
   Object.freeze(
     Object.fromEntries(definitions.map((p) => [p.id, Object.freeze(p)])),
   );
+/** Called only for the explicitly enabled owner-local capture manifest, never an imported snapshot. */
+export function authorizeLocalCapture(sourceId: string, declaration: string) {
+  const previous = sourcePolicies[sourceId];
+  if (!previous || sourceId === "official" || !declaration.trim())
+    throw new Error("Invalid local source authorization.");
+  sourcePolicies = Object.freeze({
+    ...sourcePolicies,
+    [sourceId]: Object.freeze({
+      ...previous,
+      capability: "authorizedFileImport" as const,
+      revision: "owner-authorized-local-capture-v1",
+      reason:
+        "Owner-authorized local capture. No live fetching or redistribution permission is enabled.",
+    }),
+  });
+}
 export function requireCapability(
   sourceId: string,
   kind: "snapshot" | "basemap",

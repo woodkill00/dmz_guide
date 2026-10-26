@@ -13,4 +13,6 @@ dist/
 # Local development imagery; public redistribution has not been verified.
 public/maps/hajin/v1/background.webp
 public/maps/hajin/official/
+public/maps/hajin/providers/
+public/maps/hajin/providers.local.json
 research/

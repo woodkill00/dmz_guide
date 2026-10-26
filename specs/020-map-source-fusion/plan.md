@@ -52,3 +52,7 @@ Tasks map every FR and SC to concrete implementation/tests. Definition analysis 
 ## Complexity Tracking
 
 Added complexity is limited to local source evidence/curation and transactional storage. No service infrastructure. External provider ingestion is a future gated adapter, not simulated completion. The full workspace is delivered in small checkpoints, with custom points useful before curation is available.
+
+## Owner-authorized capture and right-click follow-up
+
+User confirmed collection permission for the three named providers after initial acceptance. Ship an opt-in, same-origin local-capture loader, not network acquisition. A machine-local environment switch and bounded ignored manifest enable known providers; exact marker/evidence SHA256 digests bind reviewed affine registration to the canonical image. Default installs remain reference-only. Generalize legacy adapters by source ID for key/Layers masks, counts and persistence; expose per-provider staged promotion into immutable review snapshots while retaining unknown lineage. A website master overview sits at the top of Map key. Right-click uses the existing private draft editor and respects pending drafts, explicit picking and transaction locks.

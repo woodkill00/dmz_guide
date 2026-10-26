@@ -1,6 +1,6 @@
 # Tasks: Multi-source map workspace
 
-Input: spec.md, plan.md, research.md, data-model.md, contracts/workspace.md. Implementation, acceptance, analysis/convergence and independent review are complete for all20 tasks. See verification.md for exact evidence. Tests are required by FR-013 and SC-001..006. Paths below are repository-relative. Serialize shared workspace/map integration; no parallel markers are used.
+Input: spec.md, plan.md, research.md, data-model.md, contracts/workspace.md. Implementation, acceptance, analysis/convergence and independent review are complete for the original20 tasks and the two owner-local follow-up tasks. See verification.md for exact evidence. Tests are required by FR-013 and SC-001..006. Paths below are repository-relative. Serialize shared workspace/map integration; no parallel markers are used.
 
 For each task, first write the named failing contract/behavior tests, then implementation, then run them. All validations must implement the quoted contract constraints: "JSON depth16", "IDs128 chars", "titles200", "notes4,000", "point" geometry only, "acceptance=pending/accepted/withdrawn, freshness=current/stale". T001 covers input enums/fields; T002 and T009 enforce the exact20MiB backup-projection admission budget; T008 covers "32 custom icons", "2MiB input/icon", "8MiB sanitized icon total", "2048 per axis", "4,194,304 pixels", "decode5s", "output<=256 per axis PNG". Count maxima are jointly subject to serialized-byte limits, not simultaneous guarantees.
 
@@ -47,3 +47,8 @@ Foundation -> source/reference MVP -> private custom-point MVP -> review/curatio
 
 - [x] T019 Guard asynchronous background resource reads against superseding canonical selections and state replacement in `tools/hajin-map/src/workspace/app.ts`; reproduce delayed-read cancellation in `advanced.browser.ts`. FR-004, FR-010, SC-002 (partial, UI-R13).
 - [x] T020 Complete the 16-case visibility algebra table and global/per-source all/none/mixed tests in `tools/hajin-map/tests/visibility.test.ts`. FR-002, SC-001 (partial, COV-020).
+
+## Phase 7: Local map interaction follow-up
+
+- [x] T021 Open a new private point draft at a right-clicked canonical map position; preserve unfinished edits/previews, existing pick-location mode and save locks. Add actual right-button browser coverage for location, cancel, draft retention and no automatic persistence. FR-008, FR-010, FR-012. User-requested scope addition.
+- [x] T022 Load explicitly enabled owner-authorized, registered local captures for CODMunity/WZStats/CODCentral with per-site icons/categories. Generalize legacy source visibility, counts and persistence to every loaded source; validate bounded local manifests and test independent selection/reload with synthetic captures. Keep captures, icons, permissions and raw registration evidence ignored. FR-001–005, FR-010, FR-013. User confirmed collection permission in this session; no redistribution or live fetching authorization inferred.

@@ -15,7 +15,7 @@ export interface UIServices {
   closeDetail: () => void;
   readResource: (id: string) => Promise<Blob | undefined>;
   previousState: () => Promise<Workspace | undefined>;
-  legacySnapshot: () => unknown;
+  legacySnapshot: (sourceId?: string) => unknown;
   focus: (x: number, y: number) => void;
   process: <T>(work: (signal: AbortSignal) => Promise<T>) => Promise<T>;
 }
