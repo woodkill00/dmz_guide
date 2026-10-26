@@ -9,8 +9,8 @@ Owner: integration writer for all feature023 implementation, tests and documenta
 - QA and domain reviewers: read-only checkout; their probes stay outside checkout.
 
 ## Active queue
-1. Freeze repaired source and run independent domain/privacy reanalysis; all files now handed back to integration writer.
-2. Execute registered real browser/engine/Studio/capacity journeys in authorized hosted CI and inspect compact synthetic screenshots. Local sandboxed browser launch remains infrastructure-blocked.
+1. Publish independently reviewed test-only repair for the first hosted measured-scale blank-invalid fixture failure; production source remains the accepted tree's source.
+2. Monitor the new exact-head hosted run through native/engine/Studio/capacity journeys, then inspect compact synthetic screenshots and complete convergence.
 
 Passed: remote/main/tree reconciliation, explicit feature context, reviewed definition, sanitized8/31/22 evidence, dual-version contract and progress tests, direct-advice vectors, full first-checkpoint runtime536passed/0failed/1platformskip, build214routes and structural gates. Corrected-head focused47tests pass. First-checkpoint independent findings are repaired with dedicated regressions; reanalysis pending.
 

@@ -588,7 +588,7 @@ async function pagedDrafts({ browser, base, evidence }) {
     await next();
     assert.equal(await field(75).inputValue(), "7");
     assert.equal(await field(75, "reserves").inputValue(), "5");
-    await field(75).fill("");
+    await field(75).fill("-1");
     await next();
     await page.selectOption("#pack-select", "official:mw4-dmz-starter");
     await page.click("#draft-stay");
@@ -602,7 +602,7 @@ async function pagedDrafts({ browser, base, evidence }) {
     );
     await range("Items 101–101 of 101 matches. Page 3 of 3.");
     await page.click("#inventory-previous");
-    assert.equal(await field(75).inputValue(), "");
+    assert.equal(await field(75).inputValue(), "-1");
     await next();
     await page.selectOption("#pack-select", "official:mw4-dmz-starter");
     await page.click("#draft-save");
@@ -610,7 +610,7 @@ async function pagedDrafts({ browser, base, evidence }) {
       '[data-field="inventory"][data-id="demo:scale-item-75"]',
     );
     assert.equal(await page.locator("#pack-select").inputValue(), training);
-    assert.equal(await field(75).inputValue(), "");
+    assert.equal(await field(75).inputValue(), "-1");
     failCatalog = false;
     await page.selectOption("#pack-select", "official:mw4-dmz-starter");
     await page.click("#draft-discard");
