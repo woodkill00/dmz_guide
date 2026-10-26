@@ -17,7 +17,12 @@ try {
     const browser = await engine.launch({ headless: true });
     const health = monitorBrowser(browser);
     try {
-      await runUpgradeTests({ browser, base, captureScreenshots: true });
+      await runUpgradeTests({
+        browser,
+        base,
+        // Preserve the repository's CSP-safe WebKit functional/layout policy.
+        captureScreenshots: name !== "webkit",
+      });
       const { runMetadataFloorTests } = await import("./metadata-floor.mjs");
       await runMetadataFloorTests({
         browser,

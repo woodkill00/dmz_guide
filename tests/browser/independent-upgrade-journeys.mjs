@@ -1000,7 +1000,10 @@ export async function runIndependentUpgradeJourneys({
         "Keyboard focus has visible styling",
       );
       evidence.scenarios.push(
-        "320/390px, dark/light, actual200% text and reduced motion: controls in viewport and no overflow; focus styling; synthetic/fresh screenshots captured for independent pixel review",
+        "320/390px, dark/light, actual200% text and reduced motion: controls in viewport and no overflow; focus styling; " +
+          (captureScreenshots
+            ? "synthetic/fresh screenshots captured for independent pixel review"
+            : "functional/computed-layout evidence only; WebKit pixels not captured under pinned-tool/CSP policy"),
       );
     } finally {
       await context.close();
