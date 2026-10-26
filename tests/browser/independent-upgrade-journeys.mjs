@@ -227,8 +227,98 @@ async function exportCurrent(page) {
   return JSON.parse(await readFile(await download.path(), "utf8"));
 }
 async function capture(page, path) {
-  await page.screenshot({ path, fullPage: true });
-  return path;
+  const dimensions = await page.evaluate(() => ({
+    document: {
+      width: Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth,
+      ),
+      height: Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight,
+        document.documentElement.clientHeight,
+      ),
+    },
+    viewport: { width: innerWidth, height: innerHeight },
+    scroll: { x: scrollX, y: scrollY },
+    rootFontSize: getComputedStyle(document.documentElement).fontSize,
+    devicePixelRatio,
+  }));
+  // Firefox rejects a single image dimension above32767. Clip the *same full
+  // document* in bounded CSS-pixel tiles without changing viewport, text or DOM.
+  const tileHeight = 8192,
+    overlap = 256,
+    tiles = [],
+    paths = [];
+  assert(dimensions.document.width <= 8192, "Screenshot width remains bounded");
+  let y = 0;
+  for (let index = 0; y < dimensions.document.height; index++) {
+    const height = Math.min(tileHeight, dimensions.document.height - y);
+    const imagePath =
+      dimensions.document.height <= tileHeight
+        ? path
+        : path.replace(
+            /\.png$/,
+            `-tile${String(index + 1).padStart(2, "0")}.png`,
+          );
+    const clip = { x: 0, y, width: dimensions.document.width, height };
+    const scrollBefore = await page.evaluate(() => ({
+      x: scrollX,
+      y: scrollY,
+    }));
+    await page.screenshot({
+      path: imagePath,
+      fullPage: true,
+      clip,
+      scale: "css",
+    });
+    const scrollAfter = await page.evaluate(() => ({ x: scrollX, y: scrollY }));
+    tiles.push({ path: imagePath, clip, scrollBefore, scrollAfter });
+    paths.push(imagePath);
+    if (y + height === dimensions.document.height) break;
+    y += height - overlap;
+  }
+  assert.equal(tiles[0].clip.y, 0);
+  for (let i = 1; i < tiles.length; i++)
+    assert(
+      tiles[i].clip.y <= tiles[i - 1].clip.y + tiles[i - 1].clip.height,
+      "No vertical evidence gap",
+    );
+  assert.equal(
+    tiles.at(-1).clip.y + tiles.at(-1).clip.height,
+    dimensions.document.height,
+  );
+  const after = await page.evaluate(() => ({
+    width: innerWidth,
+    height: innerHeight,
+    rootFontSize: getComputedStyle(document.documentElement).fontSize,
+  }));
+  assert.deepEqual(
+    after,
+    { ...dimensions.viewport, rootFontSize: dimensions.rootFontSize },
+    "Capture never changes viewport or text zoom",
+  );
+  await writeFile(
+    path.replace(/\.png$/, "-capture.json"),
+    JSON.stringify(
+      {
+        method: "full-document-clipped-css-pixel-tiles",
+        ...dimensions,
+        tileHeight,
+        overlap,
+        fullVerticalCoverage: true,
+        tiles,
+      },
+      null,
+      2,
+    ),
+  );
+  return paths;
 }
 
 export async function runIndependentUpgradeJourneys({
@@ -864,10 +954,10 @@ export async function runIndependentUpgradeJourneys({
                   (theme === "light" && zoom === 200))
               )
                 evidence.screenshots.push(
-                  await capture(
+                  ...(await capture(
                     page,
                     `test-results/upgrade023-independent/${prefix}-${route}-${width}-${theme}-${zoom}.png`,
-                  ),
+                  )),
                 );
             }
           }

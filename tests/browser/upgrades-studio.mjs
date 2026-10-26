@@ -16,7 +16,13 @@ export async function runUpgradeStudioRoundtrip({
     return response.json();
   };
   const open = async (key) => {
+    const changes = page.waitForResponse(
+      (r) => r.url().endsWith("/api/changes") && r.request().method() === "GET",
+    );
     await page.goto(author.url);
+    const response = await changes;
+    assert.equal(response.status(), 200);
+    assert.equal(await response.finished(), null);
     await page.waitForSelector('[data-path="contentVersion"]');
     await page.selectOption("#pack-select", key);
     await page.waitForSelector('[data-path="contentVersion"]');
@@ -42,9 +48,17 @@ export async function runUpgradeStudioRoundtrip({
     const pending = page.waitForResponse(
       (r) => r.url().endsWith("/api/save") && r.request().method() === "POST",
     );
+    const changes = page.waitForResponse(
+      (r) => r.url().endsWith("/api/changes") && r.request().method() === "GET",
+    );
     await page.click("#save-repository");
     const response = await pending;
     assert.equal(response.status(), 200, await response.text());
+    // Studio refreshes its change summary after controls re-enable. Await the
+    // real post-save request before restarting its server; health stays strict.
+    const summary = await changes;
+    assert.equal(summary.status(), 200);
+    assert.equal(await summary.finished(), null);
     await page.waitForFunction(
       () => !document.querySelector("#save-repository").disabled,
     );
@@ -85,6 +99,7 @@ export async function runUpgradeStudioRoundtrip({
         (await snapshot()).entries.find((e) => e.key === key).pack,
         expected,
       );
+      await page.goto("about:blank");
       await author.close();
       author = await createAuthorServer({ root: repository, port: 0 });
       await open(key);
