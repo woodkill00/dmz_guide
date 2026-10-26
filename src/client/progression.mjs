@@ -1,4 +1,5 @@
 import { init, state, $, esc, error, persist, download } from "./common.mjs";
+import { closeDialog } from "./dialog-focus.mjs";
 import {
   progressRows,
   progressSources,
@@ -148,14 +149,27 @@ function focusUpgrade(target) {
   ).focus();
 }
 function dismissUpgrade({ focus = true } = {}) {
-  const target = upgradeTarget;
+  const target = upgradeTarget,
+    revision = state.revision;
   upgradeTarget = null;
   upgradeCandidate = null;
   const dialog = $("#upgrade-progress-confirm");
-  if (dialog.open) dialog.close();
+  closeDialog(
+    dialog,
+    focus
+      ? () => {
+          if (
+            target?.navigation === navigation &&
+            revision === state.revision &&
+            !state.loading &&
+            !upgradeTarget
+          )
+            focusUpgrade(target);
+        }
+      : undefined,
+  );
   $("#upgrade-progress-export").hidden = true;
   $("#upgrade-progress-result").textContent = "";
-  if (focus) focusUpgrade(target);
 }
 function requestUpgrade(control) {
   const id = control.dataset.upgradeId,
@@ -229,9 +243,8 @@ $("#upgrade-progress-apply").addEventListener("click", async () => {
     const saved = await save(upgradeCandidate);
     if (target !== upgradeTarget || target.navigation !== navigation) return;
     if (saved) {
-      dismissUpgrade({ focus: false });
+      dismissUpgrade();
       render();
-      focusUpgrade(target);
     } else {
       $("#upgrade-progress-result").textContent =
         `Not saved. ${$("#error").textContent} Your committed progress has not changed. Export this unsaved candidate before cancelling or leaving; resolve the conflict in Settings before trying a new revision.`;

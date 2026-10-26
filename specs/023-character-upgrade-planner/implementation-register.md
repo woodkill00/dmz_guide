@@ -9,8 +9,8 @@ Owner: integration writer for all feature023 implementation, tests and documenta
 - QA and domain reviewers: read-only checkout; their probes stay outside checkout.
 
 ## Active queue
-1. Publish reviewed test-only bounded screenshot and Studio post-save sequencing repairs; native feature journeys already pass, but cross-engine/full-health gates remain open. Production source remains unchanged from accepted review.
-2. Monitor the new exact-head hosted run through native/engine/Studio/capacity journeys, then inspect compact synthetic screenshots and complete convergence.
+1. Review and publish the narrow WebKit-confirmed manual-progress focus repair. Integration writer owns the shared dialog helper, both progress surfaces and regression tests; independent reviewers remain read-only.
+2. Run fresh exact-head native/engine/Studio journeys, inspect compact synthetic artifacts, then make one final records-only convergence freeze (CI evidence for that freeze goes in the PR ledger, not another recursive proof commit).
 
 Passed: remote/main/tree reconciliation, explicit feature context, reviewed definition, sanitized8/31/22 evidence, dual-version contract and progress tests, direct-advice vectors, full first-checkpoint runtime536passed/0failed/1platformskip, build214routes and structural gates. Corrected-head focused47tests pass. First-checkpoint independent findings are repaired with dedicated regressions; reanalysis pending.
 
@@ -19,3 +19,5 @@ Discovery: deliberate temporary failing browser module imported by both native a
 Missing: actual browser/Studio/engine execution and synthetic pixel inspection, independent final acceptance. Corrected checkpoint 2 full tests passed544/0failed/1platformskip; checkpoint 3 full tests passed548/0failed/1platformskip; final source rerun passed552/0failed/1platformskip. Real consumption/capture/build/prerequisite completeness remain evidence gates; exact affected advice and readiness remain withheld.
 
 Source ownership: all paths returned to sole integration writer. No feature020, tools/hajin-map, root dependency or constitution changes. Compact artifact upload added to existing quality workflow with the same pinned action and no permission/credential change.
+
+Latest hosted gate: d009829 native Ubuntu/Windows full browser and Studio health pass with independently inspected synthetic pixels. Firefox completed the engine retry; WebKit keyboard Undo lost initiating focus. Original failing assertion remains required. New production focus delta is not yet browser-verified.

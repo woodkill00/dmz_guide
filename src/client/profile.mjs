@@ -5,6 +5,7 @@ import {
   upgradeAvailabilityStates,
 } from "../domain/upgrade-progress.mjs";
 import { setCompletion } from "../domain/progression.mjs";
+import { closeDialog } from "./dialog-focus.mjs";
 import {
   INVENTORY_PAGE_SIZE,
   createInventoryDraft,
@@ -373,6 +374,32 @@ function upgradeControls(record) {
     )}<p>Recording progress only; update inventory after an in-game purchase.${progress.reviewRequired ? " Legacy unlocked requires review." : ""}</p></fieldset>`;
 }
 let pendingUpgrade = null;
+function dismissUpgradeProgress({ focus = true } = {}) {
+  const pending = pendingUpgrade,
+    revision = state.revision;
+  pendingUpgrade = null;
+  const dialog = $("#upgrade-progress-confirm");
+  if (!dialog) return;
+  closeDialog(
+    dialog,
+    focus
+      ? () => {
+          if (
+            pending &&
+            pending.pack === state.pack &&
+            revision === state.revision &&
+            !state.loading &&
+            !pendingUpgrade
+          )
+            document
+              .querySelector(
+                `[data-upgrade-id="${CSS.escape(pending.id)}"][data-upgrade-field="${pending.field}"]`,
+              )
+              ?.focus();
+        }
+      : undefined,
+  );
+}
 function stageUpgradeProgress(control) {
   const id = control.dataset.upgradeId,
     field = control.dataset.upgradeField;
@@ -395,16 +422,14 @@ function stageUpgradeProgress(control) {
     document.body.append(dialog);
     $("#upgrade-progress-cancel").onclick = () => {
       if (state.saving) return;
-      pendingUpgrade?.control.focus();
-      pendingUpgrade = null;
-      dialog.close();
+      dismissUpgradeProgress();
     };
     dialog.oncancel = (event) => {
+      event.preventDefault();
       if (state.saving) {
-        event.preventDefault();
         return;
       }
-      pendingUpgrade = null;
+      dismissUpgradeProgress();
     };
     $("#upgrade-progress-apply").onclick = async () => {
       const pending = pendingUpgrade;
@@ -414,22 +439,15 @@ function stageUpgradeProgress(control) {
         pending.revision !== state.revision ||
         hasUnsavedDraft()
       ) {
-        pendingUpgrade = null;
-        dialog.close();
+        dismissUpgradeProgress({ focus: false });
         error(new Error("Progress confirmation expired; review again."));
         return;
       }
       $("#upgrade-progress-apply").disabled = true;
       $("#upgrade-progress-cancel").disabled = true;
       if (await persist(pending.candidate)) {
-        pendingUpgrade = null;
-        dialog.close();
+        dismissUpgradeProgress();
         render();
-        document
-          .querySelector(
-            `[data-upgrade-id="${CSS.escape(pending.id)}"][data-upgrade-field="${pending.field}"]`,
-          )
-          ?.focus();
       } else {
         $("#upgrade-progress-cancel").disabled = false;
         $("#upgrade-progress-result").textContent =
@@ -459,8 +477,7 @@ function stageUpgradeProgress(control) {
   $("#upgrade-progress-cancel").focus();
 }
 document.addEventListener("pack-changing", () => {
-  pendingUpgrade = null;
-  $("#upgrade-progress-confirm")?.close();
+  dismissUpgradeProgress({ focus: false });
 });
 init(render).catch(error);
 

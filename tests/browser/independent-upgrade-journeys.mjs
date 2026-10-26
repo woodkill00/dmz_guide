@@ -211,12 +211,28 @@ async function setProgress(
     "One explicit confirmation commits once",
   );
   assert.equal(after.upgradeProgress[UPGRADE][field], value);
+  const focusState = await page.locator(upgrade(field)).evaluate((n) => ({
+    focused: n === document.activeElement,
+    selected: {
+      tag: n.tagName,
+      id: n.id,
+      dataset: { ...n.dataset },
+      disabled: n.disabled,
+      connected: n.isConnected,
+    },
+    active: document.activeElement
+      ? {
+          tag: document.activeElement.tagName,
+          id: document.activeElement.id,
+          dataset: { ...document.activeElement.dataset },
+        }
+      : null,
+    dialogOpen: document.querySelector("#upgrade-progress-confirm")?.open,
+  }));
   assert.equal(
-    await page
-      .locator(upgrade(field))
-      .evaluate((n) => n === document.activeElement),
+    focusState.focused,
     true,
-    "Progress save restores initiating control focus",
+    `Progress save restores initiating control focus: ${JSON.stringify(focusState)}`,
   );
   return after;
 }
