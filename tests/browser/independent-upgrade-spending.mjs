@@ -18,6 +18,7 @@ const MIXED = "qa023:purchase-mixed",
 const HIDDEN = "qa023:purchase-hidden-cost",
   SECRET = "qa023:secret-item";
 const ALIAS = "qa023:purchase-alias";
+const openPurchaseDiagnostics = [];
 const pathFor = (base, page) =>
   `${base}/${page}/?pack=${encodeURIComponent(PACK)}`;
 const spend = (id) => `[data-upgrade-spend="${id}"]`;
@@ -120,19 +121,122 @@ async function focusIs(page, selector) {
     `Spending modal returns focus: ${JSON.stringify(result)}`,
   );
 }
+async function installPurchaseTrace(page) {
+  // Install before navigation, not between a preceding close and focus→Enter.
+  // Bounded passive observation persists until page/context disposal.
+  await page.addInitScript(() => {
+    const tokens = new WeakMap();
+    let token = 0;
+    const describe = (node) => {
+      if (!node) return null;
+      if (!tokens.has(node)) tokens.set(node, ++token);
+      return {
+        token: tokens.get(node),
+        tag: node.tagName,
+        id: node.id,
+        dataset: { ...node.dataset },
+        connected: node.isConnected,
+        disabled: node.disabled,
+      };
+    };
+    const trace = { started: performance.now(), records: [] };
+    const log = (type, event) => {
+      trace.records.push({
+        at: performance.now() - trace.started,
+        type,
+        key: event?.key,
+        target: describe(event?.target),
+        active: describe(document.activeElement),
+        dialogs: [...document.querySelectorAll("dialog")].map((n) => ({
+          id: n.id,
+          open: n.open,
+        })),
+      });
+      if (trace.records.length > 400) trace.records.shift();
+    };
+    const listener = (event) => log(event.type, event);
+    const types = [
+      "focus",
+      "blur",
+      "keydown",
+      "keyup",
+      "click",
+      "close",
+      "cancel",
+    ];
+    for (const type of types) document.addEventListener(type, listener, true);
+    const observer = new MutationObserver((records) => {
+      if (
+        records.some((r) =>
+          ["progress-rows", "completion-fields"].includes(r.target.id),
+        )
+      )
+        log("rows-replaced");
+    });
+    observer.observe(document, { childList: true, subtree: true });
+    const cleanup = () => {
+      observer.disconnect();
+      for (const type of types)
+        document.removeEventListener(type, listener, true);
+    };
+    window.addEventListener("pagehide", cleanup, { once: true });
+    window.__qaSpendOpenTrace = {
+      snapshot: (id) => {
+        log("snapshot");
+        const result = {
+          id,
+          started: trace.started,
+          records: trace.records,
+          selected: describe(
+            document.querySelector(`[data-upgrade-spend="${CSS.escape(id)}"]`),
+          ),
+        };
+        trace.records = [];
+        return result;
+      },
+    };
+    log("document-start");
+  });
+}
 async function openPurchase(page, id = FIRST) {
-  await page.locator(spend(id)).focus();
-  await page.keyboard.press("Enter");
-  await page.locator("#upgrade-spend-confirm").waitFor({ state: "visible" });
-  assert.equal(
-    await page.locator("#upgrade-spend-ack").isChecked(),
-    false,
-    "Pre-purchase stock acknowledgement is never prechecked",
-  );
-  assert.match(
-    await page.locator("#upgrade-spend-confirm").textContent(),
-    /before this purchase.*not already been deducted/is,
-  );
+  // Original focus → Enter → visible assertion, with no added awaited setup.
+  let failure;
+  try {
+    await page.locator(spend(id)).focus();
+    await page.keyboard.press("Enter");
+    await page.locator("#upgrade-spend-confirm").waitFor({ state: "visible" });
+    assert.equal(
+      await page.locator("#upgrade-spend-ack").isChecked(),
+      false,
+      "Pre-purchase stock acknowledgement is never prechecked",
+    );
+    assert.match(
+      await page.locator("#upgrade-spend-confirm").textContent(),
+      /before this purchase.*not already been deducted/is,
+    );
+  } catch (error) {
+    failure = error;
+    throw error;
+  } finally {
+    const result = await page.evaluate(async (id) => {
+      const trace = window.__qaSpendOpenTrace.snapshot(id);
+      const { state } = await import("/assets/src/client/common.mjs");
+      return {
+        ...trace,
+        location: location.href,
+        state: {
+          loading: state.loading,
+          saving: state.saving,
+          revision: state.revision,
+          packId: state.pack?.id,
+          profile: structuredClone(state.profile),
+        },
+        error: document.querySelector("#error")?.textContent,
+        result: document.querySelector("#upgrade-spend-result")?.textContent,
+      };
+    }, id);
+    openPurchaseDiagnostics.push({ ...result, passed: !failure });
+  }
 }
 async function apply(
   page,
@@ -224,6 +328,7 @@ async function refused(page, selector, explanation, packId = PACK) {
   );
 }
 async function seed(page, base, { legacyVersion = 3, many = false } = {}) {
+  await installPurchaseTrace(page);
   await page.goto(
     `${base}/progression/?pack=observed%3Aupgrade-review-20261026`,
   );
@@ -467,7 +572,10 @@ export async function runIndependentUpgradeSpending({
   prefix = browser.browserType().name(),
 }) {
   await mkdir("test-results/upgrade023-spending", { recursive: true });
+  openPurchaseDiagnostics.length = 0;
   const evidence = {
+    diagnosticOnlyOpenPurchaseObservation: true,
+    openPurchaseDiagnostics,
     owner: "verify_upgrade_player_journeys",
     source: execFileSync("git", ["rev-parse", "HEAD"], {
       encoding: "utf8",
@@ -822,16 +930,28 @@ export async function runIndependentUpgradeSpending({
         initial = await seed(page, base);
       await page.goto(pathFor(base, "inventory"));
       await ready(page);
+      const initialDurable = await durable(page);
       await page.locator(owned(A)).fill("77");
       await refused(page, spend(FIRST), /save|cancel|unsaved/i);
       assert.equal(await page.locator(owned(A)).inputValue(), "77");
       assert.deepEqual(
         await active(page),
-        initial,
-        "Purchase never hitchhikes unsaved stock",
+        { ...initial, inventory: { ...initial.inventory, [A]: 77 } },
+        "Blocked purchase preserves the active unsaved stock draft without any other change",
+      );
+      assert.deepEqual(
+        await durable(page),
+        initialDurable,
+        "Purchase never hitchhikes the unsaved draft into committed or previous storage",
       );
       await page.click("#cancel-inventory");
       assert.equal(await page.locator(owned(A)).inputValue(), "10");
+      assert.deepEqual(
+        await active(page),
+        initial,
+        "Explicit draft Cancel restores the initial active state",
+      );
+      assert.deepEqual(await durable(page), initialDurable);
       await page.click(`[data-clear-stock="${B}"]`);
       await saveInventory(page);
       assert.equal(Object.hasOwn((await active(page)).inventory, B), false);
@@ -1582,6 +1702,7 @@ export async function runIndependentUpgradeSpending({
         observedPack = "observed:upgrade-review-20261026",
         cash = "observed:cash",
         bank = "observed:bank-upgrade-iv";
+      await installPurchaseTrace(page);
       await page.goto(
         `${base}/inventory/?pack=${encodeURIComponent(observedPack)}`,
       );
