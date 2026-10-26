@@ -28,6 +28,7 @@ jobs:
       - run: npm run map:build
       - run: npm --prefix tools/hajin-map exec playwright install --with-deps chromium
       - run: npm run map:test:browser
+      - run: npm run map:test:capacity
       - name: Retain synthetic workspace evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9

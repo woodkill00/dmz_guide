@@ -1,5 +1,11 @@
 /** Private workspace contracts. Null denotes an explicitly unknown game fact. */
-export type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
+export type Json =
+  | null
+  | boolean
+  | number
+  | string
+  | Json[]
+  | { [key: string]: Json };
 export interface Applicability {
   mapId: string;
   coordinateVersion: string;
@@ -12,21 +18,27 @@ export interface CoordinateFrame {
   coordinateVersion: string;
   width: number | null;
   height: number | null;
-  units: 'pixels' | 'normalized' | 'unknown';
-  origin: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'unknown';
-  xAxis: 'right' | 'left' | 'unknown';
-  yAxis: 'down' | 'up' | 'unknown';
+  units: "pixels" | "normalized" | "unknown";
+  origin: "top-left" | "top-right" | "bottom-left" | "bottom-right" | "unknown";
+  xAxis: "right" | "left" | "unknown";
+  yAxis: "down" | "up" | "unknown";
   crop: { x: number; y: number; width: number; height: number } | null;
   imageDigest: string | null;
 }
-export interface Evidence { note: string; url: string | null }
+export interface Evidence {
+  note: string;
+  url: string | null;
+}
 export interface SourceRecord {
   id: string;
   categoryId: string;
   title: string;
-  rawGeometry: { kind: 'point'; x: number; y: number };
+  rawGeometry: { kind: "point"; x: number; y: number };
   applicability: Applicability;
-  activityClaim: { state: 'possible-spawn' | 'observed-active' | 'unknown'; observedAt: string | null };
+  activityClaim: {
+    state: "possible-spawn" | "observed-active" | "unknown";
+    observedAt: string | null;
+  };
   upstreamRefs: string[];
   evidence: Evidence[];
 }
@@ -48,6 +60,6 @@ export interface VisibilityState {
   customEnabled: boolean;
   query: string;
 }
-export type Acceptance = 'pending' | 'accepted' | 'withdrawn';
-export type Freshness = 'current' | 'stale';
-export type AnnotationKind = 'POI' | 'location' | 'mark';
+export type Acceptance = "pending" | "accepted" | "withdrawn";
+export type Freshness = "current" | "stale";
+export type AnnotationKind = "POI" | "location" | "mark";

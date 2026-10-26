@@ -2,7 +2,7 @@
 
 **Feature Branch**: `feat/020-map-source-fusion`  
 **Created**: 2026-10-26  
-**Status**: Implementation started; foundation modules verified, user-facing feature pending
+**Status**: Implemented; final verification and independent review recorded in verification.md
 **Input**: Source layers for CODMunity, WZStats and CODCentral, category masks, comparison and a combined reviewed map, with custom POIs, marks and uploaded icons.
 
 ## User Scenarios & Testing
@@ -83,7 +83,7 @@ Source, immutable SourceSnapshot/SourceRecord, CoordinateFrame/Registration, Tax
 
 ## Assumptions and Clarifications
 
-- Planning was merged in PR23; implementation is underway on `feat/020-map-workspace-implementation`. T001/T002/T018 foundation evidence is recorded in verification.md; the user-facing feature remains pending.
+- Planning was merged in PR23; implementation is underway on `feat/020-map-workspace-implementation`. Full implementation and acceptance evidence is recorded in verification.md. Provider acquisition remains separately gated.
 - These are different providers of Hajin information, not confirmed distinct geographic maps. The model supports future map IDs without inventing their content.
 - Private point editing is the first geometry slice. No live match tracking, accounts, automatic harvesting or public sharing is implied.
 - CODMunity and WZStats terms restrict collection; CODCentral reuse permission is unverified. Provider registration can ship while acquisition remains blocked. External permission is an explicit delivery dependency, not a missing specification to assume away.

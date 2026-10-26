@@ -4,6 +4,7 @@ import { createMapView, type MapState } from './map/map-view';
 import { hajin } from './map/hajin';
 import { createSourceMarkers } from './map/source-markers';
 import { markerSources } from './map/marker-sources';
+import { mountWorkspace } from './workspace/app';
 
 const icon = (name: string) => {
   const paths: Record<string, string> = {
@@ -155,4 +156,6 @@ document.addEventListener('fullscreenchange', () => fullscreen.setAttribute('ari
 document.querySelector('#map')!.addEventListener('keydown', event => {
   if ((event as KeyboardEvent).key.toLowerCase() === 'r' && state === 'ready') { event.preventDefault(); viewer.reset(); }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { sources.forEach(source => source.destroy()); viewer.destroy(); });
+const authorWorkspace = mountWorkspace(viewer, sources);
+
+if (import.meta.hot) import.meta.hot.dispose(() => { authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });

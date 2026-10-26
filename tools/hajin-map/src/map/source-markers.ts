@@ -36,20 +36,30 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   let controller: AbortController | undefined;
   let disposed = false;
   let pendingBulk: boolean | undefined;
+  let query = '';
+  let lastEvent = '';
+  let legacyPersistence = true;
+  let restoringSnapshot = false;
+  const markerPool: {record: SourceRecord; marker: L.Marker}[] = [];
   const storageKey = `hajin.source-filters.v1.${source.id}`;
   const available = () => snapshot!.categories.filter(category => snapshot!.records.some(record => record.category === category.id));
 
   function persist() {
+    if (!legacyPersistence) return;
     const active = available();
     const selection = enabled.size === active.length ? 'all' : enabled.size === 0 ? 'none' : 'mixed';
     try { localStorage.setItem(storageKey, JSON.stringify({ version: 1, master, selection, enabled: [...enabled] })); } catch { /* Filters still work without browser storage. */ }
   }
 
-  function update() {
+  function update(persistLegacy = true) {
     if (!snapshot) return;
     root.clearLayers();
+    if (markerPool.length) {
+      groups.forEach(group => group.clearLayers());
+      for (const {record, marker} of markerPool) if (`${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())) groups.get(record.category)?.addLayer(marker);
+    }
     if (master) for (const [id, group] of groups) if (enabled.has(id)) root.addLayer(group);
-    const visible = master ? snapshot.records.filter(record => enabled.has(record.category)).length : 0;
+    const visible = master ? snapshot.records.filter(record => enabled.has(record.category) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())).length : 0;
     onUpdate(visible, snapshot.records.length, 'ready');
     const count = container.querySelector(`#${source.id}-count`);
     if (count) count.textContent = `${visible} of ${snapshot.records.length} locations shown`;
@@ -70,14 +80,18 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     keyContainer?.querySelectorAll<HTMLInputElement>('[data-key-category]').forEach(input => {
       input.checked = master && !input.disabled && enabled.has(input.dataset.keyCategory!);
     });
-    persist();
+    if (persistLegacy) persist();
+    const detail = {sourceId: source.id, origin: restoringSnapshot ? 'load' : persistLegacy ? 'user' : 'program', master, enabled: [...enabled], categories: snapshot.categories.map(c => c.id)};
+    const signature = JSON.stringify(detail);
+    if (signature !== lastEvent) { lastEvent = signature; document.dispatchEvent(new CustomEvent('map-source-filters', {detail})); }
+    document.dispatchEvent(new CustomEvent('map-source-status'));
   }
 
   function setAll(show: boolean) {
     if (!snapshot) { pendingBulk = show; return; }
     enabled.clear();
     if (show) available().forEach(category => enabled.add(category.id));
-    master = true;
+    if (show) master = true;
     update();
   }
 
@@ -95,7 +109,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
         const row = document.createElement('label'); row.className = 'category-filter key-item';
         const input = document.createElement('input'); input.type = 'checkbox'; input.dataset.keyCategory = category.id; input.disabled = amount === 0;
         input.addEventListener('change', () => {
-          if (input.checked) { if (!master) enabled.clear(); master = true; enabled.add(category.id); }
+          if (input.checked) { master = true; enabled.add(category.id); }
           else enabled.delete(category.id);
           update();
         });
@@ -176,7 +190,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
 
   function addRecords() {
     if (!snapshot) return;
-    root.clearLayers(); groups.clear(); enabled.clear();
+    root.clearLayers(); groups.clear(); enabled.clear(); markerPool.length = 0;
     const categories = new Map(snapshot.categories.map(c => [c.id, c]));
     for (const category of snapshot.categories) groups.set(category.id, L.layerGroup());
     available().forEach(category => enabled.add(category.id));
@@ -225,6 +239,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       const link = document.createElement('a'); link.href = source.recordLink(record.id); link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = `View on ${source.website} ↗`;
       popup.append(heading, detail, location, link);
       marker.bindPopup(popup, { maxWidth: 250 });
+      markerPool.push({record, marker});
       groups.get(record.category)!.addLayer(marker);
     }
     renderKey();
@@ -245,10 +260,11 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('Expected a JSON snapshot.');
       const data = parseSnapshot(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await boundedBytes(response, 2 * 1024 * 1024))), source);
       if (disposed || controller !== request) return;
-      snapshot = data; addRecords();
+      snapshot = data; restoringSnapshot = true; try { addRecords(); } finally { restoringSnapshot = false; }
     } catch {
       if (disposed || controller !== request) return;
       onUpdate(0, 0, 'failed');
+      document.dispatchEvent(new CustomEvent('map-source-status'));
       container.replaceChildren();
       const message = document.createElement('p'); message.textContent = `${source.name} locations couldn’t load. You can still explore the background.`;
       const retry = document.createElement('button'); retry.id = `retry-${source.id}`; retry.textContent = `Retry ${source.name} locations`; retry.addEventListener('click', load);
@@ -262,5 +278,11 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     } finally { clearTimeout(timeout); }
   }
   load();
-  return { reload: load, setAll, destroy() { disposed = true; controller?.abort(); map.removeLayer(root); } };
+  return { reload: load, setAll,
+    getSnapshot: () => snapshot,
+    getFilters: () => ({master, enabled: [...enabled], categories: snapshot?.categories.map(c => c.id) ?? []}),
+    setFilters(value: {master: boolean; enabled: string[]; query?: string; persistLegacy?: boolean}) { master = value.master; enabled.clear(); const valid = new Set(snapshot ? available().map(category => category.id) : []); value.enabled.forEach(id => { if (valid.has(id)) enabled.add(id); }); query = value.query ?? query; update(value.persistLegacy ?? false); },
+    setQuery(value: string) { query = value; update(false); },
+    setLegacyPersistence(value: boolean) { legacyPersistence = value; },
+    destroy() { disposed = true; controller?.abort(); map.removeLayer(root); } };
 }

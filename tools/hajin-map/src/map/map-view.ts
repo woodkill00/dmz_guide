@@ -16,6 +16,9 @@ export function createMapView(element: HTMLElement, onState: (state: MapState) =
     zoomAnimation: !reducedMotion.matches, fadeAnimation: !reducedMotion.matches,
     markerZoomAnimation: !reducedMotion.matches,
   }).setView([2048, 2048], 0);
+  const basemapPane = map.createPane('hajin-basemaps');
+  basemapPane.style.zIndex = '200';
+  basemapPane.style.pointerEvents = 'none';
   const overlay = L.layerGroup().addTo(map);
   let image: L.ImageOverlay | undefined;
   let generation = 0;
@@ -74,7 +77,7 @@ export function createMapView(element: HTMLElement, onState: (state: MapState) =
       const bytes = await boundedBytes(response, 32 * 1024 * 1024);
       if (disposed || current !== generation || request.signal.aborted) return;
       imageURL = URL.createObjectURL(new Blob([bytes as Uint8Array<ArrayBuffer>], { type: mime }));
-      const layer = L.imageOverlay(imageURL, bounds, { alt: 'Hajin DMZ terrain map showing roads, buildings, rivers and coastline', interactive: false });
+      const layer = L.imageOverlay(imageURL, bounds, { pane: 'hajin-basemaps', alt: 'Hajin DMZ terrain map showing roads, buildings, rivers and coastline', interactive: false });
       image = layer;
       layer.on('load', async () => {
         try {

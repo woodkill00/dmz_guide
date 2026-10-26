@@ -1,14 +1,390 @@
-// Foundation capacity probe; T015 will add comparison/rendering timing acceptance.
-import assert from 'node:assert/strict';
-import { parseSnapshot, validateSnapshotCollection, LIMITS } from '../src/workspace/validation.ts';
-import { syntheticSnapshot } from './fixtures/workspace.ts';
+// Synthetic capacity evidence only. No original user/game/source assets are read.
+import assert from "node:assert/strict";
+import { writeFileSync, mkdirSync, readdirSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { spawnSync } from "node:child_process";
+import os from "node:os";
+import { preview } from "vite";
+import { chromium } from "playwright";
+import {
+  parseSnapshot,
+  validateSnapshotCollection,
+  LIMITS,
+} from "../src/workspace/validation.ts";
+import { syntheticSnapshot } from "./fixtures/workspace.ts";
+import { capacityWorkspace } from "./fixtures/capacity.ts";
+import { suggest } from "../src/workspace/compare.ts";
 const started = performance.now();
 const snapshots = Array.from({ length: LIMITS.sources }, (_, i) => {
   const source = `synthetic-${i}`;
-  return parseSnapshot(JSON.stringify(syntheticSnapshot(source, LIMITS.recordsPerSource)), source);
+  return parseSnapshot(
+    JSON.stringify(syntheticSnapshot(source, LIMITS.recordsPerSource)),
+    source,
+  );
 });
 validateSnapshotCollection(snapshots);
-assert.equal(snapshots.reduce((sum, snapshot) => sum + snapshot.records.length, 0), LIMITS.recordsTotal);
+assert.equal(
+  snapshots.reduce((sum, snapshot) => sum + snapshot.records.length, 0),
+  LIMITS.recordsTotal,
+);
 assert.throws(() => validateSnapshotCollection([...snapshots, snapshots[0]]));
-console.log(JSON.stringify({ synthetic: true, stage: 'foundation-validation', sources: snapshots.length, records: LIMITS.recordsTotal,
-  elapsedMs: Math.round(performance.now() - started), comparisonAndRenderingAcceptance: 'pending T015' }, null, 2));
+const validationMs = performance.now() - started;
+const records = Array.from({ length: 20000 }, (_, i) => ({
+  key: String(i).padStart(6, "0"),
+  sourceId: `synthetic-${i % 4}`,
+  snapshotId: "synthetic",
+  recordId: String(i),
+  title: "SYNTHETIC",
+  category: `synthetic-category-${i % 4}`,
+  x: 100,
+  y: 100,
+  applicability: {
+    mapId: "hajin",
+    coordinateVersion: "hajin-official-v1-4096",
+    gameBuild: null,
+    floor: `floor-${i}`,
+  },
+  lineages: [],
+  registrationId: "synthetic",
+  mappingVersion: 1,
+  activity: "unknown",
+}));
+let server, browserServer, browser;
+const external = [],
+  errors = [];
+try {
+  server = await preview({
+    preview: { host: "127.0.0.1", port: 5276, strictPort: true },
+  });
+  browserServer = await chromium.launchServer({
+    headless: true,
+    host: "127.0.0.1",
+    chromiumSandbox: true,
+    args: ["--js-flags=--max-old-space-size=512"],
+    ...(process.env.CI
+      ? { channel: "chrome" }
+      : process.env.CHROMIUM_PATH
+        ? { executablePath: process.env.CHROMIUM_PATH }
+        : {}),
+  });
+  const pid = browserServer.process().pid;
+  function constrain() {
+    if (process.platform !== "win32")
+      return {
+        applied: false,
+        reason:
+          "Affinity enforcement is available in the Windows reference run only.",
+      };
+    const script = `$owned=Get-Process -Id ${Number(pid)}; $available=$owned.ProcessorAffinity.ToInt64(); $mask=[long]0; $count=0; for($i=0;$i -lt 63 -and $count -lt 4;$i++){ $bit=[long]1 -shl $i; if(($available -band $bit) -ne 0){$mask=$mask -bor $bit;$count++} }; $ids=@(${Number(pid)}); for($depth=0;$depth -lt 5;$depth++){ $children=@(Get-CimInstance Win32_Process | Where-Object { $ids -contains $_.ParentProcessId -and $ids -notcontains $_.ProcessId } | Select-Object -ExpandProperty ProcessId); if(!$children.Count){break};$ids+=$children }; foreach($ownedId in $ids){try{(Get-Process -Id $ownedId -ErrorAction Stop).ProcessorAffinity=[IntPtr]$mask}catch{}}; Write-Output $count`;
+    const result = spawnSync(
+      "powershell.exe",
+      ["-NoProfile", "-NonInteractive", "-Command", script],
+      { encoding: "utf8", windowsHide: true },
+    );
+    return {
+      applied: result.status === 0 && Number(result.stdout.trim()) === 4,
+      cores: Number(result.stdout.trim()),
+      stderr: result.stderr.trim(),
+    };
+  }
+  const initialAffinity = constrain();
+  browser = await chromium.connect(browserServer.wsEndpoint());
+  const context = await browser.newContext({
+      viewport: { width: 1440, height: 1000 },
+    }),
+    page = await context.newPage();
+  page.on("pageerror", (e) => errors.push(e.message));
+  const images = await page.evaluate(() =>
+    Array.from({ length: 32 }, (_, i) => {
+      const c = document.createElement("canvas");
+      c.width = c.height = 32;
+      const x = c.getContext("2d");
+      x.fillStyle = `rgb(${i * 7},${255 - i * 7},90)`;
+      x.fillRect(0, 0, 32, 32);
+      return c.toDataURL("image/png").split(",")[1];
+    }),
+  );
+  const icons = images.map((base64, i) => {
+    const input = Buffer.from(base64, "base64"),
+      chunks = [input.subarray(0, 8)];
+    for (let p = 8; p + 12 <= input.length; ) {
+      const n = input.readUInt32BE(p) + 12,
+        type = input.subarray(p + 4, p + 8).toString("ascii");
+      if (["IHDR", "PLTE", "tRNS", "IDAT", "IEND"].includes(type))
+        chunks.push(input.subarray(p, p + n));
+      p += n;
+    }
+    const bytes = Buffer.concat(chunks);
+    return {
+      id: createHash("sha256").update(bytes).digest("hex"),
+      base64: bytes.toString("base64"),
+      width: 32,
+      height: 32,
+      description: `SYNTHETIC icon ${i}`,
+      rightsDeclaration:
+        "Original synthetic pixels generated by this capacity test.",
+    };
+  });
+  const state = capacityWorkspace(icons);
+  await context.route("**/*", (route) => {
+    const url = new URL(route.request().url());
+    if (url.origin !== "http://127.0.0.1:5276") {
+      external.push(url.origin);
+      return route.abort();
+    }
+    if (url.pathname === "/maps/hajin/v1/background.webp")
+      return route.fulfill({
+        body: Buffer.from(images[0], "base64"),
+        contentType: "image/png",
+      });
+    if (url.pathname === "/maps/hajin/official/markers.json")
+      return route.fulfill({
+        status: 404,
+        body: "No real source data in synthetic capacity test.",
+      });
+    return route.continue();
+  });
+  await page.goto("http://127.0.0.1:5276");
+  await page.locator("#workspace-open:enabled").waitFor();
+  await page.evaluate(async (state) => {
+    const request = indexedDB.open("dmz-map-workspace", 2),
+      db = await new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction("state", "readwrite");
+      tx.objectStore("state").put(
+        {
+          schemaVersion: 1,
+          revision: 1,
+          data: state,
+          savedAt: new Date().toISOString(),
+        },
+        "current",
+      );
+      tx.oncomplete = resolve;
+      tx.onabort = () => reject(tx.error);
+    });
+    db.close();
+  }, state);
+  await page.reload();
+  await page.locator("#workspace-open:enabled").waitFor();
+  await page.locator("#zoom-in:enabled").waitFor();
+  await page.locator("#key-customEnabled").waitFor();
+  const finalAffinity = constrain();
+  if (process.platform === "win32")
+    assert.equal(
+      finalAffinity.applied,
+      true,
+      "Reference browser must be constrained to4 owned CPU cores.",
+    );
+  // Warm-up, then time actual persisted source toggles through the production UI and next paint.
+  const toggle = async () =>
+    page.evaluate(async () => {
+      const control = document.querySelector("#key-source-master-official"),
+        before =
+          document.querySelector("#workspace-dialog").dataset.revision ?? "1",
+        start = performance.now();
+      control.click();
+      await new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      );
+      const painted = performance.now() - start;
+      await new Promise((resolve, reject) => {
+        const deadline = setTimeout(
+          () => reject(new Error("Toggle did not persist")),
+          10000,
+        );
+        const poll = () => {
+          if (
+            document.querySelector("#workspace-dialog").dataset.revision !==
+            before
+          ) {
+            clearTimeout(deadline);
+            resolve();
+          } else setTimeout(poll, 0);
+        };
+        poll();
+      });
+      return { painted, persisted: performance.now() - start };
+    });
+  await toggle();
+  const toggleMs = [],
+    persistedMs = [];
+  for (let i = 0; i < 20; i++) {
+    const sample = await toggle();
+    toggleMs.push(sample.painted);
+    persistedMs.push(sample.persisted);
+  }
+  const sorted = [...toggleMs].sort((a, b) => a - b),
+    toggleP95 = sorted[Math.ceil(sorted.length * 0.95) - 1];
+  await toggle();
+  const searchMs = [];
+  for (let i = 0; i < 20; i++)
+    searchMs.push(
+      await page.evaluate(async (i) => {
+        const control = document.querySelector("#workspace-map-search"),
+          before = document.querySelector("#workspace-dialog").dataset.revision,
+          start = performance.now();
+        control.value = i % 2 ? "SYNTHETIC" : "SYNTHETIC raw";
+        control.dispatchEvent(new Event("input", { bubbles: true }));
+        await new Promise((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(resolve)),
+        );
+        const painted = performance.now() - start;
+        await new Promise((resolve, reject) => {
+          const limit = setTimeout(
+            () => reject(new Error("Search did not persist")),
+            10000,
+          );
+          const poll = () => {
+            if (
+              document.querySelector("#workspace-dialog").dataset.revision !==
+              before
+            ) {
+              clearTimeout(limit);
+              resolve();
+            } else setTimeout(poll, 5);
+          };
+          poll();
+        });
+        return painted;
+      }, i),
+    );
+  const searchSorted = [...searchMs].sort((a, b) => a - b),
+    searchP95 = searchSorted[Math.ceil(searchSorted.length * 0.95) - 1];
+  // The production worker is compiled from the same pure comparison function below.
+  const comparisons = [];
+  suggest(records);
+  for (let i = 0; i < 5; i++) {
+    const start = performance.now(),
+      result = suggest(records);
+    comparisons.push(performance.now() - start);
+    assert.ok(result.examined <= 250000);
+    assert.equal(result.pairs.length, 0);
+  }
+  const workerURL = `/assets/${readdirSync("dist/assets").find((name) => /^compare-worker-.*\.js$/.test(name))}`;
+  const compatible = records.map((r) => ({
+      ...r,
+      category: "SYNTHETIC compatible group",
+      applicability: { ...r.applicability, floor: null },
+    })),
+    workerMs = [];
+  for (let i = 0; i < 5; i++) {
+    const result = await page.evaluate(
+      async ({ records, url }) => {
+        const start = performance.now(),
+          worker = new Worker(url, { type: "module" });
+        try {
+          return await new Promise((resolve, reject) => {
+            const timer = setTimeout(
+              () => reject(new Error("Production comparison worker timed out")),
+              10000,
+            );
+            worker.onmessage = (event) => {
+              clearTimeout(timer);
+              if (!event.data.ok) return reject(new Error(event.data.error));
+              resolve({
+                elapsedMs: performance.now() - start,
+                pairs: event.data.result.pairs.length,
+                truncated: event.data.result.truncated,
+                examined: event.data.result.examined,
+              });
+            };
+            worker.onerror = (event) => {
+              clearTimeout(timer);
+              reject(new Error(event.message));
+            };
+            worker.postMessage(records);
+          });
+        } finally {
+          worker.terminate();
+        }
+      },
+      { records: compatible, url: workerURL },
+    );
+    assert.equal(result.pairs, 10000);
+    assert.equal(result.truncated, true);
+    assert.ok(result.examined <= 250000);
+    workerMs.push(result.elapsedMs);
+  }
+  console.log(
+    JSON.stringify({
+      toggleFirstPaintP95: toggleP95,
+      searchFirstPaintP95: searchP95,
+      productionWorkerMs: workerMs,
+      persistenceMs: persistedMs,
+    }),
+  );
+  assert.ok(
+    toggleP95 <= 250,
+    `Production source-toggle first-paint p95 ${toggleP95.toFixed(1)}ms exceeds250ms.`,
+  );
+  assert.ok(
+    comparisons.every((n) => n <= 2000),
+    "Comparison exceeded2s.",
+  );
+  assert.deepEqual(external, []);
+  assert.deepEqual(errors, []);
+  assert.ok(
+    searchP95 <= 250,
+    `Production search first-paint p95 ${searchP95.toFixed(1)}ms exceeds250ms.`,
+  );
+  assert.ok(
+    workerMs.every((ms) => ms <= 2000),
+    "Production worker comparison exceeded2s.",
+  );
+  const cdp = await context.newCDPSession(page);
+  await cdp.send("Performance.enable");
+  const metrics = await cdp.send("Performance.getMetrics");
+  const result = {
+    date: new Date().toISOString(),
+    synthetic: true,
+    productionBuild: true,
+    environment: {
+      platform: os.platform(),
+      node: process.version,
+      browser: browser.version(),
+      hostLogicalCores: os.cpus().length,
+      hostRamGiB: Math.round(os.totalmem() / 1024 ** 3),
+      initialAffinity,
+      finalAffinity,
+      rendererHeapLimitMiB: 512,
+      physical8GiBDevice: false,
+    },
+    fixture: {
+      customPoints: 5000,
+      sourceRecords: 1000,
+      reviewedEntities: 50,
+      icons: 32,
+      nodeAndByteLimitsValidated: true,
+    },
+    validation: {
+      independentSourceRecords: 20000,
+      elapsedMs: Math.round(validationMs),
+    },
+    toggle: { samples: toggleMs, p95: toggleP95, budgetMs: 250, persistedMs },
+    search: { samples: searchMs, p95: searchP95, budgetMs: 250 },
+    comparison: {
+      records: 20000,
+      samples: comparisons,
+      productionWorkerMs: workerMs,
+      budgetMs: 2000,
+      denseIncompatible: true,
+    },
+    metrics: metrics.metrics,
+    externalRequests: external,
+    runtimeErrors: errors,
+  };
+  mkdirSync(".local/browser-checks", { recursive: true });
+  writeFileSync(
+    ".local/browser-checks/capacity.json",
+    JSON.stringify(result, null, 2),
+  );
+  console.log(JSON.stringify(result, null, 2));
+} finally {
+  if (browser) await browser.close();
+  if (browserServer) await browserServer.close();
+  if (server) await new Promise((resolve) => server.httpServer.close(resolve));
+}

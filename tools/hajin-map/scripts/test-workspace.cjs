@@ -8,7 +8,7 @@ const checks = [];
 (async () => {
   fs.mkdirSync(out, { recursive: true });
   const { createServer } = await import('vite');
-  server = await createServer({ server: { host: '127.0.0.1', port: 5275, strictPort: true } });
+  server = await createServer({ server: { host: '127.0.0.1', port: 5275, strictPort: true, hmr: false } });
   await server.listen();
   const base = 'http://127.0.0.1:5275';
   browser = await chromium.launch({ headless: true, chromiumSandbox: true, ...(process.env.CI ? { channel: 'chrome' } : process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
@@ -154,6 +154,12 @@ const checks = [];
   checks.push('15-second image-decode deadline produces recoverable failure');
   const { runWorkspaceBrowser } = await import('../tests/workspace.browser.ts');
   checks.push(...await runWorkspaceBrowser(page, base));
+  const { runAuthoringBrowser } = await import('../tests/authoring.browser.ts');
+  checks.push(...await runAuthoringBrowser(page, base));
+  const { runAdvancedBrowser } = await import('../tests/advanced.browser.ts');
+  checks.push(...await runAdvancedBrowser(page, base));
+  const { runRaceBrowser } = await import('../tests/races.browser.ts');
+  checks.push(...await runRaceBrowser(page, base));
   await page.locator('#toggle-key').click();
   await page.evaluate(() => {
     const banner = document.createElement('div'); banner.textContent = 'SYNTHETIC TEST FIXTURE — NOT GAME DATA';

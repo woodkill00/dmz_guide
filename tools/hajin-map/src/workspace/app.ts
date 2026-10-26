@@ -1,0 +1,1755 @@
+import L from "leaflet";
+import type { createMapView } from "../map/map-view";
+import type { createSourceMarkers } from "../map/source-markers";
+import { markerSources } from "../map/marker-sources";
+import type { Workspace, Annotation, IconAsset } from "./model.ts";
+import { emptyWorkspace, asJson } from "./model.ts";
+import type { VisibilityState } from "./types.ts";
+import { openWorkspace } from "./store.ts";
+import { createWorkspacePreparer } from "./prepare.ts";
+import { readJSONFile } from "./import.ts";
+import { planLegacyMaskMigration, stageMaskMigration } from "./migration.ts";
+import {
+  validateWorkspace,
+  exportPrivateBackup,
+  parsePrivateBackup,
+  verifyBackupAssets,
+  estimateRestoreStorage,
+  placedRecords,
+} from "./backup.ts";
+import {
+  el,
+  button,
+  field,
+  input,
+  select,
+  note,
+  download,
+  errorText,
+} from "./dom.ts";
+import { sourcePolicies } from "./policy.ts";
+import { saveAnnotation, removeAnnotation } from "./annotations.ts";
+import { annotationEditor } from "./annotation-editor.ts";
+import { stageIcon, commitIcon, deleteIcon, annotationIcon } from "./icons.ts";
+import { sourcePanel } from "./sources-panel.ts";
+import { reviewPanel } from "./review-panel.ts";
+import {
+  globalVisibility,
+  isVisible,
+  sourceSelection,
+  setSourceAll,
+} from "./visibility.ts";
+import { createBasemapComparison } from "./basemap-view.ts";
+import { registrationMatches } from "./registration.ts";
+import type { UIServices } from "./ui-context.ts";
+type Legacy = ReturnType<typeof createSourceMarkers>;
+type Viewer = ReturnType<typeof createMapView>;
+type Tab = "points" | "sources" | "review" | "icons" | "backup";
+export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
+  let state = emptyWorkspace(),
+    revision = 0,
+    store: Awaited<ReturnType<typeof openWorkspace>> | undefined,
+    disposed = false,
+    queue = Promise.resolve(),
+    applyingFilters = false,
+    dirty = false,
+    detailActive = false,
+    detailCleanup: (() => void) | undefined,
+    active: Tab = "points",
+    editing: Annotation | undefined,
+    picking = false,
+    draftPosition: { x: number; y: number } | undefined,
+    filterTimer: ReturnType<typeof setTimeout> | undefined;
+  legacy.forEach((source) => source.setLegacyPersistence(false));
+  let legacyMigrationCommitted = false;
+  let retainedFailure = false;
+  const preparer = createWorkspacePreparer();
+  let hydrated = false,
+    pendingVisibility: VisibilityState | undefined,
+    visibilityEpoch = 0;
+  let searchTimer: ReturnType<typeof setTimeout> | undefined;
+  const visibility = () => pendingVisibility ?? state.visibility;
+  let unsaved: Workspace | undefined,
+    failedLabel: string | undefined,
+    processing: AbortController | undefined;
+  let selectedBackgroundId = "",
+    backgroundRequest = 0,
+    comparisonOpacity = 50,
+    comparisonSignature = "";
+  const selectedSnapshots = new Map<string, string>(),
+    customLayer = L.layerGroup().addTo(viewer.map),
+    sourceLayer = L.layerGroup().addTo(viewer.map),
+    reviewedLayer = L.layerGroup().addTo(viewer.map),
+    renderer = L.canvas({ padding: 0.5 }),
+    comparison = createBasemapComparison(viewer.map);
+  const openButton = button(
+    "My workspace",
+    () => {
+      if (!dialog.open) dialog.showModal();
+      if (!dirty && !detailActive) renderPanel();
+    },
+    "workspace-open",
+  );
+  openButton.disabled = true;
+  openButton.className = "workspace-open";
+  document.querySelector(".map-workspace")!.append(openButton);
+  const dialog = el("dialog");
+  dialog.id = "workspace-dialog";
+  dialog.setAttribute("aria-labelledby", "workspace-title");
+  const top = el("div", undefined, "dialog-top"),
+    heading = el("strong", "MY MAP WORKSPACE");
+  heading.id = "workspace-title";
+  top.append(
+    heading,
+    button(
+      "Close workspace",
+      () => {
+        processing?.abort();
+        dialog.close();
+      },
+      "close-workspace",
+    ),
+  );
+  const status = el("p", "Opening your private workspace…", "workspace-status");
+  status.id = "workspace-message";
+  status.setAttribute("role", "status");
+  status.setAttribute("aria-live", "polite");
+  const nav = el("nav");
+  nav.setAttribute("aria-label", "Workspace sections");
+  const body = el("div");
+  body.id = "workspace-content";
+  let interactionLocks = 0;
+  function lockInteraction() {
+    const previous =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : undefined;
+    interactionLocks++;
+    body.inert = true;
+    nav.inert = true;
+    body.setAttribute("aria-busy", "true");
+    const cancel = document.getElementById(
+      "cancel-workspace-draft",
+    ) as HTMLButtonElement | null;
+    if (cancel) cancel.disabled = true;
+    return () => {
+      interactionLocks = Math.max(0, interactionLocks - 1);
+      body.inert = nav.inert = interactionLocks > 0;
+      body.setAttribute("aria-busy", String(interactionLocks > 0));
+      if (cancel) cancel.disabled = interactionLocks > 0;
+      if (!interactionLocks && dialog.open) {
+        if (previous?.isConnected) previous.focus();
+        else {
+          const title = body.querySelector<HTMLElement>("h3");
+          title?.setAttribute("tabindex", "-1");
+          title?.focus();
+        }
+      }
+    };
+  }
+  dialog.append(top, status, nav, body);
+  document.body.append(dialog);
+  const toast = el("p", undefined, "workspace-toast");
+  toast.hidden = true;
+  toast.id = "workspace-toast";
+  toast.setAttribute("role", "status");
+  document.querySelector(".map-workspace")!.append(toast);
+  let toastTimer: ReturnType<typeof setTimeout> | undefined;
+  const notice = (message: string) => {
+    status.textContent = message;
+    toast.textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => (toast.hidden = true), 7000);
+  };
+  const error = (error: unknown) => notice(errorText(error));
+  const errorListener = (event: Event) => error((event as CustomEvent).detail);
+  document.addEventListener("workspace-error", errorListener);
+  const refresh = () => {
+    if (disposed) return;
+    renderMarkers();
+    renderKey();
+    if (dialog.open && !dirty && !detailActive) renderPanel();
+  };
+  async function commit(
+    label: string,
+    change: (draft: Workspace) => void,
+    resources: { id: string; blob: Blob }[] = [],
+    expectedRevision?: number,
+  ) {
+    const unlock = /visibility|Source masks|categories|All layers|Search/.test(
+      label,
+    )
+      ? () => {}
+      : lockInteraction();
+    const operation = queue
+      .catch(() => {})
+      .then(async () => {
+        if (disposed) throw new Error("Workspace closed.");
+        if (unsaved && failedLabel && label !== failedLabel)
+          throw new Error(
+            "An unsaved draft is retained. Export/reload it before another save.",
+          );
+        if (expectedRevision !== undefined && expectedRevision !== revision)
+          throw new Error(
+            "Workspace changed since preview. Reopen the preview.",
+          );
+        const draft = structuredClone(state);
+        change(draft);
+        unsaved = draft;
+        failedLabel = label;
+        if (!store)
+          throw new Error(
+            "Local storage unavailable. Your draft is retained; export it from Backups.",
+          );
+        const saved = await store.commit(asJson(draft), revision, resources);
+        backgroundRequest++;
+        state = draft;
+        if (draft.migrations.includes("source-masks-v1"))
+          legacyMigrationCommitted = true;
+        if (
+          label.startsWith("Backup restored") ||
+          label === "New empty workspace created"
+        ) {
+          clearTimeout(searchTimer);
+          pendingVisibility = undefined;
+        }
+        revision = saved.revision;
+        dialog.dataset.revision = String(revision);
+        unsaved = undefined;
+        failedLabel = undefined;
+        retainedFailure = false;
+        notice(label);
+        applyLegacyFilters();
+        refresh();
+      })
+      .catch((error) => {
+        if (unsaved && failedLabel === label) retainedFailure = true;
+        throw error;
+      })
+      .finally(unlock);
+    queue = operation;
+    return operation;
+  }
+  function persistVisibility(label: string, value: VisibilityState) {
+    return commit(label, (draft) => {
+      draft.visibility = structuredClone(value);
+    }).then(() => {
+      if (pendingVisibility === value) pendingVisibility = undefined;
+    });
+  }
+  function changeVisibility(
+    label: string,
+    change: (value: VisibilityState) => void,
+  ) {
+    clearTimeout(searchTimer);
+    clearTimeout(filterTimer);
+    if (retainedFailure) {
+      renderKey();
+      return Promise.reject(
+        new Error(
+          "An unsaved draft is retained. Export/reload it before changing saved filters.",
+        ),
+      );
+    }
+    const value = structuredClone(visibility());
+    change(value);
+    pendingVisibility = value;
+    applyLegacyFilters();
+    renderMarkers();
+    renderKey();
+    dialog.dataset.visibilityEpoch = String(++visibilityEpoch);
+    notice("Saving visibility…");
+    return persistVisibility(label, value);
+  }
+  const closeDetail = () => {
+    detailCleanup?.();
+    detailCleanup = undefined;
+    detailActive = false;
+    dirty = false;
+    renderPanel();
+    if (dialog.open)
+      nav.querySelector<HTMLButtonElement>(`[data-tab="${active}"]`)?.focus();
+  };
+  const cancelProcessing = button(
+    "Cancel processing",
+    () => processing?.abort(),
+    "cancel-workspace-processing",
+  );
+  cancelProcessing.hidden = true;
+  top.append(cancelProcessing);
+  dialog.addEventListener("cancel", () => processing?.abort());
+  const services: UIServices = {
+    process: async (work) => {
+      if (processing)
+        throw new Error("Another local file is processing. Cancel it first.");
+      const current = new AbortController();
+      const unlock = lockInteraction();
+      processing = current;
+      cancelProcessing.hidden = false;
+      notice("Processing local input…");
+      try {
+        const result = await work(current.signal);
+        if (current.signal.aborted) throw new Error("Import cancelled.");
+        return result;
+      } finally {
+        unlock();
+        if (processing === current) {
+          processing = undefined;
+          cancelProcessing.hidden = true;
+        }
+      }
+    },
+    state: () => state,
+    revision: () => revision,
+    commit,
+    error,
+    notice,
+    refresh,
+    detail: (node, cleanup) => {
+      detailCleanup?.();
+      detailCleanup = cleanup;
+      detailActive = true;
+      body.replaceChildren(node);
+      if (!dialog.open) dialog.showModal();
+      node.querySelector<HTMLElement>("input,button,textarea,select")?.focus();
+    },
+    closeDetail,
+    readResource: async (id) => store?.readResource(id),
+    previousState: async () => {
+      const old = (await store?.read())?.previous?.data;
+      if (!old) return undefined;
+      validateWorkspace(old);
+      return old;
+    },
+    legacySnapshot: () => legacy[0]?.getSnapshot(),
+    focus: (x, y) => {
+      viewer.map.setView([y, x], Math.max(viewer.map.getZoom(), 1), {
+        animate: false,
+      });
+      dialog.close();
+    },
+  };
+  for (const [tab, label] of [
+    ["points", "My points"],
+    ["sources", "Sources"],
+    ["review", "Review"],
+    ["icons", "Icons"],
+    ["backup", "Backups"],
+  ] as [Tab, string][]) {
+    const b = button(
+      label,
+      () => {
+        if (processing) {
+          error("Cancel file processing before switching sections.");
+          return;
+        }
+        if (dirty || detailActive) {
+          error(
+            "Save or cancel the current draft/preview before switching sections.",
+          );
+          return;
+        }
+        detailCleanup?.();
+        detailCleanup = undefined;
+        detailActive = false;
+        picking = false;
+        active = tab;
+        renderPanel();
+      },
+      `workspace-tab-${tab}`,
+    );
+    b.dataset.tab = tab;
+    nav.append(b);
+  }
+  const resetEditor = () => {
+    dirty = false;
+    editing = undefined;
+    draftPosition = undefined;
+    picking = false;
+    renderPanel();
+  };
+  top.append(
+    button(
+      "Cancel draft / preview",
+      () => {
+        processing?.abort();
+        picking = false;
+        dirty = false;
+        if (detailActive) closeDetail();
+        else resetEditor();
+      },
+      "cancel-workspace-draft",
+    ),
+  );
+  body.addEventListener("input", (event) => {
+    const target = event.target as HTMLElement;
+    if (
+      !["points-search", "review-search"].includes(target.id) &&
+      !target.hasAttribute("data-workspace-search") &&
+      !target.closest("#review-records")
+    )
+      dirty = true;
+  });
+  body.addEventListener("change", (event) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest("#review-records")) dirty = true;
+  });
+
+  function renderPanel() {
+    dialog.scrollTop = 0;
+    nav
+      .querySelectorAll("button")
+      .forEach((b) =>
+        b.setAttribute("aria-current", String(b.dataset.tab === active)),
+      );
+    body.replaceChildren();
+    if (active === "points") renderPoints();
+    if (active === "sources") body.append(sourcePanel(services));
+    if (active === "review") body.append(reviewPanel(services));
+    if (active === "icons") renderIcons();
+    if (active === "backup") renderBackup();
+  }
+  function renderPoints() {
+    body.append(
+      el("h3", "My private points"),
+      note(
+        "Create POIs, locations and marks from your own gameplay. Edit coordinates to move a point, or pick on the map. Source evidence stays separate.",
+      ),
+    );
+    const editor = annotationEditor(
+      state,
+      editing,
+      draftPosition,
+      async (annotation) => {
+        await commit(
+          editing ? "Point updated" : "Private point saved",
+          (draft) => saveAnnotation(draft, annotation),
+        );
+        resetEditor();
+        body.querySelector<HTMLInputElement>("#point-title")?.focus();
+      },
+      resetEditor,
+      () => {
+        dirty = true;
+      },
+      () => {
+        picking = true;
+        dialog.close();
+        notice(
+          "Click a position on the map. Your other draft fields will be kept.",
+        );
+      },
+      error,
+    );
+    body.append(editor);
+    body.append(
+      button(
+        "Undo last saved workspace change",
+        async () => {
+          const unlock = lockInteraction();
+          try {
+            if (dirty || detailActive || unsaved)
+              throw new Error(
+                "Save, export/reload or cancel your draft before undoing a saved change.",
+              );
+            if (!store) throw new Error("Storage unavailable.");
+            clearTimeout(searchTimer);
+            clearTimeout(filterTimer);
+            await queue.catch(() => {});
+            const saved = await store.restorePrevious(revision);
+            legacyMigrationCommitted = await store.hasLegacyMigration();
+            validateWorkspace(saved.data);
+            backgroundRequest++;
+            state = saved.data;
+            pendingVisibility = undefined;
+            revision = saved.revision;
+            dialog.dataset.revision = String(revision);
+            resetEditor();
+            notice("Previous valid workspace restored; undo is reversible.");
+            applyLegacyFilters(true);
+            refresh();
+          } catch (e) {
+            error(e);
+          } finally {
+            unlock();
+          }
+        },
+        "undo-workspace",
+      ),
+    );
+    const search = input("");
+    search.id = "points-search";
+    let page = 0;
+    const list = el("div");
+    list.id = "custom-point-list";
+    const showList = () => {
+      list.replaceChildren();
+      const filtered = state.annotations.filter((a) =>
+        `${a.title} ${a.category} ${a.notes}`
+          .toLocaleLowerCase()
+          .includes(search.value.toLocaleLowerCase()),
+      );
+      page = Math.max(0, Math.min(page, Math.ceil(filtered.length / 50) - 1));
+      list.append(
+        note(
+          `${filtered.length} private points · page ${page + 1}/${Math.max(1, Math.ceil(filtered.length / 50))}`,
+        ),
+      );
+      for (const a of filtered.slice(page * 50, (page + 1) * 50)) {
+        const row = el("section", undefined, "workspace-card");
+        row.dataset.annotation = a.id;
+        row.append(
+          el("h4", a.title),
+          note(
+            `${a.kind} · ${a.category} · ${a.verificationState} · X ${a.x.toFixed(2)}, Y ${a.y.toFixed(2)} · floor ${a.applicability.floor ?? "unknown"}`,
+          ),
+          button("Locate point", () => services.focus(a.x, a.y)),
+          button("Edit point", () => {
+            if (dirty) {
+              error("Save or cancel your current point draft first.");
+              return;
+            }
+            editing = structuredClone(a);
+            draftPosition = undefined;
+            renderPanel();
+            document.querySelector<HTMLInputElement>("#point-title")?.focus();
+          }),
+          button("Delete point", async () => {
+            try {
+              if (dirty)
+                throw new Error(
+                  "Save or cancel your current point draft first.",
+                );
+              const node = el("section");
+              node.append(
+                el("h3", "Delete private point?"),
+                note(`${a.title}. You can undo the last saved change.`),
+                button(
+                  "Confirm delete point",
+                  async () => {
+                    try {
+                      await commit("Point deleted", (draft) =>
+                        removeAnnotation(draft, a.id),
+                      );
+                      closeDetail();
+                    } catch (e) {
+                      error(e);
+                    }
+                  },
+                  "confirm-delete-point",
+                ),
+                button("Keep point", closeDetail),
+              );
+              services.detail(node);
+            } catch (e) {
+              error(e);
+            }
+          }),
+        );
+        list.append(row);
+      }
+      list.append(
+        button("Previous points", () => {
+          page = Math.max(0, page - 1);
+          showList();
+        }),
+        button("Next points", () => {
+          page++;
+          showList();
+        }),
+      );
+    };
+    search.addEventListener("input", () => {
+      page = 0;
+      showList();
+    });
+    body.append(field("Find my points", search), list);
+    showList();
+  }
+  const mapPick = (event: L.LeafletMouseEvent) => {
+    if (!picking) return;
+    const x = Math.round(event.latlng.lng * 100) / 100,
+      y = Math.round(event.latlng.lat * 100) / 100;
+    if (x < 0 || y < 0 || x > 4096 || y > 4096) {
+      error("Choose a point inside the canonical map.");
+      return;
+    }
+    picking = false;
+    const xInput = body.querySelector<HTMLInputElement>("#point-x"),
+      yInput = body.querySelector<HTMLInputElement>("#point-y");
+    if (xInput && yInput) {
+      xInput.value = String(x);
+      yInput.value = String(y);
+      xInput.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    dirty = true;
+    if (!dialog.open) dialog.showModal();
+  };
+  viewer.map.on("click", mapPick);
+  function renderIcons() {
+    body.append(
+      el("h3", "My icon library"),
+      note(
+        "Local PNG/JPEG/WebP only. Images are validated, stripped of metadata and resized to at most256px. SVG and animation are rejected.",
+      ),
+    );
+    const file = input("", "file");
+    file.accept = "image/png,image/jpeg,image/webp";
+    file.id = "custom-icon-file";
+    const description = input("");
+    description.id = "custom-icon-description";
+    const rights = el("textarea");
+    rights.maxLength = 4000;
+    rights.id = "custom-icon-rights";
+    const owned = input("", "checkbox");
+    owned.id = "custom-icon-owned";
+    body.append(
+      field("Icon file", file),
+      field("Accessible description", description),
+      field("Ownership or authorization declaration", rights),
+      field("I own or am authorized to use this icon.", owned),
+      button(
+        "Preview custom icon",
+        async () => {
+          try {
+            if (!owned.checked)
+              throw new Error("Confirm ownership or authorization.");
+            const f = file.files?.[0];
+            if (!f) throw new Error("Choose an icon file.");
+            const icon = await services.process((signal) =>
+                stageIcon(f, rights.value, description.value, signal),
+              ),
+              node = el("section"),
+              image = el("img");
+            image.src = `data:image/png;base64,${icon.base64}`;
+            image.alt = icon.description;
+            image.className = "icon-preview";
+            node.append(
+              el("h3", "Review sanitized icon"),
+              image,
+              note(
+                `${icon.description} · ${icon.width} × ${icon.height} · PNG`,
+              ),
+            );
+            const stagedRevision = revision;
+            node.append(
+              button(
+                "Keep custom icon",
+                async () => {
+                  try {
+                    await commit(
+                      "Custom icon saved",
+                      (draft) => commitIcon(draft, icon),
+                      [],
+                      stagedRevision,
+                    );
+                    closeDetail();
+                  } catch (e) {
+                    error(e);
+                  }
+                },
+                "commit-custom-icon",
+              ),
+              button("Cancel icon", closeDetail),
+            );
+            services.detail(node);
+          } catch (e) {
+            error(e);
+          }
+        },
+        "preview-custom-icon",
+      ),
+    );
+    for (const icon of state.icons) {
+      const card = el("section", undefined, "workspace-card"),
+        image = el("img");
+      image.src = `data:image/png;base64,${icon.base64}`;
+      image.alt = icon.description;
+      image.className = "icon-preview";
+      card.append(
+        image,
+        el("h4", icon.description),
+        note(icon.rightsDeclaration),
+      );
+      const category = input("");
+      const replacement = select([
+        { value: "", label: "No replacement" },
+        ...state.icons
+          .filter((i) => i.id !== icon.id)
+          .map((i) => ({ value: i.id, label: i.description })),
+      ]);
+      card.append(
+        field("Category to use this icon by default", category),
+        button("Set category icon", async () => {
+          try {
+            if (!category.value.trim() || category.value.length > 200)
+              throw new Error("Enter a category name.");
+            await commit("Category icon updated", (draft) => {
+              const old = draft.categoryIcons.find(
+                (c) => c.category === category.value.trim(),
+              );
+              if (old) old.iconId = icon.id;
+              else {
+                if (draft.categoryIcons.length >= 100)
+                  throw new Error("Category icon limit reached.");
+                draft.categoryIcons.push({
+                  category: category.value.trim(),
+                  iconId: icon.id,
+                });
+              }
+            });
+          } catch (e) {
+            error(e);
+          }
+        }),
+        field("Replacement for referenced icon deletion", replacement),
+        button("Delete this icon", async () => {
+          try {
+            await commit("Icon removed; references replaced", (draft) =>
+              deleteIcon(draft, icon.id, replacement.value || null),
+            );
+          } catch (e) {
+            error(e);
+          }
+        }),
+      );
+      body.append(card);
+    }
+  }
+  function renderBackup() {
+    body.append(
+      el("h3", "Private backups and recovery"),
+      note(
+        "Backups always preserve custom points and owned icons. Source data and derived fields without private-export permission are omitted with explicit dependency records. Background pixels are separate local files. Public/share export is not offered.",
+      ),
+    );
+    body.append(
+      button(
+        "Download private backup",
+        () =>
+          download(
+            "hajin-private-workspace.json",
+            JSON.stringify(exportPrivateBackup(state)),
+          ),
+        "export-workspace",
+      ),
+      button(
+        "Download unsaved draft",
+        () => {
+          const draft =
+            unsaved ?? (store?.getDraft() as unknown as Workspace | undefined);
+          if (!draft) throw new Error("No unsaved draft is retained.");
+          download(
+            "hajin-unsaved-draft.json",
+            JSON.stringify(exportPrivateBackup(draft)),
+          );
+        },
+        "export-workspace-draft",
+      ),
+      button(
+        "Reload saved workspace",
+        async () => {
+          const unlock = lockInteraction();
+          try {
+            if (!store) throw new Error("Storage unavailable.");
+            clearTimeout(searchTimer);
+            clearTimeout(filterTimer);
+            await queue.catch(() => {});
+            const history = await store.read();
+            legacyMigrationCommitted = await store.hasLegacyMigration();
+            if (history.current) {
+              validateWorkspace(history.current.data);
+              backgroundRequest++;
+              state = history.current.data;
+              pendingVisibility = undefined;
+              revision = history.current.revision;
+              dialog.dataset.revision = String(revision);
+            }
+            unsaved = undefined;
+            failedLabel = undefined;
+            retainedFailure = false;
+            dirty = false;
+            detailActive = false;
+            notice("Saved workspace reloaded.");
+            applyLegacyFilters(true);
+            refresh();
+          } catch (e) {
+            error(e);
+          } finally {
+            unlock();
+          }
+        },
+        "reload-workspace",
+      ),
+    );
+    body.append(
+      button(
+        "Preview legacy source-mask migration",
+        () => {
+          try {
+            if (
+              legacyMigrationCommitted ||
+              state.migrations.includes("source-masks-v1")
+            )
+              throw new Error(
+                "Legacy source masks have already been migrated.",
+              );
+            const plan = planLegacyMaskMigration(
+              localStorage,
+              { official: legacy[0]?.getFilters().categories ?? [] },
+              ["official"],
+            );
+            const staged = stageMaskMigration(
+              {
+                current: {
+                  schemaVersion: 1,
+                  revision,
+                  data: asJson(state),
+                  savedAt: new Date().toISOString(),
+                },
+                previous: null,
+              },
+              plan,
+            );
+            const node = el("section");
+            node.append(
+              el("h3", "Review legacy source-mask migration"),
+              note(
+                "Only source visibility preferences are copied. The old localStorage entry remains unchanged for rollback.",
+              ),
+              el("pre", JSON.stringify(plan.visibility, null, 2)),
+            );
+            for (const warning of plan.warnings) node.append(note(warning));
+            node.append(
+              button(
+                "Commit source-mask migration",
+                async () => {
+                  try {
+                    await commit(
+                      "Legacy source masks migrated",
+                      (draft) => Object.assign(draft, staged.data),
+                      [],
+                      staged.expectedRevision,
+                    );
+                    closeDetail();
+                  } catch (e) {
+                    error(e);
+                  }
+                },
+                "commit-mask-migration",
+              ),
+              button("Cancel migration", closeDetail),
+            );
+            services.detail(node);
+          } catch (e) {
+            error(e);
+          }
+        },
+        "preview-mask-migration",
+      ),
+    );
+    const file = input("", "file");
+    file.accept = ".json,application/json";
+    file.id = "workspace-backup-file";
+    body.append(
+      field("Private workspace backup", file),
+      button(
+        "Preview backup restore",
+        async () => {
+          try {
+            const f = file.files?.[0];
+            if (!f) throw new Error("Choose a private backup.");
+            if (f.size > 20 * 1024 * 1024)
+              throw new Error("Backup exceeds20MiB.");
+            const preparedRestore = await services.process(async (signal) => {
+              const value = parsePrivateBackup(
+                await readJSONFile(f, 20 * 1024 * 1024, signal),
+              );
+              await verifyBackupAssets(value, signal);
+              const storage = await estimateRestoreStorage(
+                f.size + new TextEncoder().encode(JSON.stringify(state)).length,
+              );
+              return { workspace: value, storage };
+            });
+            const restored = preparedRestore.workspace;
+            const estimate = preparedRestore.storage;
+            const node = el("section");
+            node.id = "restore-preview";
+            node.append(
+              el("h3", "Review replacement restore"),
+              note(
+                `${restored.annotations.length} custom points · ${restored.icons.length} icons · ${restored.entities.length} reviewed entities · ${restored.omittedDependencies.length} missing/omitted dependencies. This replaces the current workspace; the previous valid state is retained.`,
+              ),
+            );
+            for (const d of restored.omittedDependencies.slice(0, 20))
+              node.append(note(`${d.kind} · ${d.id} · ${d.reason}`));
+            node.append(
+              note(
+                estimate.available === null
+                  ? "Browser storage estimate unavailable. A quota failure will roll back without replacing the last valid workspace."
+                  : `Estimated additional storage: ${Math.ceil(estimate.bytes / 1024)} KiB; currently available: ${Math.floor(estimate.available / 1024 / 1024)} MiB. ${estimate.available < estimate.bytes ? "Space may be insufficient; keep the downloaded current backup." : "Actual save errors still roll back safely."}`,
+              ),
+            );
+            let backedUp = false;
+            const confirm = button(
+              "Replace with this private backup",
+              async () => {
+                try {
+                  if (!backedUp)
+                    throw new Error(
+                      "Download the current backup before replacement.",
+                    );
+                  await commit(
+                    "Backup restored" +
+                      (restored.omittedDependencies.length
+                        ? " with missing dependencies; review Sources/Backups."
+                        : "."),
+                    (draft) => Object.assign(draft, restored),
+                    [],
+                    stagedRevision,
+                  );
+                  closeDetail();
+                } catch (e) {
+                  error(e);
+                }
+              },
+              "confirm-restore-workspace",
+            );
+            confirm.disabled = true;
+            const stagedRevision = revision;
+            node.append(
+              button(
+                "Download current backup before replacing",
+                () => {
+                  download(
+                    "hajin-before-restore.json",
+                    JSON.stringify(exportPrivateBackup(state)),
+                  );
+                  backedUp = true;
+                  confirm.disabled = false;
+                },
+                "backup-before-restore",
+              ),
+              confirm,
+              button("Cancel restore", closeDetail),
+            );
+            services.detail(node);
+          } catch (e) {
+            error(e);
+          }
+        },
+        "preview-restore-workspace",
+      ),
+    );
+    body.append(
+      button(
+        "Start a new empty workspace",
+        () => {
+          const node = el("section");
+          node.append(
+            el("h3", "Start a new empty workspace?"),
+            note(
+              "Download the current private backup first. This clears the active workspace, including pending dependencies; one previous valid revision remains recoverable.",
+            ),
+          );
+          let backedUp = false;
+          const confirm = button(
+            "Confirm new empty workspace",
+            async () => {
+              try {
+                if (!backedUp)
+                  throw new Error("Download the current backup first.");
+                await commit(
+                  "New empty workspace created",
+                  (draft) => Object.assign(draft, emptyWorkspace()),
+                  [],
+                  stagedRevision,
+                );
+                selectedSnapshots.clear();
+                closeDetail();
+              } catch (e) {
+                error(e);
+              }
+            },
+            "confirm-new-workspace",
+          );
+          const stagedRevision = revision;
+          confirm.disabled = true;
+          node.append(
+            button("Back up current workspace before clearing", () => {
+              download(
+                "hajin-before-new-workspace.json",
+                JSON.stringify(exportPrivateBackup(state)),
+              );
+              backedUp = true;
+              confirm.disabled = false;
+            }),
+            confirm,
+            button("Keep current workspace", closeDetail),
+          );
+          services.detail(node);
+        },
+        "new-empty-workspace",
+      ),
+    );
+    if (state.omittedDependencies.length) {
+      body.append(el("h4", "Missing / omitted dependencies"));
+      for (const d of state.omittedDependencies.slice(0, 100))
+        body.append(note(`${d.kind}: ${d.id} — ${d.reason}`));
+    }
+  }
+  const circleCache = new Map<
+    string,
+    { circle: L.CircleMarker; signature: string }
+  >();
+  function renderMarkers() {
+    const activeCache = new Set<string>(),
+      iconCounts = new Map<L.LayerGroup, number>();
+    customLayer.clearLayers();
+    sourceLayer.clearLayers();
+    reviewedLayer.clearLayers();
+    const q = visibility().query.trim().toLocaleLowerCase();
+    const marker = (
+      point: {
+        x: number;
+        y: number;
+        title: string;
+        category: string;
+        id?: string;
+        key?: string;
+      },
+      layer: L.LayerGroup,
+      color: string,
+      detail: string,
+      icon?: IconAsset,
+      fallbackIcon?: string,
+      labelStyle?: "major" | "minor",
+    ) => {
+      const key = `${L.Util.stamp(layer)}:${point.id ?? point.key ?? point.title}`,
+        signature = JSON.stringify([
+          point.x,
+          point.y,
+          point.title,
+          color,
+          detail,
+        ]);
+      activeCache.add(key);
+      let cached = circleCache.get(key);
+      const popup = () => {
+        const node = el("div");
+        node.append(el("strong", point.title), note(detail));
+        return node;
+      };
+      if (!cached) {
+        cached = {
+          circle: L.circleMarker([point.y, point.x], {
+            renderer,
+            radius: 5,
+            color,
+            weight: 2,
+            fillOpacity: 0.85,
+          }).bindPopup(popup),
+          signature,
+        };
+        circleCache.set(key, cached);
+      } else if (cached.signature !== signature) {
+        cached.circle
+          .setLatLng([point.y, point.x])
+          .setStyle({ color })
+          .unbindPopup()
+          .bindPopup(popup);
+        cached.signature = signature;
+      }
+      cached.circle.addTo(layer);
+      icon ??= annotationIcon(state, {
+        iconId: null,
+        category: point.category,
+      });
+      if (
+        (icon || fallbackIcon || labelStyle) &&
+        (viewer.map.getZoom() >= 1 || labelStyle) &&
+        viewer.map.getBounds().contains([point.y, point.x]) &&
+        (iconCounts.get(layer) ?? 0) < 200
+      ) {
+        iconCounts.set(layer, (iconCounts.get(layer) ?? 0) + 1);
+        let symbol: L.Icon | L.DivIcon;
+        if (labelStyle && !icon) {
+          const text = el(
+            "span",
+            point.title,
+            labelStyle === "major" ? "official-place major" : "official-place",
+          );
+          symbol = L.divIcon({
+            className: "official-label",
+            html: text,
+            iconSize: [180, 24],
+            iconAnchor: [90, 12],
+          });
+        } else
+          symbol = L.icon({
+            iconUrl: icon
+              ? `data:image/png;base64,${icon.base64}`
+              : fallbackIcon!,
+            iconSize: [28, 28],
+            iconAnchor: [14, 14],
+          });
+        L.marker([point.y, point.x], {
+          icon: symbol,
+          title: point.title,
+          alt: icon?.description ?? point.title,
+        })
+          .bindPopup(popup)
+          .addTo(layer);
+      }
+    };
+
+    if (visibility().customEnabled)
+      for (const a of state.annotations)
+        if (
+          `${a.title} ${a.category} ${a.notes}`.toLocaleLowerCase().includes(q)
+        )
+          marker(
+            a,
+            customLayer,
+            "#dceba1",
+            `${a.kind} · ${a.category} · ${a.verificationState} · floor ${a.applicability.floor ?? "unknown"}`,
+            annotationIcon(state, a),
+          );
+    if (visibility().curatedEnabled)
+      for (const e of state.entities)
+        if (
+          e.acceptance === "accepted" &&
+          `${e.title} ${e.category}`.toLocaleLowerCase().includes(q)
+        )
+          marker(
+            e,
+            reviewedLayer,
+            e.freshness === "stale" ? "#f2ad70" : "#83d8d1",
+            `Reviewed · ${e.freshness} · ${e.refs.length} source records · upstream lineages ${e.independentLineages ?? "unknown"}`,
+          );
+    const latest = placedRecords(state, selectedSnapshots);
+    const officialIcons = new Map(
+      legacy[0]?.getSnapshot()?.categories.map((c) => [c.id, c.icon]) ?? [],
+    );
+    const entries = new Map(
+      state.snapshots.map((e) => [
+        JSON.stringify([e.snapshot.sourceId, e.snapshot.snapshotId]),
+        e,
+      ]),
+    );
+    const rawCategories = new Map(
+      state.snapshots.flatMap((e) =>
+        e.snapshot.records.map(
+          (r) =>
+            [
+              JSON.stringify([
+                e.snapshot.sourceId,
+                e.snapshot.snapshotId,
+                r.id,
+              ]),
+              r.categoryId,
+            ] as const,
+        ),
+      ),
+    );
+    let visibleRaw = 0;
+    for (const p of latest) {
+      const entry = entries.get(JSON.stringify([p.sourceId, p.snapshotId]))!;
+      if (entry.legacy) continue;
+      const category = rawCategories.get(p.key)!;
+      if (
+        isVisible(
+          visibility(),
+          p.sourceId,
+          category,
+          `${p.title} ${p.category}`,
+          true,
+        )
+      ) {
+        visibleRaw++;
+        marker(
+          p,
+          sourceLayer,
+          "#9bb6dc",
+          `${sourcePolicies[p.sourceId].name} · ${p.category} · ${p.activity} · source claim`,
+          undefined,
+          p.sourceId === "official" ? officialIcons.get(category) : undefined,
+          p.sourceId === "official"
+            ? markerSources[0].labelCategories[category]
+            : undefined,
+        );
+      }
+    }
+    const activeEntries = new Map<string, (typeof state.snapshots)[number]>();
+    for (const entry of state.snapshots)
+      activeEntries.set(entry.snapshot.sourceId, entry);
+    for (const [source, key] of selectedSnapshots) {
+      const entry = state.snapshots.find((e) => e.key === key);
+      if (entry) activeEntries.set(source, entry);
+    }
+    const legacySnapshot = legacy[0]?.getSnapshot(),
+      legacyFilters = legacy[0]?.getFilters();
+    const legacyTotal = !activeEntries.has("official")
+      ? (legacySnapshot?.records.length ?? 0)
+      : 0;
+    const legacyShown =
+      legacyTotal && legacyFilters?.master
+        ? legacySnapshot!.records.filter(
+            (r) =>
+              legacyFilters.enabled.includes(r.category) &&
+              `${r.name} ${r.category}`.toLocaleLowerCase().includes(q),
+          ).length
+        : 0;
+    const totalRaw = [...activeEntries.values()].reduce(
+        (n, e) => n + e.snapshot.records.length,
+        legacyTotal,
+      ),
+      shownRaw = visibleRaw + legacyShown;
+    const unregistered = [...activeEntries.values()]
+      .filter(
+        (e) =>
+          !registrationMatches(
+            e.snapshot.frame,
+            state.registrations.find((r) => r.id === e.registrationId),
+          ),
+      )
+      .reduce((n, e) => n + e.snapshot.records.length, 0);
+    const keySummary = document.querySelector("#key-summary");
+    if (keySummary)
+      keySummary.textContent = `${shownRaw} / ${totalRaw} raw source locations · ${unregistered} awaiting registration · ${state.annotations.length} custom points · ${state.entities.filter((e) => e.acceptance === "accepted").length} reviewed`;
+    const summary = document.querySelector("#official-summary");
+    if (summary)
+      summary.textContent = `${shownRaw} / ${totalRaw} raw source locations`;
+    const summaryCount = document.querySelector("#official-summary-count");
+    if (summaryCount) summaryCount.textContent = String(shownRaw);
+    if (
+      state.annotations.length ||
+      state.entities.some((e) => e.acceptance === "accepted") ||
+      totalRaw
+    )
+      document
+        .querySelectorAll<HTMLButtonElement>("#key-show-all,#key-hide-all")
+        .forEach((b) => (b.disabled = false));
+    if (circleCache.size > 20000)
+      for (const key of circleCache.keys())
+        if (!activeCache.has(key)) circleCache.delete(key);
+    const count = document.querySelector(
+      ".overlay-summary span:not(.marker-count)",
+    );
+    if (count)
+      count.textContent = `${state.annotations.length} private points · ${state.entities.filter((e) => e.acceptance === "accepted").length} reviewed entities`;
+  }
+  const keySlots = new Map<string, HTMLElement>();
+  const extras = el("section");
+  extras.id = "workspace-key-layers";
+  document.querySelector("#map-key-content")!.append(extras);
+  const dialogExtras = el("section");
+  dialogExtras.id = "workspace-dialog-layers";
+  document.querySelector("#source-controls")!.append(dialogExtras);
+  function renderKey() {
+    const focused =
+      document.activeElement instanceof HTMLElement &&
+      (extras.contains(document.activeElement) ||
+        dialogExtras.contains(document.activeElement))
+        ? {
+            id: document.activeElement.id,
+            start:
+              document.activeElement instanceof HTMLInputElement
+                ? document.activeElement.selectionStart
+                : null,
+            end:
+              document.activeElement instanceof HTMLInputElement
+                ? document.activeElement.selectionEnd
+                : null,
+          }
+        : undefined;
+    for (const policy of Object.values(sourcePolicies)) {
+      if (policy.id === "official") continue;
+      for (const parent of [
+        document.querySelector("#source-controls")!,
+        document.querySelector("#map-key-content")!,
+      ]) {
+        const key = `${parent.id}:${policy.id}`;
+        let slot = keySlots.get(key);
+        if (!slot) {
+          slot = el("section", undefined, "workspace-provider-card");
+          slot.dataset.workspaceProvider = policy.id;
+          parent.append(slot);
+          keySlots.set(key, slot);
+        }
+        slot.replaceChildren(
+          el("h3", policy.name),
+          note(`Permission required · 0 imported records. ${policy.reason}`),
+        );
+        const link = el("a", "Open source ↗");
+        link.href = policy.page;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        slot.append(
+          link,
+          note(
+            "Categories become available after a permission-cleared import.",
+          ),
+        );
+      }
+    }
+    function controls(host: HTMLElement, prefix: string) {
+      host.replaceChildren();
+      for (const [k, label] of [
+        ["customEnabled", "My points"],
+        ["curatedEnabled", "Reviewed map"],
+      ] as const) {
+        const check = input("", "checkbox");
+        check.checked = visibility()[k];
+        check.id = `${prefix}key-${k}`;
+        check.addEventListener("change", () => {
+          void changeVisibility("Layer visibility saved", (value) => {
+            value[k] = check.checked;
+          }).catch(error);
+        });
+        host.append(
+          field(
+            `${label} · ${k === "customEnabled" ? state.annotations.length : state.entities.filter((e) => e.acceptance === "accepted").length}`,
+            check,
+          ),
+        );
+      }
+      const search = input(visibility().query);
+      search.id = prefix + "workspace-map-search";
+      search.placeholder = "Find points and source locations";
+      search.addEventListener("input", () => {
+        if (retainedFailure) {
+          error("Export/reload the retained unsaved draft first.");
+          renderKey();
+          return;
+        }
+        clearTimeout(searchTimer);
+        clearTimeout(filterTimer);
+        const value = structuredClone(visibility());
+        value.query = search.value;
+        pendingVisibility = value;
+        applyLegacyFilters();
+        renderMarkers();
+        dialog.dataset.visibilityEpoch = String(++visibilityEpoch);
+        for (const other of document.querySelectorAll<HTMLInputElement>(
+          "#workspace-map-search,#layers-workspace-map-search",
+        ))
+          other.value = value.query;
+        searchTimer = setTimeout(() => {
+          void persistVisibility("Search saved", value).catch(error);
+        }, 400);
+      });
+      host.append(field("Search map layers", search));
+      for (const policy of Object.values(sourcePolicies)) {
+        const entries = state.snapshots.filter(
+          (e) => e.snapshot.sourceId === policy.id,
+        );
+        if (!entries.length) continue;
+        const selected =
+            selectedSnapshots.get(policy.id) ?? entries.at(-1)!.key,
+          entry = entries.find((e) => e.key === selected) ?? entries.at(-1)!;
+        if (entry.legacy) continue;
+        const group = el("fieldset");
+        group.append(el("legend", `${policy.name} snapshot layers`));
+        const snapshot = select(
+          entries.map((e) => ({ value: e.key, label: e.snapshot.snapshotId })),
+          entry.key,
+        );
+        snapshot.id = `${prefix}key-source-snapshot-${policy.id}`;
+        snapshot.addEventListener("change", () => {
+          selectedSnapshots.set(policy.id, snapshot.value);
+          applyLegacyFilters();
+          refresh();
+        });
+        group.append(field("Snapshot", snapshot));
+        const master = input("", "checkbox");
+        master.id = `${prefix}key-source-master-${policy.id}`;
+        master.checked = visibility().sourceEnabled[policy.id] !== false;
+        master.indeterminate =
+          master.checked &&
+          sourceSelection(
+            visibility(),
+            policy.id,
+            entry.snapshot.categories.map((c) => c.id),
+          ) === "mixed";
+        master.addEventListener("change", () => {
+          void changeVisibility("Source visibility saved", (value) => {
+            value.sourceEnabled[policy.id] = master.checked;
+          }).catch(error);
+        });
+        group.append(
+          field(
+            `Show source · ${sourceSelection(
+              visibility(),
+              policy.id,
+              entry.snapshot.categories.map((c) => c.id),
+            )}`,
+            master,
+          ),
+        );
+        for (const category of entry.snapshot.categories) {
+          const check = input("", "checkbox");
+          check.id = `${prefix}key-source-category-${policy.id}-${category.id}`;
+          check.checked =
+            visibility().categoryMask[policy.id]?.[category.id] !== false;
+          check.addEventListener("change", () => {
+            void changeVisibility("Category visibility saved", (value) => {
+              value.categoryMask[policy.id] ??= {};
+              value.categoryMask[policy.id][category.id] = check.checked;
+            }).catch(error);
+          });
+          const row = field(
+            `${category.path.join(" / ")} · ${entry.snapshot.records.filter((r) => r.categoryId === category.id).length}`,
+            check,
+          );
+          const ownIcon = annotationIcon(state, {
+              iconId: null,
+              category: entry.mapping[category.id] ?? "Unmapped",
+            }),
+            sourceIcon =
+              policy.id === "official"
+                ? legacy[0]
+                    ?.getSnapshot()
+                    ?.categories.find((c) => c.id === category.id)?.icon
+                : undefined;
+          if (ownIcon || sourceIcon) {
+            const image = el("img");
+            image.src = ownIcon
+              ? `data:image/png;base64,${ownIcon.base64}`
+              : sourceIcon!;
+            image.alt = "";
+            image.width = image.height = 24;
+            row.insertBefore(image, check);
+          }
+          group.append(row);
+        }
+        group.append(
+          button(
+            "Show source categories",
+            () =>
+              changeVisibility("All source categories shown", (value) =>
+                setSourceAll(
+                  value,
+                  policy.id,
+                  entry.snapshot.categories.map((c) => c.id),
+                  true,
+                ),
+              ),
+            `${prefix}key-source-show-${policy.id}`,
+          ),
+          button(
+            "Hide source categories",
+            () =>
+              changeVisibility("Source categories hidden", (value) =>
+                setSourceAll(
+                  value,
+                  policy.id,
+                  entry.snapshot.categories.map((c) => c.id),
+                  false,
+                ),
+              ),
+            `${prefix}key-source-hide-${policy.id}`,
+          ),
+        );
+        host.append(group);
+      }
+      const selectedAsset = state.basemaps.find(
+          (b) => b.id === selectedBackgroundId,
+        ),
+        selectedRegistration = state.registrations.find(
+          (r) => r.id === selectedAsset?.registrationId,
+        );
+      if (
+        selectedBackgroundId &&
+        (!selectedAsset ||
+          !registrationMatches(selectedAsset.frame, selectedRegistration) ||
+          comparisonSignature !==
+            JSON.stringify([selectedAsset.id, selectedRegistration]))
+      ) {
+        backgroundRequest++;
+        comparison.clear();
+        selectedBackgroundId = "";
+        comparisonSignature = "";
+      }
+      const choice = select(
+        [
+          { value: "", label: "Canonical background" },
+          ...state.basemaps.map((b) => ({ value: b.id, label: b.description })),
+        ],
+        selectedBackgroundId,
+      );
+      choice.id = prefix + "comparison-background";
+      const opacity = input(String(comparisonOpacity), "range");
+      opacity.min = "0";
+      opacity.max = "100";
+      opacity.id = prefix + "comparison-opacity";
+      opacity.addEventListener("input", () => {
+        comparisonOpacity = Number(opacity.value);
+        comparison.setOpacity(comparisonOpacity / 100);
+        for (const other of document.querySelectorAll<HTMLInputElement>(
+          "#comparison-opacity,#layers-comparison-opacity",
+        ))
+          other.value = String(comparisonOpacity);
+      });
+      choice.addEventListener("change", async () => {
+        const request = ++backgroundRequest;
+        try {
+          if (!choice.value) {
+            comparison.clear();
+            selectedBackgroundId = "";
+            comparisonSignature = "";
+            renderKey();
+            return;
+          }
+          const asset = state.basemaps.find((b) => b.id === choice.value)!,
+            registration = state.registrations.find(
+              (r) => r.id === asset.registrationId,
+            );
+          if (!registrationMatches(asset.frame, registration))
+            throw new Error(
+              "Calibrate this background in My workspace → Sources before comparison.",
+            );
+          const blob = await store?.readResource(asset.id);
+          if (disposed || request !== backgroundRequest) return;
+          if (!blob)
+            throw new Error(
+              "Background bytes missing. Restore the matching authorized local file.",
+            );
+          selectedBackgroundId = asset.id;
+          comparisonSignature = JSON.stringify([asset.id, registration]);
+          const shown = await comparison.show(
+            blob,
+            registration,
+            comparisonOpacity / 100,
+          );
+          if (!shown || disposed || request !== backgroundRequest) return;
+          notice(
+            "Calibrated background loaded. Use100% to switch or adjust opacity to compare.",
+          );
+          renderKey();
+        } catch (e) {
+          if (disposed || request !== backgroundRequest) return;
+          choice.value = "";
+          selectedBackgroundId = "";
+          comparisonSignature = "";
+          comparison.clear();
+          renderKey();
+          error(e);
+        }
+      });
+      host.append(
+        field("Compare local background", choice),
+        field("Background opacity (100% switches view)", opacity),
+      );
+    }
+    controls(extras, "");
+    controls(dialogExtras, "layers-");
+    if (focused) {
+      const next = document.getElementById(focused.id);
+      next?.focus();
+      if (
+        next instanceof HTMLInputElement &&
+        focused.start !== null &&
+        focused.end !== null &&
+        next.type === "text"
+      )
+        next.setSelectionRange(focused.start, focused.end);
+    }
+  }
+  const sourceEvent = (event: Event) => {
+    if (applyingFilters || !store) return;
+    const detail = (event as CustomEvent).detail;
+    if (detail.sourceId !== "official" || detail.origin !== "user") return;
+    if (retainedFailure) {
+      applyLegacyFilters();
+      return;
+    }
+    const master = detail.master,
+      mask = Object.fromEntries(
+        detail.categories.map((id: string) => [
+          id,
+          detail.enabled.includes(id),
+        ]),
+      );
+    const value = structuredClone(visibility());
+    value.sourceEnabled.official = master;
+    value.categoryMask.official = mask;
+    pendingVisibility = value;
+    clearTimeout(filterTimer);
+    clearTimeout(searchTimer);
+    filterTimer = setTimeout(() => {
+      void persistVisibility("Source masks saved", value).catch(error);
+    }, 100);
+  };
+  document.addEventListener("map-source-filters", sourceEvent);
+  const statusEvent = () => {
+    if (applyingFilters || !hydrated) return;
+    syncUnmigratedLegacy();
+    applyLegacyFilters();
+    renderMarkers();
+    renderKey();
+  };
+  document.addEventListener("map-source-status", statusEvent);
+  function syncUnmigratedLegacy() {
+    if (
+      pendingVisibility ||
+      legacyMigrationCommitted ||
+      state.migrations.includes("source-masks-v1") ||
+      state.snapshots.some((e) => e.snapshot.sourceId === "official") ||
+      !legacy[0]?.getSnapshot()
+    )
+      return;
+    try {
+      const plan = planLegacyMaskMigration(
+        localStorage,
+        { official: legacy[0].getFilters().categories },
+        ["official"],
+      );
+      if (!plan.warnings.length) {
+        state.visibility.sourceEnabled.official =
+          plan.visibility.sourceEnabled.official;
+        state.visibility.categoryMask.official =
+          plan.visibility.categoryMask.official;
+      }
+    } catch {
+      /* Private editing still works when only localStorage is unavailable. */
+    }
+  }
+  function applyLegacyFilters(persistLegacy = false) {
+    applyingFilters = true;
+    try {
+      for (const source of legacy) {
+        const filters = source.getFilters();
+        const selected =
+          selectedSnapshots.get("official") ??
+          state.snapshots
+            .filter((e) => e.snapshot.sourceId === "official")
+            .at(-1)?.key;
+        const workspaceSource = state.snapshots.find((e) => e.key === selected);
+        const replaced = !!workspaceSource && !workspaceSource.legacy;
+        source.setLegacyPersistence(
+          !legacyMigrationCommitted &&
+            !state.migrations.includes("source-masks-v1") &&
+            !replaced,
+        );
+        document.querySelector<HTMLElement>(
+          "[data-key-source=official]",
+        )!.hidden = replaced;
+        document.querySelector<HTMLElement>(
+          "#source-controls > .source-slot",
+        )!.hidden = replaced;
+        source.setFilters({
+          master:
+            (!workspaceSource || workspaceSource.legacy) &&
+            visibility().sourceEnabled.official !== false,
+          enabled: filters.categories.filter(
+            (id) => visibility().categoryMask.official?.[id] !== false,
+          ),
+          query: visibility().query,
+          persistLegacy,
+        });
+      }
+    } finally {
+      applyingFilters = false;
+    }
+  }
+  const bulk = (show: boolean) => {
+    clearTimeout(filterTimer);
+    const categories: Record<string, string[]> = {
+      official: legacy[0]?.getFilters().categories ?? [],
+    };
+    for (const entry of state.snapshots)
+      categories[entry.snapshot.sourceId] = entry.snapshot.categories.map(
+        (c) => c.id,
+      );
+    void changeVisibility(
+      show ? "All layers shown" : "All layers hidden",
+      (value) => globalVisibility(value, categories, show),
+    ).catch(error);
+  };
+  const show = () => bulk(true),
+    hide = () => bulk(false);
+  document.querySelector("#key-show-all")!.addEventListener("click", show);
+  document.querySelector("#key-hide-all")!.addEventListener("click", hide);
+  const zoom = () => renderMarkers();
+  viewer.map.on("zoomend moveend", zoom);
+  const beforeUnload = (event: BeforeUnloadEvent) => {
+    const preferenceSave =
+      !!failedLabel &&
+      /visibility|Source masks|categories|All layers|Search/.test(failedLabel);
+    if (
+      dirty ||
+      processing ||
+      (unsaved && !preferenceSave) ||
+      (pendingVisibility &&
+        (legacyMigrationCommitted ||
+          state.migrations.includes("source-masks-v1")))
+    ) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+  };
+  window.addEventListener("beforeunload", beforeUnload);
+  const initialized = (async () => {
+    try {
+      store = await openWorkspace({ prepare: preparer.prepare });
+      const history = await store.read();
+      legacyMigrationCommitted = await store.hasLegacyMigration();
+      if (history.current) {
+        validateWorkspace(history.current.data);
+        state = history.current.data;
+        pendingVisibility = undefined;
+        revision = history.current.revision;
+        dialog.dataset.revision = String(revision);
+      }
+      syncUnmigratedLegacy();
+      hydrated = true;
+      openButton.disabled = false;
+      notice("Private workspace ready.");
+      refresh();
+      applyLegacyFilters();
+    } catch (e) {
+      openButton.disabled = false;
+      error(e);
+      refresh();
+    }
+  })();
+  return {
+    ready: initialized,
+    services,
+    destroy() {
+      backgroundRequest++;
+      disposed = true;
+      window.removeEventListener("beforeunload", beforeUnload);
+      processing?.abort();
+      clearTimeout(filterTimer);
+      clearTimeout(searchTimer);
+      clearTimeout(toastTimer);
+      detailCleanup?.();
+      comparison.destroy();
+      preparer.destroy();
+      store?.close();
+      viewer.map.off("click", mapPick);
+      viewer.map.off("zoomend moveend", zoom);
+      document.removeEventListener("workspace-error", errorListener);
+      document.removeEventListener("map-source-filters", sourceEvent);
+      document.removeEventListener("map-source-status", statusEvent);
+      document
+        .querySelector("#key-show-all")
+        ?.removeEventListener("click", show);
+      document
+        .querySelector("#key-hide-all")
+        ?.removeEventListener("click", hide);
+      customLayer.remove();
+      sourceLayer.remove();
+      reviewedLayer.remove();
+      dialog.remove();
+      openButton.remove();
+      extras.remove();
+      dialogExtras.remove();
+      keySlots.forEach((slot) => slot.remove());
+      toast.remove();
+    },
+  };
+}

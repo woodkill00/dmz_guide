@@ -27,7 +27,7 @@ These paths are ignored. Never force-add unknown-rights assets, private screensh
 
 Map key always opens the legend directly, including before Layers. Clicking Map key again leaves it visible. Close with × or Escape within the panel. Every supplied category shows its icon, name and count; zero-count categories remain listed without invented markers. Individual checkboxes and Show all / Hide all share state with Sources & Layers.
 
-Sources & Layers organizes imported points by website and category. Visibility changes retain a source's custom mix. Selecting one icon from a hidden source displays that category alone. Preferences are browser-local; storage failure falls back safely, and browser storage is not a backup. The future authored-marker layer remains separate.
+Sources & Layers organizes imported points by website and category. Visibility changes retain a source's custom mix. Selecting one icon from a hidden source displays that category alone. Preferences are browser-local; storage failure falls back safely, and browser storage is not a backup. Private authored markers and Reviewed map have their own controls. My workspace provides point editing, icons, source inspection/calibration, evidence review and private backups; see the [workspace workflow](../tools/hajin-map/README.md).
 
 Drag, scroll or pinch to navigate; keyboard arrows pan and +/− zoom. Reset fits the complete image. Coordinates are background-relative, not an independently verified in-game grid. Baked-in source shading is not live match information. Source claims/positions require their own evidence and asset rights.
 
@@ -44,4 +44,4 @@ Alternatively set `CHROMIUM_PATH` to an installed compatible Chromium/Edge execu
 
 Snapshot reads are capped at 2 MiB with a 10-second deadline, 100 categories and 5,000 records. Category IDs are at most 80 characters, names 120, groups 80, icon paths 260; record IDs are at most 100 and names 200. Image fetch/decode is bounded by 15 seconds and 32 MiB. Invalid maps/versions/positions and unsafe icon paths reject the snapshot. No imported script is executed.
 
-Integration scope, requirement traces and actual acceptance are in [feature 019](../specs/019-local-map-workspace/spec.md). Run the repository's unchanged native checks separately; workspace tests do not substitute for them.
+Original integration scope is in [feature 019](../specs/019-local-map-workspace/spec.md). Current source/private-workspace acceptance and remaining external gates are in [feature020 evidence](../specs/020-map-source-fusion/verification.md). Run the repository's unchanged native checks separately; workspace tests do not substitute for them.
