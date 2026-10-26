@@ -151,6 +151,44 @@ export async function runProviderBrowser(parent) {
     await page.locator("#workspace-open:enabled").waitFor();
     await page.waitForTimeout(300);
     assert.equal(await page.locator("[data-source-marker-id]").count(), 0);
+    const duplicateSnapshot = JSON.parse(captures.codcentral.snapshot);
+    duplicateSnapshot.records.forEach((r, i) => {
+      r.name = JSON.parse(captures.official.snapshot).records[i].name;
+    });
+    captures.codcentral.snapshot = JSON.stringify(duplicateSnapshot);
+    captures.codcentral.snapshotDigest = hash(captures.codcentral.snapshot);
+    captures.codcentral.evidence = JSON.stringify({
+      snapshotDigest: captures.codcentral.snapshotDigest,
+      registrationVersion: "reviewed-affine-v1",
+      registration: { canonicalDigest: hajin.provenance.sha256 },
+    });
+    captures.codcentral.registrationDigest = hash(captures.codcentral.evidence);
+    await page.reload();
+    await page.locator("#workspace-open:enabled").waitFor();
+    await page.locator("#key-show-all").click();
+    await page.waitForFunction(
+      () => document.querySelectorAll("[data-source-marker-id]").length === 6,
+    );
+    assert.equal(await count("official"), 2);
+    assert.equal(await count("codcentral"), 0);
+    assert.equal(
+      await page
+        .locator('[data-key-source="codcentral"] [data-duplicate-count="1"]')
+        .count(),
+      2,
+    );
+    await page.locator("#show-duplicate-markers").check();
+    await page.waitForFunction(
+      () => document.querySelectorAll("[data-source-marker-id]").length === 8,
+    );
+    await page.locator("#show-duplicate-markers").uncheck();
+    await page.locator("#key-loaded-source-master-official").uncheck();
+    assert.equal(await count("official"), 0);
+    assert.equal(await count("codcentral"), 2);
+    await page.locator("#key-loaded-source-master-official").check();
+    assert.equal(await count("codcentral"), 0);
+    await page.locator("#key-hide-all").click();
+    await page.waitForTimeout(500);
     const originalCapture = captures.wzstats.snapshot;
     captures.wzstats.snapshot += " ";
     await page.reload();
@@ -194,10 +232,18 @@ export async function runProviderBrowser(parent) {
     assert.ok(
       promoted.every((s) => s.records === 2 && s.lineages.length === 0),
     );
+    await page.locator("#close-workspace").click();
+    await page.locator("#key-show-all").click();
+    await page.waitForFunction(() =>
+      document
+        .querySelector("#key-summary")
+        ?.textContent.startsWith("6 / 8 raw source locations"),
+    );
     assert.deepEqual(errors, []);
     assert.deepEqual(external, []);
     return [
       "four authorized local source captures retain independent masks/icons, counts, global selection and reload persistence offline",
+      "duplicate source copies are starred and hidden by default, can be inspected, and fall back when the official source is deselected",
     ];
   } finally {
     await context.close();

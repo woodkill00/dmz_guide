@@ -41,6 +41,10 @@ import {
 } from "./visibility.ts";
 import { createBasemapComparison } from "./basemap-view.ts";
 import { registrationMatches } from "./registration.ts";
+import {
+  displayDuplicates,
+  type DisplayRecord,
+} from "../map/display-duplicates.ts";
 import type { UIServices } from "./ui-context.ts";
 type Legacy = ReturnType<typeof createSourceMarkers>;
 type Viewer = ReturnType<typeof createMapView>;
@@ -69,6 +73,8 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     visibilityEpoch = 0;
   let searchTimer: ReturnType<typeof setTimeout> | undefined;
   const visibility = () => pendingVisibility ?? state.visibility;
+  let showDuplicateMarkers = false;
+  let duplicatePlan = displayDuplicates([]);
   let unsaved: Workspace | undefined,
     failedLabel: string | undefined,
     processing: AbortController | undefined;
@@ -82,6 +88,68 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     reviewedLayer = L.layerGroup().addTo(viewer.map),
     renderer = L.canvas({ padding: 0.5 }),
     comparison = createBasemapComparison(viewer.map);
+  const loadedKey = (sourceId: string, recordId: string) =>
+    JSON.stringify([sourceId, "loaded", recordId]);
+  function computeDisplayPlan() {
+    const active = new Map(
+      state.snapshots.map((e) => [e.snapshot.sourceId, e]),
+    );
+    for (const [source, key] of selectedSnapshots) {
+      const entry = state.snapshots.find((e) => e.key === key);
+      if (entry) active.set(source, entry);
+    }
+    const records: DisplayRecord[] = [];
+    for (const source of legacy) {
+      if (active.has(source.id) && !active.get(source.id)!.legacy) continue;
+      for (const r of source.getSnapshot()?.records ?? [])
+        records.push({
+          key: loadedKey(source.id, r.id),
+          sourceId: source.id,
+          category: r.category,
+          title: r.name,
+          x: r.x * 4096,
+          y: r.y * 4096,
+          floor: r.floor == null ? null : String(r.floor),
+          build: null,
+          visible: isVisible(
+            visibility(),
+            source.id,
+            r.category,
+            `${r.name} ${r.category}`,
+            true,
+          ),
+        });
+    }
+    const rawBySource = new Map(
+      [...active].map(([id, entry]) => [
+        id,
+        new Map(entry.snapshot.records.map((r) => [r.id, r])),
+      ]),
+    );
+    for (const p of placedRecords(state, selectedSnapshots)) {
+      const entry = active.get(p.sourceId);
+      if (!entry || entry.legacy) continue;
+      const raw = rawBySource.get(p.sourceId)!.get(p.recordId)!;
+      records.push({
+        key: p.key,
+        sourceId: p.sourceId,
+        category: raw.categoryId,
+        title: p.title,
+        x: p.x,
+        y: p.y,
+        floor: p.applicability.floor,
+        build: p.applicability.gameBuild,
+        visible: isVisible(
+          visibility(),
+          p.sourceId,
+          raw.categoryId,
+          `${p.title} ${p.category}`,
+          true,
+        ),
+      });
+    }
+    duplicatePlan = displayDuplicates(records, showDuplicateMarkers);
+  }
   const openButton = button(
     "My workspace",
     () => {
@@ -1197,6 +1265,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     for (const p of latest) {
       const entry = entries.get(JSON.stringify([p.sourceId, p.snapshotId]))!;
       if (entry.legacy) continue;
+      if (duplicatePlan.suppressed.has(p.key)) continue;
       const category = rawCategories.get(p.key)!;
       if (
         isVisible(
@@ -1240,6 +1309,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
           snapshot?.records.filter(
             (r) =>
               filters.enabled.includes(r.category) &&
+              !duplicatePlan.suppressed.has(loadedKey(source.id, r.id)) &&
               `${r.name} ${r.category}`.toLocaleLowerCase().includes(q),
           ).length ?? 0;
     }
@@ -1259,7 +1329,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
       .reduce((n, e) => n + e.snapshot.records.length, 0);
     const keySummary = document.querySelector("#key-summary");
     if (keySummary)
-      keySummary.textContent = `${shownRaw} / ${totalRaw} raw source locations · ${unregistered} awaiting registration · ${state.annotations.length} custom points · ${state.entities.filter((e) => e.acceptance === "accepted").length} reviewed`;
+      keySummary.textContent = `${shownRaw} / ${totalRaw} raw source locations · ${duplicatePlan.suppressed.size} likely duplicate copies hidden · ${unregistered} awaiting registration · ${state.annotations.length} custom points · ${state.entities.filter((e) => e.acceptance === "accepted").length} reviewed`;
     const summary = document.querySelector("#official-summary");
     if (summary)
       summary.textContent = `${shownRaw} / ${totalRaw} raw source locations`;
@@ -1311,6 +1381,27 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
           }
         : undefined;
     sourceOverview.replaceChildren(el("legend", "Website layers"));
+    const inspectDuplicates = input("", "checkbox");
+    inspectDuplicates.id = "show-duplicate-markers";
+    inspectDuplicates.checked = showDuplicateMarkers;
+    inspectDuplicates.addEventListener("change", () => {
+      showDuplicateMarkers = inspectDuplicates.checked;
+      applyLegacyFilters();
+      renderMarkers();
+      renderKey();
+    });
+    sourceOverview.append(
+      field("Show duplicate markers for comparison", inspectDuplicates),
+      note(
+        "* marks likely matching locations. Copies are hidden, never deleted. Different categories and known floors/builds remain separate.",
+      ),
+    );
+    if (duplicatePlan.truncated)
+      sourceOverview.append(
+        note(
+          "Duplicate check reached its work limit. Remaining locations are shown; narrow the source selection for review.",
+        ),
+      );
     for (const source of legacy) {
       const snapshot = source.getSnapshot();
       if (!snapshot) continue;
@@ -1475,16 +1566,33 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
             `${category.path.join(" / ")} · ${entry.snapshot.records.filter((r) => r.categoryId === category.id).length}`,
             check,
           );
+          const matching = entry.snapshot.records.filter(
+            (r) =>
+              r.categoryId === category.id &&
+              duplicatePlan.matches.has(
+                JSON.stringify([policy.id, entry.snapshot.snapshotId, r.id]),
+              ),
+          ).length;
+          if (matching) {
+            row.append(el("span", ` * ${matching} matching`));
+            row.classList.toggle(
+              "duplicate-category",
+              matching ===
+                entry.snapshot.records.filter(
+                  (r) => r.categoryId === category.id,
+                ).length,
+            );
+            row.title =
+              "Likely matching source locations are retained for comparison; only one selected copy is drawn.";
+          }
           const ownIcon = annotationIcon(state, {
               iconId: null,
               category: entry.mapping[category.id] ?? "Unmapped",
             }),
-            sourceIcon =
-              policy.id === "official"
-                ? legacy[0]
-                    ?.getSnapshot()
-                    ?.categories.find((c) => c.id === category.id)?.icon
-                : undefined;
+            sourceIcon = legacy
+              .find((source) => source.id === policy.id)
+              ?.getSnapshot()
+              ?.categories.find((c) => c.id === category.id)?.icon;
           if (ownIcon || sourceIcon) {
             const image = el("img");
             image.src = ownIcon
@@ -1695,6 +1803,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
   function applyLegacyFilters(persistLegacy = false) {
     applyingFilters = true;
     try {
+      computeDisplayPlan();
       for (const source of legacy) {
         const filters = source.getFilters();
         const id = source.id;
@@ -1717,6 +1826,19 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
         if (keySlot) keySlot.hidden = replaced;
         if (layerSlot) layerSlot.hidden = replaced;
         source.setFilters({
+          suppressed: new Set(
+            (source.getSnapshot()?.records ?? [])
+              .filter((r) => duplicatePlan.suppressed.has(loadedKey(id, r.id)))
+              .map((r) => r.id),
+          ),
+          duplicates: new Map(
+            (source.getSnapshot()?.records ?? [])
+              .filter((r) => duplicatePlan.matches.has(loadedKey(id, r.id)))
+              .map((r) => [
+                r.id,
+                duplicatePlan.matches.get(loadedKey(id, r.id))!,
+              ]),
+          ),
           master:
             (!workspaceSource || workspaceSource.legacy) &&
             visibility().sourceEnabled[id] !== false,

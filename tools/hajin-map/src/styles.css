@@ -38,3 +38,5 @@ dialog{color:#e8e9df;background:#191f1a;border:1px solid #697453;max-width:440px
 @media(min-width:760px){.annotation-form{display:grid;grid-template-columns:1fr 1fr;column-gap:20px;align-items:start}.annotation-form>h3,.annotation-form>.workspace-note,.annotation-form>.workspace-preview,.annotation-form>.workspace-field:has(#point-title),.annotation-form>.workspace-field:has(textarea),.annotation-form>.workspace-field:has(input[type=checkbox]),.annotation-form>#pick-point-position{grid-column:1/-1}.annotation-form>.workspace-field{margin:8px 0}}
 
 .workspace-field label{min-width:0;overflow-wrap:anywhere}
+.duplicate-category { color: #9da79a; }
+.duplicate-category .category-count { font-weight: 700; }

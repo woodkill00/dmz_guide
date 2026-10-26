@@ -5,7 +5,7 @@ import type { MarkerSource } from './marker-sources';
 import { boundedBytes } from './bounded-input';
 
 interface Category { id: string; name: string; group: string; icon: string }
-interface SourceRecord extends MapPosition { id: string; name: string; category: string }
+interface SourceRecord extends MapPosition { id: string; name: string; category: string; floor?: string | number | null }
 interface Snapshot { schemaVersion: number; sourcePage: string; capturedAt: string; categories: Category[]; records: SourceRecord[] }
 type State = 'loading' | 'ready' | 'failed';
 
@@ -31,6 +31,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   const root = L.layerGroup().addTo(map);
   const groups = new Map<string, L.LayerGroup>();
   const enabled = new Set<string>();
+  let suppressed = new Set<string>(), duplicates = new Map<string,string>();
   let snapshot: Snapshot | undefined;
   let master = true;
   let controller: AbortController | undefined;
@@ -56,10 +57,10 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     root.clearLayers();
     if (markerPool.length) {
       groups.forEach(group => group.clearLayers());
-      for (const {record, marker} of markerPool) if (`${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())) groups.get(record.category)?.addLayer(marker);
+      for (const {record, marker} of markerPool) if (!suppressed.has(record.id) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())) groups.get(record.category)?.addLayer(marker);
     }
     if (master) for (const [id, group] of groups) if (enabled.has(id)) root.addLayer(group);
-    const visible = master ? snapshot.records.filter(record => enabled.has(record.category) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())).length : 0;
+    const visible = master ? snapshot.records.filter(record => !suppressed.has(record.id) && enabled.has(record.category) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())).length : 0;
     onUpdate(visible, snapshot.records.length, 'ready');
     const count = container.querySelector(`#${source.id}-count`);
     if (count) count.textContent = `${visible} of ${snapshot.records.length} locations shown`;
@@ -79,6 +80,12 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     });
     keyContainer?.querySelectorAll<HTMLInputElement>('[data-key-category]').forEach(input => {
       input.checked = master && !input.disabled && enabled.has(input.dataset.keyCategory!);
+    });
+    for (const host of [container,keyContainer]) host?.querySelectorAll<HTMLInputElement>('[data-category],[data-key-category]').forEach(input => {
+      const category = input.dataset.category ?? input.dataset.keyCategory, records = snapshot!.records.filter(r=>r.category===category), matched = records.filter(r=>duplicates.has(r.id)).length;
+      const row=input.closest('label'), count=row?.querySelector('.category-count');
+      if(count)count.textContent=`${records.length}${matched ? ` * ${matched} matching` : ''}`;
+      if(row){row.classList.toggle('duplicate-category',matched>0&&matched===records.length);row.dataset.duplicateCount=String(matched);if(matched)row.title=`* ${matched} likely duplicate locations. One selected source is drawn; enable Show duplicate markers to inspect every source.`;else if(records.length)row.removeAttribute('title');}
     });
     if (persistLegacy) persist();
     const detail = {sourceId: source.id, origin: restoringSnapshot ? 'load' : persistLegacy ? 'user' : 'program', master, enabled: [...enabled], categories: snapshot.categories.map(c => c.id)};
@@ -286,7 +293,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   return { id: source.id, reload: load, setAll,
     getSnapshot: () => snapshot,
     getFilters: () => ({master, enabled: [...enabled], categories: snapshot?.categories.map(c => c.id) ?? []}),
-    setFilters(value: {master: boolean; enabled: string[]; query?: string; persistLegacy?: boolean}) { master = value.master; enabled.clear(); const valid = new Set(snapshot ? available().map(category => category.id) : []); value.enabled.forEach(id => { if (valid.has(id)) enabled.add(id); }); query = value.query ?? query; update(value.persistLegacy ?? false); },
+    setFilters(value: {master: boolean; enabled: string[]; query?: string; persistLegacy?: boolean; suppressed?: Set<string>; duplicates?: Map<string,string>}) { master = value.master; enabled.clear(); const valid = new Set(snapshot ? available().map(category => category.id) : []); value.enabled.forEach(id => { if (valid.has(id)) enabled.add(id); }); query = value.query ?? query; suppressed=value.suppressed??suppressed; duplicates=value.duplicates??duplicates; update(value.persistLegacy ?? false); },
     setQuery(value: string) { query = value; update(false); },
     setLegacyPersistence(value: boolean) { legacyPersistence = value; },
     destroy() { disposed = true; controller?.abort(); map.removeLayer(root); } };
