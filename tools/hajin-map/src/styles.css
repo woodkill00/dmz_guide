@@ -98,3 +98,17 @@ dialog{color:#e8e9df;background:#191f1a;border:1px solid #697453;max-width:440px
 .search-main-toolbar{display:flex;align-items:flex-end;flex-wrap:wrap;gap:8px;margin-bottom:8px}.search-main-toolbar>.workspace-field{flex:1 1 160px;max-width:360px;margin:4px 0}.search-main-toolbar>button{margin:4px!important;min-height:40px!important}.nearby-search>summary{cursor:pointer;padding:8px;font-weight:bold}.nearby-search:not([open]){padding:4px 12px}.search-advanced:not([open]){padding:4px 12px}.search-main-toolbar button[hidden]{display:none!important}@media(max-width:600px){.explorer-tabs{flex-wrap:nowrap;overflow-x:auto;min-width:0;padding-bottom:5px}.explorer-tabs button{flex-shrink:0;white-space:nowrap}.search-main-toolbar>.workspace-field{flex-basis:130px}}
 
 @media(max-width:600px){#workspace-dialog nav{flex-wrap:nowrap;padding:8px 12px}#workspace-dialog nav button{flex-shrink:0}#workspace-content h3{margin-top:12px}.nearby-search,.search-advanced{margin:6px 0}.nearby-search:not([open]),.search-advanced:not([open]){padding:0 8px}.nearby-search>summary,.search-advanced>summary{font-size:12px;padding:8px}}
+
+/* Keep the heading and actions outside the independently scrollable notes. */
+.readable-marker-popup .leaflet-popup-content{margin:18px 20px 16px;max-width:calc(100vw - 76px)}
+.map-marker-popup{display:flex;flex-direction:column;min-width:0;width:min(320px,calc(100vw - 76px));max-height:min(520px,calc(100vh - 340px));max-height:min(520px,calc(100dvh - 340px));font:14px/1.55 Arial,Helvetica,sans-serif;overflow-wrap:anywhere}
+.marker-popup-title{display:block;flex:none;font-size:17px;line-height:1.35;padding:0 12px 12px 0;color:#f0f3e5}
+.marker-popup-details{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding:0 10px 0 2px;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#a8b981 #182119}
+.marker-popup-details p,.marker-popup-details .workspace-note{font:inherit;color:#d1dbc8;white-space:pre-wrap;margin:0 0 12px}
+.marker-popup-details:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:3px}
+.marker-popup-actions{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:8px;border-top:1px solid #ffffff26;padding-top:12px;margin-top:10px}
+.marker-popup-actions button,.marker-popup-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 10px;border:1px solid #a4b98166;border-radius:4px;background:#303d2b;color:#eff3e5;font:13px/1.35 Arial,Helvetica,sans-serif;white-space:normal;overflow-wrap:anywhere;text-align:left;max-width:100%;cursor:pointer}
+.marker-popup-actions a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}.marker-popup-actions button:hover,.marker-popup-actions a:hover{background:#405036}.marker-popup-actions :focus-visible{outline:2px solid var(--accent);outline-offset:2px}.marker-popup-actions .workspace-field{width:100%;margin:0}.marker-popup-actions input{max-width:100%}
+
+.map-workspace:has(.readable-marker-popup) .map-controls,.map-workspace:has(.readable-marker-popup) #workspace-open{visibility:hidden}
+.map-workspace:has(.readable-marker-popup) .workspace-toast{bottom:8px;left:12px;right:12px}

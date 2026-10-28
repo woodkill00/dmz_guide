@@ -1,3 +1,4 @@
+import {markerPopup} from '../map/marker-popup.ts';
 import {createSearchPanel} from './search-panel.ts';
 import type {SearchOrigin} from './search.ts';
 import { el, button, field, input, select, note, pagedList } from "./dom.ts";
@@ -103,22 +104,11 @@ export function createUsabilityUI(h: UsabilityHost) {
     h.jump(r, popup(r));
   }
   function popup(r: ExplorerRecord) {
-    const root = el("div");
-    root.append(
-      el("strong", r.title),
-      note(`${r.sourceName} · ${r.category}`),
-      note(r.notes || "No notes supplied."),
-      note(position(r)),
-      note(r.status),
-      button(
-        r.kind === "custom"
-          ? "Details / edit point"
-          : "Details / flag discrepancy",
-        () => showRecord(r),
-      ),
-    );
-    const nearby=button("Find nearby",()=>searchUI.nearby(r));nearby.disabled=r.x===null;root.append(nearby);
-    copy(r, root);
+    const {root,details,actions}=markerPopup(r.title);
+    details.append(note(`${r.sourceName} · ${r.category}`),note(position(r)),note(r.status),note(r.notes || "No notes supplied."));
+    actions.append(button(r.kind === "custom" ? "Details / edit point" : "Details / flag discrepancy",()=>showRecord(r)));
+    const nearby=button("Find nearby",()=>searchUI.nearby(r));nearby.disabled=r.x===null;actions.append(nearby);
+    copy(r,actions);
     return root;
   }
   function showRecord(record: ExplorerRecord) {

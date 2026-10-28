@@ -1,3 +1,4 @@
+import {markerPopupOptions} from '../map/marker-popup.ts';
 import {parseIconPack,exportIconPack} from './icon-packs.ts';
 import {healthPanel} from './health-panel.ts';
 import { workspaceDestination, type ToolTarget } from '../tool-links.ts';
@@ -703,7 +704,7 @@ export function mountWorkspace(
         weight: 4,
         fillOpacity: 0.1,
       })
-        .bindPopup(popup)
+        .bindPopup(popup,markerPopupOptions)
         .addTo(searchHighlight)
         .openPopup();
       highlighted
@@ -1575,7 +1576,7 @@ export function mountWorkspace(
             color,
             weight: 2,
             fillOpacity: 0.85,
-          }).bindPopup(popup),
+          }).bindPopup(popup,markerPopupOptions),
           signature,
         };
         circleCache.set(key, cached);
@@ -1584,7 +1585,7 @@ export function mountWorkspace(
           .setLatLng([point.y, point.x])
           .setStyle({ color })
           .unbindPopup()
-          .bindPopup(popup);
+          .bindPopup(popup,markerPopupOptions);
         cached.signature = signature;
       }
       cached.circle.addTo(layer);
@@ -1625,7 +1626,7 @@ export function mountWorkspace(
           title: point.title,
           alt: icon?.description ?? point.title,
         })
-          .bindPopup(popup)
+          .bindPopup(popup,markerPopupOptions)
           .addTo(layer);
       }
     };
@@ -1636,7 +1637,7 @@ export function mountWorkspace(
           `${a.title} ${a.category} ${a.notes}`.toLocaleLowerCase().includes(q)
         )
           {
-          if(a.geometry){const vertices=a.geometry.vertices.map(([x,y])=>L.latLng(y,x));const shape=a.geometry.kind==='area'?L.polygon(vertices,{renderer,color:a.geometry.color,weight:3,fillOpacity:.18}):L.polyline(vertices,{renderer,color:a.geometry.color,weight:4});shape.bindPopup(()=>{const record=getExplorerRecords().find(r=>r.key==='custom:'+a.id);return record?usabilityUI.popup(record):el('span',a.title);}).addTo(customLayer);shape.on('add',()=>shape.getElement()?.setAttribute('data-owned-geometry',a.id));}
+          if(a.geometry){const vertices=a.geometry.vertices.map(([x,y])=>L.latLng(y,x));const shape=a.geometry.kind==='area'?L.polygon(vertices,{renderer,color:a.geometry.color,weight:3,fillOpacity:.18}):L.polyline(vertices,{renderer,color:a.geometry.color,weight:4});shape.bindPopup(()=>{const record=getExplorerRecords().find(r=>r.key==='custom:'+a.id);return record?usabilityUI.popup(record):el('span',a.title);},markerPopupOptions).addTo(customLayer);shape.on('add',()=>shape.getElement()?.setAttribute('data-owned-geometry',a.id));}
           marker(
             a,
             customLayer,

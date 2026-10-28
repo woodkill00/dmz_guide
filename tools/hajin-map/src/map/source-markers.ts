@@ -1,3 +1,4 @@
+import {markerPopup,markerPopupOptions} from './marker-popup.ts';
 import L from 'leaflet';
 import { hajin } from './hajin';
 import { toPixels, type MapPosition } from './coordinates';
@@ -248,18 +249,17 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
         element?.setAttribute('data-source-marker-id', record.id);
         element?.setAttribute('aria-label', `${record.name}, ${category.name}, ${source.name}`);
       });
-      const popup = document.createElement('div'); popup.className = 'official-popup';
-      const heading = document.createElement('strong'); heading.textContent = record.name;
+      const {root:popup,details,actions}=markerPopup(record.name);
       const detail = document.createElement('p'); detail.textContent = `${category.name} · ${source.name}`;
       const location = document.createElement('p'); location.textContent = `Image position: ${Math.round(x)}, ${Math.round(y)}`;
       const link = document.createElement('a'); link.href = source.recordLink(record.id); link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = `View on ${source.website} ↗`;
-      popup.append(heading, detail, location, link);
+      details.append(detail, location);actions.append(link);
       const notes=document.createElement('p');notes.textContent=record.notes||'No notes supplied.';
       const claim=document.createElement('p');claim.textContent=`Source claim · not independently verified · captured ${snapshot.capturedAt}`;
       const inspect=document.createElement('button');inspect.type='button';inspect.textContent='Details / flag discrepancy';inspect.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('map-record-details',{detail:{sourceId:source.id,recordId:record.id}})));
-      const copy=document.createElement('button');copy.type='button';copy.textContent='Copy coordinates';copy.addEventListener('click',()=>{void (async()=>{try{await navigator.clipboard.writeText(`${x.toFixed(2)}, ${y.toFixed(2)}`);copy.textContent='Coordinates copied';}catch{const fallback=document.createElement('input');fallback.readOnly=true;fallback.value=`${x.toFixed(2)}, ${y.toFixed(2)}`;fallback.setAttribute('aria-label','Coordinates to copy');popup.append(fallback);fallback.focus();fallback.select();}})();});
-      popup.append(notes,claim,inspect,copy);
-      marker.bindPopup(popup, { maxWidth: 250 });
+      const copy=document.createElement('button');copy.type='button';copy.textContent='Copy coordinates';copy.addEventListener('click',()=>{void (async()=>{try{await navigator.clipboard.writeText(`${x.toFixed(2)}, ${y.toFixed(2)}`);copy.textContent='Coordinates copied';}catch{const fallback=document.createElement('input');fallback.readOnly=true;fallback.value=`${x.toFixed(2)}, ${y.toFixed(2)}`;fallback.setAttribute('aria-label','Coordinates to copy');actions.append(fallback);fallback.focus();fallback.select();}})();});
+      details.append(claim,notes);actions.append(inspect,copy);
+      marker.bindPopup(popup, markerPopupOptions);
       markerPool.push({record, marker});
       groups.get(record.category)!.addLayer(marker);
     }

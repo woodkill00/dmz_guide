@@ -47,6 +47,7 @@ export function createMapView(element: HTMLElement, onState: (state: MapState) =
     map.setMinZoom(Math.min(minimum, 4));
     if (keepOverview) fit();
     else map.setView(center, Math.max(map.getZoom(), minimum), { animate: false });
+    map.eachLayer(layer=>{if(layer instanceof L.Popup&&layer.options.className==='readable-marker-popup')layer.update();});
   };
   const observer = new ResizeObserver(() => {
     cancelAnimationFrame(resizeFrame);
