@@ -137,11 +137,13 @@ const sources = markerSources.map(source => {
     const shown = values.reduce((sum, item) => sum + item.visible, 0);
     const available = values.reduce((sum, item) => sum + item.total, 0);
     const failed = values.some(item => item.state === 'failed');
+    if (document.querySelector<HTMLElement>('#workspace-dialog')?.dataset.ready !== 'true') {
     document.querySelector('#official-summary')!.textContent = failed ? 'Some source locations unavailable' : `${shown} / ${available} imported locations`;
     document.querySelector('#official-summary-count')!.textContent = String(shown);
     document.querySelector('#key-summary')!.textContent = `${shown} / ${available} locations shown${failed ? ' · source unavailable' : ''}`;
     const loading = sourceStatus.size < markerSources.length || values.some(item => item.state === 'loading');
     document.querySelectorAll<HTMLButtonElement>('#key-show-all, #key-hide-all').forEach(button => { button.disabled = loading || values.every(item => item.state === 'failed'); });
+    }
   }, keySlot);
 });
 document.querySelector('#key-show-all')!.addEventListener('click', () => sources.forEach(source => source.setAll(true)));

@@ -45,3 +45,7 @@ Alternatively set `CHROMIUM_PATH` to an installed compatible Chromium/Edge execu
 Snapshot reads are capped at 2 MiB with a 10-second deadline, 100 categories and 5,000 records. Category IDs are at most 80 characters, names 120, groups 80, icon paths 260; record IDs are at most 100 and names 200. Image fetch/decode is bounded by 15 seconds and 32 MiB. Invalid maps/versions/positions and unsafe icon paths reject the snapshot. No imported script is executed.
 
 Original integration scope is in [feature 019](../specs/019-local-map-workspace/spec.md). Current source/private-workspace acceptance and remaining external gates are in [feature020 evidence](../specs/020-map-source-fusion/verification.md). Run the repository's unchanged native checks separately; workspace tests do not substitute for them.
+
+## Find and review locations
+
+**Find locations** opens Explore for cross-site/private search, jump highlights, duplicate details, saved viewing presets, completeness checks, private discrepancy notes and backup status. Matching-row `*` controls open source/position comparisons; mistaken matches can be kept separate without deleting any evidence. Jumping to a hidden result preserves your layer selection. Backups include authored usability metadata while restricted captures remain external dependencies. See [feature021 acceptance](../specs/021-map-usability/verification.md) and the [workspace workflow](../tools/hajin-map/README.md).

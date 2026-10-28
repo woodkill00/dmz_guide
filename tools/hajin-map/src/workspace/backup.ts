@@ -22,6 +22,7 @@ import {
   transformPoint,
 } from "./registration.ts";
 import { validateMapping, categoryName } from "./taxonomy.ts";
+import { validateUsability, parseIdentity } from "./usability.ts";
 export interface PrivateBackup {
   schemaVersion: 1;
   kind: "dmz-private-map-workspace";
@@ -221,10 +222,16 @@ export function validateWorkspace(value: unknown): asserts value is Workspace {
       "visibility",
       "migrations",
       "omittedDependencies",
+      ...(value &&
+      typeof value === "object" &&
+      Object.hasOwn(value, "usability")
+        ? ["usability"]
+        : []),
     ],
     "workspace",
   );
   const s = value as unknown as Workspace;
+  if (s.usability !== undefined) validateUsability(s.usability);
   assert(s.schemaVersion === 1, "Unsupported workspace version.");
   array(s.snapshots, 20, "snapshot");
   array(s.registrations, 40, "registration");
@@ -717,8 +724,34 @@ export function exportPrivateBackup(input: Workspace): PrivateBackup {
   workspace.registrations = workspace.registrations.filter((r) =>
     frameIds.has(r.frameId),
   );
+  if (workspace.usability) {
+    const identities = new Set([
+      ...workspace.usability.separate.flatMap((p) => [p.a, p.b]),
+      ...workspace.usability.flags.map((f) => f.recordIdentity),
+    ]);
+    for (const identity of identities) {
+      const [source, snapshot, digest] = parseIdentity(identity),
+        key = snapshotKey(source, snapshot);
+      if (
+        workspace.snapshots.some((e) => e.key === key && e.digest === digest) ||
+        omitted.some(
+          (d) => d.kind === "snapshot" && d.id === key && d.digest === digest,
+        )
+      )
+        continue;
+      omitted.push({
+        kind: "snapshot",
+        id: JSON.stringify([source, snapshot, digest]),
+        digest,
+        reason:
+          "Referenced source capture is external or restricted. Private flags and separate decisions remain inactive until the exact capture is available.",
+      });
+    }
+  }
   workspace.omittedDependencies = [
-    ...new Map(omitted.map((d) => [`${d.kind}:${d.id}`, d])).values(),
+    ...new Map(
+      omitted.map((d) => [JSON.stringify([d.kind, d.id, d.digest]), d]),
+    ).values(),
   ];
   if (workspace.omittedDependencies.length > 20000)
     throw new Error(

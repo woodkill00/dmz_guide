@@ -5,7 +5,7 @@ import type { MarkerSource } from './marker-sources';
 import { boundedBytes } from './bounded-input';
 
 interface Category { id: string; name: string; group: string; icon: string }
-interface SourceRecord extends MapPosition { id: string; name: string; category: string; floor?: string | number | null }
+interface SourceRecord extends MapPosition { id: string; name: string; category: string; floor?: string | number | null; notes?: string }
 interface Snapshot { schemaVersion: number; sourcePage: string; capturedAt: string; categories: Category[]; records: SourceRecord[] }
 type State = 'loading' | 'ready' | 'failed';
 
@@ -23,6 +23,8 @@ function parseSnapshot(value: unknown, source: MarkerSource): Snapshot {
     if (!text(record.id, 100) || !/^[\w.:-]+$/.test(record.id) || ids.has(record.id) || !text(record.name, 200) || !categories.has(record.category)) throw new Error('Invalid source marker.');
     toPixels(record, hajin);
     ids.add(record.id);
+    if(record.notes!==undefined&&(typeof record.notes!=='string'||record.notes.length>4000))throw new Error('Invalid source notes.');
+    if(record.floor!=null&&!(typeof record.floor==='string'&&text(record.floor,128))&&!(typeof record.floor==='number'&&Number.isFinite(record.floor)))throw new Error('Invalid source floor.');
   }
   return data;
 }
@@ -32,7 +34,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   const groups = new Map<string, L.LayerGroup>();
   const enabled = new Set<string>();
   let suppressed = new Set<string>(), duplicates = new Map<string,string>();
-  let snapshot: Snapshot | undefined;
+  let snapshot: Snapshot | undefined, captureDigest: string | undefined;
   let master = true;
   let controller: AbortController | undefined;
   let disposed = false;
@@ -84,8 +86,10 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     for (const host of [container,keyContainer]) host?.querySelectorAll<HTMLInputElement>('[data-category],[data-key-category]').forEach(input => {
       const category = input.dataset.category ?? input.dataset.keyCategory, records = snapshot!.records.filter(r=>r.category===category), matched = records.filter(r=>duplicates.has(r.id)).length;
       const row=input.closest('label'), count=row?.querySelector('.category-count');
-      if(count)count.textContent=`${records.length}${matched ? ` * ${matched} matching` : ''}`;
+      if(count)count.textContent=String(records.length);
       if(row){row.classList.toggle('duplicate-category',matched>0&&matched===records.length);row.dataset.duplicateCount=String(matched);if(matched)row.title=`* ${matched} likely duplicate locations. One selected source is drawn; enable Show duplicate markers to inspect every source.`;else if(records.length)row.removeAttribute('title');}
+      row?.querySelector('.duplicate-details-button')?.remove();
+      if(matched&&row){const inspect=document.createElement('button');inspect.type='button';inspect.className='duplicate-details-button';inspect.textContent=`* ${matched} matching — details`;inspect.setAttribute('aria-label',`Inspect matching ${category} locations from ${source.name}`);inspect.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();document.dispatchEvent(new CustomEvent('map-duplicate-details',{detail:{sourceId:source.id,categoryId:category}}));});row.append(inspect);}
     });
     if (persistLegacy) persist();
     const detail = {sourceId: source.id, origin: restoringSnapshot ? 'load' : persistLegacy ? 'user' : 'program', master, enabled: [...enabled], categories: snapshot.categories.map(c => c.id)};
@@ -245,6 +249,11 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       const location = document.createElement('p'); location.textContent = `Image position: ${Math.round(x)}, ${Math.round(y)}`;
       const link = document.createElement('a'); link.href = source.recordLink(record.id); link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = `View on ${source.website} ↗`;
       popup.append(heading, detail, location, link);
+      const notes=document.createElement('p');notes.textContent=record.notes||'No notes supplied.';
+      const claim=document.createElement('p');claim.textContent=`Source claim · not independently verified · captured ${snapshot.capturedAt}`;
+      const inspect=document.createElement('button');inspect.type='button';inspect.textContent='Details / flag discrepancy';inspect.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('map-record-details',{detail:{sourceId:source.id,recordId:record.id}})));
+      const copy=document.createElement('button');copy.type='button';copy.textContent='Copy coordinates';copy.addEventListener('click',()=>{void (async()=>{try{await navigator.clipboard.writeText(`${x.toFixed(2)}, ${y.toFixed(2)}`);copy.textContent='Coordinates copied';}catch{const fallback=document.createElement('input');fallback.readOnly=true;fallback.value=`${x.toFixed(2)}, ${y.toFixed(2)}`;fallback.setAttribute('aria-label','Coordinates to copy');popup.append(fallback);fallback.focus();fallback.select();}})();});
+      popup.append(notes,claim,inspect,copy);
       marker.bindPopup(popup, { maxWidth: 250 });
       markerPool.push({record, marker});
       groups.get(record.category)!.addLayer(marker);
@@ -266,13 +275,13 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('Expected a JSON snapshot.');
       const bytes = await boundedBytes(response, 2 * 1024 * 1024);
+      const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes as Uint8Array<ArrayBuffer>)), b => b.toString(16).padStart(2, '0')).join('');
       if (source.snapshotDigest) {
-        const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes as Uint8Array<ArrayBuffer>)), b => b.toString(16).padStart(2, '0')).join('');
         if (digest !== source.snapshotDigest) throw new Error('Local snapshot changed; review its coordinate registration again.');
       }
       const data = parseSnapshot(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)), source);
       if (disposed || controller !== request) return;
-      snapshot = data; restoringSnapshot = true; try { addRecords(); } finally { restoringSnapshot = false; }
+      snapshot = data; captureDigest=digest; restoringSnapshot = true; try { addRecords(); } finally { restoringSnapshot = false; }
     } catch {
       if (disposed || controller !== request) return;
       onUpdate(0, 0, 'failed');
@@ -292,6 +301,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   load();
   return { id: source.id, reload: load, setAll,
     getSnapshot: () => snapshot,
+    getSnapshotDigest: () => captureDigest,
     getFilters: () => ({master, enabled: [...enabled], categories: snapshot?.categories.map(c => c.id) ?? []}),
     setFilters(value: {master: boolean; enabled: string[]; query?: string; persistLegacy?: boolean; suppressed?: Set<string>; duplicates?: Map<string,string>}) { master = value.master; enabled.clear(); const valid = new Set(snapshot ? available().map(category => category.id) : []); value.enabled.forEach(id => { if (valid.has(id)) enabled.add(id); }); query = value.query ?? query; suppressed=value.suppressed??suppressed; duplicates=value.duplicates??duplicates; update(value.persistLegacy ?? false); },
     setQuery(value: string) { query = value; update(false); },

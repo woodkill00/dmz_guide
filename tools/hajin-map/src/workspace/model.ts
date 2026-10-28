@@ -116,6 +116,7 @@ export interface MissingDependency {
   reason: string;
 }
 export interface Workspace {
+  usability?: import("./usability.ts").Usability;
   schemaVersion: 1;
   snapshots: SnapshotEntry[];
   registrations: Registration[];

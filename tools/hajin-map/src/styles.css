@@ -40,3 +40,12 @@ dialog{color:#e8e9df;background:#191f1a;border:1px solid #697453;max-width:440px
 .workspace-field label{min-width:0;overflow-wrap:anywhere}
 .duplicate-category { color: #9da79a; }
 .duplicate-category .category-count { font-weight: 700; }
+.find-locations { padding: .5rem .7rem; background: #263223; color: #edf0d1; border: 1px solid #879564; }
+.explorer-tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.explorer-tabs button[aria-current="true"] { background: #d4de9b; color: #172015; }
+.workspace-backup-reminder { padding: .75rem; margin: .75rem; border: 1px solid #d4ad65; }
+.workspace-backup-reminder[hidden] { display: none; }
+.duplicate-details-button { grid-column: 2 / -1; font-size: .75rem; padding: .2rem .4rem; }
+#explore-panel button, #location-details button { margin: .25rem; }
+#explore-panel, #location-details, #explorer-results { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .map-top-right { flex-wrap: wrap; max-width: calc(100% - 1rem); } .find-locations { font-size: .75rem; } }

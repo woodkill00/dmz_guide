@@ -46,9 +46,20 @@ import {
   type DisplayRecord,
 } from "../map/display-duplicates.ts";
 import type { UIServices } from "./ui-context.ts";
+import { createUsabilityUI } from "./usability-panel.ts";
+import { explorerRecords, loadedIdentity } from "./explorer-index.ts";
+import {
+  emptyUsability,
+  isMeaningfulMutation,
+  readReceipt,
+  writeReceipt,
+  reminderStatus,
+  RECEIPT_KEY,
+  type Receipt,
+} from "./usability.ts";
 type Legacy = ReturnType<typeof createSourceMarkers>;
 type Viewer = ReturnType<typeof createMapView>;
-type Tab = "points" | "sources" | "review" | "icons" | "backup";
+type Tab = "points" | "sources" | "review" | "icons" | "backup" | "explore";
 export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
   let state = emptyWorkspace(),
     revision = 0,
@@ -58,6 +69,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     applyingFilters = false,
     dirty = false,
     detailActive = false,
+    usabilityDetail = false,
     detailCleanup: (() => void) | undefined,
     active: Tab = "points",
     editing: Annotation | undefined,
@@ -104,6 +116,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
       for (const r of source.getSnapshot()?.records ?? [])
         records.push({
           key: loadedKey(source.id, r.id),
+          identity: loadedIdentity(source, r.id) ?? undefined,
           sourceId: source.id,
           category: r.category,
           title: r.name,
@@ -132,6 +145,14 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
       const raw = rawBySource.get(p.sourceId)!.get(p.recordId)!;
       records.push({
         key: p.key,
+        identity: entry
+          ? JSON.stringify([
+              p.sourceId,
+              entry.snapshot.snapshotId,
+              entry.digest,
+              p.recordId,
+            ])
+          : undefined,
         sourceId: p.sourceId,
         category: raw.categoryId,
         title: p.title,
@@ -148,7 +169,11 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
         ),
       });
     }
-    duplicatePlan = displayDuplicates(records, showDuplicateMarkers);
+    duplicatePlan = displayDuplicates(
+      records,
+      showDuplicateMarkers,
+      state.usability?.separate ?? [],
+    );
   }
   const openButton = button(
     "My workspace",
@@ -217,6 +242,110 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
   }
   dialog.append(top, status, nav, body);
   document.body.append(dialog);
+  const backupReminder = el("section", undefined, "workspace-backup-reminder");
+  backupReminder.id = "backup-reminder";
+  backupReminder.hidden = true;
+  status.after(backupReminder);
+  const searchHighlight = L.layerGroup().addTo(viewer.map);
+  let highlightRecord: { key: string; signature: string } | undefined;
+  const highlightSignature = (r: ReturnType<typeof explorerRecords>[number]) =>
+    JSON.stringify([
+      r.identity,
+      r.x,
+      r.y,
+      r.title,
+      r.category,
+      r.notes,
+      r.status,
+    ]);
+  function clearHighlight() {
+    searchHighlight.clearLayers();
+    highlightRecord = undefined;
+  }
+  function refreshHighlight() {
+    if (!highlightRecord) return;
+    const r = getExplorerRecords().find((r) => r.key === highlightRecord!.key);
+    if (!r || highlightSignature(r) !== highlightRecord.signature)
+      clearHighlight();
+  }
+  function receipt(): Receipt | null {
+    try {
+      return readReceipt(localStorage);
+    } catch {
+      return null;
+    }
+  }
+  function saveReceipt(value: Receipt) {
+    try {
+      return writeReceipt(localStorage, value);
+    } catch {
+      return false;
+    }
+  }
+  function resetReceipt() {
+    try {
+      localStorage.removeItem(RECEIPT_KEY);
+    } catch {
+      /* Advisory metadata cannot block recovery. */
+    }
+  }
+  function markDirtyReceipt() {
+    const old = receipt();
+    if (!old?.firstDirtyAt)
+      saveReceipt({
+        ...old,
+        version: 1,
+        at: old?.at ?? null,
+        edits: old?.edits ?? 0,
+        firstDirtyAt: new Date().toISOString(),
+        snoozedUntil: old?.snoozedUntil ?? null,
+      });
+  }
+  async function downloadPrivateBackup(name = "hajin-private-workspace.json") {
+    await queue.catch(() => {});
+    if (disposed) throw new Error("Workspace closed.");
+    const json = JSON.stringify(exportPrivateBackup(state));
+    download(name, json);
+    const recorded = saveReceipt({
+      version: 1,
+      at: new Date().toISOString(),
+      edits: state.usability?.edits ?? 0,
+      firstDirtyAt: null,
+      snoozedUntil: null,
+    });
+    notice(
+      recorded
+        ? "Private backup download started. Confirm the file saved in your downloads."
+        : "Backup download started; reminder history could not be stored. Confirm the file saved.",
+    );
+    renderBackupReminder();
+    refreshHighlight();
+  }
+  function renderBackupReminder() {
+    const status = reminderStatus(state.usability?.edits ?? 0, receipt());
+    backupReminder.hidden = !status.due;
+    if (status.due)
+      backupReminder.replaceChildren(
+        note(
+          "Back up your private map work:20 changes or7 days with changes since a recorded backup download.",
+        ),
+        button("Download backup", () => downloadPrivateBackup()),
+        button("Remind tomorrow", () => {
+          snoozeBackup();
+          renderBackupReminder();
+        }),
+      );
+  }
+  function snoozeBackup() {
+    const old = receipt();
+    saveReceipt({
+      version: 1,
+      at: old?.at ?? null,
+      edits: old?.edits ?? 0,
+      firstDirtyAt: old?.firstDirtyAt ?? null,
+      snoozedUntil: new Date(Date.now() + 86400000).toISOString(),
+    });
+  }
   const toast = el("p", undefined, "workspace-toast");
   toast.hidden = true;
   toast.id = "workspace-toast";
@@ -237,6 +366,8 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     if (disposed) return;
     renderMarkers();
     renderKey();
+    renderBackupReminder();
+    refreshHighlight();
     if (dialog.open && !dirty && !detailActive) renderPanel();
   };
   async function commit(
@@ -264,6 +395,10 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
           );
         const draft = structuredClone(state);
         change(draft);
+        if (isMeaningfulMutation(label)) {
+          draft.usability ??= emptyUsability();
+          draft.usability.edits = (state.usability?.edits ?? 0) + 1;
+        }
         unsaved = draft;
         failedLabel = label;
         if (!store)
@@ -273,6 +408,14 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
         const saved = await store.commit(asJson(draft), revision, resources);
         backgroundRequest++;
         state = draft;
+        if (isMeaningfulMutation(label)) viewer.map.closePopup();
+        if (
+          label.startsWith("Backup restored") ||
+          label === "New empty workspace created"
+        ) {
+          resetReceipt();
+          clearHighlight();
+        } else if (isMeaningfulMutation(label)) markDirtyReceipt();
         if (draft.migrations.includes("source-masks-v1"))
           legacyMigrationCommitted = true;
         if (
@@ -334,6 +477,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     detailCleanup?.();
     detailCleanup = undefined;
     detailActive = false;
+    usabilityDetail = false;
     dirty = false;
     renderPanel();
     if (dialog.open)
@@ -375,6 +519,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     notice,
     refresh,
     detail: (node, cleanup) => {
+      usabilityDetail = false;
       detailCleanup?.();
       detailCleanup = cleanup;
       detailActive = true;
@@ -399,12 +544,160 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
       dialog.close();
     },
   };
+  const getExplorerRecords = () =>
+    explorerRecords(
+      { ...state, visibility: visibility() },
+      legacy,
+      selectedSnapshots,
+    ).map((r) => ({
+      ...r,
+      visible: r.visible && !duplicatePlan.suppressed.has(r.key),
+    }));
+  const canInspect = () =>
+    !openButton.disabled &&
+    !dirty &&
+    !processing &&
+    !interactionLocks &&
+    (!detailActive || usabilityDetail);
+  const usabilityUI = createUsabilityUI({
+    ...services,
+    records: getExplorerRecords,
+    inspectionMode: () => showDuplicateMarkers,
+    categories: () => {
+      const result = Object.fromEntries(
+        legacy.map((s) => [
+          s.id,
+          s.getSnapshot()?.categories.map((c) => c.id) ?? [],
+        ]),
+      );
+      for (const e of state.snapshots)
+        result[e.snapshot.sourceId] = e.snapshot.categories.map((c) => c.id);
+      for (const [id, key] of selectedSnapshots) {
+        const e = state.snapshots.find((e) => e.key === key);
+        if (e) result[id] = e.snapshot.categories.map((c) => c.id);
+      }
+      return result;
+    },
+    inspectAllowed: canInspect,
+    clean: () => {
+      dirty = false;
+    },
+    view: () => visibility(),
+    applyView: (v) =>
+      changeVisibility("Saved view visibility applied", (value) =>
+        Object.assign(value, structuredClone(v)),
+      ),
+    detail: (node, cleanup) => {
+      services.detail(node, cleanup);
+      usabilityDetail = true;
+    },
+    editPoint: (id) => {
+      const point = state.annotations.find((a) => a.id === id);
+      if (!point) return;
+      detailCleanup?.();
+      detailCleanup = undefined;
+      detailActive = false;
+      usabilityDetail = false;
+      dirty = false;
+      active = "points";
+      editing = structuredClone(point);
+      draftPosition = undefined;
+      renderPanel();
+      if (!dialog.open) dialog.showModal();
+      body.querySelector<HTMLInputElement>("#point-title")?.focus();
+    },
+    jump: (record, popup) => {
+      if (record.x === null || record.y === null) return;
+      detailCleanup?.();
+      detailCleanup = undefined;
+      detailActive = false;
+      usabilityDetail = false;
+      dirty = false;
+      viewer.map.closePopup();
+      clearHighlight();
+      highlightRecord = {
+        key: record.key,
+        signature: highlightSignature(record),
+      };
+      viewer.map.setView(
+        [record.y, record.x],
+        Math.max(viewer.map.getZoom(), 2),
+        { animate: false },
+      );
+      const highlighted = L.circleMarker([record.y, record.x], {
+        radius: 14,
+        color: "#fff39a",
+        weight: 4,
+        fillOpacity: 0.1,
+      })
+        .bindPopup(popup)
+        .addTo(searchHighlight)
+        .openPopup();
+      highlighted
+        .getElement()
+        ?.setAttribute("data-search-highlight", record.key);
+      dialog.close();
+    },
+    receipt,
+    snooze: snoozeBackup,
+    downloadBackup: () => downloadPrivateBackup(),
+  });
+  function openExplore(
+    section = "search",
+    filter?: { sourceId: string; categoryId: string },
+  ) {
+    if (!canInspect()) {
+      error("Save or cancel your current draft/preview first.");
+      return;
+    }
+    detailCleanup?.();
+    detailCleanup = undefined;
+    detailActive = false;
+    usabilityDetail = false;
+    active = "explore";
+    usabilityUI.openSection(section, filter);
+    renderPanel();
+    if (!dialog.open) dialog.showModal();
+    body.querySelector<HTMLElement>("#explorer-search,input,button")?.focus();
+  }
+  const findButton = button(
+    "Find locations",
+    () => openExplore(),
+    "find-locations",
+  );
+  findButton.className = "find-locations";
+  findButton.disabled = true;
+  document.querySelector(".map-top-right")!.append(findButton);
+  const duplicateDetails = (event: Event) => {
+    const detail = (event as CustomEvent).detail;
+    if (legacy.some((s) => s.id === detail?.sourceId))
+      openExplore("duplicates", detail);
+  };
+  const recordDetails = (event: Event) => {
+    const detail = (event as CustomEvent).detail;
+    if (!canInspect()) {
+      error("Save or cancel your current draft/preview first.");
+      return;
+    }
+    const r = getExplorerRecords().find(
+      (r) =>
+        r.key === detail?.key ||
+        (r.sourceId === detail?.sourceId && r.id === detail?.recordId),
+    );
+    if (r) {
+      active = "explore";
+      usabilityUI.showRecord(r);
+    }
+  };
+  document.addEventListener("map-duplicate-details", duplicateDetails);
+  document.addEventListener("map-record-details", recordDetails);
   for (const [tab, label] of [
     ["points", "My points"],
     ["sources", "Sources"],
     ["review", "Review"],
     ["icons", "Icons"],
     ["backup", "Backups"],
+    ["explore", "Explore"],
   ] as [Tab, string][]) {
     const b = button(
       label,
@@ -462,7 +755,11 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
   });
   body.addEventListener("change", (event) => {
     const target = event.target as HTMLElement;
-    if (!target.closest("#review-records")) dirty = true;
+    if (
+      !target.closest("#review-records") &&
+      !target.hasAttribute("data-workspace-search")
+    )
+      dirty = true;
   });
 
   function renderPanel() {
@@ -478,6 +775,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     if (active === "review") body.append(reviewPanel(services));
     if (active === "icons") renderIcons();
     if (active === "backup") renderBackup();
+    if (active === "explore") body.append(usabilityUI.panel());
   }
   function renderPoints() {
     body.append(
@@ -531,6 +829,8 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
             validateWorkspace(saved.data);
             backgroundRequest++;
             state = saved.data;
+            resetReceipt();
+            clearHighlight();
             pendingVisibility = undefined;
             revision = saved.revision;
             dialog.dataset.revision = String(revision);
@@ -819,6 +1119,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     }
   }
   function renderBackup() {
+    usabilityUI.backup(body);
     body.append(
       el("h3", "Private backups and recovery"),
       note(
@@ -828,11 +1129,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     body.append(
       button(
         "Download private backup",
-        () =>
-          download(
-            "hajin-private-workspace.json",
-            JSON.stringify(exportPrivateBackup(state)),
-          ),
+        () => downloadPrivateBackup(),
         "export-workspace",
       ),
       button(
@@ -1022,11 +1319,8 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
             node.append(
               button(
                 "Download current backup before replacing",
-                () => {
-                  download(
-                    "hajin-before-restore.json",
-                    JSON.stringify(exportPrivateBackup(state)),
-                  );
+                async () => {
+                  await downloadPrivateBackup("hajin-before-restore.json");
                   backedUp = true;
                   confirm.disabled = false;
                 },
@@ -1078,11 +1372,8 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
           const stagedRevision = revision;
           confirm.disabled = true;
           node.append(
-            button("Back up current workspace before clearing", () => {
-              download(
-                "hajin-before-new-workspace.json",
-                JSON.stringify(exportPrivateBackup(state)),
-              );
+            button("Back up current workspace before clearing", async () => {
+              await downloadPrivateBackup("hajin-before-new-workspace.json");
               backedUp = true;
               confirm.disabled = false;
             }),
@@ -1138,6 +1429,16 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
       activeCache.add(key);
       let cached = circleCache.get(key);
       const popup = () => {
+        const record = getExplorerRecords().find(
+          (r) =>
+            r.key ===
+            (layer === customLayer
+              ? "custom:" + point.id
+              : layer === reviewedLayer
+                ? "reviewed:" + point.id
+                : point.key),
+        );
+        if (record) return usabilityUI.popup(record);
         const node = el("div");
         node.append(el("strong", point.title), note(detail));
         return node;
@@ -1574,7 +1875,14 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
               ),
           ).length;
           if (matching) {
-            row.append(el("span", ` * ${matching} matching`));
+            row.append(
+              button(`* ${matching} matching`, () =>
+                openExplore("duplicates", {
+                  sourceId: policy.id,
+                  categoryId: category.id,
+                }),
+              ),
+            );
             row.classList.toggle(
               "duplicate-category",
               matching ===
@@ -1773,6 +2081,9 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     applyLegacyFilters();
     renderMarkers();
     renderKey();
+    refreshHighlight();
+    if (dialog.open && active === "explore" && !dirty && !detailActive)
+      usabilityUI.refreshSearch();
   };
   document.addEventListener("map-source-status", statusEvent);
   function syncUnmigratedLegacy() {
@@ -1904,12 +2215,15 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
       }
       syncUnmigratedLegacy();
       hydrated = true;
+      dialog.dataset.ready = "true";
       openButton.disabled = false;
+      findButton.disabled = false;
       notice("Private workspace ready.");
       refresh();
       applyLegacyFilters();
     } catch (e) {
       openButton.disabled = false;
+      findButton.disabled = false;
       error(e);
       refresh();
     }
@@ -1920,6 +2234,10 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     destroy() {
       backgroundRequest++;
       disposed = true;
+      findButton.remove();
+      searchHighlight.remove();
+      document.removeEventListener("map-duplicate-details", duplicateDetails);
+      document.removeEventListener("map-record-details", recordDetails);
       window.removeEventListener("beforeunload", beforeUnload);
       processing?.abort();
       clearTimeout(filterTimer);

@@ -1,0 +1,3 @@
+# Implementation research
+
+Local primary sources inspected: current workspace/store/backup/visibility/registration/duplicate code and browser harness. Existing immutable snapshots and explicit registered geometry provide enough data; no website fetching is needed. Reuse typed safe DOM helpers and existing CAS/backup paths. Keep machine backup receipt separate from portable authored work to avoid falsely treating an imported receipt as a backup on the destination machine. Inspect original capture IDs and timestamps, not copied names, for portable source reference identity. No dependencies or services added.
