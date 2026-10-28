@@ -288,8 +288,9 @@ export function parseSnapshot(
       if (recordIds.has(key) || !categoryIds.has(categoryId))
         fail("Duplicate record or missing category.");
       recordIds.add(key);
-      const point = object(r.rawGeometry, ["kind", "x", "y"]);
-      if (point.kind !== "point") fail("Unsupported geometry.");
+      const unplaced=expectedSourceId==='mapgenie'&&(r.rawGeometry as ObjectValue)?.kind==='unplaced';
+      const point = object(r.rawGeometry, unplaced?["kind"]:["kind", "x", "y"]);
+      if (point.kind !== "point"&&!unplaced) fail("Unsupported geometry.");
       const app = applicability(r.applicability);
       if (
         app.mapId !== a.mapId ||
@@ -328,7 +329,7 @@ export function parseSnapshot(
         id: key,
         categoryId,
         title: text(r.title, LIMITS.title),
-        rawGeometry: {
+        rawGeometry: unplaced?{kind:'unplaced' as const}:{
           kind: "point",
           x: finite(point.x, 0, f.width ?? 1e9),
           y: finite(point.y, 0, f.height ?? 1e9),

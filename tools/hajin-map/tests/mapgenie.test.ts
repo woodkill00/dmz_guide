@@ -253,7 +253,7 @@ test("024 public location parser retains stable IDs/notes/floors and refuses mal
     [{ ...location(), category_id: 999 }],
     [{ ...location(), map_id: 99 }],
     [{ ...location(), title: "" }],
-    [{ ...location(), latitude: "1" }],
+    [{ ...location(), latitude: "1invalid" }],
   ])
     assert.throws(() => mapgenieRows({ locations }, meta));
 });
@@ -562,4 +562,19 @@ test("024 sprite decode extent/deadline and unsupported PNG chunks fail and disp
     );
     assert.equal(page.isClosed(), true);
   });
+});
+
+// Reference cards are captured identities, never fabricated world positions.
+test("024 decimal API coordinates and off-terrain reference entries survive repeat capture without pins",async()=>{
+ const m=metadata();m.mapData.categories[28403]={id:28403,group_id:1,title:'SYNTHETIC mission',premium:false};m.MARKER_SPRITE_POSITIONS_V3[28403]={x:0,y:0,width:16,height:16,pixelRatio:2};
+ const meta=validateMapgenieMetadata(m),p=geographic(900,900);
+ const {rows}=mapgenieRows({locations:[{...location(),category_id:28403,latitude:String(p.latitude),longitude:String(p.longitude)}]},meta);
+ const options={id:'mapgenie',rows,registration:{...registration(),matrix:[[6,0,-1000],[0,6,-1400]]},iconDirectory:'/maps/hajin/providers/mapgenie/icons/',declaredCategories:meta.categories,readCurrentIcon:async()=>({name:'a'.repeat(20)+'.png',bytes:Buffer.from('SYNTHETIC'),digest:digest(Buffer.from('SYNTHETIC'))})};
+ const first=await normalizedCapture(options),second=await normalizedCapture(options);
+ assert.equal(first.capture.records.length,1);assert.equal(first.capture.records[0].placement,'reference');assert.equal(first.capture.records[0].x,null);assert.equal(semantic(first.capture,{}),semantic(second.capture,{}));
+ const {adaptOfficial}=await import('../src/workspace/import.ts');const converted=adaptOfficial(first.capture,'mapgenie');assert.deepEqual(converted.records[0].rawGeometry,{kind:'unplaced'});
+ const {emptyWorkspace}=await import('../src/workspace/model.ts');const {explorerRecords,coverage}=await import('../src/workspace/explorer-index.ts');const w=emptyWorkspace();
+ const found=explorerRecords(w,[{id:'mapgenie',getSnapshot:()=>first.capture,getSnapshotDigest:()=>digest(Buffer.from('SYNTHETIC'))}]);assert.equal(found.length,1);assert.equal(found[0].x,null);assert.equal(found[0].visible,false);assert.match(found[0].status,/Reference/);const official={...found[0],key:'official',sourceId:'official',placement:undefined,x:100,y:100};const check=coverage([official,...found],[]);assert.equal(check.available,true);assert.equal(check.rows.length,0);const {asDisplay}=await import('../src/workspace/explorer-index.ts');assert.equal(asDisplay(found[0]),null);
+ const {validateCapture}=await import('../server/source-contract.mjs');for(const sourceX of [undefined,Infinity])assert.throws(()=>validateCapture({...first.capture,records:[{...first.capture.records[0],sourceX}]},'mapgenie'));assert.throws(()=>adaptOfficial({...first.capture,sourcePage:sites.codcentral.page},'codcentral'));
+ const facility=mapgenieRows({locations:[{...location(),...p}]},meta).rows;await assert.rejects(normalizedCapture({...options,rows:facility}));
 });

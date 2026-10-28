@@ -5,6 +5,7 @@ import { isVisible } from "./visibility.ts";
 import { captureIdentity, pairKey } from "./usability.ts";
 import { displayKind, type DisplayRecord } from "../map/display-duplicates.ts";
 export interface ExplorerRecord {
+  placement?: "reference";
   key: string;
   identity: string | null;
   id: string;
@@ -35,8 +36,9 @@ export interface LocalCapture {
           id: string;
           name: string;
           category: string;
-          x: number;
-          y: number;
+          placement?: "reference";
+          x: number|null;
+          y: number|null;
           floor?: string | number | null;
           notes?: string;
         }[];
@@ -79,18 +81,19 @@ export function explorerRecords(
         category: categories.get(r.category) ?? r.category,
         categoryId: r.category,
         notes: r.notes ?? "",
-        x: r.x * 4096,
-        y: r.y * 4096,
+        placement:r.placement,
+        x: r.x===null?null:r.x * 4096,
+        y: r.y===null?null:r.y * 4096,
         floor: r.floor == null ? null : String(r.floor),
         build: null,
-        visible: isVisible(
+        visible: r.placement!=="reference" && isVisible(
           v,
           source.id,
           r.category,
           `${r.name} ${r.category}`,
           true,
         ),
-        status: "Source claim · not independently verified",
+        status: r.placement==='reference'?"Reference entry · no terrain location":"Source claim · not independently verified",
         capturedAt: s.capturedAt,
         url: sourcePolicies[source.id].page,
       });
@@ -114,6 +117,7 @@ export function explorerRecords(
         category: categories.get(r.categoryId) ?? r.categoryId,
         categoryId: r.categoryId,
         notes: r.evidence.map((e) => e.note).join("\n"),
+        placement:r.rawGeometry.kind==='unplaced'?'reference':undefined,
         x: p?.x ?? null,
         y: p?.y ?? null,
         floor: r.applicability.floor,
@@ -127,7 +131,7 @@ export function explorerRecords(
             `${r.title} ${p.category}`,
             true,
           ),
-        status: `Source claim · ${r.activityClaim.state}${r.activityClaim.observedAt ? " · " + r.activityClaim.observedAt : ""}`,
+        status: r.rawGeometry.kind==='unplaced'?"Reference entry · no terrain location":`Source claim · ${r.activityClaim.state}${r.activityClaim.observedAt ? " · " + r.activityClaim.observedAt : ""}`,
         capturedAt: s.capturedAt,
         url: sourcePolicies[s.sourceId].page,
       });
@@ -252,7 +256,7 @@ export function coverage(
     truncated = false;
   const rows: Coverage[] = [];
   for (const r of records.filter(
-    (r) => r.kind === "source" && r.sourceId !== "official",
+    (r) => r.kind === "source" && r.sourceId !== "official" && r.placement!=="reference",
   )) {
     if (r.x === null || r.y === null) {
       rows.push({

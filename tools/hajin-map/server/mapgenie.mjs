@@ -206,6 +206,8 @@ export function projectMapgenie(latitude, longitude) {
   return { x: clamp(x), y: clamp(y) };
 }
 export function mapgenieRows(data, meta) {
+  const coordinate=value=>{if(typeof value==='number')return value;if(typeof value==='string'&&value.length<=32&&/^-?(?:0|[1-9][0-9]{0,2})(?:\.[0-9]{1,16})?$/.test(value))return Number(value);throw Error('Invalid MapGenie decimal coordinate.');};
+  const referenceCategories=new Set([28403,28408,28405,28423,28424,28425,28426,28427,28428,28429,28430,28431]);
   if (
     !data ||
     !Array.isArray(data.locations) ||
@@ -230,7 +232,7 @@ export function mapgenieRows(data, meta) {
     ids.add(p.id);
     if (p.description?.length > 3500) truncated++;
     const category = categories.get(p.category_id),
-      point = projectMapgenie(p.latitude, p.longitude),
+      point = projectMapgenie(coordinate(p.latitude),coordinate(p.longitude)),
       row = {
         id: `mg-${p.id}`,
         title: p.title.trim(),
@@ -239,6 +241,7 @@ export function mapgenieRows(data, meta) {
         group: category.group,
         ...point,
         notes: (p.description ?? "").slice(0, 3500),
+        allowReference:referenceCategories.has(p.category_id),
       };
     if (p.floor != null) {
       if (

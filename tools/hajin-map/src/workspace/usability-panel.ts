@@ -33,7 +33,7 @@ const ensure = (s: { usability?: Usability }) =>
 const label = (r: ExplorerRecord) => `${r.title} · ${r.sourceName}`;
 const position = (r: ExplorerRecord) =>
   r.x === null || r.y === null
-    ? "Unplaced: registration required"
+    ? r.placement==='reference'?"Reference entry: no terrain location":"Unplaced: registration required"
     : `X ${r.x.toFixed(2)}, Y ${r.y.toFixed(2)} (canonical map pixels)`;
 export function createUsabilityUI(h: UsabilityHost) {
   let updateSearch: (() => void) | undefined;
@@ -94,7 +94,7 @@ export function createUsabilityUI(h: UsabilityHost) {
     r = current;
     if (r.x === null || r.y === null) {
       h.error(
-        "This source frame needs registration before a location can be shown.",
+        r.placement==='reference'?"This reference entry has no terrain location.":"This source frame needs registration before a location can be shown.",
       );
       return;
     }
@@ -132,7 +132,7 @@ export function createUsabilityUI(h: UsabilityHost) {
       note(
         r.visible
           ? "Selected in current map view."
-          : "Outside current filters or hidden as a duplicate. Jump highlights it without changing filters.",
+          : r.placement==='reference'?"Reference entry without a terrain position. Available in search and details.": "Outside current filters or hidden as a duplicate. Jump highlights it without changing filters.",
       ),
       note(r.notes || "No notes supplied."),
     );
@@ -240,7 +240,7 @@ export function createUsabilityUI(h: UsabilityHost) {
     row.append(
       el("h4", r.title),
       note(
-        `${r.sourceName} · ${r.category} · ${r.visible ? "selected" : "outside view / duplicate"}`,
+        `${r.sourceName} · ${r.category} · ${r.placement==='reference'?"reference entry · no terrain location":r.visible ? "selected" : "outside view / duplicate"}`,
       ),
       note(position(r)),
       button("Details", () => showRecord(r)),

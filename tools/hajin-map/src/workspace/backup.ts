@@ -346,7 +346,7 @@ export function validateWorkspace(value: unknown): asserts value is Workspace {
       );
       assert(registration, "Snapshot registration missing.");
       for (const record of entry.snapshot.records)
-        transformPoint(record.rawGeometry, registration);
+        if(record.rawGeometry.kind==='point')transformPoint(record.rawGeometry, registration);
     }
   for (const b of s.basemaps) {
     fields(
@@ -820,6 +820,7 @@ export function placedRecords(
     );
     if (!registrationMatches(entry.snapshot.frame, registration)) continue;
     for (const r of entry.snapshot.records) {
+      if(r.rawGeometry.kind!=='point')continue;
       try {
         const p = transformPoint(r.rawGeometry, registration);
         output.push({

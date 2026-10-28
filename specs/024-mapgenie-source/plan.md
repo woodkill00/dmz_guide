@@ -5,4 +5,4 @@ Original server/mapgenie.mjs handles literal-only AST extraction of window.mapDa
 
 Research registration remains ignored and independently tested against canonical imagery with distributed holdouts. No Python/OpenCV runtime dependency. Local manifest/provenance binding remains; only MapGenie may start with an empty baseline after authorization/calibration.
 
-Generic source factory/masks/key/Explorer/review/updater serve MapGenie. Fixed known category-ID aliases preserve name+position matching. Tests are synthetic. Live POI/art acquisition/calibration waits for explicit permission.
+Generic source factory/masks/key/Explorer/review/updater serve MapGenie. Fixed known category-ID aliases preserve name+position matching. Default tests are synthetic. Authorized live acquisition verified decimal-string coordinates and off-terrain reference cards. Preserve reference cards as explicit unplaced geometry through captures, workspace history and Explore; never clamp them onto terrain. Live updater bootstrap and repeat reuse are verified.

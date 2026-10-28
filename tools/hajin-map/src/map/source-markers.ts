@@ -5,7 +5,7 @@ import type { MarkerSource } from './marker-sources';
 import { boundedBytes } from './bounded-input';
 
 interface Category { id: string; name: string; group: string; icon: string }
-interface SourceRecord extends MapPosition { id: string; name: string; category: string; floor?: string | number | null; notes?: string }
+interface SourceRecord extends Omit<MapPosition, 'x'|'y'> { x:number|null; y:number|null; placement?:'reference'; sourceX?:number; sourceY?:number; id: string; name: string; category: string; floor?: string | number | null; notes?: string }
 interface Snapshot { schemaVersion: number; sourcePage: string; capturedAt: string; categories: Category[]; records: SourceRecord[] }
 type State = 'loading' | 'ready' | 'failed';
 
@@ -21,7 +21,7 @@ function parseSnapshot(value: unknown, source: MarkerSource): Snapshot {
   const ids = new Set<string>();
   for (const record of data.records) {
     if (!text(record.id, 100) || !/^[\w.:-]+$/.test(record.id) || ids.has(record.id) || !text(record.name, 200) || !categories.has(record.category)) throw new Error('Invalid source marker.');
-    toPixels(record, hajin);
+    if(record.placement==='reference'){if(source.id!=='mapgenie'||record.x!==null||record.y!==null||![record.sourceX,record.sourceY].every(n=>typeof n==='number'&&Number.isFinite(n)&&n>=0&&n<=1024))throw new Error('Invalid reference entry.');}else{if(record.placement!==undefined||record.x===null||record.y===null)throw new Error('Invalid source position.');toPixels({...record,x:record.x,y:record.y},hajin);}
     ids.add(record.id);
     if(record.notes!==undefined&&(typeof record.notes!=='string'||record.notes.length>4000))throw new Error('Invalid source notes.');
     if(record.floor!=null&&!(typeof record.floor==='string'&&text(record.floor,128))&&!(typeof record.floor==='number'&&Number.isFinite(record.floor)))throw new Error('Invalid source floor.');
@@ -64,10 +64,10 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       for (const {record, marker} of markerPool) if (!suppressed.has(record.id) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())) groups.get(record.category)?.addLayer(marker);
     }
     if (master) for (const [id, group] of groups) if (enabled.has(id)) root.addLayer(group);
-    const visible = master ? snapshot.records.filter(record => !suppressed.has(record.id) && enabled.has(record.category) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())).length : 0;
+    const visible = master ? snapshot.records.filter(record => record.placement!=='reference' && !suppressed.has(record.id) && enabled.has(record.category) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())).length : 0;
     onUpdate(visible, snapshot.records.length, 'ready');
     const count = container.querySelector(`#${source.id}-count`);
-    if (count) count.textContent = `${visible} of ${snapshot.records.length} locations shown`;
+    if (count) count.textContent = `${visible} of ${snapshot.records.length} entries shown`;
     container.querySelectorAll<HTMLInputElement>('[data-category]').forEach(input => { input.checked = !input.disabled && enabled.has(input.dataset.category!); });
     const active = available();
     const selected = active.filter(category => enabled.has(category.id)).length;
@@ -89,7 +89,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       const category = input.dataset.category ?? input.dataset.keyCategory, records = snapshot!.records.filter(r=>r.category===category), matched = records.filter(r=>duplicates.has(r.id)).length;
       const row=input.closest('label'), count=row?.querySelector('.category-count');
       if(count)count.textContent=String(records.length);
-      if(row){row.classList.toggle('duplicate-category',matched>0&&matched===records.length);row.dataset.duplicateCount=String(matched);if(matched)row.title=`* ${matched} likely duplicate locations. One selected source is drawn; enable Show duplicate markers to inspect every source.`;else if(records.length)row.removeAttribute('title');}
+      if(row){row.classList.toggle('duplicate-category',matched>0&&matched===records.length);row.dataset.duplicateCount=String(matched);if(matched)row.title=`* ${matched} likely duplicate locations. One selected source is drawn; enable Show duplicate markers to inspect every source.`;else if(records.length)row.title=records.every(r=>r.placement==='reference')?'Reference entries without terrain locations; find them in Explore.':'';}
       row?.querySelector('.duplicate-details-button')?.remove();
       if(matched&&row){const inspect=document.createElement('button');inspect.type='button';inspect.className='duplicate-details-button';inspect.textContent=`* ${matched} matching — details`;inspect.setAttribute('aria-label',`Inspect matching ${category} locations from ${source.name}`);inspect.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();document.dispatchEvent(new CustomEvent('map-duplicate-details',{detail:{sourceId:source.id,categoryId:category}}));});row.append(inspect);}
     });
@@ -225,6 +225,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       master = true; pendingBulk = undefined;
     }
     for (const record of snapshot.records) {
+      if(record.x===null||record.y===null||record.placement==='reference')continue;
       const category = categories.get(record.category)!;
       const label = source.labelCategories[record.category];
       const content = document.createElement('span');
@@ -238,7 +239,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
         content.append(image);
       }
       const markerIcon = L.divIcon({ className: label ? 'official-label' : 'official-marker', html: content, iconSize: label ? [180, 24] : [28, 34], iconAnchor: label ? [90, 12] : [14, 32] });
-      const [x, y] = toPixels(record, hajin);
+      const [x, y] = toPixels({...record,x:record.x,y:record.y}, hajin);
       const marker = L.marker([y, x], { icon: markerIcon, title: record.name, alt: record.name, keyboard: true, riseOnHover: true });
       marker.on('add', () => {
         const element = marker.getElement();

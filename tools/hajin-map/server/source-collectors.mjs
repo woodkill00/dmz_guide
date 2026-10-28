@@ -432,6 +432,7 @@ export async function normalizedCapture({
       x,
       y,
     };
+    if(id==='mapgenie'&&row.allowReference&&[x,y].some(v=>v<0||v>1)){Object.assign(r,{x:null,y:null,placement:'reference',sourceX:row.x,sourceY:row.y});}
     if (row.notes != null && row.notes !== "")
       r.notes = String(row.notes).slice(0, 3500);
     if (row.floor != null) r.floor = row.floor;

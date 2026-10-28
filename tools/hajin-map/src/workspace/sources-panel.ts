@@ -157,7 +157,7 @@ export function sourcePanel(services: UIServices) {
         sample.append(
           el(
             "li",
-            `${r.title} · ${r.categoryId} · raw ${r.rawGeometry.x},${r.rawGeometry.y}`,
+            `${r.title} · ${r.categoryId} · raw ${r.rawGeometry.kind==='unplaced'?'reference entry (no terrain location)':`${r.rawGeometry.x},${r.rawGeometry.y}`} `,
           ),
         ),
       );
@@ -308,7 +308,7 @@ export function sourcePanel(services: UIServices) {
         card.append(
           el("h4", r.title),
           note(
-            `Original category: ${entry.snapshot.categories.find((c) => c.id === r.categoryId)?.path.join(" / ")} · raw X ${r.rawGeometry.x}, Y ${r.rawGeometry.y} · floor ${r.applicability.floor ?? "unknown"} · build ${r.applicability.gameBuild ?? "unknown"} · ${r.activityClaim.state}`,
+            `Original category: ${entry.snapshot.categories.find((c) => c.id === r.categoryId)?.path.join(" / ")} · ${r.rawGeometry.kind==='unplaced'?'Reference entry: no terrain location':`raw X ${r.rawGeometry.x}, Y ${r.rawGeometry.y}`}  · floor ${r.applicability.floor ?? "unknown"} · build ${r.applicability.gameBuild ?? "unknown"} · ${r.activityClaim.state}`,
           ),
         );
         for (const e of r.evidence) card.append(note(e.note));

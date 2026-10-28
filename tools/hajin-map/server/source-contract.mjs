@@ -58,8 +58,8 @@ const recordValue = (r) => ({
   ...r,
   notes: r.notes ?? "",
   floor: r.floor ?? null,
-  x: Math.round(r.x * 1e9) / 1e9,
-  y: Math.round(r.y * 1e9) / 1e9,
+  x: r.x===null?null:Math.round(r.x * 1e9) / 1e9,
+  y: r.y===null?null:Math.round(r.y * 1e9) / 1e9,
 });
 export const semantic = (capture, icons = {}) =>
   digest(
@@ -138,6 +138,7 @@ export function validateCapture(value, id) {
     cats.add(c.id);
   }
   for (const r of value.records) {
+    const geometryValid=r.placement==='reference'?id==='mapgenie'&&r.x===null&&r.y===null&&[r.sourceX,r.sourceY].every(v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=1024):r.placement===undefined&&[r.x,r.y].every(v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=1);
     if (
       !text(r.id, 100) ||
       !/^[\w.:-]+$/.test(r.id) ||
@@ -146,9 +147,7 @@ export function validateCapture(value, id) {
       !cats.has(r.category) ||
       r.mapId !== "hajin" ||
       r.coordinateSpaceVersion !== "hajin-official-v1-4096" ||
-      ![r.x, r.y].every(
-        (v) => typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= 1,
-      ) ||
+      !geometryValid ||
       (r.notes !== undefined &&
         (typeof r.notes !== "string" || r.notes.length > 3500)) ||
       (r.floor != null &&

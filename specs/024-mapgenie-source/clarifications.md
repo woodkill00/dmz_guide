@@ -1,2 +1,4 @@
 # Clarifications
 Use the tracking-free source URL. Prior permission named other providers; an asynchronous question asks whether it also covers MapGenie. Until answered, do not fetch MapGenie POI API, tiles or sprite. Public page/client schema inspection is read-only research. No account setup or paid/restricted endpoints are implied.
+
+2026-10-28: owner explicitly authorizes MapGenie import and asks to run updates twice to verify no duplicates. Live public feed is locations[283], decimal-string geographic fields.162markers lie on terrain;121mission/item reference cards are on MapGenie's surrounding board, not terrain locations. Retain all283 using explicit unplaced reference geometry for those cards, searchable in Explore; never clamp or invent coordinates. Both types participate in immutable snapshots/ID-based update no-op semantics; only terrain points participate in spatial duplicate matching.

@@ -1,20 +1,21 @@
-# Feature024 prepared implementation acceptance
-Date2026-10-28. Branch feat/024-mapgenie-source on05257f5. **Live MapGenie acceptance is pending.** Owner confirmation for this new provider has been requested asynchronously; no answer received. Do not infer permission from elapsed time or the earlier grant for other providers.
+# Feature024 local acceptance
+2026-10-28, feat/024-mapgenie-source. Latest owner authorization resolved local collection; no redistribution/deployment implied. Raw assets, authorization, captures and private screenshots remain ignored.
 
-## Authorized work verified
-- Registered MapGenie clean HTTPS link, default reference-only policy, five-source/four-provider capacities, masks/known facility aliases and generic key/Explorer/review/update/recovery paths. Old four-source authorizations remain valid; unconfigured MapGenie yields an explicit per-source outcome with no acquisition. Actual local authorization file was not expanded.
-- Inert selected-literal metadata parser, strict public-location adapter scaffold, WebMercator projection, exact16tile/frame verification, validated/cropped/re-encoded PNG sprites, independent digest-bound calibration and first-capture bootstrap are implemented and tested synthetically. Actual API schema remains unverified.
-- Shared affine validation rejects singular/near-degenerate matrices. PNG preflight rejects unsupported animation/compressed metadata/truncation; decoded extent is checked. The deadline runs in Node because JavaScript-disabled parser pages do not run page timers; timeout disposes the decoder page before rejecting. Trusted crop IDs cannot be overwritten by sprite metadata.
-- Whole-source admission preserves the20000record view/search/duplicate budget, including five valid5000record raw captures. Excluded captures remain retained with actionable controls; authoritative workspace heads and selected sites are prioritized. Admission occurs before excess native marker pools are constructed once the workspace is hydrated; late initialization also clears excluded pools safely. No imported/private records are deleted.
+## Live update
+Actual UI Update → preview → Apply captured official138, CODMunity103, WZStats108, CODCentral201, MapGenie283. All833 source entries retained. MapGenie has162 terrain locations and121 reference-board entries (missions/items), stored unplaced and searchable without fabricated terrain pins.
 
-## Executed checks
-- `npm run map:test`:87 passed,0failed, including10 new MapGenie/admission tests and all previous checks. Synthetic tests cover projection corners, inert parser/security, frame/tile binding, sprite decoding/identity/timeouts, authorization compatibility, bootstrap/repeat no-op, names+coordinates/floor/category matching and aggregate budget.
-- `npm run map:test:browser`:54groups passed,0runtime errors/0unexpected external requests. Five-source synthetic icons/masks/links/starred duplicates/fallback/reload/update/recovery, quota failure and five-by5000 admission/reprioritization passed. Existing four-source fixtures, grid, private authoring, basemap comparison and backups remained green.
-- `npm run map:build`:strict TypeScript/production build passed; index-BvvxdY0S.js.
-- `py -3 scripts/check.py`:0failures; git diff --check passed.
-- `npm run map:test:capacity`:passed after updating its five-source validation fixture to partition the unchanged20000-record aggregate limit across5x4000 records (rather than accidentally requesting25000). Per-source5000 caps are separately exercised by the five-by5000 browser regression. Toggle first-paint p95:215.7ms; search p95:116.4ms (250ms budgets); production20000-record worker runs353.9–405.7ms (2000ms budget). Enforced4cores/512MiB renderer heap on64GiB Windows host, Node24.15.0/Chromium156.0.8078.4; not physical8GiB-device certification. No live MapGenie data smoke was run.
+A second five-source update returned five unchanged outcomes and five reused captures. Workspace retained exactly five snapshots; deep comparison of snapshots before/after passed; no runtime errors. Isolated browser context preserved the owner's browser profile. Native current pointer contains all five sources, so normal reload also sees imported icons/categories.
 
-## Review and remaining gate
-Requirements independently approved. Security/domain reviewer independently ran9 MapGenie tests and approved MG024-01–03 repairs. UI reviewer approved aggregate admission repair MG-R1 and the new unavailable name/link row. Final authorized-code review has no remaining actionable findings. Live collection is not approved by this evidence.
+Live display audit:712 terrain source entries;260 matching copies suppressed,452 representatives shown with all sites selected. Every grouped name matched after normalization, each anchor distance<=24px, one record per source per group; no truncated comparison. References were excluded. Different names at nearby positions stay separate by design, preserving conservative review rather than claiming perfect source agreement.
 
-T003 remains pending: confirm MapGenie permission, verify actual public API schema, acquire authorized tile/sprite data, independently fit/holdout-check terrain registration and enable an ignored real capture. T005 live verification remains pending. No source assets/POIs/sprite/permissions/private screenshots enter Git. Current local viewer shows MapGenie as unavailable; existing sources remain usable. No deployment, paid service, account linking or public redistribution is implied.
+Calibration:216 training controls/132 spatially separated central-terrain heldouts, RMS1.4767/max7.2903 canonicalpx. Independent reviewer recomputed metrics and zero exact fit/heldout overlap. This is central-terrain image alignment evidence, not independent game-wide location accuracy certification.
+
+## Verification
+- Unit suite:88passed,0failed. Decimal-string API coordinates, unplaced reference semantics/semantic repeat, searchable/no spatial geometry, completeness exclusion with official input, malformed reference/other-provider rejection and out-of-bounds facility rejection added. Existing name+position/floor/build/source protections remain green.
+- Full browser suite:54groups passed,0runtime errors/0external requests. Five-source masks/icons/links/starred duplicate/fallback/update/recovery/reload; five-by5000 admission; existing authoring/backup/grid checks passed.
+- Strict TypeScript and production build passed (index-CQzcgNAx.js).
+- Repository check:0failures. git diff --check passed after whitespace cleanup.
+- Previously executed capacity checks remain applicable: unchanged20k limit; toggle p95 215.7ms/search116.4ms/worker353.9–405.7ms on4-core affinity/512MiB renderer heap/64GiB host; not physical8GiB-device certification. No capacity increase in this repair.
+
+## Independent review and convergence
+Requirements approved earlier. Domain/security reviewer independently passed11MapGenie tests/typecheck and recomputed calibration; no blocker. Recommended test hardening was implemented, including meaningful official-present coverage and malformed reference/other-provider rejection. UI reviewer found MG-REF-R1 misleading reference captions; repaired and independently rechecked clean. Prior singular-affine/sprite timeout/ID and aggregate admission findings remain repaired. Analyze/converge closes all seven tasks with no uncovered requirement or remaining actionable issue.

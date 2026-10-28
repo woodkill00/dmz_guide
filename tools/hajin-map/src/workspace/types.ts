@@ -33,7 +33,7 @@ export interface SourceRecord {
   id: string;
   categoryId: string;
   title: string;
-  rawGeometry: { kind: "point"; x: number; y: number };
+  rawGeometry: { kind: "point"; x: number; y: number }|{kind:'unplaced';x?:never;y?:never};
   applicability: Applicability;
   activityClaim: {
     state: "possible-spawn" | "observed-active" | "unknown";

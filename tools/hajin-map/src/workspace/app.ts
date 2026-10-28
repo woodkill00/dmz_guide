@@ -135,15 +135,15 @@ export function mountWorkspace(
     for (const source of legacy) {
       if (capacityExcluded.has(source.id)) continue;
       if (active.has(source.id) && !active.get(source.id)!.legacy) continue;
-      for (const r of source.getSnapshot()?.records ?? [])
+      for (const r of source.getSnapshot()?.records.filter(r=>r.x!==null&&r.y!==null) ?? [])
         records.push({
           key: loadedKey(source.id, r.id),
           identity: loadedIdentity(source, r.id) ?? undefined,
           sourceId: source.id,
           category: r.category,
           title: r.name,
-          x: r.x * 4096,
-          y: r.y * 4096,
+          x: r.x! * 4096,
+          y: r.y! * 4096,
           floor: r.floor == null ? null : String(r.floor),
           build: null,
           visible: isVisible(
@@ -1674,7 +1674,7 @@ export function mountWorkspace(
         legacyShown +=
           snapshot?.records.filter(
             (r) =>
-              filters.enabled.includes(r.category) &&
+              r.x!==null && r.y!==null && filters.enabled.includes(r.category) &&
               !duplicatePlan.suppressed.has(loadedKey(source.id, r.id)) &&
               `${r.name} ${r.category}`.toLocaleLowerCase().includes(q),
           ).length ?? 0;
@@ -2264,12 +2264,12 @@ export function mountWorkspace(
         if (layerSlot) layerSlot.hidden = replaced;
         source.setFilters({
           suppressed: new Set(
-            (source.getSnapshot()?.records ?? [])
+            (source.getSnapshot()?.records.filter(r=>r.x!==null&&r.y!==null) ?? [])
               .filter((r) => duplicatePlan.suppressed.has(loadedKey(id, r.id)))
               .map((r) => r.id),
           ),
           duplicates: new Map(
-            (source.getSnapshot()?.records ?? [])
+            (source.getSnapshot()?.records.filter(r=>r.x!==null&&r.y!==null) ?? [])
               .filter((r) => duplicatePlan.matches.has(loadedKey(id, r.id)))
               .map((r) => [
                 r.id,

@@ -154,22 +154,23 @@ export function adaptOfficial(
         path: [c.group, c.name],
       })),
       records: v.records.map((r: any) => {
+        const reference=sourceId==='mapgenie'&&r.placement==='reference'&&r.x===null&&r.y===null&&[r.sourceX,r.sourceY].every(n=>typeof n==='number'&&Number.isFinite(n)&&n>=0&&n<=1024);
         if (
           r.mapId !== "hajin" ||
           r.coordinateSpaceVersion !== applicability.coordinateVersion ||
-          !Number.isFinite(r.x) ||
+          !reference&&(!Number.isFinite(r.x) ||
           !Number.isFinite(r.y) ||
           r.x < 0 ||
           r.y < 0 ||
           r.x > 1 ||
-          r.y > 1
+          r.y > 1)
         )
           throw new Error("Invalid official coordinates.");
         return {
           id: r.id,
           categoryId: r.category,
           title: r.name,
-          rawGeometry: { kind: "point", x: r.x * 4096, y: r.y * 4096 },
+          rawGeometry: reference?{kind:'unplaced'}:{ kind: "point", x: r.x * 4096, y: r.y * 4096 },
           applicability: {
             ...applicability,
             floor:
@@ -186,7 +187,7 @@ export function adaptOfficial(
             sourceId === "official" ? ["activision-official-guide"] : [],
           evidence: [
             {
-              note: `Imported owner-local ${sourcePolicies[sourceId].name} claim; not independently verified.${typeof r.notes === "string" ? " " + r.notes.slice(0, 3500) : ""}`,
+              note: `Imported owner-local ${sourcePolicies[sourceId].name} claim; not independently verified.${reference?` Reference card outside terrain; source board position ${r.sourceX}, ${r.sourceY}.`:''}${typeof r.notes === "string" ? " " + r.notes.slice(0, 3500) : ""}`,
               url: sourcePolicies[sourceId].page,
             },
           ],

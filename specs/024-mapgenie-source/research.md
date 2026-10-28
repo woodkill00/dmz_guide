@@ -1,6 +1,8 @@
 # Research
-The tracking-free public map page returned200 through a normal unauthenticated bounded GET. The web connector could not render it; no protection/auth bypass used. Inert page metadata declares map1084, tile_set1345/v5,26categories and sprite rectangles. Public client code identifies a fixed map-data endpoint. Terms resolve to https://www.ziffdavis.com/terms-of-use, which explicitly lists MapGenie; owner collection permission is pending confirmation for this new provider.
+Authorized local public acquisition on2026-10-28 verified map1084/tile1345v5,26 categories and283 stable location IDs at the fixed public API. No account or scripts executed. API decimal strings are validated before WebMercator projection. All16 reviewed tiles and bounded source sprite are fingerprint-bound; raw research stays ignored.
 
-Latitude/longitude differ from other sources' percentages. Exact projection and independent imagery registration must precede placement. POI/tile/sprite acquisition is pending, not claimed complete. Raw page/client research stays ignored; downloaded scripts are never executed.
+162 entries are terrain locations;121 are mission/equipment reference cards on the decorative board outside the terrain. Preserve all283 but never fabricate coordinates for reference cards.
 
-Authorized-code review repairs: reject singular/near-degenerate affine matrices, verify decoded sprite extent, enforce PNG chunk bounds and trusted category binding, dispose decoder realms using Node-owned deadlines (page timers are disabled), and admit whole sources within20k without dropping raw captures. Actual schema/art/calibration remains pending.
+Independent terrain registration:216 unique mutual-SIFT training controls,64px spatial checkerboard split before fitting;132 heldouts at least6sourcepixels from training within identifiable central terrain (source x300..760,y420..800). RMS1.4767/max7.2903 canonicalpx, within8/16 limits. Repetitive northwest desert descriptor mismatches were excluded from validation region, not claimed passing controls. Registration evidence and imagery remain ignored.
+
+Live five-source Apply and repeat verified counts138/103/108/201/283, five unchanged outcomes, five reused captures and exactly five immutable workspace snapshots, no runtime errors. Domain/UI review covers remaining findings.
