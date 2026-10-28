@@ -1,3 +1,4 @@
+import { validateIconDesign, designedPNG, type IconDesign } from './icon-design.ts';
 // Narrow compatibility boundary: native normalization has no database or UI side effects.
 import {
   normalizeRaster,
@@ -24,6 +25,7 @@ export function validateStoredIcon(icon: IconAsset) {
     icon.rightsDeclaration.length > 4000
   )
     throw new Error("Invalid custom icon metadata.");
+  if(icon.design!==undefined)validateIconDesign(icon.design);
   const bytes = iconBytes(icon),
     info = imageInfo(bytes);
   if (
@@ -87,7 +89,8 @@ export async function stageIcon(
 }
 export function commitIcon(state: Workspace, icon: IconAsset) {
   validateStoredIcon(icon);
-  if (state.icons.some((i) => i.id === icon.id)) return;
+  const existing=state.icons.find(i=>i.id===icon.id);
+  if(existing){if(!existing.design&&icon.design)existing.design=validateIconDesign(icon.design);return;}
   const bytes =
     state.icons.reduce((n, i) => n + iconBytes(i).byteLength, 0) +
     iconBytes(icon).byteLength;
@@ -128,4 +131,10 @@ export function annotationIcon(
     annotation.iconId ??
     state.categoryIcons.find((c) => c.category === annotation.category)?.iconId;
   return state.icons.find((i) => i.id === id);
+}
+
+export async function stageDesignedIcon(design:IconDesign,description:string,signal?:AbortSignal):Promise<IconAsset>{
+ const recipe=validateIconDesign(design),png=await designedPNG(recipe,description,signal);
+ const icon=await stageIcon(new File([png],'created-icon.png',{type:'image/png'}),'Original icon composed locally from built-in vector primitives.',description.trim(),signal);
+ icon.design=recipe;return icon;
 }

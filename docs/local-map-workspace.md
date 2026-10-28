@@ -84,3 +84,13 @@ Alignment follows [CODCentral's drawn tactical grid](https://codcentral.net/blog
 The live updater was applied and repeated for all five sites; unchanged captures were reused without adding snapshots or records. Existing four-source configurations remain valid. New installations still require owner-local authorization, reviewed tile fingerprints and digest-bound `providers/mapgenie/registration.local.json`; downloaded assets are not distributed in Git. Changed imagery/frame/schema retains the last good capture.
 
 Five raw source captures can each contain5000 records, but the combined source view/search/duplicate budget remains20000. Imported workspace heads take priority. Remaining captures prefer selected websites, then the official source, with MapGenie last on ties. Whole excess captures show an unavailable warning and remain retained; select the desired website and hide another if needed to make room. No partial source truncation or record deletion occurs. Private workspace/history limits remain unchanged.
+
+## Create your own SVG icons (feature025)
+
+Open **My workspace → Icons → Create SVG icon**. Choose General, Loot cache, Medical, Danger, Objective or Extraction, then change the frame/symbol, colors, border width, symbol size and rotation. An optional1–3letter/number label replaces the symbol. The enlarged preview and32px previews on dark/light backgrounds show how it will look.
+
+Enter an accessible description and choose **Save icon to library**. In My points, select it under **Icon override**, or use the saved icon's **Set category icon** action for a category default. **Edit a copy** opens a saved design for a new variant; existing points keep their original appearance. Identical image content reuses the existing library entry; a raster-only match gains the editable settings without changing its image or references.
+
+**Download SVG** saves a scalable self-contained vector. **Download PNG** saves a transparent256px image. SVG creation uses original built-in shapes; arbitrary SVG uploads and freehand/path editing are outside this version. Existing PNG/JPEG/WebP uploads remain available. Only one icon form can be edited at a time: save or use **Cancel draft / preview** to switch forms without silently discarding edits.
+
+Editable designs remain local and are included in private backups alongside the marker PNGs. Existing raster-only backups still restore. The library retains its32icon/8MiB limit. Cancellation and failed saves preserve existing icons; a storage failure retains the draft for retry/export. Before reverting to an older application that cannot read recipes, keep a new private backup; an older-format copy must omit only optional `icons[].design` fields while retaining all image data/IDs/references.

@@ -1,0 +1,4 @@
+# UI contract
+Workspace→My icons→Create SVG icon: preset, frame/symbol or label, threecolors, border/symbol size/rotation, accessible description, live previews; Save to library/DownloadSVG/DownloadPNG. Saved designs offer Edit a copy and SVG download; raster uploads remain separate and reject arbitrary SVG. Existing POI icon select/category assignment consume saved PNGs. Cancel draft and existing dirty/tab/close/recovery guards apply. At360px preview and fields fit; every control has a label, status reports save/duplicate/failure. No external requests.
+
+One dirty icon form owns editing; competing creator/upload/library forms are visibly inert until save/cancel. Matching raster-only content gains the validated recipe without changing image identity or existing descriptions/references; existing recipes are never overwritten by duplicate save.

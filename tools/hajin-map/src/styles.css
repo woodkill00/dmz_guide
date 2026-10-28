@@ -63,3 +63,23 @@ dialog{color:#e8e9df;background:#191f1a;border:1px solid #697453;max-width:440px
 .grid-toggle input { width:16px;height:16px;flex-shrink:0; }
 .map-position { display:flex;gap:16px; }
 #grid-position { font-size:12px;font-weight:bold;min-width:24px;display:block; }
+
+.icon-studio{border:1px solid #81956266;border-radius:8px;padding:16px;margin:0 0 24px;min-width:0}
+.icon-starters,.icon-design-actions{display:flex;flex-wrap:wrap;gap:8px}
+.icon-starters button{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 10px}
+.icon-starters img{flex-shrink:0}
+.icon-design-previews{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px 0}
+.icon-design-preview{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px;min-width:0;border-radius:6px;background:#101813;border:1px solid #a2b18b66;color:#eaf0e0}
+.icon-design-preview.large{background-color:#26332a;background-image:linear-gradient(45deg,#ffffff0c 25%,transparent 25%),linear-gradient(-45deg,#ffffff0c 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ffffff0c 75%),linear-gradient(-45deg,transparent 75%,#ffffff0c 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0}
+.icon-design-preview.light{background:#eef0e7;color:#26332a}
+.icon-design-preview img{display:block;object-fit:contain;max-width:100%}
+.icon-design-preview figcaption{font-size:11px}
+.icon-design-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px;min-width:0}
+.icon-design-controls>.workspace-field{min-width:0}
+.icon-design-controls>.workspace-field:has(#icon-design-description),.icon-design-controls>.workspace-field:has(#icon-design-label){grid-column:1/-1}
+.icon-design-controls input[type=color]{height:42px;width:100%;padding:3px}
+.icon-design-actions button{min-height:44px;white-space:normal;max-width:100%}
+@media(max-width:480px){.icon-studio{padding:10px}.icon-design-controls{grid-template-columns:minmax(0,1fr)}.icon-design-preview.large{width:100%;box-sizing:border-box}.icon-starters button{flex:1 1 110px}.icon-design-actions button{flex:1 1 120px}}
+
+.icon-form-inactive{opacity:.5}
+#icon-form-draft-status:not(:empty){padding:10px;border-left:3px solid var(--accent);background:#27351f}

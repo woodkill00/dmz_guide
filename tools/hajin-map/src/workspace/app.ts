@@ -31,6 +31,8 @@ import { sourcePolicies } from "./policy.ts";
 import { saveAnnotation, removeAnnotation } from "./annotations.ts";
 import { annotationEditor } from "./annotation-editor.ts";
 import { stageIcon, commitIcon, deleteIcon, annotationIcon } from "./icons.ts";
+import { createIconStudio, downloadIconSVG, downloadIconPNG } from './icon-studio.ts';
+import { stageDesignedIcon } from './icons.ts';
 import { sourcePanel } from "./sources-panel.ts";
 import { reviewPanel } from "./review-panel.ts";
 import {
@@ -1054,10 +1056,35 @@ export function mountWorkspace(
   };
   viewer.map.on("contextmenu", rightClickPoint);
   function renderIcons() {
-    body.append(
-      el("h3", "My icon library"),
+    const forms:HTMLElement[]=[];
+    let draftOwner:HTMLElement|undefined;
+    const draftNote=note('');draftNote.id='icon-form-draft-status';draftNote.setAttribute('role','status');
+    const ownIconDraft=(owner:HTMLElement)=>{
+      if(draftOwner&&draftOwner!==owner)return;
+      draftOwner=owner;dirty=true;
+      for(const form of forms){form.inert=form!==owner;form.classList.toggle('icon-form-inactive',form!==owner);}
+      draftNote.textContent='Editing one icon form. Save or cancel this draft before using another icon form.';
+    };
+    const studio=createIconStudio({process:services.process,error,notice,dirty:()=>ownIconDraft(studio.root),save:async(design,description)=>{
+      const expected=revision;
+      const icon=await services.process(signal=>stageDesignedIcon(design,description,signal));
+      const existing=state.icons.find(i=>i.id===icon.id);
+      if(existing){
+        if(!existing.design){await commit('Editable design attached to existing icon',draft=>commitIcon(draft,icon),[],expected);resetEditor();notice(`Editable design added to ${existing.description}; image and references reused.`);}
+        else{resetEditor();notice(`Already saved as ${existing.description}; existing icon and references reused.`);}
+        return;
+      }
+      await commit('Created icon saved',draft=>commitIcon(draft,icon),[],expected);
+      resetEditor();
+    }});
+    forms.push(studio.root);
+    const upload=el('section');upload.id='icon-raster-upload';forms.push(upload);
+    for(const event of ['input','change'])upload.addEventListener(event,()=>ownIconDraft(upload));
+    body.append(draftNote,studio.root,upload);
+    upload.append(
+      el("h3", "Upload icon image"),
       note(
-        "Local PNG/JPEG/WebP only. Images are validated, stripped of metadata and resized to at most256px. SVG and animation are rejected.",
+        "Upload PNG/JPEG/WebP files, or create an SVG design above. Uploads are stripped of metadata and resized to at most256px. Arbitrary SVG files and animation are rejected.",
       ),
     );
     const file = input("", "file");
@@ -1070,7 +1097,7 @@ export function mountWorkspace(
     rights.id = "custom-icon-rights";
     const owned = input("", "checkbox");
     owned.id = "custom-icon-owned";
-    body.append(
+    upload.append(
       field("Icon file", file),
       field("Accessible description", description),
       field("Ownership or authorization declaration", rights),
@@ -1127,6 +1154,7 @@ export function mountWorkspace(
         "preview-custom-icon",
       ),
     );
+    body.append(el("h3","My saved icons"));
     for (const icon of state.icons) {
       const card = el("section", undefined, "workspace-card"),
         image = el("img");
@@ -1138,6 +1166,13 @@ export function mountWorkspace(
         el("h4", icon.description),
         note(icon.rightsDeclaration),
       );
+      card.dataset.libraryIcon=icon.id;forms.push(card);
+      for(const event of ['input','change'])card.addEventListener(event,()=>ownIconDraft(card));
+      if(icon.design)card.append(button('Edit a copy',()=>{
+        if(dirty){error('Save or cancel your current draft before opening another icon.');return;}
+        studio.load(icon.design!,icon.description);ownIconDraft(studio.root);studio.root.scrollIntoView({block:'start'});studio.root.querySelector<HTMLInputElement>('#icon-design-description')?.focus();
+      }),button('Download SVG',()=>downloadIconSVG(icon.design!,icon.description)));
+      card.append(button('Download PNG',()=>downloadIconPNG(icon)));
       const category = input("");
       const replacement = select([
         { value: "", label: "No replacement" },
@@ -1165,6 +1200,7 @@ export function mountWorkspace(
                 });
               }
             });
+            resetEditor();
           } catch (e) {
             error(e);
           }
@@ -1175,6 +1211,7 @@ export function mountWorkspace(
             await commit("Icon removed; references replaced", (draft) =>
               deleteIcon(draft, icon.id, replacement.value || null),
             );
+            resetEditor();
           } catch (e) {
             error(e);
           }

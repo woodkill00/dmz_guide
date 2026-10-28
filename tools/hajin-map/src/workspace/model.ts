@@ -33,6 +33,7 @@ export interface Annotation {
   updatedAt: string;
 }
 export interface IconAsset {
+  design?: import("./icon-design.ts").IconDesign;
   id: string;
   base64: string;
   width: number;

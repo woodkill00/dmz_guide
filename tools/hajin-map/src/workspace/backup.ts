@@ -427,7 +427,7 @@ export function validateWorkspace(value: unknown): asserts value is Workspace {
   for (const icon of s.icons) {
     fields(
       icon,
-      ["id", "base64", "width", "height", "description", "rightsDeclaration"],
+      ["id", "base64", "width", "height", "description", "rightsDeclaration",...(Object.hasOwn(icon,"design")?["design"]:[])],
       "icon",
     );
     totalBytes += validateStoredIcon(icon).length;
