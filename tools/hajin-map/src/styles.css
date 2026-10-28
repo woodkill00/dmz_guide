@@ -56,3 +56,10 @@ dialog{color:#e8e9df;background:#191f1a;border:1px solid #697453;max-width:440px
 .source-update-controls { display:flex;flex-wrap:wrap;gap:.5rem; }
 .source-update-controls p { width:100%;overflow-wrap:anywhere; }
 .source-update-controls button { min-height:36px;max-width:100%;white-space:normal; }
+.hajin-coordinate-grid { position:absolute;left:0;top:0;pointer-events:none;overflow:hidden; }
+.hajin-coordinate-grid line { stroke:#e9f2d7;stroke-opacity:.42;stroke-width:1; }
+.coordinate-grid-cell { fill:#f0f5df;stroke:#111b13;stroke-width:2.5;paint-order:stroke fill;font-family:'Courier New',monospace;font-weight:700;dominant-baseline:hanging;pointer-events:none; }
+.grid-toggle { display:flex;align-items:center;gap:8px;font-size:12px;line-height:1.5;margin:12px 0 4px;cursor:pointer; }
+.grid-toggle input { width:16px;height:16px;flex-shrink:0; }
+.map-position { display:flex;gap:16px; }
+#grid-position { font-size:12px;font-weight:bold;min-width:24px;display:block; }

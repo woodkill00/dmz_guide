@@ -1,0 +1,2 @@
+# Resolved choices
+No blocking user clarification: A–J/1–9 source grid, default visible, independently switchable, existing pixel coordinates retained. Calibration is the previously reviewed CODCentral alignment, not a new inferred full-image grid. Some source marker data-grid strings disagree with that source's drawn grid (8/194 reviewed older records); use drawn geometry and do not alter raw claims. The Grid control at source65.451%/66.000% lies in G6. Runtime grid does not fetch or execute source code.

@@ -1,0 +1,6 @@
+# Plan
+Authored immutable grid geometry in src/map/tactical-grid.ts: source dimensions2880x2700, measured internal percentage boundaries, extrapolated outer boundaries, reviewed six-term affine matrix and canonical image binding. Pure forward/inverse transforms and half-open lookup; allow tiny numeric roundoff at exact transformed boundaries, not broad proximity snapping.
+
+One noninteractive Leaflet SVG overlay in its own pane between basemaps and markers. One SVG with21lines/90texts, viewport-inverse text size and padding on zoom. Its dedicated class distinguishes the vector reference grid from background .leaflet-image-layer elements. Pointer-events:none on pane/overlay; aria-hidden decorative geometry. Map key native labelled checkbox controls visibility and advisory localStorage preference. main footer receives exact grid reference in addition to rounded image coordinates. map-view owns grid lifecycle/listeners and disposes them on HMR/destroy.
+
+Offline synthetic tests, a private live geometry smoke against reviewed local terrain, existing regression suite and capacity. No new dependencies or data fetching. Existing uncommitted/ignored local captures stay separate. Feature022 is retained as local commit d20a5c7; this branch builds on it.

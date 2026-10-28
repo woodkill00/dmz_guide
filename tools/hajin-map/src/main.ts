@@ -51,7 +51,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <main class="workspace">
     <aside id="map-key" class="sidebar" aria-label="Map key">
       <div class="sidebar-heading"><span class="section-number">MAP KEY</span><button id="close-key" class="key-close" aria-label="Hide map key">×</button></div>
-      <div class="key-toolbar"><p>Choose the symbols shown on your map.</p><div class="layer-bulk"><button id="key-show-all" disabled>Show all</button><button id="key-hide-all" disabled>Hide all</button></div><p id="key-summary" role="status">Loading icons…</p></div>
+      <div class="key-toolbar"><p>Choose the symbols shown on your map.</p><label class="grid-toggle"><input id="show-coordinate-grid" type="checkbox" checked aria-describedby="coordinate-grid-help"> Coordinate grid (A–J / 1–9)</label><p id="coordinate-grid-help" class="small-note">Source-aligned tactical grid. Unlabelled margins show —.</p><div class="layer-bulk"><button id="key-show-all" disabled>Show all</button><button id="key-hide-all" disabled>Hide all</button></div><p id="key-summary" role="status">Loading icons…</p></div>
       <div id="map-key-content" class="key-content"></div>
       <div class="overlay-summary">${icon('map')}<div><strong id="official-summary">Loading official locations…</strong><span>No authored markers yet</span></div><span id="official-summary-count" class="marker-count">—</span></div>
     </aside>
@@ -67,7 +67,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
         <button id="layers" class="icon-button" aria-label="Map sources and layers" title="Map sources and layers">${icon('layers')}</button>
         <button id="info" class="icon-button" aria-label="Map information and keyboard help" title="Map information">${icon('info')}</button>
       </div>
-      <div class="map-bottom-bar"><span class="map-position"><span class="coordinate-label">IMAGE POSITION</span><span id="position">X — &nbsp; Y —</span></span><span id="zoom-level">OVERVIEW</span></div>
+      <div class="map-bottom-bar"><span class="map-position"><span><span class="coordinate-label">GRID</span><span id="grid-position">—</span></span><span><span class="coordinate-label">IMAGE POSITION</span><span id="position">X — &nbsp; Y —</span></span></span><span id="zoom-level">OVERVIEW</span></div>
       <div id="map-status" class="map-status" role="status" aria-live="polite"><span class="loader"></span><strong>Preparing the terrain</strong><p>Loading the Hajin background…</p></div>
       <p id="map-help" class="sr-only">Drag or use arrow keys to pan. Scroll, pinch, or use the zoom buttons to zoom. Reset view fits the whole map. Image positions are not in-game grid coordinates.</p>
       <footer class="map-credit"><a href="${hajin.source}" target="_blank" rel="noopener noreferrer">Official Hajin map & icons</a><span>© 2026 Activision Publishing, Inc.</span></footer>
@@ -113,9 +113,13 @@ function updateState(next: MapState) {
   }
 }
 
-export const viewer = createMapView(document.querySelector<HTMLElement>('#map')!, updateState, (x, y) => {
+export const viewer = createMapView(document.querySelector<HTMLElement>('#map')!, updateState, (x, y, grid) => {
+  document.querySelector('#grid-position')!.textContent=grid??'—';
   document.querySelector('#position')!.textContent = x === null ? 'X —   Y —' : `X ${String(x).padStart(4, '0')}   Y ${String(y).padStart(4, '0')}`;
 }, zoom => { document.querySelector('#zoom-level')!.textContent = `ZOOM ${Math.round(100 * 2 ** (zoom - 4))}%`; });
+const gridToggle=document.querySelector<HTMLInputElement>('#show-coordinate-grid')!;
+gridToggle.checked=viewer.coordinateGrid.isVisible();gridToggle.disabled=!viewer.coordinateGrid.supported;
+gridToggle.addEventListener('change',()=>viewer.coordinateGrid.setVisible(gridToggle.checked));
 
 const sourceStatus = new Map<string, { visible: number; total: number; state: string }>();
 async function startSources() {
