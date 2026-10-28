@@ -1,3 +1,6 @@
+import {createFieldGuideUI} from './field-guide-ui.ts';
+import {plannedDuplicates,decorateRecord} from './field-guide.ts';
+import type {XY} from './roads.ts';
 import {markerPopupOptions} from '../map/marker-popup.ts';
 import {parseIconPack,exportIconPack} from './icon-packs.ts';
 import {healthPanel} from './health-panel.ts';
@@ -69,7 +72,7 @@ import {
 } from "./usability.ts";
 type Legacy = ReturnType<typeof createSourceMarkers>;
 type Viewer = ReturnType<typeof createMapView>;
-type Tab = "health" | "points" | "sources" | "review" | "icons" | "backup" | "explore";
+type Tab = "planner" | "health" | "points" | "sources" | "review" | "icons" | "backup" | "explore";
 export function mountWorkspace(
   viewer: Viewer,
   legacy: Legacy[],
@@ -99,6 +102,8 @@ export function mountWorkspace(
     visibilityEpoch = 0;
   let searchTimer: ReturnType<typeof setTimeout> | undefined;
   const visibility = () => pendingVisibility ?? state.visibility;
+  let plannerUI:ReturnType<typeof createFieldGuideUI>|undefined;
+  let plannerPick:((point:XY)=>void)|undefined;
   let showDuplicateMarkers = false;
   let duplicatePlan = displayDuplicates([]);
   let capacityExcluded = new Set<string>();
@@ -197,10 +202,10 @@ export function mountWorkspace(
         ),
       });
     }
-    duplicatePlan = displayDuplicates(
+    duplicatePlan = plannedDuplicates(
       records,
       showDuplicateMarkers,
-      state.usability?.separate ?? [],
+      state.usability?.separate ?? [],state.fieldGuide?.duplicateDecisions??[],
     );
   }
   const openButton = button(
@@ -585,7 +590,7 @@ export function mountWorkspace(
       legacy.filter((s) => !capacityExcluded.has(s.id)),
       selectedSnapshots,
     ).map((r) => ({
-      ...r,
+      ...decorateRecord(state.fieldGuide,r),
       visible: r.visible && !duplicatePlan.suppressed.has(r.key),
     }));
   const canInspect = () =>
@@ -633,6 +638,7 @@ export function mountWorkspace(
   const usabilityUI = createUsabilityUI({
     ...services,
     records: getExplorerRecords,
+    addWaypoint:r=>plannerUI!.addRecord(r),trackRecord:r=>plannerUI!.observe(r),
     mapCenter:()=>{const p=viewer.map.getCenter();if(![p.lng,p.lat].every(n=>n>=0&&n<=4096))throw new Error('Move the map center inside the terrain first.');return{x:p.lng,y:p.lat,label:'Map center'};},
     openSearch:()=>openExplore('search'),
     jumpPosition:point=>{if(!canInspect())return;clearHighlight();viewer.map.setView([point.y,point.x],Math.max(viewer.map.getZoom(),2),{animate:false});L.circleMarker([point.y,point.x],{radius:16,color:'#fff39a',weight:4}).bindPopup(el('span',point.label)).addTo(searchHighlight).openPopup();dialog.close();},
@@ -716,6 +722,20 @@ export function mountWorkspace(
     snooze: snoozeBackup,
     downloadBackup: () => downloadPrivateBackup(),
   });
+  plannerUI=createFieldGuideUI({
+    ...services,map:viewer.map,records:getExplorerRecords,
+    allowed:()=>canInspect()&&!unsaved&&!pendingVisibility,
+    draftAllowed:()=>!processing&&!interactionLocks&&(!unsaved||(!!plannerUI?.ownsDraft()&&failedLabel==='Map planner saved'))&&!pendingVisibility&&(!dirty||!!plannerUI?.ownsDraft())&&!detailActive,
+    setDirty:value=>{dirty=value;if(!value)plannerPick=undefined;},
+    openPlanner:()=>{active='planner';renderPanel();if(!dialog.open)dialog.showModal();},closePlanner:()=>dialog.close(),
+    search:query=>{usabilityUI.find(query);},popup:r=>usabilityUI.popup(r),
+    available:()=>{const out:Record<string,string[]>={};for(const source of legacy){const snapshot=source.getSnapshot();if(snapshot)out[source.id]=snapshot.categories.map(c=>c.id);}for(const entry of state.snapshots)out[entry.snapshot.sourceId]=entry.snapshot.categories.map(c=>c.id);for(const [source,key] of selectedSnapshots){const entry=state.snapshots.find(e=>e.key===key);if(entry)out[source]=entry.snapshot.categories.map(c=>c.id);}return out;},
+    view:visibility,applyView:v=>changeVisibility('Public planner view applied',value=>Object.assign(value,structuredClone(v))),
+    pick:callback=>{plannerPick=callback;dialog.close();notice('Choose a location on the map.');},
+    hideBaseMarkers:hidden=>{for(const source of legacy)source.setPresentationHidden(hidden);if(hidden){for(const layer of [customLayer,sourceLayer,reviewedLayer])layer.eachLayer(item=>{if(item instanceof L.Marker||item instanceof L.CircleMarker)layer.removeLayer(item);});}},
+  });
+  const plannerRecord=(event:Event)=>{const d=(event as CustomEvent).detail;if(!d||!['waypoint','tracking'].includes(d.action))return;const r=getExplorerRecords().find(r=>r.sourceId===d.sourceId&&r.id===d.recordId);if(!r){error('Location no longer available.');return;}void (d.action==='waypoint'?plannerUI!.addRecord(r):plannerUI!.observe(r)).catch(error);};
+  document.addEventListener('map-planner-record',plannerRecord);
   function openExplore(
     section = "search",
     filter?: { sourceId: string; categoryId: string },
@@ -773,6 +793,7 @@ export function mountWorkspace(
     ["backup", "Backups"],
     ["explore", "Explore"],
     ["health", "Health"],
+    ["planner", "Planner"],
   ] as [Tab, string][]) {
     const b = button(
       label,
@@ -791,6 +812,7 @@ export function mountWorkspace(
         detailCleanup = undefined;
         detailActive = false;
         picking = false;
+        plannerPick=undefined;plannerUI?.reset();
         active = tab;
         renderPanel();
       },
@@ -811,6 +833,7 @@ export function mountWorkspace(
       "Cancel draft / preview",
       () => {
         processing?.abort();
+        plannerPick=undefined;plannerUI?.reset();
         picking = false;
         dirty = false;
         if (detailActive) closeDetail();
@@ -850,6 +873,7 @@ export function mountWorkspace(
     if (active === "review") body.append(reviewPanel(services));
     if (active === "icons") renderIcons();
     if (active === "backup") renderBackup();
+    if(active==='planner')body.append(plannerUI!.panel());
     if(active==='health')body.append(healthPanel({...services,captures:()=>legacy.map(source=>({id:source.id,capturedAt:source.getSnapshot()?.capturedAt??null,records:source.getSnapshot()?.records.length??0,files:source.getSnapshotLocation()})),navigate:target=>{if(!canInspect())return;if(target==='updates'){dialog.close();document.querySelector<HTMLButtonElement>('#toggle-key')?.click();const controls=document.querySelector<HTMLElement>('#map-source-updates');if(controls){controls.tabIndex=-1;controls.focus();controls.scrollIntoView({block:'center'});}}else{active=target;renderPanel();}}}));
     if (active === "explore") body.append(usabilityUI.panel());
   }
@@ -1014,6 +1038,7 @@ export function mountWorkspace(
     showList();
   }
   const mapPick = (event: L.LeafletMouseEvent) => {
+    if(plannerPick){const point:XY=[event.latlng.lng,event.latlng.lat];if(!point.every(n=>n>=0&&n<=4096)){error('Choose a location inside the terrain.');return;}const callback=plannerPick;plannerPick=undefined;try{callback(point);}catch(e){error(e);}finally{if(!dialog.open)dialog.showModal();}return;}
     if (!picking) return;
     const x = Math.round(event.latlng.lng * 100) / 100,
       y = Math.round(event.latlng.lat * 100) / 100;
@@ -1036,7 +1061,7 @@ export function mountWorkspace(
   const rightClickPoint = (event: L.LeafletMouseEvent) => {
     if (!hydrated || disposed || interactionLocks || processing) return;
     L.DomEvent.preventDefault(event.originalEvent);
-    if (picking) {
+    if (picking||plannerPick) {
       mapPick(event);
       return;
     }
@@ -1780,6 +1805,7 @@ export function mountWorkspace(
     );
     if (count)
       count.textContent = `${state.annotations.length} private points · ${state.entities.filter((e) => e.acceptance === "accepted").length} reviewed entities`;
+    plannerUI?.renderOverlay();
   }
   const keySlots = new Map<string, HTMLElement>();
   const sourceOverview = el("fieldset");
@@ -2411,6 +2437,7 @@ export function mountWorkspace(
       notice("Private workspace ready.");
       refresh();
       applyLegacyFilters();
+      void plannerUI?.loadLocalGraph();plannerUI?.initialShare();
     } catch (e) {
       openButton.disabled = false;
       findButton.disabled = false;
@@ -2436,6 +2463,7 @@ export function mountWorkspace(
     },
     services,
     destroy() {
+      plannerUI?.destroy();plannerPick=undefined;document.removeEventListener('map-planner-record',plannerRecord);
       usabilityUI.destroy();
       updatesUI.destroy();
       backgroundRequest++;

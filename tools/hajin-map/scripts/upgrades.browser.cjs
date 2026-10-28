@@ -7,6 +7,7 @@ async function isolated(parent,base,fixture){
  const ready=async(tool='points')=>{await page.goto(base+'/?tool='+tool);await page.locator('#workspace-open:enabled').waitFor();};
  return{context,page,read,ready,verify:()=>{assert.deepEqual(errors,[]);assert.deepEqual(external,[]);}};
 }
+exports.isolated=isolated;
 exports.runSearchBrowser=async function(parent,base,fixture){const t=await isolated(parent,base,fixture),{page,read,ready}=t;try{
  await ready();await page.evaluate(async()=>{const {openWorkspace}=await import('/src/workspace/store.ts'),{emptyWorkspace}=await import('/src/workspace/model.ts'),{makeAnnotation}=await import('/src/workspace/annotations.ts'),{searchOrigin}=await import('/src/workspace/search.ts');const db=await openWorkspace();try{const old=await db.read(),w=emptyWorkspace(),p=searchOrigin('G6');w.annotations=[makeAnnotation({title:'SYNTHETIC clinic',category:'Medical',notes:'blue door unique evidence',x:p.x,y:p.y,floor:'2',verificationState:'observed'}),makeAnnotation({title:'SYNTHETIC nearby cache',category:'Loot',x:p.x+30,y:p.y+40}),makeAnnotation({title:'SYNTHETIC distant cache',category:'Loot',x:100,y:100}),makeAnnotation({title:'SAFE <img src=x onerror=window.__bad=1>',category:'Security fixture',x:1200,y:1300})];await db.commit(w,old.current?.revision??0);}finally{db.close();}});
  await ready('explore');await page.locator('#explorer-search').waitFor();const before=(await read()).visibility;

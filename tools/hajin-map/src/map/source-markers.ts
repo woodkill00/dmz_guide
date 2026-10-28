@@ -259,6 +259,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       const inspect=document.createElement('button');inspect.type='button';inspect.textContent='Details / flag discrepancy';inspect.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('map-record-details',{detail:{sourceId:source.id,recordId:record.id}})));
       const copy=document.createElement('button');copy.type='button';copy.textContent='Copy coordinates';copy.addEventListener('click',()=>{void (async()=>{try{await navigator.clipboard.writeText(`${x.toFixed(2)}, ${y.toFixed(2)}`);copy.textContent='Coordinates copied';}catch{const fallback=document.createElement('input');fallback.readOnly=true;fallback.value=`${x.toFixed(2)}, ${y.toFixed(2)}`;fallback.setAttribute('aria-label','Coordinates to copy');actions.append(fallback);fallback.focus();fallback.select();}})();});
       details.append(claim,notes);actions.append(inspect,copy);
+      for(const [action,label] of [['waypoint','Add waypoint'],['tracking','My tracking']]){const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('map-planner-record',{detail:{sourceId:source.id,recordId:record.id,action}})));actions.append(b);}
       marker.bindPopup(popup, markerPopupOptions);
       markerPool.push({record, marker});
       groups.get(record.category)!.addLayer(marker);
@@ -310,6 +311,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   return { id: source.id, reload: load, setAll,
     setCapacityBlocked(value:boolean){if(value===capacityBlocked)return;capacityBlocked=value;if(value){root.clearLayers();groups.clear();markerPool.length=0;capacityMessage();onUpdate(0,snapshot?.records.length??0,'failed');}else if(snapshot){restoringSnapshot=true;try{addRecords();}finally{restoringSnapshot=false;}}},
     async replaceCapture(next: MarkerSource) { if(next.id!==source.id||next.page!==source.page)throw new Error('Source identity cannot change.');Object.assign(source,next);await load();if(!snapshot)throw new Error(`${source.name} capture could not reload. Reload the page to retry.`); },
+    setPresentationHidden(hidden:boolean){if(hidden)map.removeLayer(root);else if(!map.hasLayer(root))root.addTo(map);},
     getSnapshot: () => snapshot,
     getSnapshotDigest: () => captureDigest,
     getSnapshotLocation:()=>({snapshot:source.snapshot,iconDirectory:source.iconDirectory,digest:captureDigest??null}),

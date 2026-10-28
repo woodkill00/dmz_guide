@@ -5,6 +5,7 @@ import { isVisible } from "./visibility.ts";
 import { captureIdentity, pairKey } from "./usability.ts";
 import { displayKind, type DisplayRecord } from "../map/display-duplicates.ts";
 export interface ExplorerRecord {
+  version?:string;
   placement?: "reference";
   key: string;
   identity: string | null;
@@ -165,6 +166,7 @@ export function explorerRecords(
   for (const e of state.entities)
     records.push({
       key: "reviewed:" + e.id,
+      version:JSON.stringify([e.decisionId,e.acceptance,e.freshness]),
       identity: null,
       id: e.id,
       kind: "reviewed",

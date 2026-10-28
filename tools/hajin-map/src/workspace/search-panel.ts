@@ -75,5 +75,5 @@ export function createSearchPanel(h:SearchHost){
   root.append(field('Search names, categories, websites, notes and evidence',query),note('Includes hidden layers and references. Select a title or Jump; Nearby searches around it.'),toolbar,near,advanced,status,results);
   refresh=()=>{if(!root.isConnected)return;records=h.records();index=buildSearchIndex(records);show();};show();
  }
- return{render,nearby,refresh:()=>refresh?.(),destroy:()=>{clearTimeout(timer);current=undefined;refresh=undefined;}};
+ return{render,nearby,setQuery:(query:string)=>{options.query=query;page=0;clearTimeout(timer);h.open();},refresh:()=>refresh?.(),destroy:()=>{clearTimeout(timer);current=undefined;refresh=undefined;}};
 }

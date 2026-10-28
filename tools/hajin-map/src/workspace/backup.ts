@@ -1,3 +1,4 @@
+import {validateFieldGuide,fieldGuideIdentities} from "./field-guide.ts";
 import {evidenceBytes,verifyEvidence} from './owned-assets.ts';
 import type {
   Workspace,
@@ -223,6 +224,7 @@ export function validateWorkspace(value: unknown): asserts value is Workspace {
       "visibility",
       "migrations",
       "omittedDependencies",
+      ...(value && typeof value === "object" && Object.hasOwn(value,"fieldGuide") ? ["fieldGuide"] : []),
       ...(value &&
       typeof value === "object" &&
       Object.hasOwn(value, "usability")
@@ -232,6 +234,7 @@ export function validateWorkspace(value: unknown): asserts value is Workspace {
     "workspace",
   );
   const s = value as unknown as Workspace;
+  if (s.fieldGuide !== undefined) validateFieldGuide(s.fieldGuide);
   if (s.usability !== undefined) validateUsability(s.usability);
   assert(s.schemaVersion === 1, "Unsupported workspace version.");
   array(s.snapshots, 20, "snapshot");
@@ -729,10 +732,11 @@ export function exportPrivateBackup(input: Workspace): PrivateBackup {
   workspace.registrations = workspace.registrations.filter((r) =>
     frameIds.has(r.frameId),
   );
-  if (workspace.usability) {
+  if (workspace.usability||workspace.fieldGuide) {
     const identities = new Set([
-      ...workspace.usability.separate.flatMap((p) => [p.a, p.b]),
-      ...workspace.usability.flags.map((f) => f.recordIdentity),
+      ...(workspace.usability?.separate.flatMap((p) => [p.a, p.b])??[]),
+      ...(workspace.usability?.flags.map((f) => f.recordIdentity)??[]),
+      ...fieldGuideIdentities(workspace.fieldGuide),
     ]);
     for (const identity of identities) {
       const [source, snapshot, digest] = parseIdentity(identity),

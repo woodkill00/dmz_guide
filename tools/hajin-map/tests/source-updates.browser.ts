@@ -191,6 +191,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
   const check = async () => {
     await page.locator("#update-map-sources").click();
     await page.locator("#map-update-preview").waitFor();
+    assert.ok(await page.locator("[data-source-changes]").count()>0);
   };
   const close = async () => {
     if (await page.locator("#workspace-dialog").evaluate((d) => d.open)) {

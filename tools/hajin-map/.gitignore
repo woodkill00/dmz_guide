@@ -20,3 +20,6 @@ public/maps/hajin/captures/
 public/maps/hajin/current-captures.local.json*
 public/maps/hajin/previous-captures.local.json*
 public/maps/hajin/update-authorization.local.json
+
+# Separate, private local road-centerline reference (not redistributed).
+public/maps/hajin/roads.local.json

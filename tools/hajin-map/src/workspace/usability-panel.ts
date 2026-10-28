@@ -18,6 +18,7 @@ import { displayDuplicates } from "../map/display-duplicates.ts";
 import type { VisibilityState } from "./types.ts";
 export interface UsabilityHost extends UIServices {
   records: () => ExplorerRecord[];
+  addWaypoint:(r:ExplorerRecord)=>Promise<void>;trackRecord:(r:ExplorerRecord)=>Promise<void>;
   mapCenter:()=>SearchOrigin;
   jumpPosition:(origin:SearchOrigin)=>void;
   openSearch:()=>void;
@@ -109,6 +110,7 @@ export function createUsabilityUI(h: UsabilityHost) {
     actions.append(button(r.kind === "custom" ? "Details / edit point" : "Details / flag discrepancy",()=>showRecord(r)));
     const nearby=button("Find nearby",()=>searchUI.nearby(r));nearby.disabled=r.x===null;actions.append(nearby);
     copy(r,actions);
+    const waypoint=button("Add waypoint",()=>h.addWaypoint(r));waypoint.disabled=r.x===null;actions.append(waypoint,button("My tracking",()=>h.trackRecord(r)));
     return root;
   }
   function showRecord(record: ExplorerRecord) {
@@ -654,6 +656,7 @@ export function createUsabilityUI(h: UsabilityHost) {
     return root;
   }
   return {
+    find:(query:string)=>searchUI.setQuery(query),
     refreshSearch: () => {
       if (section === "search") searchUI.refresh();
     },

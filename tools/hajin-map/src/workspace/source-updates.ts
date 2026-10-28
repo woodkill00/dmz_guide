@@ -1,3 +1,4 @@
+import {sourceChanges} from './field-guide.ts';
 import { el, button, note } from "./dom.ts";
 import type { UIServices } from "./ui-context.ts";
 import type { Workspace } from "./model.ts";
@@ -488,6 +489,10 @@ export function createSourceUpdates(
         const incoming = prepared.find((p) => p.snapshot.sourceId === o.id);
         if (incoming) {
           const d = refreshPreview(h.state(), incoming.snapshot);
+          const old=h.state().snapshots.filter(e=>e.snapshot.sourceId===o.id).at(-1)?.snapshot??(()=>{try{const raw=h.legacySnapshot(o.id);return raw?adaptOfficial(raw,o.id):undefined;}catch{return undefined;}})();
+          const rows=sourceChanges(old,incoming.snapshot),changes=el('details');changes.dataset.sourceChanges=o.id;
+          changes.append(el('summary',`${rows.length} changed locations · names, positions and removals`));let page=0;const list=el('div');
+          const show=()=>{list.replaceChildren(note(`Page ${page+1}/${Math.max(1,Math.ceil(rows.length/50))} · up to200 per-source entries shown`));for(const row of rows.slice(page*50,Math.min((page+1)*50,200))){const item=el('article',undefined,'workspace-card');item.append(el('strong',row.types.join(' + ')),note(`Before: ${row.before?.title??'not present'}${row.before?` · X ${row.before.x??'unplaced'}, Y ${row.before.y??'unplaced'}`:''}`),note(`After: ${row.after?.title??'missing from new capture'}${row.after?` · X ${row.after.x??'unplaced'}, Y ${row.after.y??'unplaced'}`:''}`));list.append(item);}const prev=button('Previous changes',()=>{page--;show();}),next=button('Next changes',()=>{page++;show();});prev.disabled=page===0;next.disabled=(page+1)*50>=Math.min(rows.length,200);list.append(prev,next);};show();changes.append(list);if(rows.length>200)changes.append(note('Additional changes remain in the captures; this preview is capped at200 entries.'));node.append(changes);
           node.append(
             note(
               `${d.affectedEntities.length} reviewed decisions will need checking. ${h.state().snapshots.some((s) => s.digest === incoming.digest) ? "Already in this workspace; capture will be reused." : ""}`,

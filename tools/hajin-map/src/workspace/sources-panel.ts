@@ -1,3 +1,5 @@
+import {fieldGuideIdentities} from './field-guide.ts';
+import {parseIdentity} from './usability.ts';
 import type { UIServices } from "./ui-context.ts";
 import type { SnapshotEntry } from "./model.ts";
 import { el, button, field, input, select, note } from "./dom.ts";
@@ -348,7 +350,7 @@ export function sourcePanel(services: UIServices) {
         prefix = entry.key.slice(0, -1) + ",";
       const referenced = (s: ReturnType<UIServices["state"]> | undefined) =>
         !!s &&
-        (s.entities.some((e) => e.refs.some((r) => r.startsWith(prefix))) ||
+        (fieldGuideIdentities(s.fieldGuide).some(identity=>{const parts=parseIdentity(identity);return JSON.stringify(parts.slice(0,2))===entry.key&&parts[2]===entry.digest;}) || s.entities.some((e) => e.refs.some((r) => r.startsWith(prefix))) ||
           s.decisions.some(
             (d) =>
               d.refs.some((r) => r.startsWith(prefix)) ||
@@ -358,7 +360,7 @@ export function sourcePanel(services: UIServices) {
           ));
       if (referenced(services.state()) || referenced(old))
         throw new Error(
-          "This snapshot is referenced by current/previous curation or decision history and cannot be pruned.",
+          "This snapshot is referenced by current/previous planner references, curation or decision history and cannot be pruned.",
         );
       const revision = services.revision(),
         node = el("section");
