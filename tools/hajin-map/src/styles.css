@@ -49,3 +49,10 @@ dialog{color:#e8e9df;background:#191f1a;border:1px solid #697453;max-width:440px
 #explore-panel button, #location-details button { margin: .25rem; }
 #explore-panel, #location-details, #explorer-results { min-width: 0; overflow-wrap: anywhere; }
 @media (max-width: 600px) { .map-top-right { flex-wrap: wrap; max-width: calc(100% - 1rem); } .find-locations { font-size: .75rem; } }
+.website-layer-row { display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;padding:.55rem 0; }
+.website-layer-row span { width:100%;padding-left:1.5rem;font-size:.8rem;opacity:.8; }
+.website-layer-row a { color:var(--accent, #dce8ac);text-decoration:underline;text-underline-offset:3px; }
+.website-layer-row input { width:1rem;height:1rem; }
+.source-update-controls { display:flex;flex-wrap:wrap;gap:.5rem; }
+.source-update-controls p { width:100%;overflow-wrap:anywhere; }
+.source-update-controls button { min-height:36px;max-width:100%;white-space:normal; }

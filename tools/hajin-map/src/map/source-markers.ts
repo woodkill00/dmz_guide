@@ -109,7 +109,8 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   function renderKey() {
     if (!snapshot || !keyContainer) return;
     keyContainer.replaceChildren();
-    const heading = document.createElement('h3'); heading.className = 'key-source-name'; heading.textContent = source.name;
+    const heading = document.createElement('h3'); heading.className = 'key-source-name';
+    const siteLink=document.createElement('a');siteLink.textContent=source.name;siteLink.href=source.page;siteLink.target='_blank';siteLink.rel='noopener noreferrer';heading.append(siteLink);
     const domain = document.createElement('p'); domain.className = 'key-source-domain'; domain.textContent = source.website;
     keyContainer.append(heading, domain);
     for (const group of [...new Set(snapshot.categories.map(category => category.group))]) {
@@ -141,7 +142,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     container.replaceChildren();
     const card = document.createElement('details'); card.className = 'source-layer'; card.open = true; card.dataset.source = source.id;
     const summary = document.createElement('summary');
-    const heading = document.createElement('span'); heading.className = 'source-name'; heading.textContent = source.name;
+    const heading = document.createElement('a'); heading.className = 'source-name'; heading.textContent = source.name;heading.href=source.page;heading.target='_blank';heading.rel='noopener noreferrer';heading.addEventListener('click',event=>event.stopPropagation());
     const domain = document.createElement('span'); domain.className = 'source-domain'; domain.textContent = source.website;
     const badge = document.createElement('span'); badge.className = 'source-selection';
     summary.append(heading, domain, badge); card.append(summary);
@@ -300,6 +301,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   }
   load();
   return { id: source.id, reload: load, setAll,
+    async replaceCapture(next: MarkerSource) { if(next.id!==source.id||next.page!==source.page)throw new Error('Source identity cannot change.');Object.assign(source,next);await load();if(!snapshot)throw new Error(`${source.name} capture could not reload. Reload the page to retry.`); },
     getSnapshot: () => snapshot,
     getSnapshotDigest: () => captureDigest,
     getFilters: () => ({master, enabled: [...enabled], categories: snapshot?.categories.map(c => c.id) ?? []}),

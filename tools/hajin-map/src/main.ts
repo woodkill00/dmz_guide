@@ -5,6 +5,8 @@ import { hajin } from './map/hajin';
 import { createSourceMarkers } from './map/source-markers';
 import { markerSources as defaultMarkerSources } from './map/marker-sources';
 import { loadLocalProviderSources } from './map/local-providers';
+import type { MarkerSource } from './map/marker-sources';
+import { loadCurrentCaptures } from './map/current-captures';
 import { mountWorkspace } from './workspace/app';
 
 const icon = (name: string) => {
@@ -119,14 +121,20 @@ const sourceStatus = new Map<string, { visible: number; total: number; state: st
 async function startSources() {
 const markerSources = [...defaultMarkerSources];
 if (import.meta.env.VITE_LOCAL_PROVIDER_SNAPSHOTS === '1') {
-  try { markerSources.push(...await loadLocalProviderSources()); }
+  try {
+    markerSources.push(...await loadLocalProviderSources());
+    for(const current of await loadCurrentCaptures()){
+      const index=markerSources.findIndex(s=>s.id===current.id);
+      if(index<0)markerSources.push(current);else markerSources[index]=current;
+    }
+  }
   catch {
     const warning = document.createElement('p'); warning.id = 'local-provider-load-error'; warning.setAttribute('role', 'alert');
     warning.textContent = 'Local provider captures could not load. Check the local manifest and registration evidence; the official map remains available.';
     document.querySelector('#map-key-content')!.prepend(warning);
   }
 }
-const sources = markerSources.map(source => {
+const createSource = (source: MarkerSource) => {
   const slot = document.createElement('section'); slot.className = 'source-slot'; slot.dataset.sourceSlot = source.id; slot.setAttribute('aria-label', `${source.name} layers`);
   document.querySelector('#source-controls')!.append(slot);
   const keySlot = document.createElement('section'); keySlot.className = 'key-source'; keySlot.dataset.keySource = source.id; keySlot.setAttribute('aria-label', `${source.name} map key`);
@@ -145,7 +153,8 @@ const sources = markerSources.map(source => {
     document.querySelectorAll<HTMLButtonElement>('#key-show-all, #key-hide-all').forEach(button => { button.disabled = loading || values.every(item => item.state === 'failed'); });
     }
   }, keySlot);
-});
+};
+const sources=markerSources.map(createSource);
 document.querySelector('#key-show-all')!.addEventListener('click', () => sources.forEach(source => source.setAll(true)));
 document.querySelector('#key-hide-all')!.addEventListener('click', () => sources.forEach(source => source.setAll(false)));
 const layersDialog = document.querySelector<HTMLDialogElement>('#layers-dialog')!;
@@ -169,7 +178,7 @@ document.addEventListener('fullscreenchange', () => fullscreen.setAttribute('ari
 document.querySelector('#map')!.addEventListener('keydown', event => {
   if ((event as KeyboardEvent).key.toLowerCase() === 'r' && state === 'ready') { event.preventDefault(); viewer.reset(); }
 });
-const authorWorkspace = mountWorkspace(viewer, sources);
+const authorWorkspace = mountWorkspace(viewer, sources,source=>{const controller=createSource(source);sources.push(controller);return controller;});
 
 if (import.meta.hot) import.meta.hot.dispose(() => { authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
 }

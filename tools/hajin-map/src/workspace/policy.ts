@@ -70,7 +70,7 @@ export function authorizeLocalCapture(sourceId: string, declaration: string) {
       capability: "authorizedFileImport" as const,
       revision: "owner-authorized-local-capture-v1",
       reason:
-        "Owner-authorized local capture. No live fetching or redistribution permission is enabled.",
+        "Owner-authorized local capture. Acquisition requires the separate local update opt-in; no redistribution permission is enabled.",
     }),
   });
 }

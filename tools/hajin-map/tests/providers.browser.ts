@@ -65,6 +65,7 @@ export async function runProviderBrowser(parent) {
         external.push(url.href);
         return route.abort();
       }
+      if(url.pathname.endsWith('current-captures.local.json'))return route.fulfill({status:404,body:'Synthetic fixture: no current generation'});
       if (url.pathname.endsWith("providers.local.json"))
         return route.fulfill({
           json: {

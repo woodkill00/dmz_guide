@@ -175,7 +175,11 @@ export function adaptOfficial(
             floor:
               typeof r.floor === "number" && Number.isFinite(r.floor)
                 ? String(r.floor)
-                : null,
+                : typeof r.floor === "string" &&
+                    r.floor.length > 0 &&
+                    r.floor.length <= 100
+                  ? r.floor
+                  : null,
           },
           activityClaim: { state: "unknown", observedAt: null },
           upstreamRefs:

@@ -24,9 +24,9 @@ jobs:
           node-version: ${{ matrix.node }}
           package-manager-cache: false
       - run: npm run map:install
+      - run: npm --prefix tools/hajin-map exec playwright install --with-deps chromium
       - run: npm run map:test
       - run: npm run map:build
-      - run: npm --prefix tools/hajin-map exec playwright install --with-deps chromium
       - run: npm run map:test:browser
       - run: npm run map:test:capacity
       - name: Retain synthetic workspace evidence

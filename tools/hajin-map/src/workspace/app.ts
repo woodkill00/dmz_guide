@@ -47,6 +47,9 @@ import {
 } from "../map/display-duplicates.ts";
 import type { UIServices } from "./ui-context.ts";
 import { createUsabilityUI } from "./usability-panel.ts";
+import { createSourceUpdates } from "./source-updates.ts";
+import { captureSource } from "../map/current-captures.ts";
+import type { MarkerSource } from "../map/marker-sources.ts";
 import { explorerRecords, loadedIdentity } from "./explorer-index.ts";
 import {
   emptyUsability,
@@ -60,7 +63,11 @@ import {
 type Legacy = ReturnType<typeof createSourceMarkers>;
 type Viewer = ReturnType<typeof createMapView>;
 type Tab = "points" | "sources" | "review" | "icons" | "backup" | "explore";
-export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
+export function mountWorkspace(
+  viewer: Viewer,
+  legacy: Legacy[],
+  addSource?: (source: MarkerSource) => Legacy,
+) {
   let state = emptyWorkspace(),
     revision = 0,
     store: Awaited<ReturnType<typeof openWorkspace>> | undefined,
@@ -197,6 +204,10 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     button(
       "Close workspace",
       () => {
+        if (interactionLocks && !processing) {
+          notice("Wait for the source update to finish.");
+          return;
+        }
         processing?.abort();
         dialog.close();
       },
@@ -490,7 +501,10 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
   );
   cancelProcessing.hidden = true;
   top.append(cancelProcessing);
-  dialog.addEventListener("cancel", () => processing?.abort());
+  dialog.addEventListener("cancel", (event) => {
+    if (interactionLocks && !processing) event.preventDefault();
+    else processing?.abort();
+  });
   const services: UIServices = {
     process: async (work) => {
       if (processing)
@@ -559,6 +573,42 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     !processing &&
     !interactionLocks &&
     (!detailActive || usabilityDetail);
+  const updatesUI = createSourceUpdates({
+    ...services,
+    allowed: () => canInspect() && !unsaved && !pendingVisibility,
+    transition: async (work) => {
+      const unlock = lockInteraction();
+      try {
+        return await work();
+      } finally {
+        unlock();
+      }
+    },
+    finish: () => {
+      closeDetail();
+      dialog.close();
+      document.querySelector<HTMLButtonElement>("#update-map-sources")?.focus();
+    },
+    replace: async (descriptors) => {
+      for (const d of descriptors) {
+        const source =
+          legacy.find((s) => s.id === d.id) ?? addSource?.(captureSource(d));
+        source?.setLegacyPersistence(false);
+        if (source) await source.replaceCapture(captureSource(d));
+      }
+      applyLegacyFilters();
+      renderMarkers();
+      renderKey();
+    },
+    select: (entries) => {
+      for (const e of entries) {
+        const source = state.snapshots.find((s) => s.key === e.key)?.snapshot
+          .sourceId;
+        if (source) selectedSnapshots.set(source, e.key);
+      }
+    },
+  });
+  document.querySelector(".key-toolbar")!.append(updatesUI.root);
   const usabilityUI = createUsabilityUI({
     ...services,
     records: getExplorerRecords,
@@ -1664,6 +1714,11 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
   dialogExtras.id = "workspace-dialog-layers";
   document.querySelector("#source-controls")!.append(dialogExtras);
   function renderKey() {
+    for (const [key, slot] of keySlots)
+      if (legacy.some((s) => s.id === slot.dataset.workspaceProvider)) {
+        slot.remove();
+        keySlots.delete(key);
+      }
     const focused =
       document.activeElement instanceof HTMLElement &&
       (sourceOverview.contains(document.activeElement) ||
@@ -1721,12 +1776,22 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
           value.sourceEnabled[source.id] = master.checked;
         }).catch(error);
       });
-      sourceOverview.append(
-        field(
-          `${sourcePolicies[source.id]?.name ?? source.id} · ${snapshot.records.length} captured locations`,
-          master,
-        ),
+      const row = el("div", undefined, "website-layer-row");
+      const link = el("a", sourcePolicies[source.id]?.name ?? source.id);
+      link.href = sourcePolicies[source.id].page;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.id = `key-source-link-${source.id}`;
+      master.setAttribute(
+        "aria-label",
+        `${sourcePolicies[source.id]?.name ?? source.id} visibility`,
       );
+      row.append(
+        master,
+        link,
+        el("span", `${snapshot.records.length} captured locations`),
+      );
+      sourceOverview.append(row);
     }
     for (const policy of Object.values(sourcePolicies)) {
       if (legacy.some((source) => source.id === policy.id)) continue;
@@ -1815,7 +1880,13 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
           entry = entries.find((e) => e.key === selected) ?? entries.at(-1)!;
         if (entry.legacy) continue;
         const group = el("fieldset");
-        group.append(el("legend", `${policy.name} snapshot layers`));
+        const legend = el("legend");
+        const sourceLink = el("a", policy.name);
+        sourceLink.href = policy.page;
+        sourceLink.target = "_blank";
+        sourceLink.rel = "noopener noreferrer";
+        legend.append(sourceLink, document.createTextNode(" snapshot layers"));
+        group.append(legend);
         const snapshot = select(
           entries.map((e) => ({ value: e.key, label: e.snapshot.snapshotId })),
           entry.key,
@@ -2232,6 +2303,7 @@ export function mountWorkspace(viewer: Viewer, legacy: Legacy[]) {
     ready: initialized,
     services,
     destroy() {
+      updatesUI.destroy();
       backgroundRequest++;
       disposed = true;
       findButton.remove();
