@@ -475,6 +475,7 @@ async function fixture(t, opts = {}) {
         id: "two",
         name: "Synthetic new point",
       });
+    opts.transform?.(next,id);
     next.categories[0].icon = iconDirectory + "a".repeat(20) + ".svg";
     return {
       capture: next,
@@ -619,6 +620,7 @@ test("022 HTTP actions reject missing tokens, cross origin, oversized bodies and
     calls = 0;
   const service = {
     capabilities: async () => ({ enabled: true }),
+    history:async()=>({jobs:[],retainedJobs:0,limit:64}),
     prepare: async () => {
       calls++;
       return { id: "synthetic" };
@@ -690,6 +692,9 @@ test("022 HTTP actions reject missing tokens, cross origin, oversized bodies and
     ).status,
     413,
   );
+  assert.equal((await fetch(url+'/history')).status,403);
+  assert.equal((await fetch(url+'/history',{headers})).status,200);
+  assert.equal((await fetch(url+'/history',{headers:{...headers,origin:'https://evil.invalid'}})).status,403);
   assert.equal(calls, 0);
   assert.equal(
     (await fetch(url + "/prepare", { method: "POST", headers, body: "{}" }))
@@ -853,3 +858,11 @@ test("022 ready job bookkeeping refreshes across instances and superseded activa
   await assert.rejects(other.activate(a.id), /superseded/);
   assert.equal((await s.current()).value.sources[0].generation, c.id);
 });
+
+test('027 multi-generation changed/renamed/removed feeds survive activation restart and repeat without record duplication',async t=>{
+ let generation=1;const {service:s,root}=await fixture(t,{unchanged:true,transform:(next,id)=>{if(id!=='official')return;const seed={...next.records[0]};next.records=generation===1?[{...seed,id:'one',name:'SYNTHETIC renamed'},{...seed,id:'two',name:'SYNTHETIC added'}]:[{...seed,id:'two',name:'SYNTHETIC added'}];}});
+ const first=await ready(s),changed=first.outcomes.find(o=>o.id==='official');assert.equal(changed.diff.added,1);assert.equal(changed.diff.changed,1);await s.reserve(first.id);const restarted=new SourceUpdates(root,{enabled:true,collect:s.collect});restarted.registration=async()=>null;await restarted.activate(first.id);await restarted.activate(first.id);
+ generation=2;const second=await ready(restarted);assert.equal(second.outcomes.find(o=>o.id==='official').diff.missing,1);await restarted.reserve(second.id);await restarted.activate(second.id);const before=await restarted.current(),repeat=await ready(restarted);assert.equal(repeat.outcomes.find(o=>o.id==='official').status,'unchanged');await restarted.reserve(repeat.id);await restarted.activate(repeat.id);assert.equal((await restarted.current()).hash,before.hash);const current=(await restarted.current()).value.sources.find(s=>s.id==='official');const raw=JSON.parse(await readFile(path.join(root,'public',current.snapshot),'utf8'));assert.equal(raw.records.length,1);assert.equal(raw.records[0].id,'two');
+});
+
+test('027 bounded update history reports completed/cancelled outcomes without changing pointers or leaking capture payloads',async t=>{const {service:s}=await fixture(t);const first=await ready(s);await s.reserve(first.id);await s.activate(first.id);const second=await ready(s);await s.cancel(second.id);const before=await s.current(),history=await s.history();assert.equal(history.jobs.length,2);assert.ok(history.jobs.some(j=>j.state==='activated'));assert.ok(history.jobs.some(j=>j.state==='cancelled'));assert.equal((await s.current()).hash,before.hash);assert.equal(JSON.stringify(history).includes('records'),false);assert.equal(JSON.stringify(history).includes('iconDirectory'),false);});

@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping make the guide useful and trustworthy. The application is not built yet. Evidence, documentation review, accessible design feedback and tests are valuable contributions now.
+Thanks for helping make the guide useful and trustworthy. The repository includes a runnable static guide and an opt-in local map workspace. Evidence, documentation review, accessible design feedback and regression tests help keep both useful and trustworthy.
 
 ## Choose your path
 

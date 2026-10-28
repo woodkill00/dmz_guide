@@ -292,6 +292,17 @@ export class SourceUpdates {
       throw Error("Update preview expired. Run another check.");
     return this.publicJob(j);
   }
+  async history() {
+    let files;try{files=(await readdir(this.stateDir)).filter(f=>f.endsWith('.json')&&uuid.test(f.slice(0,-5)));}catch(error){if(absent(error))return{jobs:[],retainedJobs:0,limit:64};throw error;}
+    const jobs=[];
+    for(const file of files.slice(0,64)){
+      const id=file.slice(0,-5);
+      try{const j=await this.freshJob(id);jobs.push({id,state:['collecting','ready','activated','cancelled'].includes(j.state)?j.state:'unknown',createdAt:typeof j.createdAt==='string'?j.createdAt.slice(0,40):'',reserved:!!j.reserved,outcomes:(j.outcomes??[]).slice(0,5).map(o=>({id:Object.hasOwn(sites,o.id)?o.id:'unknown',status:['checking','updated','unchanged','error'].includes(o.status)?o.status:'unknown',...Object.fromEntries(['added','changed','missing'].map(key=>[key,Number.isSafeInteger(o.diff?.[key])&&o.diff[key]>=0&&o.diff[key]<=5000?o.diff[key]:null]))}))});}
+      catch{jobs.push({id,state:'unreadable',createdAt:'',reserved:false,outcomes:[]});}
+    }
+    jobs.sort((a,b)=>b.createdAt.localeCompare(a.createdAt)||a.id.localeCompare(b.id));
+    return{jobs,retainedJobs:files.length,limit:64};
+  }
   async list() {
     await mkdir(this.stateDir, { recursive: true });
     const result = [];

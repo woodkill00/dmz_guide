@@ -148,7 +148,7 @@ export function explorerRecords(
       title: a.title,
       category: a.category,
       categoryId: a.category,
-      notes: [a.notes, a.evidence].filter(Boolean).join("\n"),
+      notes: [a.notes, a.evidence,a.observedAt?"Observed "+a.observedAt:"",...(a.attachments??[]).map(e=>e.caption),a.geometry?`${a.geometry.kind} annotation`:""].filter(Boolean).join("\n"),
       x: a.x,
       y: a.y,
       floor: a.applicability.floor,

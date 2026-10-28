@@ -1,3 +1,5 @@
+import {parseIconPack,exportIconPack} from './icon-packs.ts';
+import {healthPanel} from './health-panel.ts';
 import { workspaceDestination, type ToolTarget } from '../tool-links.ts';
 import L from "leaflet";
 import type { createMapView } from "../map/map-view";
@@ -66,7 +68,7 @@ import {
 } from "./usability.ts";
 type Legacy = ReturnType<typeof createSourceMarkers>;
 type Viewer = ReturnType<typeof createMapView>;
-type Tab = "points" | "sources" | "review" | "icons" | "backup" | "explore";
+type Tab = "health" | "points" | "sources" | "review" | "icons" | "backup" | "explore";
 export function mountWorkspace(
   viewer: Viewer,
   legacy: Legacy[],
@@ -630,6 +632,9 @@ export function mountWorkspace(
   const usabilityUI = createUsabilityUI({
     ...services,
     records: getExplorerRecords,
+    mapCenter:()=>{const p=viewer.map.getCenter();if(![p.lng,p.lat].every(n=>n>=0&&n<=4096))throw new Error('Move the map center inside the terrain first.');return{x:p.lng,y:p.lat,label:'Map center'};},
+    openSearch:()=>openExplore('search'),
+    jumpPosition:point=>{if(!canInspect())return;clearHighlight();viewer.map.setView([point.y,point.x],Math.max(viewer.map.getZoom(),2),{animate:false});L.circleMarker([point.y,point.x],{radius:16,color:'#fff39a',weight:4}).bindPopup(el('span',point.label)).addTo(searchHighlight).openPopup();dialog.close();},
     inspectionMode: () => showDuplicateMarkers,
     categories: () => {
       const result = Object.fromEntries(
@@ -766,6 +771,7 @@ export function mountWorkspace(
     ["icons", "Icons"],
     ["backup", "Backups"],
     ["explore", "Explore"],
+    ["health", "Health"],
   ] as [Tab, string][]) {
     const b = button(
       label,
@@ -843,6 +849,7 @@ export function mountWorkspace(
     if (active === "review") body.append(reviewPanel(services));
     if (active === "icons") renderIcons();
     if (active === "backup") renderBackup();
+    if(active==='health')body.append(healthPanel({...services,captures:()=>legacy.map(source=>({id:source.id,capturedAt:source.getSnapshot()?.capturedAt??null,records:source.getSnapshot()?.records.length??0,files:source.getSnapshotLocation()})),navigate:target=>{if(!canInspect())return;if(target==='updates'){dialog.close();document.querySelector<HTMLButtonElement>('#toggle-key')?.click();const controls=document.querySelector<HTMLElement>('#map-source-updates');if(controls){controls.tabIndex=-1;controls.focus();controls.scrollIntoView({block:'center'});}}else{active=target;renderPanel();}}}));
     if (active === "explore") body.append(usabilityUI.panel());
   }
   function renderPoints() {
@@ -876,6 +883,7 @@ export function mountWorkspace(
         );
       },
       error,
+      services.process,
     );
     body.append(editor);
     body.append(
@@ -1066,7 +1074,7 @@ export function mountWorkspace(
       for(const form of forms){form.inert=form!==owner;form.classList.toggle('icon-form-inactive',form!==owner);}
       draftNote.textContent='Editing one icon form. Save or cancel this draft before using another icon form.';
     };
-    const studio=createIconStudio({process:services.process,error,notice,dirty:()=>ownIconDraft(studio.root),save:async(design,description)=>{
+    const studio=createIconStudio({starters:state.icons.filter(i=>i.design).map(i=>({description:i.description,design:i.design!})),process:services.process,error,notice,dirty:()=>ownIconDraft(studio.root),save:async(design,description)=>{
       const expected=revision;
       const icon=await services.process(signal=>stageDesignedIcon(design,description,signal));
       const existing=state.icons.find(i=>i.id===icon.id);
@@ -1155,6 +1163,19 @@ export function mountWorkspace(
         "preview-custom-icon",
       ),
     );
+    const packs=el('section');packs.id='icon-design-packs';forms.push(packs);
+    const packFile=input('','file');packFile.id='icon-pack-file';packFile.accept='.json,application/json';
+    for(const event of ['input','change'])packs.addEventListener(event,()=>ownIconDraft(packs));
+    packs.append(el('h3','Editable icon design packs'),note('Export/import up to32 original editable recipes as JSON. Raster-only uploads are not included. Preview validates every design before one atomic library save.'),button('Export editable icon pack',()=>download('hajin-icon-design-pack.json',JSON.stringify(exportIconPack(state.icons),null,2)),'export-icon-pack'),field('Icon design pack JSON',packFile),button('Preview icon design pack',async()=>{
+      try{
+        const file=packFile.files?.[0];if(!file)throw new Error('Choose an icon design pack.');const expected=revision;
+        const icons=await services.process(async signal=>{const pack=parseIconPack(JSON.parse(await readJSONFile(file,256*1024,signal)));const staged:IconAsset[]=[];for(const e of pack.entries)staged.push(await stageDesignedIcon(e.design,e.description,signal));const projected=structuredClone(state);staged.forEach(icon=>commitIcon(projected,icon));validateWorkspace(projected);return staged;});
+        const unique=new Set(icons.map(i=>i.id)),add=[...unique].filter(id=>!state.icons.some(i=>i.id===id)).length;
+        const preview=el('section');preview.id='icon-pack-preview';preview.append(el('h3','Review icon design pack'),note(`${icons.length} recipes · ${add} new image(s) · ${icons.length-add} existing/repeated image(s) reused`));
+        for(const icon of icons){const img=el('img');img.src='data:image/png;base64,'+icon.base64;img.alt=icon.description;img.className='icon-preview';preview.append(img);}
+        preview.append(button('Import icon design pack',async()=>{try{if(icons.every(icon=>state.icons.some(old=>old.id===icon.id&&old.design))){closeDetail();notice('Icon pack unchanged; existing images and recipes reused.');return;}await commit('Icon pack imported',draft=>icons.forEach(icon=>commitIcon(draft,icon)),[],expected);closeDetail();}catch(error){services.error(error);}},'commit-icon-pack'),button('Cancel icon pack',closeDetail));services.detail(preview);
+      }catch(error){services.error(error);}
+    },'preview-icon-pack'));packs.querySelector<HTMLButtonElement>('#export-icon-pack')!.disabled=!state.icons.some(icon=>icon.design);body.append(packs);
     body.append(el("h3","My saved icons"));
     for (const icon of state.icons) {
       const card = el("section", undefined, "workspace-card"),
@@ -1614,6 +1635,8 @@ export function mountWorkspace(
         if (
           `${a.title} ${a.category} ${a.notes}`.toLocaleLowerCase().includes(q)
         )
+          {
+          if(a.geometry){const vertices=a.geometry.vertices.map(([x,y])=>L.latLng(y,x));const shape=a.geometry.kind==='area'?L.polygon(vertices,{renderer,color:a.geometry.color,weight:3,fillOpacity:.18}):L.polyline(vertices,{renderer,color:a.geometry.color,weight:4});shape.bindPopup(()=>{const record=getExplorerRecords().find(r=>r.key==='custom:'+a.id);return record?usabilityUI.popup(record):el('span',a.title);}).addTo(customLayer);shape.on('add',()=>shape.getElement()?.setAttribute('data-owned-geometry',a.id));}
           marker(
             a,
             customLayer,
@@ -1621,6 +1644,7 @@ export function mountWorkspace(
             `${a.kind} · ${a.category} · ${a.verificationState} · floor ${a.applicability.floor ?? "unknown"}`,
             annotationIcon(state, a),
           );
+          }
     if (visibility().curatedEnabled)
       for (const e of state.entities)
         if (
@@ -2411,6 +2435,7 @@ export function mountWorkspace(
     },
     services,
     destroy() {
+      usabilityUI.destroy();
       updatesUI.destroy();
       backgroundRequest++;
       disposed = true;

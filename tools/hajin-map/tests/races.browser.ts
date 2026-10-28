@@ -71,11 +71,9 @@ export async function runRaceBrowser(parent, base) {
   let state = await read();
   assert.equal(state.visibility.customEnabled, false);
   assert.equal(state.visibility.query, "SYNTHETIC");
-  await page
-    .locator("#workspace-map-search")
-    .fill("MUST NOT REPLAY AFTER UNDO");
-  await page.locator("#workspace-open").click();
-  await page.locator("#undo-workspace").click();
+  // Dispatch these real controls in one browser task so CPU load cannot let the
+  //400ms debounce legitimately save before the cancellation action is reached.
+  await page.evaluate(()=>{const search=document.querySelector<HTMLInputElement>('#workspace-map-search')!;search.value='MUST NOT REPLAY AFTER UNDO';search.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector<HTMLButtonElement>('#workspace-open')!.click();document.querySelector<HTMLButtonElement>('#undo-workspace')!.click();});
   await page.waitForFunction(() =>
     document
       .querySelector("#workspace-message")
@@ -85,12 +83,7 @@ export async function runRaceBrowser(parent, base) {
   state = await read();
   assert.notEqual(state.visibility.query, "MUST NOT REPLAY AFTER UNDO");
   await page.locator("#close-workspace").click();
-  await page
-    .locator("#workspace-map-search")
-    .fill("MUST NOT REPLAY AFTER RELOAD");
-  await page.locator("#workspace-open").click();
-  await page.locator("#workspace-tab-backup").click();
-  await page.locator("#reload-workspace").click();
+  await page.evaluate(()=>{const search=document.querySelector<HTMLInputElement>('#workspace-map-search')!;search.value='MUST NOT REPLAY AFTER RELOAD';search.dispatchEvent(new Event('input',{bubbles:true}));for(const id of ['workspace-open','workspace-tab-backup','reload-workspace'])document.querySelector<HTMLButtonElement>('#'+id)!.click();});
   await page.waitForFunction(
     () =>
       document.querySelector("#workspace-message")?.textContent ===

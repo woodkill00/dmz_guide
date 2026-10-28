@@ -17,6 +17,9 @@ export interface SnapshotEntry {
   legacy: boolean;
 }
 export interface Annotation {
+  observedAt?:string;
+  attachments?:import("./owned-assets.ts").EvidenceAsset[];
+  geometry?:import("./owned-assets.ts").OwnedGeometry;
   id: string;
   kind: "POI" | "location" | "mark";
   title: string;

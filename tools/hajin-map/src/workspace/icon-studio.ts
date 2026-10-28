@@ -11,6 +11,7 @@ export function downloadIconPNG(icon:IconAsset){
 export function downloadIconSVG(design:IconDesign,description:string){download(filename(description)+'.svg',iconSVG(design,description),'image/svg+xml');}
 
 export function createIconStudio(h:Pick<UIServices,'process'|'error'|'notice'> & {
+  starters?:{description:string;design:IconDesign}[];
   dirty:()=>void;
   save:(design:IconDesign,description:string)=>Promise<void>;
 }){
@@ -49,12 +50,22 @@ export function createIconStudio(h:Pick<UIServices,'process'|'error'|'notice'> &
     try{const v=read(),url=iconSVGURL(v.design,v.description);for(const image of images){image.src=url;image.alt=v.description;}status.textContent='Preview ready · transparent outside the frame';for(const b of [save,svg,png])b.disabled=false;}
     catch(error){status.textContent=errorText(error);for(const image of images){image.removeAttribute('src');image.alt='Invalid design: preview unavailable';}for(const b of [save,svg,png])b.disabled=true;}
   };
-  const load=(value:IconDesign,name:string)=>{
-    const d=validateIconDesign(value);description.value=name;frame.value=d.frame;symbol.value=d.symbol;label.value=d.label;background.value=d.background;foreground.value=d.foreground;border.value=d.border;borderWidth.value=String(d.borderWidth);size.value=String(d.symbolSize);rotation.value=String(d.rotation);preview();
+  const historyControls=[description,frame,symbol,label,background,foreground,border,borderWidth,size,rotation];
+  const snapshot=()=>historyControls.map(n=>n.value.slice(0,256));
+  let history:string[][]=[snapshot()],cursor=0;
+  const undo=button('Undo design change',()=>restore(cursor-1),'undo-icon-design'),redo=button('Redo design change',()=>restore(cursor+1),'redo-icon-design');
+  const historyState=()=>{undo.disabled=cursor<=0;redo.disabled=cursor>=history.length-1;};
+  function restore(next:number){if(next<0||next>=history.length)return;cursor=next;historyControls.forEach((n,i)=>n.value=history[cursor][i]);preview();h.dirty();historyState();}
+  const remember=()=>{const next=snapshot();if(JSON.stringify(next)!==JSON.stringify(history[cursor])){history=history.slice(0,cursor+1);history.push(next);if(history.length>50)history.shift();cursor=history.length-1;}historyState();};
+  const load=(value:IconDesign,name:string,record=false)=>{
+    const d=validateIconDesign(value);description.value=name;frame.value=d.frame;symbol.value=d.symbol;label.value=d.label;background.value=d.background;foreground.value=d.foreground;border.value=d.border;borderWidth.value=String(d.borderWidth);size.value=String(d.symbolSize);rotation.value=String(d.rotation);preview();if(record)remember();else{history=[snapshot()];cursor=0;historyState();}
   };
-  for(const template of iconTemplates){const b=button(template.name,()=>{load(template.design,template.name+' marker');h.dirty();});b.dataset.iconTemplate=template.id;const img=el('img');img.src=iconSVGURL(template.design,template.name);img.alt='';img.width=img.height=32;b.prepend(img);starters.append(b);}
-  controls.addEventListener('input',()=>{h.dirty();preview();});controls.addEventListener('change',()=>{h.dirty();preview();});
-  root.append(title,intro,starters,note('Choosing a starter replaces the current design settings.'),previews,status,controls,actions);
+  for(const template of iconTemplates){const b=button(template.name,()=>{load(template.design,template.name+' marker',true);h.dirty();});b.dataset.iconTemplate=template.id;const img=el('img');img.src=iconSVGURL(template.design,template.name);img.alt='';img.width=img.height=32;b.prepend(img);starters.append(b);}
+  controls.addEventListener('input',()=>{h.dirty();preview();remember();});controls.addEventListener('change',()=>{h.dirty();preview();remember();});
+  const savedStarters=el('details');savedStarters.append(el('summary','My saved design starters'));
+  for(const starter of h.starters??[])savedStarters.append(button(starter.description,()=>{load(starter.design,starter.description,true);h.dirty();}));
+  actions.append(undo,redo);historyState();
+  root.append(title,intro,starters,savedStarters,note('Choosing a starter replaces the current design settings.'),previews,status,controls,actions);
   preview();
   return {root,load};
 }

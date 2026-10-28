@@ -312,6 +312,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     async replaceCapture(next: MarkerSource) { if(next.id!==source.id||next.page!==source.page)throw new Error('Source identity cannot change.');Object.assign(source,next);await load();if(!snapshot)throw new Error(`${source.name} capture could not reload. Reload the page to retry.`); },
     getSnapshot: () => snapshot,
     getSnapshotDigest: () => captureDigest,
+    getSnapshotLocation:()=>({snapshot:source.snapshot,iconDirectory:source.iconDirectory,digest:captureDigest??null}),
     getFilters: () => ({master, enabled: [...enabled], categories: snapshot?.categories.map(c => c.id) ?? []}),
     setFilters(value: {master: boolean; enabled: string[]; query?: string; persistLegacy?: boolean; suppressed?: Set<string>; duplicates?: Map<string,string>}) { master = value.master; enabled.clear(); const valid = new Set(snapshot ? available().map(category => category.id) : []); value.enabled.forEach(id => { if (valid.has(id)) enabled.add(id); }); query = value.query ?? query; suppressed=value.suppressed??suppressed; duplicates=value.duplicates??duplicates; update(value.persistLegacy ?? false); },
     setQuery(value: string) { query = value; update(false); },

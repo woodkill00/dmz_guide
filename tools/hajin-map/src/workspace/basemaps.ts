@@ -262,6 +262,7 @@ export async function stageBasemap(
   sourceId: string,
   description: string,
   signal?: AbortSignal,
+  normalization?:{maxDimension:number;outputBytes:number},
 ): Promise<{ asset: BasemapAsset; blob: Blob }> {
   requireCapability(sourceId, "basemap");
   if (
@@ -322,13 +323,15 @@ export async function stageBasemap(
   try {
     if (bitmap.width !== info.width || bitmap.height !== info.height)
       fail("Background decoded extent differs from header.");
-    canvas.width = info.width;
-    canvas.height = info.height;
+    if(normalization&&(!Number.isInteger(normalization.maxDimension)||normalization.maxDimension<256||normalization.maxDimension>8192||!Number.isInteger(normalization.outputBytes)||normalization.outputBytes<1024||normalization.outputBytes>32*1024*1024))fail('Invalid local raster normalization limits.');
+    const scale=normalization?Math.min(1,normalization.maxDimension/Math.max(info.width,info.height)):1;
+    canvas.width = Math.max(1,Math.round(info.width*scale));
+    canvas.height = Math.max(1,Math.round(info.height*scale));
     const context = canvas.getContext("2d");
     if (!context) throw new Error("Background canvas unavailable.");
-    context.drawImage(bitmap, 0, 0);
+    context.drawImage(bitmap, 0, 0,canvas.width,canvas.height);
     check();
-    const blob = await pending(
+    const encode=()=>pending(
       new Promise<Blob>((resolve, reject) =>
         canvas.toBlob(
           (b) =>
@@ -337,8 +340,11 @@ export async function stageBasemap(
         ),
       ),
     );
-    if (blob.size > 32 * 1024 * 1024)
-      fail("Sanitized background exceeds32MiB.");
+    let blob=await encode();
+    for(let step=0;normalization&&blob.size>normalization.outputBytes&&step<8;step++){
+      canvas.width=Math.max(1,Math.round(canvas.width*.8));canvas.height=Math.max(1,Math.round(canvas.height*.8));context.drawImage(bitmap,0,0,canvas.width,canvas.height);check();blob=await encode();
+    }
+    if (blob.size > (normalization?.outputBytes??32*1024*1024))fail('Sanitized local image exceeds output byte budget.');
     const clean = stripPNG(new Uint8Array(await pending(blob.arrayBuffer())));
     rasterHeader(clean);
     const id = await pending(sha256(clean));
@@ -356,8 +362,8 @@ export async function stageBasemap(
           id: `background-${id.slice(0, 16)}`,
           mapId: "hajin",
           coordinateVersion: `background-${id.slice(0, 16)}`,
-          width: info.width,
-          height: info.height,
+          width: canvas.width,
+          height: canvas.height,
           units: "pixels",
           origin: "top-left",
           xAxis: "right",

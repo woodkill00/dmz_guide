@@ -62,6 +62,7 @@ export function sourceUpdatePlugin({ root, enabled = false, service } = {}) {
           }
           if (req.method === "POST" && req.url === "/prepare")
             return send(200, await updates.prepare());
+          if(req.method==="GET"&&req.url==="/history")return send(200,await updates.history());
           if (req.method === "GET" && req.url === "/jobs")
             return send(200, await updates.list());
           const match =

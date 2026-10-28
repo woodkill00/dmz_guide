@@ -1,3 +1,5 @@
+import {createSearchPanel} from './search-panel.ts';
+import type {SearchOrigin} from './search.ts';
 import { el, button, field, input, select, note, pagedList } from "./dom.ts";
 import type { UIServices } from "./ui-context.ts";
 import {
@@ -15,6 +17,9 @@ import { displayDuplicates } from "../map/display-duplicates.ts";
 import type { VisibilityState } from "./types.ts";
 export interface UsabilityHost extends UIServices {
   records: () => ExplorerRecord[];
+  mapCenter:()=>SearchOrigin;
+  jumpPosition:(origin:SearchOrigin)=>void;
+  openSearch:()=>void;
   categories: () => Record<string, string[]>;
   inspectionMode: () => boolean;
   inspectAllowed: () => boolean;
@@ -36,10 +41,7 @@ const position = (r: ExplorerRecord) =>
     ? r.placement==='reference'?"Reference entry: no terrain location":"Unplaced: registration required"
     : `X ${r.x.toFixed(2)}, Y ${r.y.toFixed(2)} (canonical map pixels)`;
 export function createUsabilityUI(h: UsabilityHost) {
-  let updateSearch: (() => void) | undefined;
   let section = "search",
-    query = "",
-    page = 0,
     coverageFilter = "all",
     duplicateFilter: { sourceId: string; categoryId: string } | null = null;
   const allowed = () => {
@@ -115,6 +117,7 @@ export function createUsabilityUI(h: UsabilityHost) {
         () => showRecord(r),
       ),
     );
+    const nearby=button("Find nearby",()=>searchUI.nearby(r));nearby.disabled=r.x===null;root.append(nearby);
     copy(r, root);
     return root;
   }
@@ -123,6 +126,7 @@ export function createUsabilityUI(h: UsabilityHost) {
     const r = h.records().find((x) => x.key === record.key) ?? record,
       node = el("section");
     node.id = "location-details";
+    if(r.kind==='custom'){const point=h.state().annotations.find(a=>a.id===r.id);for(const asset of point?.attachments??[]){const image=el('img');image.src='data:image/png;base64,'+asset.base64;image.alt=asset.caption;image.className='workspace-image-preview';const entry=el('details');entry.append(el('summary',asset.caption),image);node.append(entry);}}
     node.append(
       el("h3", r.title),
       note(`${r.sourceName} · ${r.category}`),
@@ -238,7 +242,7 @@ export function createUsabilityUI(h: UsabilityHost) {
     const row = el("section", undefined, "workspace-card");
     row.dataset.explorerRecord = r.key;
     row.append(
-      el("h4", r.title),
+      (()=>{const title=el("h4"),choose=button(r.title,()=>r.x===null?showRecord(r):jump(r));choose.className="search-result-title";title.append(choose);return title;})(),
       note(
         `${r.sourceName} · ${r.category} · ${r.placement==='reference'?"reference entry · no terrain location":r.visible ? "selected" : "outside view / duplicate"}`,
       ),
@@ -246,65 +250,13 @@ export function createUsabilityUI(h: UsabilityHost) {
       button("Details", () => showRecord(r)),
     );
     const go = button("Jump", () => jump(r));
-    go.disabled = r.x === null;
+    go.disabled = r.x === null;go.dataset.searchJump="true";
     row.append(go);
+    const nearby=button("Nearby",()=>searchUI.nearby(r));nearby.disabled=r.x===null;row.append(nearby);
     return row;
   }
-  function search(root: HTMLElement) {
-    const search = input(query);
-    search.id = "explorer-search";
-    search.dataset.workspaceSearch = "true";
-    search.setAttribute(
-      "aria-label",
-      "Find locations across sites and my points",
-    );
-    const results = el("div");
-    results.id = "explorer-results";
-    const render = () => {
-      const records = h.records();
-      const q = query.trim().toLocaleLowerCase(),
-        filtered = records.filter((r) =>
-          `${r.title} ${r.category} ${r.sourceName}`
-            .toLocaleLowerCase()
-            .includes(q),
-        );
-      page = Math.max(0, Math.min(page, Math.ceil(filtered.length / 50) - 1));
-      results.replaceChildren(
-        note(
-          `${filtered.length} results · page ${page + 1}/${Math.max(1, Math.ceil(filtered.length / 50))}`,
-        ),
-      );
-      for (const r of filtered.slice(page * 50, (page + 1) * 50))
-        results.append(card(r));
-      const prev = button("Previous results", () => {
-          page--;
-          render();
-        }),
-        next = button("Next results", () => {
-          page++;
-          render();
-        });
-      prev.disabled = page === 0;
-      next.disabled = (page + 1) * 50 >= filtered.length;
-      results.append(prev, next);
-    };
-    updateSearch = () => {
-      if (root.isConnected) render();
-    };
-    search.addEventListener("input", () => {
-      query = search.value;
-      page = 0;
-      render();
-    });
-    root.append(
-      field("Search names, categories and websites", search),
-      note(
-        "All loaded locations are searched, including hidden layers and collapsed copies. Jump adds a highlight without changing your selection.",
-      ),
-      results,
-    );
-    render();
-  }
+  const searchUI=createSearchPanel({records:h.records,separate:()=>meta(h).separate,card,error:h.error,center:h.mapCenter,go:h.jumpPosition,open:h.openSearch,allowed});
+  function search(root:HTMLElement){searchUI.render(root);}
   function duplicates(root: HTMLElement) {
     const records = h.records(),
       byKey = new Map(records.map((r) => [r.key, r])),
@@ -713,8 +665,9 @@ export function createUsabilityUI(h: UsabilityHost) {
   }
   return {
     refreshSearch: () => {
-      if (section === "search") updateSearch?.();
+      if (section === "search") searchUI.refresh();
     },
+    destroy:()=>searchUI.destroy(),
     panel,
     popup,
     showRecord,

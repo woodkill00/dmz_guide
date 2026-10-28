@@ -1,3 +1,5 @@
+import {stageEvidence,parseVertices,validateGeometry,geometryLength,type EvidenceAsset} from './owned-assets.ts';
+import type {UIServices} from './ui-context.ts';
 import type { Annotation, Workspace } from "./model.ts";
 import { makeAnnotation } from "./annotations.ts";
 import { el, button, field, input, select, note } from "./dom.ts";
@@ -10,6 +12,7 @@ export function annotationEditor(
   dirty: () => void,
   onPick: () => void,
   onError: (error: unknown) => void,
+  process:UIServices["process"]=(work)=>work(new AbortController().signal),
 ) {
   const form = el("form");
   form.id = "point-form";
@@ -70,18 +73,34 @@ export function annotationEditor(
   own.required = true;
   own.checked = !!initial;
   own.id = "point-owned";
+  const observed=input(initial?.observedAt??'','date');observed.id='point-observed-at';
+  const geometryType=select([{value:'point',label:'Point marker'},{value:'route',label:'Route / line'},{value:'area',label:'Shaded area'}],initial?.geometry?.kind??'point');geometryType.id='point-geometry-kind';
+  const geometryColor=input(initial?.geometry?.color??'#d4de9b','color');geometryColor.id='point-geometry-color';
+  const vertices=el('textarea');vertices.id='point-vertices';vertices.maxLength=8000;vertices.value=initial?.geometry?.vertices.map(v=>v.join(',')).join('\n')??'';
+  const geometryFields=el('fieldset');geometryFields.append(el('legend','Route / area vertices'),note('Use one image X,Y per line. Pick a position on the map, then Add current X/Y vertex to build a route or area. Distances are image pixels, not game meters.'),field('Vertices (one X,Y per line)',vertices),field('Geometry color',geometryColor),button('Add current X/Y vertex',()=>{vertices.value+=(vertices.value.trim()?'\n':'')+x.value+','+y.value;dirty();update();},'add-geometry-vertex'));
+  let attachments:EvidenceAsset[]=structuredClone(initial?.attachments??[]);
+  const assetList=el('div');assetList.id='point-evidence-list';
+  const showAssets=()=>{assetList.replaceChildren();for(const asset of attachments){const card=el('details'),caption=el('summary',asset.caption),image=el('img');image.src='data:image/png;base64,'+asset.base64;image.alt=asset.caption;image.className='workspace-image-preview';card.append(caption,image,button('Remove screenshot',()=>{attachments=attachments.filter(a=>a.id!==asset.id);dirty();showAssets();}));assetList.append(card);}};
+  const evidenceFile=input('','file');evidenceFile.id='point-evidence-file';evidenceFile.accept='image/png,image/jpeg,image/webp';
+  const caption=input('');caption.id='point-evidence-caption';
+  const evidenceFields=el('details');evidenceFields.append(el('summary','Owned screenshots / gameplay evidence'),note('Up to4 screenshots per point,32total/8MiB. Images stay private, are stripped of metadata and normalized to PNG up to1600px. Private backups include them.'),field('Screenshot file',evidenceFile),field('Screenshot caption',caption),button('Attach owned screenshot',async()=>{try{if(attachments.length>=4)throw new Error('At most4 screenshots per point.');if(!own.checked)throw new Error('Confirm ownership/authorization before attaching evidence.');const file=evidenceFile.files?.[0];if(!file)throw new Error('Choose a screenshot.');const asset=await process(signal=>stageEvidence(file,caption.value,signal));if(attachments.some(a=>a.id===asset.id))throw new Error('This screenshot is already attached.');attachments.push(asset);evidenceFile.value='';caption.value='';dirty();showAssets();}catch(error){onError(error);}},'attach-point-evidence'),button('Clear selected screenshot',()=>{evidenceFile.value='';caption.value='';dirty();},'clear-point-evidence'),assetList);showAssets();
   const preview = el("p", undefined, "workspace-preview");
   preview.id = "point-preview";
   const update = () => {
-    preview.textContent = `Preview: ${title.value || "Untitled"} · ${kind.value} · X ${x.value}, Y ${y.value} · ${category.value}. Save to add this private point.`;
+    geometryFields.hidden=geometryType.value==='point';
+    let geometryNote='';if(geometryType.value!=='point'){try{const g=validateGeometry({kind:geometryType.value,vertices:parseVertices(vertices.value),color:geometryColor.value});geometryNote=` · ${g.vertices.length} vertices · ${geometryLength(g).toFixed(1)} image pixels ${g.kind==='area'?'perimeter':'length'}`;}catch(e){geometryNote=' · '+(e instanceof Error?e.message:String(e));}}
+    preview.textContent = `Preview: ${title.value || "Untitled"} · ${kind.value} · X ${x.value}, Y ${y.value} · ${category.value}${geometryNote}. Save to add this private point.`;
   };
   form.append(
     field("Title", title),
     field("Kind", kind),
+    field("Geometry",geometryType),
     field("Category", category),
     field("X image position", x),
     field("Y image position", y),
     button("Pick position on map", onPick, "pick-point-position"),
+    geometryFields,
+    field("Observed date (optional)",observed),
     field("Floor (blank means unknown)", floor),
     field("Game build (blank means unknown)", build),
     field("Notes", notes),
@@ -92,6 +111,7 @@ export function annotationEditor(
       "This is my own observation/content, or I am authorized to use it.",
       own,
     ),
+    evidenceFields,
     preview,
   );
   form.addEventListener("input", () => {
@@ -111,8 +131,12 @@ export function annotationEditor(
     if (!form.reportValidity()) return;
     submit.disabled = true;
     try {
+      if(evidenceFile.files?.length||caption.value.trim())throw new Error('Attach or clear the selected screenshot before saving the point.');
       const value = makeAnnotation({
         title: title.value,
+        observedAt:observed.value||undefined,
+        attachments,
+        geometry:geometryType.value==='point'?undefined:validateGeometry({kind:geometryType.value,vertices:parseVertices(vertices.value),color:geometryColor.value}),
         x: Number(x.value),
         y: Number(y.value),
         kind: kind.value as Annotation["kind"],

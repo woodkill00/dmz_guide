@@ -1,3 +1,4 @@
+import {validateGeometry,evidenceBytes,validObservedDate,geometryAnchor} from './owned-assets.ts';
 import type { Annotation, Workspace } from "./model.ts";
 import { canonicalFrame } from "./registration.ts";
 export function pointBounds(x: number, y: number) {
@@ -6,6 +7,9 @@ export function pointBounds(x: number, y: number) {
 }
 export function annotationValid(a: Annotation) {
   pointBounds(a.x, a.y);
+  if(a.observedAt!==undefined&&!validObservedDate(a.observedAt))throw new Error('Observation date must be a real YYYY-MM-DD date.');
+  if(a.geometry!==undefined){const g=validateGeometry(a.geometry),anchor=geometryAnchor(g);if(Math.abs(anchor.x-a.x)>.001||Math.abs(anchor.y-a.y)>.001)throw new Error('Geometry anchor must match its vertices.');}
+  if(a.attachments!==undefined){if(!Array.isArray(a.attachments)||a.attachments.length>4||new Set(a.attachments.map(e=>e.id)).size!==a.attachments.length)throw new Error('At most4 distinct screenshots per point.');a.attachments.forEach(evidenceBytes);}
   if (
     !a.id ||
     a.id.length > 128 ||
@@ -29,6 +33,9 @@ export function annotationValid(a: Annotation) {
     throw new Error("Invalid private point.");
 }
 export function makeAnnotation(input: {
+  observedAt?:string;
+  attachments?:Annotation["attachments"];
+  geometry?:Annotation["geometry"];
   title: string;
   x: number;
   y: number;
@@ -63,6 +70,9 @@ export function makeAnnotation(input: {
     createdAt: now,
     updatedAt: now,
   };
+  if(input.observedAt)a.observedAt=input.observedAt;
+  if(input.attachments?.length)a.attachments=structuredClone(input.attachments);
+  if(input.geometry){a.geometry=validateGeometry(input.geometry);Object.assign(a,geometryAnchor(a.geometry));}
   annotationValid(a);
   return a;
 }

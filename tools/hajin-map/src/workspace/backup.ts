@@ -1,3 +1,4 @@
+import {evidenceBytes,verifyEvidence} from './owned-assets.ts';
 import type {
   Workspace,
   CanonicalEntity,
@@ -404,6 +405,7 @@ export function validateWorkspace(value: unknown): asserts value is Workspace {
         "ownership",
         "createdAt",
         "updatedAt",
+        ...["observedAt","attachments","geometry"].filter(key=>Object.hasOwn(a,key)),
       ],
       "annotation",
     );
@@ -415,6 +417,9 @@ export function validateWorkspace(value: unknown): asserts value is Workspace {
     annotationValid(a);
     assert(date(a.createdAt) && date(a.updatedAt), "Invalid annotation dates.");
   }
+  const geometries=s.annotations.flatMap(a=>a.geometry?[a.geometry]:[]);assert(geometries.length<=500&&geometries.reduce((n,g)=>n+g.vertices.length,0)<=20000,'Geometry count or20000vertex budget exceeded.');
+  const allEvidence=s.annotations.flatMap(a=>a.attachments??[]);
+  assert(allEvidence.length<=32&&allEvidence.reduce((n,a)=>n+evidenceBytes(a).length,0)<=8*1024*1024,'Screenshot count or8MiB total limit exceeded.');
   unique(
     s.annotations.map((a) => a.id),
     "annotation",
@@ -794,6 +799,7 @@ export async function verifyBackupAssets(
   signal?: AbortSignal,
 ) {
   const deadline = performance.now() + 15000;
+  for(const evidence of state.annotations.flatMap(a=>a.attachments??[])){if(performance.now()>deadline)throw new Error('Backup image validation timed out.');await verifyEvidence(evidence,signal);}
   for (const icon of state.icons) {
     if (performance.now() > deadline)
       throw new Error("Backup image validation timed out.");

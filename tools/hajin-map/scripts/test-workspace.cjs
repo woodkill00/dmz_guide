@@ -168,6 +168,8 @@ const checks = [];
   checks.push(...await runSourceUpdatesBrowser(page, {image,snapshot}));
   const { runTacticalGridBrowser } = await import('../tests/tactical-grid.browser.ts');
   checks.push(...await runTacticalGridBrowser(page, base, {image,snapshot}));
+  const {runUpgradesBrowser}=require('./upgrades.browser.cjs');
+  checks.push(...await runUpgradesBrowser(page,base,{image,snapshot}));
   const {runHelpBrowser}=require('./help.browser.cjs');
   checks.push(...await runHelpBrowser(page,base,{image,snapshot}));
   const {runIconStudioBrowser}=require('./icon-studio.browser.cjs');

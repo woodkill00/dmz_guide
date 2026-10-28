@@ -353,6 +353,12 @@ export async function runUsabilityBrowser(parent, base, fixture) {
     await explore("search");
     await page.locator("#explorer-search").focus();
     await page.keyboard.type("My lookout");
+    await page.waitForFunction(() => document.querySelector("#search-results-status")?.textContent.startsWith("1 results"));
+    await page.locator("#workspace-dialog").evaluate(d => d.scrollTop = 0);
+    for (const selector of ["#search-results-status", ".search-result-title"]) {
+      const bounds = await page.locator(selector).first().boundingBox();
+      assert.ok(bounds && bounds.y >= 0 && bounds.y + bounds.height < 792, selector + " must be visible in the initial mobile viewport");
+    }
     assert.equal(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

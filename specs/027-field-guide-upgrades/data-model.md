@@ -1,0 +1,8 @@
+# Data/UI contracts
+Search query<=256chars,<=8terms; quoted phrases + field operators source/category/kind/floor/build/has/is/near/grid; unsupported syntax rejects clearly. Rank exact title > prefix/word > notes/category > bounded typo candidates. Filters AND, case-insensitive unicode normalization; source/category selects exactIDs; placed nearest distances Euclidean canonicalpixels. Grid cell uses reviewed geometry. Groups only compatible source copies; own/reviewed entries stay independent. Search state transient and preserved across Jump/reopen, not saved as masks.
+
+Annotation optional observedAt YYYY-MM-DD validUTCday, attachments EvidenceAsset[]{id SHA256,base64,width,height,caption<=200}, geometry{kind:route|area,vertices:[x,y][],color:#rrggbb}. Attachment max4/point32total,2MiBasset8MiBaggregate; normalizefile<=8MiBtoPNG<=1600px, strictPNG + digest verify on restore. Geometry max200vertices finite0..4096, at least2distinct route/3noncollinear area points. Anchor is vertex mean; kind stays existing POI/location/mark. Existing exact-key validators allow only named optional fields and alloldinputs remain valid.
+
+Health/recovery manifests are derived, no root schema change. Report source/browser resources versus filesystem assets separately, protect current/previous/history references via existing prune. No collecting on open. Pack kind:dmz-icon-design-pack,version1,entries<=32{description<=200,designvalidated}; file<=256KiB, preview generated distinct/add/reuse counts, atomic commit/cancel.
+
+Joint render budget: at most500 private routes/areas and20000total vertices, within5000total annotations and existingJSON/node/backup limits. Shapes use the shared canvas renderer; their anchors remain keyboard-accessible point markers.
