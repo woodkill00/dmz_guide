@@ -50,6 +50,7 @@ import { createUsabilityUI } from "./usability-panel.ts";
 import { createSourceUpdates } from "./source-updates.ts";
 import { captureSource } from "../map/current-captures.ts";
 import type { MarkerSource } from "../map/marker-sources.ts";
+import { sourceAdmission } from "../map/source-admission.ts";
 import { explorerRecords, loadedIdentity } from "./explorer-index.ts";
 import {
   emptyUsability,
@@ -94,6 +95,7 @@ export function mountWorkspace(
   const visibility = () => pendingVisibility ?? state.visibility;
   let showDuplicateMarkers = false;
   let duplicatePlan = displayDuplicates([]);
+  let capacityExcluded = new Set<string>();
   let unsaved: Workspace | undefined,
     failedLabel: string | undefined,
     processing: AbortController | undefined;
@@ -117,8 +119,21 @@ export function mountWorkspace(
       const entry = state.snapshots.find((e) => e.key === key);
       if (entry) active.set(source, entry);
     }
+    const authoritative = new Map(
+      [...active]
+        .filter(([, entry]) => !entry.legacy)
+        .map(([id, entry]) => [id, entry.snapshot.records.length]),
+    );
+    capacityExcluded = sourceAdmission(
+      authoritative,
+      new Map(legacy.map((s) => [s.id, s.getSnapshot()?.records.length ?? 0])),
+      visibility().sourceEnabled,
+    ).excluded;
+    for (const source of legacy)
+      source.setCapacityBlocked(capacityExcluded.has(source.id));
     const records: DisplayRecord[] = [];
     for (const source of legacy) {
+      if (capacityExcluded.has(source.id)) continue;
       if (active.has(source.id) && !active.get(source.id)!.legacy) continue;
       for (const r of source.getSnapshot()?.records ?? [])
         records.push({
@@ -561,7 +576,7 @@ export function mountWorkspace(
   const getExplorerRecords = () =>
     explorerRecords(
       { ...state, visibility: visibility() },
-      legacy,
+      legacy.filter((s) => !capacityExcluded.has(s.id)),
       selectedSnapshots,
     ).map((r) => ({
       ...r,
@@ -1680,7 +1695,7 @@ export function mountWorkspace(
       .reduce((n, e) => n + e.snapshot.records.length, 0);
     const keySummary = document.querySelector("#key-summary");
     if (keySummary)
-      keySummary.textContent = `${shownRaw} / ${totalRaw} raw source locations · ${duplicatePlan.suppressed.size} likely duplicate copies hidden · ${unregistered} awaiting registration · ${state.annotations.length} custom points · ${state.entities.filter((e) => e.acceptance === "accepted").length} reviewed`;
+      keySummary.textContent = `${shownRaw} / ${totalRaw} raw source locations · ${duplicatePlan.suppressed.size} likely duplicate copies hidden · ${unregistered} awaiting registration${capacityExcluded.size ? ` · ${capacityExcluded.size} source(s) unavailable at the20,000-record view limit` : ""} · ${state.annotations.length} custom points · ${state.entities.filter((e) => e.acceptance === "accepted").length} reviewed`;
     const summary = document.querySelector("#official-summary");
     if (summary)
       summary.textContent = `${shownRaw} / ${totalRaw} raw source locations`;
@@ -1763,7 +1778,12 @@ export function mountWorkspace(
       if (!snapshot) continue;
       const master = input("", "checkbox");
       master.id = `key-loaded-source-master-${source.id}`;
-      master.checked = visibility().sourceEnabled[source.id] !== false;
+      master.checked =
+        !capacityExcluded.has(source.id) &&
+        visibility().sourceEnabled[source.id] !== false;
+      if (capacityExcluded.has(source.id))
+        master.title =
+          "Source retained but unavailable at the20,000-record view limit. Select desired websites and hide another layer if needed.";
       master.indeterminate =
         master.checked &&
         sourceSelection(
@@ -1791,10 +1811,45 @@ export function mountWorkspace(
         link,
         el("span", `${snapshot.records.length} captured locations`),
       );
+      if (capacityExcluded.has(source.id))
+        row.append(
+          note(
+            "Unavailable at the20,000-record view limit. Hide another website layer to make room; this capture is retained.",
+          ),
+        );
       sourceOverview.append(row);
     }
     for (const policy of Object.values(sourcePolicies)) {
       if (legacy.some((source) => source.id === policy.id)) continue;
+      const referenceRow = el("div", undefined, "website-layer-row"),
+        reference = input("", "checkbox"),
+        referenceLink = el("a", policy.name);
+      reference.disabled = true;
+      reference.id = `key-reference-source-${policy.id}`;
+      reference.setAttribute(
+        "aria-label",
+        `${policy.name}: local source files unavailable`,
+      );
+      referenceLink.id = `key-source-link-${policy.id}`;
+      referenceLink.href = policy.page;
+      referenceLink.target = "_blank";
+      referenceLink.rel = "noopener noreferrer";
+      const retained =
+        state.snapshots.find(
+          (e) => e.key === selectedSnapshots.get(policy.id),
+        ) ??
+        state.snapshots.filter((e) => e.snapshot.sourceId === policy.id).at(-1);
+      referenceRow.append(
+        reference,
+        referenceLink,
+        el(
+          "span",
+          retained
+            ? `${retained.snapshot.records.length} retained workspace locations; snapshot controls below.`
+            : "No local capture: permission and coordinate registration required.",
+        ),
+      );
+      sourceOverview.append(referenceRow);
       for (const parent of [
         document.querySelector("#source-controls")!,
         document.querySelector("#map-key-content")!,
@@ -2222,6 +2277,7 @@ export function mountWorkspace(
               ]),
           ),
           master:
+            !capacityExcluded.has(id) &&
             (!workspaceSource || workspaceSource.legacy) &&
             visibility().sourceEnabled[id] !== false,
           enabled: filters.categories.filter(

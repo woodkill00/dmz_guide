@@ -136,12 +136,13 @@ test("aggregate snapshot admission scopes identities and bounds retained source 
   assert.doesNotThrow(() => validateSnapshotCollection([one, two]));
   assert.throws(() => validateSnapshotCollection([one, one]));
   assert.throws(() => validateSnapshotCollection(Array(21).fill(one)));
-  const providers = Array.from({ length: 5 }, (_, i) =>
+  const providers = Array.from({ length: 6 }, (_, i) =>
     parseSnapshot(
       JSON.stringify(syntheticSnapshot(`source-${i}`)),
       `source-${i}`,
     ),
   );
+  assert.doesNotThrow(()=>validateSnapshotCollection(providers.slice(0,5)));
   assert.throws(() => validateSnapshotCollection(providers));
   const full = parseSnapshot(
     JSON.stringify(syntheticSnapshot("first", 5000)),

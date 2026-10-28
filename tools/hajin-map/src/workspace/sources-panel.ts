@@ -19,7 +19,7 @@ export function sourcePanel(services: UIServices) {
   panel.append(
     el("h3", "Sources and immutable snapshots"),
     note(
-      "Each site has its own layer and category masks. Owner-enabled local captures can be previewed for review below. Reference-only sources stay unavailable; the viewer never fetches source websites.",
+      "Each site has its own layer and category masks. Owner-enabled local captures can be previewed for review below. Reference-only sources stay unavailable. Normal viewing uses local captures; checks run only through the owner-enabled Map key update.",
     ),
   );
   for (const policy of Object.values(sourcePolicies)) {

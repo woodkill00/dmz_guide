@@ -1,0 +1,15 @@
+# Feature024: MapGenie Hajin source
+Created2026-10-28. Status: prepared/tested synthetically; new-provider collection permission and live calibration pending.
+
+US1 MapGenie appears with existing website sources: canonical link, independent master/category masks, icons/counts and comparison.
+US2 An explicitly authorized/reviewed capture uses calibrated coordinates and joins updates. Missing authorization or calibration never stops existing sources; repeated updates reuse captures and preserve private data/history/grid.
+
+FR001 Register mapgenie with tracking-free HTTPS URL https://mapgenie.io/call-of-duty-modern-warfare-4/maps/hajin-dmz, reference-only by default. Support5-source pointers/receipts and4-provider local manifests without breaking existing4-source configuration/backups.
+FR002 Collect only after explicit MapGenie permission, from fixed public map1084 metadata/API and reviewed tiles/sprite. No credentials/account/private endpoints/bypass. Parse inert literal data, bound requests/images/records, never execute remote scripts. Errors retain last good capture.
+FR003 Convert geographic coordinates using exact WebMercator math at reviewed z10 tile origin(508,508),1024x1024 footprint, then independently reviewed affine transform. Exact declared tile frame and all16 reviewed byte hashes gate updates; changed frame/artwork requires review. Existing RMS<=8/max<=16canonicalpixels and>=2independent heldouts apply; do not borrow another provider calibration.
+FR004 Preserve namespaced stable upstream record/category IDs and current group/category titles. Crop bounded actual source sprite into re-encoded local PNGs. Unknown floors remain unknown; empty declared categories remain available. Unsupported schema/conflicting IDs fail safely.
+FR005 Known facility category aliases join conservative duplicate checks: matching still requires name+location, compatible floor/build and one record/site/group. Retain source evidence/stars; unknown types remain distinct.
+FR006 MapGenie joins staged update preview/Apply/recovery/no-op once authorized. Old authorization files remain valid; unconfigured MapGenie reports unavailable without fetching or blocking existing updates. Only registered/authorized MapGenie can bootstrap a first capture from an empty baseline; existing source failures remain safe.
+FR007 Synthetic tests default; optional authorized live smoke verifies five-source controls/dedup/update/reload. Private data/assets/permission statements stay ignored; no deployment/redistribution.
+SC001 Unit/server/browser/build/regression checks cover projection/frame/sprite/identity, old4-source compatibility, first import/repeat and source-specific failures.
+SC002 Independent requirements/domain/security/UI review and analyze/converge repair cycle close actionable issues; executed evidence and pending acquisition limits are honest.

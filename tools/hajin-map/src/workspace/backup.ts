@@ -161,7 +161,7 @@ function entityValid(e: CanonicalEntity) {
     ),
     "Selected field missing its evidence.",
   );
-  array(e.reviewedHeads, 4, "reviewed heads");
+  array(e.reviewedHeads, 5, "reviewed heads");
   array(e.evidenceVersions, 32, "evidence versions");
   for (const h of e.reviewedHeads) {
     fields(h, ["sourceId", "snapshotId"], "reviewed head");

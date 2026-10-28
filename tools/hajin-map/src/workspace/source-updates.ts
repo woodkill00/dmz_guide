@@ -195,7 +195,7 @@ export function createSourceUpdates(
         ) ||
         !Array.isArray(p.entries) ||
         p.entries.length < 1 ||
-        p.entries.length > 4 ||
+        p.entries.length > 5 ||
         !Array.isArray(p.descriptors) ||
         p.descriptors.length !== p.entries.length ||
         p.entries.some(
@@ -268,7 +268,7 @@ export function createSourceUpdates(
       recover.hidden = !pending();
       if (!invalidReceipt)
         status.textContent =
-          "Check all four websites. Review changes before adding them.";
+          "Check configured websites. Review changes before adding them; unconfigured sources keep their previous data.";
     } catch (e) {
       status.textContent =
         e instanceof SyntaxError

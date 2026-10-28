@@ -24,13 +24,34 @@ export function allowedURL(input) {
       u.pathname,
     ) &&
     !u.search;
+  const mapgenieData = u.href === sites.mapgenie.publicData;
+  const mapgenieTile =
+    u.hostname === "tiles.mapgenie.io" &&
+    /^\/games\/call-of-duty-modern-warfare-4\/hajin-dmz\/v5\/10\/(?:508|509|510|511)\/(?:508|509|510|511)\.jpg$/.test(
+      u.pathname,
+    ) &&
+    !u.search;
+  const mapgenieSprite =
+    u.hostname === "media.mapgenie.io" &&
+    /^\/v2\/assets\/prod\/games\/call-of-duty-modern-warfare-4\/markers\/v[1-9][0-9]{0,5}\/markers@2x\.png$/.test(
+      u.pathname,
+    ) &&
+    !u.search;
   if (
     u.protocol !== "https:" ||
     u.username ||
     u.password ||
     (u.port && u.port !== "443") ||
     u.hash ||
-    !(fixed || (official && !u.search) || api || tile)
+    !(
+      fixed ||
+      (official && !u.search) ||
+      api ||
+      tile ||
+      mapgenieData ||
+      mapgenieTile ||
+      mapgenieSprite
+    )
   )
     throw Error("Remote URL is outside the fixed source registry.");
   return u;

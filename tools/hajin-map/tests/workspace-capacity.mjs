@@ -18,7 +18,7 @@ const started = performance.now();
 const snapshots = Array.from({ length: LIMITS.sources }, (_, i) => {
   const source = `synthetic-${i}`;
   return parseSnapshot(
-    JSON.stringify(syntheticSnapshot(source, LIMITS.recordsPerSource)),
+    JSON.stringify(syntheticSnapshot(source,Math.min(LIMITS.recordsPerSource,Math.floor(LIMITS.recordsTotal/LIMITS.sources)+Number(i<LIMITS.recordsTotal%LIMITS.sources)))),
     source,
   );
 });
@@ -31,11 +31,11 @@ assert.throws(() => validateSnapshotCollection([...snapshots, snapshots[0]]));
 const validationMs = performance.now() - started;
 const records = Array.from({ length: 20000 }, (_, i) => ({
   key: String(i).padStart(6, "0"),
-  sourceId: `synthetic-${i % 4}`,
+  sourceId: `synthetic-${i % LIMITS.sources}`,
   snapshotId: "synthetic",
   recordId: String(i),
   title: "SYNTHETIC",
-  category: `synthetic-category-${i % 4}`,
+  category: `synthetic-category-${i % LIMITS.sources}`,
   x: 100,
   y: 100,
   applicability: {

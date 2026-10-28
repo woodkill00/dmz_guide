@@ -518,7 +518,7 @@ test("022 staged partial update preserves failures, atomically activates and sur
   await s.reserve(p.id);
   const restart = new SourceUpdates(root, { enabled: true });
   await restart.activate(p.id);
-  assert.equal((await restart.current()).value.sources.length, 3);
+  assert.equal((await restart.current()).value.sources.length, 4);
   await restart.activate(p.id);
   assert.equal((await restart.get(p.id)).state, "activated");
 });
@@ -793,7 +793,7 @@ test("022 activation and cancellation serialize across service instances and sur
   const restart = new SourceUpdates(root, { enabled: true });
   assert.equal((await restart.get(j.id)).state, "activated");
   await assert.rejects(restart.cancel(j.id), /cancellation is unavailable/);
-  assert.equal((await restart.current()).value.sources.length, 4);
+  assert.equal((await restart.current()).value.sources.length, 5);
 });
 test("022 semantic restaging reuses workspace capture and can reselect an older immutable head", async () => {
   const state = emptyWorkspace();

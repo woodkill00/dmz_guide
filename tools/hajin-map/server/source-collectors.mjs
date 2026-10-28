@@ -9,6 +9,14 @@ import {
   validateCapture,
 } from "./source-contract.mjs";
 import { sourceNetwork } from "./source-network.mjs";
+import {
+  mapgenieBindings,
+  validateMapgenieMetadata,
+  mapgenieRows,
+  verifyMapgenieFrame,
+  mapgenieSpriteURL,
+  mapgenieSpriteIcons,
+} from "./mapgenie.mjs";
 const text = (b) => new TextDecoder("utf-8", { fatal: true }).decode(b);
 const fallback = Buffer.from(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="11" fill="#e8eed5"/><circle cx="16" cy="16" r="4" fill="#26352b"/></svg>',
@@ -136,7 +144,10 @@ export function hydrationPins(scripts) {
 /** All remote markup lives only in detached DOMParser documents; requests are denied. */
 export async function withInertParser(work, signal) {
   signal?.throwIfAborted();
-  const browser = await chromium.launch({ timeout: 10000,chromiumSandbox:true });
+  const browser = await chromium.launch({
+    timeout: 10000,
+    chromiumSandbox: true,
+  });
   const abort = () => {
     void browser.close();
   };
@@ -246,6 +257,8 @@ export async function parsePage(page, id, html) {
           new DOMParser().parseFromString(html, "image/svg+xml")
             .documentElement,
         );
+      if (id === "mapgenie")
+        return { scripts: [...doc.scripts].map((n) => n.textContent) };
       if (id === "codcentral")
         return {
           image:
@@ -308,6 +321,8 @@ export async function normalizedCapture({
   registration,
   iconDirectory,
   readIcon,
+  declaredCategories = [],
+  readCurrentIcon,
   capturedAt = new Date().toISOString(),
 }) {
   if (!Array.isArray(rows) || !rows.length || rows.length > 5000)
@@ -319,6 +334,7 @@ export async function normalizedCapture({
   for (const category of [
     ...new Set([
       ...rows.map((r) => r.category),
+      ...declaredCategories.map((c) => c.category),
       ...(old?.categories.map((c) => c.id) ?? []),
     ]),
   ].sort()) {
@@ -331,11 +347,14 @@ export async function normalizedCapture({
       throw Error("Invalid category identifier.");
     const prior = old?.categories.find((c) => c.id === category),
       row =
+        declaredCategories.find((c) => c.category === category) ??
         rows.find((r) => r.category === category && r.icon) ??
         rows.find((r) => r.category === category);
     let bytes,
       ext = "svg";
-    if (row?.icon) bytes = Buffer.from(row.icon);
+    const current = await readCurrentIcon?.(category);
+    if (current) ({ bytes, ext } = current);
+    else if (row?.icon) bytes = Buffer.from(row.icon);
     else if (prior) {
       ({ bytes, ext } = await readIcon(prior.icon));
       warnings.push(
@@ -353,7 +372,7 @@ export async function normalizedCapture({
     categories.push({
       id: category,
       name: row?.label ?? prior?.name ?? category,
-      group: prior?.group ?? `${id} categories`,
+      group: row?.group ?? prior?.group ?? `${id} categories`,
       icon: iconDirectory + name,
     });
   }
@@ -523,6 +542,29 @@ export async function collectSource(
     const html = text(await get(sites[id].page));
     return await withInertParser(async (page) => {
       const parsed = await parsePage(page, id, html);
+      if (id === "mapgenie") {
+        const meta = validateMapgenieMetadata(mapgenieBindings(parsed.scripts));
+        await verifyMapgenieFrame(meta, authorization, registration, get);
+        const data = JSON.parse(text(await get(sites.mapgenie.publicData))),
+          { rows, warnings } = mapgenieRows(data, meta);
+        const sprite = await get(
+            mapgenieSpriteURL(meta.MARKER_IMAGES_URL),
+            4 * 1024 * 1024,
+          ),
+          icons = await mapgenieSpriteIcons(page, sprite, meta);
+        const result = await normalizedCapture({
+          id,
+          rows,
+          old,
+          registration,
+          iconDirectory,
+          declaredCategories: meta.categories,
+          readCurrentIcon: async (category) => icons.get(category),
+          readIcon: (icon) => readLocalIcon(root, page, icon),
+        });
+        result.warnings.push(...warnings);
+        return result;
+      }
       await verifyFrame(id, parsed, authorization, registration, get);
       let rows;
       if (id === "official") {
@@ -620,47 +662,49 @@ export async function collectSource(
         old,
         registration,
         iconDirectory,
-        readIcon: async (icon) => {
-          if (
-            !/^\/maps\/hajin\/(?:official|providers\/(?:codmunity|wzstats|codcentral)|captures\/[a-f0-9-]{36}\/(?:official|codmunity|wzstats|codcentral))\/icons\/[a-zA-Z0-9_-]+\.(svg|png)$/.test(
-              icon,
-            )
-          )
-            throw Error("Unsafe local icon path.");
-          const bytes = await readFile(path.join(root, "public", icon));
-          if (bytes.length > 512 * 1024) throw Error("Icon limit.");
-          if (icon.endsWith(".svg"))
-            return {
-              bytes: Buffer.from(await parsePage(page, "icon", text(bytes))),
-              ext: "svg",
-            };
-          if (
-            !bytes
-              .subarray(0, 8)
-              .equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])) ||
-            bytes.length < 24 ||
-            bytes.readUInt32BE(16) > 256 ||
-            bytes.readUInt32BE(20) > 256
-          )
-            throw Error("Invalid or oversized existing PNG icon.");
-          const encoded = await page.evaluate(async (raw) => {
-            const image = await createImageBitmap(
-              new Blob([Uint8Array.from(atob(raw), (c) => c.charCodeAt(0))], {
-                type: "image/png",
-              }),
-            );
-            const canvas = document.createElement("canvas");
-            canvas.width = image.width;
-            canvas.height = image.height;
-            canvas.getContext("2d").drawImage(image, 0, 0);
-            image.close();
-            return canvas.toDataURL("image/png").split(",")[1];
-          }, bytes.toString("base64"));
-          return { bytes: Buffer.from(encoded, "base64"), ext: "png" };
-        },
+        readIcon: (icon) => readLocalIcon(root, page, icon),
       });
     }, signal);
   } finally {
     local.abort();
   }
+}
+
+export async function readLocalIcon(root, page, icon) {
+  if (
+    !/^\/maps\/hajin\/(?:official|providers\/(?:codmunity|wzstats|codcentral|mapgenie)|captures\/[a-f0-9-]{36}\/(?:official|codmunity|wzstats|codcentral|mapgenie))\/icons\/[a-zA-Z0-9_-]+\.(svg|png)$/.test(
+      icon,
+    )
+  )
+    throw Error("Unsafe local icon path.");
+  const bytes = await readFile(path.join(root, "public", icon));
+  if (bytes.length > 512 * 1024) throw Error("Icon limit.");
+  if (icon.endsWith(".svg"))
+    return {
+      bytes: Buffer.from(await parsePage(page, "icon", text(bytes))),
+      ext: "svg",
+    };
+  if (
+    !bytes
+      .subarray(0, 8)
+      .equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])) ||
+    bytes.length < 24 ||
+    bytes.readUInt32BE(16) > 256 ||
+    bytes.readUInt32BE(20) > 256
+  )
+    throw Error("Invalid or oversized existing PNG icon.");
+  const encoded = await page.evaluate(async (raw) => {
+    const image = await createImageBitmap(
+      new Blob([Uint8Array.from(atob(raw), (c) => c.charCodeAt(0))], {
+        type: "image/png",
+      }),
+    );
+    const canvas = document.createElement("canvas");
+    canvas.width = image.width;
+    canvas.height = image.height;
+    canvas.getContext("2d").drawImage(image, 0, 0);
+    image.close();
+    return canvas.toDataURL("image/png").split(",")[1];
+  }, bytes.toString("base64"));
+  return { bytes: Buffer.from(encoded, "base64"), ext: "png" };
 }

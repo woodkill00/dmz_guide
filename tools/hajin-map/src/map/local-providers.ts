@@ -22,14 +22,14 @@ export function localProviderSources(value: unknown): MarkerSource[] {
     !data ||
     data.version !== 1 ||
     !Array.isArray(data.sources) ||
-    data.sources.length > 3
+    data.sources.length > 4
   )
     throw new Error("Invalid local provider manifest.");
   const ids = new Set<string>();
   return data.sources.map((s) => {
     if (
       !s ||
-      !["codmunity", "wzstats", "codcentral"].includes(s.id) ||
+      !["codmunity", "wzstats", "codcentral",'mapgenie'].includes(s.id) ||
       ids.has(s.id) ||
       typeof s.authorization !== "string" ||
       !s.authorization.trim() ||

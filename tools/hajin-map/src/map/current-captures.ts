@@ -61,7 +61,7 @@ export async function loadCurrentCaptures(): Promise<MarkerSource[]> {
       data.version !== 1 ||
       data.canonicalDigest !== hajin.provenance.sha256 ||
       !Array.isArray(data.sources) ||
-      data.sources.length > 4 ||
+      data.sources.length > 5 ||
       new Set(data.sources.map((s: CaptureDescriptor) => s.id)).size !==
         data.sources.length
     )

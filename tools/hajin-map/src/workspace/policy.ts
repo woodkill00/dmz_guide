@@ -53,6 +53,17 @@ const definitions: SourcePolicy[] = [
     privateExport: false,
     localBasemap: false,
   },
+  {
+    id: "mapgenie",
+    name: "MapGenie",
+    page: "https://mapgenie.io/call-of-duty-modern-warfare-4/maps/hajin-dmz",
+    capability: "referenceOnly",
+    revision: "mapgenie-local-024-v1",
+    reason:
+      "MapGenie collection requires owner permission and reviewed coordinate registration. Existing website captures remain available.",
+    privateExport: false,
+    localBasemap: false,
+  },
 ];
 export let sourcePolicies: Readonly<Record<string, Readonly<SourcePolicy>>> =
   Object.freeze(

@@ -18,7 +18,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
     external = [],
     calls = [];
   const hash = (v) => createHash("sha256").update(v).digest("hex");
-  const ids = ["official", "codmunity", "wzstats", "codcentral"];
+  const ids = ["official", "codmunity", "wzstats", "codcentral", "mapgenie"];
   const gen = "12345678-1234-4123-8123-123456789abc";
   const captures = {};
   let round = 0,
@@ -214,6 +214,61 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
       await link.click();
       assert.equal(await master.isChecked(), before);
     }
+    const mapgenieCount = () =>
+      page.locator('[data-source-id="mapgenie"]').count();
+    assert.equal(await mapgenieCount(), 2);
+    await page.locator("#key-loaded-source-master-mapgenie").uncheck();
+    assert.equal(await mapgenieCount(), 0);
+    assert.equal(await page.locator('[data-source-id="official"]').count(), 2);
+    await page.locator("#key-loaded-source-master-mapgenie").check();
+    const ownCategory = page
+      .locator('[data-key-source="mapgenie"] [data-key-category]:enabled')
+      .first();
+    const hiddenCategory = await ownCategory.getAttribute("data-key-category");
+    await ownCategory.uncheck();
+    assert.equal(
+      await mapgenieCount(),
+      captures.mapgenie.raw.records.filter((r) => r.category !== hiddenCategory)
+        .length,
+    );
+    await ownCategory.check();
+    assert.equal(await mapgenieCount(), 2);
+    await page.waitForTimeout(500);
+    const originalMapgenie = captures.mapgenie.snapshot;
+    const duplicate = structuredClone(captures.mapgenie.raw);
+    duplicate.records.forEach(
+      (r, i) => (r.name = captures.official.raw.records[i].name),
+    );
+    captures.mapgenie.snapshot = JSON.stringify(duplicate);
+    captures.mapgenie.snapshotDigest = hash(captures.mapgenie.snapshot);
+    captures.mapgenie.evidence = JSON.stringify({
+      snapshotDigest: captures.mapgenie.snapshotDigest,
+      registrationVersion: "reviewed-affine-v1",
+      registration: { canonicalDigest: hajin.provenance.sha256 },
+    });
+    captures.mapgenie.registrationDigest = hash(captures.mapgenie.evidence);
+    await open();
+    assert.equal(await mapgenieCount(), 0);
+    assert.ok(
+      (await page
+        .locator('[data-key-source="mapgenie"] .duplicate-details-button')
+        .count()) > 0,
+    );
+    await page.locator("#key-loaded-source-master-official").uncheck();
+    assert.equal(await mapgenieCount(), 2);
+    await page.locator("#key-loaded-source-master-official").check();
+    assert.equal(await mapgenieCount(), 0);
+    await page.waitForTimeout(500);
+    captures.mapgenie.snapshot = originalMapgenie;
+    captures.mapgenie.snapshotDigest = hash(originalMapgenie);
+    captures.mapgenie.evidence = JSON.stringify({
+      snapshotDigest: captures.mapgenie.snapshotDigest,
+      registrationVersion: "reviewed-affine-v1",
+      registration: { canonicalDigest: hajin.provenance.sha256 },
+    });
+    captures.mapgenie.registrationDigest = hash(captures.mapgenie.evidence);
+    await open();
+    assert.equal(await mapgenieCount(), 2);
     // Seed real private metadata in the same isolated synthetic origin.
     await page.evaluate(async () => {
       const { openWorkspace } = await import("/src/workspace/store.ts"),
@@ -251,7 +306,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
     });
     await open();
     await check();
-    assert.equal(await page.locator("#map-update-preview h4").count(), 4);
+    assert.equal(await page.locator("#map-update-preview h4").count(), 5);
     activationFails = true;
     await page.locator("#apply-map-update").click();
     await page.locator("#resume-map-update").waitFor();
@@ -261,7 +316,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
         .textContent.includes("activation is pending"),
     );
     let state = await read();
-    assert.equal(state.snapshots.length, 4);
+    assert.equal(state.snapshots.length, 5);
     assert.equal(state.annotations[0].notes, "Private test note");
     assert.equal(
       state.snapshots[0].snapshot.records[0].applicability.floor,
@@ -302,7 +357,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
       () => !document.querySelector("#workspace-dialog").open,
     );
     state = await read();
-    assert.equal(state.snapshots.length, 4);
+    assert.equal(state.snapshots.length, 5);
     assert.equal(state.annotations.length, 1);
     // Failed recovery metadata must cancel the reservation before touching workspace.
     await check();
@@ -335,7 +390,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
     await page.locator("#cancel-map-update").waitFor();
     await page.locator("#cancel-map-update").click();
     await page.locator("#update-map-sources:enabled").waitFor();
-    assert.equal((await read()).snapshots.length, 4);
+    assert.equal((await read()).snapshots.length, 5);
     slow = false;
     await page.setViewportSize({ width: 360, height: 800 });
     await page.locator("#toggle-key").click();
@@ -362,7 +417,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
       await page.locator("#discard-map-update-receipt").isVisible(),
       false,
     );
-    assert.equal((await read()).snapshots.length, 4);
+    assert.equal((await read()).snapshots.length, 5);
     noProviders = true;
     await page.evaluate(async () => {
       const { openWorkspace } = await import("/src/workspace/store.ts"),
@@ -390,7 +445,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
     );
     await page.locator("#key-loaded-source-master-codmunity").waitFor();
     assert.equal(await page.locator("[data-workspace-provider]").count(), 0);
-    assert.equal((await read()).snapshots.length, 4);
+    assert.equal((await read()).snapshots.length, 5);
     // A workspace transaction failure must leave both the old workspace and server activation untouched.
     contentChange = true;
     await check();
@@ -418,7 +473,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
       calls.filter((c) => c.endsWith("/activate")).length,
       activationsBeforeQuota,
     );
-    assert.equal((await read()).snapshots.length, 4);
+    assert.equal((await read()).snapshots.length, 5);
     await page.evaluate(
       () => (IDBObjectStore.prototype.put = window.originalIDBPut),
     );
@@ -432,12 +487,85 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
     );
     await page.locator("#dismiss-map-update").click();
     await close();
-    assert.equal((await read()).snapshots.length, 4);
+    assert.equal((await read()).snapshots.length, 5);
+    // Five individually valid5000-record captures must not overflow the shared20k view pipeline.
+    noProviders = false;
+    for (const id of ids) {
+      const large = structuredClone(captures[id].raw);
+      large.records = Array.from({ length: 5000 }, (_, i) => ({
+        ...large.records[0],
+        id: `synthetic-large-${id}-${i}`,
+        name: `SYNTHETIC limit ${id} ${i}`,
+        x: 0.2 + (i % 100) * 0.006,
+        y: 0.2 + Math.floor(i / 100) * 0.006,
+      }));
+      captures[id].snapshot = JSON.stringify(large);
+      captures[id].snapshotDigest = hash(captures[id].snapshot);
+      captures[id].evidence = JSON.stringify({
+        snapshotDigest: captures[id].snapshotDigest,
+        registrationVersion: "reviewed-affine-v1",
+        registration: { canonicalDigest: hajin.provenance.sha256 },
+      });
+      captures[id].registrationDigest = hash(captures[id].evidence);
+    }
+    await page.evaluate(async (ids) => {
+      const { openWorkspace } = await import("/src/workspace/store.ts"),
+        { emptyWorkspace } = await import("/src/workspace/model.ts");
+      const db = await openWorkspace();
+      try {
+        const old = await db.read(),
+          s = emptyWorkspace();
+        s.migrations.push("source-masks-v1");
+        for (const id of ids) s.visibility.sourceEnabled[id] = false;
+        await db.commit(s, old.current.revision);
+      } finally {
+        db.close();
+      }
+    }, ids);
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto(base);
+    await page.locator("#workspace-open:enabled").waitFor({ timeout: 60000 });
+    await page
+      .locator('[data-key-source="mapgenie"] [data-source-capacity]')
+      .waitFor({ timeout: 60000 });
+    assert.match(
+      await page.locator("#key-summary").textContent(),
+      /25000.*view limit/,
+    );
+    assert.equal(await page.locator('[data-source-id="mapgenie"]').count(), 0);
+    assert.equal(
+      await page.locator("#key-loaded-source-master-mapgenie").isEnabled(),
+      true,
+    );
+    await page.locator("#key-loaded-source-master-mapgenie").check();
+    await page.waitForFunction(
+      () =>
+        document.querySelectorAll('[data-source-id="mapgenie"]').length ===
+        5000,
+      {},
+      { timeout: 60000 },
+    );
+    assert.equal(
+      await page
+        .locator('[data-key-source="mapgenie"] [data-source-capacity]')
+        .count(),
+      0,
+    );
+    assert.equal(await page.locator('[data-source-id="official"]').count(), 0);
+    await page.locator("#key-loaded-source-master-mapgenie").uncheck();
+    await page
+      .locator('[data-key-source="mapgenie"] [data-source-capacity]')
+      .waitFor();
+    assert.equal(await page.locator('[data-source-id="mapgenie"]').count(), 0);
+    assert.equal(
+      await page.locator("#key-source-link-mapgenie").textContent(),
+      "MapGenie",
+    );
     assert.deepEqual(errors, []);
     assert.deepEqual(external, []);
     return [
-      "source names link to four registered maps without toggling website masters",
-      "Map key updates preview/apply four staged captures and preserve private points/string floors",
+      "source names link to five registered maps without toggling website masters",
+      "Map key updates preview/apply five staged captures and preserve private points/string floors",
       "pending activation survives reload and retries without importing captures again",
       "unchanged updates reuse immutable workspace snapshots without duplicate markers",
       "receipt storage failure cancels reservation; cancellation preserves active workspace",
@@ -445,6 +573,8 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
       "delayed Apply locks cancel/close/Escape; damaged receipts have explicit recovery",
       "official-only startup gains live provider icons/masters after Update",
       "failed workspace quota transaction retains prior captures and never activates source files",
+      "MapGenie has independent master/category masks, comparison stars and official-copy fallback",
+      "five5000-record raw captures preserve20k view admission and recover when website selection changes",
     ];
   } finally {
     await context.close();

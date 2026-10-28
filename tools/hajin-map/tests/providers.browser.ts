@@ -115,7 +115,8 @@ export async function runProviderBrowser(parent) {
     await page.waitForFunction(
       () => document.querySelectorAll("[data-source-marker-id]").length === 8,
     );
-    assert.equal(await page.locator("[data-workspace-provider]").count(), 0);
+    assert.equal(await page.locator('[data-workspace-provider]:not([data-workspace-provider="mapgenie"])').count(), 0);
+    assert.equal(await page.locator('[data-workspace-provider="mapgenie"]').count(),2);
     await page.locator("#key-loaded-source-master-codcentral").uncheck();
     assert.equal(await count("codcentral"), 0);
     assert.equal(await count("wzstats"), 2);

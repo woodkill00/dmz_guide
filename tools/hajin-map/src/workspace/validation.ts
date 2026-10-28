@@ -8,7 +8,7 @@ import type {
 export const LIMITS = Object.freeze({
   snapshotBytes: 2 * 1024 * 1024,
   backupBytes: 20 * 1024 * 1024,
-  sources: 4,
+  sources: 5,
   categories: 100,
   recordsPerSource: 5000,
   recordsTotal: 20000,

@@ -17,19 +17,20 @@ const normalize = (s: string) =>
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
 const aliases: Record<string, string[]> = {
-  police: ["dmz_policeStation", "police"],
-  clinic: ["dmz_clinic", "clinic"],
-  fire: ["dmz_fireStation", "fire", "fire-station"],
-  gas: ["dmz_gasStation", "gas", "gas-station"],
+  police: ["dmz_policeStation", "police", "mapgenie-28415"],
+  clinic: ["dmz_clinic", "clinic", "mapgenie-28418"],
+  fire: ["dmz_fireStation", "fire", "fire-station", "mapgenie-28416"],
+  gas: ["dmz_gasStation", "gas", "gas-station", "mapgenie-28414"],
   marine: ["dmz_marineGasStation", "marine", "marine-gas"],
-  cache: ["dmz_ammoCache", "ammo", "cache"],
-  uav: ["dmz_uavTower", "uav", "uav-tower"],
-  hunt: ["dmz_lieutenantHunt", "hunt", "lt-tower", "lttower"],
-  sam: ["dmz_samSite", "sam"],
-  compound: ["dmz_compound", "compound"],
-  exfil: ["dmz_exfil", "exfil"],
+  cache: ["dmz_ammoCache", "ammo", "cache", "mapgenie-28412"],
+  uav: ["dmz_uavTower", "uav", "uav-tower", "mapgenie-28410"],
+  hunt: ["dmz_lieutenantHunt", "hunt", "lt-tower", "lttower", "mapgenie-28417"],
+  sam: ["dmz_samSite", "sam", "mapgenie-28413"],
+  compound: ["dmz_compound", "compound", "mapgenie-28422"],
+  exfil: ["dmz_exfil", "exfil", "mapgenie-28420"],
   poi: ["poiLabel", "poi"],
-  fortress: ["fort", "fortress"],
+  fortress: ["fort", "fortress", "mapgenie-28411"],
+  bounty: ["bounty", "mapgenie-28419"],
 };
 const kinds = new Map(
   Object.entries(aliases).flatMap(([kind, ids]) =>

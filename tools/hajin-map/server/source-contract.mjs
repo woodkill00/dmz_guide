@@ -21,9 +21,29 @@ export const sites = Object.freeze({
       "https://codcentral.net/assets/library/mw4/dmz/map/hajin-map-2880.webp",
     size: [2880, 2700],
   },
+  mapgenie: {
+    page: "https://mapgenie.io/call-of-duty-modern-warfare-4/maps/hajin-dmz",
+    publicData: "https://mapgenie.io/api/v1/maps/1084/data",
+    size: [1024, 1024],
+  },
 });
 export const digest = (bytes) =>
   createHash("sha256").update(bytes).digest("hex");
+export function validAffine(matrix) {
+  if (
+    !Array.isArray(matrix) ||
+    matrix.length !== 2 ||
+    matrix.some(
+      (row) =>
+        !Array.isArray(row) || row.length !== 3 || !row.every(Number.isFinite),
+    )
+  )
+    return false;
+  const [[a, b], [c, d]] = matrix,
+    det = a * d - b * c,
+    norm = a * a + b * b + c * c + d * d;
+  return Number.isFinite(det) && Math.abs(det) > 1e-8 * Math.max(1, norm);
+}
 const stable = (value) =>
   Array.isArray(value)
     ? value.map(stable)

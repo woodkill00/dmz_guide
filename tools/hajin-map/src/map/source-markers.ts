@@ -43,6 +43,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   let lastEvent = '';
   let legacyPersistence = true;
   let restoringSnapshot = false;
+  let capacityBlocked=false;
   const markerPool: {record: SourceRecord; marker: L.Marker}[] = [];
   const storageKey = `hajin.source-filters.v1.${source.id}`;
   const available = () => snapshot!.categories.filter(category => snapshot!.records.some(record => record.category === category.id));
@@ -56,6 +57,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
 
   function update(persistLegacy = true) {
     if (!snapshot) return;
+    if(capacityBlocked){root.clearLayers();onUpdate(0,snapshot.records.length,'failed');capacityMessage();return;}
     root.clearLayers();
     if (markerPool.length) {
       groups.forEach(group => group.clearLayers());
@@ -202,6 +204,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
 
   function addRecords() {
     if (!snapshot) return;
+    if(capacityBlocked){capacityMessage();return;}
     root.clearLayers(); groups.clear(); enabled.clear(); markerPool.length = 0;
     const categories = new Map(snapshot.categories.map(c => [c.id, c]));
     for (const category of snapshot.categories) groups.set(category.id, L.layerGroup());
@@ -282,7 +285,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       }
       const data = parseSnapshot(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)), source);
       if (disposed || controller !== request) return;
-      snapshot = data; captureDigest=digest; restoringSnapshot = true; try { addRecords(); } finally { restoringSnapshot = false; }
+      snapshot = data; captureDigest=digest; restoringSnapshot = true; try {document.dispatchEvent(new CustomEvent('map-source-status'));addRecords(); } finally { restoringSnapshot = false; }
     } catch {
       if (disposed || controller !== request) return;
       onUpdate(0, 0, 'failed');
@@ -300,7 +303,11 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     } finally { clearTimeout(timeout); }
   }
   load();
+  function capacityMessage(){
+    for(const host of [container,keyContainer])if(host&&!host.querySelector('[data-source-capacity]')){host.replaceChildren();const note=document.createElement('p');note.dataset.sourceCapacity=source.id;note.setAttribute('role','status');note.textContent=`${source.name} unavailable: the combined source view exceeds20,000 records. Hide another website layer to make room, or reduce imported source records. This capture is retained.`;const link=document.createElement('a');link.href=source.page;link.target='_blank';link.rel='noopener noreferrer';link.textContent=`Open ${source.name}`;host.append(note,link);}
+  }
   return { id: source.id, reload: load, setAll,
+    setCapacityBlocked(value:boolean){if(value===capacityBlocked)return;capacityBlocked=value;if(value){root.clearLayers();groups.clear();markerPool.length=0;capacityMessage();onUpdate(0,snapshot?.records.length??0,'failed');}else if(snapshot){restoringSnapshot=true;try{addRecords();}finally{restoringSnapshot=false;}}},
     async replaceCapture(next: MarkerSource) { if(next.id!==source.id||next.page!==source.page)throw new Error('Source identity cannot change.');Object.assign(source,next);await load();if(!snapshot)throw new Error(`${source.name} capture could not reload. Reload the page to retry.`); },
     getSnapshot: () => snapshot,
     getSnapshotDigest: () => captureDigest,

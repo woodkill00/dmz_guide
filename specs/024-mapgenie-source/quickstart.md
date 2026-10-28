@@ -1,0 +1,2 @@
+# Verify
+Select024-mapgenie-source. Install tool dependencies/Chromium. Run map unit/build/browser/repository checks and capacity when workload changes warrant it. Default fixtures are synthetic/offline. Authorized live smoke needs MapGenie permission and reviewed calibration/fingerprints. Verify five-source links/masks/icons, name+location matching, bootstrap/repeat, old configuration and private-state preservation. Do not commit source assets/raw captures/authorization/private screenshots.

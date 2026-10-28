@@ -16,6 +16,7 @@ import {
   semantic,
   diffCaptures,
   validateCapture,
+  validAffine,
 } from "./source-contract.mjs";
 import { collectSource } from "./source-collectors.mjs";
 const absent = (e) => e?.code === "ENOENT";
@@ -65,8 +66,11 @@ export class SourceUpdates {
     if (
       a.version !== 1 ||
       a.canonicalDigest !== canonicalDigest ||
-      JSON.stringify([...a.authorizedSources].sort()) !==
-        JSON.stringify(Object.keys(sites).sort())
+      !Array.isArray(a.authorizedSources) ||
+      !a.authorizedSources.length ||
+      a.authorizedSources.length > Object.keys(sites).length ||
+      new Set(a.authorizedSources).size !== a.authorizedSources.length ||
+      a.authorizedSources.some((id) => !Object.hasOwn(sites, id))
     )
       throw Error("Owner local update authorization is missing or invalid.");
     return a;
@@ -91,7 +95,7 @@ export class SourceUpdates {
         value.version !== 1 ||
         value.canonicalDigest !== canonicalDigest ||
         !Array.isArray(value.sources) ||
-        value.sources.length > 4 ||
+        value.sources.length > 5 ||
         new Set(value.sources.map((s) => s.id)).size !== value.sources.length
       )
         throw Error("Invalid current capture pointer.");
@@ -126,10 +130,23 @@ export class SourceUpdates {
     const url =
       descriptor?.snapshot ??
       `/maps/hajin/${id === "official" ? "official" : `providers/${id}`}/markers.json`;
-    const bytes = await this.bytes(
-      path.join(this.root, "public", url),
-      2 * 1024 * 1024,
-    );
+    let bytes;
+    try {
+      bytes = await this.bytes(
+        path.join(this.root, "public", url),
+        2 * 1024 * 1024,
+      );
+    } catch (e) {
+      if (id !== "mapgenie" || descriptor || !absent(e)) throw e;
+      const capture = {
+        schemaVersion: 1,
+        sourcePage: sites.mapgenie.page,
+        capturedAt: "1970-01-01T00:00:00.000Z",
+        categories: [],
+        records: [],
+      };
+      return { capture, descriptor: null, semanticDigest: semantic(capture) };
+    }
     if (descriptor && digest(bytes) !== descriptor.snapshotDigest)
       throw Error("Current capture digest mismatch.");
     const capture = validateCapture(JSON.parse(bytes.toString("utf8")), id);
@@ -155,31 +172,54 @@ export class SourceUpdates {
       semanticDigest: semantic(capture, icons),
     };
   }
-  async registration(id) {
+  async registration(id, authorization) {
     if (id === "official") return null;
-    const manifest = await this.json(
-        path.join(this.root, "public/maps/hajin/providers.local.json"),
-        32768,
-      ),
-      entry = manifest.sources?.find((s) => s.id === id);
-    if (!entry || !entry.authorization?.trim())
-      throw Error("Reviewed provider authorization is missing.");
-    const bytes = await this.bytes(
-      path.join(
-        this.root,
-        `public/maps/hajin/providers/${id}/provenance.local.json`,
-      ),
-      2 * 1024 * 1024,
-    );
-    if (digest(bytes) !== entry.registrationDigest)
-      throw Error("Provider registration evidence changed.");
+    let bytes;
+    if (id === "mapgenie") {
+      const expected = authorization?.mapgenie?.registrationDigest;
+      if (!/^[a-f0-9]{64}$/.test(expected ?? ""))
+        throw Error(
+          "MapGenie needs explicitly reviewed local coordinate registration.",
+        );
+      bytes = await this.bytes(
+        path.join(
+          this.root,
+          "public/maps/hajin/providers/mapgenie/registration.local.json",
+        ),
+        2 * 1024 * 1024,
+      );
+      if (digest(bytes) !== expected)
+        throw Error("MapGenie registration evidence changed.");
+    } else {
+      const manifest = await this.json(
+          path.join(this.root, "public/maps/hajin/providers.local.json"),
+          32768,
+        ),
+        entry = manifest.sources?.find((s) => s.id === id);
+      if (!entry || !entry.authorization?.trim())
+        throw Error("Reviewed provider authorization is missing.");
+      bytes = await this.bytes(
+        path.join(
+          this.root,
+          `public/maps/hajin/providers/${id}/provenance.local.json`,
+        ),
+        2 * 1024 * 1024,
+      );
+      if (digest(bytes) !== entry.registrationDigest)
+        throw Error("Provider registration evidence changed.");
+    }
     const p = JSON.parse(bytes.toString("utf8")),
       r = p.registration;
     if (
       p.registrationVersion !== "reviewed-affine-v1" ||
       r?.canonicalDigest !== canonicalDigest ||
+      !Number.isFinite(r.rms) ||
+      r.rms < 0 ||
       r.rms > 8 ||
+      !Number.isFinite(r.maxError) ||
+      r.maxError < 0 ||
       r.maxError > 16 ||
+      !Number.isInteger(r.heldOut) ||
       r.heldOut < 2 ||
       !Array.isArray(r.matrix) ||
       r.matrix.length !== 2 ||
@@ -191,6 +231,8 @@ export class SourceUpdates {
       )
     )
       throw Error("Reviewed provider alignment is invalid.");
+    if (!validAffine(r.matrix))
+      throw Error("Reviewed provider alignment is singular or degenerate.");
     return r;
   }
   publicJob(j) {
@@ -330,8 +372,12 @@ export class SourceUpdates {
       const outcome = { id, status: "checking" };
       j.outcomes.push(outcome);
       try {
-        const old = await this.baseline(id, current),
-          registration = await this.registration(id),
+        if (!authorization.authorizedSources.includes(id))
+          throw Error(
+            `${id} is not authorized/configured for local collection. Existing source data retained.`,
+          );
+        const registration = await this.registration(id, authorization),
+          old = await this.baseline(id, current),
           base = `/maps/hajin/captures/${j.id}/${id}/`;
         const result = await this.collect(id, {
           root: this.root,
