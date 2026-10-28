@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#131815">
+  <meta name="description" content="How to use the local Hajin map, website layers, custom POIs, SVG icons, source checks and private backups.">
+  <title>How to use your map — Hajin Field Guide</title>
+  <link rel="stylesheet" href="/src/help.css">
+</head>
+<body>
+<a class="skip" href="#guide">Skip to guide</a>
+<header class="help-header"><a class="brand" href="/">HAJIN FIELD GUIDE <span>Local map handbook</span></a><a class="action" href="/?tool=map">Open map</a></header>
+<div class="help-layout">
+<nav class="contents" aria-label="Guide contents">
+  <strong>ON THIS PAGE</strong>
+  <a href="#start">Start here</a><a href="#navigation">Map &amp; coordinates</a><a href="#layers">Layers &amp; map key</a><a href="#duplicates">Duplicate markers</a><a href="#updates">Update source data</a><a href="#points">Your POIs &amp; marks</a><a href="#icons">Create custom icons</a><a href="#explore">Find &amp; compare</a><a href="#views">Save a map view</a><a href="#review">Sources &amp; reviewed map</a><a href="#backgrounds">Comparison backgrounds</a><a href="#backups">Backups &amp; recovery</a><a href="#sources">Website links</a><a href="#troubleshooting">Troubleshooting &amp; limits</a>
+</nav>
+<main id="guide">
+  <div class="intro"><p class="eyebrow">YOUR LOCAL WORKSPACE</p><h1>How to use your map</h1><p class="lead">Find locations, compare sources and build your own DMZ field guide from gameplay.</p><p>The buttons below open the relevant tools. They do not run updates, change filters or save anything. Help opens separately from the map so your current draft stays in place. When working in multiple map tabs, save changes in one at a time.</p></div>
+
+  <section id="start"><h2>1. Start here</h2>
+    <ol><li><a href="/?tool=key">Open Map key</a> and choose the websites and marker categories you want.</li><li><a href="/?tool=explore">Find a location</a> by name, category or source. Open its details to see its source.</li><li><a href="/?tool=points">Add your own POI</a>, or right-click a location on the map to start a draft there.</li><li><a href="/?tool=icons">Create an icon</a> and assign it to a point or a category.</li><li><a href="/?tool=backups">Download a private backup</a> after a useful editing session.</li></ol>
+    <p class="callout">The map displays local captures and your own saved work. It does not track a live match. Imported locations are source claims, not automatically verified game facts.</p>
+  </section>
+
+  <section id="navigation"><h2>2. Move around &amp; read coordinates</h2>
+    <p>Drag to pan. Scroll, pinch or use the + / − buttons to zoom. Reset view fits the whole terrain. The north arrow points up. Fullscreen is available when your browser supports it.</p>
+    <p>Focus the map to pan with arrow keys, zoom with + / −, and reset with R. Tab moves between controls. Escape closes a dialog; the map key also closes with Escape while focused inside it.</p>
+    <p>The coordinate grid labels cells such as <strong>G6</strong>. Its A–J / 1–9 lines are aligned to the captured terrain. The bottom bar separately shows <strong>image X/Y</strong> positions, measured from the top-left of the 4096 × 4096 image. Grid references and image pixels are different. Unlabelled margins show a dash. Alignment is source-based, not independent verification of every in-game location.</p>
+    <a class="action" href="/?tool=grid">Open coordinate-grid control</a><a class="text-action" href="/?tool=map">Go to map</a>
+  </section>
+
+  <section id="layers"><h2>3. Choose layers in Map key</h2>
+    <p><strong>Map key</strong> opens the legend directly. Website layers each have a main switch and category sublayers. Choose all, none or a mix; hiding a website retains its category selection. A website name links to its original map.</p>
+    <p>Each category shows its source icon, name and record count. Empty categories can remain listed without inventing markers. My points and Reviewed map have separate visibility switches. Search and layer masks can both affect what is drawn.</p>
+    <p><strong>Sources &amp; Layers</strong> provides another view of these controls. Settings are saved in this browser when storage is available. Visibility is separate from deleting or changing a source capture.</p>
+    <p>Some MapGenie entries are mission or equipment reference cards placed on its reference board, outside the terrain. They remain searchable with details, but have no terrain pin or Jump destination. A record count can therefore exceed the number of pins.</p>
+    <a class="action" href="/?tool=key">Open Map key</a><a class="text-action" href="/?tool=layers">Open Sources &amp; Layers</a>
+  </section>
+
+  <section id="duplicates"><h2>4. Understand duplicate markers</h2>
+    <p>The viewer compares both the <strong>marker name and map position</strong>, along with compatible category, known floor and game build. Nearby markers with different names are kept separate. Unknown categories or conflicting information can also stay separate for review.</p>
+    <p>Likely copies are marked with an asterisk and may appear greyed out in category rows. One selected source draws the pin, preferring the official source when it is enabled. Turning it off lets another selected source represent the location. The source records remain intact.</p>
+    <p>Use matching-marker details to inspect the comparison. <strong>Show duplicate markers</strong> lets you inspect every copy. A keep-separate decision applies to the reviewed capture; changed source data may need checking again. These are conservative suggestions, not proof that all sources agree.</p>
+    <a class="action" href="/?tool=duplicates">Inspect duplicate details</a><a class="text-action" href="/?tool=key">Open duplicate visibility control</a>
+  </section>
+
+  <section id="updates"><h2>5. Check for source updates</h2>
+    <ol><li>Open Map key and choose <strong>Update map sources</strong>.</li><li>Wait for each site's result. Inspect added, changed or missing entries, category changes and icon notes.</li><li>Choose <strong>Apply source update</strong> to keep the preview, or dismiss it.</li></ol>
+    <p>Checks need the owner-enabled local update service and configured sources. Normal map viewing and reading this guide do not collect new source data. If a site fails or its terrain alignment changes, the last good capture stays available. “Missing” means absent from that feed, not confirmed removed from the game.</p>
+    <p>Unchanged content reuses the existing capture rather than appending duplicate records. Older captures are retained as evidence. Duplicate display checks also run across selected sources; source imports are not merged into your own POIs.</p>
+    <p>If applying was interrupted after the workspace saved, use <strong>Resume pending update</strong>. It retries activation without importing the same capture again. <strong>Manage staged updates</strong> lets you inspect or dismiss abandoned previews. If a newer update superseded one, follow the on-screen recovery explanation and run a fresh check. Avoid clearing browser storage as a recovery shortcut.</p>
+    <a class="action" href="/?tool=updates">Open update controls</a>
+  </section>
+
+  <section id="points"><h2>6. Add your own POIs, locations &amp; marks</h2>
+    <p>Right-click inside the terrain to open an unsaved point at that position. Alternatively, open My points, enter image X/Y, or choose <strong>Pick position on map</strong>. On touch devices, use the form or map-pick button.</p>
+    <ol><li>Enter a title, kind and category. Categories help organize your own discoveries.</li><li>Add notes, evidence, floor, build and verification state as appropriate. Leave unknown facts unknown.</li><li>Select an icon override, or use the category default.</li><li>Confirm the content is yours or authorized, then save.</li></ol>
+    <p>Use a saved point's edit controls to change it. Delete removes that private point; Undo can restore the previous saved workspace state. Save or explicitly cancel a current draft before changing sections or starting another point. Right-click does not silently replace an existing draft.</p>
+    <a class="action" href="/?tool=points">Open My points</a>
+  </section>
+
+  <section id="icons"><h2>7. Create &amp; reuse custom icons</h2>
+    <p>In Icons, choose a General, Loot cache, Medical, Danger, Objective or Extraction starter. Change its frame, symbol, colors, border width, symbol size and rotation. An optional 1–3 letter/number label replaces the symbol. Enter an accessible description.</p>
+    <p>The large preview and small previews on dark/light backgrounds show how your design reads at map size. Choose <strong>Save icon to library</strong>, then select it in a point's Icon override or use <strong>Set category icon</strong> on its library card.</p>
+    <p><strong>Edit a copy</strong> opens saved settings for a new variant without changing icons already used by points. Identical pixels reuse a library entry. A matching raster-only image can gain editable settings while keeping its existing identity and references.</p>
+    <p><strong>Download SVG</strong> exports a scalable vector; <strong>Download PNG</strong> exports a transparent image. Your editable designs also travel in private backups. Existing PNG/JPEG/WebP uploads use a separate form. Only one icon form is editable at a time: save or cancel before switching. Creation uses built-in shapes; arbitrary SVG uploads and freehand path editing are not supported.</p>
+    <a class="action" href="/?tool=icons">Open icon creator &amp; library</a>
+  </section>
+
+  <section id="explore"><h2>8. Find, compare &amp; flag locations</h2>
+    <p><strong>Find locations</strong> searches loaded source entries, your points and reviewed locations by their available names, categories and source names. A hidden result can still be inspected. Jump highlights a placed result without changing your saved masks. Reference cards cannot be jumped to.</p>
+    <p><strong>Completeness check</strong> compares provider records against the loaded official data. It distinguishes matches, uncertain differences, unplaced entries and provider-only claims. A missing category, bounded comparison or unloaded source cannot establish complete game coverage.</p>
+    <p><strong>My discrepancies</strong> records your own notes about source differences and whether you have resolved them. It does not submit anything to the provider or contact other users. Changed capture identities can make earlier notes or decisions inactive rather than silently transferring them to another location.</p>
+    <a class="action" href="/?tool=explore">Find locations</a><a class="text-action" href="/?tool=completeness">Open completeness check</a><a class="text-action" href="/?tool=discrepancies">Open My discrepancies</a>
+  </section>
+
+  <section id="views"><h2>9. Save a useful map view</h2>
+    <p>Set your website masters, category mix, source search and My points / Reviewed switches, then open Saved views and name the current view. Apply it later to restore that combination. Review any missing-category notice after source updates.</p>
+    <p>A saved view stores visibility preferences, not a separate set of POIs. Temporary search highlights and duplicate-inspection mode are not included.</p>
+    <a class="action" href="/?tool=saved-views">Open Saved views</a>
+  </section>
+
+  <section id="review"><h2>10. Inspect sources &amp; build the reviewed map</h2>
+    <p><strong>Sources</strong> shows imported snapshots, original records, category mappings and coordinate registration. Snapshots preserve what a website supplied; they are separate from your own observations. Unregistered frames remain unplotted until their alignment is reviewed.</p>
+    <p>For a local source file, preview its changes before importing. Coordinate calibration is an advanced workflow: use identifiable terrain controls and separate check points, inspect the reported fit, and accept only a reviewed alignment. Do not reuse a different site's image scale or guess positions.</p>
+    <p><strong>Review</strong> lets you inspect source records and choose the title, position and category for a reviewed entity. Authored corrections need your evidence and declaration. Accepting a review does not erase the raw source claims. Source changes can mark a review stale; inspect and reconfirm it. Split and undo controls retain an explainable decision trail.</p>
+    <a class="action" href="/?tool=sources">Inspect Sources</a><a class="text-action" href="/?tool=review">Open Review</a>
+  </section>
+
+  <section id="backgrounds"><h2>11. Compare another background</h2>
+    <p>In Sources, choose a local raster background you own or are authorized to use, describe it and confirm authorization. Choose <strong>Preview background</strong>, review the image, then <strong>Keep local background</strong>. On its saved card, choose <strong>Calibrate background</strong>, enter identifiable terrain controls and separate check points, choose <strong>Validate calibration</strong>, review the result, then <strong>Accept registration</strong>. Only then use the comparison background and opacity controls in Map key / Layers to compare it with the canonical terrain.</p>
+    <p>Markers keep their canonical coordinates while the registered overlay is shown. A comparison image is not a new map coordinate system. Background image files are separate backup dependencies: keep copies of the original local files as well as your workspace backup.</p>
+    <a class="action" href="/?tool=backgrounds">Open background tools</a><a class="text-action" href="/?tool=key">Open comparison controls</a>
+  </section>
+
+  <section id="backups"><h2>12. Back up &amp; recover your work</h2>
+    <p>Your points, icons, designs, notes, preferences and review decisions are local to this browser profile. This is not cloud sync. Clearing site data, changing profiles or losing the device can lose work.</p>
+    <ol><li>Choose <strong>Download private backup</strong> in Backups and confirm the file actually saved.</li><li>To restore, choose a private backup and preview the replacement.</li><li>Download the current backup first, then explicitly confirm replacement. Inspect any missing-dependency notices.</li></ol>
+    <p>Private backups preserve owned points and icons, including editable icon designs. Restricted source data is omitted with dependency notices; a restored reference may need its local source capture again. Background pixels are separate files. No public/share export is provided.</p>
+    <p>A failed save preserves the last valid workspace and retains the attempted draft for retry. Export a retained unsaved draft before reloading saved state. Keep a copy before restoring or starting a new workspace. A reminder appears after enough edits or time with changes; the browser can record only that a download started, not that you kept the file.</p>
+    <a class="action" href="/?tool=backups">Open Backups &amp; recovery</a>
+  </section>
+
+  <section id="sources"><h2>13. Visit the original map websites</h2>
+    <p>These links open the sources separately. Each retains its own categories, names, evidence and collection requirements. Your local captures may differ from their latest pages.</p>
+    <ul><li><a href="https://www.callofduty.com/guides/modernwarfare4/dmz-maps/hajin" target="_blank" rel="noopener noreferrer">Call of Duty — official Hajin map</a></li><li><a href="https://codmunity.gg/dmz/map" target="_blank" rel="noopener noreferrer">CODMunity</a></li><li><a href="https://wzstats.gg/mw4/dmz/map" target="_blank" rel="noopener noreferrer">WZStats</a></li><li><a href="https://codcentral.net/blog/mw4-dmz-map/" target="_blank" rel="noopener noreferrer">CODCentral</a></li><li><a href="https://mapgenie.io/call-of-duty-modern-warfare-4/maps/hajin-dmz" target="_blank" rel="noopener noreferrer">MapGenie</a></li></ul>
+  </section>
+
+  <section id="troubleshooting"><h2>14. Troubleshooting &amp; limits</h2>
+    <dl><dt>I cannot see a marker.</dt><dd>Check the website master, its category mask, search, My points / Reviewed visibility and duplicate mode. Reference cards have no terrain pin. A failed source retains its last good data where available.</dd><dt>The terrain does not load.</dt><dd>Use Retry map. This local app needs separately supplied map imagery; the app does not distribute it. Help and workspace tools can still be opened.</dd><dt>Updates are unavailable.</dt><dd>The local update service or source configuration may not be enabled. Read its status; a link from this page does not start or enable collection.</dd><dt>A save conflicts with another tab.</dt><dd>Keep the draft, export it if needed, and reload the newer saved workspace before reconciling. Save from one map tab at a time.</dd><dt>How much can I keep?</dt><dd>The icon library holds up to32 icons /8MiB. Private workspaces allow up to5000 custom points,20 source snapshots,20000 retained source records and20MiB of backup content. Source captures allow up to5000 entries each; combined source viewing/search has a20000-entry budget. At a limit, back up and review old material; excess sources can remain retained but unavailable for display until you select a combination that fits.</dd></dl>
+    <p>Unsaved work is guarded when switching sections. Use Save or Cancel draft / preview intentionally. Opening a tool here does not import, erase or approve anything.</p>
+    <a class="action" href="/?tool=backups">Open recovery tools</a><a class="text-action" href="#start">Back to start</a>
+  </section>
+  <footer>Independent fan project. Not affiliated with Activision or Infinity Ward. This guide describes the local workspace, not live game availability.</footer>
+</main>
+</div>
+</body>
+</html>

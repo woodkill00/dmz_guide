@@ -94,3 +94,9 @@ Enter an accessible description and choose **Save icon to library**. In My point
 **Download SVG** saves a scalable self-contained vector. **Download PNG** saves a transparent256px image. SVG creation uses original built-in shapes; arbitrary SVG uploads and freehand/path editing are outside this version. Existing PNG/JPEG/WebP uploads remain available. Only one icon form can be edited at a time: save or use **Cancel draft / preview** to switch forms without silently discarding edits.
 
 Editable designs remain local and are included in private backups alongside the marker PNGs. Existing raster-only backups still restore. The library retains its32icon/8MiB limit. Cancellation and failed saves preserve existing icons; a storage failure retains the draft for retry/export. Before reverting to an older application that cannot read recipes, keep a new private backup; an older-format copy must omit only optional `icons[].design` fields while retaining all image data/IDs/references.
+
+## In-app help (feature026)
+
+Use **Help** in the local map header, or open http://127.0.0.1:5175/help.html. The handbook explains navigation/grid, website masks, duplicate checks, source updates/recovery, custom points/icons, Explore/saved views/discrepancies, source review/calibration, comparison backgrounds and private backups. Its contents links jump to each topic; tool links open the corresponding panel directly without running an update, changing filters or saving data.
+
+Help opens in a separate tab to preserve an existing draft. Tool links return to the map in the help tab; use one map tab for saving at a time. The page remains readable without JavaScript or downloaded terrain and is included in the local workspace production build. Unknown/duplicate tool parameters are ignored; workspace startup failures show an explanation. No public deployment is implied.

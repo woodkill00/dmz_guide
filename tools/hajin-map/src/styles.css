@@ -83,3 +83,6 @@ dialog{color:#e8e9df;background:#191f1a;border:1px solid #697453;max-width:440px
 
 .icon-form-inactive{opacity:.5}
 #icon-form-draft-status:not(:empty){padding:10px;border-left:3px solid var(--accent);background:#27351f}
+
+.header-links{display:flex;align-items:center;gap:16px}.help-link{color:var(--accent);font-size:12px;text-underline-offset:4px;display:inline-flex;align-items:center;min-height:44px;padding:4px 8px}.help-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.tool-navigation-error{position:absolute;top:90px;left:20px;right:20px;z-index:1100;background:#35251e;border:1px solid #e3b29a;color:#fff;padding:16px;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+@media(max-width:600px){.header-links .local-badge{display:none}.header-links{gap:4px}}

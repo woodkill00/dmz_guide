@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => ({
       enabled: loadEnv(mode, root, "DMZ_").DMZ_ENABLE_SOURCE_UPDATES === "1",
     }),
   ],
+  build:{rollupOptions:{input:{map:fileURLToPath(new URL("index.html",import.meta.url)),help:fileURLToPath(new URL("help.html",import.meta.url))}}},
   server: {
     fs: {
       allow: [

@@ -1,3 +1,4 @@
+import { workspaceDestination, type ToolTarget } from '../tool-links.ts';
 import L from "leaflet";
 import type { createMapView } from "../map/map-view";
 import type { createSourceMarkers } from "../map/source-markers";
@@ -2394,6 +2395,20 @@ export function mountWorkspace(
   })();
   return {
     ready: initialized,
+    openTool(target:ToolTarget){
+      const destination=workspaceDestination(target);
+      if(!destination)return false;
+      if(disposed||!hydrated)throw new Error('Workspace tools could not open. Check local storage and the workspace status, then try My workspace again.');
+      if(dirty||detailActive||processing||interactionLocks||unsaved||pendingVisibility)throw new Error('Save or cancel your current draft before opening another tool.');
+      active=destination.tab;
+      if(destination.section)usabilityUI.openSection(destination.section);
+      renderPanel();
+      if(!dialog.open)dialog.showModal();
+      const focus=destination.focus?body.querySelector<HTMLElement>('#'+destination.focus):nav.querySelector<HTMLElement>(`[data-tab="${active}"]`);
+      focus?.focus();
+      if(destination.focus)focus?.scrollIntoView({block:'center'});
+      return true;
+    },
     services,
     destroy() {
       updatesUI.destroy();

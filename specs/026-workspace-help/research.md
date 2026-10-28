@@ -1,0 +1,2 @@
+# Research/clarify
+Inspected main.ts, app.ts ready/guards, usability-panel openSection, source/updater and icon workflows plus owner-local docs. No external dependency or unresolved question. Use static multi-page help to keep reading independent of assets/JS. Tool links navigate via explicit allowlist, never invoke update/save/toggle/reset. Preserve existing map by new-tab help; no history listener that might switch a live draft.

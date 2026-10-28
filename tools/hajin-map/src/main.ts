@@ -1,3 +1,4 @@
+import { parseToolTarget } from './tool-links.ts';
 import 'leaflet/dist/leaflet.css';
 import './styles.css';
 import { createMapView, type MapState } from './map/map-view';
@@ -36,6 +37,7 @@ const sourceInfo = `
   <dl><div><dt>Coverage</dt><dd>Full surface map</dd></div><div><dt>Resolution</dt><dd>4096 × 4096</dd></div><div><dt>Source captured</dt><dd>25 Oct 2026</dd></div></dl>
   <p class="small-note">Orange terrain and reactor shading are part of the source image. They do not show live match conditions.</p>
   <div class="info-rule"></div>
+  <p><a href="/help.html" target="_blank" rel="noopener noreferrer">Read the full workspace guide — tools, icons, updates and backups</a></p>
   <h3>Navigation</h3>
   <p>Drag to explore. Scroll or pinch to zoom. Use Reset view to see the full map.</p>
   <p class="small-note">Keyboard: focus the map, use arrow keys to pan and + / − to zoom. Tab moves to the next control.</p>
@@ -46,7 +48,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <header class="app-header">
     <a class="brand" href="/" aria-label="Hajin Field Guide home"><span class="brand-mark">${icon('cross')}</span><span>FIELD GUIDE<span class="brand-sub">MODERN WARFARE · DMZ</span></span></a>
     <div class="header-center"><span class="status-dot"></span> HAJIN EXCLUSION ZONE</div>
-    <div class="local-badge"><span></span> LOCAL EDITION</div>
+    <div class="header-links"><div class="local-badge"><span></span> LOCAL EDITION</div><a id="open-help" class="help-link" href="/help.html" target="_blank" rel="noopener noreferrer">Help</a></div>
   </header>
   <main class="workspace">
     <aside id="map-key" class="sidebar" aria-label="Map key">
@@ -183,6 +185,21 @@ document.querySelector('#map')!.addEventListener('keydown', event => {
   if ((event as KeyboardEvent).key.toLowerCase() === 'r' && state === 'ready') { event.preventDefault(); viewer.reset(); }
 });
 const authorWorkspace = mountWorkspace(viewer, sources,source=>{const controller=createSource(source);sources.push(controller);return controller;});
+
+const requestedTool=parseToolTarget(location.search);
+if(requestedTool)void authorWorkspace.ready.then(()=>{
+  if(authorWorkspace.openTool(requestedTool))return;
+  if(requestedTool==='layers'){layersDialog.showModal();document.querySelector<HTMLElement>('#close-layers')?.focus();}
+  else if(requestedTool==='key'||requestedTool==='grid'||requestedTool==='updates'){
+    setKeyOpen(true);
+    const target=document.querySelector<HTMLElement>(requestedTool==='grid'?'#show-coordinate-grid':requestedTool==='updates'?'#map-source-updates':'#key-show-all');
+    if(target){if(requestedTool==='updates')target.tabIndex=-1;target.focus();target.scrollIntoView({block:'center'});}
+  }else document.querySelector<HTMLElement>('#map')?.focus();
+}).catch(error=>{
+  const message=document.createElement('p');message.id='tool-navigation-error';message.className='tool-navigation-error';message.setAttribute('role','alert');message.tabIndex=-1;
+  message.textContent=error instanceof Error?error.message:'The requested tool could not open. Use My workspace to inspect its status.';
+  document.querySelector('.map-workspace')?.append(message);message.focus();
+});
 
 if (import.meta.hot) import.meta.hot.dispose(() => { authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
 }
