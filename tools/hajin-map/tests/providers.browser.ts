@@ -177,6 +177,14 @@ export async function runProviderBrowser(parent) {
         .count(),
       2,
     );
+    await page
+      .locator('[data-key-source="codcentral"] .duplicate-details-button')
+      .first()
+      .click();
+    assert.ok(
+      (await page.locator("#explore-panel").textContent()).includes("distance"),
+    );
+    await page.locator("#close-workspace").click();
     await page.locator("#show-duplicate-markers").check();
     await page.waitForFunction(
       () => document.querySelectorAll("[data-source-marker-id]").length === 8,

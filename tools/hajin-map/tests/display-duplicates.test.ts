@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { captureIdentity } from "../src/workspace/usability.ts";
 import {
   displayDuplicates,
   type DisplayRecord,
@@ -119,4 +120,25 @@ test("both marker name and map location must match, including facilities at iden
     ]).suppressed.size,
     0,
   );
+});
+test("capture-bound keep-separate rules survive grouping and become inactive for changed capture digests", () => {
+  const a = record("a", "official", {
+      identity: captureIdentity("official", "same-time", "a".repeat(64), "a"),
+    }),
+    b = record("b", "codcentral", {
+      identity: captureIdentity("codcentral", "same-time", "b".repeat(64), "b"),
+    }),
+    c = record("c", "wzstats", {
+      identity: captureIdentity("wzstats", "same-time", "c".repeat(64), "c"),
+    });
+  const separate = [{ a: a.identity!, b: b.identity! }];
+  assert.equal(displayDuplicates([a, b], false, separate).suppressed.size, 0);
+  const grouped = displayDuplicates([a, b, c], false, separate);
+  assert.ok(
+    grouped.groups.every(
+      (g) => !(g.members.includes(a) && g.members.includes(b)),
+    ),
+  );
+  b.identity = captureIdentity("codcentral", "same-time", "d".repeat(64), "b");
+  assert.equal(displayDuplicates([a, b], false, separate).suppressed.size, 1);
 });

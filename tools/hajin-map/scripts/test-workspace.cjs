@@ -162,6 +162,8 @@ const checks = [];
   checks.push(...await runRaceBrowser(page, base));
   const { runProviderBrowser } = await import('../tests/providers.browser.ts');
   checks.push(...await runProviderBrowser(page));
+  const { runUsabilityBrowser } = await import('../tests/usability.browser.ts');
+  checks.push(...await runUsabilityBrowser(page, base, {image,snapshot}));
   await page.locator('#toggle-key').click();
   await page.evaluate(() => {
     const banner = document.createElement('div'); banner.textContent = 'SYNTHETIC TEST FIXTURE — NOT GAME DATA';

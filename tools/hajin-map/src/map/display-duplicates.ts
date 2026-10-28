@@ -1,5 +1,6 @@
 /** Reversible display grouping only: never merges or modifies source evidence. */
 export interface DisplayRecord {
+  identity?: string;
   key: string;
   sourceId: string;
   category: string;
@@ -35,7 +36,7 @@ const kinds = new Map(
     ids.map((id) => [normalize(id), kind] as const),
   ),
 );
-function kind(category: string) {
+export function displayKind(category: string) {
   return category.startsWith("dmz_fortress_")
     ? "fortress"
     : (kinds.get(normalize(category)) ?? normalize(category));
@@ -50,7 +51,11 @@ const priority = (a: DisplayRecord, b: DisplayRecord) =>
   Number(b.sourceId === "official") - Number(a.sourceId === "official") ||
   a.sourceId.localeCompare(b.sourceId, "en") ||
   a.key.localeCompare(b.key, "en");
-export function displayDuplicates(input: DisplayRecord[], showAll = false) {
+export function displayDuplicates(
+  input: DisplayRecord[],
+  showAll = false,
+  separate: readonly { a: string; b: string }[] = [],
+) {
   if (input.length > 20000)
     throw new Error("Display source record limit exceeded.");
   if (new Set(input.map((r) => r.sourceId)).size < 2)
@@ -58,6 +63,10 @@ export function displayDuplicates(input: DisplayRecord[], showAll = false) {
       suppressed: new Set<string>(),
       matches: new Map<string, string>(),
       truncated: false,
+      groups: [] as {
+        members: DisplayRecord[];
+        representative: DisplayRecord;
+      }[],
     };
   const grid = new Map<string, number[]>(),
     groups: {
@@ -69,8 +78,11 @@ export function displayDuplicates(input: DisplayRecord[], showAll = false) {
     }[] = [];
   let examined = 0,
     truncated = false;
+  const blocked = new Set(
+    separate.map((p) => JSON.stringify([p.a, p.b].sort())),
+  );
   for (const r of [...input].sort(priority)) {
-    const k = kind(r.category),
+    const k = displayKind(r.category),
       gx = Math.floor(r.x / 24),
       gy = Math.floor(r.y / 24);
     let match = -1,
@@ -86,6 +98,15 @@ export function displayDuplicates(input: DisplayRecord[], showAll = false) {
             const g = groups[index],
               distance = Math.hypot(r.x - g.anchor.x, r.y - g.anchor.y);
             if (g.sources.has(r.sourceId)) continue;
+            if (
+              r.identity &&
+              g.members.some(
+                (m) =>
+                  m.identity &&
+                  blocked.has(JSON.stringify([r.identity, m.identity].sort())),
+              )
+            )
+              continue;
             if (
               distance > 24 ||
               (r.floor !== null && g.floors.size && !g.floors.has(r.floor)) ||
@@ -121,10 +142,13 @@ export function displayDuplicates(input: DisplayRecord[], showAll = false) {
   }
   const suppressed = new Set<string>(),
     matches = new Map<string, string>();
+  const details: { members: DisplayRecord[]; representative: DisplayRecord }[] =
+    [];
   for (const g of groups) {
     if (g.members.length < 2) continue;
     const visible = g.members.filter((r) => r.visible),
       representative = visible[0] ?? g.anchor;
+    details.push({ members: g.members, representative });
     for (const r of g.members) {
       if (r.key !== g.anchor.key)
         matches.set(r.key, `${g.anchor.sourceId}: ${g.anchor.title}`);
@@ -132,5 +156,5 @@ export function displayDuplicates(input: DisplayRecord[], showAll = false) {
         suppressed.add(r.key);
     }
   }
-  return { suppressed, matches, truncated };
+  return { suppressed, matches, truncated, groups: details };
 }
