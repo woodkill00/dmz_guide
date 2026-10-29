@@ -1,6 +1,6 @@
 # Pointer activation repair
 
-Actual CI on the initial feature implementation failed the detail URL assertion in Chromium and Firefox. An explicit exact-URL navigation wait was added without weakening the assertion. Subsequent Chromium runs on Ubuntu and Windows still timed out, proving that synchronization alone did not repair the interaction.
+Actual CI on the initial feature implementation failed the detail URL assertion in Chromium and the WebKit engine phase. An explicit exact-URL navigation wait was added without weakening the assertion. Subsequent Chromium runs on Ubuntu and Windows still timed out, proving that synchronization alone did not repair the interaction.
 
 ## Cause and bounded fix
 The catalog filter ran on both input and change events and unconditionally appended every sorted row back to its container. A dirty search field emits change when a pointer press on a row link blurs it. Reparenting that pressed link before its click activation can cancel native navigation, even when the sort order is unchanged. The URL's filter replacement was observable, but no detail navigation occurred.

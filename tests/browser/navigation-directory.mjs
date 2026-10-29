@@ -238,6 +238,21 @@ export async function runNavigationDirectoryTests({
     );
     await page.locator(".sitemap-pack summary").first().click();
     assert((await page.locator(".sitemap-pack a:visible").count()) > 0);
+    if (captureScreenshots) {
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.screenshot({
+        path: `test-results/${browser.browserType().name()}-sitemap-top.png`,
+        fullPage: false,
+      });
+      await page
+        .locator(".sitemap-pack summary")
+        .first()
+        .scrollIntoViewIfNeeded();
+      await page.screenshot({
+        path: `test-results/${browser.browserType().name()}-sitemap-expanded-pack.png`,
+        fullPage: false,
+      });
+    }
     await page.goto(base + "/map-workspace/?pack=demo%3Atraining-pack");
     await page.waitForFunction(() =>
       [...document.querySelectorAll(".site-nav a")]
@@ -251,6 +266,17 @@ export async function runNavigationDirectoryTests({
     assert(
       (await page.locator("main").textContent()).includes("not live game GPS"),
     );
+    if (captureScreenshots) {
+      await page.screenshot({
+        path: `test-results/${browser.browserType().name()}-map-workspace-top.png`,
+        fullPage: false,
+      });
+      await page.locator("main .notice").scrollIntoViewIfNeeded();
+      await page.screenshot({
+        path: `test-results/${browser.browserType().name()}-map-workspace-boundaries.png`,
+        fullPage: false,
+      });
+    }
     const noScript = await browser.newContext({ javaScriptEnabled: false });
     try {
       const reader = await noScript.newPage();
@@ -268,7 +294,12 @@ export async function runNavigationDirectoryTests({
   }
 }
 
-export async function runDirectoryRemovalTests({ browser, author }) {
+export async function runDirectoryRemovalTests({
+  browser,
+  author,
+  prefix = browser.browserType().name(),
+  captureScreenshots = true,
+}) {
   const context = await browser.newContext(),
     page = await context.newPage();
   const initial = await (await fetch(author.url + "/api/catalog")).json();
@@ -292,12 +323,26 @@ export async function runDirectoryRemovalTests({ browser, author }) {
       await page.evaluate(() => document.activeElement.id),
       "cancel-remove",
     );
+    if (captureScreenshots && browser.browserType().name() !== "webkit") {
+      await page.locator("#remove-stage").scrollIntoViewIfNeeded();
+      await page.screenshot({
+        path: `test-results/${prefix}-directory-removal-blocked.png`,
+        fullPage: false,
+      });
+    }
     await page.click("#cancel-remove");
     assert(await page.locator("#remove-stage").isHidden());
     assert.equal(
       await page.evaluate(() => document.activeElement.id),
       "remove-record",
     );
+    if (captureScreenshots && browser.browserType().name() !== "webkit") {
+      await page.locator("#remove-record").scrollIntoViewIfNeeded();
+      await page.screenshot({
+        path: `test-results/${prefix}-directory-removal-cancelled.png`,
+        fullPage: false,
+      });
+    }
     // Make a harmless unsaved fixture edit; declining a pack switch must retain it.
     const field = page.locator('[data-path$=".name"]').first();
     const old = await field.inputValue();

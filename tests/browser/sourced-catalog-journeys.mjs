@@ -76,6 +76,16 @@ export async function runSourcedCatalogJourneys({
       try {
         const page = await context.newPage();
         await page.goto(route(base, "catalog"));
+        // readURL() initializes the filters before reporting the filtered count.
+        // Do not fill while hydration can reset the search input.
+        await page.waitForFunction(
+          (pack) =>
+            document.querySelector("#catalog-pack")?.value === pack &&
+            document
+              .querySelector("#catalog-count")
+              ?.textContent.includes("matching"),
+          PACK,
+        );
         await page.locator("#catalog-search").fill("Bank Upgrade VII");
         const bank = page.locator("[data-record-card]:visible").filter({
           has: page.getByRole("link", {
@@ -88,9 +98,19 @@ export async function runSourcedCatalogJourneys({
           1,
           "One source tier, not a duplicate of existing observations",
         );
-        await bank
-          .getByRole("link", { name: "Bank Upgrade VII", exact: true })
-          .click();
+        const bankURL = detail(base, "objectives", "reported:bank-upgrade-vii");
+        // Native clicks can return before Firefox commits the new document.
+        // Keep the real click and require its exact destination before snapshots.
+        await Promise.all([
+          page.waitForURL(bankURL, { waitUntil: "domcontentloaded" }),
+          bank
+            .getByRole("link", { name: "Bank Upgrade VII", exact: true })
+            .click(),
+        ]);
+        assert.equal(page.url(), bankURL);
+        await page
+          .getByRole("heading", { name: "Bank Upgrade VII", exact: true })
+          .waitFor({ state: "visible" });
         assert.equal(
           await page
             .getByRole("heading", { name: "Bank Upgrade VII", exact: true })

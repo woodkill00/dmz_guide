@@ -540,7 +540,12 @@ export async function runStudioTests({
       author: upgradeAuthor,
       createAuthorServer,
     });
-    await runDirectoryRemovalTests({ browser, author });
+    await runDirectoryRemovalTests({
+      browser,
+      author,
+      prefix,
+      captureScreenshots,
+    });
     await runPageEditTests({
       browser,
       repository,

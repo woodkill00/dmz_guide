@@ -1,3 +1,4 @@
+import { observeBrowserAction } from "./action-observers.mjs";
 import assert from "node:assert/strict";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 /** Actual Studio v1/v2 guided→JSON→save→restart→export/import; isolated repository only. */
@@ -9,6 +10,19 @@ export async function runUpgradeStudioRoundtrip({
 }) {
   let context, page, failure;
   const evidence = [];
+  let phase = "initializing",
+    keyInFlight = null;
+  const diagnostics = {
+    requests: [],
+    responses: [],
+    requestFailures: [],
+    console: [],
+    pageErrors: [],
+  };
+  const record = (kind, value) => {
+    diagnostics[kind].push(value);
+    if (diagnostics[kind].length > 80) diagnostics[kind].shift();
+  };
   const closeOwnedAuthor = async () => {
     const owned = author;
     author = null;
@@ -31,8 +45,10 @@ export async function runUpgradeStudioRoundtrip({
     const changes = page.waitForResponse(
       (r) => r.url().endsWith("/api/changes") && r.request().method() === "GET",
     );
-    await page.goto(author.url);
-    const response = await changes;
+    const [response] = await observeBrowserAction(
+      () => page.goto(author.url),
+      [changes],
+    );
     assert.equal(response.status(), 200);
     assert.equal(await response.finished(), null);
     await page.waitForSelector('[data-path="contentVersion"]');
@@ -63,12 +79,13 @@ export async function runUpgradeStudioRoundtrip({
     const changes = page.waitForResponse(
       (r) => r.url().endsWith("/api/changes") && r.request().method() === "GET",
     );
-    await page.click("#save-repository");
-    const response = await pending;
+    const [response, summary] = await observeBrowserAction(
+      () => page.click("#save-repository"),
+      [pending, changes],
+    );
     assert.equal(response.status(), 200, await response.text());
     // Studio refreshes its change summary after controls re-enable. Await the
     // real post-save request before restarting its server; health stays strict.
-    const summary = await changes;
     assert.equal(summary.status(), 200);
     assert.equal(await summary.finished(), null);
     await page.waitForFunction(
@@ -78,7 +95,35 @@ export async function runUpgradeStudioRoundtrip({
   try {
     context = await browser.newContext();
     page = await context.newPage();
+    page.on("request", (request) =>
+      record("requests", { url: request.url(), method: request.method() }),
+    );
+    page.on("response", (response) =>
+      record("responses", {
+        url: response.url(),
+        status: response.status(),
+        method: response.request().method(),
+      }),
+    );
+    page.on("requestfailed", (request) =>
+      record("requestFailures", {
+        url: request.url(),
+        error: request.failure()?.errorText,
+      }),
+    );
+    page.on("pageerror", (error) =>
+      record("pageErrors", error.message.slice(0, 4096)),
+    );
+    page.on("console", (message) => {
+      if (message.type() === "error")
+        record("console", {
+          text: message.text().slice(0, 4096),
+          location: message.location(),
+        });
+    });
     for (const key of ["demo-training", "upgrade-observations"]) {
+      keyInFlight = key;
+      phase = "load original catalog";
       const original = (await snapshot()).entries.find(
         (e) => e.key === key,
       ).pack;
@@ -123,6 +168,7 @@ export async function runUpgradeStudioRoundtrip({
       expected.contentVersion = "synthetic-studio-v" + original.schemaVersion;
       expected.description += " Synthetic advanced edit.";
       await jsonEdit(expected);
+      phase = "save synthetic guided and JSON edits";
       await save();
       assert.deepEqual(
         (await snapshot()).entries.find((e) => e.key === key).pack,
@@ -147,6 +193,7 @@ export async function runUpgradeStudioRoundtrip({
       assert.deepEqual(await exportDraft(), expected);
       // Restore only our isolated synthetic edits so unrelated existing acceptance remains unchanged.
       await jsonEdit(original);
+      phase = "restore original isolated catalog";
       await save();
       assert.deepEqual(
         (await snapshot()).entries.find((e) => e.key === key).pack,
@@ -174,6 +221,54 @@ export async function runUpgradeStudioRoundtrip({
     );
   } catch (error) {
     failure = error;
+    try {
+      let diagnosticTimer;
+      const state = await Promise.race([
+        page
+          ?.evaluate(() => ({
+            url: location.href,
+            status: document.querySelector("#save-status")?.textContent,
+            error: document.querySelector("#error")?.textContent,
+            busy: document
+              .querySelector("#workspace")
+              ?.getAttribute("aria-busy"),
+            saveDisabled: document.querySelector("#save-repository")?.disabled,
+            previewHidden: document.querySelector("#content-stage")?.hidden,
+            activeElement: document.activeElement?.id,
+            selectedCatalog: document.querySelector("#pack-select")?.value,
+          }))
+          .catch((reason) => ({ unavailable: reason.message })),
+        new Promise((resolve) => {
+          diagnosticTimer = setTimeout(
+            () =>
+              resolve({
+                unavailable: "Diagnostic page snapshot exceeded 2000ms",
+              }),
+            2000,
+          );
+        }),
+      ]).finally(() => clearTimeout(diagnosticTimer));
+      await mkdir("test-results/upgrade023-independent", { recursive: true });
+      await writeFile(
+        `test-results/upgrade023-independent/studio-${browser.browserType().name()}-failure.json`,
+        JSON.stringify(
+          {
+            sourceHead: process.env.GITHUB_SHA || "local",
+            phase,
+            key: keyInFlight,
+            message: error.message,
+            stack: error.stack,
+            state,
+            diagnostics,
+            completed: evidence,
+          },
+          null,
+          2,
+        ),
+      );
+    } catch (diagnosticError) {
+      failure = combine(failure, diagnosticError);
+    }
   }
   try {
     await context?.close();
