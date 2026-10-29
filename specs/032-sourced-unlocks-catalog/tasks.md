@@ -14,14 +14,14 @@
 
 ## Phase 4: US 3 use and preservation
 - [x] T 007 Update `docs/quickstart.md` and `docs/content-contributing.md` for source coverage, backup/rebind and purchase-blocking correction (FR-006–009).
-- [ ] T 008 Exercise item, upgrade, unlock, level, source links and rebind workflows in `tests/browser/sourced-catalog-journeys.mjs`, desktop/mobile with screenshot review (FR-001–009).
+- [x] T 008 Exercise item, upgrade, unlock, level, source links and rebind workflows in `tests/browser/sourced-catalog-journeys.mjs`, desktop/mobile with screenshot review (FR-001–009).
 
 ## Phase 5: Verification and convergence
-- [ ] T 009 Run repository/schema/runtime/build/format and affected browser suites; record exact results and review in `acceptance.md`, complete traceability and convergence findings (SC-001–004).
-- [ ] T 010 Independent data/implementation review and publication-scope report; leave public writes gated on parent authorization (FR-006–007,SC-004).
+- [x] T 009 Run repository/schema/runtime/build/format and affected browser suites; record exact results and review in `acceptance.md`, complete traceability and convergence findings (SC-001–004).
+- [x] T 010 Independent data/implementation review and publication-scope report; public writes remain under parent authorization (FR-006–007,SC-004).
 
 Dependencies: T 001→T 002→T 003→T 004→T 005→T 006→T 007→T 008→T 009→T 010. Independent reviewer reads while implementation proceeds only after design checklist passes; no parallel shared-file writers. MVP is US 1, followed by US 2 and preservation/verification. Tests are required by the constitution and spec.
 
 
 ## Current verification state
-T 008 browser runner is authored/wired and statically checked; actual launch is environment-blocked before assertions. T 009 local repository/runtime/build/format/Python checks pass, but browser/visual stages remain not run. T 010 independent design/data/focused domain review passes; final publication/CI gates remain open. See acceptance.md for exact results and failures.
+T 008–010 implementation verification and independent review are complete. Repaired head `7a0b4caf` passed all nine CI jobs with reviewed browser pixels; see acceptance.md. Final documentation-head CI, authorized merge and post-merge results are tracked in PR #28 before delivery completion; these release gates are not represented as already passed.
