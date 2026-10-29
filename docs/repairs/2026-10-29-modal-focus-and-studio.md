@@ -128,3 +128,39 @@ This test-only repair passed independent review, all 14 focus lifecycle tests,
 full runtime validation (614 passed, one Windows-only skip, zero failures),
 formatting and repository contracts. The final-head engine run remains the
 acceptance gate; the unrelated readiness status failure is not claimed fixed.
+
+## Windows Studio screenshot geometry (2026-10-29)
+
+Quality `40962753898`, Windows job `123759487694`, head `d5fd8b1`, subsequently
+failed page-edit evidence: a 390×11550 PNG passed its own dimensions, then the
+strict post-capture document measurement was 390×12202. Artifact `12937427618`
+SHA-256 `e2515903a16006af79aa9ddb69471b06ba3002f8c8e903e0fc10e268b75afdcd`
+contains both `chrome-page-edit-selected-editor-dark-390-normal.png` and the
+failure PNG. Their first differing pixels occur at y=6488: “Review working-tree
+changes” is empty in the first image, then displays “Git summary · 10 entries”
+and ten file paths in the failure image. This adds the exact 652-pixel growth;
+media below shifts down. Failure JSON records no pending requests, HTTP errors,
+console errors or page errors. Image decode and font readiness were not the
+missing readiness boundary.
+
+Studio startup renders/focuses the selected record before awaiting `changes()`;
+that function renders the list and summary note only after `/api/changes`
+completes. The evidence journey previously awaited record identity and images,
+not the change summary. A supervised response observer now starts before the
+final public→Studio click, checks actual GET `/api/changes` status 200 and
+successful body completion, then observes the exact note and bounded first-100
+file list matching that response before layout checks and screenshots. Empty
+loading markup cannot satisfy the predicate, including for a real zero-entry
+summary. No sleeps, screenshot retry, layout mutation, application changes or
+weakened geometry/coverage assertions were introduced.
+
+Three deterministic readiness tests distinguish response receipt from rendered
+note/list, require the explicit zero-entry summary, and refuse HTTP 503. All
+three plus the three immediate-observer-supervision tests pass locally. Final
+Windows browser execution remains required; the earlier failure is retained.
+
+Independent source and before/after pixel review passed, including a separate
+six-test run and verification that all original screenshot dimension, geometry
+and coverage assertions remain unchanged. Formatting and repository checks pass.
+The full local runtime rerun passed 617 tests with one Windows-only skip and
+zero failures. Actual final-head Windows browser/Studio validation remains pending.

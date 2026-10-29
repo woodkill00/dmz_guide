@@ -60,3 +60,13 @@ bound, preserving its original equality and persistence assertions. Independent
 review and all 14 focus lifecycle runtime tests passed. No application focus code
 changed; actual final-head WebKit and all required CI remain pending. See
 [repair evidence](../../../docs/repairs/2026-10-29-modal-focus-and-studio.md).
+
+The same `d5fd8b1` Windows run later reached Studio evidence and failed strict
+post-screenshot geometry: 11550px grew to 12202px. Before/after artifact pixels
+prove the late ten-entry working-tree summary caused the entire 652px growth.
+A scoped test-only repair now awaits its actual HTTP response and exact rendered
+note/list before measuring. Stable geometry, complete screenshot coverage and
+application code remain unchanged. Three deterministic readiness tests and
+three observer-supervision tests pass; independent source and actual-pixel review
+passed. Final-head Windows acceptance must be established before completion. Full details and artifact hash
+remain in the linked repair evidence.

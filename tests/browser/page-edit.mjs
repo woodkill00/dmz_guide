@@ -1,3 +1,4 @@
+import { observeBrowserAction } from "./action-observers.mjs";
 import assert from "node:assert/strict";
 import {
   cp,
@@ -26,6 +27,37 @@ const build = (cwd) =>
     cwd,
     maxBuffer: 4 * 1024 * 1024,
   });
+
+// Studio loads its working-tree summary after rendering the selected record.
+// Observe both the actual response and its complete rendering before measuring.
+export async function openStudioForEvidence(page, action) {
+  const changes = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/api/changes") &&
+      response.request().method() === "GET",
+  );
+  const [response] = await observeBrowserAction(action, [changes]);
+  assert.equal(response.status(), 200);
+  assert.equal(await response.finished(), null);
+  const result = await response.json();
+  assert(Array.isArray(result.files), "Studio changes response includes files");
+  const expected = {
+    files: result.files
+      .slice(0, 100)
+      .map((entry) => `${entry.status}: ${entry.path}`),
+    note: `${result.gitAvailable ? "Git" : "Managed metadata"} summary · ${result.files.length} entries${result.truncated || result.files.length > 100 ? " (bounded/truncated)" : ""}. Unrelated files and private data are excluded.`,
+  };
+  await page.waitForFunction(
+    ({ files, note }) =>
+      document.querySelector("#changes-note")?.textContent === note &&
+      JSON.stringify(
+        [...document.querySelectorAll("#file-changes li")].map(
+          (n) => n.textContent,
+        ),
+      ) === JSON.stringify(files),
+    expected,
+  );
+}
 
 export async function captureDocumentEvidence(page, path) {
   await page.evaluate(() => document.fonts.ready);
@@ -830,7 +862,9 @@ export async function runPageEditTests({
       await pixel(page.locator("img[data-public-image]").nth(1)),
       [0, 204, 0, 255],
     );
-    await page.locator("[data-edit-record]").click();
+    await openStudioForEvidence(page, () =>
+      page.locator("[data-edit-record]").click(),
+    );
     await page.waitForSelector("#entry-identity");
     assert(
       (await page.locator("#entry-identity").textContent()).includes(wire),
