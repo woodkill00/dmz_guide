@@ -1,3 +1,4 @@
+import { stockLimit } from "../../src/domain/profile.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -35,6 +36,8 @@ for (const count of [100, 1000, 5000]) {
     };
     vm.runInNewContext(`${render}\n${filter}\nrender();`, {
       ...helper,
+      stockLimit,
+      renderSpendingSummary() {}, // this extraction exercises inventory rows only
       registerDraftGuard() {},
       document: { addEventListener() {} },
       $: (selector) => nodes[selector],
@@ -72,14 +75,14 @@ test("all-page raw draft, checkpoint and deterministic invalid recovery contract
   draft.checkpoint();
   assert.equal(draft.isDirty(), false);
   draft.set("reserves", items[75].id, "1000001", profile);
-  draft.set("inventory", items[75].id, "", profile);
+  draft.set("inventory", items[75].id, "-1", profile);
   assert.deepEqual(draft.firstInvalid(), {
     id: items[75].id,
     field: "inventory",
     name: `owned:${items[75].id}`,
     index: 75,
   });
-  assert(Number.isNaN(profile.inventory[items[75].id]));
+  assert.equal(profile.inventory[items[75].id], -1);
   draft.set("inventory", items[75].id, "2.5", profile);
   assert.equal(draft.raw.get(`owned:${items[75].id}`), "2.5");
   assert(draft.isDirty(), "Failed save does not call checkpoint");
@@ -326,4 +329,23 @@ test("superseded invalid task cannot consume a newer failed-Save recovery", () =
   assert.deepEqual(h.counts(), { prevented: 2, errors: 0, reveals: 0 });
   h.callbacks[1]();
   assert.deepEqual(h.counts(), { prevented: 2, errors: 1, reveals: 1 });
+});
+
+test("v3 cash draft accepts 2M but noncurrency and legacy drafts retain 1M bounds", () => {
+  const items = [
+    { id: "test:cash", kind: "currency" },
+    { id: "test:item", kind: "item" },
+  ];
+  for (const schemaVersion of [1, 2, 3]) {
+    const profile = { schemaVersion, inventory: {}, reserves: {} };
+    const draft = helper.createInventoryDraft(items, profile);
+    draft.set("inventory", "test:cash", "2000000", profile);
+    assert.equal(draft.firstInvalid() === null, schemaVersion === 3);
+    draft.set("inventory", "test:cash", "1000000", profile);
+    draft.set("reserves", "test:cash", "2000000", profile);
+    assert.equal(draft.firstInvalid() === null, schemaVersion === 3);
+    draft.set("reserves", "test:cash", "1000000", profile);
+    draft.set("inventory", "test:item", "1000001", profile);
+    assert.equal(draft.firstInvalid().id, "test:item");
+  }
 });

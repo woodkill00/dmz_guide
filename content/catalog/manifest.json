@@ -12,6 +12,10 @@
     {
       "id": "official:mw4-dmz-starter",
       "key": "official-starter"
+    },
+    {
+      "id": "observed:upgrade-review-20261026",
+      "key": "upgrade-observations"
     }
   ],
   "provenance": [

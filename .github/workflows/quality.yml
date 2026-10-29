@@ -80,6 +80,47 @@ jobs:
           name: static-release-${{ matrix.os }}
           path: release/dmz-guide-static.zip
           retention-days: 14
+      - name: Save compact upgrade inventory ${{ matrix.os }} evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-evidence-${{ matrix.os }}-inventory
+          path: |
+            test-results/upgrade023-independent/*chromium*.json
+            test-results/upgrade023-independent/*chromium*-inventory-*.png
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Save compact upgrade progression ${{ matrix.os }} evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-evidence-${{ matrix.os }}-progression
+          path: |
+            test-results/upgrade023-independent/*chromium*.json
+            test-results/upgrade023-independent/*chromium*-progression-*.png
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Save compact upgrade other ${{ matrix.os }} evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-evidence-${{ matrix.os }}-other
+          path: |
+            test-results/upgrade023-independent/*chromium*.json
+            test-results/upgrade023-independent/*chromium*.png
+            !test-results/upgrade023-independent/*chromium*-inventory-*.png
+            !test-results/upgrade023-independent/*chromium*-progression-*.png
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Save compact recorded spending evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-spending-${{ matrix.os }}
+          path: |
+            test-results/upgrade023-spending/
+          retention-days: 14
+          if-no-files-found: warn
       - name: Save browser evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -128,6 +169,64 @@ jobs:
       - run: node tests/browser/contributor-workflows.mjs --engines
       - run: npm run test:engines
       - run: npm run test:studio -- --engines
+      - name: Save compact upgrade inventory firefox evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-evidence-firefox-inventory
+          path: |
+            test-results/upgrade023-independent/*firefox*.json
+            test-results/upgrade023-independent/*firefox*-inventory-*.png
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Save compact upgrade progression firefox evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-evidence-firefox-progression
+          path: |
+            test-results/upgrade023-independent/*firefox*.json
+            test-results/upgrade023-independent/*firefox*-progression-*.png
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Save compact upgrade other firefox evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-evidence-firefox-other
+          path: |
+            test-results/upgrade023-independent/*firefox*.json
+            test-results/upgrade023-independent/*firefox*.png
+            !test-results/upgrade023-independent/*firefox*-inventory-*.png
+            !test-results/upgrade023-independent/*firefox*-progression-*.png
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Save compact upgrade webkit acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-evidence-webkit
+          path: test-results/upgrade023-independent/*webkit*
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Save compact recorded spending firefox evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-spending-firefox
+          path: |
+            test-results/upgrade023-spending/*firefox*
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Save compact recorded spending webkit evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: upgrade023-spending-webkit
+          path: |
+            test-results/upgrade023-spending/*webkit*
+          retention-days: 14
+          if-no-files-found: warn
       - name: Save engine evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9

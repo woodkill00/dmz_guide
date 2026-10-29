@@ -1,3 +1,5 @@
+import { upgradeProgressFor, setUpgradeProgress } from "./upgrade-progress.mjs";
+import { requirementFacts } from "../content/validate.mjs";
 import { clone, assert, safeURL } from "../content/limits.mjs";
 
 const recordGroups = [
@@ -129,6 +131,9 @@ function sourceView(source, guard) {
     publishedAt: guard.text(source.publishedAt || "Unknown"),
     reviewedAt: guard.text(source.reviewedAt || "Unknown"),
     supports: guard.text(source.supports),
+    provenance: source.provenance
+      ? projectSpoilerValue(source.provenance, guard)
+      : null,
   };
 }
 
@@ -183,7 +188,10 @@ export function progressRows(
               record?.title ||
               (prerequisite ? "Unresolved prerequisite" : "Unresolved record"),
           ),
-      state: profile.completion[id] || "unknown",
+      state:
+        record?.track === "dmz-upgrade"
+          ? upgradeProgressFor(pack, profile, id).completion
+          : profile.completion[id] || "unknown",
       status: record?.status || "unknown",
       url: record && !hidden && !guard.contains(id) ? localURL(pack, id) : null,
     };
@@ -236,9 +244,14 @@ export function progressRows(
         (!track || t === track) &&
         (!status || r.status === status) &&
         (!progress ||
-          (type === "objective"
-            ? profile.completion[r.id] || "unknown"
-            : "not-applicable") === progress) &&
+          (progress === "not-completed"
+            ? r.track === "dmz-upgrade" &&
+              upgradeProgressFor(pack, profile, r.id).completion !== "completed"
+            : (type === "objective"
+                ? r.track === "dmz-upgrade"
+                  ? upgradeProgressFor(pack, profile, r.id).completion
+                  : profile.completion[r.id] || "unknown"
+                : "not-applicable") === progress)) &&
         (!source || ((!r.spoiler || reveal) && r.sourceIds.includes(source))),
     )
     .filter(
@@ -289,7 +302,23 @@ export function progressRows(
         name: guard.text(r.name || r.title),
         description: guard.text(r.description || r.body || ""),
         status: r.status,
-        state: profile.completion[r.id] || "unknown",
+        state:
+          r.track === "dmz-upgrade"
+            ? upgradeProgressFor(pack, profile, r.id).completion
+            : profile.completion[r.id] || "unknown",
+        upgrade:
+          r.track === "dmz-upgrade"
+            ? {
+                ...upgradeProgressFor(pack, profile, r.id),
+                tierLabel: r.upgrade?.tierLabel ?? null,
+                prerequisiteStatus: r.upgrade?.prerequisiteStatus || "unknown",
+              }
+            : null,
+        requirements: (r.requirements || []).slice(0, 64).map((row) => ({
+          ...reference(row.itemId),
+          quantity: row.quantity,
+          consumption: requirementFacts(pack, row).consumption,
+        })),
         disputed:
           r.status === "disputed" ||
           (pack.claims || []).some(
@@ -330,6 +359,13 @@ export function setCompletion(pack, profile, id, value) {
     pack.objectives.some((r) => r.id === id),
     "Unknown objective",
   );
+  if (pack.objectives.find((r) => r.id === id)?.track === "dmz-upgrade") {
+    assert(
+      ["unknown", "incomplete", "completed"].includes(value),
+      "Unknown progress state",
+    );
+    return setUpgradeProgress(pack, profile, id, { completion: value });
+  }
   assert(progressStates.includes(value), "Unknown progress state");
   const next = clone(profile);
   next.completion[id] = value;
@@ -338,5 +374,6 @@ export function setCompletion(pack, profile, id, value) {
 export function resetProgress(profile) {
   const next = clone(profile);
   next.completion = {};
+  if (next.schemaVersion >= 2) next.upgradeProgress = {};
   return next;
 }

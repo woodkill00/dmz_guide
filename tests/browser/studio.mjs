@@ -1,3 +1,4 @@
+import { runUpgradeStudioRoundtrip } from "./upgrades-studio.mjs";
 import assert from "node:assert/strict";
 import {
   cp,
@@ -528,6 +529,16 @@ export async function runStudioTests({
       "Synthetic unrelated file. Never show in managed change review.\n",
     );
     author = await createAuthorServer({ root: repository, port: 0 });
+    // Transfer ownership before awaiting: the helper may restart the server.
+    // On failure it closes its current handle; this caller must not close a stale one.
+    const upgradeAuthor = author;
+    author = null;
+    author = await runUpgradeStudioRoundtrip({
+      browser,
+      repository,
+      author: upgradeAuthor,
+      createAuthorServer,
+    });
     await runPageEditTests({
       browser,
       repository,

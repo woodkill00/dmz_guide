@@ -1,0 +1,65 @@
+{
+  "description": "Unlocks additional purchase options at the vendor.",
+  "effects": [],
+  "id": "observed:vendor-item-upgrade-i",
+  "name": "Vendor Item Upgrade I",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "consumed",
+      "itemId": "observed:electronic-sensors",
+      "quantity": 20,
+      "sourceIds": [
+        "source:upgrade-observation-03",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:cpu",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-03",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:printed-circuit-board",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-03",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:prototype-rf-module",
+      "quantity": 2,
+      "sourceIds": [
+        "source:upgrade-observation-03",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:upgrade-observation-03",
+    "source:upgrade-consumption-confirmation-20261026"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "upgrade-observation-03"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "I"
+  }
+}

@@ -1,3 +1,4 @@
+import { runUpgradeTests } from "./upgrades.mjs";
 import { firefox, webkit } from "playwright";
 import { startBrowserServer } from "./server.mjs";
 import { mkdir, writeFile } from "node:fs/promises";
@@ -16,6 +17,12 @@ try {
     const browser = await engine.launch({ headless: true });
     const health = monitorBrowser(browser);
     try {
+      await runUpgradeTests({
+        browser,
+        base,
+        // Preserve the repository's CSP-safe WebKit functional/layout policy.
+        captureScreenshots: name !== "webkit",
+      });
       const { runMetadataFloorTests } = await import("./metadata-floor.mjs");
       await runMetadataFloorTests({
         browser,

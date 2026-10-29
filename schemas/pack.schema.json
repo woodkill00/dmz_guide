@@ -5,7 +5,10 @@
   "additionalProperties": false,
   "properties": {
     "schemaVersion": {
-      "const": 1
+      "enum": [
+        1,
+        2
+      ]
     },
     "id": {
       "type": "string",
@@ -33,7 +36,11 @@
           "maxLength": 120
         }
       },
-      "required": ["id", "mode", "build"]
+      "required": [
+        "id",
+        "mode",
+        "build"
+      ]
     },
     "title": {
       "type": "string",
@@ -48,7 +55,10 @@
       "additionalProperties": false,
       "properties": {
         "expectedTotal": {
-          "type": ["integer", "null"],
+          "type": [
+            "integer",
+            "null"
+          ],
           "minimum": 0
         },
         "note": {
@@ -56,13 +66,23 @@
           "maxLength": 2000
         }
       },
-      "required": ["expectedTotal", "note"]
+      "required": [
+        "expectedTotal",
+        "note"
+      ]
     },
     "sources": {
       "type": "array",
       "maxItems": 20000,
       "items": {
-        "$ref": "#/$defs/source"
+        "anyOf": [
+          {
+            "$ref": "#/$defs/source"
+          },
+          {
+            "$ref": "#/$defs/sourceV2"
+          }
+        ]
       }
     },
     "items": {
@@ -76,14 +96,28 @@
       "type": "array",
       "maxItems": 20000,
       "items": {
-        "$ref": "#/$defs/recipe"
+        "anyOf": [
+          {
+            "$ref": "#/$defs/recipe"
+          },
+          {
+            "$ref": "#/$defs/recipeV2"
+          }
+        ]
       }
     },
     "objectives": {
       "type": "array",
       "maxItems": 20000,
       "items": {
-        "$ref": "#/$defs/objective"
+        "anyOf": [
+          {
+            "$ref": "#/$defs/objective"
+          },
+          {
+            "$ref": "#/$defs/objectiveV2"
+          }
+        ]
       }
     },
     "guides": {
@@ -158,7 +192,11 @@
           "maxLength": 120
         }
       },
-      "required": ["gameId", "mode", "build"]
+      "required": [
+        "gameId",
+        "mode",
+        "build"
+      ]
     },
     "source": {
       "type": "object",
@@ -180,7 +218,12 @@
           "pattern": "^https?://"
         },
         "type": {
-          "enum": ["official", "community", "observation", "original-fixture"]
+          "enum": [
+            "official",
+            "community",
+            "observation",
+            "original-fixture"
+          ]
         },
         "publishedAt": {
           "type": "string",
@@ -227,7 +270,10 @@
           "minLength": 1
         },
         "value": {
-          "type": ["number", "null"],
+          "type": [
+            "number",
+            "null"
+          ],
           "minimum": 0
         },
         "unit": {
@@ -272,7 +318,10 @@
                       "minimum": 0
                     }
                   },
-                  "required": ["min", "max"]
+                  "required": [
+                    "min",
+                    "max"
+                  ]
                 }
               ]
             },
@@ -473,7 +522,9 @@
             }
           },
           "then": {
-            "required": ["customUnit"],
+            "required": [
+              "customUnit"
+            ],
             "properties": {
               "customUnit": {
                 "minLength": 1
@@ -563,7 +614,12 @@
           "$ref": "#/$defs/scope"
         },
         "kind": {
-          "enum": ["item", "weapon", "currency", "resource"]
+          "enum": [
+            "item",
+            "weapon",
+            "currency",
+            "resource"
+          ]
         },
         "category": {
           "type": "string",
@@ -571,7 +627,11 @@
           "minLength": 1
         },
         "unit": {
-          "enum": ["count", "resource-unit", "dmz-cash"]
+          "enum": [
+            "count",
+            "resource-unit",
+            "dmz-cash"
+          ]
         },
         "description": {
           "type": "string",
@@ -643,7 +703,11 @@
           "type": "boolean"
         }
       },
-      "required": ["itemId", "quantity", "consumed"]
+      "required": [
+        "itemId",
+        "quantity",
+        "consumed"
+      ]
     },
     "recipe": {
       "type": "object",
@@ -697,7 +761,10 @@
               "maximum": 1000000
             }
           },
-          "required": ["itemId", "quantity"]
+          "required": [
+            "itemId",
+            "quantity"
+          ]
         },
         "inputs": {
           "type": "array",
@@ -719,7 +786,13 @@
           "type": "boolean"
         },
         "eligibility": {
-          "enum": ["unknown", "stash", "carried", "bank", "resources"]
+          "enum": [
+            "unknown",
+            "stash",
+            "carried",
+            "bank",
+            "resources"
+          ]
         },
         "station": {
           "type": "string",
@@ -774,16 +847,28 @@
           "maxLength": 200
         },
         "value": {
-          "type": ["integer", "string", "boolean", "null"]
+          "type": [
+            "integer",
+            "string",
+            "boolean",
+            "null"
+          ]
         }
       },
-      "required": ["type", "target", "value"],
+      "required": [
+        "type",
+        "target",
+        "value"
+      ],
       "allOf": [
         {
           "if": {
             "properties": {
               "type": {
-                "enum": ["capacityDelta", "capacitySet"]
+                "enum": [
+                  "capacityDelta",
+                  "capacitySet"
+                ]
               }
             }
           },
@@ -1093,7 +1178,10 @@
           "maxLength": 100
         },
         "extent": {
-          "type": ["array", "null"],
+          "type": [
+            "array",
+            "null"
+          ],
           "items": {
             "type": "number"
           },
@@ -1110,10 +1198,19 @@
           }
         },
         "origin": {
-          "enum": ["top-left", "bottom-left", "center", "unknown"]
+          "enum": [
+            "top-left",
+            "bottom-left",
+            "center",
+            "unknown"
+          ]
         },
         "axis": {
-          "enum": ["x-right-y-down", "x-right-y-up", "unknown"]
+          "enum": [
+            "x-right-y-down",
+            "x-right-y-up",
+            "unknown"
+          ]
         },
         "spoiler": {
           "type": "boolean"
@@ -1190,7 +1287,10 @@
           "maxLength": 4000
         },
         "grid": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "maxLength": 20
         },
         "coordinates": {
@@ -1213,12 +1313,21 @@
                   "maxLength": 80
                 }
               },
-              "required": ["x", "y", "floor"]
+              "required": [
+                "x",
+                "y",
+                "floor"
+              ]
             }
           ]
         },
         "spawnKind": {
-          "enum": ["fixed", "possible", "event", "unknown"]
+          "enum": [
+            "fixed",
+            "possible",
+            "event",
+            "unknown"
+          ]
         },
         "itemIds": {
           "type": "array",
@@ -1287,7 +1396,12 @@
           "maxLength": 200
         },
         "value": {
-          "type": ["string", "number", "boolean", "null"],
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ],
           "maxLength": 1000
         },
         "sourceId": {
@@ -1338,7 +1452,11 @@
           "maxLength": 300
         },
         "mime": {
-          "enum": ["image/png", "image/jpeg", "image/webp"]
+          "enum": [
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ]
         },
         "sha256": {
           "type": "string",
@@ -1401,7 +1519,11 @@
     "imageDescription": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["assetId", "text", "decorative"],
+      "required": [
+        "assetId",
+        "text",
+        "decorative"
+      ],
       "properties": {
         "assetId": {
           "$ref": "#/$defs/item/properties/assetId"
@@ -1414,6 +1536,506 @@
           "type": "boolean"
         }
       }
+    },
+    "sourceV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 300,
+          "minLength": 1
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 2000,
+          "pattern": "^https?://"
+        },
+        "type": {
+          "enum": [
+            "official",
+            "community",
+            "observation",
+            "original-fixture"
+          ]
+        },
+        "publishedAt": {
+          "type": "string",
+          "maxLength": 30
+        },
+        "reviewedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "supports": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "web",
+                "private-observation"
+              ]
+            },
+            "observationKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]*$"
+            },
+            "lineageKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]*$"
+            },
+            "captureDate": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date"
+            },
+            "buildStatus": {
+              "enum": [
+                "known",
+                "unknown"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "observationKey",
+            "lineageKey",
+            "captureDate",
+            "buildStatus"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "url",
+        "type",
+        "publishedAt",
+        "reviewedAt",
+        "supports",
+        "provenance"
+      ]
+    },
+    "requirementV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "itemId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "quantity": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "consumption": {
+          "enum": [
+            "consumed",
+            "retained",
+            "unknown"
+          ]
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "observed",
+            "unverified",
+            "unknown",
+            "disputed",
+            "stale",
+            "fictional"
+          ]
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        }
+      },
+      "required": [
+        "itemId",
+        "quantity",
+        "consumption",
+        "status",
+        "sourceIds"
+      ]
+    },
+    "objectiveV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "observed",
+            "unverified",
+            "unknown",
+            "disputed",
+            "stale",
+            "fictional"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "track": {
+          "enum": [
+            "dmz-order",
+            "dmz-upgrade",
+            "dmz-story",
+            "campaign",
+            "progression"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "requirements": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "$ref": "#/$defs/requirementV2"
+          }
+        },
+        "prerequisites": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "requirementsKnown": {
+          "type": "boolean"
+        },
+        "oneTime": {
+          "type": "boolean"
+        },
+        "effects": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        },
+        "spoiler": {
+          "type": "boolean"
+        },
+        "assetId": {
+          "$ref": "#/$defs/item/properties/assetId"
+        },
+        "assetIds": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/item/properties/assetId"
+          }
+        },
+        "imageDescriptions": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/$defs/imageDescription"
+          }
+        },
+        "upgrade": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tierLabel": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 20
+            },
+            "prerequisiteStatus": {
+              "enum": [
+                "known",
+                "unknown"
+              ]
+            },
+            "observationKeys": {
+              "type": "array",
+              "maxItems": 1000,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]*$"
+              }
+            }
+          },
+          "required": [
+            "tierLabel",
+            "prerequisiteStatus",
+            "observationKeys"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sourceIds",
+        "status",
+        "track",
+        "description",
+        "requirements",
+        "prerequisites",
+        "requirementsKnown",
+        "oneTime",
+        "effects",
+        "spoiler"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "track": {
+                "const": "dmz-upgrade"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "upgrade"
+            ],
+            "properties": {
+              "oneTime": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "recipeV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+          "maxLength": 100
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "observed",
+            "unverified",
+            "unknown",
+            "disputed",
+            "stale",
+            "fictional"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "output": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "itemId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+              "maxLength": 100
+            },
+            "quantity": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000
+            }
+          },
+          "required": [
+            "itemId",
+            "quantity"
+          ]
+        },
+        "inputs": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "$ref": "#/$defs/requirementV2"
+          }
+        },
+        "prerequisites": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$",
+            "maxLength": 100
+          }
+        },
+        "ingredientsKnown": {
+          "type": "boolean"
+        },
+        "eligibility": {
+          "enum": [
+            "unknown",
+            "stash",
+            "carried",
+            "bank",
+            "resources"
+          ]
+        },
+        "station": {
+          "type": "string",
+          "maxLength": 120,
+          "minLength": 1
+        },
+        "assetId": {
+          "$ref": "#/$defs/item/properties/assetId"
+        },
+        "assetIds": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/item/properties/assetId"
+          }
+        },
+        "imageDescriptions": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/$defs/imageDescription"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sourceIds",
+        "status",
+        "output",
+        "inputs",
+        "prerequisites",
+        "ingredientsKnown",
+        "eligibility",
+        "station"
+      ]
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "sources": {
+            "items": {
+              "$ref": "#/$defs/source"
+            }
+          },
+          "objectives": {
+            "items": {
+              "$ref": "#/$defs/objective"
+            }
+          },
+          "recipes": {
+            "items": {
+              "$ref": "#/$defs/recipe"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schemaVersion": {
+            "const": 2
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "sources": {
+            "items": {
+              "$ref": "#/$defs/sourceV2"
+            }
+          },
+          "objectives": {
+            "items": {
+              "$ref": "#/$defs/objectiveV2"
+            }
+          },
+          "recipes": {
+            "items": {
+              "$ref": "#/$defs/recipeV2"
+            }
+          }
+        }
+      }
+    }
+  ]
 }

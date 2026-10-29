@@ -1,3 +1,6 @@
+import { adviceMarkup } from "./upgrade-advice-view.mjs";
+import { saveWatchPin } from "./watch-pin.mjs";
+import { createReaderContext } from "../domain/reader-flow.mjs";
 import {
   matchesTokens,
   readReaderContext,
@@ -86,7 +89,36 @@ async function render() {
         .replaceAll("</h1>", "</h2>");
   } else
     markup += `<label>Search private visible records<input id="local-query" type="search"></label><div class="card-grid">${records.map((r) => `<article class="panel" data-local-search="${esc(recordSearchText(r))}"><p>${esc(r.recordType)} · ${esc(r.status)}</p><h2><a href="${link(r)}">${r.spoiler ? "Spoiler-protected record" : esc(r.name || r.title)}</a></h2><p>${r.spoiler ? "Reveal only after choosing this record." : esc(r.description || r.category || "")}</p></article>`).join("")}</div>`;
+  if (
+    chosen?.recordType === "item" &&
+    (!chosen.spoiler || state.profile.spoilers)
+  )
+    markup += `<section id="item-upgrade-advice" class="panel"><h2>Your known unfinished upgrade uses</h2>${adviceMarkup(state.pack, state.profile, { itemId: chosen.id })}<button type="button" data-item-pin="${esc(chosen.id)}" aria-pressed="${(state.profile.watchPins || []).includes(chosen.id)}">${(state.profile.watchPins || []).includes(chosen.id) ? "Remove your watch pin" : "Add your watch pin"}</button></section>`;
   $("#local-records").innerHTML = markup;
+  $("#item-upgrade-advice")?.addEventListener("click", async (event) => {
+    const button = event.target.closest("button");
+    if (!button || state.saving) return;
+    try {
+      const id = button.dataset.itemPin || button.dataset.watchPin;
+      if (id) {
+        if (
+          await saveWatchPin(id, !(state.profile.watchPins || []).includes(id))
+        )
+          await render();
+      } else if (button.dataset.adviceLocation) {
+        location.assign(
+          await createReaderContext(
+            state.pack,
+            button.dataset.adviceLocation,
+            "maps",
+            { needsOnly: false },
+          ),
+        );
+      }
+    } catch (reason) {
+      error(reason);
+    }
+  });
   // Private relationships always stay in this exact selected pack, never a public fork.
   for (const a of $("#local-records").querySelectorAll("a[href]")) {
     const url = new URL(a.href, location.href);

@@ -305,7 +305,7 @@ export function imageInfo(bytes) {
 function checkedPack(pack, schema) {
   boundedWalk(pack);
   assert(
-    pack.schemaVersion === 1,
+    [1, 2].includes(pack.schemaVersion),
     "Unsupported content version. Keep the original file and use a compatible reader; no automatic migration is available.",
   );
   assert(size(pack) <= LIMITS.packBytes, "Pack exceeds byte limit");
@@ -446,10 +446,17 @@ export function profileImpact(profile, before, after) {
     ...Object.keys(profile.inventory || {}),
     ...Object.keys(profile.reserves || {}),
     ...Object.keys(profile.completion || {}),
+    ...Object.keys(profile.upgradeProgress || {}),
+    ...(profile.watchPins || []),
     ...Object.keys(profile.routes || {}),
     ...Object.values(profile.routes || {}),
     ...(profile.goals || []).map((g) => g.id),
   ]);
+  const spendingRefs = new Set(
+    (profile.spendHistory || [])
+      .filter((e) => e.kind === "purchase")
+      .flatMap((e) => [e.upgradeId, ...e.costs.map((c) => c.itemId)]),
+  );
   const diff = diffPacks(before, after),
     changed = new Set([...diff.changed, ...diff.removed].map((x) => x.id));
   return {
@@ -458,6 +465,8 @@ export function profileImpact(profile, before, after) {
       profile.contentVersion !== after.contentVersion ||
       JSON.stringify(before?.game) !== JSON.stringify(after.game),
     unresolved: [...refs].filter((id) => !known.has(id)),
+    spendingUnresolved: [...spendingRefs].filter((id) => !known.has(id)),
+    spendingHistoryPreserved: true,
     affectedGoals: (profile.goals || [])
       .filter(
         (g) =>

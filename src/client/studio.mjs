@@ -15,7 +15,7 @@ import {
   clone,
   parseBounded,
 } from "../content/limits.mjs";
-import { validatePack } from "../content/validate.mjs";
+import { validatePack, schemaForVersion } from "../content/validate.mjs";
 import {
   GROUPS,
   TRANSFER_LIMITS,
@@ -777,9 +777,14 @@ async function start() {
       GROUPS.reduce((n, g) => n + draft[g].length, 0) < LIMITS.records,
       "Record limit reached",
     );
-    const record = defaultFieldValue(schema, schema.properties[group].items, {
-      fictional: draft.game.id === "fictional-training",
-    });
+    const authorSchema = schemaForVersion(schema, draft.schemaVersion);
+    const record = defaultFieldValue(
+      authorSchema,
+      authorSchema.properties[group].items,
+      {
+        fictional: draft.game.id === "fictional-training",
+      },
+    );
     record.id = uniqueId(name);
     if (Object.hasOwn(record, "name")) record.name = name;
     else if (Object.hasOwn(record, "title")) record.title = name;
@@ -865,7 +870,9 @@ async function start() {
   action("#load-json", () => {
     const next = parseBounded($("#advanced-json").value);
     assert(
-      draft && next.id === draft.id && next.schemaVersion === 1,
+      draft &&
+        next.id === draft.id &&
+        next.schemaVersion === draft.schemaVersion,
       "Existing catalog identity/schemaVersion cannot change",
     );
     validate(next);

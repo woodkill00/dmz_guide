@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "id": "observed:binding-catalyst",
+  "kind": "item",
+  "name": "Binding Catalyst",
+  "sourceIds": [
+    "source:upgrade-observation-07"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

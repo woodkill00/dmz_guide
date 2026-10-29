@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "id": "observed:comms-module",
+  "kind": "item",
+  "name": "Comms Module",
+  "sourceIds": [
+    "source:upgrade-observation-02",
+    "source:upgrade-observation-05",
+    "source:upgrade-observation-06"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

@@ -1,0 +1,65 @@
+{
+  "description": "Increases Stash item capacity by 18.",
+  "effects": [],
+  "id": "observed:stash-item-upgrade-iii",
+  "name": "Stash Item Upgrade III",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "consumed",
+      "itemId": "observed:cash",
+      "quantity": 100000,
+      "sourceIds": [
+        "source:upgrade-observation-07",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:binding-catalyst",
+      "quantity": 20,
+      "sourceIds": [
+        "source:upgrade-observation-07",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:stock-rod",
+      "quantity": 20,
+      "sourceIds": [
+        "source:upgrade-observation-07",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "observed:alloyed-plating",
+      "quantity": 10,
+      "sourceIds": [
+        "source:upgrade-observation-07",
+        "source:upgrade-consumption-confirmation-20261026"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:upgrade-observation-07",
+    "source:upgrade-consumption-confirmation-20261026"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "upgrade-observation-07"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "III"
+  }
+}

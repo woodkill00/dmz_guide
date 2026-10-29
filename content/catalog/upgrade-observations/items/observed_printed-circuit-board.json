@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "id": "observed:printed-circuit-board",
+  "kind": "item",
+  "name": "Printed Circuit Board",
+  "sourceIds": [
+    "source:upgrade-observation-03"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

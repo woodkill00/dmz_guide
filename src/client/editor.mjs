@@ -7,7 +7,7 @@ import {
 import { $, state, init, error, status, download } from "./common.mjs";
 import { readRecord, commitRecord } from "../storage/store.mjs";
 import { LIMITS, assert, clone, parseBounded } from "../content/limits.mjs";
-import { validatePack } from "../content/validate.mjs";
+import { validatePack, schemaForVersion } from "../content/validate.mjs";
 import {
   GROUPS,
   TRANSFER_LIMITS,
@@ -392,6 +392,10 @@ async function stageCandidate(
     warnings.push(
       `Historical references retained, not deleted: ${impact.unresolved.join(", ")}`,
     );
+  if (impact.spendingUnresolved?.length)
+    warnings.push(
+      "Recorded spending snapshots retain their original costs and identities. Some historical references no longer resolve; review safely in Settings. History is not rewritten or replayed.",
+    );
   if (impact.affectedGoals.length)
     warnings.push(`Affected saved goals: ${impact.affectedGoals.join(", ")}`);
   if (candidate.assets.length !== candidatePayloads.length)
@@ -638,7 +642,11 @@ async function start() {
     const group = $("#editor-section").value;
     if (!GROUPS.includes(group)) return;
     assert(draft[group].length < LIMITS.records, "Record limit reached");
-    draft[group].push(defaultValue(schema.properties[group].items));
+    draft[group].push(
+      defaultValue(
+        schemaForVersion(schema, draft.schemaVersion).properties[group].items,
+      ),
+    );
     markDirty();
     renderRecords();
     $("#editor-record").value = String(draft[group].length - 1);
@@ -821,7 +829,7 @@ async function start() {
     assert(!saving, "Wait for the atomic save to finish");
     const next = parseBounded($("#advanced-json").value);
     assert(
-      next.id === draft.id && next.schemaVersion === 1,
+      next.id === draft.id && next.schemaVersion === draft.schemaVersion,
       "Existing pack identity/schemaVersion cannot change in the advanced draft",
     );
     validatePack(next, schema);

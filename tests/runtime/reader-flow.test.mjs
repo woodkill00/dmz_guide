@@ -1,3 +1,5 @@
+import { spoilerGuard } from "../../src/domain/progression.mjs";
+import { adviceMarkup } from "../../src/client/upgrade-advice-view.mjs";
 import {
   matchesTokens,
   createReaderContext,
@@ -93,6 +95,7 @@ test("Wave2 zero-goal result is actionable without empty panels", () => {
     if (!nodes.has(s))
       nodes.set(s, {
         innerHTML: "",
+        value: "",
         addEventListener() {},
         focus() {},
         querySelectorAll() {
@@ -106,6 +109,8 @@ test("Wave2 zero-goal result is actionable without empty panels", () => {
     {
       $,
       esc: String,
+      adviceMarkup,
+      spoilerGuard,
       state: {
         pack: { recipes: [], objectives: [], guides: [], items: [] },
         profile: { goals: [], routes: {}, spoilers: false },
@@ -310,7 +315,8 @@ test("in-memory navigation context is rechecked for expiry on later render", asy
 test("ledger preserves item-only headings and sibling navigation controls", () => {
   const nodes = new Map(),
     $ = (s) => {
-      if (!nodes.has(s)) nodes.set(s, { innerHTML: "", addEventListener() {} });
+      if (!nodes.has(s))
+        nodes.set(s, { innerHTML: "", value: "", addEventListener() {} });
       return nodes.get(s);
     };
   const item = {
@@ -324,6 +330,8 @@ test("ledger preserves item-only headings and sibling navigation controls", () =
     {
       $,
       esc: String,
+      adviceMarkup,
+      spoilerGuard,
       state: {
         pack: {
           recipes: [],

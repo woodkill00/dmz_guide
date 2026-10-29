@@ -92,6 +92,11 @@ export async function commitRecord(
         }
         const next = clone(value);
         next.revision = actual + 1;
+        if (!Number.isSafeInteger(next.revision) || next.revision < 1)
+          throw new Error("Storage revision limit exceeded");
+        // Validate the exact value that will be committed, not only the caller's
+        // pre-increment candidate: a revision digit can cross the backup limit.
+        if (store === "profiles") validateProfile(next);
         result = {
           value: next,
           previous: keepPrevious

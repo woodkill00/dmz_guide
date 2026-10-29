@@ -8,6 +8,8 @@ const original = loadFixturePack("demo-training");
 function fixture() {
   const pack = structuredClone(original),
     profile = newProfile(pack);
+  // This legacy fixture represents a genuine unlock flag, not a purchased upgrade.
+  pack.objectives[0].track = "progression";
   profile.goals = [
     { id: "demo:beacon-build", quantity: 1 },
     { id: "demo:scanner-build", quantity: 1 },
