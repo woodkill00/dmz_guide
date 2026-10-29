@@ -24,7 +24,7 @@ jobs:
           node-version: ${{ matrix.node }}
           package-manager-cache: false
       - run: npm run map:install
-      - run: npm --prefix tools/hajin-map exec playwright install --with-deps chromium
+      - run: npm --prefix tools/hajin-map exec -- playwright install --with-deps chrome
       - run: npm run map:test
       - run: npm run map:build
       - run: npm run map:test:browser
@@ -51,7 +51,7 @@ jobs:
           node-version: '24.x'
           package-manager-cache: false
       - run: npm run map:install
-      - run: npm --prefix tools/hajin-map exec playwright install --with-deps chromium firefox webkit
+      - run: npm --prefix tools/hajin-map exec -- playwright install --with-deps chrome firefox webkit
       - run: npm --prefix tools/hajin-map run test:engines
       - name: Retain synthetic engine evidence
         if: always()

@@ -12,3 +12,4 @@
 
 - [x] T005 Convergence MENU-R1/R2: stable external tracker/gameplay handles retain focus/capture during real map redraw; transient default-position containment on short screens/content growth without persisting layout. Browser reproduction added. FR001–003.
 
+- [ ] T006 Integration repair: preserve sandboxed Chrome in hosted parser/engine checks, forward browser dependency-install flags correctly, rerun hosted checks before main merge. Record native597/map122 and builds after main integration.

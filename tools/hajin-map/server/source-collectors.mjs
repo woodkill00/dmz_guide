@@ -147,6 +147,7 @@ export async function withInertParser(work, signal) {
   const browser = await chromium.launch({
     timeout: 10000,
     chromiumSandbox: true,
+    ...(process.env.CI ? { channel: "chrome" } : {}),
   });
   const abort = () => {
     void browser.close();

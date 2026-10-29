@@ -7,3 +7,7 @@
 - Actual local5175 smoke in a fresh temporary browser context registered all6menus with zero runtime errors; no owner profile was used.
 
 No provider downloads, original owner-profile changes, remote push/merge or deployment. Local viewer remains on127.0.0.1:5175. Browser-local menu positions intentionally are not private-data backup fields. Physical touch/screenreader testing not performed.
+
+## Main integration verification
+Fetched main b3c5d3d and merged cleanly as e1fbbc2. Independent integration review found no shared-file/privacy blocker: native files exactly match incoming main; no game imagery/captures/road graph tracked. Postmerge597native runtime tests,122map tests, native214route build, strict map71module build and repository checks passed. PR27 opened for the accepted feature chain020-031.
+Hosted initial map jobs exposed unsupported Chromium headless-shell sandbox launch and missing WebKit libraries because npm consumed --with-deps. T006 forwards flags with exec -- and installs Chrome plus dependencies, selecting that installed channel in CI parser and engine entrypoints while retaining chromiumSandbox:true. No sandbox disabled and no test criteria changed. Final hosted outcomes pending.
