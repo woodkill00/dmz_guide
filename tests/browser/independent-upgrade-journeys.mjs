@@ -2,9 +2,11 @@
 // All holdings below are deliberately synthetic, never values from observations.
 // Integration owner may copy this file into tests/browser/ and import its export.
 import assert from "node:assert/strict";
+import { installPickerFocusDiagnostics } from "./picker-focus-diagnostics.mjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 
+const progressTraces = new WeakMap();
 const PACK = "observed:upgrade-review-20261026";
 const ITEM = "observed:power-regulator";
 const UPGRADE = "observed:dog-tag-case-upgrade-ii";
@@ -150,7 +152,29 @@ async function saveInventory(page) {
   await waitSaved(page, before);
   return (await durable(page)).value;
 }
-async function setProgress(
+async function setProgress(page, field, value, options = {}) {
+  await page.evaluate(installPickerFocusDiagnostics, {
+    dialogSelector: "#upgrade-progress-confirm",
+    controlSelector: upgrade(field),
+    rootSelector: "#progress-rows",
+    traceCalls: true,
+  });
+  try {
+    return await setProgressCore(page, field, value, options);
+  } finally {
+    const traces = progressTraces.get(page);
+    try {
+      const events = await page.evaluate(() =>
+        window.__dmzPickerFocusEvidence.stop(),
+      );
+      traces?.push({ field, value, ...options, events });
+    } catch (error) {
+      traces?.push({ field, value, unavailable: error.message.slice(0, 2048) });
+    }
+    if (traces?.length > 20) traces.shift();
+  }
+}
+async function setProgressCore(
   page,
   field,
   value,
@@ -358,6 +382,7 @@ export async function runIndependentUpgradeJourneys({
   browser,
   base,
   captureScreenshots = true,
+  diagnosticProgressOnly = false,
   prefix = browser.browserType().name(),
 }) {
   await mkdir("test-results/upgrade023-independent", { recursive: true });
@@ -382,12 +407,16 @@ export async function runIndependentUpgradeJourneys({
   };
   let failure;
   try {
-    await freshDefinitions();
-    await draftAndProgress();
-    await staleAndQuota();
-    await failedProgressCandidates();
-    await migrationAndRestore();
-    await responsive();
+    if (diagnosticProgressOnly) {
+      for (let attempt = 1; attempt <= 5; attempt++) await draftAndProgress();
+    } else {
+      await freshDefinitions();
+      await draftAndProgress();
+      await staleAndQuota();
+      await failedProgressCandidates();
+      await migrationAndRestore();
+      await responsive();
+    }
   } catch (error) {
     failure = error;
     evidence.failure = { message: error.message, stack: error.stack };
@@ -577,6 +606,8 @@ export async function runIndependentUpgradeJourneys({
     const context = await browser.newContext();
     try {
       const page = await context.newPage();
+      evidence.progressFocus ||= [];
+      progressTraces.set(page, evidence.progressFocus);
       await page.goto(url(base, "inventory"));
       await ready(page);
       const initial = await durable(page);

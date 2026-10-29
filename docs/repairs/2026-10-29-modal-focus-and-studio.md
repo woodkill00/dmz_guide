@@ -207,3 +207,49 @@ Independent diagnostics review passed, including a separate 15-test diagnostics
 and dialog-focus run. Review confirms read-only bounded capture, detached
 observers, fail-fast repetitions and unchanged original acceptance assertions;
 no root-cause or product-fix approval is implied.
+
+## Progress restoration diagnostics extension (2026-10-29)
+
+Diagnostic PR #29 head `95a1832`, quality `40974264910`, engine job
+`123798295090`, failed WebKit's progress completion focus even with the existing
+2000ms exact-endpoint wait. This disproves treating the earlier observational
+wait alone as a complete resolution of native focus loss. No application repair
+is claimed. The original progress assertions and deadlines remain intact.
+
+Firefox spending artifact `12942715460` records five passing picker attempts.
+Attempt one shows the modal heading explicitly blurring at 56ms; native close
+then restores an outside initiating button at 58ms despite the no-restore intent.
+The common switch disables that button; it blurs at 63ms, close dispatches at
+64ms, picker readiness arrives at 79ms and picker focus at 98ms. This establishes
+a native restoration/disabled-blur sequence on a successful run, not proof that
+it caused the Windows or WebKit failure. The failing progress path has no such
+timeline yet; speculation is not an application patch.
+
+The same bounded diagnostic recorder now supports the progress dialog, initiating
+select and row replacement. Its optional test-owned focus/close wrappers record
+before/after calls and delegate exactly once using Reflect.apply, preserving
+receiver, arguments, return and exceptions; original descriptors are restored
+at capture end unless another owner replaced them. No extra focus/close calls
+are made. A wrapper around the otherwise unchanged setProgress core captures up
+to 20 per-operation timelines of 100 events each in the existing journey JSON.
+These wrappers and diagnostic roundtrips may affect timing, so passes alone are
+not a root-cause proof.
+
+Supplemental `node tests/browser/focus-diagnostic.mjs webkit` uses the existing
+owned-server and browser-health guards, then runs the exact draftAndProgress
+scenario in five fresh contexts, fail-fast. Its JSON is
+`test-results/upgrade023-independent/webkit-focus-diagnostic-journeys.json`.
+The regular suite retains its default full sequence; only an explicitly supplied
+diagnosticProgressOnly option selects the supplemental subset. No full-suite
+job, assertion, HTTP/health check or deadline is removed or weakened. This
+supplement is for prompt native-browser evidence, not replacement acceptance.
+
+Independent source review passed with an explicit limitation: unlike the earlier
+event-only collector, optional native-call wrappers modify test-page prototypes
+while installed. They are observational instrumentation, not strictly read-only,
+and may perturb timing. No application code is changed and the goal remains an
+actual failing native trace. The reviewer separately passed both diagnostics
+unit tests and verified the unchanged full-suite default and core assertions.
+Local validation of the extension: full runtime suite 620 tests, 619 passed,
+one Windows-only skip, zero failures; formatting and repository contracts pass.
+Native focused/full CI remains pending; local checks certify only instrumentation.

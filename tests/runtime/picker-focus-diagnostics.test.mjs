@@ -84,3 +84,70 @@ test("picker diagnostics are bounded, read-only, timestamped and detach observer
   assert.equal(evidence.length, 100);
   assert.equal(evidence.at(-1).kind, "sample-149");
 });
+
+test("diagnostic focus/close wrappers preserve receivers, arguments, return and thrown errors", () => {
+  let received,
+    throws = false;
+  const sentinel = new Error("native sentinel");
+  class HTMLElement {
+    focus(...args) {
+      received = { receiver: this, args };
+      if (throws) throw sentinel;
+      return 42;
+    }
+  }
+  class HTMLDialogElement {
+    close(...args) {
+      received = { receiver: this, args };
+      return 43;
+    }
+  }
+  const originalFocus = HTMLElement.prototype.focus;
+  const originalClose = HTMLDialogElement.prototype.close;
+  const document = Object.assign(new EventTarget(), {
+    activeElement: null,
+    hasFocus: () => false,
+    querySelector: () => null,
+  });
+  const window = new EventTarget();
+  class MutationObserver {
+    observe() {}
+    disconnect() {}
+  }
+  runInNewContext(
+    `(${installPickerFocusDiagnostics.toString()})({ traceCalls: true })`,
+    {
+      document,
+      window,
+      MutationObserver,
+      HTMLElement,
+      HTMLDialogElement,
+      performance,
+    },
+  );
+  const target = new HTMLElement(),
+    options = { preventScroll: true };
+  assert.equal(target.focus(options), 42);
+  assert.equal(received.receiver, target);
+  assert.equal(received.args[0], options);
+  throws = true;
+  assert.throws(
+    () => target.focus(),
+    (error) => error === sentinel,
+  );
+  const dialog = new HTMLDialogElement();
+  assert.equal(dialog.close("native-value"), 43);
+  assert.equal(received.receiver, dialog);
+  assert.equal(received.args[0], "native-value");
+  const events = window.__dmzPickerFocusEvidence.stop();
+  assert.equal(
+    events.filter((event) => event.kind === "focus-call-before").length,
+    2,
+  );
+  assert.equal(
+    events.filter((event) => event.kind === "focus-call-after").length,
+    2,
+  );
+  assert.equal(HTMLElement.prototype.focus, originalFocus);
+  assert.equal(HTMLDialogElement.prototype.close, originalClose);
+});

@@ -1,5 +1,10 @@
-/** Bounded, read-only evidence for synthetic modal-navigation acceptance. */
-export function installPickerFocusDiagnostics() {
+/** Bounded synthetic focus evidence; optional transparent native-call instrumentation. */
+export function installPickerFocusDiagnostics({
+  dialogSelector = "#upgrade-spend-confirm",
+  controlSelector = null,
+  rootSelector = null,
+  traceCalls = false,
+} = {}) {
   const events = [];
   const start = performance.now();
   const describe = (node) =>
@@ -10,6 +15,8 @@ export function installPickerFocusDiagnostics() {
           connected: node.isConnected ?? null,
           disabled: node.disabled ?? null,
           inert: node.inert ?? null,
+          upgradeId: node.dataset?.upgradeId ?? null,
+          upgradeField: node.dataset?.upgradeField ?? null,
         }
       : null;
   const snapshot = (kind, target = null, detail = null) => {
@@ -22,11 +29,12 @@ export function installPickerFocusDiagnostics() {
       documentHasFocus: document.hasFocus(),
       visibilityState: document.visibilityState,
       picker: describe(document.querySelector("#pack-select")),
-      dialogOpen:
-        document.querySelector("#upgrade-spend-confirm")?.open ?? null,
+      control: controlSelector
+        ? describe(document.querySelector(controlSelector))
+        : null,
+      dialogOpen: document.querySelector(dialogSelector)?.open ?? null,
       dialogModal:
-        document.querySelector("#upgrade-spend-confirm")?.matches?.(":modal") ??
-        null,
+        document.querySelector(dialogSelector)?.matches?.(":modal") ?? null,
     });
     if (events.length > 100) events.shift();
   };
@@ -67,18 +75,56 @@ export function installPickerFocusDiagnostics() {
       attributeOldValue: true,
       childList: true,
     });
-  const dialog = document.querySelector("#upgrade-spend-confirm");
+  const dialog = document.querySelector(dialogSelector);
   if (dialog)
     observer.observe(dialog, {
       attributes: true,
-      attributeFilter: ["open"],
+      subtree: true,
+      attributeFilter: ["open", "disabled"],
       attributeOldValue: true,
     });
+  if (controlSelector) {
+    const control = document.querySelector(controlSelector);
+    if (control)
+      observer.observe(control, {
+        attributes: true,
+        attributeFilter: ["disabled"],
+        attributeOldValue: true,
+      });
+  }
+  if (rootSelector) {
+    const root = document.querySelector(rootSelector);
+    if (root) observer.observe(root, { childList: true });
+  }
+  const wrappers = [];
+  if (traceCalls) {
+    for (const [prototype, name] of [
+      [HTMLElement.prototype, "focus"],
+      [HTMLDialogElement.prototype, "close"],
+    ]) {
+      const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
+      const original = descriptor.value;
+      const wrapper = function (...args) {
+        snapshot(`${name}-call-before`, this);
+        try {
+          return Reflect.apply(original, this, args);
+        } finally {
+          snapshot(`${name}-call-after`, this);
+        }
+      };
+      Object.defineProperty(prototype, name, { ...descriptor, value: wrapper });
+      wrappers.push(() => {
+        if (prototype[name] === wrapper)
+          Object.defineProperty(prototype, name, descriptor);
+      });
+    }
+  }
   window.__dmzPickerFocusEvidence = {
     mark: (kind) => snapshot(kind),
     stop() {
       snapshot("capture-end");
       observer.disconnect();
+      for (const restore of wrappers) restore();
       for (const type of types)
         document.removeEventListener(type, listener, capture);
       window.removeEventListener("focus", windowListener);
