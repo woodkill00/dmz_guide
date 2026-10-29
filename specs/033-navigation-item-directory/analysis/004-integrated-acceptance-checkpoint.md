@@ -39,10 +39,24 @@ Limits: Studio removal captures are desktop, not mobile. Sitemap/map captures us
 | Canonical repair source/domain review | PASS | Independent identity comparison and 44-test run above |
 | Repaired implementation quality CI | PASS: all six jobs | [`40959670904`](https://github.com/woodkill00/dmz_guide/actions/runs/40959670904), head `7a0b4caf`; Windows and Ubuntu full runtime/browser/Studio/package, Firefox/WebKit browser/Studio, Node 24 and repository checks all succeeded |
 | Repaired implementation map CI | PASS: all three jobs | [`40959671130`](https://github.com/woodkill00/dmz_guide/actions/runs/40959671130), head `7a0b4caf`; Node 22/24 and browser-engine/accessibility jobs all succeeded |
-| Implementation acceptance reconciliation | PASS | Owning tasks/convergence updated; only documentation changes follow the tested implementation. No rendered facts or application/test code changed. |
-| Final documentation-head CI and merge | PENDING at this commit | Exact final SHA, required checks and authorized merge result will be recorded in [PR #28](https://github.com/woodkill00/dmz_guide/pull/28) before completion. |
+| Implementation acceptance reconciliation | PASS | Owning tasks/convergence updated. A subsequent scoped progress-focus test-observation repair follows the checkpoint; application code and rendered facts remain unchanged. Final-head CI is required. |
+| Final repaired-head CI and merge | PENDING at this commit | Exact final SHA, required checks and authorized merge result will be recorded in [PR #28](https://github.com/woodkill00/dmz_guide/pull/28) before completion. |
 | Post-merge verification | PENDING at this commit | Main merge SHA and all required post-merge check results will be recorded in PR #28; no premature pass is claimed. |
 
 Prior failures remain failures. Neither owner merge authorization, draft publication, partial remote passes nor local tests can fill pending rows without actual results.
 
 Implementation checkpoint observed 2026-10-29 22:01 UTC: all nine jobs succeeded. The integrated local rerun also passed 614 runtime tests (one Windows-only skip), repository validation, 734-route build and formatting. The repair worker independently ran all 40 Python tests successfully.
+
+## Subsequent final-head findings (2026-10-29)
+
+Docs-only head `d5fd8b1`, quality run `40962753898`, failed Ubuntu's strict
+readiness status diagnostic assertion (`/503/` versus last-probe request timeout),
+and WebKit's immediate progress-focus snapshot (BODY after modal hidden). These
+remain recorded failures; they do not supersede the historical all-green
+`7a0b4caf` checkpoint or establish final acceptance. The readiness observation
+has no speculative code or deadline change. The progress journey now observes
+the exact asynchronous focus endpoint with the existing spending-journey 2000ms
+bound, preserving its original equality and persistence assertions. Independent
+review and all 14 focus lifecycle runtime tests passed. No application focus code
+changed; actual final-head WebKit and all required CI remain pending. See
+[repair evidence](../../../docs/repairs/2026-10-29-modal-focus-and-studio.md).

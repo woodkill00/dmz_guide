@@ -98,3 +98,33 @@ or its pack digest. The raw repository revision intentionally changes: an alread
 open Studio draft remains protected by its existing stale-revision check and
 must be exported/reconciled or reloaded before saving; its old revision is not
 silently accepted. Python validation also passed all 40 tests.
+
+## WebKit progress focus observation (2026-10-29)
+
+Quality `40962753898`, engine job `123759488091`, docs-only head `d5fd8b1`,
+failed at the immediate focus snapshot in `setProgress`: durable progress was
+saved, the dialog was closed, and the replacement completion select was connected
+and enabled, but the sampled active element was BODY. The same runtime code
+previously passed at `7a0b4caf`. This snapshot does not establish whether the
+pending native close/blur restoration later ran.
+
+`closeDialog` deliberately restores on the asynchronous native close event and,
+when a closing control still has focus, a MessageChannel task after native blur.
+The deterministic runtime tests “progress focus resolves the replacement control
+after native close settles” and “closed modal keeps focus until native blur;
+restore once after cleanup” prove closed markup precedes that restoration. The
+progress journey waited for durable data and hidden markup but not that endpoint;
+the spending journey already observes exact focus with a 2000ms bound.
+
+The progress journey now uses the same bounded observational wait for its exact
+initiating select, then retains its original strict focus equality and complete
+connected/enabled/active/dialog diagnostics. A missed deadline fails even if
+focus arrives between the timeout and diagnostic capture. It never sets focus,
+retries the save, or changes application code, persistence assertions, HTTP
+checks, startup deadlines or modal cancellation behavior. Existing 14 native
+focus lifecycle unit contracts pass; actual WebKit acceptance still requires CI.
+
+This test-only repair passed independent review, all 14 focus lifecycle tests,
+full runtime validation (614 passed, one Windows-only skip, zero failures),
+formatting and repository contracts. The final-head engine run remains the
+acceptance gate; the unrelated readiness status failure is not claimed fixed.

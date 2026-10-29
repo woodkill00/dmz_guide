@@ -211,6 +211,18 @@ async function setProgress(
     "One explicit confirmation commits once",
   );
   assert.equal(after.upgradeProgress[UPGRADE][field], value);
+  // Closed markup and durable data precede the native close/blur task. Observe
+  // the promised exact focus endpoint, as the spending journey does; never set it.
+  let focusFailure;
+  try {
+    await page.waitForFunction(
+      (selector) => document.querySelector(selector) === document.activeElement,
+      upgrade(field),
+      { timeout: 2000 },
+    );
+  } catch (error) {
+    focusFailure = error.message;
+  }
   const focusState = await page.locator(upgrade(field)).evaluate((n) => ({
     focused: n === document.activeElement,
     selected: {
@@ -229,6 +241,11 @@ async function setProgress(
       : null,
     dialogOpen: document.querySelector("#upgrade-progress-confirm")?.open,
   }));
+  assert.equal(
+    focusFailure,
+    undefined,
+    `Progress focus endpoint did not arrive within 2000ms: ${JSON.stringify({ ...focusState, focusFailure })}`,
+  );
   assert.equal(
     focusState.focused,
     true,
