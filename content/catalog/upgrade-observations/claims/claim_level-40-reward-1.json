@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-40-reward-1",
   "entityId": "reported:level-40",
   "field": "reward.station",
-  "value": "{\"type\": \"station\", \"label\": \"3x Station Upgrades\", \"uncertainty\": \"Reward identity or wording is incomplete; verify in game.\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-40-reward-1",
   "locator": "DMZ Level 40",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"station\", \"label\": \"3x Station Upgrades\", \"uncertainty\": \"Reward identity or wording is incomplete; verify in game.\"}"
 }

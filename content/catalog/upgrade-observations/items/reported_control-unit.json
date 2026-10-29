@@ -1,14 +1,14 @@
 {
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Community-source item identity. Current build, locations and unlisted mechanics remain unverified.",
   "id": "reported:control-unit",
+  "kind": "item",
   "name": "Control Unit",
   "sourceIds": [
     "source:detonated-fob-20261025"
   ],
+  "stats": [],
   "status": "unverified",
-  "kind": "item",
-  "category": "upgrade material",
-  "unit": "count",
-  "description": "Community-source item identity. Current build, locations and unlisted mechanics remain unverified.",
-  "aliases": [],
-  "stats": []
+  "unit": "count"
 }

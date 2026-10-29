@@ -1,69 +1,69 @@
 {
+  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
+  "effects": [],
   "id": "reported:stash-weapon-upgrade-iii",
   "name": "Stash Weapon Upgrade III",
-  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
-  "sourceIds": [
-    "source:detonated-fob-20261025"
-  ],
-  "status": "unverified",
-  "track": "dmz-upgrade",
+  "oneTime": true,
+  "prerequisites": [],
   "requirements": [
     {
+      "consumption": "unknown",
       "itemId": "observed:cash",
       "quantity": null,
-      "consumption": "unknown",
-      "status": "unknown",
       "sourceIds": [
         "source:detonated-fob-20261025"
-      ]
+      ],
+      "status": "unknown"
     },
     {
+      "consumption": "unknown",
       "itemId": "reported:gold-bar",
       "quantity": 5,
-      "consumption": "unknown",
-      "status": "unverified",
       "sourceIds": [
         "source:detonated-fob-20261025"
-      ]
+      ],
+      "status": "unverified"
     },
     {
+      "consumption": "unknown",
       "itemId": "reported:stabilized-reagents",
       "quantity": 30,
-      "consumption": "unknown",
-      "status": "unverified",
       "sourceIds": [
         "source:detonated-fob-20261025"
-      ]
+      ],
+      "status": "unverified"
     },
     {
+      "consumption": "unknown",
       "itemId": "reported:volatile-explosives",
       "quantity": 30,
-      "consumption": "unknown",
-      "status": "unverified",
       "sourceIds": [
         "source:detonated-fob-20261025"
-      ]
+      ],
+      "status": "unverified"
     },
     {
+      "consumption": "unknown",
       "itemId": "reported:nano-structured-alloy",
       "quantity": 10,
-      "consumption": "unknown",
-      "status": "unverified",
       "sourceIds": [
         "source:detonated-fob-20261025"
-      ]
+      ],
+      "status": "unverified"
     }
   ],
   "requirementsKnown": false,
-  "prerequisites": [],
-  "oneTime": true,
-  "effects": [],
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
   "spoiler": false,
+  "status": "unverified",
+  "track": "dmz-upgrade",
   "upgrade": {
-    "tierLabel": "III",
-    "prerequisiteStatus": "unknown",
     "observationKeys": [
       "detonated-stash-weapon-upgrade-iii-20261025"
-    ]
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "III"
   }
 }

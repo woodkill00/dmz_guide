@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-thermite-route-1",
   "entityId": "reported:unlock-thermite",
   "field": "recipeUnlockRoute.level",
-  "value": 41,
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-thermite-route-1",
   "locator": "Level Unlock Recipes",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": 41
 }

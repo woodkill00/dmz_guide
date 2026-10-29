@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-fulton-drop-marker-item",
   "entityId": "reported:unlock-fulton-drop-marker",
   "field": "unlockedRecipeItem",
-  "value": "reported:fulton-drop-marker",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-fulton-drop-marker-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:fulton-drop-marker"
 }

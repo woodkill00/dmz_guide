@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-20-reward-1",
   "entityId": "reported:level-20",
   "field": "reward.station",
-  "value": "{\"type\": \"station\", \"label\": \"Station Unlock — Dog Tag Case\", \"details\": {\"display\": \"enemy operator dog tags\", \"expansionStation\": \"3D Printer\"}}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-20-reward-1",
   "locator": "DMZ Level 20",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"station\", \"label\": \"Station Unlock — Dog Tag Case\", \"details\": {\"display\": \"enemy operator dog tags\", \"expansionStation\": \"3D Printer\"}}"
 }

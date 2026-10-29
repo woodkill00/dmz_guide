@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-door-breacher-charge-item",
   "entityId": "reported:unlock-door-breacher-charge",
   "field": "unlockedRecipeItem",
-  "value": "reported:door-breacher-charge",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-door-breacher-charge-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:door-breacher-charge"
 }

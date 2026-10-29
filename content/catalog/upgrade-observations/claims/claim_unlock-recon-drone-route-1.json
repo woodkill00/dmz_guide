@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-recon-drone-route-1",
   "entityId": "reported:unlock-recon-drone",
   "field": "recipeUnlockRoute.order",
-  "value": "Counterfeit 1/2",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-recon-drone-route-1",
   "locator": "DMZ Orders Recipes",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "Counterfeit 1/2"
 }

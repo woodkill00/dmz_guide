@@ -1,16 +1,16 @@
 {
+  "description": "Recipe unlock reference only. Craft ingredients and output batch yield are not provided. Reported routes: level: Level 31; loot: Extract a looted recipe; article labels this list loot-only. These are separate reported routes, not combined prerequisites. Conflict: a level unlock and a loot-only claim coexist; neither is selected as authoritative.",
+  "effects": [],
   "id": "reported:unlock-uav",
   "name": "UAV recipe unlock",
-  "description": "Recipe unlock reference only. Craft ingredients and output batch yield are not provided. Reported routes: level: Level 31; loot: Extract a looted recipe; article labels this list loot-only. These are separate reported routes, not combined prerequisites. Conflict: a level unlock and a loot-only claim coexist; neither is selected as authoritative.",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
   "sourceIds": [
     "source:detonated-recipes-20261019"
   ],
+  "spoiler": false,
   "status": "disputed",
-  "track": "progression",
-  "requirements": [],
-  "requirementsKnown": false,
-  "prerequisites": [],
-  "oneTime": true,
-  "effects": [],
-  "spoiler": false
+  "track": "progression"
 }

@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-69-rank",
   "entityId": "reported:level-69",
   "field": "dmzLevel",
-  "value": 69,
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-69-rank",
   "locator": "DMZ Level 69",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": 69
 }

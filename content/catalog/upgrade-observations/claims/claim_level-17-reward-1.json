@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-17-reward-1",
   "entityId": "reported:level-17",
   "field": "reward.recipe",
-  "value": "{\"type\": \"recipe\", \"label\": \"Shock Stick — Recipe\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-17-reward-1",
   "locator": "DMZ Level 17",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"recipe\", \"label\": \"Shock Stick — Recipe\"}"
 }

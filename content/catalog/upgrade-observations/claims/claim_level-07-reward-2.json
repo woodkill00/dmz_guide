@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-07-reward-2",
   "entityId": "reported:level-07",
   "field": "reward.recipe",
-  "value": "{\"type\": \"recipe\", \"label\": \"Frag Grenade — Recipe\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-07-reward-2",
   "locator": "DMZ Level 7",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"recipe\", \"label\": \"Frag Grenade — Recipe\"}"
 }

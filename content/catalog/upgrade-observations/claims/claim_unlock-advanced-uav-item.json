@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-advanced-uav-item",
   "entityId": "reported:unlock-advanced-uav",
   "field": "unlockedRecipeItem",
-  "value": "reported:advanced-uav",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-advanced-uav-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:advanced-uav"
 }

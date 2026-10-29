@@ -1,14 +1,14 @@
 {
+  "aliases": [],
+  "category": "equipment",
+  "description": "Community-source item identity. Current build, locations and unlisted mechanics remain unverified. A recipe unlock is reported; see its separate progression record. Craft costs and batch yield are unknown in this source.",
   "id": "reported:3-plate-ballistic-gel-vest",
+  "kind": "item",
   "name": "3-Plate Ballistic Gel Vest",
   "sourceIds": [
     "source:detonated-recipes-20261019"
   ],
+  "stats": [],
   "status": "unverified",
-  "kind": "item",
-  "category": "equipment",
-  "unit": "count",
-  "description": "Community-source item identity. Current build, locations and unlisted mechanics remain unverified. A recipe unlock is reported; see its separate progression record. Craft costs and batch yield are unknown in this source.",
-  "aliases": [],
-  "stats": []
+  "unit": "count"
 }

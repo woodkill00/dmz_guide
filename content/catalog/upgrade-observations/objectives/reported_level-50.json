@@ -1,16 +1,16 @@
 {
+  "description": "Community-reported DMZ level milestone. Reported rewards: Station Upgrade — 50% Bounty Payout. Manual tracking does not grant items, recipes or purchased upgrade completion.",
+  "effects": [],
   "id": "reported:level-50",
   "name": "DMZ Level 50 rewards",
-  "description": "Community-reported DMZ level milestone. Reported rewards: Station Upgrade — 50% Bounty Payout. Manual tracking does not grant items, recipes or purchased upgrade completion.",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
   "sourceIds": [
     "source:detonated-levels-20261020"
   ],
+  "spoiler": false,
   "status": "unverified",
-  "track": "progression",
-  "requirements": [],
-  "requirementsKnown": false,
-  "prerequisites": [],
-  "oneTime": true,
-  "effects": [],
-  "spoiler": false
+  "track": "progression"
 }

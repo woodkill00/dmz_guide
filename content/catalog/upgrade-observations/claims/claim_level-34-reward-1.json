@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-34-reward-1",
   "entityId": "reported:level-34",
   "field": "reward.item",
-  "value": "{\"type\": \"item\", \"label\": \"Large Backpack — Epic Consumable\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-34-reward-1",
   "locator": "DMZ Level 34",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"Large Backpack — Epic Consumable\"}"
 }

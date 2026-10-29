@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-shock-stick-route-1",
   "entityId": "reported:unlock-shock-stick",
   "field": "recipeUnlockRoute.level",
-  "value": 17,
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-shock-stick-route-1",
   "locator": "Level Unlock Recipes",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": 17
 }

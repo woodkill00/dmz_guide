@@ -1,33 +1,33 @@
 {
+  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
+  "effects": [],
   "id": "reported:bank-upgrade-ii",
   "name": "Bank Upgrade II",
-  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
-  "sourceIds": [
-    "source:detonated-fob-20261025"
-  ],
-  "status": "unverified",
-  "track": "dmz-upgrade",
+  "oneTime": true,
+  "prerequisites": [],
   "requirements": [
     {
+      "consumption": "unknown",
       "itemId": "observed:cash",
       "quantity": 50000,
-      "consumption": "unknown",
-      "status": "unverified",
       "sourceIds": [
         "source:detonated-fob-20261025"
-      ]
+      ],
+      "status": "unverified"
     }
   ],
   "requirementsKnown": false,
-  "prerequisites": [],
-  "oneTime": true,
-  "effects": [],
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
   "spoiler": false,
+  "status": "unverified",
+  "track": "dmz-upgrade",
   "upgrade": {
-    "tierLabel": "II",
-    "prerequisiteStatus": "unknown",
     "observationKeys": [
       "detonated-bank-upgrade-ii-20261025"
-    ]
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "II"
   }
 }

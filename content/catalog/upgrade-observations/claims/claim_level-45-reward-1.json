@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-45-reward-1",
   "entityId": "reported:level-45",
   "field": "reward.station",
-  "value": "{\"type\": \"station\", \"label\": \"Station Upgrade — +18 Stash Slots\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-45-reward-1",
   "locator": "DMZ Level 45",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"station\", \"label\": \"Station Upgrade — +18 Stash Slots\"}"
 }

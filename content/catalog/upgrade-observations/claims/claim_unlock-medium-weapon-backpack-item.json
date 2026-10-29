@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-medium-weapon-backpack-item",
   "entityId": "reported:unlock-medium-weapon-backpack",
   "field": "unlockedRecipeItem",
-  "value": "reported:medium-weapon-backpack",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-medium-weapon-backpack-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:medium-weapon-backpack"
 }

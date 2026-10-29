@@ -1,8 +1,7 @@
 {
-  "id": "guide:source-material-totals",
-  "title": "Source-listed material totals",
-  "category": "progression",
   "body": "Summing the 28 individual FOB definitions gives 889 noncash units across 37 material identities. Known cash is 2,840,000, with eight prices absent; that subtotal is not a full cash requirement. Individual item claims retain the source total for review. These are source-reference aggregates, not remaining needs or a verified cumulative prerequisite graph.",
+  "category": "progression",
+  "id": "guide:source-material-totals",
   "relatedIds": [
     "observed:detonators",
     "observed:binding-catalyst",
@@ -46,5 +45,6 @@
     "source:detonated-fob-20261025"
   ],
   "spoiler": false,
-  "status": "unverified"
+  "status": "unverified",
+  "title": "Source-listed material totals"
 }

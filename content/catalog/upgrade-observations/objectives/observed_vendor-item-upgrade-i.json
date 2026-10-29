@@ -47,13 +47,13 @@
       "status": "observed"
     },
     {
+      "consumption": "unknown",
       "itemId": "observed:cash",
       "quantity": null,
-      "consumption": "unknown",
-      "status": "unknown",
       "sourceIds": [
         "source:detonated-fob-20261025"
-      ]
+      ],
+      "status": "unknown"
     }
   ],
   "requirementsKnown": false,

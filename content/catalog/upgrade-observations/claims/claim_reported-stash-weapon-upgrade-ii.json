@@ -1,9 +1,9 @@
 {
-  "id": "claim:reported-stash-weapon-upgrade-ii",
   "entityId": "observed:stash-weapon-upgrade-ii",
   "field": "sourceListedRequirements",
-  "value": "{\"cash\": 100000, \"materials\": {\"Structural Alloy\": 20, \"High-Tenacity Fibers\": 20, \"Turned Components\": 10}}",
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:reported-stash-weapon-upgrade-ii",
   "locator": "Stash Weapon Upgrade",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 100000, \"materials\": {\"Structural Alloy\": 20, \"High-Tenacity Fibers\": 20, \"Turned Components\": 10}}"
 }

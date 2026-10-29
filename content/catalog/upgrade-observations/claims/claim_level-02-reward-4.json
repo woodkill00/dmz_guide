@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-02-reward-4",
   "entityId": "reported:level-02",
   "field": "reward.recipe",
-  "value": "{\"type\": \"recipe\", \"label\": \"Small Backpack — Recipe\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-02-reward-4",
   "locator": "DMZ Level 2",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"recipe\", \"label\": \"Small Backpack — Recipe\"}"
 }

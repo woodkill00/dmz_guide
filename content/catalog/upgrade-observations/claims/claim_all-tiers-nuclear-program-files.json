@@ -1,9 +1,9 @@
 {
-  "id": "claim:all-tiers-nuclear-program-files",
   "entityId": "reported:nuclear-program-files",
   "field": "sourceListedAllTiersMaterialCount",
-  "value": 15,
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:all-tiers-nuclear-program-files",
   "locator": "What Items You Need to Keep in DMZ",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": 15
 }

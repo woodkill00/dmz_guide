@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-2-plate-armor-vest-route-1",
   "entityId": "reported:unlock-2-plate-armor-vest",
   "field": "recipeUnlockRoute.level",
-  "value": 2,
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-2-plate-armor-vest-route-1",
   "locator": "Level Unlock Recipes",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": 2
 }

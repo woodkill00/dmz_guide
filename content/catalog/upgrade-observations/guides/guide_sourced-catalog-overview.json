@@ -1,8 +1,7 @@
 {
-  "id": "guide:sourced-catalog-overview",
-  "title": "Using the expanded upgrade and unlock reference",
-  "category": "progression",
   "body": "This catalog combines eight preserved observations with community-source reference records. Select an upgrade to inspect its item quantities; use Inventory for your own stock and Progression for manual status. Source-listed totals are not personal remaining needs. Unknown consumption or cost makes Keep/Search partial and prevents a new purchase entry. Existing history is retained.\nRecipe unlock conditions are separate from crafting ingredients and batch yield. The supplied recipe page does not provide those costs, so no executable recipes are created. Level rewards are reference only and never add inventory automatically.\nThe source lists 28 FOB tiers, 75 distinct recipe identities via 77 routes, and 69 milestones covering levels 2–70. This is not complete game coverage or verified live-build data.",
+  "category": "progression",
+  "id": "guide:sourced-catalog-overview",
   "relatedIds": [
     "reported:bank-upgrade-i",
     "reported:bank-upgrade-ii",
@@ -41,5 +40,6 @@
     "source:detonated-levels-20261020"
   ],
   "spoiler": false,
-  "status": "unverified"
+  "status": "unverified",
+  "title": "Using the expanded upgrade and unlock reference"
 }

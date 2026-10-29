@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-railgun-sentry-item",
   "entityId": "reported:unlock-railgun-sentry",
   "field": "unlockedRecipeItem",
-  "value": "reported:railgun-sentry",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-railgun-sentry-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:railgun-sentry"
 }

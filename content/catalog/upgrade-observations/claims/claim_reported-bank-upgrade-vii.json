@@ -1,9 +1,9 @@
 {
-  "id": "claim:reported-bank-upgrade-vii",
   "entityId": "reported:bank-upgrade-vii",
   "field": "sourceListedRequirements",
-  "value": "{\"cash\": 500000, \"materials\": {\"W.M.D. Manifest\": 10}}",
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:reported-bank-upgrade-vii",
   "locator": "Bank Upgrade",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 500000, \"materials\": {\"W.M.D. Manifest\": 10}}"
 }

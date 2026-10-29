@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-claymore-item",
   "entityId": "reported:unlock-claymore",
   "field": "unlockedRecipeItem",
-  "value": "reported:claymore",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-claymore-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:claymore"
 }

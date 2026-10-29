@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-37-reward-1",
   "entityId": "reported:level-37",
   "field": "reward.item",
-  "value": "{\"type\": \"item\", \"label\": \"3-Plate Armor Vest — Epic Consumable\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-37-reward-1",
   "locator": "DMZ Level 37",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"3-Plate Armor Vest — Epic Consumable\"}"
 }

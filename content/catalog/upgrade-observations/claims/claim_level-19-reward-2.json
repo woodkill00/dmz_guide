@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-19-reward-2",
   "entityId": "reported:level-19",
   "field": "reward.item",
-  "value": "{\"type\": \"item\", \"label\": \"Recon Equipment Kit — Uncommon Consumable\", \"contents\": [\"Seeker Drone\", \"Recon Drone\", \"Heartbeat Sensors\", \"Snapshot Grenades\", \"Police Station Key\"]}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-19-reward-2",
   "locator": "DMZ Level 19",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"Recon Equipment Kit — Uncommon Consumable\", \"contents\": [\"Seeker Drone\", \"Recon Drone\", \"Heartbeat Sensors\", \"Snapshot Grenades\", \"Police Station Key\"]}"
 }

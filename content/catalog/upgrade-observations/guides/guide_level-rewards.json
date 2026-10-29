@@ -1,8 +1,7 @@
 {
-  "id": "guide:level-rewards",
-  "title": "DMZ level reward reference",
-  "category": "progression",
   "body": "Milestones are listed for DMZ levels 2–70. Recipe rewards, physical items, station changes and cosmetics remain distinct. Mark only what you have actually observed; no reward inventory is credited. Level 40 and 54 bundles lack identities, and level 15 Simone wording is ambiguous. Station rewards do not establish purchased upgrade tier prerequisites.",
+  "category": "progression",
+  "id": "guide:level-rewards",
   "relatedIds": [
     "reported:level-02",
     "reported:level-03",
@@ -78,5 +77,6 @@
     "source:detonated-levels-20261020"
   ],
   "spoiler": false,
-  "status": "unverified"
+  "status": "unverified",
+  "title": "DMZ level reward reference"
 }

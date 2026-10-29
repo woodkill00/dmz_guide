@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-19-reward-1",
   "entityId": "reported:level-19",
   "field": "reward.cosmetic",
-  "value": "{\"type\": \"cosmetic\", \"label\": \"Hector Operator Skin\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-19-reward-1",
   "locator": "DMZ Level 19",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"cosmetic\", \"label\": \"Hector Operator Skin\"}"
 }

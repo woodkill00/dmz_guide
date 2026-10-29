@@ -1,9 +1,9 @@
 {
-  "id": "claim:reported-stash-item-upgrade-iii",
   "entityId": "observed:stash-item-upgrade-iii",
   "field": "sourceListedRequirements",
-  "value": "{\"cash\": 100000, \"materials\": {\"Binding Catalyst\": 20, \"Stock Rod\": 20, \"Alloyed Plating\": 10}}",
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:reported-stash-item-upgrade-iii",
   "locator": "Stash Item Upgrade",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 100000, \"materials\": {\"Binding Catalyst\": 20, \"Stock Rod\": 20, \"Alloyed Plating\": 10}}"
 }

@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-stim-item",
   "entityId": "reported:unlock-stim",
   "field": "unlockedRecipeItem",
-  "value": "reported:stim",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-stim-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:stim"
 }

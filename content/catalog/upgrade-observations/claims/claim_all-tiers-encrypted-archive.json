@@ -1,9 +1,9 @@
 {
-  "id": "claim:all-tiers-encrypted-archive",
   "entityId": "reported:encrypted-archive",
   "field": "sourceListedAllTiersMaterialCount",
-  "value": 10,
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:all-tiers-encrypted-archive",
   "locator": "What Items You Need to Keep in DMZ",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": 10
 }

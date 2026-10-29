@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-08-rank",
   "entityId": "reported:level-08",
   "field": "dmzLevel",
-  "value": 8,
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-08-rank",
   "locator": "DMZ Level 8",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": 8
 }

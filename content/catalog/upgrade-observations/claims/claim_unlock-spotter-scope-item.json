@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-spotter-scope-item",
   "entityId": "reported:unlock-spotter-scope",
   "field": "unlockedRecipeItem",
-  "value": "reported:spotter-scope",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-spotter-scope-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:spotter-scope"
 }

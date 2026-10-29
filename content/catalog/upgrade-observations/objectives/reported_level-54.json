@@ -1,16 +1,16 @@
 {
+  "description": "Community-reported DMZ level milestone. Reported rewards: 3x Epic Consumable. Manual tracking does not grant items, recipes or purchased upgrade completion. Reward wording or identities are unresolved; inspect the claims.",
+  "effects": [],
   "id": "reported:level-54",
   "name": "DMZ Level 54 rewards",
-  "description": "Community-reported DMZ level milestone. Reported rewards: 3x Epic Consumable. Manual tracking does not grant items, recipes or purchased upgrade completion. Reward wording or identities are unresolved; inspect the claims.",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
   "sourceIds": [
     "source:detonated-levels-20261020"
   ],
+  "spoiler": false,
   "status": "unverified",
-  "track": "progression",
-  "requirements": [],
-  "requirementsKnown": false,
-  "prerequisites": [],
-  "oneTime": true,
-  "effects": [],
-  "spoiler": false
+  "track": "progression"
 }

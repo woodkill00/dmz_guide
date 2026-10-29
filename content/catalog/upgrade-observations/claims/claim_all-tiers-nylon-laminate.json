@@ -1,9 +1,9 @@
 {
-  "id": "claim:all-tiers-nylon-laminate",
   "entityId": "reported:nylon-laminate",
   "field": "sourceListedAllTiersMaterialCount",
-  "value": 30,
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:all-tiers-nylon-laminate",
   "locator": "What Items You Need to Keep in DMZ",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": 30
 }

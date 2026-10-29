@@ -1,8 +1,7 @@
 {
-  "id": "guide:recipe-unlocks",
-  "title": "Recipe unlock reference",
-  "category": "crafting",
   "body": "Find the item in the linked progression records and inspect its reported route claims. Multiple routes are not combined requirements. UAV has unresolved level/loot-only claims. Story routes are hidden until revealed. Ingredients and craft yield remain unknown.",
+  "category": "crafting",
+  "id": "guide:recipe-unlocks",
   "relatedIds": [
     "reported:unlock-1-plate-armor-vest",
     "reported:unlock-bandage",
@@ -84,5 +83,6 @@
     "source:detonated-recipes-20261019"
   ],
   "spoiler": false,
-  "status": "unverified"
+  "status": "unverified",
+  "title": "Recipe unlock reference"
 }

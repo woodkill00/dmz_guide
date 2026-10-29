@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-defibrillator-item",
   "entityId": "reported:unlock-defibrillator",
   "field": "unlockedRecipeItem",
-  "value": "reported:defibrillator",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-defibrillator-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:defibrillator"
 }

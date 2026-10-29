@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-32-reward-1",
   "entityId": "reported:level-32",
   "field": "reward.station",
-  "value": "{\"type\": \"station\", \"label\": \"Station Upgrade — Vendor Upgrade\", \"details\": {\"vendorChange\": \"additional sale items\"}}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-32-reward-1",
   "locator": "DMZ Level 32",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"station\", \"label\": \"Station Upgrade — Vendor Upgrade\", \"details\": {\"vendorChange\": \"additional sale items\"}}"
 }

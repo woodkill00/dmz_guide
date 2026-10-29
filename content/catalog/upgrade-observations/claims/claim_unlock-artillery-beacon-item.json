@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-artillery-beacon-item",
   "entityId": "reported:unlock-artillery-beacon",
   "field": "unlockedRecipeItem",
-  "value": "reported:artillery-beacon",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-artillery-beacon-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:artillery-beacon"
 }

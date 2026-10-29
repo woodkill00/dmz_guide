@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-sticky-grenade-route-1",
   "entityId": "reported:unlock-sticky-grenade",
   "field": "recipeUnlockRoute.level",
-  "value": 23,
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-sticky-grenade-route-1",
   "locator": "Level Unlock Recipes",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": 23
 }

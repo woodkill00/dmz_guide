@@ -1,9 +1,9 @@
 {
-  "id": "claim:reported-epic-ingredient-printing",
   "entityId": "reported:epic-ingredient-printing",
   "field": "sourceListedRequirements",
-  "value": "{\"cash\": 100000, \"materials\": {\"Binding Catalyst\": 10, \"Printed Circuit Board\": 10, \"Military Composites\": 5}}",
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:reported-epic-ingredient-printing",
   "locator": "Epic Ingredient Printing",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 100000, \"materials\": {\"Binding Catalyst\": 10, \"Printed Circuit Board\": 10, \"Military Composites\": 5}}"
 }

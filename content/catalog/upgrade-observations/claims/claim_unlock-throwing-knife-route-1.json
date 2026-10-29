@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-throwing-knife-route-1",
   "entityId": "reported:unlock-throwing-knife",
   "field": "recipeUnlockRoute.level",
-  "value": 7,
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-throwing-knife-route-1",
   "locator": "Level Unlock Recipes",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": 7
 }

@@ -1,9 +1,9 @@
 {
-  "id": "claim:reported-stash-item-upgrade-i",
   "entityId": "reported:stash-item-upgrade-i",
   "field": "sourceListedRequirements",
-  "value": "{\"cash\": 10000, \"materials\": {\"Rigid Synthetics\": 10, \"Electronic Sensors\": 10}}",
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:reported-stash-item-upgrade-i",
   "locator": "Stash Item Upgrade",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 10000, \"materials\": {\"Rigid Synthetics\": 10, \"Electronic Sensors\": 10}}"
 }

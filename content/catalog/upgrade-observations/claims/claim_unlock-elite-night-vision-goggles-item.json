@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-elite-night-vision-goggles-item",
   "entityId": "reported:unlock-elite-night-vision-goggles",
   "field": "unlockedRecipeItem",
-  "value": "reported:elite-night-vision-goggles",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-elite-night-vision-goggles-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:elite-night-vision-goggles"
 }

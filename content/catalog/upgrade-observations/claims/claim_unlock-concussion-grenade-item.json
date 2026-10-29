@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-concussion-grenade-item",
   "entityId": "reported:unlock-concussion-grenade",
   "field": "unlockedRecipeItem",
-  "value": "reported:concussion-grenade",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-concussion-grenade-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:concussion-grenade"
 }

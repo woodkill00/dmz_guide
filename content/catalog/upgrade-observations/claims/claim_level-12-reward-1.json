@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-12-reward-1",
   "entityId": "reported:level-12",
   "field": "reward.station",
-  "value": "{\"type\": \"station\", \"label\": \"Station Upgrade — Field Upgrades\", \"details\": {\"printingCategory\": \"field upgrades\"}}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-12-reward-1",
   "locator": "DMZ Level 12",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"station\", \"label\": \"Station Upgrade — Field Upgrades\", \"details\": {\"printingCategory\": \"field upgrades\"}}"
 }

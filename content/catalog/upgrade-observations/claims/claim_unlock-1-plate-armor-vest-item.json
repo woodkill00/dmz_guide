@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-1-plate-armor-vest-item",
   "entityId": "reported:unlock-1-plate-armor-vest",
   "field": "unlockedRecipeItem",
-  "value": "reported:1-plate-armor-vest",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-1-plate-armor-vest-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:1-plate-armor-vest"
 }

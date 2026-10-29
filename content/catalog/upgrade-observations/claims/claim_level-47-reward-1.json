@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-47-reward-1",
   "entityId": "reported:level-47",
   "field": "reward.material",
-  "value": "{\"type\": \"material\", \"label\": \"2x Nitro Compounds — Rare Ingredient\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-47-reward-1",
   "locator": "DMZ Level 47",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"material\", \"label\": \"2x Nitro Compounds — Rare Ingredient\"}"
 }

@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-trip-wire-item",
   "entityId": "reported:unlock-trip-wire",
   "field": "unlockedRecipeItem",
-  "value": "reported:trip-wire",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-trip-wire-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:trip-wire"
 }

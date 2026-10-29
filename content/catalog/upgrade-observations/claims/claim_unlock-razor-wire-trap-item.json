@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-razor-wire-trap-item",
   "entityId": "reported:unlock-razor-wire-trap",
   "field": "unlockedRecipeItem",
-  "value": "reported:razor-wire-trap",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-razor-wire-trap-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:razor-wire-trap"
 }

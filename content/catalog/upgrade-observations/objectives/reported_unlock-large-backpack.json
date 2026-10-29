@@ -1,16 +1,16 @@
 {
+  "description": "Recipe unlock reference only. Craft ingredients and output batch yield are not provided. Reported routes: order: DMZ Order 10.",
+  "effects": [],
   "id": "reported:unlock-large-backpack",
   "name": "Large Backpack recipe unlock",
-  "description": "Recipe unlock reference only. Craft ingredients and output batch yield are not provided. Reported routes: order: DMZ Order 10.",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
   "sourceIds": [
     "source:detonated-recipes-20261019"
   ],
+  "spoiler": false,
   "status": "unverified",
-  "track": "progression",
-  "requirements": [],
-  "requirementsKnown": false,
-  "prerequisites": [],
-  "oneTime": true,
-  "effects": [],
-  "spoiler": false
+  "track": "progression"
 }

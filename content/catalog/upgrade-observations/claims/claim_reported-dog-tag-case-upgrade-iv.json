@@ -1,9 +1,9 @@
 {
-  "id": "claim:reported-dog-tag-case-upgrade-iv",
   "entityId": "reported:dog-tag-case-upgrade-iv",
   "field": "sourceListedRequirements",
-  "value": "{\"cash\": 200000, \"materials\": {\"CPU\": 20, \"Stabilized Reagents\": 10, \"Experimental Compounds\": 5}}",
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:reported-dog-tag-case-upgrade-iv",
   "locator": "Dog Tag Case Storage Upgrade",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 200000, \"materials\": {\"CPU\": 20, \"Stabilized Reagents\": 10, \"Experimental Compounds\": 5}}"
 }

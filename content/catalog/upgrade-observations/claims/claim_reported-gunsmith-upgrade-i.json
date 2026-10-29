@@ -1,9 +1,9 @@
 {
-  "id": "claim:reported-gunsmith-upgrade-i",
   "entityId": "reported:gunsmith-upgrade-i",
   "field": "sourceListedRequirements",
-  "value": "{\"cash\": 50000, \"materials\": {\"Reactive Metals\": 20, \"CPU\": 10, \"Power Regulator\": 5}}",
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:reported-gunsmith-upgrade-i",
   "locator": "Gunsmith Discount",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 50000, \"materials\": {\"Reactive Metals\": 20, \"CPU\": 10, \"Power Regulator\": 5}}"
 }

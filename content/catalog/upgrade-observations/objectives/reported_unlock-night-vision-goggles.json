@@ -1,16 +1,16 @@
 {
+  "description": "Recipe unlock reference only. Craft ingredients and output batch yield are not provided. Reported routes: story: Operation: Shopping Hacks; order: Underground 1/2. These are separate reported routes, not combined prerequisites.",
+  "effects": [],
   "id": "reported:unlock-night-vision-goggles",
   "name": "Night Vision Goggles recipe unlock",
-  "description": "Recipe unlock reference only. Craft ingredients and output batch yield are not provided. Reported routes: story: Operation: Shopping Hacks; order: Underground 1/2. These are separate reported routes, not combined prerequisites.",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
   "sourceIds": [
     "source:detonated-recipes-20261019"
   ],
+  "spoiler": true,
   "status": "unverified",
-  "track": "progression",
-  "requirements": [],
-  "requirementsKnown": false,
-  "prerequisites": [],
-  "oneTime": true,
-  "effects": [],
-  "spoiler": true
+  "track": "progression"
 }

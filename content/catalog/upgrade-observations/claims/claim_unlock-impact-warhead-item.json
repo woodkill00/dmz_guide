@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-impact-warhead-item",
   "entityId": "reported:unlock-impact-warhead",
   "field": "unlockedRecipeItem",
-  "value": "reported:impact-warhead",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-impact-warhead-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:impact-warhead"
 }

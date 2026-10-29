@@ -1,9 +1,9 @@
 {
-  "id": "claim:reported-bank-upgrade-iv",
   "entityId": "observed:bank-upgrade-iv",
   "field": "sourceListedRequirements",
-  "value": "{\"cash\": 200000, \"materials\": {\"Ballistic Flight Logs\": 5, \"Regional Combat Notes\": 5}}",
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:reported-bank-upgrade-iv",
   "locator": "Bank Upgrade",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 200000, \"materials\": {\"Ballistic Flight Logs\": 5, \"Regional Combat Notes\": 5}}"
 }

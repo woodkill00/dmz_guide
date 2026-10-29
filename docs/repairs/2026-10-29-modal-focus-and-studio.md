@@ -52,3 +52,49 @@ Assessment: the harness created response observers, awaited a potentially pendin
 On caught failure, capture a bounded tail (80 entries per event category) of requests, responses, failed requests, console errors and page errors plus selected catalog, current save/error text, busy/preview/control state before closing the owned context/server. Synthetic fixtures only; no private profiles are collected. Three deterministic runtime tests cover an observer rejecting while the UI action is pending, a later observer rejection after fail-fast handling, action failure identity, and successful response ordering. They pass locally. Integrated browser CI remains required to establish whether the original save flow succeeds or expose its underlying cause; this run remains FAIL.
 
 Observer repair local verification: 11 observer/ownership focused tests PASS, including a caught response failure while its action is still pending, diagnostic persistence and exact current-server/context closure. The first full run exposed four outdated lifecycle mocks lacking the newly observed page API; the mocks were extended without changing their ownership/error assertions. The corrected full runtime run passed 602 tests with one Windows-only skip; repository and formatting checks passed. Actual Windows Studio remains pending integrated CI, not locally verified.
+
+## Windows first-save write amplification (2026-10-29)
+
+Quality run `40956690486`, Windows job `123738496296`, PR head `ff582c15`
+(merge SHA `7278d540`) now retains `studio-chromium-failure.json` in artifact
+`12933094816`. The first `demo-training` synthetic save issued `POST /api/save`
+but received no response within the unchanged 30-second observer deadline. The
+page remained busy with “Saving validated repository files…”. Initial modules,
+session, catalog and change summary all returned 200; no console, page or
+request-failure errors were recorded. This is not a missed button click.
+
+An isolated copy of the integrated repository reproduces a concrete amplification
+bug: a change to only the demo pack header asks the actual author store to rewrite
+650 files, including 649 untouched source-catalog JSON files. The imported JSON
+used insertion-order keys rather than the existing `catalogJSON` canonical sorted
+keys. Every unrelated rewrite incurs the full durable journal/backup/install
+protocol. A local Linux profile measured 8.18 seconds, 117,818 `lstat`, 46,017
+`readdir` and 10,987 `open` calls. After canonicalizing those 649 files with the
+existing serializer, the identical save changes exactly one file and measured
+3.28 seconds, 61,355 `lstat`, 7,726 `readdir` and 3,848 `open` calls. These timings
+are diagnostic observations, not a cross-platform performance guarantee.
+
+The repair changes key order only. Parsed JSON equality was verified for all 649
+files (including array order and all values); no game facts, identities, catalog
+membership, private state, schema or transaction behavior changes. No deadline,
+HTTP/status assertion, filesystem safety check or health check is relaxed. A
+runtime regression requires all checked-in catalog bytes to match the canonical
+serializer, then performs an actual isolated store save and asserts exactly the
+edited demo header/objective are written while every other source/media file is
+byte-identical. Restoring one original noncanonical claim makes this regression
+fail before a save. Windows CI must establish whether eliminating the measured
+amplification resolves its deadline failure; local evidence alone cannot do so.
+
+Local validation of this repair: full runtime suite 615 tests / 614 passed /
+1 Windows-only skipped / 0 failed; canonical-byte and actual-write-set regression
+passed, with the deliberate original-byte negative case failing as expected;
+repository contracts, formatting, and the 734-route build passed. Browser behavior
+still requires the supported CI runners because this sandbox cannot launch Chrome.
+
+Independent review passed parsed-value/array-order identity and 44 targeted
+catalog/source/content/spending tests. The published pack serialization already
+uses `catalogJSON`, so this byte normalization does not alter published content
+or its pack digest. The raw repository revision intentionally changes: an already
+open Studio draft remains protected by its existing stale-revision check and
+must be exported/reconciled or reloaded before saving; its old revision is not
+silently accepted. Python validation also passed all 40 tests.

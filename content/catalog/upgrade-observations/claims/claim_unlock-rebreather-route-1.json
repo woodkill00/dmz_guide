@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-rebreather-route-1",
   "entityId": "reported:unlock-rebreather",
   "field": "recipeUnlockRoute.loot",
-  "value": "Extract a looted recipe; article labels this list loot-only",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-rebreather-route-1",
   "locator": "Looted Recipes",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "Extract a looted recipe; article labels this list loot-only"
 }

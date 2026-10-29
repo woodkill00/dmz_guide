@@ -1,16 +1,16 @@
 {
+  "description": "Recipe unlock reference only. Craft ingredients and output batch yield are not provided. Reported routes: loot: Extract a looted recipe; article labels this list loot-only.",
+  "effects": [],
   "id": "reported:unlock-bomb-glider",
   "name": "Bomb Glider recipe unlock",
-  "description": "Recipe unlock reference only. Craft ingredients and output batch yield are not provided. Reported routes: loot: Extract a looted recipe; article labels this list loot-only.",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
   "sourceIds": [
     "source:detonated-recipes-20261019"
   ],
+  "spoiler": false,
   "status": "unverified",
-  "track": "progression",
-  "requirements": [],
-  "requirementsKnown": false,
-  "prerequisites": [],
-  "oneTime": true,
-  "effects": [],
-  "spoiler": false
+  "track": "progression"
 }

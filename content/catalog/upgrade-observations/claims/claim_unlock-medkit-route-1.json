@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-medkit-route-1",
   "entityId": "reported:unlock-medkit",
   "field": "recipeUnlockRoute.level",
-  "value": 2,
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-medkit-route-1",
   "locator": "Level Unlock Recipes",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": 2
 }

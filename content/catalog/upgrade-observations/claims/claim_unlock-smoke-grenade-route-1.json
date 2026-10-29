@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-smoke-grenade-route-1",
   "entityId": "reported:unlock-smoke-grenade",
   "field": "recipeUnlockRoute.level",
-  "value": 4,
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-smoke-grenade-route-1",
   "locator": "Level Unlock Recipes",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": 4
 }

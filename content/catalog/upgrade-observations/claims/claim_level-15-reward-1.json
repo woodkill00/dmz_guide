@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-15-reward-1",
   "entityId": "reported:level-15",
   "field": "reward.unknown",
-  "value": "{\"type\": \"unknown\", \"label\": \"Simone Operator Skill\", \"uncertainty\": \"Reward identity or wording is incomplete; verify in game.\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-15-reward-1",
   "locator": "DMZ Level 15",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"unknown\", \"label\": \"Simone Operator Skill\", \"uncertainty\": \"Reward identity or wording is incomplete; verify in game.\"}"
 }

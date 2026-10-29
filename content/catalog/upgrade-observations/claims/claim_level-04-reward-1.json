@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-04-reward-1",
   "entityId": "reported:level-04",
   "field": "reward.cosmetic",
-  "value": "{\"type\": \"cosmetic\", \"label\": \"Reece Operator Skin\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-04-reward-1",
   "locator": "DMZ Level 4",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"cosmetic\", \"label\": \"Reece Operator Skin\"}"
 }

@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-29-reward-1",
   "entityId": "reported:level-29",
   "field": "reward.material",
-  "value": "{\"type\": \"material\", \"label\": \"2x Detonators — Uncommon Ingredient\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-29-reward-1",
   "locator": "DMZ Level 29",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"material\", \"label\": \"2x Detonators — Uncommon Ingredient\"}"
 }

@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-inflatable-decoy-route-1",
   "entityId": "reported:unlock-inflatable-decoy",
   "field": "recipeUnlockRoute.level",
-  "value": 52,
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-inflatable-decoy-route-1",
   "locator": "Level Unlock Recipes",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": 52
 }

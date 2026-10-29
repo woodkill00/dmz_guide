@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-uav-route-2",
   "entityId": "reported:unlock-uav",
   "field": "recipeUnlockRoute.loot",
-  "value": "Extract a looted recipe; article labels this list loot-only",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-uav-route-2",
   "locator": "Looted Recipes",
-  "status": "disputed"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "disputed",
+  "value": "Extract a looted recipe; article labels this list loot-only"
 }

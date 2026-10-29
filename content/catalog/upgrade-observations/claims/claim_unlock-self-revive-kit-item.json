@@ -1,9 +1,9 @@
 {
-  "id": "claim:unlock-self-revive-kit-item",
   "entityId": "reported:unlock-self-revive-kit",
   "field": "unlockedRecipeItem",
-  "value": "reported:self-revive-kit",
-  "sourceId": "source:detonated-recipes-20261019",
+  "id": "claim:unlock-self-revive-kit-item",
   "locator": "Recipe identity (craft yield unspecified)",
-  "status": "unverified"
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:self-revive-kit"
 }

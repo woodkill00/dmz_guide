@@ -1,16 +1,16 @@
 {
+  "description": "Community-reported DMZ level milestone. Reported rewards: 2x CPU — Rare Ingredient. Manual tracking does not grant items, recipes or purchased upgrade completion.",
+  "effects": [],
   "id": "reported:level-44",
   "name": "DMZ Level 44 rewards",
-  "description": "Community-reported DMZ level milestone. Reported rewards: 2x CPU — Rare Ingredient. Manual tracking does not grant items, recipes or purchased upgrade completion.",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
   "sourceIds": [
     "source:detonated-levels-20261020"
   ],
+  "spoiler": false,
   "status": "unverified",
-  "track": "progression",
-  "requirements": [],
-  "requirementsKnown": false,
-  "prerequisites": [],
-  "oneTime": true,
-  "effects": [],
-  "spoiler": false
+  "track": "progression"
 }

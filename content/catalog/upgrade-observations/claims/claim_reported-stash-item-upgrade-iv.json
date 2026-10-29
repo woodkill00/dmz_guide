@@ -1,9 +1,9 @@
 {
-  "id": "claim:reported-stash-item-upgrade-iv",
   "entityId": "reported:stash-item-upgrade-iv",
   "field": "sourceListedRequirements",
-  "value": "{\"cash\": null, \"materials\": {\"Gold Skull\": 5, \"Alloyed Plating\": 30, \"Experimental Compounds\": 10, \"Turned Components\": 30}}",
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:reported-stash-item-upgrade-iv",
   "locator": "Stash Item Upgrade",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": null, \"materials\": {\"Gold Skull\": 5, \"Alloyed Plating\": 30, \"Experimental Compounds\": 10, \"Turned Components\": 30}}"
 }

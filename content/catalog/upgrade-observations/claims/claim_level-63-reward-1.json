@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-63-reward-1",
   "entityId": "reported:level-63",
   "field": "reward.item",
-  "value": "{\"type\": \"item\", \"label\": \"2-Plate Helmet Armor Vest — Ultra Consumable\"}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-63-reward-1",
   "locator": "DMZ Level 63",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"2-Plate Helmet Armor Vest — Ultra Consumable\"}"
 }

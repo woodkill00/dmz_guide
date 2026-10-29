@@ -1,9 +1,9 @@
 {
-  "id": "claim:reported-stash-weapon-upgrade-iii",
   "entityId": "reported:stash-weapon-upgrade-iii",
   "field": "sourceListedRequirements",
-  "value": "{\"cash\": null, \"materials\": {\"Gold Bar\": 5, \"Stabilized Reagents\": 30, \"Volatile Explosives\": 30, \"Nano-Structured Alloy\": 10}}",
-  "sourceId": "source:detonated-fob-20261025",
+  "id": "claim:reported-stash-weapon-upgrade-iii",
   "locator": "Stash Weapon Upgrade",
-  "status": "unverified"
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": null, \"materials\": {\"Gold Bar\": 5, \"Stabilized Reagents\": 30, \"Volatile Explosives\": 30, \"Nano-Structured Alloy\": 10}}"
 }

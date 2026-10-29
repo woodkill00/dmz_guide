@@ -1,9 +1,9 @@
 {
-  "id": "claim:level-27-reward-1",
   "entityId": "reported:level-27",
   "field": "reward.item",
-  "value": "{\"type\": \"item\", \"label\": \"Triage Kit — Epic Consumable\", \"contents\": [\"Bandages\", \"Med Kits\", \"Painkillers\", \"Self Revives\"]}",
-  "sourceId": "source:detonated-levels-20261020",
+  "id": "claim:level-27-reward-1",
   "locator": "DMZ Level 27",
-  "status": "unverified"
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"Triage Kit — Epic Consumable\", \"contents\": [\"Bandages\", \"Med Kits\", \"Painkillers\", \"Self Revives\"]}"
 }
