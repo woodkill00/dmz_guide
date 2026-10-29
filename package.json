@@ -23,7 +23,8 @@
     "map:install": "npm --prefix tools/hajin-map ci",
     "map:dev": "npm --prefix tools/hajin-map run dev",
     "map:build": "npm --prefix tools/hajin-map run build",
-    "map:test": "npm --prefix tools/hajin-map test && npm --prefix tools/hajin-map run test:inputs",
+    "map:test": "npm --prefix tools/hajin-map test",
+    "map:test:capacity": "npm --prefix tools/hajin-map run test:capacity",
     "map:test:browser": "npm --prefix tools/hajin-map run test:browser"
   },
   "devDependencies": {

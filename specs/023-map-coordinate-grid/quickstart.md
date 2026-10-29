@@ -1,0 +1,2 @@
+# Verify
+Select023-map-coordinate-grid. Run npm run map:test, npm run map:build, npm run map:test:browser, npm run map:test:capacity and py -3 scripts/check.py. Grid browser tests are synthetic/offline; live terrain screenshots remain ignored outside CI artifacts. Verify G6, inset grid edges, pointer/center readout, toggle, zoom/pan/reset/resize, right-click POI and basemap comparison. Document actual results only.

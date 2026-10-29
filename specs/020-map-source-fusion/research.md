@@ -34,3 +34,11 @@ Source registration, masks, synthetic snapshot ingestion, calibration, review an
 ## Clarify record
 
 Resolved from user context: each website is a top-level source; its original categories are sublayers; combined curated output is a separate layer; original evidence stays intact. Custom work is private, local and point-based initially. Existing key direct-open behavior is a regression requirement. No runtime implementation has been claimed. Pending optional scope steering does not block planning. Unsupported game facts, source accuracy and reuse rights remain explicitly unknown rather than guessed.
+
+## Authorized local follow-up (2026-10-26)
+
+After the original acceptance, the owner explicitly confirmed collection permission for CODMunity, WZStats and CODCentral. A bounded owner-local capture was prepared from their public map pages. CODMunity's JSON endpoint returned403; no bypass was attempted. Its already served HTML contained an inert serialized map payload, decoded with a literal-only TypeScript AST reader, without executing imported scripts. WZStats supplied JSON hydration data; CODCentral supplied DOM point records. A normal WZStats page view supplied its displayed icon shapes. Source icons were reduced to a restricted SVG shape/attribute subset or decoded/reencoded PNG. Original metadata and captures remain ignored.
+
+Image correspondence established different crops/scales rather than normalized-square overlays: canonical is4096x4096; source images are CODCentral2880x2700, CODMunity1120x1055 and WZStats1080x1080. Spatially deduplicated feature anchors were split into fit and independent held-out sets. Held-out counts/RMS/max canonical error: CODCentral1903/0.266/4.337px; CODMunity404/0.599/3.359px; WZStats342/0.883/3.907px. Evidence retains source dimensions, affine matrices, feature anchors, source raw records, capture digest and canonical digest. These are display alignment measurements, not game-accuracy verification. No live-activity or independent-corroboration claim follows.
+
+Actual private captures: CODCentral194 records/15 categories; CODMunity103/10; WZStats108/14. Together with the prior official138/21 capture, local display has543 raw markers and60 category entries. Counts describe these snapshots only. No source dataset/assets are added to public history.

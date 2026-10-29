@@ -2,7 +2,7 @@
 
 **Feature Branch**: `feat/020-map-source-fusion`  
 **Created**: 2026-10-26  
-**Status**: Planning; runtime not implemented  
+**Status**: Implemented; final verification and independent review recorded in verification.md
 **Input**: Source layers for CODMunity, WZStats and CODCentral, category masks, comparison and a combined reviewed map, with custom POIs, marks and uploaded icons.
 
 ## User Scenarios & Testing
@@ -48,6 +48,8 @@ As a player, I can create, edit, move and remove private point POIs, locations a
 
 ### Edge Cases
 
+Local interaction follow-up: right-clicking inside the map opens a new private POI draft at that canonical position. No automatic save occurs. An existing draft or preview is preserved; in explicit pick-location mode right-click selects the position for that draft. Out-of-bounds clicks and busy saves must not create points. Numeric keyboard authoring remains available.
+
 Source record ID collisions; stale calibration; inverted axes; rectangular crops; unknown floors; possible spawn versus active object; empty categories; inaccessible assets; source master off with remembered masks; malformed backups; icon references on deletion; tabs racing; migration rollback; derived fields whose reuse rights remain restricted.
 
 ## Requirements
@@ -83,8 +85,16 @@ Source, immutable SourceSnapshot/SourceRecord, CoordinateFrame/Registration, Tax
 
 ## Assumptions and Clarifications
 
-- This turn defines the researched feature and runs artifact analysis; runtime implementation remains a separate tracked phase unless the user requests it during this work.
+- Planning was merged in PR23; implementation is underway on `feat/020-map-workspace-implementation`. Full implementation and acceptance evidence is recorded in verification.md. Provider acquisition defaults gated; the owner-authorized local follow-up below enables private captures on this machine.
 - These are different providers of Hajin information, not confirmed distinct geographic maps. The model supports future map IDs without inventing their content.
 - Private point editing is the first geometry slice. No live match tracking, accounts, automatic harvesting or public sharing is implied.
-- CODMunity and WZStats terms restrict collection; CODCentral reuse permission is unverified. Provider registration can ship while acquisition remains blocked. External permission is an explicit delivery dependency, not a missing specification to assume away.
+- CODMunity and WZStats terms restrict collection; CODCentral reuse permission is unverified. Default registration remains blocked. The later owner-local authorization below supplies collection permission for this machine; it does not grant redistribution.
 - Existing owner-local official assets retain feature019 rights status. Adding providers does not clear redistribution of those assets.
+
+## Owner-local capture follow-up
+
+The owner subsequently explicitly confirmed permission to collect data from the three named providers. This enables machine-local captures only: default registry policy remains reference-only, with opt-in local authorization and hash-bound, reviewed coordinate evidence. Runtime performs no provider requests. Capture bytes, icons and permission declarations stay ignored. Each loaded capture has independent visibility, source/category icons and a bounded preview path into review snapshots. This confirmation does not establish redistribution permission or factual accuracy.
+
+## Reversible duplicate display follow-up
+
+The owner requests one visible marker for likely matching locations across all websites, preferring the Call of Duty source, with `*`/muted source-category rows and preserved source data for completeness checks. This is display grouping, not a canonical merge or verification claim. Same normalized category and positions within24 canonical pixels require matching normalized marker names. Different names never collapse, including facilities at identical coordinates. Normalize Unicode/case, whitespace and punctuation only; do not infer singular/plural or synonym equivalence. Different known floors/builds remain separate. Use representative-based grouping, not transitive chains, with at most one record per website per group. Never suppress nearby objects from the same site. If the preferred source/category is deselected, an enabled matching copy appears. A clearly labelled Show duplicate markers checkbox restores all selected copies for inspection. Custom annotations/reviewed entities remain separate authored layers. Unknown/ambiguous matches stay available and source records/history are never changed.

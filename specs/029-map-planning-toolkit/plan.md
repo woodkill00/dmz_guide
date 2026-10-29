@@ -1,0 +1,18 @@
+# Implementation plan
+Serial vertical slices in the existing TypeScript/Vite/Leaflet/IndexedDB app. No new dependency, schemaVersion stays1 with optional validated fieldGuide. Constitution reviewed: offline/private, inert bounded imports, honest game facts, accessibility, recovery and small testable slices preserved. No amendment/hooks. Scope20kvisible sources+5kowned/reviewed remains.
+
+1. Pure field-guide model/contracts/tracking/duplicate queue/deltas/public-view serialization; graph validation/projection/heap Dijkstra solver and deterministic fixtures. Public links use fixed JSON fragment and strict keys/bounds, no free text IDs.
+2. Dedicated Planner workspace tab with tracking evidence editor/duplicate queue and existing paired highlight/list. Hook marker/search popup actions via guarded callbacks. Capture signatures invalidate same/separate/observation/ref route decisions on source changes. Do not merge snapshots or source evidence.
+3. Gameplay toolbar/preferences, density overlay with clustered visible records and overlapping-list expansion, saved query shortcuts/categories. Disabled clustering leaves current behavior. Overlay starts after rendering and restores sources on disable; enforce no count duplication of suppressed records.
+4. Public view preview/apply and update change-list details reuse existing apply pipeline; no update auto-collection. Private backup validates/restores new optional data without serializing restricted provider coordinates.
+5. Planner routes list with draggable stop handles and reorder buttons; source refs/manual XY, visible/clear/unresolved legs, editable color/name and selection from popup/map. Pure solver generates road polylines plus separately styled connectors; re-run on graph/order/state changes. No server driving API: canonical game image is not Earth geography.
+6. Road editor: enter/draw polylines, merge shared endpoints only, block/direction, preview JSON import, delete/manage; revision-bound atomic save. Fixed local optional graph is read-only and excluded from backup until an explicitly authored edit/import. Generate ignored starter trace from visible main roads, label uncertainty and partial coverage.
+7. Unit/browser/3engine/a11y/build/repository verification, fresh-profile optional-data restore and bad import/draft/quota/CAS tests, independent definition/security/UI review, analysis/convergence fixes. No native/capacity engine change except visible grouping; benchmark dense input before acceptance.
+
+Touched contracts: model/backup, tool-links/Help, explorer/popup/app/source update preview. New pure modules field-guide.ts, roads.ts and field-guide-ui.ts; cluster overlay/map UI module. Preserve027manual gate; evidence not fabricated. Local commits only; no remote writes.
+
+## Delivery status
+All seven implementation stages above are built and automated-verified. Detailed commands, fixtures, measurements and review repairs are in [acceptance.md](acceptance.md); workflow tasks include T014–026 convergence work. Local graph/routing smoke passes; the starter has11segments and remains partial/unverified. Extending and validating real-world coverage is the separate [manual verification](manual-verification.md) work, not a claim of a complete drivable map network.
+
+## Rollback
+Profiles that have not used Planner have no persisted migration. After using it, retain the complete new private backup and separate local assets; an older strict reader may reject the optional fieldGuide field. Restore a retained pre-feature backup when running older code rather than discarding new data from the only copy. No downgrade/mutation runs automatically.

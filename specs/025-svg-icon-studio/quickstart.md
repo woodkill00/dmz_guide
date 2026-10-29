@@ -1,0 +1,2 @@
+# Verify
+Run npm run map:dev; Workspace→My icons. Choose Medical, change colors/frame/symbol/label; save. Assign icon to own POI/category; reload. Edit a copy/save variant; original POI stays unchanged. DownloadSVG/PNG; inspect transparency and no remote content. Private backup/restore retains recipes; raster-only icons remain usable. Cancel a draft and test dirty-tab guards. Keyboard at360px with no overflow. npm run map:test, map:build, map:test:browser; py -3 scripts/check.py. Tests use synthetic/offline maps, never owner data.

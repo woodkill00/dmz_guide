@@ -2,7 +2,7 @@
 
 ## Supported state
 
-This repository is a planning/tooling bootstrap. There is no supported production application release. Treat future content imports, picture bundles, storage migrations and remote links as security-sensitive boundaries.
+This repository includes a runnable static guide and opt-in local authoring/map tools. No supported production release is declared here. Treat content imports, picture bundles, local update services, storage migrations and remote links as security-sensitive boundaries.
 
 ## Report privately
 

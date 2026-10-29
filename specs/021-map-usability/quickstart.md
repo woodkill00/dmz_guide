@@ -1,0 +1,3 @@
+# Verification quickstart
+
+Select specs/021-map-usability. Run npm run map:test and npm run map:build, then npm run map:test:browser and npm run map:test:capacity. Run py -3 scripts/check.py and git diff --check. Use synthetic fixtures only for screenshots/artifacts. Verify search/jump without masks changing, duplicate details/separate/re-enable/reload, presets/flags/backup restore, completeness with and without official data, reminders/time/storage errors, own Edit, keyboard/360px and existing map journeys. Native checks remain separate; no native code changes expected. Record actual results and independent review; analyze/converge read-only, append missing tasks if required.

@@ -1,3 +1,4 @@
+import {markerPopup,markerPopupOptions} from './marker-popup.ts';
 import L from 'leaflet';
 import { hajin } from './hajin';
 import { toPixels, type MapPosition } from './coordinates';
@@ -5,7 +6,7 @@ import type { MarkerSource } from './marker-sources';
 import { boundedBytes } from './bounded-input';
 
 interface Category { id: string; name: string; group: string; icon: string }
-interface SourceRecord extends MapPosition { id: string; name: string; category: string }
+interface SourceRecord extends Omit<MapPosition, 'x'|'y'> { x:number|null; y:number|null; placement?:'reference'; sourceX?:number; sourceY?:number; id: string; name: string; category: string; floor?: string | number | null; notes?: string }
 interface Snapshot { schemaVersion: number; sourcePage: string; capturedAt: string; categories: Category[]; records: SourceRecord[] }
 type State = 'loading' | 'ready' | 'failed';
 
@@ -21,8 +22,10 @@ function parseSnapshot(value: unknown, source: MarkerSource): Snapshot {
   const ids = new Set<string>();
   for (const record of data.records) {
     if (!text(record.id, 100) || !/^[\w.:-]+$/.test(record.id) || ids.has(record.id) || !text(record.name, 200) || !categories.has(record.category)) throw new Error('Invalid source marker.');
-    toPixels(record, hajin);
+    if(record.placement==='reference'){if(source.id!=='mapgenie'||record.x!==null||record.y!==null||![record.sourceX,record.sourceY].every(n=>typeof n==='number'&&Number.isFinite(n)&&n>=0&&n<=1024))throw new Error('Invalid reference entry.');}else{if(record.placement!==undefined||record.x===null||record.y===null)throw new Error('Invalid source position.');toPixels({...record,x:record.x,y:record.y},hajin);}
     ids.add(record.id);
+    if(record.notes!==undefined&&(typeof record.notes!=='string'||record.notes.length>4000))throw new Error('Invalid source notes.');
+    if(record.floor!=null&&!(typeof record.floor==='string'&&text(record.floor,128))&&!(typeof record.floor==='number'&&Number.isFinite(record.floor)))throw new Error('Invalid source floor.');
   }
   return data;
 }
@@ -31,28 +34,41 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   const root = L.layerGroup().addTo(map);
   const groups = new Map<string, L.LayerGroup>();
   const enabled = new Set<string>();
-  let snapshot: Snapshot | undefined;
+  let suppressed = new Set<string>(), duplicates = new Map<string,string>();
+  let snapshot: Snapshot | undefined, captureDigest: string | undefined;
   let master = true;
   let controller: AbortController | undefined;
   let disposed = false;
   let pendingBulk: boolean | undefined;
+  let query = '';
+  let lastEvent = '';
+  let legacyPersistence = true;
+  let restoringSnapshot = false;
+  let capacityBlocked=false;
+  const markerPool: {record: SourceRecord; marker: L.Marker}[] = [];
   const storageKey = `hajin.source-filters.v1.${source.id}`;
   const available = () => snapshot!.categories.filter(category => snapshot!.records.some(record => record.category === category.id));
 
   function persist() {
+    if (!legacyPersistence) return;
     const active = available();
     const selection = enabled.size === active.length ? 'all' : enabled.size === 0 ? 'none' : 'mixed';
     try { localStorage.setItem(storageKey, JSON.stringify({ version: 1, master, selection, enabled: [...enabled] })); } catch { /* Filters still work without browser storage. */ }
   }
 
-  function update() {
+  function update(persistLegacy = true) {
     if (!snapshot) return;
+    if(capacityBlocked){root.clearLayers();onUpdate(0,snapshot.records.length,'failed');capacityMessage();return;}
     root.clearLayers();
+    if (markerPool.length) {
+      groups.forEach(group => group.clearLayers());
+      for (const {record, marker} of markerPool) if (!suppressed.has(record.id) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())) groups.get(record.category)?.addLayer(marker);
+    }
     if (master) for (const [id, group] of groups) if (enabled.has(id)) root.addLayer(group);
-    const visible = master ? snapshot.records.filter(record => enabled.has(record.category)).length : 0;
+    const visible = master ? snapshot.records.filter(record => record.placement!=='reference' && !suppressed.has(record.id) && enabled.has(record.category) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())).length : 0;
     onUpdate(visible, snapshot.records.length, 'ready');
     const count = container.querySelector(`#${source.id}-count`);
-    if (count) count.textContent = `${visible} of ${snapshot.records.length} locations shown`;
+    if (count) count.textContent = `${visible} of ${snapshot.records.length} entries shown`;
     container.querySelectorAll<HTMLInputElement>('[data-category]').forEach(input => { input.checked = !input.disabled && enabled.has(input.dataset.category!); });
     const active = available();
     const selected = active.filter(category => enabled.has(category.id)).length;
@@ -70,21 +86,34 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     keyContainer?.querySelectorAll<HTMLInputElement>('[data-key-category]').forEach(input => {
       input.checked = master && !input.disabled && enabled.has(input.dataset.keyCategory!);
     });
-    persist();
+    for (const host of [container,keyContainer]) host?.querySelectorAll<HTMLInputElement>('[data-category],[data-key-category]').forEach(input => {
+      const category = input.dataset.category ?? input.dataset.keyCategory, records = snapshot!.records.filter(r=>r.category===category), matched = records.filter(r=>duplicates.has(r.id)).length;
+      const row=input.closest('label'), count=row?.querySelector('.category-count');
+      if(count)count.textContent=String(records.length);
+      if(row){row.classList.toggle('duplicate-category',matched>0&&matched===records.length);row.dataset.duplicateCount=String(matched);if(matched)row.title=`* ${matched} likely duplicate locations. One selected source is drawn; enable Show duplicate markers to inspect every source.`;else if(records.length)row.title=records.every(r=>r.placement==='reference')?'Reference entries without terrain locations; find them in Explore.':'';}
+      row?.querySelector('.duplicate-details-button')?.remove();
+      if(matched&&row){const inspect=document.createElement('button');inspect.type='button';inspect.className='duplicate-details-button';inspect.textContent=`* ${matched} matching — details`;inspect.setAttribute('aria-label',`Inspect matching ${category} locations from ${source.name}`);inspect.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();document.dispatchEvent(new CustomEvent('map-duplicate-details',{detail:{sourceId:source.id,categoryId:category}}));});row.append(inspect);}
+    });
+    if (persistLegacy) persist();
+    const detail = {sourceId: source.id, origin: restoringSnapshot ? 'load' : persistLegacy ? 'user' : 'program', master, enabled: [...enabled], categories: snapshot.categories.map(c => c.id)};
+    const signature = JSON.stringify(detail);
+    if (signature !== lastEvent) { lastEvent = signature; document.dispatchEvent(new CustomEvent('map-source-filters', {detail})); }
+    document.dispatchEvent(new CustomEvent('map-source-status'));
   }
 
   function setAll(show: boolean) {
     if (!snapshot) { pendingBulk = show; return; }
     enabled.clear();
     if (show) available().forEach(category => enabled.add(category.id));
-    master = true;
+    if (show) master = true;
     update();
   }
 
   function renderKey() {
     if (!snapshot || !keyContainer) return;
     keyContainer.replaceChildren();
-    const heading = document.createElement('h3'); heading.className = 'key-source-name'; heading.textContent = source.name;
+    const heading = document.createElement('h3'); heading.className = 'key-source-name';
+    const siteLink=document.createElement('a');siteLink.textContent=source.name;siteLink.href=source.page;siteLink.target='_blank';siteLink.rel='noopener noreferrer';heading.append(siteLink);
     const domain = document.createElement('p'); domain.className = 'key-source-domain'; domain.textContent = source.website;
     keyContainer.append(heading, domain);
     for (const group of [...new Set(snapshot.categories.map(category => category.group))]) {
@@ -95,7 +124,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
         const row = document.createElement('label'); row.className = 'category-filter key-item';
         const input = document.createElement('input'); input.type = 'checkbox'; input.dataset.keyCategory = category.id; input.disabled = amount === 0;
         input.addEventListener('change', () => {
-          if (input.checked) { if (!master) enabled.clear(); master = true; enabled.add(category.id); }
+          if (input.checked) { master = true; enabled.add(category.id); }
           else enabled.delete(category.id);
           update();
         });
@@ -116,7 +145,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     container.replaceChildren();
     const card = document.createElement('details'); card.className = 'source-layer'; card.open = true; card.dataset.source = source.id;
     const summary = document.createElement('summary');
-    const heading = document.createElement('span'); heading.className = 'source-name'; heading.textContent = source.name;
+    const heading = document.createElement('a'); heading.className = 'source-name'; heading.textContent = source.name;heading.href=source.page;heading.target='_blank';heading.rel='noopener noreferrer';heading.addEventListener('click',event=>event.stopPropagation());
     const domain = document.createElement('span'); domain.className = 'source-domain'; domain.textContent = source.website;
     const badge = document.createElement('span'); badge.className = 'source-selection';
     summary.append(heading, domain, badge); card.append(summary);
@@ -176,7 +205,8 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
 
   function addRecords() {
     if (!snapshot) return;
-    root.clearLayers(); groups.clear(); enabled.clear();
+    if(capacityBlocked){capacityMessage();return;}
+    root.clearLayers(); groups.clear(); enabled.clear(); markerPool.length = 0;
     const categories = new Map(snapshot.categories.map(c => [c.id, c]));
     for (const category of snapshot.categories) groups.set(category.id, L.layerGroup());
     available().forEach(category => enabled.add(category.id));
@@ -196,6 +226,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       master = true; pendingBulk = undefined;
     }
     for (const record of snapshot.records) {
+      if(record.x===null||record.y===null||record.placement==='reference')continue;
       const category = categories.get(record.category)!;
       const label = source.labelCategories[record.category];
       const content = document.createElement('span');
@@ -209,7 +240,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
         content.append(image);
       }
       const markerIcon = L.divIcon({ className: label ? 'official-label' : 'official-marker', html: content, iconSize: label ? [180, 24] : [28, 34], iconAnchor: label ? [90, 12] : [14, 32] });
-      const [x, y] = toPixels(record, hajin);
+      const [x, y] = toPixels({...record,x:record.x,y:record.y}, hajin);
       const marker = L.marker([y, x], { icon: markerIcon, title: record.name, alt: record.name, keyboard: true, riseOnHover: true });
       marker.on('add', () => {
         const element = marker.getElement();
@@ -218,13 +249,19 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
         element?.setAttribute('data-source-marker-id', record.id);
         element?.setAttribute('aria-label', `${record.name}, ${category.name}, ${source.name}`);
       });
-      const popup = document.createElement('div'); popup.className = 'official-popup';
-      const heading = document.createElement('strong'); heading.textContent = record.name;
+      const {root:popup,details,actions}=markerPopup(record.name);
       const detail = document.createElement('p'); detail.textContent = `${category.name} · ${source.name}`;
       const location = document.createElement('p'); location.textContent = `Image position: ${Math.round(x)}, ${Math.round(y)}`;
       const link = document.createElement('a'); link.href = source.recordLink(record.id); link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = `View on ${source.website} ↗`;
-      popup.append(heading, detail, location, link);
-      marker.bindPopup(popup, { maxWidth: 250 });
+      details.append(detail, location);actions.append(link);
+      const notes=document.createElement('p');notes.textContent=record.notes||'No notes supplied.';
+      const claim=document.createElement('p');claim.textContent=`Source claim · not independently verified · captured ${snapshot.capturedAt}`;
+      const inspect=document.createElement('button');inspect.type='button';inspect.textContent='Details / flag discrepancy';inspect.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('map-record-details',{detail:{sourceId:source.id,recordId:record.id}})));
+      const copy=document.createElement('button');copy.type='button';copy.textContent='Copy coordinates';copy.addEventListener('click',()=>{void (async()=>{try{await navigator.clipboard.writeText(`${x.toFixed(2)}, ${y.toFixed(2)}`);copy.textContent='Coordinates copied';}catch{const fallback=document.createElement('input');fallback.readOnly=true;fallback.value=`${x.toFixed(2)}, ${y.toFixed(2)}`;fallback.setAttribute('aria-label','Coordinates to copy');actions.append(fallback);fallback.focus();fallback.select();}})();});
+      details.append(claim,notes);actions.append(inspect,copy);
+      for(const [action,label] of [['waypoint','Add waypoint'],['tracking','My tracking']]){const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('map-planner-record',{detail:{sourceId:source.id,recordId:record.id,action}})));actions.append(b);}
+      marker.bindPopup(popup, markerPopupOptions);
+      markerPool.push({record, marker});
       groups.get(record.category)!.addLayer(marker);
     }
     renderKey();
@@ -243,12 +280,18 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       const response = await fetch(source.snapshot, { signal: request.signal });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('Expected a JSON snapshot.');
-      const data = parseSnapshot(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await boundedBytes(response, 2 * 1024 * 1024))), source);
+      const bytes = await boundedBytes(response, 2 * 1024 * 1024);
+      const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes as Uint8Array<ArrayBuffer>)), b => b.toString(16).padStart(2, '0')).join('');
+      if (source.snapshotDigest) {
+        if (digest !== source.snapshotDigest) throw new Error('Local snapshot changed; review its coordinate registration again.');
+      }
+      const data = parseSnapshot(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)), source);
       if (disposed || controller !== request) return;
-      snapshot = data; addRecords();
+      snapshot = data; captureDigest=digest; restoringSnapshot = true; try {document.dispatchEvent(new CustomEvent('map-source-status'));addRecords(); } finally { restoringSnapshot = false; }
     } catch {
       if (disposed || controller !== request) return;
       onUpdate(0, 0, 'failed');
+      document.dispatchEvent(new CustomEvent('map-source-status'));
       container.replaceChildren();
       const message = document.createElement('p'); message.textContent = `${source.name} locations couldn’t load. You can still explore the background.`;
       const retry = document.createElement('button'); retry.id = `retry-${source.id}`; retry.textContent = `Retry ${source.name} locations`; retry.addEventListener('click', load);
@@ -262,5 +305,19 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     } finally { clearTimeout(timeout); }
   }
   load();
-  return { reload: load, setAll, destroy() { disposed = true; controller?.abort(); map.removeLayer(root); } };
+  function capacityMessage(){
+    for(const host of [container,keyContainer])if(host&&!host.querySelector('[data-source-capacity]')){host.replaceChildren();const note=document.createElement('p');note.dataset.sourceCapacity=source.id;note.setAttribute('role','status');note.textContent=`${source.name} unavailable: the combined source view exceeds20,000 records. Hide another website layer to make room, or reduce imported source records. This capture is retained.`;const link=document.createElement('a');link.href=source.page;link.target='_blank';link.rel='noopener noreferrer';link.textContent=`Open ${source.name}`;host.append(note,link);}
+  }
+  return { id: source.id, reload: load, setAll,
+    setCapacityBlocked(value:boolean){if(value===capacityBlocked)return;capacityBlocked=value;if(value){root.clearLayers();groups.clear();markerPool.length=0;capacityMessage();onUpdate(0,snapshot?.records.length??0,'failed');}else if(snapshot){restoringSnapshot=true;try{addRecords();}finally{restoringSnapshot=false;}}},
+    async replaceCapture(next: MarkerSource) { if(next.id!==source.id||next.page!==source.page)throw new Error('Source identity cannot change.');Object.assign(source,next);await load();if(!snapshot)throw new Error(`${source.name} capture could not reload. Reload the page to retry.`); },
+    setPresentationHidden(hidden:boolean){if(hidden)map.removeLayer(root);else if(!map.hasLayer(root))root.addTo(map);},
+    getSnapshot: () => snapshot,
+    getSnapshotDigest: () => captureDigest,
+    getSnapshotLocation:()=>({snapshot:source.snapshot,iconDirectory:source.iconDirectory,digest:captureDigest??null}),
+    getFilters: () => ({master, enabled: [...enabled], categories: snapshot?.categories.map(c => c.id) ?? []}),
+    setFilters(value: {master: boolean; enabled: string[]; query?: string; persistLegacy?: boolean; suppressed?: Set<string>; duplicates?: Map<string,string>}) { master = value.master; enabled.clear(); const valid = new Set(snapshot ? available().map(category => category.id) : []); value.enabled.forEach(id => { if (valid.has(id)) enabled.add(id); }); query = value.query ?? query; suppressed=value.suppressed??suppressed; duplicates=value.duplicates??duplicates; update(value.persistLegacy ?? false); },
+    setQuery(value: string) { query = value; update(false); },
+    setLegacyPersistence(value: boolean) { legacyPersistence = value; },
+    destroy() { disposed = true; controller?.abort(); map.removeLayer(root); } };
 }

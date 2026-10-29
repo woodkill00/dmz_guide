@@ -1,0 +1,6 @@
+# Final consistency / convergence analysis
+2026-10-28. FR001–003/SC001 map to T001–007. No schema migration or source permission change. Initial definition accepted independently by integration_review in checklists/review.md. Manual scoped full-cycle fallback used; the optional bug extension is not installed and no extension commands are claimed. No configured hooks.
+
+T002 delivers the shared DOM-only popup/header/detail/action contract across source, private/reviewed and search markers. T003 exercises long source and owned popups, short content, keyboard/wheel, line breaks/long words, inert markup, action preservation, viewport bounds and unchanged masks. T004 records independent UI review and Help. Convergence appended T005 for header/resize auto-pan, T006 for Escape from focused popup content and T007 for independent POP-R1 control obstruction. All repaired and reproduced by focused browser checks. POP-R1 review confirms resolution with no outstanding finding.
+
+Automated evidence:103map units,66full browser scenario groups, production strict build, three engine smoke and configured axe checks including popup, repository/diff checks all passed. No public release/game accuracy/manual device accessibility claim. Acceptance contains actual environment and limitations. No unresolved implementation task or inconsistent requirement remains.

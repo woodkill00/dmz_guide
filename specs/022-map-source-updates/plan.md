@@ -1,0 +1,8 @@
+# Plan
+Use a Vite development-server plugin on127.0.0.1 only, opt-in via ignored environment/authorization files. It uses fixed HTTPS collectors with bounded networking, literal-only TypeScript AST hydration parsing and an isolated blank Playwright DOM parser (scripts are not executed). Reuse safe icons or sanitize/reencode current source icons; label generic fallbacks when a new source type has no available icon. No Python/OpenCV runtime dependency.
+
+Server stages immutable ignored captures and previews. Stable source record IDs plus semantic hashes exclude capture time/path ordering noise; preserve distinct same-site objects. Validate current canonical/source image fingerprints before reusing reviewed affine matrices. A process mutex and filesystem lock/CAS protect a single atomic current-capture pointer replacement; prior generations remain for recovery. No in-place overwrites of current capture assets.
+
+Frontend links site labels separately from checkbox behavior. Update controls live in Map key and use bounded local API requests. Preview adapts successful captures into existing immutable snapshots and refresh/stale logic. Commit workspace first; then activate server capture pointer. If activation fails after workspace commit, keep valid workspace evidence and offer activation retry without reimport. Quota/CAS failure before workspace commit leaves live pointer unchanged. No claim of distributed atomicity.
+
+All source URLs/IDs/paths are registry-owned. Endpoints use same-origin loopback host validation and random tokens. New flags and files are ignored; no acquisition without explicit click. Preserve current source-specific rights policy and copied-content backup omission. Native guide unchanged.

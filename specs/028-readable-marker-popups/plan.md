@@ -1,0 +1,4 @@
+# Plan
+Constitution reviewed: accessible mobile controls, inert imported text, bounded UI, no schema change. No amendment/hooks/extensions.
+Shared map/marker-popup.ts builds header/detail/action regions using DOM text and exposes Leaflet options. Source-markers and usability-panel reuse it; workspace binds use matching options. CSS constrains viewport, body scroll and action wrapping. Disable Leaflet wheel/click propagation inside popup, keep map gestures outside unchanged. Use dynamic viewport CSS with fallback and no global popup defaults.
+Verification: synthetic full notes (including markup/long words/newlines), source/owned/search paths, desktop/mobile bounds, scrollTop via keyboard/wheel, fixed heading/actions, links/buttons, short content, unchanged state. Full existing browser suite, engine/axe runner, units/typecheck/build/repository checks. Independent definition and implementation review. Rollback code only; private data untouched.

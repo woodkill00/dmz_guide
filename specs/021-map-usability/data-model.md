@@ -1,0 +1,7 @@
+# Data model and bounds
+
+Workspace.usability optional {version:1,presets,separate,flags,edits}. Absent means empty metadata/0 edits, preserving schema1. Preset {id,name,visibility};20, unique IDs, name80, full validated existing visibility algebra. SeparatePair {a,b,at};200 unique unordered pairs, opaque capture-scoped identities<=512, distinct endpoints. Flag {id,recordIdentity,notes,status,authorship,createdAt,updatedAt};200, unique IDs/record refs, notes4000, status open/resolved, authorship owned. edits nonnegative safe integer. Metadata must fit existing exact20MiB/JSON limits and round-trip private backup. It contains no copied raw source fields; missing capture refs are retained as inactive.
+
+Explorer records use source-scoped immutable snapshot ID plus SHA256 capture digest and record ID, canonical point or unplaced, category/title/notes/evidence and source claim status. Index is derived, never authority. Duplicate groups expose existing bounded matches and representatives; exclusions compare every group member to prevent bridging. Coverage: matched/uncertain/not-found/kept-separate/unplaced; missing official input yields unavailable.
+
+Machine reminder receipt {version:1,at,edits,firstDirtyAt,snoozedUntil}; bounded localStorage, valid UTC timestamps, count nonnegative safe integer. Failure returns unknown and does not fail workspace commits. Undo/replace/new reset the local receipt so a different logical state cannot inherit coverage. Download timestamps mean initiation only.

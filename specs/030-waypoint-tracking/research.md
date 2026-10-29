@@ -1,0 +1,2 @@
+# Local assessment
+029 already routes/stores/reorders waypoints but route access is buried in Planner, active route selection is transient, route markers have tooltips only and there is no per-route reached/next control. Reuse existing CAS/backup, safe popup and route resolver. Manual tracking is implementable without game-file changes or live telemetry. Existing partial local road graph cannot establish whole-map or actual vehicle access.

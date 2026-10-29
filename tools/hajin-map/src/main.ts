@@ -1,9 +1,15 @@
+import { parseToolTarget } from './tool-links.ts';
 import 'leaflet/dist/leaflet.css';
 import './styles.css';
 import { createMapView, type MapState } from './map/map-view';
 import { hajin } from './map/hajin';
 import { createSourceMarkers } from './map/source-markers';
-import { markerSources } from './map/marker-sources';
+import { markerSources as defaultMarkerSources } from './map/marker-sources';
+import { loadLocalProviderSources } from './map/local-providers';
+import type { MarkerSource } from './map/marker-sources';
+import { loadCurrentCaptures } from './map/current-captures';
+import { mountWorkspace } from './workspace/app';
+import { mountMapMenuLayout } from './map/menu-layout';
 
 const icon = (name: string) => {
   const paths: Record<string, string> = {
@@ -32,6 +38,7 @@ const sourceInfo = `
   <dl><div><dt>Coverage</dt><dd>Full surface map</dd></div><div><dt>Resolution</dt><dd>4096 × 4096</dd></div><div><dt>Source captured</dt><dd>25 Oct 2026</dd></div></dl>
   <p class="small-note">Orange terrain and reactor shading are part of the source image. They do not show live match conditions.</p>
   <div class="info-rule"></div>
+  <p><a href="/help.html" target="_blank" rel="noopener noreferrer">Read the full workspace guide — tools, icons, updates and backups</a></p>
   <h3>Navigation</h3>
   <p>Drag to explore. Scroll or pinch to zoom. Use Reset view to see the full map.</p>
   <p class="small-note">Keyboard: focus the map, use arrow keys to pan and + / − to zoom. Tab moves to the next control.</p>
@@ -42,12 +49,12 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <header class="app-header">
     <a class="brand" href="/" aria-label="Hajin Field Guide home"><span class="brand-mark">${icon('cross')}</span><span>FIELD GUIDE<span class="brand-sub">MODERN WARFARE · DMZ</span></span></a>
     <div class="header-center"><span class="status-dot"></span> HAJIN EXCLUSION ZONE</div>
-    <div class="local-badge"><span></span> LOCAL EDITION</div>
+    <div class="header-links"><div class="local-badge"><span></span> LOCAL EDITION</div><a id="open-help" class="help-link" href="/help.html" target="_blank" rel="noopener noreferrer">Help</a></div>
   </header>
   <main class="workspace">
     <aside id="map-key" class="sidebar" aria-label="Map key">
       <div class="sidebar-heading"><span class="section-number">MAP KEY</span><button id="close-key" class="key-close" aria-label="Hide map key">×</button></div>
-      <div class="key-toolbar"><p>Choose the symbols shown on your map.</p><div class="layer-bulk"><button id="key-show-all" disabled>Show all</button><button id="key-hide-all" disabled>Hide all</button></div><p id="key-summary" role="status">Loading icons…</p></div>
+      <div class="key-toolbar"><p>Choose the symbols shown on your map.</p><label class="grid-toggle"><input id="show-coordinate-grid" type="checkbox" checked aria-describedby="coordinate-grid-help"> Coordinate grid (A–J / 1–9)</label><p id="coordinate-grid-help" class="small-note">Source-aligned tactical grid. Unlabelled margins show —.</p><div class="layer-bulk"><button id="key-show-all" disabled>Show all</button><button id="key-hide-all" disabled>Hide all</button></div><p id="key-summary" role="status">Loading icons…</p></div>
       <div id="map-key-content" class="key-content"></div>
       <div class="overlay-summary">${icon('map')}<div><strong id="official-summary">Loading official locations…</strong><span>No authored markers yet</span></div><span id="official-summary-count" class="marker-count">—</span></div>
     </aside>
@@ -63,7 +70,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
         <button id="layers" class="icon-button" aria-label="Map sources and layers" title="Map sources and layers">${icon('layers')}</button>
         <button id="info" class="icon-button" aria-label="Map information and keyboard help" title="Map information">${icon('info')}</button>
       </div>
-      <div class="map-bottom-bar"><span class="map-position"><span class="coordinate-label">IMAGE POSITION</span><span id="position">X — &nbsp; Y —</span></span><span id="zoom-level">OVERVIEW</span></div>
+      <div class="map-bottom-bar"><span class="map-position"><span><span class="coordinate-label">GRID</span><span id="grid-position">—</span></span><span><span class="coordinate-label">IMAGE POSITION</span><span id="position">X — &nbsp; Y —</span></span></span><span id="zoom-level">OVERVIEW</span></div>
       <div id="map-status" class="map-status" role="status" aria-live="polite"><span class="loader"></span><strong>Preparing the terrain</strong><p>Loading the Hajin background…</p></div>
       <p id="map-help" class="sr-only">Drag or use arrow keys to pan. Scroll, pinch, or use the zoom buttons to zoom. Reset view fits the whole map. Image positions are not in-game grid coordinates.</p>
       <footer class="map-credit"><a href="${hajin.source}" target="_blank" rel="noopener noreferrer">Official Hajin map & icons</a><span>© 2026 Activision Publishing, Inc.</span></footer>
@@ -109,13 +116,33 @@ function updateState(next: MapState) {
   }
 }
 
-export const viewer = createMapView(document.querySelector<HTMLElement>('#map')!, updateState, (x, y) => {
+export const viewer = createMapView(document.querySelector<HTMLElement>('#map')!, updateState, (x, y, grid) => {
+  document.querySelector('#grid-position')!.textContent=grid??'—';
   document.querySelector('#position')!.textContent = x === null ? 'X —   Y —' : `X ${String(x).padStart(4, '0')}   Y ${String(y).padStart(4, '0')}`;
 }, zoom => { document.querySelector('#zoom-level')!.textContent = `ZOOM ${Math.round(100 * 2 ** (zoom - 4))}%`; });
+const gridToggle=document.querySelector<HTMLInputElement>('#show-coordinate-grid')!;
+gridToggle.checked=viewer.coordinateGrid.isVisible();gridToggle.disabled=!viewer.coordinateGrid.supported;
+gridToggle.addEventListener('change',()=>viewer.coordinateGrid.setVisible(gridToggle.checked));
 
 const sourceStatus = new Map<string, { visible: number; total: number; state: string }>();
-const sources = markerSources.map(source => {
-  const slot = document.createElement('section'); slot.className = 'source-slot'; slot.setAttribute('aria-label', `${source.name} layers`);
+async function startSources() {
+const markerSources = [...defaultMarkerSources];
+if (import.meta.env.VITE_LOCAL_PROVIDER_SNAPSHOTS === '1') {
+  try {
+    markerSources.push(...await loadLocalProviderSources());
+    for(const current of await loadCurrentCaptures()){
+      const index=markerSources.findIndex(s=>s.id===current.id);
+      if(index<0)markerSources.push(current);else markerSources[index]=current;
+    }
+  }
+  catch {
+    const warning = document.createElement('p'); warning.id = 'local-provider-load-error'; warning.setAttribute('role', 'alert');
+    warning.textContent = 'Local provider captures could not load. Check the local manifest and registration evidence; the official map remains available.';
+    document.querySelector('#map-key-content')!.prepend(warning);
+  }
+}
+const createSource = (source: MarkerSource) => {
+  const slot = document.createElement('section'); slot.className = 'source-slot'; slot.dataset.sourceSlot = source.id; slot.setAttribute('aria-label', `${source.name} layers`);
   document.querySelector('#source-controls')!.append(slot);
   const keySlot = document.createElement('section'); keySlot.className = 'key-source'; keySlot.dataset.keySource = source.id; keySlot.setAttribute('aria-label', `${source.name} map key`);
   document.querySelector('#map-key-content')!.append(keySlot);
@@ -125,13 +152,16 @@ const sources = markerSources.map(source => {
     const shown = values.reduce((sum, item) => sum + item.visible, 0);
     const available = values.reduce((sum, item) => sum + item.total, 0);
     const failed = values.some(item => item.state === 'failed');
+    if (document.querySelector<HTMLElement>('#workspace-dialog')?.dataset.ready !== 'true') {
     document.querySelector('#official-summary')!.textContent = failed ? 'Some source locations unavailable' : `${shown} / ${available} imported locations`;
     document.querySelector('#official-summary-count')!.textContent = String(shown);
     document.querySelector('#key-summary')!.textContent = `${shown} / ${available} locations shown${failed ? ' · source unavailable' : ''}`;
     const loading = sourceStatus.size < markerSources.length || values.some(item => item.state === 'loading');
     document.querySelectorAll<HTMLButtonElement>('#key-show-all, #key-hide-all').forEach(button => { button.disabled = loading || values.every(item => item.state === 'failed'); });
+    }
   }, keySlot);
-});
+};
+const sources=markerSources.map(createSource);
 document.querySelector('#key-show-all')!.addEventListener('click', () => sources.forEach(source => source.setAll(true)));
 document.querySelector('#key-hide-all')!.addEventListener('click', () => sources.forEach(source => source.setAll(false)));
 const layersDialog = document.querySelector<HTMLDialogElement>('#layers-dialog')!;
@@ -155,4 +185,24 @@ document.addEventListener('fullscreenchange', () => fullscreen.setAttribute('ari
 document.querySelector('#map')!.addEventListener('keydown', event => {
   if ((event as KeyboardEvent).key.toLowerCase() === 'r' && state === 'ready') { event.preventDefault(); viewer.reset(); }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { sources.forEach(source => source.destroy()); viewer.destroy(); });
+const authorWorkspace = mountWorkspace(viewer, sources,source=>{const controller=createSource(source);sources.push(controller);return controller;});
+const disposeMenuLayout = mountMapMenuLayout(document.querySelector<HTMLElement>('.map-workspace')!);
+
+const requestedTool=parseToolTarget(location.search);
+if(requestedTool)void authorWorkspace.ready.then(()=>{
+  if(authorWorkspace.openTool(requestedTool))return;
+  if(requestedTool==='layers'){layersDialog.showModal();document.querySelector<HTMLElement>('#close-layers')?.focus();}
+  else if(requestedTool==='key'||requestedTool==='grid'||requestedTool==='updates'){
+    setKeyOpen(true);
+    const target=document.querySelector<HTMLElement>(requestedTool==='grid'?'#show-coordinate-grid':requestedTool==='updates'?'#map-source-updates':'#key-show-all');
+    if(target){if(requestedTool==='updates')target.tabIndex=-1;target.focus();target.scrollIntoView({block:'center'});}
+  }else document.querySelector<HTMLElement>('#map')?.focus();
+}).catch(error=>{
+  const message=document.createElement('p');message.id='tool-navigation-error';message.className='tool-navigation-error';message.setAttribute('role','alert');message.tabIndex=-1;
+  message.textContent=error instanceof Error?error.message:'The requested tool could not open. Use My workspace to inspect its status.';
+  document.querySelector('.map-workspace')?.append(message);message.focus();
+});
+
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeMenuLayout(); authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
+}
+void startSources();

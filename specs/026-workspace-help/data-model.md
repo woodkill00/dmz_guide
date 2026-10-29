@@ -1,0 +1,2 @@
+# Contracts
+No stored state changes. ?tool=map/key/layers/grid/updates/points/icons/sources/review/backups/explore/duplicates/saved-views/completeness/discrepancies/backgrounds. Fixed allowlist; unknown/duplicate query ignored. Workspace destinations wait ready; guard dirty/detail/processing before any section switch. Explore maps to known subsection IDs; backgrounds→Sources. Key destinations focus relevant existing controls without changing values. Initial route only, so history/hash cannot silently discard drafts. Help anchors are normal HTML fragment identifiers.

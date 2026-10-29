@@ -1,0 +1,2 @@
+# Verify
+Run map:dev; open /help.html or Help from map. Read contents and follow tool links. Icons/points/source/review/backups and all Explore subtabs should open; updates only reveals controls. Terrain may be missing. Unknown tool leaves map alone. Help remains readable with JS disabled. At360px use keyboard and no overflow. Run map:test/map:build/map:test:browser and py -3 scripts/check.py. Build must emit dist/help.html.
