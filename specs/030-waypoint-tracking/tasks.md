@@ -14,3 +14,7 @@ External gameplay accuracy/physical touch/screenreader evidence not claimed. No 
 - [x] T009 Convergence: wait boundedly for popup fade removal before restoring HUD focus; cancel on dialog/navigation/disposal and preserve a newer user focus. Leaflet hides the HUD while a closing popup remains in DOM. FR004.
 
 - [x] T010 Convergence: progress/name changes repaint cached road geometry without recalculating or flickering route lines; pending worker completion paints latest progress rather than overwriting it. Delay worker in browser reproduction. FR003/004.
+
+- [x] T011 Visibility repair: collapse/restore tracker via accessible compact toggle; retain choice on rerender/reload with storage-failure fallback, no data/mask/route changes; minimized popup focus targets restore. Targeted browser plus build/repository/regression checks and independent review. FR004/SC001.
+
+- [x] T012 Verification repair: maximum-source test replaces MapGenie checkbox with a capacity notice after deselection. Assert checked before clicking and retain capacity/zero-marker after assertions, avoiding uncheck re-reading a detached control. No product assertions removed or budgets loosened. FR005.

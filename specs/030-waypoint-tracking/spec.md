@@ -8,3 +8,6 @@ FR005 Verify real pointer reorder, progress/reload/backup/fresh-profile/missing-
 SC001 Select/add/reorder stops, follow the stored road route, mark/unmark/reorder/reset reached stops and resume the same selected route after reload; changes visible immediately.
 SC002 Old backups and source-reference privacy retained; stale/missing next stops have no fake focus/reach operation. Reproductions pass without data loss.
 Clarification: progress is an explicit owner action, separate from POI/source activity claims. Road routing still uses the separately loaded partial/unverified graph; no claim of complete or confirmed road coverage is added.
+
+## Tracker visibility repair — 2026-10-29
+The on-map tracker can be minimized to a small Show waypoints button and expanded again. Expanded state exposes the existing controls; minimized state keeps route lines/numbered stops/progress untouched. Keep the choice through map/worker/progress updates and browser reload with a guarded local display preference; unavailable storage falls back to in-memory behavior. Toggle exposes aria-expanded/controls, restores keyboard focus and remains usable on360px screens. Popup completion must return focus to the minimized toggle without opening it. No workspace mutation, changed source masks, or new backup fields. This extends FR004/SC001.

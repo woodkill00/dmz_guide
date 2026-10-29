@@ -122,3 +122,5 @@ Tracking is additional owned evidence, not promotion of source possible-spawn cl
 
 ### Visible waypoint tracking (feature030)
 The map Routes button opens the current saved route directly. Numbered stops have progress popups; the on-map panel provides Show next, Mark next reached, Reset progress and revision-bound session Undo reset. Reached tokens bind to location/version, not row index; reordering retains progress and reselecting a changed source clears it. The active route and reached flags persist in private backups. Missing/stale next stops cannot be focused or marked until resolved. Progress is a manual owner action, separate from source activity claims and live player position. Existing partial road coverage limits remain.
+
+The on-map tracker has Minimize tracker / Show waypoints controls. The compact restore button stays available, remembers the display choice across reloads where localStorage is available, and never changes saved route/progress/source masks. Storage failures retain a usable in-memory toggle.

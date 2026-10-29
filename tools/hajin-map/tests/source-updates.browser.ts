@@ -553,7 +553,11 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
       0,
     );
     assert.equal(await page.locator('[data-source-id="official"]').count(), 0);
-    await page.locator("#key-loaded-source-master-mapgenie").uncheck();
+    // Turning this source off replaces its checkbox with the capacity notice.
+    // Verify the before/after state without asking uncheck() to re-read a removed control.
+    const mapgenieMaster=page.locator("#key-loaded-source-master-mapgenie");
+    assert.equal(await mapgenieMaster.isChecked(),true);
+    await mapgenieMaster.click();
     await page
       .locator('[data-key-source="mapgenie"] [data-source-capacity]')
       .waitFor();
