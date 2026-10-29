@@ -10,3 +10,6 @@ Actual local browser stages: NOT RUN. Chromium launch failed before assertions b
 New browser journeys are wired into Chromium and Firefox/WebKit suites and local Studio acceptance. They cover search/filter/sort/empty state, all-pack scope, 320/390px at 200% text, exact author links, nondefault pack navigation, conflicting detail query, external-map separation, no-JavaScript reading, reference-blocked removal, cancellation/focus, unsaved draft preservation, and unreferenced draft-only removal. Writing/wiring these scenarios is not evidence that they passed.
 
 Independent design and source review are recorded in reviewer-owned checklist/analysis files. Physical touch devices, assistive technology certification, live game data and deployment are not claimed. Parent integration must run exact-commit CI, inspect browser artifacts and record post-merge checks before declaring delivery complete.
+
+## Related integration repair
+See [modal focus and Studio failure assessment](../../docs/repairs/2026-10-29-modal-focus-and-studio.md) for the separately scoped repair integrated with this feature.

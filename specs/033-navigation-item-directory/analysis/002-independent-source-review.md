@@ -24,3 +24,19 @@ Executed `node --test tests/runtime/navigation-directory.test.mjs tests/runtime/
 This focused run does not certify full checks, browser behavior, visual layout, Windows, physical devices, screen readers, publication or merge. Exact integrated-head CI and actual screenshots remain required. No failing assertions were removed or weakened by this review.
 
 Verification correction: the initial command named a nonexistent `author-target.test.mjs`; Node ran the other selected files (18 passes). The command above was rerun with the actual `page-edit.test.mjs` file and produced 23 passes. The initial run is not evidence for the missing file.
+
+## Integrated source review — 2026-10-29
+
+Reviewed combined local commit `6c0d306` (published equivalent tree `406ecf26`, PR head `bf494817596b1322076908ac50aa20c98758f8b7`) against main `37a8462`. Source/domain verdict: PASS. This remains separate from browser/visual and exact-head CI acceptance.
+
+- Catalog expansion preserves stable IDs, original requirement rows, explicit unknown cash/consumption, spoiler boundaries and immutable recorded spending. Rebinding and guarded reversal contracts are unchanged.
+- The focus repair only blurs a currently focused descendant of the invalidated modal before native close; it cancels older pending restoration and never blurs newer outside focus. Positive/negative lifecycle regressions cover this branch. The original failing browser endpoint assertion remains intact.
+- The Windows Studio module-load `ERR_NO_BUFFER_SPACE` diagnostic is documented as an observed resource failure with unproven underlying host cause. No speculative Studio patch, automatic reload, ignored diagnostic or test relaxation is introduced. A successful exact-head Windows run is still required.
+- Navigation/removal integration retains the reviewed identity and explicit draft/save boundaries. No catalog/profile schema, dependency, security policy or workflow change was introduced.
+- Review follow-up corrected Chromium runner ordering so strict browser-health monitoring attaches before the new navigation journeys. Firefox/WebKit already attached it before those journeys.
+- Exact per-catalog displayed row sequences are now asserted for type, evidence status and name sorting, including unchanged row counts; selecting a sort option alone is no longer treated as verification.
+
+Independently executed on local `6c0d306`:
+`node --test tests/runtime/sourced-catalog.test.mjs tests/runtime/upgrades-content.test.mjs tests/runtime/upgrades-spending.test.mjs tests/runtime/navigation-directory.test.mjs tests/runtime/page-edit.test.mjs tests/runtime/reader-flow.test.mjs tests/runtime/upgrades-dialog-focus.test.mjs`
+
+Result: 64 passed, zero failed/skipped, exit 0. `git diff --check` passed. This focused independent result does not replace the integrator's full aggregate checks or pending actual browser/visual/CI gates. No runtime changes were made by the reviewer.

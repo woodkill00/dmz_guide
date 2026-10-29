@@ -93,8 +93,19 @@ export async function runNavigationDirectoryTests({
     const remove = await row
       .locator("[data-directory-remove]")
       .getAttribute("href");
-    await row.locator("h3 a").click();
+    // Native link clicks begin document navigation; observe its exact destination
+    // before reading page.url(), rather than snapshotting the departing page.
+    await Promise.all([
+      page.waitForURL((url) => url.pathname === detail, {
+        waitUntil: "domcontentloaded",
+      }),
+      row.locator("h3 a").click(),
+    ]);
     assert.equal(new URL(page.url()).pathname, detail);
+    assert.equal(
+      await page.locator("body").getAttribute("data-nav-pack"),
+      "demo:training-pack",
+    );
     await page.goto(base + detail + "?pack=official%3Amw4-dmz-starter");
     await page.waitForFunction(
       () =>
