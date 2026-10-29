@@ -1,6 +1,7 @@
 // Independent reviewer-owned purchase/spending UI acceptance.
 // Every quantity, identity and mechanic in the fixture is fictional QA data.
 import assert from "node:assert/strict";
+import { installPickerFocusDiagnostics } from "./picker-focus-diagnostics.mjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 
@@ -566,7 +567,8 @@ export async function runIndependentUpgradeSpending({
     await inventoryGuards();
     for (const surface of ["progression", "inventory"])
       await failedNavigation(surface);
-    await cancelledNavigation();
+    for (let attempt = 1; attempt <= 5; attempt++)
+      await cancelledNavigation(attempt);
     await observedCurrencyBoundary();
     await migrationAndSnapshots();
     await protectedMigration();
@@ -1628,11 +1630,12 @@ export async function runIndependentUpgradeSpending({
     }
   }
 
-  async function cancelledNavigation() {
+  async function cancelledNavigation(attempt) {
     const context = await browser.newContext();
+    let page;
     try {
-      const page = await context.newPage(),
-        initial = await seed(page, base);
+      page = await context.newPage();
+      const initial = await seed(page, base);
       await openPurchase(page);
       await page.goto(pathFor(base, "inventory"));
       await ready(page);
@@ -1645,6 +1648,7 @@ export async function runIndependentUpgradeSpending({
         await page.locator("#upgrade-spend-confirm[open]").count(),
         0,
       );
+      await page.evaluate(installPickerFocusDiagnostics);
       await openPurchase(page);
       // Simulate a legitimate selected-pack change from the application's picker.
       // Native modal inertness prevents pointer interaction outside; the common
@@ -1662,13 +1666,33 @@ export async function runIndependentUpgradeSpending({
         await page.locator("#upgrade-spend-confirm[open]").count(),
         0,
       );
+      await page.evaluate(() =>
+        window.__dmzPickerFocusEvidence.mark("before-picker-focus"),
+      );
       await page.locator("#pack-select").focus();
+      await page.evaluate(() =>
+        window.__dmzPickerFocusEvidence.mark("after-picker-focus"),
+      );
       assert.deepEqual((await durable(page)).value, initial);
       await focusIs(page, "#pack-select");
       evidence.scenarios.push(
         "Unconfirmed document navigation and selected-pack change discard stale preview without any debit/event; old modal focus cannot steal focus from the new pack",
       );
     } finally {
+      evidence.cancelledNavigationFocus ||= [];
+      try {
+        evidence.cancelledNavigationFocus.push({
+          attempt,
+          events: await page?.evaluate(
+            () => window.__dmzPickerFocusEvidence?.stop() ?? [],
+          ),
+        });
+      } catch (error) {
+        evidence.cancelledNavigationFocus.push({
+          attempt,
+          unavailable: error.message.slice(0, 2048),
+        });
+      }
       await context.close();
     }
   }

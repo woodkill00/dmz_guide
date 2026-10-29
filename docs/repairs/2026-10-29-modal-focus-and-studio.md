@@ -164,3 +164,46 @@ six-test run and verification that all original screenshot dimension, geometry
 and coverage assertions remain unchanged. Formatting and repository checks pass.
 The full local runtime rerun passed 617 tests with one Windows-only skip and
 zero failures. Actual final-head Windows browser/Studio validation remains pending.
+
+## Post-merge picker focus diagnosis, not a fix (2026-10-29)
+
+Main `d85e4b209ff7b50926b62ca31be6ead76261444a`, quality `40972065709`,
+Windows job `123790961600`, failed the original spending `cancelledNavigation`
+case: its connected, enabled `#pack-select` did not hold focus within the existing
+2000ms bound; BODY was active and the spending dialog was closed. Unlike the
+progress snapshot issue, this already awaited an exact endpoint. Earlier
+pre-merge all-green results remain historical evidence, not a post-merge pass.
+
+The final snapshot cannot establish whether the picker never acquired focus or
+acquired it and then lost it. Source review finds native close/blur cleanup and
+background option refresh as possible timing boundaries, but does not prove
+either caused the failure. No application patch or additional focus command is
+justified by this evidence alone.
+
+A diagnostics-only follow-up retains the original scenario actions, durable-state
+assertions and 2000ms focus deadline. It runs that exact scenario five times in
+fresh synthetic contexts, stopping immediately on any failure, rather than
+retrying a failed assertion. Each attempt records at most 100 timestamped events:
+document focus/blur/focusin/focusout/close and input-event types, window focus,
+picker disabled/inert/option-child changes, and modal-open changes. Snapshots
+record actual event target, current active element, document.hasFocus(), picker
+connection/disabled state, and modal-open state. Explicit before/after markers
+surround the existing single picker focus call. No key text, player inventory,
+source screenshots or account data is collected. Evidence joins the existing
+synthetic spending JSON before context cleanup; capture failure is reported
+without replacing the original acceptance error. Observers are removed when
+captured. Additional diagnostic commands may affect timing; a passing run alone
+will not establish the root cause or claim a focus fix.
+
+A deterministic runtime test checks bounded storage, read-only state, increasing
+timestamps and observer detachment. Actual CI timelines are required to decide
+whether a product repair or an interaction-readiness correction is justified.
+
+Local diagnostics validation: full runtime suite 619 tests, 618 passed, one
+Windows-only skip and zero failures; focused diagnostics test, formatting and
+repository contracts passed. These results validate instrumentation only, not
+the unresolved native-browser focus behavior.
+Independent diagnostics review passed, including a separate 15-test diagnostics
+and dialog-focus run. Review confirms read-only bounded capture, detached
+observers, fail-fast repetitions and unchanged original acceptance assertions;
+no root-cause or product-fix approval is implied.
