@@ -1,0 +1,9 @@
+{
+  "entityId": "observed:stash-item-upgrade-iii",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-stash-item-upgrade-iii",
+  "locator": "Stash Item Upgrade",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 100000, \"materials\": {\"Binding Catalyst\": 20, \"Stock Rod\": 20, \"Alloyed Plating\": 10}}"
+}

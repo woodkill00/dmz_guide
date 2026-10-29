@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:stash-item-upgrade-iv",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-stash-item-upgrade-iv",
+  "locator": "Stash Item Upgrade",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": null, \"materials\": {\"Gold Skull\": 5, \"Alloyed Plating\": 30, \"Experimental Compounds\": 10, \"Turned Components\": 30}}"
+}

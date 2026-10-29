@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:control-unit",
+  "field": "sourceListedAllTiersMaterialCount",
+  "id": "claim:all-tiers-control-unit",
+  "locator": "What Items You Need to Keep in DMZ",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": 30
+}

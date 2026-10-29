@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-crossfire",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-crossfire-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:crossfire"
+}

@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-58",
+  "field": "dmzLevel",
+  "id": "claim:level-58-rank",
+  "locator": "DMZ Level 58",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": 58
+}

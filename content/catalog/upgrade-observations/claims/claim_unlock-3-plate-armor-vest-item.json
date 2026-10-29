@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-3-plate-armor-vest",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-3-plate-armor-vest-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:3-plate-armor-vest"
+}

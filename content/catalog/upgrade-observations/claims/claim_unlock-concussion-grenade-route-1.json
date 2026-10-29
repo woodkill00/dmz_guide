@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-concussion-grenade",
+  "field": "recipeUnlockRoute.level",
+  "id": "claim:unlock-concussion-grenade-route-1",
+  "locator": "Level Unlock Recipes",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": 4
+}

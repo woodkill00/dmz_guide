@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-25",
+  "field": "reward.station",
+  "id": "claim:level-25-reward-1",
+  "locator": "DMZ Level 25",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"station\", \"label\": \"Station Upgrade — +5% Discount\", \"details\": {\"gunsmithDiscountPercent\": 5}}"
+}

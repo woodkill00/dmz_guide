@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-36",
+  "field": "reward.recipe",
+  "id": "claim:level-36-reward-1",
+  "locator": "DMZ Level 36",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"recipe\", \"label\": \"Molotov Cocktail — Recipe\"}"
+}

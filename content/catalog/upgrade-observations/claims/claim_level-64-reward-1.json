@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-64",
+  "field": "reward.item",
+  "id": "claim:level-64-reward-1",
+  "locator": "DMZ Level 64",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"Revive Pistol — Field Upgrade\"}"
+}

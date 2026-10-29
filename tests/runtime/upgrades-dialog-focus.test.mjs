@@ -181,3 +181,41 @@ test("an already closed native dialog can restore directly without a new event",
   dialog.settled();
   assert.equal(calls, 1);
 });
+
+test("navigation dismissal blurs its modal control before native close cleanup", () => {
+  const dialog = new Dialog(),
+    document = dialog.ownerDocument,
+    events = [];
+  const button = (dialog.closingControl = {
+    blur() {
+      events.push("blur");
+      document.activeElement = document.body;
+    },
+  });
+  document.activeElement = button;
+  dialog.close = () => {
+    events.push("close");
+    assert.equal(
+      document.activeElement,
+      document.body,
+      "A stale modal control must not carry native blur into the next view",
+    );
+    dialog.open = false;
+  };
+  closeDialog(dialog);
+  assert.deepEqual(events, ["blur", "close"]);
+  const nextPicker = {};
+  document.activeElement = nextPicker;
+  dialog.settled();
+  assert.equal(document.activeElement, nextPicker);
+});
+
+test("navigation dismissal never blurs newer focus outside its modal", () => {
+  const dialog = new Dialog();
+  let blurs = 0;
+  const newer = { blur: () => blurs++ };
+  dialog.ownerDocument.activeElement = newer;
+  closeDialog(dialog);
+  assert.equal(blurs, 0);
+  assert.equal(dialog.ownerDocument.activeElement, newer);
+});

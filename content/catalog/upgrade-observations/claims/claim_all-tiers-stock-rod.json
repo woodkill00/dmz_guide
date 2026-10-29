@@ -1,0 +1,9 @@
+{
+  "entityId": "observed:stock-rod",
+  "field": "sourceListedAllTiersMaterialCount",
+  "id": "claim:all-tiers-stock-rod",
+  "locator": "What Items You Need to Keep in DMZ",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": 30
+}

@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:dog-tag-case-upgrade-i",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-dog-tag-case-upgrade-i",
+  "locator": "Dog Tag Case Storage Upgrade",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 10000, \"materials\": {\"Rigid Synthetics\": 10, \"Biomaterials\": 10}}"
+}

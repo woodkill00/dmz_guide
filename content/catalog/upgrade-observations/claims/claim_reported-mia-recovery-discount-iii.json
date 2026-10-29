@@ -1,0 +1,9 @@
+{
+  "entityId": "observed:mia-recovery-discount-iii",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-mia-recovery-discount-iii",
+  "locator": "MIA Recovery Discount",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": null, \"materials\": {\"W.M.D. Manifest\": 5, \"Foreign Intelligence Targets\": 5, \"Power Regulator\": 10, \"Comms Module\": 10}}"
+}

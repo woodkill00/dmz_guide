@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "equipment",
+  "description": "Community-source item identity. Current build, locations and unlisted mechanics remain unverified. A recipe unlock is reported; see its separate progression record. Craft costs and batch yield are unknown in this source.",
+  "id": "reported:disposable-parachute",
+  "kind": "item",
+  "name": "Disposable Parachute",
+  "sourceIds": [
+    "source:detonated-recipes-20261019"
+  ],
+  "stats": [],
+  "status": "unverified",
+  "unit": "count"
+}

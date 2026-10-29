@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-10",
+  "field": "reward.station",
+  "id": "claim:level-10-reward-1",
+  "locator": "DMZ Level 10",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"station\", \"label\": \"Station Unlock — Gunsmith\", \"details\": {\"purchaseCondition\": \"Corresponding weapon manual\", \"modificationMethod\": \"attachments\"}}"
+}

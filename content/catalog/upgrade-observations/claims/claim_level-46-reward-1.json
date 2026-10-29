@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-46",
+  "field": "reward.item",
+  "id": "claim:level-46-reward-1",
+  "locator": "DMZ Level 46",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"Recon Equipment Kit — Uncommon Consumable\", \"contents\": [\"Seeker Drone\", \"Recon Drone\", \"Snapshot Grenades\", \"Heartbeat Sensors\", \"a Black Market Weapons Locker Key\"]}"
+}

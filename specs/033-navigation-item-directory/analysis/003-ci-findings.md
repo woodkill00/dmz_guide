@@ -1,0 +1,16 @@
+# Integrated CI findings, 2026-10-29
+
+These records preserve failed runs; later passing runs do not erase them.
+
+- `bf494817`, quality run `40948873912`: Chromium and WebKit stopped on the new directory's immediate post-click pathname assertion (actual `/items/`, expected exact item detail). Firefox completed navigation and source catalog journeys. Windows runtime stopped in the existing delayed-bootstrap occupied-port fixture at its unchanged 700 ms adversarial deadline; owned-child cleanup succeeded. Map run `40948873905` passed all three jobs.
+- `7e720497`, quality run `40950148013`: retaining the strict pathname assertion and waiting for the exact detail URL exposed a real interaction failure on Ubuntu and Windows Chromium: no detail navigation occurred before 30 seconds. The wait was diagnostic, not accepted as a fix. Windows runtime passed with unchanged deadlines. Map run `40950148068` passed all three jobs.
+- Source investigation identified that every filter/change unconditionally re-appended directory rows. A search input's blur/change between pointer down and activation could detach the clicked link even when sort order was unchanged. The repair must preserve already ordered nodes and exercise real first-click detail/edit/remove after dirty search, without synthetic force clicks or direct navigation substituting for the link.
+
+Actual final browser/visual acceptance remains pending until a repaired exact head passes.
+
+- `f256afe7`, quality run `40951633665`: Ubuntu completed the full runtime, browser, Studio and package pipeline; all three map jobs passed (`40951634241`). The directory pointer repair passed actual Chromium flows on Ubuntu and Windows. Firefox reached source-catalog navigation but an immediate destination-heading count still observed the old document; the source test now waits for hydration and the exact clicked URL/visible heading while retaining its assertions. Windows completed runtime/browser but the Studio roundtrip's response waiter rejected while its click promise was still awaited, causing an unhandled rejection and losing failure artifacts. Immediate supervision and bounded failure diagnostics are required; this does not establish the underlying save failure as fixed.
+- Independent artifact review of Ubuntu archive `12932916693` (SHA-256 `b7b9fb30291a70f5a378f1e9fc3a7690385b8ce9cdcdc99512069fca7f790e50`) passed actual item/nav pixels at 320/390px and 200% text, sourced pages/refusal/history and the corrected milestone label/completion control. Source-catalog JSON passed three scenario groups. Cross-platform acceptance remains open.
+
+The subsequent `ff582c15` partial run, canonical repair and reviewed artifacts are recorded in [the integrated acceptance checkpoint](004-integrated-acceptance-checkpoint.md). Final repaired-head CI remains pending there; earlier failures above are retained.
+
+Final implementation checkpoint: canonical repair `7a0b4caf` passed every job in quality40959670904 and map40959671130 on 2026-10-29. Windows Studio now passes without timeout or transaction-policy changes. Exact evidence and remaining documentation-head/merge/postmerge gates: [acceptance checkpoint](004-integrated-acceptance-checkpoint.md).

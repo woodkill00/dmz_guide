@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-08",
+  "field": "reward.item",
+  "id": "claim:level-08-reward-1",
+  "locator": "DMZ Level 8",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"Restock Kit\", \"contents\": [\"Armor Box\", \"Munitions Box\", \"Medium Backpack\"]}"
+}

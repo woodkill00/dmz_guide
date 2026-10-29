@@ -1,0 +1,2 @@
+# Clarifications — 2026-10-28
+No user clarification is needed for the bounded content slice. Use the existing catalog identity, preserve profile IDs/history, attribute new community reports and keep build/cost/consumption unknowns. Recipe unlock routes are reference/progress records because neither ingredient quantities nor output batch yields are provided. No conjunction is inferred for multiple routes. Ranking milestones do not award inventory automatically. Public publication is a separate permission gate.

@@ -1,0 +1,16 @@
+{
+  "description": "Community-reported DMZ level milestone. Reported rewards: Trap Equipment Kit — Uncommon Consumable. Manual tracking does not grant items, recipes or purchased upgrade completion.",
+  "effects": [],
+  "id": "reported:level-42",
+  "name": "DMZ Level 42 rewards",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:detonated-levels-20261020"
+  ],
+  "spoiler": false,
+  "status": "unverified",
+  "track": "progression"
+}

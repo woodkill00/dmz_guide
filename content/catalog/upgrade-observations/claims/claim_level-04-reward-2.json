@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-04",
+  "field": "reward.station",
+  "id": "claim:level-04-reward-2",
+  "locator": "DMZ Level 4",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"station\", \"label\": \"3D Printer Station Upgrade — Tacticals\", \"details\": {\"printingCategory\": \"tacticals\"}}"
+}

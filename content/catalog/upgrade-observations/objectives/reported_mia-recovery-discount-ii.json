@@ -1,0 +1,69 @@
+{
+  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
+  "effects": [],
+  "id": "reported:mia-recovery-discount-ii",
+  "name": "MIA Recovery Discount II",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "observed:cash",
+      "quantity": null,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unknown"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "reported:nuclear-program-files",
+      "quantity": 5,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "reported:degraded-execution-footage",
+      "quantity": 5,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:binding-catalyst",
+      "quantity": 10,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:nitro-compounds",
+      "quantity": 10,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
+  "spoiler": false,
+  "status": "unverified",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "detonated-mia-recovery-discount-ii-20261025"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "II"
+  }
+}

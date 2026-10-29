@@ -1,0 +1,16 @@
+{
+  "description": "Recipe unlock reference only. Craft ingredients and output batch yield are not provided. Reported routes: level: Level 2.",
+  "effects": [],
+  "id": "reported:unlock-bandage",
+  "name": "Bandage recipe unlock",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:detonated-recipes-20261019"
+  ],
+  "spoiler": false,
+  "status": "unverified",
+  "track": "progression"
+}

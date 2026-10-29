@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-02",
+  "field": "reward.recipe",
+  "id": "claim:level-02-reward-2",
+  "locator": "DMZ Level 2",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"recipe\", \"label\": \"1-Plate Armor Vest — Recipe\"}"
+}

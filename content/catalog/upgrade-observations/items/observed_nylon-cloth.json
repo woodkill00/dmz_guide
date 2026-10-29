@@ -6,7 +6,8 @@
   "kind": "item",
   "name": "Nylon Cloth",
   "sourceIds": [
-    "source:upgrade-observation-01"
+    "source:upgrade-observation-01",
+    "source:detonated-fob-20261025"
   ],
   "stats": [],
   "status": "observed",

@@ -1,0 +1,60 @@
+{
+  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
+  "effects": [],
+  "id": "reported:epic-ingredient-printing",
+  "name": "Epic Ingredient Printing",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "observed:cash",
+      "quantity": 100000,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:binding-catalyst",
+      "quantity": 10,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:printed-circuit-board",
+      "quantity": 10,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:military-composites",
+      "quantity": 5,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
+  "spoiler": false,
+  "status": "unverified",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "detonated-epic-ingredient-printing-20261025"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": null
+  }
+}

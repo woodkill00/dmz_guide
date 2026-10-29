@@ -4,6 +4,12 @@ A community field guide being built around trustworthy game data and explainable
 
 **Status: the runnable multipage guide and Repository Content Studio are merged on main.** Content Studio passed independent implementation and visual review at [`ce4d50c`](https://github.com/woodkill00/dmz_guide/tree/ce4d50c35b785db17e1eca96822918fffbe6a3aa), then merged through [PR #8](https://github.com/woodkill00/dmz_guide/pull/8). See [Content Studio acceptance](specs/009-repository-content-studio/acceptance.md) and [baseline guide acceptance](specs/008-community-release/acceptance.md) for exact test evidence. With Node 22.x or 24.x, run `npm ci` and `npm run author` to edit repository JSON/media at the printed local address. To read the public guide, run `npm run build` and `npm start`. No public deployment or complete verified game catalog is claimed. See the [run and content-editing guide](docs/release.md) and [quickstart](docs/quickstart.md).
 
+## Integrated catalog and navigation update
+
+[PR #28](https://github.com/woodkill00/dmz_guide/pull/28) adds shared page navigation, `/sitemap/`, a compact searchable/sortable `/items/` directory with detail links and exact local Studio Edit/Remove previews, and an expanded attributed upgrades/unlocks catalog. Removal remains a reference-checked local draft operation, never automatic public deletion or inventory removal. The optional map workspace remains a separate local app.
+
+The upgrade-observations pack contains 28 reported FOB definitions, 75 recipe-unlock identities and 69 level milestones; these are source reports, not a complete verified current-build catalog. Unknown prices/mechanics remain unknown and unlock references do not invent executable crafting recipes or grant rewards. The repaired implementation passed all nine cross-platform CI jobs; final documentation-head and post-merge gates are tracked in PR #28. See [catalog acceptance](specs/032-sourced-unlocks-catalog/acceptance.md) and [navigation acceptance](specs/033-navigation-item-directory/acceptance.md).
+
 ## Start here
 
 - **Using the optional local Hajin viewer?** See the [local map workspace](docs/local-map-workspace.md). Run `npm run map:install`, then `npm run map:dev`. It retains the separate interactive key/source-layer viewer without replacing the native guide; downloaded game assets are not bundled.

@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:nano-structured-alloy",
+  "field": "sourceListedAllTiersMaterialCount",
+  "id": "claim:all-tiers-nano-structured-alloy",
+  "locator": "What Items You Need to Keep in DMZ",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": 12
+}

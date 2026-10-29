@@ -5,6 +5,12 @@ const pendingFocus = new WeakMap();
 export function closeDialog(dialog, restoreFocus) {
   pendingFocus.get(dialog)?.();
   if (!restoreFocus) {
+    // Navigation invalidates the old modal without a restoration target. Release
+    // its focused control before native close can queue cleanup for it. Otherwise
+    // that late blur can clear a picker focused in the newly rendered catalog.
+    // A newer outside focus belongs to the user and must never be disturbed.
+    const active = dialog.ownerDocument.activeElement;
+    if (active && dialog.contains(active)) active.blur?.();
     if (dialog.open) dialog.close();
     return;
   }

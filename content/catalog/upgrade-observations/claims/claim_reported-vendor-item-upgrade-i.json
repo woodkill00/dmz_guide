@@ -1,0 +1,9 @@
+{
+  "entityId": "observed:vendor-item-upgrade-i",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-vendor-item-upgrade-i",
+  "locator": "Vendor Item Slots Upgrade",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": null, \"materials\": {\"Electronic Sensors\": 20, \"CPU\": 10, \"Printed Circuit Board\": 10, \"Prototype RF Module\": 2}}"
+}

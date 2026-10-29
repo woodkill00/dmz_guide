@@ -6,7 +6,8 @@
   "kind": "item",
   "name": "Regional Combat Notes",
   "sourceIds": [
-    "source:upgrade-observation-04"
+    "source:upgrade-observation-04",
+    "source:detonated-fob-20261025"
   ],
   "stats": [],
   "status": "observed",

@@ -1,0 +1,69 @@
+{
+  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
+  "effects": [],
+  "id": "reported:vendor-item-upgrade-ii",
+  "name": "Vendor Item Upgrade II",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "observed:cash",
+      "quantity": null,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unknown"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "reported:control-unit",
+      "quantity": 20,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:high-tenacity-fibers",
+      "quantity": 10,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:nylon-cloth",
+      "quantity": 10,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "reported:nano-structured-alloy",
+      "quantity": 2,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
+  "spoiler": false,
+  "status": "unverified",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "detonated-vendor-item-upgrade-ii-20261025"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "II"
+  }
+}

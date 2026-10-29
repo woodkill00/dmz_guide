@@ -6,7 +6,8 @@
   "kind": "item",
   "name": "Reactive Metals",
   "sourceIds": [
-    "source:upgrade-observation-02"
+    "source:upgrade-observation-02",
+    "source:detonated-fob-20261025"
   ],
   "stats": [],
   "status": "observed",

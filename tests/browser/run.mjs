@@ -1,3 +1,4 @@
+import { runNavigationDirectoryTests } from "./navigation-directory.mjs";
 import { runUpgradeTests } from "./upgrades.mjs";
 import { chromium } from "playwright";
 import { startBrowserServer } from "./server.mjs";
@@ -23,6 +24,7 @@ try {
   const { monitorBrowser } = await import("./health.mjs");
   const checkHealth = monitorBrowser(browser);
   await mkdir("test-results", { recursive: true });
+  await runNavigationDirectoryTests({ browser, base });
   await runUpgradeTests({ browser, base, captureScreenshots: true });
   const { runMetadataFloorTests } = await import("./metadata-floor.mjs");
   await runMetadataFloorTests({ browser, base, mode: "fixed" });

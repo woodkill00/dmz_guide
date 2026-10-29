@@ -69,6 +69,38 @@ function scalableEntry(count = 1000) {
   });
   return { key, pack, assetSources };
 }
+test("checked-in catalog uses canonical bytes without unrelated first-save rewrites", async (t) => {
+  const serialized = serializeCatalog({ ...fixtureCatalog, schema });
+  for (const [path, bytes] of serialized)
+    assert.deepEqual(
+      fixtureCatalog.files.get(path),
+      bytes,
+      `Noncanonical source would amplify a Studio save: ${path}`,
+    );
+  const root = await fixture(t);
+  const { createAuthorStore } = await import("../../scripts/author-store.mjs");
+  const store = await createAuthorStore({ root, schema });
+  const pack = loadFixturePack("demo-training");
+  pack.contentVersion = "synthetic-canonical-save";
+  pack.objectives[0].description += " Synthetic isolated edit.";
+  const saved = await store.save({
+    packKey: "demo-training",
+    expectedRevision: fixtureCatalog.revision,
+    pack,
+  });
+  const expected = [
+    "content/catalog/demo-training/pack.json",
+    catalogRecordPath("demo-training", "objectives", pack.objectives[0]),
+  ];
+  assert.deepEqual([...saved.paths].sort(), expected.sort());
+  for (const [path, bytes] of fixtureCatalog.files)
+    if (!expected.includes(path))
+      assert.deepEqual(
+        new Uint8Array(await readFile(join(root, path))),
+        bytes,
+        path,
+      );
+});
 test("canonical snapshot preserves all ordered packs and serializes deterministically", async (t) => {
   const root = await fixture(t),
     snapshot = await readCatalog({ root, schema });

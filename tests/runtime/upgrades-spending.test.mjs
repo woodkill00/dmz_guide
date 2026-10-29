@@ -211,13 +211,22 @@ test("B10 hidden cost blocks preview without revealing its label", () => {
   );
 });
 
-test("B05/B11 actual admitted observed catalog records all eight known direct costs despite incomplete readiness metadata", async () => {
+test("B05/B11 actual admitted observed catalog records six known direct costs and blocks two newly explicit unknown cash prices", async () => {
   const { loadFixturePack } = await import("../helpers/catalog.mjs");
   const pack = loadFixturePack("upgrade-observations");
-  for (const objective of pack.objectives) {
+  for (const objective of pack.objectives.filter((o) =>
+    o.id.startsWith("observed:"),
+  )) {
     const p = newProfile(pack);
     for (const item of pack.items)
       p.inventory[item.id] = item.kind === "currency" ? 2000000 : 1000000;
+    if (objective.requirements.some((r) => r.quantity === null)) {
+      assert.throws(
+        () => recordUpgradePurchase(pack, p, objective.id, op()),
+        /unknown|disputed/i,
+      );
+      continue;
+    }
     const result = recordUpgradePurchase(pack, p, objective.id, op());
     assert(
       result.warnings.some((message) =>

@@ -1,0 +1,147 @@
+{
+  "FR-001": {
+    "tasks": [
+      "T003",
+      "T004"
+    ],
+    "evidence": [
+      "tests/runtime/sourced-catalog.test.mjs",
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ],
+    "status": "local-content-verified"
+  },
+  "FR-002": {
+    "tasks": [
+      "T003",
+      "T004"
+    ],
+    "evidence": [
+      "tests/runtime/sourced-catalog.test.mjs",
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ],
+    "status": "local-content-verified"
+  },
+  "FR-003": {
+    "tasks": [
+      "T003",
+      "T004"
+    ],
+    "evidence": [
+      "tests/runtime/sourced-catalog.test.mjs",
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ],
+    "status": "local-content-verified"
+  },
+  "FR-004": {
+    "tasks": [
+      "T005",
+      "T006"
+    ],
+    "evidence": [
+      "tests/runtime/sourced-catalog.test.mjs",
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ],
+    "status": "local-content-verified"
+  },
+  "FR-005": {
+    "tasks": [
+      "T005",
+      "T006"
+    ],
+    "evidence": [
+      "tests/runtime/sourced-catalog.test.mjs",
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ],
+    "status": "local-content-verified"
+  },
+  "FR-006": {
+    "tasks": [
+      "T002",
+      "T003",
+      "T005",
+      "T007"
+    ],
+    "evidence": [
+      "tests/runtime/sourced-catalog.test.mjs",
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ],
+    "status": "local-content-verified"
+  },
+  "FR-007": {
+    "tasks": [
+      "T004",
+      "T007",
+      "T008"
+    ],
+    "evidence": [
+      "tests/runtime/sourced-catalog.test.mjs",
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ],
+    "status": "local-domain-verified-browser-pending"
+  },
+  "FR-008": {
+    "tasks": [
+      "T005",
+      "T008"
+    ],
+    "evidence": [
+      "tests/runtime/sourced-catalog.test.mjs",
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ],
+    "status": "local-domain-verified-browser-pending"
+  },
+  "FR-009": {
+    "tasks": [
+      "T005",
+      "T006",
+      "T007"
+    ],
+    "evidence": [
+      "tests/runtime/sourced-catalog.test.mjs",
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ],
+    "status": "local-content-verified"
+  },
+  "SC-001": {
+    "tasks": [
+      "T004",
+      "T006"
+    ],
+    "status": "local-verified",
+    "evidence": [
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ]
+  },
+  "SC-002": {
+    "tasks": [
+      "T004",
+      "T006"
+    ],
+    "status": "local-verified",
+    "evidence": [
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ]
+  },
+  "SC-003": {
+    "tasks": [
+      "T008",
+      "T009",
+      "T010"
+    ],
+    "status": "browser-and-final-acceptance-pending",
+    "evidence": [
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ]
+  },
+  "SC-004": {
+    "tasks": [
+      "T008",
+      "T009",
+      "T010"
+    ],
+    "status": "browser-and-final-acceptance-pending",
+    "evidence": [
+      "specs/032-sourced-unlocks-catalog/acceptance.md"
+    ]
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
+  "effects": [],
+  "id": "reported:stash-item-upgrade-ii",
+  "name": "Stash Item Upgrade II",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "observed:cash",
+      "quantity": 50000,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:detonators",
+      "quantity": 20,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:nylon-cloth",
+      "quantity": 10,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:power-regulator",
+      "quantity": 5,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
+  "spoiler": false,
+  "status": "unverified",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "detonated-stash-item-upgrade-ii-20261025"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "II"
+  }
+}

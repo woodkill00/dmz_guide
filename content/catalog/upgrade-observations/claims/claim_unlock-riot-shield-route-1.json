@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-riot-shield",
+  "field": "recipeUnlockRoute.loot",
+  "id": "claim:unlock-riot-shield-route-1",
+  "locator": "Looted Recipes",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "Extract a looted recipe; article labels this list loot-only"
+}

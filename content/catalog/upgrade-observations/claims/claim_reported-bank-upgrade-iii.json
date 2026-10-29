@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:bank-upgrade-iii",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-bank-upgrade-iii",
+  "locator": "Bank Upgrade",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 100000, \"materials\": {\"Infantry Invasion Plans\": 5}}"
+}

@@ -1,0 +1,60 @@
+{
+  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
+  "effects": [],
+  "id": "reported:mia-recovery-discount-i",
+  "name": "MIA Recovery Discount I",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "observed:cash",
+      "quantity": null,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unknown"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "observed:regional-combat-notes",
+      "quantity": 5,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "reported:control-unit",
+      "quantity": 10,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "reported:rigid-synthetics",
+      "quantity": 10,
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ],
+      "status": "unverified"
+    }
+  ],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
+  "spoiler": false,
+  "status": "unverified",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "detonated-mia-recovery-discount-i-20261025"
+    ],
+    "prerequisiteStatus": "unknown",
+    "tierLabel": "I"
+  }
+}

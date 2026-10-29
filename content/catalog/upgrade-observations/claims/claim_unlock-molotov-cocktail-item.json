@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-molotov-cocktail",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-molotov-cocktail-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:molotov-cocktail"
+}

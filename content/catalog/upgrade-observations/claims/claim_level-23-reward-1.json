@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-23",
+  "field": "reward.recipe",
+  "id": "claim:level-23-reward-1",
+  "locator": "DMZ Level 23",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"recipe\", \"label\": \"Sticky Grenade — Recipe\"}"
+}

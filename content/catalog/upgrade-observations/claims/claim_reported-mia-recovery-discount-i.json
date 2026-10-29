@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:mia-recovery-discount-i",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-mia-recovery-discount-i",
+  "locator": "MIA Recovery Discount",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": null, \"materials\": {\"Regional Combat Notes\": 5, \"Control Unit\": 10, \"Rigid Synthetics\": 10}}"
+}

@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-medium-scavenger-backpack",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-medium-scavenger-backpack-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:medium-scavenger-backpack"
+}

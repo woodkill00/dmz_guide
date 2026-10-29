@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-33",
+  "field": "reward.material",
+  "id": "claim:level-33-reward-1",
+  "locator": "DMZ Level 33",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"material\", \"label\": \"2x Electronics — Uncommon Ingredient\"}"
+}

@@ -1,0 +1,16 @@
+{
+  "description": "Community-reported DMZ level milestone. Reported rewards: Reece Operator Skin; 3D Printer Station Upgrade — Tacticals; Smoke Grenade — Recipe; Concussion Grenade — Recipe. Manual tracking does not grant items, recipes or purchased upgrade completion.",
+  "effects": [],
+  "id": "reported:level-04",
+  "name": "DMZ Level 04 rewards",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:detonated-levels-20261020"
+  ],
+  "spoiler": false,
+  "status": "unverified",
+  "track": "progression"
+}

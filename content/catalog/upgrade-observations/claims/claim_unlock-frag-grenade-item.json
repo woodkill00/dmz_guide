@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-frag-grenade",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-frag-grenade-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:frag-grenade"
+}

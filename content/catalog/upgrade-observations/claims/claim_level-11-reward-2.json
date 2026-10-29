@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-11",
+  "field": "reward.item",
+  "id": "claim:level-11-reward-2",
+  "locator": "DMZ Level 11",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"Basic Triage Kit — Uncommon Kit\", \"contents\": [\"Bandages\", \"Med Kit\", \"Radiation Blockers\", \"Painkillers\"]}"
+}

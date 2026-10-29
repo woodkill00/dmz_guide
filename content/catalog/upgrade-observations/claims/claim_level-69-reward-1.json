@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-69",
+  "field": "reward.item",
+  "id": "claim:level-69-reward-1",
+  "locator": "DMZ Level 69",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"Parachute — Legendary Consumable\"}"
+}

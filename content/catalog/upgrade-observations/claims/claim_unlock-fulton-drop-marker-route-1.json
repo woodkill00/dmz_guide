@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-fulton-drop-marker",
+  "field": "recipeUnlockRoute.loot",
+  "id": "claim:unlock-fulton-drop-marker-route-1",
+  "locator": "Looted Recipes",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "Extract a looted recipe; article labels this list loot-only"
+}

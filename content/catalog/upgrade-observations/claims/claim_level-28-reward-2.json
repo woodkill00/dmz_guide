@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-28",
+  "field": "reward.recipe",
+  "id": "claim:level-28-reward-2",
+  "locator": "DMZ Level 28",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"recipe\", \"label\": \"Care Package — Recipe\"}"
+}

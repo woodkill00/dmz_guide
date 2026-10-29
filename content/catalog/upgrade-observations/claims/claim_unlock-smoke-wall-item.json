@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-smoke-wall",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-smoke-wall-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:smoke-wall"
+}

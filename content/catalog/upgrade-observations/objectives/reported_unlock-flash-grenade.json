@@ -1,0 +1,16 @@
+{
+  "description": "Recipe unlock reference only. Craft ingredients and output batch yield are not provided. Reported routes: order: Human Intel 1/2.",
+  "effects": [],
+  "id": "reported:unlock-flash-grenade",
+  "name": "Flash Grenade recipe unlock",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:detonated-recipes-20261019"
+  ],
+  "spoiler": false,
+  "status": "unverified",
+  "track": "progression"
+}

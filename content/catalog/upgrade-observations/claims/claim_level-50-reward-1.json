@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-50",
+  "field": "reward.station",
+  "id": "claim:level-50-reward-1",
+  "locator": "DMZ Level 50",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"station\", \"label\": \"Station Upgrade — 50% Bounty Payout\", \"details\": {\"bountyIncreasePercent\": 50}}"
+}

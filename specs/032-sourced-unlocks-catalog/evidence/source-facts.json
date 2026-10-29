@@ -1,0 +1,1958 @@
+{
+  "reviewedAt": "2026-10-28",
+  "sourceIds": [
+    "source:detonated-fob-20261025",
+    "source:detonated-recipes-20261019",
+    "source:detonated-levels-20261020"
+  ],
+  "fob": [
+    {
+      "id": "reported:bank-upgrade-i",
+      "name": "Bank Upgrade I",
+      "cash": 20000,
+      "materials": {},
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:bank-upgrade-ii",
+      "name": "Bank Upgrade II",
+      "cash": 50000,
+      "materials": {},
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:bank-upgrade-iii",
+      "name": "Bank Upgrade III",
+      "cash": 100000,
+      "materials": {
+        "reported:infantry-invasion-plans": 5
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "observed:bank-upgrade-iv",
+      "name": "Bank Upgrade IV",
+      "cash": 200000,
+      "materials": {
+        "observed:ballistic-flight-logs": 5,
+        "observed:regional-combat-notes": 5
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:bank-upgrade-v",
+      "name": "Bank Upgrade V",
+      "cash": 500000,
+      "materials": {
+        "reported:degraded-execution-footage": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:bank-upgrade-vi",
+      "name": "Bank Upgrade VI",
+      "cash": 500000,
+      "materials": {
+        "reported:nuclear-program-files": 10,
+        "reported:encrypted-archive": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:bank-upgrade-vii",
+      "name": "Bank Upgrade VII",
+      "cash": 500000,
+      "materials": {
+        "observed:wmd-manifest": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:stash-item-upgrade-i",
+      "name": "Stash Item Upgrade I",
+      "cash": 10000,
+      "materials": {
+        "reported:rigid-synthetics": 10,
+        "observed:electronic-sensors": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:stash-item-upgrade-ii",
+      "name": "Stash Item Upgrade II",
+      "cash": 50000,
+      "materials": {
+        "observed:detonators": 20,
+        "observed:nylon-cloth": 10,
+        "observed:power-regulator": 5
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "observed:stash-item-upgrade-iii",
+      "name": "Stash Item Upgrade III",
+      "cash": 100000,
+      "materials": {
+        "observed:binding-catalyst": 20,
+        "observed:stock-rod": 20,
+        "observed:alloyed-plating": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:stash-item-upgrade-iv",
+      "name": "Stash Item Upgrade IV",
+      "cash": null,
+      "materials": {
+        "reported:gold-skull": 5,
+        "observed:alloyed-plating": 30,
+        "reported:experimental-compounds": 10,
+        "observed:turned-components": 30
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "observed:stash-weapon-upgrade-i",
+      "name": "Stash Weapon Upgrade I",
+      "cash": 50000,
+      "materials": {
+        "observed:reactive-metals": 20,
+        "observed:stock-rod": 10,
+        "observed:comms-module": 5
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "observed:stash-weapon-upgrade-ii",
+      "name": "Stash Weapon Upgrade II",
+      "cash": 100000,
+      "materials": {
+        "observed:structural-alloy": 20,
+        "observed:high-tenacity-fibers": 20,
+        "observed:turned-components": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:stash-weapon-upgrade-iii",
+      "name": "Stash Weapon Upgrade III",
+      "cash": null,
+      "materials": {
+        "reported:gold-bar": 5,
+        "reported:stabilized-reagents": 30,
+        "reported:volatile-explosives": 30,
+        "reported:nano-structured-alloy": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:gunsmith-upgrade-i",
+      "name": "Gunsmith Upgrade I",
+      "cash": 50000,
+      "materials": {
+        "observed:reactive-metals": 20,
+        "observed:cpu": 10,
+        "observed:power-regulator": 5
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "observed:gunsmith-upgrade-ii",
+      "name": "Gunsmith Upgrade II",
+      "cash": 100000,
+      "materials": {
+        "observed:nitro-compounds": 20,
+        "observed:comms-module": 10,
+        "observed:military-composites": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:mia-recovery-discount-i",
+      "name": "MIA Recovery Discount I",
+      "cash": null,
+      "materials": {
+        "observed:regional-combat-notes": 5,
+        "reported:control-unit": 10,
+        "reported:rigid-synthetics": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:mia-recovery-discount-ii",
+      "name": "MIA Recovery Discount II",
+      "cash": null,
+      "materials": {
+        "reported:nuclear-program-files": 5,
+        "reported:degraded-execution-footage": 5,
+        "observed:binding-catalyst": 10,
+        "observed:nitro-compounds": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "observed:mia-recovery-discount-iii",
+      "name": "MIA Recovery Discount III",
+      "cash": null,
+      "materials": {
+        "observed:wmd-manifest": 5,
+        "observed:foreign-intelligence-targets": 5,
+        "observed:power-regulator": 10,
+        "observed:comms-module": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:mia-recovery-discount-iv",
+      "name": "MIA Recovery Discount IV",
+      "cash": null,
+      "materials": {
+        "reported:sanctioned-assassination-list": 5,
+        "reported:ballistic-fabric": 30,
+        "reported:nylon-laminate": 30,
+        "observed:prototype-rf-module": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:dog-tag-case-upgrade-i",
+      "name": "Dog Tag Case Upgrade I",
+      "cash": 10000,
+      "materials": {
+        "reported:rigid-synthetics": 10,
+        "reported:biomaterials": 10
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "observed:dog-tag-case-upgrade-ii",
+      "name": "Dog Tag Case Upgrade II",
+      "cash": 50000,
+      "materials": {
+        "observed:detonators": 20,
+        "observed:nylon-cloth": 10,
+        "observed:power-regulator": 5
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:dog-tag-case-upgrade-iii",
+      "name": "Dog Tag Case Upgrade III",
+      "cash": 100000,
+      "materials": {
+        "observed:printed-circuit-board": 10,
+        "observed:structural-alloy": 10,
+        "observed:power-regulator": 5
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:dog-tag-case-upgrade-iv",
+      "name": "Dog Tag Case Upgrade IV",
+      "cash": 200000,
+      "materials": {
+        "observed:cpu": 20,
+        "reported:stabilized-reagents": 10,
+        "reported:experimental-compounds": 5
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "observed:vendor-item-upgrade-i",
+      "name": "Vendor Item Upgrade I",
+      "cash": null,
+      "materials": {
+        "observed:electronic-sensors": 20,
+        "observed:cpu": 10,
+        "observed:printed-circuit-board": 10,
+        "observed:prototype-rf-module": 2
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:vendor-item-upgrade-ii",
+      "name": "Vendor Item Upgrade II",
+      "cash": null,
+      "materials": {
+        "reported:control-unit": 20,
+        "observed:high-tenacity-fibers": 10,
+        "observed:nylon-cloth": 10,
+        "reported:nano-structured-alloy": 2
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:uncommon-ingredient-printing",
+      "name": "Uncommon Ingredient Printing",
+      "cash": 50000,
+      "materials": {
+        "reported:biomaterials": 20,
+        "observed:high-tenacity-fibers": 10,
+        "observed:comms-module": 5
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    },
+    {
+      "id": "reported:epic-ingredient-printing",
+      "name": "Epic Ingredient Printing",
+      "cash": 100000,
+      "materials": {
+        "observed:binding-catalyst": 10,
+        "observed:printed-circuit-board": 10,
+        "observed:military-composites": 5
+      },
+      "sourceId": "source:detonated-fob-20261025"
+    }
+  ],
+  "materialTotals": {
+    "observed:detonators": 40,
+    "observed:binding-catalyst": 40,
+    "observed:alloyed-plating": 40,
+    "observed:turned-components": 40,
+    "observed:reactive-metals": 40,
+    "observed:high-tenacity-fibers": 40,
+    "reported:stabilized-reagents": 40,
+    "observed:cpu": 40,
+    "reported:rigid-synthetics": 30,
+    "observed:electronic-sensors": 30,
+    "observed:nylon-cloth": 30,
+    "observed:power-regulator": 30,
+    "observed:stock-rod": 30,
+    "observed:comms-module": 30,
+    "observed:structural-alloy": 30,
+    "reported:volatile-explosives": 30,
+    "observed:nitro-compounds": 30,
+    "reported:control-unit": 30,
+    "reported:ballistic-fabric": 30,
+    "reported:nylon-laminate": 30,
+    "reported:biomaterials": 30,
+    "observed:printed-circuit-board": 30,
+    "reported:degraded-execution-footage": 15,
+    "reported:nuclear-program-files": 15,
+    "observed:wmd-manifest": 15,
+    "reported:experimental-compounds": 15,
+    "observed:military-composites": 15,
+    "reported:nano-structured-alloy": 12,
+    "observed:prototype-rf-module": 12,
+    "observed:regional-combat-notes": 10,
+    "reported:encrypted-archive": 10,
+    "reported:infantry-invasion-plans": 5,
+    "observed:ballistic-flight-logs": 5,
+    "reported:gold-skull": 5,
+    "reported:gold-bar": 5,
+    "observed:foreign-intelligence-targets": 5,
+    "reported:sanctioned-assassination-list": 5
+  },
+  "recipeUnlocks": [
+    {
+      "id": "reported:unlock-1-plate-armor-vest",
+      "itemId": "reported:1-plate-armor-vest",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 2",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-bandage",
+      "itemId": "reported:bandage",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 2",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-small-backpack",
+      "itemId": "reported:small-backpack",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 2",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-medkit",
+      "itemId": "reported:medkit",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 2",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-2-plate-armor-vest",
+      "itemId": "reported:2-plate-armor-vest",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 2",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-medium-backpack",
+      "itemId": "reported:medium-backpack",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 2",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-sedative-inhaler",
+      "itemId": "reported:sedative-inhaler",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 3",
+          "level": 3
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-smoke-grenade",
+      "itemId": "reported:smoke-grenade",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 4",
+          "level": 4
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-concussion-grenade",
+      "itemId": "reported:concussion-grenade",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 4",
+          "level": 4
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-frag-grenade",
+      "itemId": "reported:frag-grenade",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 7",
+          "level": 7
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-throwing-knife",
+      "itemId": "reported:throwing-knife",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 7",
+          "level": 7
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-snapshot-grenade",
+      "itemId": "reported:snapshot-grenade",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 9",
+          "level": 9
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-ammo-box",
+      "itemId": "reported:ammo-box",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 12",
+          "level": 12
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-spotter-scope",
+      "itemId": "reported:spotter-scope",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 12",
+          "level": 12
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-armor-box",
+      "itemId": "reported:armor-box",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 14",
+          "level": 14
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-shock-stick",
+      "itemId": "reported:shock-stick",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 17",
+          "level": 17
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-sticky-grenade",
+      "itemId": "reported:sticky-grenade",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 23",
+          "level": 23
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-gas-mask",
+      "itemId": "reported:gas-mask",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 26",
+          "level": 26
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-care-package",
+      "itemId": "reported:care-package",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 28",
+          "level": 28
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-uav",
+      "itemId": "reported:uav",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 31",
+          "level": 31
+        },
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-molotov-cocktail",
+      "itemId": "reported:molotov-cocktail",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 36",
+          "level": 36
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-thermite",
+      "itemId": "reported:thermite",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 41",
+          "level": 41
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-self-revive-kit",
+      "itemId": "reported:self-revive-kit",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 48",
+          "level": 48
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-inflatable-decoy",
+      "itemId": "reported:inflatable-decoy",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 52",
+          "level": 52
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-disposable-parachute",
+      "itemId": "reported:disposable-parachute",
+      "routes": [
+        {
+          "type": "level",
+          "condition": "Level 55",
+          "level": 55
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-defibrillator",
+      "itemId": "reported:defibrillator",
+      "routes": [
+        {
+          "type": "story",
+          "condition": "Operation: Critical Extraction"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-night-vision-goggles",
+      "itemId": "reported:night-vision-goggles",
+      "routes": [
+        {
+          "type": "story",
+          "condition": "Operation: Shopping Hacks"
+        },
+        {
+          "type": "order",
+          "condition": "Underground 1/2"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-large-backpack",
+      "itemId": "reported:large-backpack",
+      "routes": [
+        {
+          "type": "order",
+          "condition": "DMZ Order 10"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-flash-grenade",
+      "itemId": "reported:flash-grenade",
+      "routes": [
+        {
+          "type": "order",
+          "condition": "Human Intel 1/2"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-recon-drone",
+      "itemId": "reported:recon-drone",
+      "routes": [
+        {
+          "type": "order",
+          "condition": "Counterfeit 1/2"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-door-breacher-charge",
+      "itemId": "reported:door-breacher-charge",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-pain-killers",
+      "itemId": "reported:pain-killers",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-radiation-blockers",
+      "itemId": "reported:radiation-blockers",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-3-plate-ballistic-gel-vest",
+      "itemId": "reported:3-plate-ballistic-gel-vest",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-2-plate-helmet-armor-vest",
+      "itemId": "reported:2-plate-helmet-armor-vest",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-2-plate-ballistic-gel-vest",
+      "itemId": "reported:2-plate-ballistic-gel-vest",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-3-plate-armor-vest",
+      "itemId": "reported:3-plate-armor-vest",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-3-plate-helmet-armor-vest",
+      "itemId": "reported:3-plate-helmet-armor-vest",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-tempered-armor-vest",
+      "itemId": "reported:tempered-armor-vest",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-medium-scavenger-backpack",
+      "itemId": "reported:medium-scavenger-backpack",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-medium-weapon-backpack",
+      "itemId": "reported:medium-weapon-backpack",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-small-secure-backpack",
+      "itemId": "reported:small-secure-backpack",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-large-scavenger-backpack",
+      "itemId": "reported:large-scavenger-backpack",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-medium-secure-backpack",
+      "itemId": "reported:medium-secure-backpack",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-large-secure-backpack",
+      "itemId": "reported:large-secure-backpack",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-secure-scavenger-backpack",
+      "itemId": "reported:secure-scavenger-backpack",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-screamer-mine",
+      "itemId": "reported:screamer-mine",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-stim",
+      "itemId": "reported:stim",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-heartbeat-sensor",
+      "itemId": "reported:heartbeat-sensor",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-drill-charge",
+      "itemId": "reported:drill-charge",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-c4",
+      "itemId": "reported:c4",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-claymore",
+      "itemId": "reported:claymore",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-proximity-mine",
+      "itemId": "reported:proximity-mine",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-trip-wire",
+      "itemId": "reported:trip-wire",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-portable-radar",
+      "itemId": "reported:portable-radar",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-razor-wire-trap",
+      "itemId": "reported:razor-wire-trap",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-rebreather",
+      "itemId": "reported:rebreather",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-riot-shield",
+      "itemId": "reported:riot-shield",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-seeker-drone",
+      "itemId": "reported:seeker-drone",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-smoke-wall",
+      "itemId": "reported:smoke-wall",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-trophy-system",
+      "itemId": "reported:trophy-system",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-sam-airburst-turret",
+      "itemId": "reported:sam-airburst-turret",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-revive-pistol",
+      "itemId": "reported:revive-pistol",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-fulton-drop-marker",
+      "itemId": "reported:fulton-drop-marker",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-bombing-run",
+      "itemId": "reported:bombing-run",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-combat-drone",
+      "itemId": "reported:combat-drone",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-bomb-glider",
+      "itemId": "reported:bomb-glider",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-artillery-beacon",
+      "itemId": "reported:artillery-beacon",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-advanced-uav",
+      "itemId": "reported:advanced-uav",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-impact-warhead",
+      "itemId": "reported:impact-warhead",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-railgun-sentry",
+      "itemId": "reported:railgun-sentry",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-crossfire",
+      "itemId": "reported:crossfire",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-durable-gas-mask",
+      "itemId": "reported:durable-gas-mask",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-elite-night-vision-goggles",
+      "itemId": "reported:elite-night-vision-goggles",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    },
+    {
+      "id": "reported:unlock-parachute",
+      "itemId": "reported:parachute",
+      "routes": [
+        {
+          "type": "loot",
+          "condition": "Extract a looted recipe; article labels this list loot-only"
+        }
+      ]
+    }
+  ],
+  "levels": [
+    {
+      "level": 2,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Unlock — 3D Printer",
+          "details": {
+            "printingCategories": [
+              "gear",
+              "upgrades",
+              "backpacks",
+              "consumables"
+            ]
+          }
+        },
+        {
+          "type": "recipe",
+          "label": "1-Plate Armor Vest — Recipe"
+        },
+        {
+          "type": "recipe",
+          "label": "Bandage — Recipe"
+        },
+        {
+          "type": "recipe",
+          "label": "Small Backpack — Recipe"
+        },
+        {
+          "type": "recipe",
+          "label": "Medkit — Recipe"
+        },
+        {
+          "type": "recipe",
+          "label": "2-Plate Armor Vest — Recipe"
+        },
+        {
+          "type": "recipe",
+          "label": "Medium Backpack — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 3,
+      "rewards": [
+        {
+          "type": "recipe",
+          "label": "Sedative Inhaler — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 4,
+      "rewards": [
+        {
+          "type": "cosmetic",
+          "label": "Reece Operator Skin"
+        },
+        {
+          "type": "station",
+          "label": "3D Printer Station Upgrade — Tacticals",
+          "details": {
+            "printingCategory": "tacticals"
+          }
+        },
+        {
+          "type": "recipe",
+          "label": "Smoke Grenade — Recipe"
+        },
+        {
+          "type": "recipe",
+          "label": "Concussion Grenade — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Unlock — Vendor"
+        }
+      ]
+    },
+    {
+      "level": 6,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Rigid Synthetics — Uncommon Ingredients"
+        },
+        {
+          "type": "item",
+          "label": "Basic Armor Kit — Uncommon Consumable",
+          "contents": [
+            "2-Plate Carrier",
+            "Armor Box"
+          ]
+        }
+      ]
+    },
+    {
+      "level": 7,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "3D Printer Station Upgrade — Lethals",
+          "details": {
+            "printingCategory": "lethals"
+          }
+        },
+        {
+          "type": "recipe",
+          "label": "Frag Grenade — Recipe"
+        },
+        {
+          "type": "recipe",
+          "label": "Throwing Knife — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 8,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Restock Kit",
+          "contents": [
+            "Armor Box",
+            "Munitions Box",
+            "Medium Backpack"
+          ]
+        }
+      ]
+    },
+    {
+      "level": 9,
+      "rewards": [
+        {
+          "type": "cosmetic",
+          "label": "Coffey Operator Skin"
+        },
+        {
+          "type": "recipe",
+          "label": "Snapshot Grenade — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Unlock — Gunsmith",
+          "details": {
+            "purchaseCondition": "Corresponding weapon manual",
+            "modificationMethod": "attachments"
+          }
+        }
+      ]
+    },
+    {
+      "level": 11,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Reactive Metals — Uncommon Ingredients"
+        },
+        {
+          "type": "item",
+          "label": "Basic Triage Kit — Uncommon Kit",
+          "contents": [
+            "Bandages",
+            "Med Kit",
+            "Radiation Blockers",
+            "Painkillers"
+          ]
+        }
+      ]
+    },
+    {
+      "level": 12,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — Field Upgrades",
+          "details": {
+            "printingCategory": "field upgrades"
+          }
+        },
+        {
+          "type": "recipe",
+          "label": "Ammo Box — Recipe"
+        },
+        {
+          "type": "recipe",
+          "label": "Spotter Scope — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 13,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "UAV — Epic Fire Support"
+        }
+      ]
+    },
+    {
+      "level": 14,
+      "rewards": [
+        {
+          "type": "recipe",
+          "label": "Armor Box — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 15,
+      "rewards": [
+        {
+          "type": "unknown",
+          "label": "Simone Operator Skill",
+          "uncertainty": "Reward identity or wording is incomplete; verify in game."
+        },
+        {
+          "type": "station",
+          "label": "Station Upgrade — +1 Operator Slot"
+        }
+      ]
+    },
+    {
+      "level": 16,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Explosives Equipment Kit — Uncommon Consumable",
+          "contents": [
+            "Frag Grenades",
+            "Sticky Grenades",
+            "C4",
+            "Proximity Mines",
+            "Gun Store Weapons Locker Key"
+          ]
+        }
+      ]
+    },
+    {
+      "level": 17,
+      "rewards": [
+        {
+          "type": "recipe",
+          "label": "Shock Stick — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 18,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — Vendor Upgrade",
+          "details": {
+            "vendorChange": "additional sale items"
+          }
+        }
+      ]
+    },
+    {
+      "level": 19,
+      "rewards": [
+        {
+          "type": "cosmetic",
+          "label": "Hector Operator Skin"
+        },
+        {
+          "type": "item",
+          "label": "Recon Equipment Kit — Uncommon Consumable",
+          "contents": [
+            "Seeker Drone",
+            "Recon Drone",
+            "Heartbeat Sensors",
+            "Snapshot Grenades",
+            "Police Station Key"
+          ]
+        }
+      ]
+    },
+    {
+      "level": 20,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Unlock — Dog Tag Case",
+          "details": {
+            "display": "enemy operator dog tags",
+            "expansionStation": "3D Printer"
+          }
+        }
+      ]
+    },
+    {
+      "level": 21,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Basic Armor Kit — Uncommon Consumable",
+          "contents": [
+            "2-Plate Carrier",
+            "Armor Box"
+          ]
+        }
+      ]
+    },
+    {
+      "level": 22,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — +18 Stash Slots"
+        }
+      ]
+    },
+    {
+      "level": 23,
+      "rewards": [
+        {
+          "type": "recipe",
+          "label": "Sticky Grenade — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 24,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Restock Kit — Uncommon Consumable",
+          "contents": [
+            "Medium Backpacks",
+            "Armor Box",
+            "Munitions Box"
+          ]
+        }
+      ]
+    },
+    {
+      "level": 25,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — +5% Discount",
+          "details": {
+            "gunsmithDiscountPercent": 5
+          }
+        }
+      ]
+    },
+    {
+      "level": 26,
+      "rewards": [
+        {
+          "type": "recipe",
+          "label": "Gas Mask — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 27,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Triage Kit — Epic Consumable",
+          "contents": [
+            "Bandages",
+            "Med Kits",
+            "Painkillers",
+            "Self Revives"
+          ]
+        }
+      ]
+    },
+    {
+      "level": 28,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — Fire Support",
+          "details": {
+            "printingCategory": "fire support"
+          }
+        },
+        {
+          "type": "recipe",
+          "label": "Care Package — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 29,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Detonators — Uncommon Ingredient"
+        }
+      ]
+    },
+    {
+      "level": 30,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — 10% Bounty Payout",
+          "details": {
+            "bountyIncreasePercent": 10
+          }
+        }
+      ]
+    },
+    {
+      "level": 31,
+      "rewards": [
+        {
+          "type": "recipe",
+          "label": "UAV — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 32,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — Vendor Upgrade",
+          "details": {
+            "vendorChange": "additional sale items"
+          }
+        }
+      ]
+    },
+    {
+      "level": 33,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Electronics — Uncommon Ingredient"
+        }
+      ]
+    },
+    {
+      "level": 34,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Large Backpack — Epic Consumable"
+        }
+      ]
+    },
+    {
+      "level": 35,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — +6 Weapon Stash Slots"
+        }
+      ]
+    },
+    {
+      "level": 36,
+      "rewards": [
+        {
+          "type": "recipe",
+          "label": "Molotov Cocktail — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 37,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "3-Plate Armor Vest — Epic Consumable"
+        }
+      ]
+    },
+    {
+      "level": 38,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Control Unit — Uncommon Ingredient"
+        }
+      ]
+    },
+    {
+      "level": 39,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Biomaterials — Uncommon Ingredients"
+        }
+      ]
+    },
+    {
+      "level": 40,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "3x Station Upgrades",
+          "uncertainty": "Reward identity or wording is incomplete; verify in game."
+        }
+      ]
+    },
+    {
+      "level": 41,
+      "rewards": [
+        {
+          "type": "recipe",
+          "label": "Thermite — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 42,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Trap Equipment Kit — Uncommon Consumable",
+          "contents": [
+            "Razor Wire Traps",
+            "Trip Wires",
+            "Proximity Mines",
+            "Claymores",
+            "Gun Store Weapons Locker Key"
+          ]
+        }
+      ]
+    },
+    {
+      "level": 43,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Structural Alloy — Rare Ingredient"
+        }
+      ]
+    },
+    {
+      "level": 44,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x CPU — Rare Ingredient"
+        }
+      ]
+    },
+    {
+      "level": 45,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — +18 Stash Slots"
+        }
+      ]
+    },
+    {
+      "level": 46,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Recon Equipment Kit — Uncommon Consumable",
+          "contents": [
+            "Seeker Drone",
+            "Recon Drone",
+            "Snapshot Grenades",
+            "Heartbeat Sensors",
+            "a Black Market Weapons Locker Key"
+          ]
+        }
+      ]
+    },
+    {
+      "level": 47,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Nitro Compounds — Rare Ingredient"
+        }
+      ]
+    },
+    {
+      "level": 48,
+      "rewards": [
+        {
+          "type": "recipe",
+          "label": "Self Revive Kit — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 49,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Binding Catalyst — Rare Ingredient"
+        }
+      ]
+    },
+    {
+      "level": 50,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — 50% Bounty Payout",
+          "details": {
+            "bountyIncreasePercent": 50
+          }
+        }
+      ]
+    },
+    {
+      "level": 51,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Stock Rod — Rare Ingredient"
+        }
+      ]
+    },
+    {
+      "level": 52,
+      "rewards": [
+        {
+          "type": "recipe",
+          "label": "Inflatable Decoy — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 53,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x High-Tenacity Fibers — Rare Ingredient"
+        }
+      ]
+    },
+    {
+      "level": 54,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "3x Epic Consumable",
+          "uncertainty": "Reward identity or wording is incomplete; verify in game."
+        }
+      ]
+    },
+    {
+      "level": 55,
+      "rewards": [
+        {
+          "type": "recipe",
+          "label": "Disposable Parachute — Recipe"
+        }
+      ]
+    },
+    {
+      "level": 56,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Printed Circuit Boards — Rare Ingredient"
+        }
+      ]
+    },
+    {
+      "level": 57,
+      "rewards": [
+        {
+          "type": "material",
+          "label": "2x Nylon Cloth — Rare Ingredient"
+        }
+      ]
+    },
+    {
+      "level": 58,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Care Package — Rare Fire Support"
+        }
+      ]
+    },
+    {
+      "level": 59,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Combat Drone — Epic Fire Support"
+        }
+      ]
+    },
+    {
+      "level": 60,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — +6 Weapon Stash Slots"
+        }
+      ]
+    },
+    {
+      "level": 61,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Medium Weapon Backpack — Epic Consumable"
+        }
+      ]
+    },
+    {
+      "level": 62,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Door Breacher Charge — Ultra Consumable"
+        }
+      ]
+    },
+    {
+      "level": 63,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "2-Plate Helmet Armor Vest — Ultra Consumable"
+        }
+      ]
+    },
+    {
+      "level": 64,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Revive Pistol — Field Upgrade"
+        }
+      ]
+    },
+    {
+      "level": 65,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "UAV — Epic Fire Support"
+        }
+      ]
+    },
+    {
+      "level": 66,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Crossfire — Fire Support"
+        }
+      ]
+    },
+    {
+      "level": 67,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Defibrillator — Uncommon Consumable"
+        }
+      ]
+    },
+    {
+      "level": 68,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Durable Gas Mask — Epic Consumable"
+        }
+      ]
+    },
+    {
+      "level": 69,
+      "rewards": [
+        {
+          "type": "item",
+          "label": "Parachute — Legendary Consumable"
+        }
+      ]
+    },
+    {
+      "level": 70,
+      "rewards": [
+        {
+          "type": "station",
+          "label": "Station Upgrade — +18 Stash Slots"
+        },
+        {
+          "type": "station",
+          "label": "Station Upgrade — 100% Bounty Payout",
+          "details": {
+            "bountyIncreasePercent": 100
+          }
+        },
+        {
+          "type": "item",
+          "label": "Advanced Sere Kit — Legendary Consumable",
+          "contents": [
+            "Operator Rescue Beacons",
+            "Med Kit",
+            "Self Revives",
+            "Weapon Insurance Contracts"
+          ]
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Community reports, not current-build verification",
+    "Craft ingredients and output yields unprovided",
+    "Full recipe coverage not established",
+    "Unknown prices are not zero",
+    "Multiple reported routes are not all-required dependencies"
+  ]
+}

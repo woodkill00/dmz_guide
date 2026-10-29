@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-16",
+  "field": "reward.item",
+  "id": "claim:level-16-reward-1",
+  "locator": "DMZ Level 16",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"Explosives Equipment Kit — Uncommon Consumable\", \"contents\": [\"Frag Grenades\", \"Sticky Grenades\", \"C4\", \"Proximity Mines\", \"Gun Store Weapons Locker Key\"]}"
+}

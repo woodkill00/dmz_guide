@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:bank-upgrade-v",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-bank-upgrade-v",
+  "locator": "Bank Upgrade",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 500000, \"materials\": {\"Degraded Execution Footage\": 10}}"
+}

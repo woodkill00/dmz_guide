@@ -1,0 +1,9 @@
+{
+  "entityId": "observed:foreign-intelligence-targets",
+  "field": "sourceListedAllTiersMaterialCount",
+  "id": "claim:all-tiers-foreign-intelligence-targets",
+  "locator": "What Items You Need to Keep in DMZ",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": 5
+}

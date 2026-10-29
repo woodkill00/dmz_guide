@@ -6,7 +6,8 @@
   "kind": "item",
   "name": "Binding Catalyst",
   "sourceIds": [
-    "source:upgrade-observation-07"
+    "source:upgrade-observation-07",
+    "source:detonated-fob-20261025"
   ],
   "stats": [],
   "status": "observed",

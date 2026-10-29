@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-medium-secure-backpack",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-medium-secure-backpack-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:medium-secure-backpack"
+}

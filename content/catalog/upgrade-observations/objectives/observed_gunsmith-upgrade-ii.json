@@ -50,7 +50,8 @@
   "requirementsKnown": false,
   "sourceIds": [
     "source:upgrade-observation-06",
-    "source:upgrade-consumption-confirmation-20261026"
+    "source:upgrade-consumption-confirmation-20261026",
+    "source:detonated-fob-20261025"
   ],
   "spoiler": false,
   "status": "observed",

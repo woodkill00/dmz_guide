@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-snapshot-grenade",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-snapshot-grenade-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:snapshot-grenade"
+}

@@ -1,0 +1,9 @@
+{
+  "entityId": "observed:nylon-cloth",
+  "field": "sourceListedAllTiersMaterialCount",
+  "id": "claim:all-tiers-nylon-cloth",
+  "locator": "What Items You Need to Keep in DMZ",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": 30
+}

@@ -1,0 +1,9 @@
+{
+  "entityId": "observed:alloyed-plating",
+  "field": "sourceListedAllTiersMaterialCount",
+  "id": "claim:all-tiers-alloyed-plating",
+  "locator": "What Items You Need to Keep in DMZ",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": 40
+}

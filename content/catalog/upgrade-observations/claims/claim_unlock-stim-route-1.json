@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-stim",
+  "field": "recipeUnlockRoute.loot",
+  "id": "claim:unlock-stim-route-1",
+  "locator": "Looted Recipes",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "Extract a looted recipe; article labels this list loot-only"
+}

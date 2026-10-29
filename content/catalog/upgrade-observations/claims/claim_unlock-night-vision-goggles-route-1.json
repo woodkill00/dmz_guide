@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-night-vision-goggles",
+  "field": "recipeUnlockRoute.story",
+  "id": "claim:unlock-night-vision-goggles-route-1",
+  "locator": "Story Mission Recipes",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "Operation: Shopping Hacks"
+}

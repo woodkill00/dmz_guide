@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-molotov-cocktail",
+  "field": "recipeUnlockRoute.level",
+  "id": "claim:unlock-molotov-cocktail-route-1",
+  "locator": "Level Unlock Recipes",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": 36
+}

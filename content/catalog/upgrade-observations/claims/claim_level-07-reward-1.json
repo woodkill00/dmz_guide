@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-07",
+  "field": "reward.station",
+  "id": "claim:level-07-reward-1",
+  "locator": "DMZ Level 7",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"station\", \"label\": \"3D Printer Station Upgrade — Lethals\", \"details\": {\"printingCategory\": \"lethals\"}}"
+}

@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "upgrade material",
+  "description": "Community-source item identity. Current build, locations and unlisted mechanics remain unverified.",
+  "id": "reported:gold-bar",
+  "kind": "item",
+  "name": "Gold Bar",
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
+  "stats": [],
+  "status": "unverified",
+  "unit": "count"
+}

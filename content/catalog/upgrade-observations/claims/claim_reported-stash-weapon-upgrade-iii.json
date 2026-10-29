@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:stash-weapon-upgrade-iii",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-stash-weapon-upgrade-iii",
+  "locator": "Stash Weapon Upgrade",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": null, \"materials\": {\"Gold Bar\": 5, \"Stabilized Reagents\": 30, \"Volatile Explosives\": 30, \"Nano-Structured Alloy\": 10}}"
+}

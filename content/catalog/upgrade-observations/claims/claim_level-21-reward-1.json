@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-21",
+  "field": "reward.item",
+  "id": "claim:level-21-reward-1",
+  "locator": "DMZ Level 21",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"Basic Armor Kit — Uncommon Consumable\", \"contents\": [\"2-Plate Carrier\", \"Armor Box\"]}"
+}

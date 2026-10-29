@@ -34,6 +34,10 @@ import {
   publicTitle,
   setBundledAssets,
 } from "../src/ui/render.mjs";
+import {
+  renderSiteMap,
+  renderMapWorkspace,
+} from "../src/ui/navigation-page.mjs";
 import { readCatalog, bundledSources, catalogJSON } from "./catalog.mjs";
 import { prepareBundledAssets, writeBundledAssets } from "./bundled-assets.mjs";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -94,8 +98,20 @@ async function generate(dist) {
     pages.push({
       path: `/${path}/`,
       title,
-      body: renderCatalog(packs, { title, type }),
-      page: path === "items" || path === "weapons" ? "catalog" : path,
+      body: renderCatalog(packs, {
+        title,
+        type,
+        compact: path === "items",
+        authorTargets: Object.fromEntries(
+          catalog.entries.map(({ key, pack }) => [
+            pack.id,
+            Object.fromEntries(
+              pack.items.map((item) => [item.id, guidancePath(key, item.id)]),
+            ),
+          ]),
+        ),
+      }),
+      page: path,
       scripts: ["/assets/src/client/catalog.mjs"],
     });
   for (const record of allRecords(packs)) {
@@ -106,6 +122,7 @@ async function generate(dist) {
     pages.push({
       path: recordUrl(record),
       title: publicTitle(record),
+      packId: record.pack.id,
       body: renderDetail(record, packs, {
         authorActions: renderAuthorActions(record, {
           edit: guidance + "#edit",
@@ -113,13 +130,14 @@ async function generate(dist) {
         }),
       }),
       page:
-        { item: "catalog", recipe: "recipes", guide: "guides" }[
+        { item: "items", recipe: "recipes", guide: "guides" }[
           record.recordType
         ] || record.recordType,
     });
     pages.push({
       path: guidance,
       title: "Edit " + publicTitle(record),
+      packId: record.pack.id,
       body: renderAuthorGuidance(record, entry.key),
       page: "contribute",
     });
@@ -159,6 +177,18 @@ async function generate(dist) {
           "This workspace is not available in this build. Your existing browser data has not been changed.",
         ),
       });
+  pages.push({
+    path: "/map-workspace/",
+    title: "Local map workspace",
+    page: "map-workspace",
+    body: renderMapWorkspace(),
+  });
+  pages.push({
+    path: "/sitemap/",
+    title: "Site map",
+    page: "sitemap",
+    body: renderSiteMap(pages, packs),
+  });
   setNavigation(pages);
   const paths = new Set();
   for (const page of pages) {

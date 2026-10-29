@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:uncommon-ingredient-printing",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-uncommon-ingredient-printing",
+  "locator": "Uncommon Ingredient Printing",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 50000, \"materials\": {\"Biomaterials\": 20, \"High-Tenacity Fibers\": 10, \"Comms Module\": 5}}"
+}

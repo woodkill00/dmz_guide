@@ -1,0 +1,16 @@
+{
+  "description": "Community-reported DMZ level milestone. Reported rewards: Durable Gas Mask — Epic Consumable. Manual tracking does not grant items, recipes or purchased upgrade completion.",
+  "effects": [],
+  "id": "reported:level-68",
+  "name": "DMZ Level 68 rewards",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:detonated-levels-20261020"
+  ],
+  "spoiler": false,
+  "status": "unverified",
+  "track": "progression"
+}

@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-care-package",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-care-package-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:care-package"
+}

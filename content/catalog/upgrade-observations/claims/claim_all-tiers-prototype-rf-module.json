@@ -1,0 +1,9 @@
+{
+  "entityId": "observed:prototype-rf-module",
+  "field": "sourceListedAllTiersMaterialCount",
+  "id": "claim:all-tiers-prototype-rf-module",
+  "locator": "What Items You Need to Keep in DMZ",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": 12
+}

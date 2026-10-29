@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-bomb-glider",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-bomb-glider-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:bomb-glider"
+}

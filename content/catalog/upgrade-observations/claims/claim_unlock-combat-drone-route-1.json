@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-combat-drone",
+  "field": "recipeUnlockRoute.loot",
+  "id": "claim:unlock-combat-drone-route-1",
+  "locator": "Looted Recipes",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "Extract a looted recipe; article labels this list loot-only"
+}

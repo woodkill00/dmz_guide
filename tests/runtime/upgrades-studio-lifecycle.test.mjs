@@ -1,3 +1,4 @@
+import { observeBrowserAction } from "../browser/action-observers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -21,6 +22,7 @@ async function exercise(mode) {
     ],
   }));
   const keys = ["demo-training", "upgrade-observations"];
+  const written = [];
   const servers = [],
     selected = { key: keys[0], draft: clone(packs[0]) };
   let contextClosed = 0,
@@ -73,14 +75,19 @@ async function exercise(mode) {
   });
   const page = {
     locator,
-    goto: async () => {},
+    on: () => {},
+    evaluate: async () => ({ synthetic: true }),
+    goto: async () => (mode === "observer" ? new Promise(() => {}) : undefined),
     waitForSelector: async () => {},
     waitForFunction: async () => {},
-    waitForResponse: async () => ({
-      status: () => 200,
-      finished: async () => null,
-      text: async () => "ok",
-    }),
+    waitForResponse: async () => {
+      if (mode === "observer") throw new Error("observer sentinel");
+      return {
+        status: () => 200,
+        finished: async () => null,
+        text: async () => "ok",
+      };
+    },
     waitForEvent: async () => ({ path: async () => "virtual-export" }),
     selectOption: async (selector, key) => {
       if (selector === "#pack-select") {
@@ -119,8 +126,11 @@ async function exercise(mode) {
     JSON,
     Buffer,
     process: { env: {} },
+    observeBrowserAction,
+    setTimeout,
+    clearTimeout,
     readFile: async () => JSON.stringify({ pack: selected.draft }),
-    writeFile: async () => {},
+    writeFile: async (path, value) => written.push({ path, value }),
     mkdir: async () => {},
     fetch: async () => ({
       status: 200,
@@ -151,11 +161,12 @@ async function exercise(mode) {
   } catch (error) {
     failure = error;
   }
-  return { servers, contextClosed, result, failure };
+  return { servers, contextClosed, result, failure, written };
 }
 for (const mode of [
   "new-context",
   "new-page",
+  "observer",
   "restart",
   "assertion",
   "context-close",
@@ -167,6 +178,15 @@ for (const mode of [
     assert.equal(outcome.result, undefined);
     assert(outcome.servers.every((server) => server.closes === 1));
     assert.equal(outcome.contextClosed, mode === "new-context" ? 0 : 1);
+    if (mode === "observer") {
+      const report = outcome.written.find((entry) =>
+        entry.path.endsWith("-failure.json"),
+      );
+      assert(report, "Observer failures preserve diagnostics before cleanup");
+      const data = JSON.parse(report.value);
+      assert.match(data.message, /observer sentinel/);
+      assert.equal(data.state.synthetic, true);
+    }
     if (mode === "assertion" || mode === "cleanup") {
       assert.match(outcome.failure.message, /Guided Studio preserves/);
       if (mode === "cleanup")

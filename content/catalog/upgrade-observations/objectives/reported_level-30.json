@@ -1,0 +1,16 @@
+{
+  "description": "Community-reported DMZ level milestone. Reported rewards: Station Upgrade — 10% Bounty Payout. Manual tracking does not grant items, recipes or purchased upgrade completion.",
+  "effects": [],
+  "id": "reported:level-30",
+  "name": "DMZ Level 30 rewards",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:detonated-levels-20261020"
+  ],
+  "spoiler": false,
+  "status": "unverified",
+  "track": "progression"
+}

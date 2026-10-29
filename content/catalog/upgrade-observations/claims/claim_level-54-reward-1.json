@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:level-54",
+  "field": "reward.item",
+  "id": "claim:level-54-reward-1",
+  "locator": "DMZ Level 54",
+  "sourceId": "source:detonated-levels-20261020",
+  "status": "unverified",
+  "value": "{\"type\": \"item\", \"label\": \"3x Epic Consumable\", \"uncertainty\": \"Reward identity or wording is incomplete; verify in game.\"}"
+}

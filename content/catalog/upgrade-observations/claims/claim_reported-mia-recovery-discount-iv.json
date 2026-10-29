@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:mia-recovery-discount-iv",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-mia-recovery-discount-iv",
+  "locator": "MIA Recovery Discount",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": null, \"materials\": {\"Sanctioned Assassination List\": 5, \"Ballistic Fabric\": 30, \"Nylon Laminate\": 30, \"Prototype RF Module\": 10}}"
+}

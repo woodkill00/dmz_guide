@@ -937,7 +937,10 @@ async function start() {
     $("#import-content").focus();
   });
   await withBusy(loadCatalog);
-  if (initialTarget) {
+  if (initialTarget?.intent === "remove") {
+    const selection = selected();
+    requestRemoval(selection.group, selection.index);
+  } else if (initialTarget) {
     const focus = $(
       initialTarget.intent === "images" ? "#picture-file" : "#editor-record",
     );

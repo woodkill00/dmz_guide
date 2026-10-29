@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-shock-stick",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-shock-stick-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:shock-stick"
+}

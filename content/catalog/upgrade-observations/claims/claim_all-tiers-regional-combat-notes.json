@@ -1,0 +1,9 @@
+{
+  "entityId": "observed:regional-combat-notes",
+  "field": "sourceListedAllTiersMaterialCount",
+  "id": "claim:all-tiers-regional-combat-notes",
+  "locator": "What Items You Need to Keep in DMZ",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": 10
+}

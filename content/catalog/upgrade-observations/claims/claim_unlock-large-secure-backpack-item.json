@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:unlock-large-secure-backpack",
+  "field": "unlockedRecipeItem",
+  "id": "claim:unlock-large-secure-backpack-item",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "sourceId": "source:detonated-recipes-20261019",
+  "status": "unverified",
+  "value": "reported:large-secure-backpack"
+}

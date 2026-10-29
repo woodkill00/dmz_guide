@@ -1,0 +1,9 @@
+{
+  "entityId": "reported:stash-item-upgrade-i",
+  "field": "sourceListedRequirements",
+  "id": "claim:reported-stash-item-upgrade-i",
+  "locator": "Stash Item Upgrade",
+  "sourceId": "source:detonated-fob-20261025",
+  "status": "unverified",
+  "value": "{\"cash\": 10000, \"materials\": {\"Rigid Synthetics\": 10, \"Electronic Sensors\": 10}}"
+}

@@ -1,0 +1,2 @@
+# Existing-contract mapping
+No schema migration. Pack/schema 2 and profile/schema 3 retain identities. Add item/objective/guide/source/claim records through current contract. `reported:unlock-*` is manual progression, not a craft recipe. `reported:level-*` has no grant effects. Field claims carry normalized route/type/reward facts. Unknown cash has `quantity:null`; newly reported consumption is `unknown`. Existing immutable ledger snapshots are never regenerated from the updated catalog.
