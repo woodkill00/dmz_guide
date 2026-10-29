@@ -1,0 +1,2 @@
+# Check
+Open Routes from the map. Add marker/map stops, drag or use Up/Down. Select a numbered stop and mark reached, or use Mark next reached. Reorder and confirm the same location remains reached; reload and confirm selected route/progress. Reset progress; stale/unavailable stop requires resolution before focusing/marking next. Road mode shows known geometry and gaps; Direct remains explicitly straight lines.

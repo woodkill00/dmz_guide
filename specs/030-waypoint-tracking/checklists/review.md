@@ -1,0 +1,10 @@
+# Independent requirements review
+- [x] R001 Scope, identity/staleness, reversible progress, active route and private/mobile guards are clear and testable.
+
+## Independent requirements-quality review — 2026-10-29
+
+Reviewer: Codex integration_review agent, separate from the implementation owner. Read the 030 spec, plan, model, tasks, research, quickstart and analysis with repository governance. Accepted R001 after the reset-reversibility clarification: session-only Undo reset restores the prior at-most-32 reached tokens only while the post-reset workspace revision is unchanged; another mutation or reload expires it. Individual Mark not reached reverses a reached action.
+
+Direct route access, empty/all-complete states, ordered next-stop controls, map/editor parity and accessible stop popups are explicit. Progress follows stable waypoint identity rather than list index. Existing per-route uniqueness rules prevent repeated source keys/manual IDs from sharing an ambiguous progress token. Source/capture/version changes cannot transfer reached status to a moved location; stale/missing next stops have no fake focus/reach action. Active-route identity is optional in old data and must resolve or be null in current data. Private backups retain references/progress without copied provider title/geometry.
+
+No remaining definition blocker found. This marks requirements quality only. Final implementation/tests must verify actual pointer reorder and keyboard alternatives, identity-preserving progress, remove/reselect cleanup, source staleness, active-route deletion/reload/restore, bounded reset undo and its expiry, draft/CAS guards, popup layering/focus and mobile behavior. Existing partial/unverified road coverage, manual owner assertions and lack of live GPS/ETA remain explicit. Gameplay, physical-touch and screenreader evidence are not inferred from automation. Local commits only; no remote push/merge/deployment is authorized by this scope. No production files were changed by this review.

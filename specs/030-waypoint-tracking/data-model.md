@@ -1,0 +1,2 @@
+# Optional contracts
+PlannedRoute.reached?:string[] of unique current waypoint tokens, at most32. Manual token is manual:<id>; record token is JSON[key,identity], so source/review version rebinding does not inherit progress. FieldGuide.activeRouteId?:string|null must reference an existing route when non-null. Both absent in old data. Progress stores references only, no source geometry/titles. Source observations/visited flags remain separate.

@@ -727,7 +727,7 @@ export function mountWorkspace(
     allowed:()=>canInspect()&&!unsaved&&!pendingVisibility,
     draftAllowed:()=>!processing&&!interactionLocks&&(!unsaved||(!!plannerUI?.ownsDraft()&&failedLabel==='Map planner saved'))&&!pendingVisibility&&(!dirty||!!plannerUI?.ownsDraft())&&!detailActive,
     setDirty:value=>{dirty=value;if(!value)plannerPick=undefined;},
-    openPlanner:()=>{active='planner';renderPanel();if(!dialog.open)dialog.showModal();},closePlanner:()=>dialog.close(),
+    openPlanner:preserve=>{if(!preserve){active='planner';renderPanel();}if(!dialog.open)dialog.showModal();},closePlanner:()=>dialog.close(),
     search:query=>{usabilityUI.find(query);},popup:r=>usabilityUI.popup(r),
     available:()=>{const out:Record<string,string[]>={};for(const source of legacy){const snapshot=source.getSnapshot();if(snapshot)out[source.id]=snapshot.categories.map(c=>c.id);}for(const entry of state.snapshots)out[entry.snapshot.sourceId]=entry.snapshot.categories.map(c=>c.id);for(const [source,key] of selectedSnapshots){const entry=state.snapshots.find(e=>e.key===key);if(entry)out[source]=entry.snapshot.categories.map(c=>c.id);}return out;},
     view:visibility,applyView:v=>changeVisibility('Public planner view applied',value=>Object.assign(value,structuredClone(v))),
