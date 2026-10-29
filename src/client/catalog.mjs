@@ -74,14 +74,19 @@ if (form) {
     }
     if (sort)
       for (const container of document.querySelectorAll(".item-directory")) {
-        const rows = [...container.querySelectorAll("[data-record-card]")];
+        const current = [...container.querySelectorAll("[data-record-card]")];
+        const rows = [...current];
         rows.sort(
           (a, b) =>
             (a.dataset[sort.value] || "").localeCompare(
               b.dataset[sort.value] || "",
             ) || a.dataset.name.localeCompare(b.dataset.name),
         );
-        container.append(...rows);
+        // A search input's change event can fire on pointer-down blur. Moving
+        // an already ordered row then detaches the pressed anchor and cancels
+        // its native click. Reorder only when the sequence actually changes.
+        if (rows.some((row, index) => row !== current[index]))
+          container.append(...rows);
       }
     let count = 0;
     for (const card of cards) {

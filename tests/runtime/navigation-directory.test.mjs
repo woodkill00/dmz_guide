@@ -175,3 +175,109 @@ test("033 FR-004: intermediary navigation carries only a bounded pack to same-or
     "https://guide.test/items/",
   );
 });
+
+import { matchesTokens } from "../../src/domain/reader-flow.mjs";
+test("033 pointer blur cannot reparent an already sorted pressed item link", () => {
+  const source = readFileSync(
+    new URL("../../src/client/catalog.mjs", import.meta.url),
+    "utf8",
+  ).replace(/^import .*?;\n/gms, "");
+  const listeners = {},
+    fields = {
+      "#catalog-search": { value: "" },
+      '[name="type"]': { value: "", options: [{ value: "" }] },
+      '[name="pack"]': {
+        value: "",
+        options: [{ value: "" }, { value: "demo:training-pack" }],
+      },
+      "#catalog-sort": {
+        value: "name",
+        options: ["name", "type", "status"].map((value) => ({ value })),
+      },
+    };
+  const cards = [
+    {
+      dataset: {
+        name: "alpha wire",
+        search: "alpha wire",
+        type: "resource",
+        status: "observed",
+        pack: "demo:training-pack",
+      },
+    },
+    {
+      dataset: {
+        name: "beta wire",
+        search: "beta wire",
+        type: "currency",
+        status: "verified",
+        pack: "demo:training-pack",
+      },
+    },
+  ];
+  let order = [...cards],
+    reparentCount = 0;
+  const container = {
+    querySelectorAll: () => order,
+    append: (...rows) => {
+      order = rows;
+      reparentCount++;
+    },
+  };
+  const form = {
+    dataset: { defaultPack: "demo:training-pack" },
+    querySelector: (s) => fields[s],
+    addEventListener: (name, fn) => {
+      listeners[name] = fn;
+    },
+  };
+  const result = {},
+    empty = {};
+  vm.runInNewContext(source, {
+    matchesTokens,
+    URL,
+    URLSearchParams,
+    location: {
+      href: "http://guide.test/items/",
+      pathname: "/items/",
+      search: "",
+    },
+    history: { replaceState() {} },
+    window: { addEventListener() {} },
+    document: {
+      querySelector: (s) =>
+        s === "#catalog-filters"
+          ? form
+          : s === "#catalog-count"
+            ? result
+            : s === "#catalog-empty"
+              ? empty
+              : null,
+      querySelectorAll: (s) =>
+        s === "[data-record-card]"
+          ? cards
+          : s === ".item-directory"
+            ? [container]
+            : [],
+    },
+  });
+  assert.equal(reparentCount, 0, "Initial already sorted DOM is retained");
+  fields["#catalog-sort"].value = "type";
+  listeners.change();
+  assert.equal(reparentCount, 1, "A genuinely changed order is applied");
+  assert.deepEqual(order, [cards[1], cards[0]]);
+  fields["#catalog-search"].value = "wire";
+  listeners.input();
+  const pressedRow = order[0];
+  // Browser dispatches change when the search field blurs during pointer-down.
+  listeners.change();
+  assert.equal(reparentCount, 1, "Blur must not detach the pointer target");
+  assert.equal(order[0], pressedRow);
+  assert(cards.every((card) => card.hidden === false));
+  fields["#catalog-sort"].value = "name";
+  listeners.change();
+  assert.equal(reparentCount, 2);
+  assert.deepEqual(order, cards);
+  listeners.change();
+  assert.equal(reparentCount, 2, "Repeated change remains a DOM no-op");
+});

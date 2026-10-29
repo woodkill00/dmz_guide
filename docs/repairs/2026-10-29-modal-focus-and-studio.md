@@ -36,3 +36,9 @@ The change is bounded to invalidation, preserves normal restoration, and has pos
 - `npm run build`: PASS, 214 independent HTML routes plus 404 for this repair-only baseline.
 - `python -m unittest discover -s tests -v`: 40 PASS.
 - Original Chromium/Windows Studio failing acceptance scenarios: still require integrated CI execution. The local launch blockers above are NOT RUN, not PASS.
+
+## Later Windows readiness-fixture failure (retained)
+
+PR #28 head `bf494817`, quality run [40948873912](https://github.com/woodkill00/dmz_guide/actions/runs/40948873912), Windows runtime job `123711333488`: the delayed-bootstrap occupied-port negative fixture exceeded its unchanged 700 ms outcome budget. Total elapsed was 1902 ms, including the deliberate 1100 ms bootstrap delay. Live handshake PID 7416 matched the owned child; cleanup was confirmed. There was no successful-bind marker, HTTP probe or stderr, so the expected `EADDRINUSE` outcome did not reach the harness before cancellation. This evidence does not distinguish delayed trigger filesystem delivery, child scheduling or OS bind latency; it does not demonstrate an application regression. The ordinary occupied-port case passed (~159 ms), and the delayed caller-cancellation case passed (~1191 ms).
+
+Focused local verification on Linux (`node --test --test-name-pattern='occupied port|fixture outcome timeout|cold bootstrap' tests/runtime/server-readiness.test.mjs`) passed all four cases, including the delayed occupied-port case (~1201 ms overall), fatal 700 ms outcome timeout with actual child cleanup, and cold-bootstrap 700 ms deadline. This is not Windows reproduction. No deadline, cleanup assertion, trigger behavior or production helper changed. The next integrated head's normal Windows CI must pass; this prior run remains FAIL, and Windows recurrence would require further diagnosis rather than retries until green.

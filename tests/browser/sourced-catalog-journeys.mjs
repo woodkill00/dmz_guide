@@ -245,6 +245,16 @@ export async function runSourcedCatalogJourneys({
             32,
           );
           await noOverflow(page, "Manual milestone/390/200%");
+          await control.scrollIntoViewIfNeeded();
+          assert(
+            await control.isVisible(),
+            "Milestone control remains visible at 200% text",
+          );
+          const bounds = await control.boundingBox();
+          assert(
+            bounds && bounds.y >= 0 && bounds.y + bounds.height <= 900,
+            "Milestone screenshot must include the saved completion control",
+          );
           await shot(page, "milestone-390-200");
         }
       } finally {

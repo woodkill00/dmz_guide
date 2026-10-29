@@ -106,6 +106,90 @@ export async function runNavigationDirectoryTests({
       await page.locator("body").getAttribute("data-nav-pack"),
       "demo:training-pack",
     );
+    // Regress the real pointer-down / dirty-search blur sequence for every action.
+    for (const selector of [
+      "h3 a",
+      "[data-directory-edit]",
+      "[data-directory-remove]",
+    ]) {
+      await page.goto(base + "/items/?pack=demo%3Atraining-pack");
+      await page.waitForFunction(() =>
+        document
+          .querySelector("#catalog-count")
+          .textContent.includes("matching"),
+      );
+      await page.locator("#catalog-sort").focus();
+      await page.selectOption("#catalog-sort", "type");
+      assert.equal(
+        await page.evaluate(() => document.activeElement.id),
+        "catalog-sort",
+      );
+      await page.fill("#catalog-search", "wire");
+      assert.equal(
+        await page.evaluate(() => document.activeElement.id),
+        "catalog-search",
+      );
+      const action = page
+        .locator(".item-row:visible")
+        .first()
+        .locator(selector);
+      const destination = new URL(await action.getAttribute("href"), base);
+      await Promise.all([
+        page.waitForURL(
+          (url) =>
+            url.pathname === destination.pathname &&
+            url.hash === destination.hash,
+          { waitUntil: "domcontentloaded" },
+        ),
+        action.click(),
+      ]);
+      assert.equal(new URL(page.url()).pathname, destination.pathname);
+      assert.equal(
+        await page.locator("body").getAttribute("data-nav-pack"),
+        "demo:training-pack",
+      );
+      await page.goBack({ waitUntil: "domcontentloaded" });
+      assert.equal(new URL(page.url()).pathname, "/items/");
+      await page.waitForFunction(
+        () =>
+          document.querySelector("#catalog-pack").value ===
+          "demo:training-pack",
+      );
+    }
+    // Keyboard users can leave the dirty search, reach a visible item, and activate it.
+    await page.fill("#catalog-search", "wire");
+    let keyboardDestination = null;
+    for (let step = 0; step < 30; step++) {
+      await page.keyboard.press("Tab");
+      const focused = await page.evaluate(() => {
+        const element = document.activeElement,
+          row = element.closest(".item-row");
+        return {
+          id: element.id,
+          hidden: row?.hidden || false,
+          detail: element.matches(".item-row h3 a")
+            ? element.getAttribute("href")
+            : null,
+        };
+      });
+      assert.equal(
+        focused.hidden,
+        false,
+        "Tab cannot enter an action in a filtered-out row",
+      );
+      if (focused.detail) {
+        keyboardDestination = focused.detail;
+        break;
+      }
+    }
+    assert(keyboardDestination, "A visible detail link is keyboard reachable");
+    await Promise.all([
+      page.waitForURL((url) => url.pathname === keyboardDestination, {
+        waitUntil: "domcontentloaded",
+      }),
+      page.keyboard.press("Enter"),
+    ]);
+    assert.equal(new URL(page.url()).pathname, keyboardDestination);
     await page.goto(base + detail + "?pack=official%3Amw4-dmz-starter");
     await page.waitForFunction(
       () =>
