@@ -1,0 +1,9 @@
+{
+  "id": "claim:all-tiers-binding-catalyst",
+  "entityId": "observed:binding-catalyst",
+  "field": "sourceListedAllTiersMaterialCount",
+  "value": 40,
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "What Items You Need to Keep in DMZ",
+  "status": "unverified"
+}

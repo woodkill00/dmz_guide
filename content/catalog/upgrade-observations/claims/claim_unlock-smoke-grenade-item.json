@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-smoke-grenade-item",
+  "entityId": "reported:unlock-smoke-grenade",
+  "field": "unlockedRecipeItem",
+  "value": "reported:smoke-grenade",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

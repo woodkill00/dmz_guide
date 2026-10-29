@@ -1,0 +1,9 @@
+{
+  "id": "claim:all-tiers-ballistic-flight-logs",
+  "entityId": "observed:ballistic-flight-logs",
+  "field": "sourceListedAllTiersMaterialCount",
+  "value": 5,
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "What Items You Need to Keep in DMZ",
+  "status": "unverified"
+}

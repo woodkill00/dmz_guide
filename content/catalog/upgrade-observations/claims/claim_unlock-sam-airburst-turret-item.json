@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-sam-airburst-turret-item",
+  "entityId": "reported:unlock-sam-airburst-turret",
+  "field": "unlockedRecipeItem",
+  "value": "reported:sam-airburst-turret",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

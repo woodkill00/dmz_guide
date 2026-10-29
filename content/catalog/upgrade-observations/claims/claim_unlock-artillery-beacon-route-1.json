@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-artillery-beacon-route-1",
+  "entityId": "reported:unlock-artillery-beacon",
+  "field": "recipeUnlockRoute.loot",
+  "value": "Extract a looted recipe; article labels this list loot-only",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Looted Recipes",
+  "status": "unverified"
+}

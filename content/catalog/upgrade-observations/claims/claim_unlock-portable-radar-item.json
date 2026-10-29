@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-portable-radar-item",
+  "entityId": "reported:unlock-portable-radar",
+  "field": "unlockedRecipeItem",
+  "value": "reported:portable-radar",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

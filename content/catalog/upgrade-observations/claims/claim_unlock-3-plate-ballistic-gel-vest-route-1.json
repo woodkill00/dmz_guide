@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-3-plate-ballistic-gel-vest-route-1",
+  "entityId": "reported:unlock-3-plate-ballistic-gel-vest",
+  "field": "recipeUnlockRoute.loot",
+  "value": "Extract a looted recipe; article labels this list loot-only",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Looted Recipes",
+  "status": "unverified"
+}

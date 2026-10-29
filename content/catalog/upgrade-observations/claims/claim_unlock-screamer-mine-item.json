@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-screamer-mine-item",
+  "entityId": "reported:unlock-screamer-mine",
+  "field": "unlockedRecipeItem",
+  "value": "reported:screamer-mine",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

@@ -1,3 +1,4 @@
+import { runNavigationDirectoryTests } from "./navigation-directory.mjs";
 import { runUpgradeTests } from "./upgrades.mjs";
 import { firefox, webkit } from "playwright";
 import { startBrowserServer } from "./server.mjs";
@@ -17,6 +18,11 @@ try {
     const browser = await engine.launch({ headless: true });
     const health = monitorBrowser(browser);
     try {
+      await runNavigationDirectoryTests({
+        browser,
+        base,
+        captureScreenshots: name !== "webkit",
+      });
       await runUpgradeTests({
         browser,
         base,

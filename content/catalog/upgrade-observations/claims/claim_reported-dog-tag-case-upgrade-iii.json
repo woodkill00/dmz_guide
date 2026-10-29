@@ -1,0 +1,9 @@
+{
+  "id": "claim:reported-dog-tag-case-upgrade-iii",
+  "entityId": "reported:dog-tag-case-upgrade-iii",
+  "field": "sourceListedRequirements",
+  "value": "{\"cash\": 100000, \"materials\": {\"Printed Circuit Board\": 10, \"Structural Alloy\": 10, \"Power Regulator\": 5}}",
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "Dog Tag Case Storage Upgrade",
+  "status": "unverified"
+}

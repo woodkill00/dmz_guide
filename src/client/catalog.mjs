@@ -20,7 +20,8 @@ const form = document.querySelector("#catalog-filters");
 if (form) {
   const query = form.querySelector("#catalog-search"),
     type = form.querySelector('[name="type"]'),
-    pack = form.querySelector('[name="pack"]');
+    pack = form.querySelector('[name="pack"]'),
+    sort = form.querySelector("#catalog-sort");
   const cards = [...document.querySelectorAll("[data-record-card]")];
   const allowed = (field, value) =>
     [...field.options].some((option) => option.value === value);
@@ -28,6 +29,7 @@ if (form) {
     const params = new URLSearchParams();
     if (type.value && allowed(type, type.value)) params.set("type", type.value);
     if (allowed(pack, pack.value)) params.set("pack", pack.value);
+    if (sort && allowed(sort, sort.value)) params.set("sort", sort.value);
     history.replaceState(
       null,
       "",
@@ -41,6 +43,10 @@ if (form) {
     pack.value = allowed(pack, params.get("pack"))
       ? params.get("pack")
       : form.dataset.defaultPack || "";
+    if (sort)
+      sort.value = allowed(sort, params.get("sort"))
+        ? params.get("sort")
+        : "name";
     const token = params.get("search");
     // Strip arbitrary query/token/unknown params even if transfer parsing fails.
     writeURL();
@@ -59,6 +65,24 @@ if (form) {
         "Search transfer unavailable. Enter your search here.";
   }
   function filter(update) {
+    for (const anchor of document.querySelectorAll(".site-nav a[href]")) {
+      const target = new URL(anchor.href, location.href);
+      if (pack.value && allowed(pack, pack.value))
+        target.searchParams.set("pack", pack.value);
+      else target.searchParams.delete("pack");
+      anchor.href = target.href;
+    }
+    if (sort)
+      for (const container of document.querySelectorAll(".item-directory")) {
+        const rows = [...container.querySelectorAll("[data-record-card]")];
+        rows.sort(
+          (a, b) =>
+            (a.dataset[sort.value] || "").localeCompare(
+              b.dataset[sort.value] || "",
+            ) || a.dataset.name.localeCompare(b.dataset.name),
+        );
+        container.append(...rows);
+      }
     let count = 0;
     for (const card of cards) {
       const show =

@@ -1,3 +1,4 @@
+import { runDirectoryRemovalTests } from "./navigation-directory.mjs";
 import { runUpgradeStudioRoundtrip } from "./upgrades-studio.mjs";
 import assert from "node:assert/strict";
 import {
@@ -539,6 +540,7 @@ export async function runStudioTests({
       author: upgradeAuthor,
       createAuthorServer,
     });
+    await runDirectoryRemovalTests({ browser, author });
     await runPageEditTests({
       browser,
       repository,

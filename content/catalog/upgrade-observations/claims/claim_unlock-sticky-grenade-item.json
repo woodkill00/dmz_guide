@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-sticky-grenade-item",
+  "entityId": "reported:unlock-sticky-grenade",
+  "field": "unlockedRecipeItem",
+  "value": "reported:sticky-grenade",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

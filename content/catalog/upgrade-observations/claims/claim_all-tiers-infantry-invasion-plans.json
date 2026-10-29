@@ -1,0 +1,9 @@
+{
+  "id": "claim:all-tiers-infantry-invasion-plans",
+  "entityId": "reported:infantry-invasion-plans",
+  "field": "sourceListedAllTiersMaterialCount",
+  "value": 5,
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "What Items You Need to Keep in DMZ",
+  "status": "unverified"
+}

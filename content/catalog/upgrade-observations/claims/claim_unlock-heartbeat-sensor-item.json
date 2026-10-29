@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-heartbeat-sensor-item",
+  "entityId": "reported:unlock-heartbeat-sensor",
+  "field": "unlockedRecipeItem",
+  "value": "reported:heartbeat-sensor",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

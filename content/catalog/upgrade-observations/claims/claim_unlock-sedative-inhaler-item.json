@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-sedative-inhaler-item",
+  "entityId": "reported:unlock-sedative-inhaler",
+  "field": "unlockedRecipeItem",
+  "value": "reported:sedative-inhaler",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

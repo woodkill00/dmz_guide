@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-pain-killers-item",
+  "entityId": "reported:unlock-pain-killers",
+  "field": "unlockedRecipeItem",
+  "value": "reported:pain-killers",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "claim:all-tiers-sanctioned-assassination-list",
+  "entityId": "reported:sanctioned-assassination-list",
+  "field": "sourceListedAllTiersMaterialCount",
+  "value": 5,
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "What Items You Need to Keep in DMZ",
+  "status": "unverified"
+}

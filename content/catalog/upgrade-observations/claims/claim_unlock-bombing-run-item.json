@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-bombing-run-item",
+  "entityId": "reported:unlock-bombing-run",
+  "field": "unlockedRecipeItem",
+  "value": "reported:bombing-run",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

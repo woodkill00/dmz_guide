@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-bandage-item",
+  "entityId": "reported:unlock-bandage",
+  "field": "unlockedRecipeItem",
+  "value": "reported:bandage",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

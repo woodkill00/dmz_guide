@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-61-reward-1",
+  "entityId": "reported:level-61",
+  "field": "reward.item",
+  "value": "{\"type\": \"item\", \"label\": \"Medium Weapon Backpack — Epic Consumable\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 61",
+  "status": "unverified"
+}

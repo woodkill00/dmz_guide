@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-care-package-route-1",
+  "entityId": "reported:unlock-care-package",
+  "field": "recipeUnlockRoute.level",
+  "value": 28,
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Level Unlock Recipes",
+  "status": "unverified"
+}

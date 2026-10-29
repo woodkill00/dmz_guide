@@ -45,33 +45,51 @@ test("observed catalog preserves 8/31/22 facts with separate scoped consumption 
   const p = loadFixturePack("upgrade-observations");
   validatePack(p, schema);
   assert.equal(p.schemaVersion, 2);
-  assert.equal(p.objectives.length, 8);
-  assert.equal(p.items.length, 22);
+  const original = p.objectives.filter((o) => o.id.startsWith("observed:"));
+  assert.equal(original.length, 8);
+  assert.equal(p.items.filter((i) => i.id.startsWith("observed:")).length, 22);
   assert.equal(
-    p.objectives.reduce((n, o) => n + o.requirements.length, 0),
+    original.reduce(
+      (n, o) =>
+        n +
+        o.requirements.filter((r) =>
+          r.sourceIds.includes(
+            "source:upgrade-consumption-confirmation-20261026",
+          ),
+        ).length,
+      0,
+    ),
     31,
   );
   assert(
-    p.objectives.every(
+    original.every(
       (o) =>
         o.prerequisites.length === 0 &&
         o.upgrade.prerequisiteStatus === "unknown" &&
-        o.requirements.every(
-          (r) =>
-            r.consumption === "consumed" &&
+        o.requirements
+          .filter((r) =>
             r.sourceIds.includes(
               "source:upgrade-consumption-confirmation-20261026",
             ),
-        ),
+          )
+          .every(
+            (r) =>
+              r.consumption === "consumed" &&
+              r.sourceIds.includes(
+                "source:upgrade-consumption-confirmation-20261026",
+              ),
+          ),
     ),
   );
   assert(
-    p.sources.every(
-      (s) =>
-        s.url === null &&
-        s.provenance.captureDate === null &&
-        s.provenance.buildStatus === "unknown",
-    ),
+    p.sources
+      .filter((s) => s.type === "observation")
+      .every(
+        (s) =>
+          s.url === null &&
+          s.provenance.captureDate === null &&
+          s.provenance.buildStatus === "unknown",
+      ),
   );
 });
 
@@ -85,18 +103,24 @@ test("consumption amendment preserves original amounts/effects and observation i
       ),
     ),
   );
-  assert.equal(pack.contentVersion, "2026.10.26.2");
-  assert.equal(pack.sources.length, 9);
+  assert.equal(pack.contentVersion, "2026.10.28.1");
+  assert.equal(pack.sources.filter((s) => s.type === "observation").length, 9);
   for (const old of seed.upgrades) {
     const current = pack.objectives.find((r) => r.id === `observed:${old.id}`);
     assert.equal(current.name, old.name);
     assert.equal(current.description, old.description);
     assert.deepEqual(current.upgrade.observationKeys, [old.evidenceKey]);
     assert.deepEqual(
-      current.requirements.map((c) => [
-        pack.items.find((i) => i.id === c.itemId).name,
-        c.quantity,
-      ]),
+      current.requirements
+        .filter((r) =>
+          r.sourceIds.includes(
+            "source:upgrade-consumption-confirmation-20261026",
+          ),
+        )
+        .map((c) => [
+          pack.items.find((i) => i.id === c.itemId).name,
+          c.quantity,
+        ]),
       old.requirements.map((c) => [c.itemName, c.required]),
     );
   }

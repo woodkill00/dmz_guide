@@ -1,0 +1,9 @@
+{
+  "id": "claim:all-tiers-rigid-synthetics",
+  "entityId": "reported:rigid-synthetics",
+  "field": "sourceListedAllTiersMaterialCount",
+  "value": 30,
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "What Items You Need to Keep in DMZ",
+  "status": "unverified"
+}

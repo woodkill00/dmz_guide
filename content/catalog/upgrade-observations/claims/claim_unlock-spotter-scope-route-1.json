@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-spotter-scope-route-1",
+  "entityId": "reported:unlock-spotter-scope",
+  "field": "recipeUnlockRoute.level",
+  "value": 12,
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Level Unlock Recipes",
+  "status": "unverified"
+}

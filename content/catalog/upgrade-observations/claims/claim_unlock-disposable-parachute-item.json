@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-disposable-parachute-item",
+  "entityId": "reported:unlock-disposable-parachute",
+  "field": "unlockedRecipeItem",
+  "value": "reported:disposable-parachute",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

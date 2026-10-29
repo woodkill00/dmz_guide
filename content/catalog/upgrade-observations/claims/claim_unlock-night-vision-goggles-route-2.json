@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-night-vision-goggles-route-2",
+  "entityId": "reported:unlock-night-vision-goggles",
+  "field": "recipeUnlockRoute.order",
+  "value": "Underground 1/2",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "DMZ Orders Recipes",
+  "status": "unverified"
+}

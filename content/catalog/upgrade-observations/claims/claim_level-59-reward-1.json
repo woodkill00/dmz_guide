@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-59-reward-1",
+  "entityId": "reported:level-59",
+  "field": "reward.item",
+  "value": "{\"type\": \"item\", \"label\": \"Combat Drone — Epic Fire Support\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 59",
+  "status": "unverified"
+}

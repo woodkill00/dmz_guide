@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-ammo-box-item",
+  "entityId": "reported:unlock-ammo-box",
+  "field": "unlockedRecipeItem",
+  "value": "reported:ammo-box",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

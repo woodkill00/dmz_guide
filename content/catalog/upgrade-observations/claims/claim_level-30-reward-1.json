@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-30-reward-1",
+  "entityId": "reported:level-30",
+  "field": "reward.station",
+  "value": "{\"type\": \"station\", \"label\": \"Station Upgrade — 10% Bounty Payout\", \"details\": {\"bountyIncreasePercent\": 10}}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 30",
+  "status": "unverified"
+}

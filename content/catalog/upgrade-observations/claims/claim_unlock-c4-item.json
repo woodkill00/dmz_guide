@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-c4-item",
+  "entityId": "reported:unlock-c4",
+  "field": "unlockedRecipeItem",
+  "value": "reported:c4",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "claim:reported-mia-recovery-discount-ii",
+  "entityId": "reported:mia-recovery-discount-ii",
+  "field": "sourceListedRequirements",
+  "value": "{\"cash\": null, \"materials\": {\"Nuclear Program Files\": 5, \"Degraded Execution Footage\": 5, \"Binding Catalyst\": 10, \"Nitro Compounds\": 10}}",
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "MIA Recovery Discount",
+  "status": "unverified"
+}

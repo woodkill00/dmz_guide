@@ -6,7 +6,8 @@
   "kind": "item",
   "name": "High-Tenacity Fibers",
   "sourceIds": [
-    "source:upgrade-observation-08"
+    "source:upgrade-observation-08",
+    "source:detonated-fob-20261025"
   ],
   "stats": [],
   "status": "observed",

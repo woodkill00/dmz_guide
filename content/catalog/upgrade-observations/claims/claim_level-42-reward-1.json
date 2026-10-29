@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-42-reward-1",
+  "entityId": "reported:level-42",
+  "field": "reward.item",
+  "value": "{\"type\": \"item\", \"label\": \"Trap Equipment Kit — Uncommon Consumable\", \"contents\": [\"Razor Wire Traps\", \"Trip Wires\", \"Proximity Mines\", \"Claymores\", \"Gun Store Weapons Locker Key\"]}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 42",
+  "status": "unverified"
+}

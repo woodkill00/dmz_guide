@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-large-backpack-route-1",
+  "entityId": "reported:unlock-large-backpack",
+  "field": "recipeUnlockRoute.order",
+  "value": "DMZ Order 10",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "DMZ Orders Recipes",
+  "status": "unverified"
+}

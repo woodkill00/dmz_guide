@@ -6,7 +6,8 @@
   "kind": "item",
   "name": "Military Composites",
   "sourceIds": [
-    "source:upgrade-observation-06"
+    "source:upgrade-observation-06",
+    "source:detonated-fob-20261025"
   ],
   "stats": [],
   "status": "observed",

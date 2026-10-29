@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-small-backpack-item",
+  "entityId": "reported:unlock-small-backpack",
+  "field": "unlockedRecipeItem",
+  "value": "reported:small-backpack",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

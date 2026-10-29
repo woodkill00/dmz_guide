@@ -1,0 +1,9 @@
+{
+  "id": "claim:reported-vendor-item-upgrade-ii",
+  "entityId": "reported:vendor-item-upgrade-ii",
+  "field": "sourceListedRequirements",
+  "value": "{\"cash\": null, \"materials\": {\"Control Unit\": 20, \"High-Tenacity Fibers\": 10, \"Nylon Cloth\": 10, \"Nano-Structured Alloy\": 2}}",
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "Vendor Item Slots Upgrade",
+  "status": "unverified"
+}

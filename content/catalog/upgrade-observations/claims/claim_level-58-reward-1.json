@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-58-reward-1",
+  "entityId": "reported:level-58",
+  "field": "reward.item",
+  "value": "{\"type\": \"item\", \"label\": \"Care Package — Rare Fire Support\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 58",
+  "status": "unverified"
+}

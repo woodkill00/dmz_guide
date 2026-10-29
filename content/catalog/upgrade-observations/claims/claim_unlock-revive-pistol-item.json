@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-revive-pistol-item",
+  "entityId": "reported:unlock-revive-pistol",
+  "field": "unlockedRecipeItem",
+  "value": "reported:revive-pistol",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-21-rank",
+  "entityId": "reported:level-21",
+  "field": "dmzLevel",
+  "value": 21,
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 21",
+  "status": "unverified"
+}

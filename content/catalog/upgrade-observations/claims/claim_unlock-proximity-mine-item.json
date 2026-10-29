@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-proximity-mine-item",
+  "entityId": "reported:unlock-proximity-mine",
+  "field": "unlockedRecipeItem",
+  "value": "reported:proximity-mine",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

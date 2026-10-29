@@ -1,0 +1,9 @@
+{
+  "id": "claim:reported-stash-weapon-upgrade-i",
+  "entityId": "observed:stash-weapon-upgrade-i",
+  "field": "sourceListedRequirements",
+  "value": "{\"cash\": 50000, \"materials\": {\"Reactive Metals\": 20, \"Stock Rod\": 10, \"Comms Module\": 5}}",
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "Stash Weapon Upgrade",
+  "status": "unverified"
+}

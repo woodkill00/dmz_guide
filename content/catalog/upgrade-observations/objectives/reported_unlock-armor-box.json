@@ -1,0 +1,16 @@
+{
+  "id": "reported:unlock-armor-box",
+  "name": "Armor Box recipe unlock",
+  "description": "Recipe unlock reference only. Craft ingredients and output batch yield are not provided. Reported routes: level: Level 14.",
+  "sourceIds": [
+    "source:detonated-recipes-20261019"
+  ],
+  "status": "unverified",
+  "track": "progression",
+  "requirements": [],
+  "requirementsKnown": false,
+  "prerequisites": [],
+  "oneTime": true,
+  "effects": [],
+  "spoiler": false
+}

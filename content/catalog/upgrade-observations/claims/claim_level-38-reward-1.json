@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-38-reward-1",
+  "entityId": "reported:level-38",
+  "field": "reward.material",
+  "value": "{\"type\": \"material\", \"label\": \"2x Control Unit — Uncommon Ingredient\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 38",
+  "status": "unverified"
+}

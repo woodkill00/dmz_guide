@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-gas-mask-item",
+  "entityId": "reported:unlock-gas-mask",
+  "field": "unlockedRecipeItem",
+  "value": "reported:gas-mask",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

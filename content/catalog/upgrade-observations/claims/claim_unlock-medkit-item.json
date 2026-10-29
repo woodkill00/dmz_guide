@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-medkit-item",
+  "entityId": "reported:unlock-medkit",
+  "field": "unlockedRecipeItem",
+  "value": "reported:medkit",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

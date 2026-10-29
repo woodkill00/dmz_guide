@@ -45,12 +45,22 @@
         "source:upgrade-consumption-confirmation-20261026"
       ],
       "status": "observed"
+    },
+    {
+      "itemId": "observed:cash",
+      "quantity": null,
+      "consumption": "unknown",
+      "status": "unknown",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
     }
   ],
   "requirementsKnown": false,
   "sourceIds": [
     "source:upgrade-observation-03",
-    "source:upgrade-consumption-confirmation-20261026"
+    "source:upgrade-consumption-confirmation-20261026",
+    "source:detonated-fob-20261025"
   ],
   "spoiler": false,
   "status": "observed",

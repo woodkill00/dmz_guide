@@ -44,7 +44,9 @@ test("Wave2 catalog nonadjacent all-token matching and private query", () => {
   const form = {
     dataset: { defaultPack: "fixture:pack" },
     querySelector: (s) =>
-      fields[s === "#catalog-search" ? "q" : s.match(/name="(.*?)"/)[1]],
+      s === "#catalog-sort"
+        ? null
+        : fields[s === "#catalog-search" ? "q" : s.match(/name="(.*?)"/)[1]],
     addEventListener: (name, fn) => {
       listeners[name] = fn;
     },

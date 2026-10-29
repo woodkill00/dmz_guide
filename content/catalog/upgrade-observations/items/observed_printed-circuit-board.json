@@ -6,7 +6,8 @@
   "kind": "item",
   "name": "Printed Circuit Board",
   "sourceIds": [
-    "source:upgrade-observation-03"
+    "source:upgrade-observation-03",
+    "source:detonated-fob-20261025"
   ],
   "stats": [],
   "status": "observed",

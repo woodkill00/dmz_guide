@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-43-reward-1",
+  "entityId": "reported:level-43",
+  "field": "reward.material",
+  "value": "{\"type\": \"material\", \"label\": \"2x Structural Alloy — Rare Ingredient\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 43",
+  "status": "unverified"
+}

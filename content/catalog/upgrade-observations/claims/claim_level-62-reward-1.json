@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-62-reward-1",
+  "entityId": "reported:level-62",
+  "field": "reward.item",
+  "value": "{\"type\": \"item\", \"label\": \"Door Breacher Charge — Ultra Consumable\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 62",
+  "status": "unverified"
+}

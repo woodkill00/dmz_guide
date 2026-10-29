@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-flash-grenade-item",
+  "entityId": "reported:unlock-flash-grenade",
+  "field": "unlockedRecipeItem",
+  "value": "reported:flash-grenade",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

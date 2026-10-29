@@ -1,0 +1,2 @@
+# Review journey
+Export your private backup first. Build and serve the guide, select the expanded observed/source-reported catalog. If prompted, preview current content binding in Settings and confirm only after review. Inspect BankVII, an item such as GoldBar, UAV recipe unlock and DMZ Level 40. Check Sources/Claims, unknown cash and guide links. Use manual progression to record what you actually completed; milestones do not credit inventory. Existing VendorI/MIAIII purchases remain recorded; new purchases require verified cash information.

@@ -1,0 +1,60 @@
+{
+  "id": "reported:uncommon-ingredient-printing",
+  "name": "Uncommon Ingredient Printing",
+  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
+  "status": "unverified",
+  "track": "dmz-upgrade",
+  "requirements": [
+    {
+      "itemId": "observed:cash",
+      "quantity": 50000,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    },
+    {
+      "itemId": "reported:biomaterials",
+      "quantity": 20,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    },
+    {
+      "itemId": "observed:high-tenacity-fibers",
+      "quantity": 10,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    },
+    {
+      "itemId": "observed:comms-module",
+      "quantity": 5,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    }
+  ],
+  "requirementsKnown": false,
+  "prerequisites": [],
+  "oneTime": true,
+  "effects": [],
+  "spoiler": false,
+  "upgrade": {
+    "tierLabel": null,
+    "prerequisiteStatus": "unknown",
+    "observationKeys": [
+      "detonated-uncommon-ingredient-printing-20261025"
+    ]
+  }
+}

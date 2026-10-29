@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-35-reward-1",
+  "entityId": "reported:level-35",
+  "field": "reward.station",
+  "value": "{\"type\": \"station\", \"label\": \"Station Upgrade — +6 Weapon Stash Slots\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 35",
+  "status": "unverified"
+}

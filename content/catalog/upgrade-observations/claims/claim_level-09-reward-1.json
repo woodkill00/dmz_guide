@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-09-reward-1",
+  "entityId": "reported:level-09",
+  "field": "reward.cosmetic",
+  "value": "{\"type\": \"cosmetic\", \"label\": \"Coffey Operator Skin\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 9",
+  "status": "unverified"
+}

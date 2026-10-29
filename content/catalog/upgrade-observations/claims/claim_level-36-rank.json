@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-36-rank",
+  "entityId": "reported:level-36",
+  "field": "dmzLevel",
+  "value": 36,
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 36",
+  "status": "unverified"
+}

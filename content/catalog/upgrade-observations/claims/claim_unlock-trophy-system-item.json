@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-trophy-system-item",
+  "entityId": "reported:unlock-trophy-system",
+  "field": "unlockedRecipeItem",
+  "value": "reported:trophy-system",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

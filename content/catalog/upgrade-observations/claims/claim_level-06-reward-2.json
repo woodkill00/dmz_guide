@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-06-reward-2",
+  "entityId": "reported:level-06",
+  "field": "reward.item",
+  "value": "{\"type\": \"item\", \"label\": \"Basic Armor Kit — Uncommon Consumable\", \"contents\": [\"2-Plate Carrier\", \"Armor Box\"]}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 6",
+  "status": "unverified"
+}

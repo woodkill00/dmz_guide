@@ -1,0 +1,9 @@
+{
+  "id": "claim:reported-gunsmith-upgrade-ii",
+  "entityId": "observed:gunsmith-upgrade-ii",
+  "field": "sourceListedRequirements",
+  "value": "{\"cash\": 100000, \"materials\": {\"Nitro Compounds\": 20, \"Comms Module\": 10, \"Military Composites\": 10}}",
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "Gunsmith Discount",
+  "status": "unverified"
+}

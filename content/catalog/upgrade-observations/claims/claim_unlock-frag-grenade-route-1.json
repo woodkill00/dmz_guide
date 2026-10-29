@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-frag-grenade-route-1",
+  "entityId": "reported:unlock-frag-grenade",
+  "field": "recipeUnlockRoute.level",
+  "value": 7,
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Level Unlock Recipes",
+  "status": "unverified"
+}

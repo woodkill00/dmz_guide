@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-2-plate-helmet-armor-vest-route-1",
+  "entityId": "reported:unlock-2-plate-helmet-armor-vest",
+  "field": "recipeUnlockRoute.loot",
+  "value": "Extract a looted recipe; article labels this list loot-only",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Looted Recipes",
+  "status": "unverified"
+}

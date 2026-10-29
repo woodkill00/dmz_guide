@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-radiation-blockers-item",
+  "entityId": "reported:unlock-radiation-blockers",
+  "field": "unlockedRecipeItem",
+  "value": "reported:radiation-blockers",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-70-reward-3",
+  "entityId": "reported:level-70",
+  "field": "reward.item",
+  "value": "{\"type\": \"item\", \"label\": \"Advanced Sere Kit — Legendary Consumable\", \"contents\": [\"Operator Rescue Beacons\", \"Med Kit\", \"Self Revives\", \"Weapon Insurance Contracts\"]}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 70",
+  "status": "unverified"
+}

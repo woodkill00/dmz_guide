@@ -1,0 +1,16 @@
+{
+  "id": "reported:level-47",
+  "name": "DMZ Level 47 rewards",
+  "description": "Community-reported DMZ level milestone. Reported rewards: 2x Nitro Compounds — Rare Ingredient. Manual tracking does not grant items, recipes or purchased upgrade completion.",
+  "sourceIds": [
+    "source:detonated-levels-20261020"
+  ],
+  "status": "unverified",
+  "track": "progression",
+  "requirements": [],
+  "requirementsKnown": false,
+  "prerequisites": [],
+  "oneTime": true,
+  "effects": [],
+  "spoiler": false
+}

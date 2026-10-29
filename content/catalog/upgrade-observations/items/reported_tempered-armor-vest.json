@@ -1,0 +1,14 @@
+{
+  "id": "reported:tempered-armor-vest",
+  "name": "Tempered Armor Vest",
+  "sourceIds": [
+    "source:detonated-recipes-20261019"
+  ],
+  "status": "unverified",
+  "kind": "item",
+  "category": "equipment",
+  "unit": "count",
+  "description": "Community-source item identity. Current build, locations and unlisted mechanics remain unverified. A recipe unlock is reported; see its separate progression record. Craft costs and batch yield are unknown in this source.",
+  "aliases": [],
+  "stats": []
+}

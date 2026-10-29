@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-riot-shield-item",
+  "entityId": "reported:unlock-riot-shield",
+  "field": "unlockedRecipeItem",
+  "value": "reported:riot-shield",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

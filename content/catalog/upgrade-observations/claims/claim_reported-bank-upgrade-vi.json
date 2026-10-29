@@ -1,0 +1,9 @@
+{
+  "id": "claim:reported-bank-upgrade-vi",
+  "entityId": "reported:bank-upgrade-vi",
+  "field": "sourceListedRequirements",
+  "value": "{\"cash\": 500000, \"materials\": {\"Nuclear Program Files\": 10, \"Encrypted Archive\": 10}}",
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "Bank Upgrade",
+  "status": "unverified"
+}

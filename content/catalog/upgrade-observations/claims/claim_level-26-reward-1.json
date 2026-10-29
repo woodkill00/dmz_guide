@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-26-reward-1",
+  "entityId": "reported:level-26",
+  "field": "reward.recipe",
+  "value": "{\"type\": \"recipe\", \"label\": \"Gas Mask — Recipe\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 26",
+  "status": "unverified"
+}

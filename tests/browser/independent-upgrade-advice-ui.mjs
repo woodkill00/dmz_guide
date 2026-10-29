@@ -89,7 +89,7 @@ export async function runIndependentUpgradeAdviceUI({
       (await observedRow.locator("[data-advice-search]").textContent()).trim(),
       "Not known",
     );
-    // Scoped owner confirmation permits known-direct-cost arithmetic, not build/readiness proof.
+    // Entered stock cannot certify consumption for newly added source-only tiers.
     await page.evaluate(async () => {
       const { state } = await import("/assets/src/client/common.mjs");
       const { saveProfile } = await import("/assets/src/storage/store.mjs");
@@ -99,6 +99,36 @@ export async function runIndependentUpgradeAdviceUI({
     });
     await page.reload();
     await ready(page);
+    assert.equal(
+      await page.locator("#upgrade-scope").inputValue(),
+      "all-known-incomplete",
+    );
+    for (const field of ["keep", "search"])
+      assert.equal(
+        (
+          await observedRow.locator(`[data-advice-${field}]`).textContent()
+        ).trim(),
+        "Not known",
+      );
+    assert.match(await observedRow.textContent(), /Consumption not confirmed/);
+    evidence.scenarios.push(
+      "Expanded all-known scope with synthetic stock6 withholds Keep/Search because source-only consumption is unconfirmed",
+    );
+    // Focus only the two original owner-confirmed material rows (5 + 10).
+    // MIA III's new unknown cash cost must not invalidate known material arithmetic.
+    await page.evaluate(async () => {
+      const { state } = await import("/assets/src/client/common.mjs");
+      const { saveProfile } = await import("/assets/src/storage/store.mjs");
+      const p = structuredClone(state.profile);
+      p.goals = [
+        { id: "observed:dog-tag-case-upgrade-ii", quantity: 1 },
+        { id: "observed:mia-recovery-discount-iii", quantity: 1 },
+      ];
+      await saveProfile(p, state.revision);
+    });
+    await page.reload();
+    await ready(page);
+    await page.selectOption("#upgrade-scope", "focused");
     assert.equal(
       (await observedRow.locator("[data-advice-keep]").textContent()).trim(),
       "6",
@@ -117,7 +147,7 @@ export async function runIndependentUpgradeAdviceUI({
     );
     assert(!/Consumption not confirmed/.test(await observedRow.textContent()));
     evidence.scenarios.push(
-      "Owner-confirmed observed consumption plus synthetic entered stock gives known-direct Keep6/Search9; absent stock remains unknown and build/prerequisite completeness stays unverified",
+      "Focused original Dog Tag II + MIA III owner-confirmed material rows preserve known-direct Keep6/Search9; absent stock remains unknown and build/prerequisite completeness stays unverified",
     );
     // Create a validated *separate* local pack; never relabel real observations as confirmed mechanics.
     await page.evaluate(

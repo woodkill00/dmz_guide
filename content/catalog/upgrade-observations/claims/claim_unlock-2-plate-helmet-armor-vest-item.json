@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-2-plate-helmet-armor-vest-item",
+  "entityId": "reported:unlock-2-plate-helmet-armor-vest",
+  "field": "unlockedRecipeItem",
+  "value": "reported:2-plate-helmet-armor-vest",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

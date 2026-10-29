@@ -1,0 +1,69 @@
+{
+  "id": "reported:stash-item-upgrade-iv",
+  "name": "Stash Item Upgrade IV",
+  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
+  "status": "unverified",
+  "track": "dmz-upgrade",
+  "requirements": [
+    {
+      "itemId": "observed:cash",
+      "quantity": null,
+      "consumption": "unknown",
+      "status": "unknown",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    },
+    {
+      "itemId": "reported:gold-skull",
+      "quantity": 5,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    },
+    {
+      "itemId": "observed:alloyed-plating",
+      "quantity": 30,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    },
+    {
+      "itemId": "reported:experimental-compounds",
+      "quantity": 10,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    },
+    {
+      "itemId": "observed:turned-components",
+      "quantity": 30,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    }
+  ],
+  "requirementsKnown": false,
+  "prerequisites": [],
+  "oneTime": true,
+  "effects": [],
+  "spoiler": false,
+  "upgrade": {
+    "tierLabel": "IV",
+    "prerequisiteStatus": "unknown",
+    "observationKeys": [
+      "detonated-stash-item-upgrade-iv-20261025"
+    ]
+  }
+}

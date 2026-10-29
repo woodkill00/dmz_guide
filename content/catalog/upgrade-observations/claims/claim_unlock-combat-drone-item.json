@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-combat-drone-item",
+  "entityId": "reported:unlock-combat-drone",
+  "field": "unlockedRecipeItem",
+  "value": "reported:combat-drone",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

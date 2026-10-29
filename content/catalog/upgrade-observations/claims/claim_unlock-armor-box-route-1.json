@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-armor-box-route-1",
+  "entityId": "reported:unlock-armor-box",
+  "field": "recipeUnlockRoute.level",
+  "value": 14,
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Level Unlock Recipes",
+  "status": "unverified"
+}

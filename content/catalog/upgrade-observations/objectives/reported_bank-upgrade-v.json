@@ -1,0 +1,42 @@
+{
+  "id": "reported:bank-upgrade-v",
+  "name": "Bank Upgrade V",
+  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
+  "status": "unverified",
+  "track": "dmz-upgrade",
+  "requirements": [
+    {
+      "itemId": "observed:cash",
+      "quantity": 500000,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    },
+    {
+      "itemId": "reported:degraded-execution-footage",
+      "quantity": 10,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    }
+  ],
+  "requirementsKnown": false,
+  "prerequisites": [],
+  "oneTime": true,
+  "effects": [],
+  "spoiler": false,
+  "upgrade": {
+    "tierLabel": "V",
+    "prerequisiteStatus": "unknown",
+    "observationKeys": [
+      "detonated-bank-upgrade-v-20261025"
+    ]
+  }
+}

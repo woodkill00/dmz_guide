@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-bomb-glider-route-1",
+  "entityId": "reported:unlock-bomb-glider",
+  "field": "recipeUnlockRoute.loot",
+  "value": "Extract a looted recipe; article labels this list loot-only",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Looted Recipes",
+  "status": "unverified"
+}

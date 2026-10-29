@@ -1,0 +1,51 @@
+{
+  "id": "reported:bank-upgrade-vi",
+  "name": "Bank Upgrade VI",
+  "description": "Source-reported FOB requirements. Consumption, additional costs, tier prerequisites and current-build applicability are not established.",
+  "sourceIds": [
+    "source:detonated-fob-20261025"
+  ],
+  "status": "unverified",
+  "track": "dmz-upgrade",
+  "requirements": [
+    {
+      "itemId": "observed:cash",
+      "quantity": 500000,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    },
+    {
+      "itemId": "reported:nuclear-program-files",
+      "quantity": 10,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    },
+    {
+      "itemId": "reported:encrypted-archive",
+      "quantity": 10,
+      "consumption": "unknown",
+      "status": "unverified",
+      "sourceIds": [
+        "source:detonated-fob-20261025"
+      ]
+    }
+  ],
+  "requirementsKnown": false,
+  "prerequisites": [],
+  "oneTime": true,
+  "effects": [],
+  "spoiler": false,
+  "upgrade": {
+    "tierLabel": "VI",
+    "prerequisiteStatus": "unknown",
+    "observationKeys": [
+      "detonated-bank-upgrade-vi-20261025"
+    ]
+  }
+}

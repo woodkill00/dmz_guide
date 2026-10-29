@@ -1,0 +1,16 @@
+{
+  "id": "reported:level-35",
+  "name": "DMZ Level 35 rewards",
+  "description": "Community-reported DMZ level milestone. Reported rewards: Station Upgrade — +6 Weapon Stash Slots. Manual tracking does not grant items, recipes or purchased upgrade completion.",
+  "sourceIds": [
+    "source:detonated-levels-20261020"
+  ],
+  "status": "unverified",
+  "track": "progression",
+  "requirements": [],
+  "requirementsKnown": false,
+  "prerequisites": [],
+  "oneTime": true,
+  "effects": [],
+  "spoiler": false
+}

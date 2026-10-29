@@ -1,0 +1,16 @@
+{
+  "id": "reported:level-02",
+  "name": "DMZ Level 02 rewards",
+  "description": "Community-reported DMZ level milestone. Reported rewards: Station Unlock — 3D Printer; 1-Plate Armor Vest — Recipe; Bandage — Recipe; Small Backpack — Recipe; Medkit — Recipe; 2-Plate Armor Vest — Recipe; Medium Backpack — Recipe. Manual tracking does not grant items, recipes or purchased upgrade completion.",
+  "sourceIds": [
+    "source:detonated-levels-20261020"
+  ],
+  "status": "unverified",
+  "track": "progression",
+  "requirements": [],
+  "requirementsKnown": false,
+  "prerequisites": [],
+  "oneTime": true,
+  "effects": [],
+  "spoiler": false
+}

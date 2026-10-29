@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-09-reward-2",
+  "entityId": "reported:level-09",
+  "field": "reward.recipe",
+  "value": "{\"type\": \"recipe\", \"label\": \"Snapshot Grenade — Recipe\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 9",
+  "status": "unverified"
+}

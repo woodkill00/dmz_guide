@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-2-plate-ballistic-gel-vest-item",
+  "entityId": "reported:unlock-2-plate-ballistic-gel-vest",
+  "field": "unlockedRecipeItem",
+  "value": "reported:2-plate-ballistic-gel-vest",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

@@ -399,18 +399,43 @@ export async function runIndependentUpgradeJourneys({
         return {
           profile: structuredClone(state.profile),
           contentVersion: state.pack.contentVersion,
-          prerequisites: state.pack.objectives.map(
-            (o) => o.upgrade?.prerequisiteStatus,
-          ),
-          rows: state.pack.objectives
+          prerequisites: state.pack.objectives
             .filter((o) => o.track === "dmz-upgrade")
+            .map((o) => o.upgrade.prerequisiteStatus),
+          rows: state.pack.objectives
+            .filter((o) => o.id.startsWith("observed:"))
             .map((o) => [
               o.name,
               o.upgrade.tierLabel,
               o.description,
-              o.requirements.map((r) => [items.get(r.itemId), r.quantity]),
+              o.requirements
+                .filter((r) =>
+                  r.sourceIds.includes(
+                    "source:upgrade-consumption-confirmation-20261026",
+                  ),
+                )
+                .map((r) => [items.get(r.itemId), r.quantity]),
             ]),
-          requirements: state.pack.objectives.flatMap((o) => o.requirements),
+          requirements: state.pack.objectives
+            .flatMap((o) => o.requirements)
+            .filter((r) =>
+              r.sourceIds.includes(
+                "source:upgrade-consumption-confirmation-20261026",
+              ),
+            ),
+          newUnknownCash: state.pack.objectives
+            .filter((o) => o.id.startsWith("observed:"))
+            .flatMap((o) =>
+              o.requirements
+                .filter((r) => r.quantity === null)
+                .map((r) => [
+                  o.id,
+                  r.itemId,
+                  r.consumption,
+                  r.status,
+                  r.sourceIds,
+                ]),
+            ),
           sources: state.pack.sources,
         };
       });
@@ -424,7 +449,27 @@ export async function runIndependentUpgradeJourneys({
         new Set(actual.rows.flatMap((r) => r[3].map((row) => row[0]))).size,
         22,
       );
-      assert.equal(actual.contentVersion, "2026.10.26.2");
+      assert.equal(actual.contentVersion, "2026.10.28.1");
+      assert.deepEqual(
+        actual.newUnknownCash,
+        [
+          [
+            "observed:vendor-item-upgrade-i",
+            "observed:cash",
+            "unknown",
+            "unknown",
+            ["source:detonated-fob-20261025"],
+          ],
+          [
+            "observed:mia-recovery-discount-iii",
+            "observed:cash",
+            "unknown",
+            "unknown",
+            ["source:detonated-fob-20261025"],
+          ],
+        ],
+        "Newly reported unknown cash is explicit without rewriting original31 observed rows",
+      );
       const confirmations = actual.sources.filter((s) =>
         /owner.*consumption/i.test(s.title),
       );
@@ -504,7 +549,7 @@ export async function runIndependentUpgradeJourneys({
         /Not entered/i,
       );
       evidence.scenarios.push(
-        "Fresh observed pack:8 exact definitions/31 rows/22 labels; scoped owner-reported consumption with unknown build/prerequisites/progress, empty holdings and no spending history",
+        "Expanded pack retains original8 exact definitions/31 rows/22 labels and appends2 explicitly unknown cash rows; scoped owner-reported consumption with unknown build/prerequisites/progress, empty holdings and no spending history",
       );
     } finally {
       await context.close();

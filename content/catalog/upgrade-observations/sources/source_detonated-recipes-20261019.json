@@ -1,0 +1,16 @@
+{
+  "id": "source:detonated-recipes-20261019",
+  "title": "Detonated: recipe unlock routes",
+  "url": "https://detonated.com/how-to-unlock-all-dmz-recipes-in-modern-warfare-4/",
+  "type": "community",
+  "publishedAt": "2026-10-19",
+  "reviewedAt": "2026-10-28",
+  "supports": "Reported level, story, Order and loot unlock routes. Ingredient amounts and batch yields are not supplied; UAV routes conflict. Not a complete recipe catalog.",
+  "provenance": {
+    "kind": "web",
+    "observationKey": "detonated-recipes-20261019",
+    "lineageKey": "detonated-recipes-20261019",
+    "captureDate": null,
+    "buildStatus": "unknown"
+  }
+}

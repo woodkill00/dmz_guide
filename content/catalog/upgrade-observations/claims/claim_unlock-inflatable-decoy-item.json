@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-inflatable-decoy-item",
+  "entityId": "reported:unlock-inflatable-decoy",
+  "field": "unlockedRecipeItem",
+  "value": "reported:inflatable-decoy",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

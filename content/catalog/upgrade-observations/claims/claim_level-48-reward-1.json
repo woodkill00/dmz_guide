@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-48-reward-1",
+  "entityId": "reported:level-48",
+  "field": "reward.recipe",
+  "value": "{\"type\": \"recipe\", \"label\": \"Self Revive Kit — Recipe\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 48",
+  "status": "unverified"
+}

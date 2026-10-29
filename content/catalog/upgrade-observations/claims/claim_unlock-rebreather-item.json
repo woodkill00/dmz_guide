@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-rebreather-item",
+  "entityId": "reported:unlock-rebreather",
+  "field": "unlockedRecipeItem",
+  "value": "reported:rebreather",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

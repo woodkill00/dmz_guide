@@ -1,0 +1,9 @@
+{
+  "id": "claim:all-tiers-military-composites",
+  "entityId": "observed:military-composites",
+  "field": "sourceListedAllTiersMaterialCount",
+  "value": 15,
+  "sourceId": "source:detonated-fob-20261025",
+  "locator": "What Items You Need to Keep in DMZ",
+  "status": "unverified"
+}

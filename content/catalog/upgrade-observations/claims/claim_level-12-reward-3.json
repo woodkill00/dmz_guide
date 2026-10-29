@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-12-reward-3",
+  "entityId": "reported:level-12",
+  "field": "reward.recipe",
+  "value": "{\"type\": \"recipe\", \"label\": \"Spotter Scope — Recipe\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 12",
+  "status": "unverified"
+}

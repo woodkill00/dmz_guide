@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-tempered-armor-vest-item",
+  "entityId": "reported:unlock-tempered-armor-vest",
+  "field": "unlockedRecipeItem",
+  "value": "reported:tempered-armor-vest",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

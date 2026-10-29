@@ -1,0 +1,16 @@
+{
+  "id": "source:detonated-fob-20261025",
+  "title": "Detonated: FOB upgrade requirements",
+  "url": "https://detonated.com/which-items-should-you-keep-in-dmz-all-fob-upgrades-list/",
+  "type": "community",
+  "publishedAt": "2026-10-25",
+  "reviewedAt": "2026-10-28",
+  "supports": "Reported tier names and listed requirements; eight cash prices are unconfirmed. This report is not consumption or live-build verification.",
+  "provenance": {
+    "kind": "web",
+    "observationKey": "detonated-fob-20261025",
+    "lineageKey": "detonated-fob-20261025",
+    "captureDate": null,
+    "buildStatus": "unknown"
+  }
+}

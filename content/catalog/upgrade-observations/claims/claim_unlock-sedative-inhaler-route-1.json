@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-sedative-inhaler-route-1",
+  "entityId": "reported:unlock-sedative-inhaler",
+  "field": "recipeUnlockRoute.level",
+  "value": 3,
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Level Unlock Recipes",
+  "status": "unverified"
+}

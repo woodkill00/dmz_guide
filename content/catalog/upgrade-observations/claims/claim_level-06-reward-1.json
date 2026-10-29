@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-06-reward-1",
+  "entityId": "reported:level-06",
+  "field": "reward.material",
+  "value": "{\"type\": \"material\", \"label\": \"2x Rigid Synthetics — Uncommon Ingredients\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 6",
+  "status": "unverified"
+}

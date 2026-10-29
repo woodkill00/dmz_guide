@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-67-reward-1",
+  "entityId": "reported:level-67",
+  "field": "reward.item",
+  "value": "{\"type\": \"item\", \"label\": \"Defibrillator — Uncommon Consumable\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 67",
+  "status": "unverified"
+}

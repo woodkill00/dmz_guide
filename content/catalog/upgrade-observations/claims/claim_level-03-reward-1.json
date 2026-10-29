@@ -1,0 +1,9 @@
+{
+  "id": "claim:level-03-reward-1",
+  "entityId": "reported:level-03",
+  "field": "reward.recipe",
+  "value": "{\"type\": \"recipe\", \"label\": \"Sedative Inhaler — Recipe\"}",
+  "sourceId": "source:detonated-levels-20261020",
+  "locator": "DMZ Level 3",
+  "status": "unverified"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "claim:unlock-recon-drone-item",
+  "entityId": "reported:unlock-recon-drone",
+  "field": "unlockedRecipeItem",
+  "value": "reported:recon-drone",
+  "sourceId": "source:detonated-recipes-20261019",
+  "locator": "Recipe identity (craft yield unspecified)",
+  "status": "unverified"
+}

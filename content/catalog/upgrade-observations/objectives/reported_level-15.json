@@ -1,0 +1,16 @@
+{
+  "id": "reported:level-15",
+  "name": "DMZ Level 15 rewards",
+  "description": "Community-reported DMZ level milestone. Reported rewards: Simone Operator Skill; Station Upgrade — +1 Operator Slot. Manual tracking does not grant items, recipes or purchased upgrade completion. Reward wording or identities are unresolved; inspect the claims.",
+  "sourceIds": [
+    "source:detonated-levels-20261020"
+  ],
+  "status": "unverified",
+  "track": "progression",
+  "requirements": [],
+  "requirementsKnown": false,
+  "prerequisites": [],
+  "oneTime": true,
+  "effects": [],
+  "spoiler": false
+}

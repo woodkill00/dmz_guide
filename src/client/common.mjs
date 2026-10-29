@@ -360,6 +360,13 @@ export async function init(
           !opaqueContext &&
           target.origin === location.origin &&
           [
+            "/catalog/",
+            "/items/",
+            "/weapons/",
+            "/recipes/",
+            "/guides/",
+            "/sitemap/",
+            "/map-workspace/",
             "/planner/",
             "/inventory/",
             "/settings/",

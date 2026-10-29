@@ -96,14 +96,22 @@ export function setNavigation(pages) {
     ["maps", "progression", "editor", "community"].includes(p.page),
   );
 }
-export function renderLayout({ title, body, page = "", scripts = [] }) {
+export function renderLayout({
+  title,
+  body,
+  page = "",
+  scripts = [],
+  packId = "",
+}) {
   if (page === "home") scripts = [...scripts, "/assets/src/client/catalog.mjs"];
   const primary = [
     ["/catalog/", "Catalog", "catalog"],
+    ["/items/", "Items", "items"],
     ["/planner/", "Planner", "planner"],
     ["/inventory/", "Inventory", "inventory"],
   ];
   const secondary = [
+    ["/weapons/", "Weapons", "weapons"],
     ["/recipes/", "Recipes", "recipes"],
     ["/guides/", "Guides", "guides"],
     ...extraNavigation.map((p) => [
@@ -117,14 +125,17 @@ export function renderLayout({ title, body, page = "", scripts = [] }) {
       }[p.page] || p.title,
       p.page,
     ]),
+    ["/local/", "Private reader", "local"],
+    ["/map-workspace/", "Local map workspace", "map-workspace"],
     ["/settings/", "Settings", "settings"],
   ];
   const navLink = ([url, label, key]) =>
-    `<a href="${url}"${page === key ? ' aria-current="page"' : ""}>${e(label)}</a>`;
+    `<a href="${url}${packId ? "?pack=" + e(encodeURIComponent(packId)) : ""}"${page === key ? ' aria-current="page"' : ""}>${e(label)}</a>`;
   const navigation =
     primary.map(navLink).join("") +
+    navLink(["/sitemap/", "Site map", "sitemap"]) +
     `<details class="nav-more"><summary>More${secondary.find(([, , key]) => key === page) ? ` · ${e(secondary.find(([, , key]) => key === page)[1])}` : ""}</summary><div>${secondary.map(navLink).join("")}</div></details>`;
-  return `<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/assets/src/favicon.svg" type="image/svg+xml"><meta name="color-scheme" content="dark light"><meta name="description" content="An independent DMZ field guide with source-backed records and private, explainable planning."><title>${e(title)} · DMZ Guide</title><link rel="stylesheet" href="/assets/src/styles.css"><script type="module" src="/assets/src/client/theme.mjs"></script>${scripts.map((s) => `<script type="module" src="${e(s)}"></script>`).join("")}</head><body data-page="${e(page)}"><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><a class="brand" href="/" aria-label="DMZ Guide home"><span class="brand-mark" aria-hidden="true">D<span>↗</span></span><span>DMZ<span class="brand-sub">FIELD GUIDE</span></span></a><span class="header-note">INDEPENDENT INTELLIGENCE<br><span>READ. PREPARE. EXTRACT.</span></span><button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme">Light mode</button></header><nav class="site-nav" aria-label="Main navigation">${navigation}</nav><main id="main" tabindex="-1">${body}</main><footer class="site-footer"><a class="footer-brand" href="/">DMZ / FIELD GUIDE</a><p>Independent community project. Not affiliated with or endorsed by the game publisher.</p><p>Private progress stays in this browser. No accounts, analytics or cloud sync. Local operation needs the static server running. Browser storage is not a backup.</p><a href="/settings/">Backup &amp; privacy</a></footer></body></html>`;
+  return `<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/assets/src/favicon.svg" type="image/svg+xml"><meta name="color-scheme" content="dark light"><meta name="description" content="An independent DMZ field guide with source-backed records and private, explainable planning."><title>${e(title)} · DMZ Guide</title><link rel="stylesheet" href="/assets/src/styles.css"><script type="module" src="/assets/src/client/navigation.mjs"></script><script type="module" src="/assets/src/client/theme.mjs"></script>${scripts.map((s) => `<script type="module" src="${e(s)}"></script>`).join("")}</head><body data-page="${e(page)}"${packId ? ` data-nav-pack="${e(packId)}"` : ""}><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><a class="brand" href="/" aria-label="DMZ Guide home"><span class="brand-mark" aria-hidden="true">D<span>↗</span></span><span>DMZ<span class="brand-sub">FIELD GUIDE</span></span></a><span class="header-note">INDEPENDENT INTELLIGENCE<br><span>READ. PREPARE. EXTRACT.</span></span><button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme">Light mode</button></header><nav class="site-nav" aria-label="Main navigation">${navigation}</nav><main id="main" tabindex="-1">${body}</main><footer class="site-footer"><a class="footer-brand" href="/">DMZ / FIELD GUIDE</a><p>Independent community project. Not affiliated with or endorsed by the game publisher.</p><p>Private progress stays in this browser. No accounts, analytics or cloud sync. Local operation needs the static server running. Browser storage is not a backup.</p><a href="/settings/">Backup &amp; privacy</a><a href="/sitemap/">Site map</a></footer></body></html>`;
 }
 export function pageHeading(eyebrow, title, description = "") {
   return `<header class="page-heading"><p class="eyebrow">${e(eyebrow)}</p><h1>${e(title)}</h1>${description ? `<p class="lede">${e(description)}</p>` : ""}</header>`;
@@ -155,7 +166,12 @@ export function renderHome(packs) {
 }
 export function renderCatalog(
   packs,
-  { title = "The catalog", type = "" } = {},
+  {
+    title = "The catalog",
+    type = "",
+    compact = false,
+    authorTargets = {},
+  } = {},
 ) {
   packs = [...packs].sort(
     (a, b) => Number(isFixture(a)) - Number(isFixture(b)),
@@ -171,16 +187,33 @@ export function renderCatalog(
       filtered.map((r) => (r.recordType === "item" ? r.kind : r.recordType)),
     ),
   ];
-  return `${pageHeading("FIELD REFERENCE", title, "Find a record. Check its evidence. Keep the unknowns in view.")}<form class="filter-bar" id="catalog-filters" data-default-pack="${e(defaultPack)}" action="" method="get"><label class="search-field">Search records<input type="search" maxlength="200" id="catalog-search" placeholder="Try Medkit, resources, or M4…" autocomplete="off"></label><label>Record type<select name="type" id="catalog-type"><option value="">All types</option>${types.map((t) => `<option value="${e(t)}">${e(t)}</option>`).join("")}</select></label><label>Content pack<select name="pack" id="catalog-pack"><option value="">All packs</option>${packs.map((p) => `<option value="${e(p.id)}" ${p.id === defaultPack ? "selected" : ""}>${e(p.title)}${isFixture(p) ? " (fictional)" : ""}</option>`).join("")}</select></label><button type="submit" class="button primary">Search</button><a class="text-link" href="?" id="clear-filters">Clear filters</a></form><p class="result-count" id="catalog-count" role="status">${filtered.length} records. Coverage not established.</p><noscript><p class="notice">Search filters require JavaScript. All records are listed below and can be read without it.</p></noscript><div class="empty-state" id="catalog-empty" hidden><h2>No matching records.</h2><p>Try another word or clear the filters.</p><a class="button secondary" href="?">Clear filters</a></div>${packs
+  return `${pageHeading("FIELD REFERENCE", title, "Find a record. Check its evidence. Keep the unknowns in view.")}<form class="filter-bar" id="catalog-filters" data-default-pack="${e(defaultPack)}" action="" method="get"><label class="search-field">Search records<input type="search" maxlength="200" id="catalog-search" placeholder="Try Medkit, resources, or M4…" autocomplete="off"></label><label>Record type<select name="type" id="catalog-type"><option value="">All types</option>${types.map((t) => `<option value="${e(t)}">${e(t)}</option>`).join("")}</select></label><label>Content pack<select name="pack" id="catalog-pack"><option value="">All packs</option>${packs.map((p) => `<option value="${e(p.id)}" ${p.id === defaultPack ? "selected" : ""}>${e(p.title)}${isFixture(p) ? " (fictional)" : ""}</option>`).join("")}</select></label>${compact ? '<label>Sort items<select id="catalog-sort" name="sort"><option value="name">Name</option><option value="type">Type</option><option value="status">Evidence status</option></select></label>' : ""}<button type="submit" class="button primary">Search</button><a class="text-link" href="?" id="clear-filters">Clear filters</a></form>${compact ? '<p class="notice directory-help">Edit and Remove open exact-record instructions for your local Content Studio. Removal is previewed and blocked when referenced; nothing changes until you explicitly confirm and save. Private player inventory is untouched. <a href="/local/">Browse private records</a> or <a href="/editor/">open the private editor</a>.</p>' : ""}<p class="result-count" id="catalog-count" role="status">${filtered.length} records. Coverage not established.</p><noscript><p class="notice">Search filters require JavaScript. All records are listed below and can be read without it.</p></noscript><div class="empty-state" id="catalog-empty" hidden><h2>No matching records.</h2><p>Try another word or clear the filters.</p><a class="button secondary" href="?">Clear filters</a></div>${packs
     .map(
       (pack) =>
-        `<section class="catalog-section" data-catalog-section><div class="section-heading"><div><p class="eyebrow">${isFixture(pack) ? "FICTIONAL FIXTURES · NOT GAME DATA" : "SOURCE-BACKED STARTER REFERENCE"}</p><h2>${e(pack.title)}</h2><p>${e(pack.coverage.note)}</p></div></div><div class="card-grid">${filtered
+        `<section class="catalog-section" data-catalog-section><div class="section-heading"><div><p class="eyebrow">${isFixture(pack) ? "FICTIONAL FIXTURES · NOT GAME DATA" : "SOURCE-BACKED STARTER REFERENCE"}</p><h2>${e(pack.title)}</h2><p>${e(pack.coverage.note)}</p></div></div><div class="${compact ? "item-directory" : "card-grid"}">${filtered
           .filter((r) => r.pack.id === pack.id)
-          .map(renderCard)
+          .sort((a, b) =>
+            compact ? publicTitle(a).localeCompare(publicTitle(b)) : 0,
+          )
+          .map((record) =>
+            compact
+              ? renderItemRow(
+                  record,
+                  authorTargets[record.pack.id]?.[record.id],
+                )
+              : renderCard(record),
+          )
           .join("")}</div></section>`,
     )
     .join("")}`;
 }
+
+export function renderItemRow(record, target) {
+  record = displayRecord(record);
+  const title = publicTitle(record);
+  return `<article class="item-row" data-record-card data-search="${e(recordSearchText(record))}" data-name="${e(title.toLowerCase())}" data-type="${e(record.kind)}" data-status="${e(statusLabel(record))}" data-pack="${e(record.pack.id)}"><div class="item-identity"><h3><a href="${e(recordUrl(record))}">${e(title)}</a></h3><p>${e(record.kind)} · ${e(record.spoiler ? "Spoiler-protected" : record.category || "Uncategorized")} · ${e(statusLabel(record))}</p></div><div class="item-row-actions" aria-label="Actions for ${e(title)}"><a href="${e(recordUrl(record))}">Details</a>${target ? `<a data-directory-edit href="${e(target + "#edit")}">Edit<span class="sr-only"> ${e(title)}</span></a><a data-directory-remove href="${e(target + "#remove")}">Remove<span class="sr-only"> ${e(title)}</span></a>` : ""}</div></article>`;
+}
+
 function sourceMarkup(source) {
   let url;
   try {
