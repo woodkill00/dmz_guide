@@ -15,7 +15,8 @@ exports.runHelpBrowser=async function(parent,base,fixture){
     await page.locator('#close-workspace').click();
     const popup=context.waitForEvent('page');await page.locator('#open-help').click();const help=await popup;help.setDefaultTimeout(12000);help.on('pageerror',e=>errors.push(e.message));await help.waitForLoadState('domcontentloaded');
     await page.locator('#workspace-open').click();assert.equal(await page.locator('#point-title').inputValue(),'SYNTHETIC retained help draft');
-    assert.equal(await help.title(),'How to use your map — Hajin Field Guide');assert.equal(await help.locator('main section').count(),15);
+    assert.equal(await help.title(),'How to use your map — Hajin Field Guide');assert.equal(await help.locator('main section').count(),16);
+    assert.match(await help.locator('#move-map-menus').textContent(),/Home[\s\S]*Escape/);
     assert.match(await help.locator('#explore').textContent(),/names, categories and source names/);
     assert.match(await help.locator('#backgrounds').textContent(),/Preview background[\s\S]*Keep local background[\s\S]*Calibrate background[\s\S]*Validate calibration[\s\S]*Accept registration/);
     const ids=await help.locator('[id]').evaluateAll(nodes=>nodes.map(n=>n.id));assert.equal(new Set(ids).size,ids.length);
@@ -33,7 +34,7 @@ exports.runHelpBrowser=async function(parent,base,fixture){
     missing=true;await help.goto(base+'/?tool=icons');await help.locator('#icon-studio').waitFor();await help.locator('#retry').waitFor();
     await help.goto(base+'/help.html');await help.setViewportSize({width:360,height:800});await help.keyboard.press('Tab');assert.equal(await help.locator('.skip').evaluate(n=>n===document.activeElement),true);await help.keyboard.press('Enter');assert.equal(await help.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     fs.mkdirSync('.local/browser-checks',{recursive:true});await help.screenshot({path:'.local/browser-checks/synthetic-help-mobile.png'});await help.setViewportSize({width:1440,height:1000});await help.screenshot({path:'.local/browser-checks/synthetic-help-desktop.png'});
-    nojs=await browser.newContext({javaScriptEnabled:false,viewport:{width:360,height:800}});await nojs.route('**/*',routing);const staticPage=await nojs.newPage();await staticPage.goto(base+'/help.html');assert.equal(await staticPage.locator('main section').count(),15);assert.match(await staticPage.locator('body').innerText(),/Download private backup/);assert.equal(await staticPage.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    nojs=await browser.newContext({javaScriptEnabled:false,viewport:{width:360,height:800}});await nojs.route('**/*',routing);const staticPage=await nojs.newPage();await staticPage.goto(base+'/help.html');assert.equal(await staticPage.locator('main section').count(),16);assert.match(await staticPage.locator('body').innerText(),/Download private backup/);assert.equal(await staticPage.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     // Storage failure cannot leave a tool deep link silently unopened.
     const failed=await context.newPage();await failed.addInitScript(()=>{indexedDB.open=()=>{throw new Error('Synthetic storage unavailable');};});await failed.goto(base+'/?tool=icons');await failed.locator('#tool-navigation-error').waitFor();assert.match(await failed.locator('#tool-navigation-error').textContent(),/Workspace tools could not open/);await failed.close();
     assert.deepEqual(mutations,[]);assert.deepEqual(external,[]);assert.deepEqual(errors,[]);

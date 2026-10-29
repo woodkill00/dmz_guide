@@ -174,6 +174,7 @@ const checks = [];
   checks.push(...await runPlannerBrowser(page,base,{image,snapshot}));
   const {runWaypointTrackingBrowser}=require('./waypoint-tracking.browser.cjs');
   checks.push(...await runWaypointTrackingBrowser(page,base,{image,snapshot}));
+  checks.push(...await require('./menu-layout.browser.cjs').runMenuLayoutBrowser(page,base,{image,snapshot}));
   const {runHelpBrowser}=require('./help.browser.cjs');
   checks.push(...await runHelpBrowser(page,base,{image,snapshot}));
   const {runIconStudioBrowser}=require('./icon-studio.browser.cjs');

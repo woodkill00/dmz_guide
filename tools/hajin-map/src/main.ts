@@ -9,6 +9,7 @@ import { loadLocalProviderSources } from './map/local-providers';
 import type { MarkerSource } from './map/marker-sources';
 import { loadCurrentCaptures } from './map/current-captures';
 import { mountWorkspace } from './workspace/app';
+import { mountMapMenuLayout } from './map/menu-layout';
 
 const icon = (name: string) => {
   const paths: Record<string, string> = {
@@ -185,6 +186,7 @@ document.querySelector('#map')!.addEventListener('keydown', event => {
   if ((event as KeyboardEvent).key.toLowerCase() === 'r' && state === 'ready') { event.preventDefault(); viewer.reset(); }
 });
 const authorWorkspace = mountWorkspace(viewer, sources,source=>{const controller=createSource(source);sources.push(controller);return controller;});
+const disposeMenuLayout = mountMapMenuLayout(document.querySelector<HTMLElement>('.map-workspace')!);
 
 const requestedTool=parseToolTarget(location.search);
 if(requestedTool)void authorWorkspace.ready.then(()=>{
@@ -201,6 +203,6 @@ if(requestedTool)void authorWorkspace.ready.then(()=>{
   document.querySelector('.map-workspace')?.append(message);message.focus();
 });
 
-if (import.meta.hot) import.meta.hot.dispose(() => { authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeMenuLayout(); authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
 }
 void startSources();

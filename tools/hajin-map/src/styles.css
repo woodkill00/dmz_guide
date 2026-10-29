@@ -123,3 +123,17 @@ dialog{color:#e8e9df;background:#191f1a;border:1px solid #697453;max-width:440px
 .waypoint-routes-open{position:absolute;left:170px;bottom:62px;z-index:450;min-height:44px;padding:10px 16px;background:#3c4828;color:#f1f4e5;border:1px solid #c8d78c;border-radius:4px;font-size:13px;font-weight:bold}.route-plan-summary{pointer-events:auto}.route-plan-summary>.workspace-note{margin:0 0 8px;color:#f1e9cb}.route-plan-summary button,.route-tracking-controls button{min-height:44px;padding:8px 10px;margin:3px;border-radius:4px;border:1px solid #a4b98188;background:#303d2b;color:#eff3e5;font:13px/1.4 Arial,Helvetica,sans-serif}.route-plan-summary button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.waypoint-number.reached{background:#235138;border-color:#a5e0b8}.waypoint-number.next{outline:3px solid #fff0a6;outline-offset:3px}.waypoint-reached{border-color:#9bc7a0!important}.route-tracking-controls{border-left:3px solid #dfcf8b;padding:8px 12px;margin:12px 0}.map-workspace:has(.readable-marker-popup) .waypoint-routes-open{visibility:hidden}@media(max-width:600px){.waypoint-routes-open{left:132px;bottom:58px;padding:10px 14px}}
 
 .route-plan-summary.tracker-minimized{padding:4px 6px}.route-plan-summary #route-tracker-toggle{margin-bottom:8px}.route-plan-summary.tracker-minimized #route-tracker-toggle{margin:0}.route-plan-summary #route-tracker-details>.workspace-note{margin:0 0 8px;color:#f1e9cb}
+.movable-map-menu{box-sizing:border-box;max-height:calc(100% - 8px);max-width:calc(100% - 8px);overflow:auto}
+.map-menu-drag-handle,.route-plan-summary .map-menu-drag-handle{flex-shrink:0;display:block;min-width:28px;min-height:28px;margin:0;padding:2px 8px;border:1px solid #a4b98188;border-radius:4px;background:#243120;color:#eff3e5;font:20px/1 Arial;cursor:grab;touch-action:none;user-select:none}
+.map-menu-drag-handle:active{cursor:grabbing}.map-menu-drag-handle:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.movable-launcher{position:absolute;z-index:450;display:flex;flex-direction:column;align-items:stretch;width:max-content;bottom:62px;left:20px}
+.movable-routes{left:170px}.movable-launcher>#workspace-open,.movable-launcher>#waypoint-routes-open{position:static;flex-shrink:0}
+.map-workspace:has(.readable-marker-popup) .movable-launcher{visibility:hidden}
+.movable-tracker{position:absolute;left:20px;bottom:170px;z-index:440;width:max-content;max-width:min(360px,calc(100% - 100px))}
+.movable-tracker>.route-plan-summary{position:static;max-width:none;max-height:none;width:100%}
+.movable-gameplay{position:absolute;left:16px;right:16px;top:16px;z-index:450;width:calc(100% - 32px);background:#172016ed;border:1px solid #81956277;border-radius:5px;padding:4px}
+.movable-gameplay>.gameplay-toolbar{position:static;border:0;width:100%;max-width:none;max-height:none;box-sizing:border-box}
+.map-workspace:has(.readable-marker-popup) .movable-tracker,.map-workspace:has(.readable-marker-popup) .movable-gameplay{visibility:hidden}
+.movable-map-menu[hidden]{display:none}
+@media(max-width:760px){.movable-workspace{left:12px;bottom:58px}}
+@media(max-width:600px){.movable-routes{left:132px;bottom:58px}.movable-tracker{left:12px;bottom:158px;max-width:calc(100% - 90px)}.movable-gameplay{left:10px;right:10px;width:calc(100% - 20px)}}
