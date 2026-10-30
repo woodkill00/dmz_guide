@@ -1,0 +1,2 @@
+# UI contract
+Directory contains only compact rows and filters; boss name is a real anchor. Detail includes Back to boss list, heading, readable counters, existing settings/kill controls plus independent dog-tag log/history/settings. URL is same local index with tool=planner and boss ID. No private counts/notes in URL. Guard all same-tab navigation before replacing forms; native new-tab behavior retained. Invalid IDs do not fall back to first target. Dog-tag log/Undo/pause never mutates kill arrays. Save/failure/restore use existing host pipeline.

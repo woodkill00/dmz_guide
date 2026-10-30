@@ -1,0 +1,21 @@
+# Boss directory, detail pages and dog tags
+Created2026-10-30. Branch feat/038-boss-directory. Status: implemented and verified locally.
+Input: readable list of all saved bosses with kills/dog tags, opening a specific boss page.
+
+## Journeys
+US1(P1) Scan a compact searchable/paged list with Boss/type, Kills/goal and Dog tags columns. All13 currently collected targets fit a page; scope always says saved roster, not all game bosses.
+US2(P1) Activate a boss name to open its own local detail page, copy/bookmark/open a new tab/reload that URL, and return to the same filtered list. Unknown/deleted IDs show a clear unavailable page, never a different boss. Keyboard focus and browser Back/Forward work with dirty-draft protection.
+US3(P1) Record/undo dated dog-tag collections independently from kills, optionally set starting count/tag goal and pause tracking without deleting history. Existing kills/settings/source refresh/backups/pins remain correct.
+
+## Requirements
+FR001 Replace giant editable row cards with a semantic three-column table (boss name/type, kills/goal, dog tags). Page25, existing query/type/kill-goal filters, retained list query/page on detail→Back, readable320px without horizontal overflow. Editing forms only on detail page; roster/custom creation tucked into details on list.
+FR002 Real local links use existing index page query ?tool=planner&boss=encodedID. Direct load selects Boss checklist and exact saved ID. Unmodified clicks navigate within current app using guarded history; modified/new-tab links remain native. Reload/popstate restore exact target. Back-to-list and cross-page navigation refuse dirty/retained failed drafts rather than silently losing them. Restore focus to originating name link/list control or detail heading; missing target explains deletion/unavailable data. No new backend route or public profile endpoint.
+FR003 Optional Entry.tags={enabled:boolean,starting:integer0..9999,goal:null|integer1..9999}; optional Checklists.dogTags:KillLog[] with existing log shape/date/at/notes/session. Old version1 backups remain unchanged on read, optional fields exact/strict when present. Defaults: Lieutenant enabled, Commander disabled, starting0/no goal, explicitly tracking preferences not a drop-rate assertion. Disabled tracking retains counts/history, cannot append until enabled. Tag total<=9999,<=2000 tag logs globally; unique event IDs across both arrays. Kill logging never changes tags, vice versa. Undo uses exact latest appended tag log, independent of observation date. Delete target removes both histories atomically after clear confirmation. Private reports/backups include tags; public links/packs omit private data.
+FR004 Detail header shows identity/type, source link, kills and dog tags clearly. Independent log forms/history/Undo, tag settings and pause/resume, existing owner settings/location/source pins/report. Optional tag-goal status distinct; existing completion/filter remains kill-goal status. Default Commander zero untracked renders dash/Not tracking; paused nonzero counts remain visible. No automatic extraction/game credit/rewards, no automatic tag per kill.
+FR005 Preserve roster identity/refresh and all owner data including optional tag settings/logs. No new source collection or asset publication; source references retained. Official FOB guide discusses Lieutenant Dog Tag Cases, not automatic app credit. Actual drop/collection/extraction attribution remains owner-recorded.
+FR006 Draft/epoch/CAS/quota/size/source FK safeguards remain authoritative. Stable IDs across failed log retry, rapid activation, dirty Back/popstate/filter guards, no listener/timer leaks. Meaningful positive/negative units/browser, compatibility, source-refresh/backup roundtrip, independent review/mobile/keyboard/axe/3engines/full map regressions/build/check/isolated unchanged capacity. No real gameplay/device/screenreader claim.
+
+## Success criteria
+SC001 Readable overview navigates to exact deep-linked boss; counters survive refresh/history navigation without duplicates/loss.
+SC002 Old backups remain admitted; independent dog-tag records and recovery never alter existing kills/source data.
+SC003 Automated gates and independent review pass; actual gameplay remains not-tested.
