@@ -27,6 +27,7 @@ export async function runAuthoringBrowser(parent, base) {
       { button: "right" },
     );
   await rightClick();
+  await page.getByRole("button",{name:"Add owned POI here",exact:true}).click();
   assert.equal(
     await page.locator("#workspace-dialog").evaluate((d) => d.open),
     true,

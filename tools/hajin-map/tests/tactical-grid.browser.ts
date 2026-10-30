@@ -113,6 +113,7 @@ export async function runTacticalGridBrowser(parent, base, fixture) {
     await page.mouse.move(target.x, target.y);
     assert.equal(await page.locator("#grid-position").textContent(), "G6");
     await page.mouse.click(target.x, target.y, { button: "right" });
+    await page.getByRole("button",{name:"Add owned POI here",exact:true}).click();
     await page.locator("#point-x").waitFor();
     assert.ok(
       Math.abs(

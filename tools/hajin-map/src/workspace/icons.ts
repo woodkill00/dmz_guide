@@ -104,7 +104,7 @@ export function deleteIcon(
   replacementId: string | null,
 ) {
   const references =
-    state.annotations.filter((a) => a.iconId === id).length +
+    [...state.annotations,...(state.fieldGuide?.toolkit?.trash??[])].filter((a) => a.iconId === id).length +
     state.categoryIcons.filter((c) => c.iconId === id).length;
   if (references && !replacementId)
     throw new Error(
@@ -115,7 +115,7 @@ export function deleteIcon(
     (replacementId === id || !state.icons.some((i) => i.id === replacementId))
   )
     throw new Error("Replacement icon unavailable.");
-  state.annotations.forEach((a) => {
+  [...state.annotations,...(state.fieldGuide?.toolkit?.trash??[])].forEach((a) => {
     if (a.iconId === id) a.iconId = replacementId;
   });
   state.categoryIcons.forEach((c) => {

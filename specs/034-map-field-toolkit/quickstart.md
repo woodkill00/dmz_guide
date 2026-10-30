@@ -1,0 +1,2 @@
+# Quickstart
+npm run map:dev; open http://127.0.0.1:5175/ in intended browser profile. Save private backup first. Open Routes/Planner: Recovery, Missions, Collections, Tools, Packs and Settings provide feature entry points. Run npm run map:test, npm run map:build, npm run map:test:browser and npm --prefix tools/hajin-map run test:engines. Use synthetic fixtures for destructive checks; verify repeated pack import is no-op, stale source refs unresolved, deleted point restore and undo preserve prior work. Manual gameplay/physical-device testing remains separate.

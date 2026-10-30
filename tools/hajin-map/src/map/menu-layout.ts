@@ -120,6 +120,7 @@ export function mountMapMenuLayout(host: HTMLElement) {
   }
   function schedule() { if (!frame) frame = requestAnimationFrame(() => { frame = 0; discover(); }); }
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && drag) { event.preventDefault(); event.stopPropagation(); cancel(); } }, { capture: true, signal: listeners.signal });
+  document.addEventListener('map-menu-reset',()=>{cancel();for(const id of Object.keys(positions))delete positions[id];for(const [id] of menus)paint(id);save();},{signal:listeners.signal});
   const mutations = new MutationObserver(schedule);
   mutations.observe(host, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
   resize.observe(host); discover();

@@ -17,6 +17,7 @@ export interface SnapshotEntry {
   legacy: boolean;
 }
 export interface Annotation {
+  metadata?:{tags:string[];building:string;approach:string;lastChecked:string};
   observedAt?:string;
   attachments?:import("./owned-assets.ts").EvidenceAsset[];
   geometry?:import("./owned-assets.ts").OwnedGeometry;

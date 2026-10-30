@@ -723,9 +723,9 @@ export function mountWorkspace(
     downloadBackup: () => downloadPrivateBackup(),
   });
   plannerUI=createFieldGuideUI({
-    ...services,map:viewer.map,records:getExplorerRecords,
+    ...services,map:viewer.map,records:getExplorerRecords,addPoint:point=>openPointAt(point),
     allowed:()=>canInspect()&&!unsaved&&!pendingVisibility,
-    draftAllowed:()=>!processing&&!interactionLocks&&(!unsaved||(!!plannerUI?.ownsDraft()&&failedLabel==='Map planner saved'))&&!pendingVisibility&&(!dirty||!!plannerUI?.ownsDraft())&&!detailActive,
+    draftAllowed:()=>!processing&&!interactionLocks&&(!unsaved||(!!plannerUI?.ownsDraft()&&['Map planner saved','Map toolkit saved'].includes(failedLabel??'')))&&!pendingVisibility&&(!dirty||!!plannerUI?.ownsDraft())&&!detailActive,
     setDirty:value=>{dirty=value;if(!value)plannerPick=undefined;},
     openPlanner:preserve=>{if(!preserve){active='planner';renderPanel();}if(!dialog.open)dialog.showModal();},closePlanner:()=>dialog.close(),
     search:query=>{usabilityUI.find(query);},popup:r=>usabilityUI.popup(r),
@@ -956,7 +956,7 @@ export function mountWorkspace(
     const showList = () => {
       list.replaceChildren();
       const filtered = state.annotations.filter((a) =>
-        `${a.title} ${a.category} ${a.notes}`
+        `${a.title} ${a.category} ${a.notes} ${a.metadata?.tags.join(' ')??''} ${a.metadata?.building??''} ${a.metadata?.approach??''} ${a.metadata?.lastChecked??''}`
           .toLocaleLowerCase()
           .includes(search.value.toLocaleLowerCase()),
       );
@@ -1009,6 +1009,8 @@ export function mountWorkspace(
                   },
                   "confirm-delete-point",
                 ),
+                button("Delete without recovery copy",async()=>{try{if(!window.confirm('Delete this private point without adding a recovery-bin copy? Existing backups and the previous saved revision may still contain it.'))return;await commit('Point deleted without recovery copy',draft=>{if(!draft.annotations.some(point=>point.id===a.id))throw new Error('Point no longer exists.');draft.annotations=draft.annotations.filter(point=>point.id!==a.id);});closeDetail();}catch(e){error(e);}},'delete-point-without-bin'),
+                note('If the recovery bin is full or this point exceeds its2MiB limit, use Delete without recovery copy only after saving a backup if needed.'),
                 button("Keep point", closeDetail),
               );
               services.detail(node);
@@ -1058,6 +1060,7 @@ export function mountWorkspace(
     if (!dialog.open) dialog.showModal();
   };
   viewer.map.on("click", mapPick);
+  function openPointAt(point:XY){if(!canInspect())throw new Error('Save or cancel your current draft first.');active='points';editing=undefined;draftPosition={x:point[0],y:point[1]};renderPanel();dirty=true;if(!dialog.open)dialog.showModal();body.querySelector<HTMLInputElement>('#point-title')?.focus();}
   const rightClickPoint = (event: L.LeafletMouseEvent) => {
     if (!hydrated || disposed || interactionLocks || processing) return;
     L.DomEvent.preventDefault(event.originalEvent);
@@ -1078,17 +1081,14 @@ export function mountWorkspace(
       error("Choose a point inside the canonical map.");
       return;
     }
-    active = "points";
-    editing = undefined;
-    draftPosition = { x, y };
-    renderPanel();
-    dirty = true;
-    if (!dialog.open) dialog.showModal();
-    body.querySelector<HTMLInputElement>("#point-title")?.focus();
-    notice(
-      "New point location selected. Complete the details and save, or cancel.",
-    );
+    try{plannerUI!.quickActions([x,y]);}catch(e){error(e);}
   };
+  let pressTimer:ReturnType<typeof setTimeout>|undefined,pressStart:{x:number;y:number;pointer:number}|undefined;
+  const cancelPress=()=>{clearTimeout(pressTimer);pressStart=undefined;};
+  const press=(event:PointerEvent)=>{if(!event.isPrimary){cancelPress();return;}if(event.pointerType==='mouse'||event.target instanceof HTMLElement&&event.target.closest('button,input,select,textarea,.movable-map-menu,.leaflet-popup'))return;cancelPress();pressStart={x:event.clientX,y:event.clientY,pointer:event.pointerId};pressTimer=setTimeout(()=>{if(!pressStart||!canInspect())return;const latlng=viewer.map.containerPointToLatLng(L.point(pressStart.x-viewer.map.getContainer().getBoundingClientRect().left,pressStart.y-viewer.map.getContainer().getBoundingClientRect().top));cancelPress();try{plannerUI!.quickActions([latlng.lng,latlng.lat]);}catch(e){error(e);}},650);};
+  const movePress=(event:PointerEvent)=>{if(pressStart&&(event.pointerId!==pressStart.pointer||Math.hypot(event.clientX-pressStart.x,event.clientY-pressStart.y)>8))cancelPress();};
+  viewer.map.getContainer().addEventListener('pointerdown',press);viewer.map.getContainer().addEventListener('pointermove',movePress);viewer.map.getContainer().addEventListener('pointerup',cancelPress);viewer.map.getContainer().addEventListener('pointercancel',cancelPress);
+  const cancelMapTool=(event:KeyboardEvent)=>{if(event.key!=='Escape')return;cancelPress();if(!plannerPick&&!picking)return;event.preventDefault();plannerPick=undefined;picking=false;viewer.map.closePopup();if(!dialog.open)dialog.showModal();notice('Map picking cancelled. Your draft is kept.');};document.addEventListener('keydown',cancelMapTool);
   viewer.map.on("contextmenu", rightClickPoint);
   function renderIcons() {
     const forms:HTMLElement[]=[];
@@ -1659,7 +1659,7 @@ export function mountWorkspace(
     if (visibility().customEnabled)
       for (const a of state.annotations)
         if (
-          `${a.title} ${a.category} ${a.notes}`.toLocaleLowerCase().includes(q)
+          `${a.title} ${a.category} ${a.notes} ${a.metadata?.tags.join(' ')??''} ${a.metadata?.building??''} ${a.metadata?.approach??''} ${a.metadata?.lastChecked??''}`.toLocaleLowerCase().includes(q)
         )
           {
           if(a.geometry){const vertices=a.geometry.vertices.map(([x,y])=>L.latLng(y,x));const shape=a.geometry.kind==='area'?L.polygon(vertices,{renderer,color:a.geometry.color,weight:3,fillOpacity:.18}):L.polyline(vertices,{renderer,color:a.geometry.color,weight:4});shape.bindPopup(()=>{const record=getExplorerRecords().find(r=>r.key==='custom:'+a.id);return record?usabilityUI.popup(record):el('span',a.title);},markerPopupOptions).addTo(customLayer);shape.on('add',()=>shape.getElement()?.setAttribute('data-owned-geometry',a.id));}
@@ -2482,6 +2482,7 @@ export function mountWorkspace(
       preparer.destroy();
       store?.close();
       viewer.map.off("click", mapPick);
+      document.removeEventListener('keydown',cancelMapTool);cancelPress();viewer.map.getContainer().removeEventListener('pointerdown',press);viewer.map.getContainer().removeEventListener('pointermove',movePress);viewer.map.getContainer().removeEventListener('pointerup',cancelPress);viewer.map.getContainer().removeEventListener('pointercancel',cancelPress);
       viewer.map.off("contextmenu", rightClickPoint);
       viewer.map.off("zoomend moveend", zoom);
       document.removeEventListener("workspace-error", errorListener);

@@ -73,6 +73,7 @@ export function annotationEditor(
   own.required = true;
   own.checked = !!initial;
   own.id = "point-owned";
+  const tags=input(initial?.metadata?.tags.join(', ')??'','text',1000),building=input(initial?.metadata?.building??'','text',120),approach=el('textarea'),lastChecked=input(initial?.metadata?.lastChecked??'','date');tags.id='point-tags';building.id='point-building';approach.id='point-approach';approach.maxLength=2000;approach.value=initial?.metadata?.approach??'';lastChecked.id='point-last-checked';
   const observed=input(initial?.observedAt??'','date');observed.id='point-observed-at';
   const geometryType=select([{value:'point',label:'Point marker'},{value:'route',label:'Route / line'},{value:'area',label:'Shaded area'}],initial?.geometry?.kind??'point');geometryType.id='point-geometry-kind';
   const geometryColor=input(initial?.geometry?.color??'#d4de9b','color');geometryColor.id='point-geometry-color';
@@ -103,6 +104,7 @@ export function annotationEditor(
     field("Observed date (optional)",observed),
     field("Floor (blank means unknown)", floor),
     field("Game build (blank means unknown)", build),
+    field("Tags (comma separated)",tags),field("Building",building),field("Approach notes",approach),field("Last checked by me",lastChecked),
     field("Notes", notes),
     field("Evidence / gameplay observation", evidence),
     field("Verification state", verification),
@@ -134,6 +136,7 @@ export function annotationEditor(
       if(evidenceFile.files?.length||caption.value.trim())throw new Error('Attach or clear the selected screenshot before saving the point.');
       const value = makeAnnotation({
         title: title.value,
+        metadata:{tags:[...new Set(tags.value.split(',').map(t=>t.trim()).filter(Boolean))],building:building.value,approach:approach.value,lastChecked:lastChecked.value},
         observedAt:observed.value||undefined,
         attachments,
         geometry:geometryType.value==='point'?undefined:validateGeometry({kind:geometryType.value,vertices:parseVertices(vertices.value),color:geometryColor.value}),
