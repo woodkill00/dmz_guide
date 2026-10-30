@@ -69,23 +69,23 @@ async function exercise(options = {}, failureAt = null) {
   }
   return { calls, files, error };
 }
-test("supplemental cancellation diagnostics dispatch exactly 20 unchanged scenarios", async () => {
+test("supplemental cancellation diagnostics dispatch exactly 100 unchanged scenarios", async () => {
   const { calls, files, error } = await exercise({
     focusedCancellationOnly: true,
   });
   assert.equal(error, undefined);
-  assert.equal(calls.length, 20);
+  assert.equal(calls.length, 100);
   assert.deepEqual(
     calls.map((call) => call.name),
-    Array(20).fill("cancelledNavigation"),
+    Array(100).fill("cancelledNavigation"),
   );
   assert.deepEqual(
     calls.map((call) => call.args[0]),
-    Array.from({ length: 20 }, (_, i) => i + 1),
+    Array.from({ length: 100 }, (_, i) => i + 1),
   );
   assert.equal(files[0].value.result, "PASS");
   assert.equal(files[0].value.mode, "focused-cancellation");
-  assert.equal(files[0].value.requestedCancellationContexts, 20);
+  assert.equal(files[0].value.requestedCancellationContexts, 100);
 });
 test("supplemental cancellation diagnostics fail fast and preserve failed evidence", async () => {
   const { calls, files, error } = await exercise(

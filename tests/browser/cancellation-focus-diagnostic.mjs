@@ -1,5 +1,5 @@
 // Supplemental synthetic diagnostics; never a substitute for the full suite.
-// Execute the unchanged cancelled-navigation journey in 20 fresh contexts,
+// Execute the unchanged cancelled-navigation journey in 100 fresh contexts,
 // stopping at the first failure and retaining its bounded focus-event evidence.
 import { chromium } from "playwright";
 import assert from "node:assert/strict";

@@ -558,7 +558,7 @@ export async function runIndependentUpgradeSpending({
     browser: browser.version(),
     syntheticStateOnly: true,
     mode: focusedCancellationOnly ? "focused-cancellation" : "full-suite",
-    requestedCancellationContexts: focusedCancellationOnly ? 20 : 5,
+    requestedCancellationContexts: focusedCancellationOnly ? 100 : 5,
     scenarios: [],
     screenshots: [],
   };
@@ -567,7 +567,7 @@ export async function runIndependentUpgradeSpending({
     if (focusedCancellationOnly) {
       // Each exact existing scenario owns a fresh context. Failures propagate
       // immediately: this loop is coverage, never a retry-until-pass policy.
-      for (let attempt = 1; attempt <= 20; attempt++)
+      for (let attempt = 1; attempt <= 100; attempt++)
         await cancelledNavigation(attempt);
     } else {
       for (const surface of ["progression", "inventory"])

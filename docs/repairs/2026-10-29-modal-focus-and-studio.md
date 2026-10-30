@@ -335,3 +335,28 @@ Windows-only skip and no failures (631 total); targeted formatting, repository
 checks and `git diff --check` passed. Local native browser launch remains blocked
 by the documented environment restriction; the next authorized CI run is required
 for the refined cancellation observation.
+
+### Final bounded cancellation sample (2026-10-30)
+
+Timing-faithful head `df5b63f` supplemental run `40977822703` passed Windows
+job `123810110403` (20 fresh cancellation contexts) and WebKit job
+`123810110641` (five progress contexts). Windows artifact `12943781074`
+(SHA-256 `1a75c9f0a81a99050e56a8c86812888c134bf5ce9c4e2e68047cb4952782d963`)
+shows all twenty native closes returning to the old button, followed by its
+blur before picker focus; cleanup preceded successful picker acquisition by
+22.1–30.0ms. No historical Windows failure was reproduced. The transparent
+page-realm wrapper captures application focus calls, but not Playwright's
+locator focus invocation; DOM focus/focusin events still capture acquisition.
+
+A final bounded sample expands only the supplemental cancellation branch to
+100 fresh contexts, still fail-fast under the unchanged workflow job budget.
+The default full suite remains five cancellation contexts with every other
+scenario and assertion unchanged. There is no production change, timeout
+increase or failed-test retry. No further count escalation is planned. A green
+sample is limited negative evidence, not proof of the original Windows cause
+or a claim that the separately proven WebKit restoration repair fixes it.
+
+The final sample's three dispatcher contracts passed, including fail-fast evidence
+and unchanged default coverage; independent source review, targeted formatting,
+repository checks and diff checks passed. Actual 100-context execution is pending
+CI, not counted as completed coverage here.
