@@ -1,3 +1,4 @@
+import {referencePlugin} from './server/reference-plugin.mjs';
 import { renderMainNavigation } from "../../src/ui/site-navigation.mjs";
 import { defineConfig, loadEnv } from "vite";
 import { fileURLToPath } from "node:url";
@@ -5,6 +6,7 @@ import { sourceUpdatePlugin } from "./server/source-update-plugin.mjs";
 const root = fileURLToPath(new URL(".", import.meta.url));
 export default defineConfig(({ mode }) => ({
   plugins: [
+    referencePlugin(),
     {name:"shared-page-navigation",transformIndexHtml(html,context){const help=context.filename.endsWith("help.html");return html.replace("<!-- MAIN_NAVIGATION -->",renderMainNavigation({surface:help?"help":"map",page:help?"map-help":"hajin-map"}));}},
     sourceUpdatePlugin({
       root,

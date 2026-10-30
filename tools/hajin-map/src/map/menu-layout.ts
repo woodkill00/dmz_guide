@@ -121,6 +121,7 @@ export function mountMapMenuLayout(host: HTMLElement) {
   function schedule() { if (!frame) frame = requestAnimationFrame(() => { frame = 0; discover(); }); }
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && drag) { event.preventDefault(); event.stopPropagation(); cancel(); } }, { capture: true, signal: listeners.signal });
   document.addEventListener('map-menu-reset',()=>{cancel();for(const id of Object.keys(positions))delete positions[id];for(const [id] of menus)paint(id);save();},{signal:listeners.signal});
+  document.addEventListener('map-menu-apply',event=>{const next=(event as CustomEvent).detail;if(!next||typeof next!=='object')return;cancel();for(const [id] of definitions){const p=next[id];if(p&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&p.x>=0&&p.x<=1&&p.y>=0&&p.y<=1)positions[id]={x:p.x,y:p.y};else delete positions[id];}for(const [id] of menus)paint(id);save();},{signal:listeners.signal});
   const mutations = new MutationObserver(schedule);
   mutations.observe(host, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
   resize.observe(host); discover();

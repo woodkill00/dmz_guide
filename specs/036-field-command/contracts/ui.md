@@ -1,0 +1,2 @@
+# UI contracts
+Plannersections Matchmode,Accuracy,Mappresets,Relationships,Sessionplayback,Routesuggestions,Referencelibrary. CompactHUD retains accessible collapse/positioning. Import2MiBJSON→strictvalidate→readonlydiff→explicitApply(expectedrevision)orCancel. Safelinksnoopener and safeDOM. CLIonlycollectsregistrypages; UIopenssourceURLs/imports resultingpack. Currentauthoritative save/write/draft/epoch/CAS bridge reused; no arbitrarywebproxy or automaticclaimsverification.

@@ -1,0 +1,488 @@
+{
+  "version": 1,
+  "reviewedAt": "2026-10-30",
+  "game": "mw4-dmz",
+  "permission": "Owner confirmed local collection permission in session2026-10-30; no public redistribution authorized.",
+  "sources": [
+    {
+      "id": "official-fob",
+      "name": "Call of Duty \u00b7 FOB",
+      "tier": "official",
+      "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-dmz-how-to-play-forward-operating-base-guide",
+      "coverage": [
+        "upgrades",
+        "materials",
+        "recipes",
+        "weapons",
+        "missions"
+      ],
+      "assessment": "Publisher-authored systems explanation; not a complete recipe database.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/blog/2026/10/call-of-duty-modern-warfare-4-dmz-how-to-play-forward-operating-base-guide"
+      ]
+    },
+    {
+      "id": "official-hajin",
+      "name": "Call of Duty \u00b7 Hajin",
+      "tier": "official",
+      "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-dmz-deep-dive-hajin",
+      "coverage": [
+        "locations",
+        "story",
+        "missions"
+      ],
+      "assessment": "Publisher baseline for locations; not proof of every spawn.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/blog/2026/10/call-of-duty-modern-warfare-4-dmz-deep-dive-hajin"
+      ]
+    },
+    {
+      "id": "official-patch",
+      "name": "Call of Duty \u00b7 Patch notes",
+      "tier": "official",
+      "url": "https://www.callofduty.com/patchnotes/2026/10/call-of-duty-modern-warfare-4-launch-patch-notes",
+      "coverage": [
+        "updates",
+        "weapons",
+        "missions"
+      ],
+      "assessment": "Primary change log; older mechanics may be superseded.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/patchnotes/2026/10/call-of-duty-modern-warfare-4-launch-patch-notes"
+      ]
+    },
+    {
+      "id": "official-weapons",
+      "name": "Call of Duty \u00b7 Weapons",
+      "tier": "official",
+      "url": "https://www.callofduty.com/uk/en/blog/2026/10/call-of-duty-modern-warfare-4-launch-multiplayer-operators-weapons-equipment-create-a-class",
+      "coverage": [
+        "weapons",
+        "attachments",
+        "equipment"
+      ],
+      "assessment": "Publisher names and systems; distinguish Multiplayer from DMZ availability.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/uk/en/blog/2026/10/call-of-duty-modern-warfare-4-launch-multiplayer-operators-weapons-equipment-create-a-class"
+      ]
+    },
+    {
+      "id": "official-progression",
+      "name": "Call of Duty \u00b7 Progression",
+      "tier": "official",
+      "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+      "coverage": [
+        "progression",
+        "upgrades"
+      ],
+      "assessment": "Primary progression explanation; cross-mode applicability needs review.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige"
+      ]
+    },
+    {
+      "id": "playstation",
+      "name": "PlayStation Blog \u00b7 Activision",
+      "tier": "official",
+      "url": "https://blog.playstation.com/2026/10/05/everything-you-need-to-know-about-dmz-mode-in-call-of-duty-modern-warfare-4/",
+      "coverage": [
+        "upgrades",
+        "story",
+        "missions",
+        "weapons"
+      ],
+      "assessment": "Named Activision author on platform publisher blog; largely same-origin evidence, not independent corroboration.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/2026/10/05/everything-you-need-to-know-about-dmz-mode-in-call-of-duty-modern-warfare-4"
+      ]
+    },
+    {
+      "id": "activision-support",
+      "name": "Activision Support",
+      "tier": "official",
+      "url": "https://support.activision.com/uk/en/modern-warfare-4/articles/known-issues-in-modern-warfare-4",
+      "coverage": [
+        "updates"
+      ],
+      "assessment": "Primary issue reference; not an item catalog.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/uk/en/modern-warfare-4/articles/known-issues-in-modern-warfare-4"
+      ]
+    },
+    {
+      "id": "codmunity",
+      "name": "CODMunity",
+      "tier": "community",
+      "url": "https://codmunity.gg/dmz/items",
+      "coverage": [
+        "items",
+        "materials",
+        "recipes"
+      ],
+      "assessment": "Structured public item/recipe listing; community reports remain unverified.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/dmz/items"
+      ]
+    },
+    {
+      "id": "codmunity-missions",
+      "name": "CODMunity \u00b7 Missions",
+      "tier": "community",
+      "url": "https://codmunity.gg/dmz/missions",
+      "coverage": [
+        "missions",
+        "story",
+        "orders"
+      ],
+      "assessment": "Task names and tips; some details explicitly awaiting verification.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/dmz/missions"
+      ]
+    },
+    {
+      "id": "codmunity-progression",
+      "name": "CODMunity \u00b7 Progression",
+      "tier": "community",
+      "url": "https://codmunity.gg/dmz/progression",
+      "coverage": [
+        "progression",
+        "upgrades"
+      ],
+      "assessment": "Level/unlock cross-check, not independent proof of mechanics.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/dmz/progression"
+      ]
+    },
+    {
+      "id": "wzstats",
+      "name": "WZStats \u00b7 Loot",
+      "tier": "community",
+      "url": "https://ssr.wzstats.gg/mw4/dmz/loot",
+      "coverage": [
+        "items",
+        "materials",
+        "equipment"
+      ],
+      "assessment": "SSR loot listing; prices/tier rankings differ from other sources and are not verified values.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/mw4/dmz/loot"
+      ]
+    },
+    {
+      "id": "wzstats-weapons",
+      "name": "WZStats \u00b7 Weapons",
+      "tier": "community",
+      "url": "https://ssr.wzstats.gg/mw4/dmz",
+      "coverage": [
+        "weapons",
+        "attachments"
+      ],
+      "assessment": "Loadout/ranking opinions separated from factual unlock/stat claims.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/mw4/dmz"
+      ]
+    },
+    {
+      "id": "dmzhub",
+      "name": "DMZHub",
+      "tier": "community",
+      "url": "https://dmzhub.gg/",
+      "coverage": [
+        "items",
+        "keys",
+        "recipes",
+        "upgrades",
+        "weapons",
+        "missions",
+        "story"
+      ],
+      "assessment": "Broad linked database with community contributions; dynamic route extraction may require specialized adapters.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/items",
+        "/missions",
+        "/orders",
+        "/recipes",
+        "/upgrades",
+        "/weapons",
+        "/weapon-manuals",
+        "/keys"
+      ]
+    },
+    {
+      "id": "dmztracker",
+      "name": "DMZTracker",
+      "tier": "community",
+      "url": "https://www.dmztracker.gg/",
+      "coverage": [
+        "items",
+        "recipes",
+        "upgrades",
+        "missions",
+        "orders",
+        "story"
+      ],
+      "assessment": "Broad progression/reference coverage and changelog; distinguish verified detail from planned pages.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/items",
+        "/missions",
+        "/orders",
+        "/recipes",
+        "/keys",
+        "/guides",
+        "/fob"
+      ]
+    },
+    {
+      "id": "dmzcodex",
+      "name": "DMZ Codex \u00b7 Items",
+      "tier": "community",
+      "url": "https://dmzcodex.com/items/",
+      "coverage": [
+        "items",
+        "materials",
+        "keys",
+        "recipes"
+      ],
+      "assessment": "Names/uses and cross-links; differing category counts are not a completeness denominator.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/items"
+      ]
+    },
+    {
+      "id": "dmzcodex-parts",
+      "name": "DMZ Codex \u00b7 Attachments",
+      "tier": "community",
+      "url": "https://dmzcodex.com/attachments/",
+      "coverage": [
+        "attachments",
+        "weapons"
+      ],
+      "assessment": "Explicit attachment directory; validate build/unlock applicability.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/attachments"
+      ]
+    },
+    {
+      "id": "dmzmap",
+      "name": "DMZMap \u00b7 Orders",
+      "tier": "community",
+      "url": "https://dmzmap.com/orders",
+      "coverage": [
+        "orders",
+        "missions"
+      ],
+      "assessment": "Readable objective directory and updates; do not conflate selected-path page numbering.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/orders"
+      ]
+    },
+    {
+      "id": "oghub",
+      "name": "OGHub",
+      "tier": "community",
+      "url": "https://www.oghub.fr/en/game/call-of-duty/mw4/dmz",
+      "coverage": [
+        "items",
+        "keys",
+        "recipes",
+        "upgrades",
+        "missions",
+        "story"
+      ],
+      "assessment": "Structured multilingual hub; rendered and indexed counts disagree, so counts not treated as coverage.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/en/game/call-of-duty/mw4/dmz"
+      ]
+    },
+    {
+      "id": "azerpug",
+      "name": "AzerPug Companion",
+      "tier": "community",
+      "url": "https://mw4.azerpug.com/dmz/recipes",
+      "coverage": [
+        "recipes",
+        "materials",
+        "items"
+      ],
+      "assessment": "Recipe resource/unlock cross-check, community evidence not certified mechanics.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/dmz/recipes"
+      ]
+    },
+    {
+      "id": "nomad",
+      "name": "NOMADS DMZ HUB",
+      "tier": "community",
+      "url": "https://nomaddmzhub.com/",
+      "coverage": [
+        "weapons",
+        "attachments",
+        "recipes",
+        "traits"
+      ],
+      "assessment": "Attachment builder exposes unknown prices; preserve unknowns and fan-site status.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/gunsmith",
+        "/recipes",
+        "/items",
+        "/traits"
+      ]
+    },
+    {
+      "id": "gamersheroes",
+      "name": "Gamers Heroes \u00b7 Orders",
+      "tier": "editorial",
+      "url": "https://www.gamersheroes.com/game-guides/modern-warfare-4-mw4-dmz-orders-companion-guide/",
+      "coverage": [
+        "orders",
+        "missions"
+      ],
+      "assessment": "Named Blaine Smith guide with objective explanations; retain source attribution, no full walkthrough copying.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/game-guides/modern-warfare-4-mw4-dmz-orders-companion-guide"
+      ]
+    },
+    {
+      "id": "detonated",
+      "name": "DETONATED \u00b7 Recipes",
+      "tier": "editorial",
+      "url": "https://detonated.com/how-to-unlock-all-dmz-recipes-in-modern-warfare-4/",
+      "coverage": [
+        "recipes",
+        "upgrades",
+        "materials"
+      ],
+      "assessment": "Focused recipe/unlock coverage already used by native guide; independently compare actual recipe details.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/how-to-unlock-all-dmz-recipes-in-modern-warfare-4"
+      ]
+    },
+    {
+      "id": "detonated-stash",
+      "name": "DETONATED \u00b7 Stash",
+      "tier": "editorial",
+      "url": "https://detonated.com/how-to-upgrade-dmz-stash-in-modern-warfare-4/",
+      "coverage": [
+        "upgrades",
+        "materials"
+      ],
+      "assessment": "Focused upgrade reference; source reports not universally verified.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/how-to-upgrade-dmz-stash-in-modern-warfare-4"
+      ]
+    },
+    {
+      "id": "allthingshow",
+      "name": "All Things How \u00b7 Mission keypads",
+      "tier": "editorial",
+      "url": "https://allthings.how/where-to-find-each-story-mission-keypad-code-in-mw4-dmz/",
+      "coverage": [
+        "missions",
+        "story"
+      ],
+      "assessment": "Specific mission mechanic cross-check; spoilers and per-run variability matter.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/where-to-find-each-story-mission-keypad-code-in-mw4-dmz"
+      ]
+    },
+    {
+      "id": "dmzwiki",
+      "name": "DMZ Wiki \u00b7 Guides",
+      "tier": "community",
+      "url": "https://dmzwiki.com/guides",
+      "coverage": [
+        "missions",
+        "story",
+        "items"
+      ],
+      "assessment": "Guide discovery/reference; secondary reports require claim-level corroboration.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/guides"
+      ]
+    },
+    {
+      "id": "windowscentral",
+      "name": "Windows Central \u00b7 FOB",
+      "tier": "editorial",
+      "url": "https://www.windowscentral.com/gaming/call-of-duty/call-of-duty-modern-warfare-4-dmz-fob-complete-guide",
+      "coverage": [
+        "upgrades",
+        "weapons",
+        "attachments"
+      ],
+      "assessment": "Named editorial explanation; often derives publisher material, not independent database proof.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/gaming/call-of-duty/call-of-duty-modern-warfare-4-dmz-fob-complete-guide"
+      ]
+    },
+    {
+      "id": "pcgamer",
+      "name": "PC Gamer \u00b7 Review",
+      "tier": "editorial",
+      "url": "https://www.pcgamer.com/games/call-of-duty/call-of-duty-modern-warfare-4-review/",
+      "coverage": [
+        "story",
+        "missions",
+        "materials"
+      ],
+      "assessment": "First-person gameplay context; review is not a structured exhaustive catalog.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/games/call-of-duty/call-of-duty-modern-warfare-4-review"
+      ]
+    }
+  ]
+}

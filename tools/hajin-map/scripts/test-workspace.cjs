@@ -175,6 +175,7 @@ const checks = [];
   const {runWaypointTrackingBrowser}=require('./waypoint-tracking.browser.cjs');
   checks.push(...await runWaypointTrackingBrowser(page,base,{image,snapshot}));
   checks.push(...await require('./operations.browser.cjs').runOperationsBrowser(page,base,{image,snapshot}));
+  checks.push(...await require('./command.browser.cjs').runCommandBrowser(page,base,{image,snapshot}));
   checks.push(...await require('./toolkit.browser.cjs').runToolkitBrowser(page,base,{image,snapshot}));
   checks.push(...await require('./navigation.browser.cjs').runNavigationBrowser(page,base,{image,snapshot}));
   checks.push(...await require('./menu-layout.browser.cjs').runMenuLayoutBrowser(page,base,{image,snapshot}));

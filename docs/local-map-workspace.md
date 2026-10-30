@@ -1,5 +1,7 @@
 # Local Hajin map workspace
 
+See [field command tools](field-command.md) for match mode, presets, accuracy, route suggestions, relationships and playback, and the [reference library](reference-library.md) for source research and refreshes.
+
 The optional workspace under `tools/hajin-map/` carries the owner's separate local viewer into this repository. It does not replace the guide's native `/maps/` list/map, catalog or Content Studio. It has its own dependency lock and loopback server. Public guide build/release commands do not bundle this workspace or its owner-local resources.
 
 ## Start it

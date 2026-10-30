@@ -1,0 +1,252 @@
+{
+  "reviewDate": "2026-10-30",
+  "registryEndpoints": 27,
+  "registryDomains": 18,
+  "capturedEndpoints": 25,
+  "verifiedGameClaims": false,
+  "sources": [
+    {
+      "sourceId": "official-fob",
+      "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-dmz-how-to-play-forward-operating-base-guide",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:21:51.625Z",
+      "latestDigest": "c51da2f5cec71e997900f8b51292c474e3d273c0b913637fc24c1251fe424d0e",
+      "candidateCount": 106,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "official-hajin",
+      "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-dmz-deep-dive-hajin",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:21:53.018Z",
+      "latestDigest": "3996d492760e27f33b534bce3432ff4bfcd49478c112162a07119d51adde6cb0",
+      "candidateCount": 119,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "official-patch",
+      "url": "https://www.callofduty.com/patchnotes/2026/10/call-of-duty-modern-warfare-4-launch-patch-notes",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:21:54.449Z",
+      "latestDigest": "d90f56b2976f35186516059349d702f2573b7a07fb536f38129c1739be43c9b9",
+      "candidateCount": 129,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "official-weapons",
+      "url": "https://www.callofduty.com/uk/en/blog/2026/10/call-of-duty-modern-warfare-4-launch-multiplayer-operators-weapons-equipment-create-a-class",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:21:56.016Z",
+      "latestDigest": "67e87b096acc3606aa791afad93af3f1b4218c90c48d508d363867100c07de96",
+      "candidateCount": 219,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "official-progression",
+      "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:21:57.664Z",
+      "latestDigest": "39a323bbd6a3b0db0f6f0320069899612d0260ebf5e96315752f4ee1d1abf2d5",
+      "candidateCount": 108,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "playstation",
+      "url": "https://blog.playstation.com/2026/10/05/everything-you-need-to-know-about-dmz-mode-in-call-of-duty-modern-warfare-4/",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:21:59.241Z",
+      "latestDigest": "c04714c40d475266e4b949275e6d7038efed05329fb96ef8619c9174f78ad5f6",
+      "candidateCount": 20,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "activision-support",
+      "url": "https://support.activision.com/uk/en/modern-warfare-4/articles/known-issues-in-modern-warfare-4",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:22:00.601Z",
+      "latestDigest": "fb8d918c770a17e4b82517c1e446bf205ae30806dd12a568122b14279ef6b69d",
+      "candidateCount": 9,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "codmunity",
+      "url": "https://codmunity.gg/dmz/items",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:20:32.484Z",
+      "latestDigest": "d17c44ea526f8697d885bc9bab5e113ed45ffcc233d4405ecdaff8cccd215c89",
+      "candidateCount": 131,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "codmunity-missions",
+      "url": "https://codmunity.gg/dmz/missions",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:20:35.468Z",
+      "latestDigest": "5968021fbe6fcb285409a8c37e4ffdd068d366b0829e12b0f4acd83b60fb8131",
+      "candidateCount": 185,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "codmunity-progression",
+      "url": "https://codmunity.gg/dmz/progression",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:20:37.088Z",
+      "latestDigest": "288fda903e81532189ab248e45131c52ba67359c17b5f0a80c4580bf7923a36d",
+      "candidateCount": 74,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "wzstats",
+      "url": "https://ssr.wzstats.gg/mw4/dmz/loot",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:20:39.361Z",
+      "latestDigest": "163f23c82ba91da0b215d419be1dec81ddeec149f63eb9d4c31a76005c065f3a",
+      "candidateCount": 40,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "wzstats-weapons",
+      "url": "https://ssr.wzstats.gg/mw4/dmz",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:22:46.547Z",
+      "latestDigest": "7791d3d54e459bfdc767a6a162f124c428a7b92b168bbc9d1f37a4e0b4d4e40c",
+      "candidateCount": 42,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "dmzhub",
+      "url": "https://dmzhub.gg/",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:26:47.389Z",
+      "latestDigest": "2fb8547ac4becf70162ff4f5a868f9ccfc8b7b98a34d0f613f9c3f98489e19dd",
+      "candidateCount": 22,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "dmztracker",
+      "url": "https://www.dmztracker.gg/",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:20:42.249Z",
+      "latestDigest": "3d68d0c26f961f08a147b5c93155aade5ef512347377ae2e36c4b0b976de096a",
+      "candidateCount": 24,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "dmzcodex",
+      "url": "https://dmzcodex.com/items/",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:20:43.644Z",
+      "latestDigest": "0a8ab5558bdf710e08f57ad29df8a3775dc8c66643e3b7451b720347965e978a",
+      "candidateCount": 520,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "dmzcodex-parts",
+      "url": "https://dmzcodex.com/attachments/",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:20:44.981Z",
+      "latestDigest": "631792993e99dc0890a0a21309da476215792f80c1ac251903b5a558cf118990",
+      "candidateCount": 84,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "dmzmap",
+      "url": "https://dmzmap.com/orders",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:20:46.433Z",
+      "latestDigest": "4236fb8ef59884eaee8c6d626a513bc20ddfa1c1830fd228a0678d643427f780",
+      "candidateCount": 122,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "oghub",
+      "url": "https://www.oghub.fr/en/game/call-of-duty/mw4/dmz",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:22:02.728Z",
+      "latestDigest": "df5f26bed177e921333afbb8752f8c813fde5b605ae3e08e46c54ec34bf46523",
+      "candidateCount": 15,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "azerpug",
+      "url": "https://mw4.azerpug.com/dmz/recipes",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:20:48.210Z",
+      "latestDigest": "afff71e95be0533bb6b77855832af7b4d40db49e2732a08a86b616fb7c145d19",
+      "candidateCount": 4,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "nomad",
+      "url": "https://nomaddmzhub.com/",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:20:49.527Z",
+      "latestDigest": "bee038617a435c03ee2dad310696eed72de41c813531bacad1866597929110b6",
+      "candidateCount": 5,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "gamersheroes",
+      "url": "https://www.gamersheroes.com/game-guides/modern-warfare-4-mw4-dmz-orders-companion-guide/",
+      "directRetrieval": "failed",
+      "latestCapture": null,
+      "latestDigest": null,
+      "candidateCount": 0,
+      "limitation": "HTTP403; reference only"
+    },
+    {
+      "sourceId": "detonated",
+      "url": "https://detonated.com/how-to-unlock-all-dmz-recipes-in-modern-warfare-4/",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:22:05.157Z",
+      "latestDigest": "cb1e33a5618a4396f22ea272e6befd70bab5ad5cae16fe75f2d8496f97b71f57",
+      "candidateCount": 12,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "detonated-stash",
+      "url": "https://detonated.com/how-to-upgrade-dmz-stash-in-modern-warfare-4/",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:22:07.113Z",
+      "latestDigest": "9e90d85aef11c7abb1b5b1ab24f5e9ec4fd22cf666b726756fa6f9c742b67064",
+      "candidateCount": 8,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "allthingshow",
+      "url": "https://allthings.how/where-to-find-each-story-mission-keypad-code-in-mw4-dmz/",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:22:08.677Z",
+      "latestDigest": "b35a034948397b5202cb3607a3da98ee81e5d2471669345102df8bba7c15974b",
+      "candidateCount": 12,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "dmzwiki",
+      "url": "https://dmzwiki.com/guides",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:22:10.638Z",
+      "latestDigest": "f082ceaeecedaf28300153a890fe818ce252bf32128d1695703849096df661af",
+      "candidateCount": 79,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "windowscentral",
+      "url": "https://www.windowscentral.com/gaming/call-of-duty/call-of-duty-modern-warfare-4-dmz-fob-complete-guide",
+      "directRetrieval": "captured",
+      "latestCapture": "2026-10-30T20:22:48.397Z",
+      "latestDigest": "5450931305f888a2e5de730b65d2cf560d8770303561d26d3824b6c4aec4891d",
+      "candidateCount": 18,
+      "limitation": "Generic unverified candidates, not complete or verified game facts"
+    },
+    {
+      "sourceId": "pcgamer",
+      "url": "https://www.pcgamer.com/games/call-of-duty/call-of-duty-modern-warfare-4-review/",
+      "directRetrieval": "failed",
+      "latestCapture": null,
+      "latestDigest": null,
+      "candidateCount": 0,
+      "limitation": "Response exceeds2MiB; reference only"
+    }
+  ]
+}

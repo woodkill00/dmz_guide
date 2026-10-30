@@ -18,3 +18,18 @@ Save a private backup, then open Planner section → Match journal. Start a date
 Reports bind to the exact graph fingerprint. Replacing the graph makes old reports stale; reports do not rewrite route rules or prove access elsewhere. Trace missing roads with the existing editor and author explicit junctions rather than assuming crossings connect.
 
 Keep private screenshots and exports out of public history. Physical-device, screen-reader and real-match results require actual testers; this worksheet does not mark them passed.
+
+## Field command usability checks — not yet executed in a real match
+
+Record date, browser/device, pass/fail/not-tested and observed problems for each step.
+
+1. Start a journal, enable compact Match mode and complete objectives without losing the next waypoint.
+2. Move and minimize the tracker, restore a saved preset, then verify controls remain reachable at your actual screen size.
+3. Preview a suggested route order and inspect connectors and avoid areas against gameplay. Report missing roads rather than assuming a safe route.
+4. Find an accuracy issue, check both source claims, and record an entrance or key relationship using your observations.
+5. End the match, replay recorded events, promote one captured mark, reload and confirm no duplicate.
+6. Use keyboard alone to navigate each new panel, complete an objective and cancel an import; check focus and announcements with an actual screen reader.
+7. On a physical smaller-screen device check touch targets, scrolling and menu placement. Automated desktop viewport tests are separate evidence.
+8. Refresh a source, review changes and stale completion, then download a private backup and rehearse restore with a disposable workspace.
+
+Actual match, physical-device and screenreader results remain not-tested until recorded by a person.

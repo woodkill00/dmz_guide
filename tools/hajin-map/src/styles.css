@@ -153,3 +153,6 @@ body.map-page{height:100dvh;display:flex;flex-direction:column}body.map-page>#ap
 .map-workspace[data-marker-size=large] .leaflet-marker-icon:not(.official-marker):not(.official-label):not(.route-stop):not(.density-marker):not(.temporary-map-mark){scale:1.3}.map-workspace[data-marker-size=small] .leaflet-marker-icon:not(.official-marker):not(.official-label):not(.route-stop):not(.density-marker):not(.temporary-map-mark){scale:.85}
 
 .movable-gameplay>.gameplay-toolbar{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior:contain}.movable-gameplay>.gameplay-toolbar>*{flex-shrink:0}.movable-gameplay>.gameplay-toolbar select{width:auto}
+
+.compact-match-mode .tracker-waypoint-list,.compact-match-mode #tracker-clear-waypoints,.compact-match-mode .workspace-field:has(#tracker-waypoint-search),.compact-match-mode .workspace-field:has(#tracker-waypoint-status){display:none}
+.command-panel a{overflow-wrap:anywhere}.command-panel .workspace-card{overflow-wrap:anywhere}

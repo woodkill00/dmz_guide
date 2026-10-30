@@ -1,3 +1,4 @@
+import {verifyCapture} from './command.ts';
 import {validateFieldGuide,fieldGuideIdentities} from "./field-guide.ts";
 import {evidenceBytes,verifyEvidence} from './owned-assets.ts';
 import type {
@@ -805,6 +806,7 @@ export async function verifyBackupAssets(
   signal?: AbortSignal,
 ) {
   const deadline = performance.now() + 15000;
+  for(const cap of state.fieldGuide?.command?.captures??[])await verifyCapture(cap,signal,deadline);
   for(const evidence of [...state.annotations,...(state.fieldGuide?.toolkit?.trash??[])].flatMap(a=>a.attachments??[])){if(performance.now()>deadline)throw new Error('Backup image validation timed out.');await verifyEvidence(evidence,signal);}
   for (const icon of state.icons) {
     if (performance.now() > deadline)
