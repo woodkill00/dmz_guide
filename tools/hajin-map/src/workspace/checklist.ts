@@ -51,3 +51,9 @@ export function planRoster(f:FieldGuide,pack:Capture){
  }
  validateChecklists(next);validateChecklistSources(next,cmd);const present=new Set(pack.records.map(r=>r.id)),missing=next.entries.filter(e=>e.source?.sourceId===pack.sourceId&&!present.has(e.source.recordId)).length;return{checklists:next,command:cmd,added,reused,renamed,missing,noop:JSON.stringify(next)===JSON.stringify(f.checklists??emptyChecklists())&&JSON.stringify(cmd)===JSON.stringify(f.command??emptyCommand())};
 }
+
+export function decreaseBossCount(c:Checklists,entryId:string,kind:'kills'|'tags',expectedTotal:number){
+ requireValue(kind==='kills'||kind==='tags','Unknown boss counter.');const entry=c.entries.find(e=>e.id===entryId);requireValue(entry,'Target no longer exists.');const total=kind==='kills'?killTotal(c,entry):dogTagTotal(c,entry);requireValue(total===expectedTotal,'Count changed; review the latest count before lowering it.');requireValue(total>0,'Count is already zero.');
+ if(kind==='kills'){const latest=latestKill(c,entryId);if(latest)undoKill(c,entryId,latest.id);else entry.starting--;}
+ else{const latest=latestDogTag(c,entryId);if(latest)undoDogTag(c,entryId,latest.id);else entry.tags={...tagSettings(entry),starting:tagSettings(entry).starting-1};}
+}

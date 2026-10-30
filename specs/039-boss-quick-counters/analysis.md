@@ -1,0 +1,5 @@
+FR001–003 map to T002–004. No gameplay/source claims or migration. Minus is deliberate history correction with visible explanation, not an invented negative event. Source roster population outside scope. Independent definition review pending before code.
+
+Definition PASS before code. Source/domain review no blocker; independently7domain tests pass. Browser reproduction corrected two test assumptions: pausedzero renders dash (assert minus disabled instead), and failed quick actions use existing unsaved-draft export/Reload saved workspace gate rather than Cancel alone. No production recovery safeguards weakened. Added real stale-revision rejection and row-focused screenshot. Existing037five browser groups passed; all171units/type/build/repo0pass. Focused039+038three-engine checks pending final receipts.
+
+Final convergence: all T001–004 implemented, updateddirectory5groups pass in allthreeengines;037fivegroups pass,171units/finalbuild/repo0pass. No unresolved reviewed source/domain/visual blocker. Exact checks and unrerun unrelated gates in acceptance.md.

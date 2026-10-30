@@ -16,7 +16,7 @@ Alternatively expand **Add a custom target**. Choose Commander or Lieutenant, a 
 
 ## Read the directory and open a boss
 
-The compact directory shows each saved boss, its type, kills against your goal, and collected dog tags. Click a boss name to open its dedicated page. These links support new tabs, reload and browser Back/Forward. **Back to boss list** returns to the directory. Missing or deleted boss links show an unavailable page.
+The compact directory shows each saved boss, its type, kills against your goal, and collected dog tags. Use the + and − buttons beside either count to adjust it directly from the list. + records one dated event; − removes the latest appended log first, then lowers the starting count when no logs remain. Zero cannot be lowered. Paused dog-tag tracking blocks + until enabled on the boss page; its existing count can still be lowered. Kills and tags stay independent. Click a boss name to open its dedicated page. These links support new tabs, reload and browser Back/Forward. **Back to boss list** returns to the directory. Missing or deleted boss links show an unavailable page.
 
 ## Use the checklist
 

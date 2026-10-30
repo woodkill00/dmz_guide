@@ -1,0 +1,4 @@
+- [x] T001 Specify semantics, compatibility and verification; independent definition review.
+- [x] T002 FR002 domain decrement and meaningful unit tests.
+- [x] T003 FR001/003 row controls/CSS/docs with guards.
+- [x] T004 Focused browser plus existing038/037 regression; units/build/check/independent review and convergence receipts.

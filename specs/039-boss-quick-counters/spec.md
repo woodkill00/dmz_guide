@@ -1,0 +1,5 @@
+# Boss directory quick counters
+FR001 Every directory row has labelled + and − controls for kills and dog tags. Counts and goal/type/name link remain readable at320px and keyboard accessible. No detail navigation required.
+FR002 Plus records one manual event using local observation date, existing active-session snapshot, caps and save safeguards. Paused tags cannot be incremented and explain how to enable. Minus removes latest appended log first; when none exist it lowers starting count. Zero disabled; no negative counts. Tag/kill histories independent. Explain decrement semantics visibly.
+FR003 Existing CAS/quota/draft guards remain authoritative; rapid activation must not double-save one pending action; failed saves retain saved state and existing recovery draft. Source/other targets/goals unchanged; reload/private backup preserves counts. Detail anchors retained.
+SC001 Directory adjustments save exact counters without navigating, including baseline decrease and log removal. SC002 Meaningful domain/browser keyboard/mobile/reload/failure checks, type/build/repo checks and independent review pass.
