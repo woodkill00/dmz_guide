@@ -305,3 +305,33 @@ allowed-native-baseline refinement. Full local runtime validation passed 628
 tests total: 627 passed, one Windows-only skipped, zero failures. Formatting,
 repository contracts and diff checks passed. Native repaired acceptance remains
 pending, and the Windows no-restore picker regression is not closed by this patch.
+
+### Native verification and cancellation instrumentation refinement (2026-10-30)
+
+At PR29 head `0da63238`, supplemental run `40977334067` passed both jobs:
+WebKit job `123808515056` completed five fresh progress contexts (20 captured
+progress transitions), and Windows Chromium job `123808514787` completed twenty
+fresh cancellation contexts. WebKit artifact `12942563273` shows the previously
+failing BODY-at-close branch acquiring the correct SELECT immediately after the
+posted focus call (for example, close at 156ms, focus at 157ms). This verifies the
+scoped restoration repair in actual WebKit; full required suites remain separate.
+Windows artifact `12943525880` still shows native close returning to the old,
+subsequently disabled button before BODY, but contains no failing picker trace.
+Those passes do not establish a cause or repair for the original Windows failure.
+
+To reduce diagnostic timing distortion, cancellation now enables the existing
+transparent native-call wrappers before opening the modal and removes the two
+extra protocol evaluate calls immediately surrounding the original picker focus.
+The wrapper records immediate focus-call before/after state synchronously and
+forwards the original call exactly once. Original change, ready wait, modal
+assertion, single picker focus, durable-state assertion and strict 2000ms focus
+endpoint remain unchanged. There is no application change, additional wait,
+retry or deadline increase. Instrumentation can still perturb timing; native
+verification of this refinement remains pending at this commit.
+
+Refinement verification: independent source review passed; 24 focused diagnostic
+and modal-focus contracts passed. Full runtime suite passed 630 tests with one
+Windows-only skip and no failures (631 total); targeted formatting, repository
+checks and `git diff --check` passed. Local native browser launch remains blocked
+by the documented environment restriction; the next authorized CI run is required
+for the refined cancellation observation.

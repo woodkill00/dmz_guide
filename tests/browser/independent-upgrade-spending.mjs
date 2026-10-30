@@ -1660,7 +1660,7 @@ export async function runIndependentUpgradeSpending({
         await page.locator("#upgrade-spend-confirm[open]").count(),
         0,
       );
-      await page.evaluate(installPickerFocusDiagnostics);
+      await page.evaluate(installPickerFocusDiagnostics, { traceCalls: true });
       await openPurchase(page);
       // Simulate a legitimate selected-pack change from the application's picker.
       // Native modal inertness prevents pointer interaction outside; the common
@@ -1678,13 +1678,7 @@ export async function runIndependentUpgradeSpending({
         await page.locator("#upgrade-spend-confirm[open]").count(),
         0,
       );
-      await page.evaluate(() =>
-        window.__dmzPickerFocusEvidence.mark("before-picker-focus"),
-      );
       await page.locator("#pack-select").focus();
-      await page.evaluate(() =>
-        window.__dmzPickerFocusEvidence.mark("after-picker-focus"),
-      );
       assert.deepEqual((await durable(page)).value, initial);
       await focusIs(page, "#pack-select");
       evidence.scenarios.push(
