@@ -164,3 +164,199 @@ six-test run and verification that all original screenshot dimension, geometry
 and coverage assertions remain unchanged. Formatting and repository checks pass.
 The full local runtime rerun passed 617 tests with one Windows-only skip and
 zero failures. Actual final-head Windows browser/Studio validation remains pending.
+
+## Post-merge picker focus diagnosis, not a fix (2026-10-29)
+
+Main `d85e4b209ff7b50926b62ca31be6ead76261444a`, quality `40972065709`,
+Windows job `123790961600`, failed the original spending `cancelledNavigation`
+case: its connected, enabled `#pack-select` did not hold focus within the existing
+2000ms bound; BODY was active and the spending dialog was closed. Unlike the
+progress snapshot issue, this already awaited an exact endpoint. Earlier
+pre-merge all-green results remain historical evidence, not a post-merge pass.
+
+The final snapshot cannot establish whether the picker never acquired focus or
+acquired it and then lost it. Source review finds native close/blur cleanup and
+background option refresh as possible timing boundaries, but does not prove
+either caused the failure. No application patch or additional focus command is
+justified by this evidence alone.
+
+A diagnostics-only follow-up retains the original scenario actions, durable-state
+assertions and 2000ms focus deadline. It runs that exact scenario five times in
+fresh synthetic contexts, stopping immediately on any failure, rather than
+retrying a failed assertion. Each attempt records at most 100 timestamped events:
+document focus/blur/focusin/focusout/close and input-event types, window focus,
+picker disabled/inert/option-child changes, and modal-open changes. Snapshots
+record actual event target, current active element, document.hasFocus(), picker
+connection/disabled state, and modal-open state. Explicit before/after markers
+surround the existing single picker focus call. No key text, player inventory,
+source screenshots or account data is collected. Evidence joins the existing
+synthetic spending JSON before context cleanup; capture failure is reported
+without replacing the original acceptance error. Observers are removed when
+captured. Additional diagnostic commands may affect timing; a passing run alone
+will not establish the root cause or claim a focus fix.
+
+A deterministic runtime test checks bounded storage, read-only state, increasing
+timestamps and observer detachment. Actual CI timelines are required to decide
+whether a product repair or an interaction-readiness correction is justified.
+
+Local diagnostics validation: full runtime suite 619 tests, 618 passed, one
+Windows-only skip and zero failures; focused diagnostics test, formatting and
+repository contracts passed. These results validate instrumentation only, not
+the unresolved native-browser focus behavior.
+Independent diagnostics review passed, including a separate 15-test diagnostics
+and dialog-focus run. Review confirms read-only bounded capture, detached
+observers, fail-fast repetitions and unchanged original acceptance assertions;
+no root-cause or product-fix approval is implied.
+
+## Progress restoration diagnostics extension (2026-10-29)
+
+Diagnostic PR #29 head `95a1832`, quality `40974264910`, engine job
+`123798295090`, failed WebKit's progress completion focus even with the existing
+2000ms exact-endpoint wait. This disproves treating the earlier observational
+wait alone as a complete resolution of native focus loss. No application repair
+is claimed. The original progress assertions and deadlines remain intact.
+
+Firefox spending artifact `12942715460` records five passing picker attempts.
+Attempt one shows the modal heading explicitly blurring at 56ms; native close
+then restores an outside initiating button at 58ms despite the no-restore intent.
+The common switch disables that button; it blurs at 63ms, close dispatches at
+64ms, picker readiness arrives at 79ms and picker focus at 98ms. This establishes
+a native restoration/disabled-blur sequence on a successful run, not proof that
+it caused the Windows or WebKit failure. The failing progress path has no such
+timeline yet; speculation is not an application patch.
+
+The same bounded diagnostic recorder now supports the progress dialog, initiating
+select and row replacement. Its optional test-owned focus/close wrappers record
+before/after calls and delegate exactly once using Reflect.apply, preserving
+receiver, arguments, return and exceptions; original descriptors are restored
+at capture end unless another owner replaced them. No extra focus/close calls
+are made. A wrapper around the otherwise unchanged setProgress core captures up
+to 20 per-operation timelines of 100 events each in the existing journey JSON.
+These wrappers and diagnostic roundtrips may affect timing, so passes alone are
+not a root-cause proof.
+
+Supplemental `node tests/browser/focus-diagnostic.mjs webkit` uses the existing
+owned-server and browser-health guards, then runs the exact draftAndProgress
+scenario in five fresh contexts, fail-fast. Its JSON is
+`test-results/upgrade023-independent/webkit-focus-diagnostic-journeys.json`.
+The regular suite retains its default full sequence; only an explicitly supplied
+diagnosticProgressOnly option selects the supplemental subset. No full-suite
+job, assertion, HTTP/health check or deadline is removed or weakened. This
+supplement is for prompt native-browser evidence, not replacement acceptance.
+
+Independent source review passed with an explicit limitation: unlike the earlier
+event-only collector, optional native-call wrappers modify test-page prototypes
+while installed. They are observational instrumentation, not strictly read-only,
+and may perturb timing. No application code is changed and the goal remains an
+actual failing native trace. The reviewer separately passed both diagnostics
+unit tests and verified the unchanged full-suite default and core assertions.
+Local validation of the extension: full runtime suite 620 tests, 619 passed,
+one Windows-only skip, zero failures; formatting and repository contracts pass.
+Native focused/full CI remains pending; local checks certify only instrumentation.
+
+## Confirmed WebKit close-dispatch focus refusal (2026-10-29)
+
+Supplemental native run `40976297636`, head `3fac5c27`, job `123805045019`,
+failed in the fourth fresh context. Artifact `12942128446`, SHA-256
+`54279367f983a51fb35f9219ee0135583e4d00970ef57fbea305448fbe688b88`, retains
+the failing `progressFocus[15]` completion→incomplete trace. At 76ms close is
+called with BODY active; at 93ms row replacement and the close event have run.
+The restoration callback calls focus on the correct connected, enabled SELECT,
+but the immediate after-call active element is still BODY. document.hasFocus()
+is true and :modal is false. BODY remains active at 2162ms. This was a failed
+focus acquisition during close dispatch, not focus acquired then stolen later,
+and not merely an assertion sampled before restoration was attempted.
+
+The shared helper previously posted a task only if a closing control still had
+focus and later blurred. With BODY already active it called restoration directly
+inside close dispatch, where the actual WebKit trace proves focus can be ignored.
+The repair uses the existing single cancellable MessageChannel task in that
+branch too. There is exactly one restoration attempt, no timer/retry/polling, no
+extra test focus command and no acceptance deadline increase. Pending restoration
+still cancels on pointer/key input, navigation, reopen, supersession or newer
+outside focus. An already-closed helper call now also restores from one posted
+task rather than synchronously; this deliberately avoids the same native-cleanup
+boundary. The no-restore navigation branch is unchanged, so the original Windows
+picker failure remains separately open and must not be claimed fixed here.
+
+A deterministic regression models the observed ignored focus during native close
+cleanup. It fails baseline with the exact assertion “Never attempt restoration
+inside native close dispatch” (1 attempt versus expected 0), then passes this
+repair with exactly one later attempt. Existing successful restoration contracts
+now await their specified posted completion; all 20 focus lifecycle tests pass,
+including five additional BODY-branch cancellation/newer-focus cases. The mock
+BODY/documentElement now implement EventTarget like actual DOM elements; an
+initial mock-only TypeError was corrected before recording the baseline failure.
+Actual repaired WebKit diagnostic repetitions and the full required suite remain
+necessary; local lifecycle tests are not a native-browser pass.
+
+Before committing, review of native outside restoration found an important
+compatibility boundary: if native close has already returned focus to the old
+initiator, that same baseline must not suppress a requested correction target.
+The queued close branch therefore snapshots its current active element and
+allows that unchanged baseline; a different outside focus chosen before the task
+still cancels restoration. The post-blur branch continues to reject any newer
+outside focus. Two additional tests cover native-origin→correction and a newer
+outside target superseding that baseline (22 focus tests total). Pointer/key,
+navigation, reopen and supersession cancellation remain unchanged.
+
+Independent final source review passed all 22 focus lifecycle tests and the
+allowed-native-baseline refinement. Full local runtime validation passed 628
+tests total: 627 passed, one Windows-only skipped, zero failures. Formatting,
+repository contracts and diff checks passed. Native repaired acceptance remains
+pending, and the Windows no-restore picker regression is not closed by this patch.
+
+### Native verification and cancellation instrumentation refinement (2026-10-30)
+
+At PR29 head `0da63238`, supplemental run `40977334067` passed both jobs:
+WebKit job `123808515056` completed five fresh progress contexts (20 captured
+progress transitions), and Windows Chromium job `123808514787` completed twenty
+fresh cancellation contexts. WebKit artifact `12942563273` shows the previously
+failing BODY-at-close branch acquiring the correct SELECT immediately after the
+posted focus call (for example, close at 156ms, focus at 157ms). This verifies the
+scoped restoration repair in actual WebKit; full required suites remain separate.
+Windows artifact `12943525880` still shows native close returning to the old,
+subsequently disabled button before BODY, but contains no failing picker trace.
+Those passes do not establish a cause or repair for the original Windows failure.
+
+To reduce diagnostic timing distortion, cancellation now enables the existing
+transparent native-call wrappers before opening the modal and removes the two
+extra protocol evaluate calls immediately surrounding the original picker focus.
+The wrapper records immediate focus-call before/after state synchronously and
+forwards the original call exactly once. Original change, ready wait, modal
+assertion, single picker focus, durable-state assertion and strict 2000ms focus
+endpoint remain unchanged. There is no application change, additional wait,
+retry or deadline increase. Instrumentation can still perturb timing; native
+verification of this refinement remains pending at this commit.
+
+Refinement verification: independent source review passed; 24 focused diagnostic
+and modal-focus contracts passed. Full runtime suite passed 630 tests with one
+Windows-only skip and no failures (631 total); targeted formatting, repository
+checks and `git diff --check` passed. Local native browser launch remains blocked
+by the documented environment restriction; the next authorized CI run is required
+for the refined cancellation observation.
+
+### Final bounded cancellation sample (2026-10-30)
+
+Timing-faithful head `df5b63f` supplemental run `40977822703` passed Windows
+job `123810110403` (20 fresh cancellation contexts) and WebKit job
+`123810110641` (five progress contexts). Windows artifact `12943781074`
+(SHA-256 `1a75c9f0a81a99050e56a8c86812888c134bf5ce9c4e2e68047cb4952782d963`)
+shows all twenty native closes returning to the old button, followed by its
+blur before picker focus; cleanup preceded successful picker acquisition by
+22.1–30.0ms. No historical Windows failure was reproduced. The transparent
+page-realm wrapper captures application focus calls, but not Playwright's
+locator focus invocation; DOM focus/focusin events still capture acquisition.
+
+A final bounded sample expands only the supplemental cancellation branch to
+100 fresh contexts, still fail-fast under the unchanged workflow job budget.
+The default full suite remains five cancellation contexts with every other
+scenario and assertion unchanged. There is no production change, timeout
+increase or failed-test retry. No further count escalation is planned. A green
+sample is limited negative evidence, not proof of the original Windows cause
+or a claim that the separately proven WebKit restoration repair fixes it.
+
+The final sample's three dispatcher contracts passed, including fail-fast evidence
+and unchanged default coverage; independent source review, targeted formatting,
+repository checks and diff checks passed. Actual 100-context execution is pending
+CI, not counted as completed coverage here.

@@ -1,6 +1,7 @@
 // Independent reviewer-owned purchase/spending UI acceptance.
 // Every quantity, identity and mechanic in the fixture is fictional QA data.
 import assert from "node:assert/strict";
+import { installPickerFocusDiagnostics } from "./picker-focus-diagnostics.mjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 
@@ -542,8 +543,10 @@ export async function runIndependentUpgradeSpending({
   browser,
   base,
   captureScreenshots = true,
+  focusedCancellationOnly = false,
   prefix = browser.browserType().name(),
 }) {
+  assert.equal(typeof focusedCancellationOnly, "boolean");
   await mkdir("test-results/upgrade023-spending", { recursive: true });
   const evidence = {
     owner: "verify_upgrade_player_journeys",
@@ -554,24 +557,35 @@ export async function runIndependentUpgradeSpending({
     platform: process.platform,
     browser: browser.version(),
     syntheticStateOnly: true,
+    mode: focusedCancellationOnly ? "focused-cancellation" : "full-suite",
+    requestedCancellationContexts: focusedCancellationOnly ? 100 : 5,
     scenarios: [],
     screenshots: [],
   };
   let failure;
   try {
-    for (const surface of ["progression", "inventory"])
-      await transactionJourney(surface);
-    for (const surface of ["progression", "inventory"])
-      for (const mode of ["quota", "cas"]) await failedPurchase(surface, mode);
-    await inventoryGuards();
-    for (const surface of ["progression", "inventory"])
-      await failedNavigation(surface);
-    await cancelledNavigation();
-    await observedCurrencyBoundary();
-    await migrationAndSnapshots();
-    await protectedMigration();
-    await privateDisplayAndPaging();
-    await responsive();
+    if (focusedCancellationOnly) {
+      // Each exact existing scenario owns a fresh context. Failures propagate
+      // immediately: this loop is coverage, never a retry-until-pass policy.
+      for (let attempt = 1; attempt <= 100; attempt++)
+        await cancelledNavigation(attempt);
+    } else {
+      for (const surface of ["progression", "inventory"])
+        await transactionJourney(surface);
+      for (const surface of ["progression", "inventory"])
+        for (const mode of ["quota", "cas"])
+          await failedPurchase(surface, mode);
+      await inventoryGuards();
+      for (const surface of ["progression", "inventory"])
+        await failedNavigation(surface);
+      for (let attempt = 1; attempt <= 5; attempt++)
+        await cancelledNavigation(attempt);
+      await observedCurrencyBoundary();
+      await migrationAndSnapshots();
+      await protectedMigration();
+      await privateDisplayAndPaging();
+      await responsive();
+    }
   } catch (error) {
     failure = error;
     evidence.failure = { message: error.message, stack: error.stack };
@@ -1628,11 +1642,12 @@ export async function runIndependentUpgradeSpending({
     }
   }
 
-  async function cancelledNavigation() {
+  async function cancelledNavigation(attempt) {
     const context = await browser.newContext();
+    let page;
     try {
-      const page = await context.newPage(),
-        initial = await seed(page, base);
+      page = await context.newPage();
+      const initial = await seed(page, base);
       await openPurchase(page);
       await page.goto(pathFor(base, "inventory"));
       await ready(page);
@@ -1645,6 +1660,7 @@ export async function runIndependentUpgradeSpending({
         await page.locator("#upgrade-spend-confirm[open]").count(),
         0,
       );
+      await page.evaluate(installPickerFocusDiagnostics, { traceCalls: true });
       await openPurchase(page);
       // Simulate a legitimate selected-pack change from the application's picker.
       // Native modal inertness prevents pointer interaction outside; the common
@@ -1669,6 +1685,20 @@ export async function runIndependentUpgradeSpending({
         "Unconfirmed document navigation and selected-pack change discard stale preview without any debit/event; old modal focus cannot steal focus from the new pack",
       );
     } finally {
+      evidence.cancelledNavigationFocus ||= [];
+      try {
+        evidence.cancelledNavigationFocus.push({
+          attempt,
+          events: await page?.evaluate(
+            () => window.__dmzPickerFocusEvidence?.stop() ?? [],
+          ),
+        });
+      } catch (error) {
+        evidence.cancelledNavigationFocus.push({
+          attempt,
+          unavailable: error.message.slice(0, 2048),
+        });
+      }
       await context.close();
     }
   }
