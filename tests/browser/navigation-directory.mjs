@@ -260,7 +260,11 @@ export async function runNavigationDirectoryTests({
         .href.includes("pack=demo%3Atraining-pack"),
     );
     assert.equal(
-      await page.locator('a[href="http://127.0.0.1:5175/"]').count(),
+      await page.locator('main a[href="http://127.0.0.1:5175/"]').count(),
+      1,
+    );
+    assert.equal(
+      await page.locator('.site-nav a[href="http://127.0.0.1:5175/"]').count(),
       1,
     );
     assert(

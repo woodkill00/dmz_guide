@@ -33,6 +33,7 @@ const staticFiles = new Set([
   "src/content/portable.mjs",
   "src/content/bundled-assets.mjs",
   "src/ui/studio.css",
+  "src/ui/companion-navigation.css",
   "src/styles.css",
   "src/favicon.svg",
   "schemas/pack.schema.json",

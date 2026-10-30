@@ -11,6 +11,12 @@ test("saved preview uses validated local IDs, saved revision and lazy media", ()
   const record = entry.pack.items.find((item) => item.assetId);
   const html = renderSavedPreview(snapshot, entry.key, record.id);
   assert.match(html, /Saved repository preview/);
+  assert.equal((html.match(/aria-label="Main navigation"/g) || []).length, 1);
+  assert.match(
+    html,
+    /href="http:\/\/127\.0\.0\.1:4173\/items\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/,
+  );
+  assert.match(html, /href="\/assets\/src\/ui\/companion-navigation\.css"/);
   assert.ok(html.includes('rel="icon" href="/assets/src/favicon.svg"'));
   assert.ok(html.includes(snapshot.revision));
   assert.match(html, /loading="lazy"/);

@@ -40,7 +40,8 @@ export function createMapView(element: HTMLElement, onState: (state: MapState) =
   const resize = () => {
     const keepOverview = overview;
     const center = map.getCenter();
-    map.invalidateSize({ pan: false });
+    // Counter-pan synchronously so max-bounds enforcement never sees a shifted center.
+    map.invalidateSize({ pan: true, animate: false });
     // getBoundsZoom clamps to the existing minimum; release the old viewport's limit first.
     map.setMinZoom(-4);
     const minimum = map.getBoundsZoom(bounds, false, L.point(48, 48));

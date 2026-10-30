@@ -1,3 +1,4 @@
+import { renderMainNavigation } from "./site-navigation.mjs";
 import { imageDescription } from "../content/image-description.mjs";
 import { bundledAssetURL } from "../content/bundled-assets.mjs";
 import { spoilerGuard, projectSpoilerValue } from "../domain/progression.mjs";
@@ -104,38 +105,12 @@ export function renderLayout({
   packId = "",
 }) {
   if (page === "home") scripts = [...scripts, "/assets/src/client/catalog.mjs"];
-  const primary = [
-    ["/catalog/", "Catalog", "catalog"],
-    ["/items/", "Items", "items"],
-    ["/planner/", "Planner", "planner"],
-    ["/inventory/", "Inventory", "inventory"],
-  ];
-  const secondary = [
-    ["/weapons/", "Weapons", "weapons"],
-    ["/recipes/", "Recipes", "recipes"],
-    ["/guides/", "Guides", "guides"],
-    ...extraNavigation.map((p) => [
-      p.path,
-      {
-        editor: "Editor",
-        maps: "Maps",
-        local: "Private reader",
-        progression: "Progress",
-        community: "Community",
-      }[p.page] || p.title,
-      p.page,
-    ]),
-    ["/local/", "Private reader", "local"],
-    ["/map-workspace/", "Local map workspace", "map-workspace"],
-    ["/settings/", "Settings", "settings"],
-  ];
-  const navLink = ([url, label, key]) =>
-    `<a href="${url}${packId ? "?pack=" + e(encodeURIComponent(packId)) : ""}"${page === key ? ' aria-current="page"' : ""}>${e(label)}</a>`;
-  const navigation =
-    primary.map(navLink).join("") +
-    navLink(["/sitemap/", "Site map", "sitemap"]) +
-    `<details class="nav-more"><summary>More${secondary.find(([, , key]) => key === page) ? ` · ${e(secondary.find(([, , key]) => key === page)[1])}` : ""}</summary><div>${secondary.map(navLink).join("")}</div></details>`;
-  return `<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/assets/src/favicon.svg" type="image/svg+xml"><meta name="color-scheme" content="dark light"><meta name="description" content="An independent DMZ field guide with source-backed records and private, explainable planning."><title>${e(title)} · DMZ Guide</title><link rel="stylesheet" href="/assets/src/styles.css"><script type="module" src="/assets/src/client/navigation.mjs"></script><script type="module" src="/assets/src/client/theme.mjs"></script>${scripts.map((s) => `<script type="module" src="${e(s)}"></script>`).join("")}</head><body data-page="${e(page)}"${packId ? ` data-nav-pack="${e(packId)}"` : ""}><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><a class="brand" href="/" aria-label="DMZ Guide home"><span class="brand-mark" aria-hidden="true">D<span>↗</span></span><span>DMZ<span class="brand-sub">FIELD GUIDE</span></span></a><span class="header-note">INDEPENDENT INTELLIGENCE<br><span>READ. PREPARE. EXTRACT.</span></span><button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme">Light mode</button></header><nav class="site-nav" aria-label="Main navigation">${navigation}</nav><main id="main" tabindex="-1">${body}</main><footer class="site-footer"><a class="footer-brand" href="/">DMZ / FIELD GUIDE</a><p>Independent community project. Not affiliated with or endorsed by the game publisher.</p><p>Private progress stays in this browser. No accounts, analytics or cloud sync. Local operation needs the static server running. Browser storage is not a backup.</p><a href="/settings/">Backup &amp; privacy</a><a href="/sitemap/">Site map</a></footer></body></html>`;
+  const navigation = renderMainNavigation({
+    page,
+    packId,
+    extra: extraNavigation,
+  });
+  return `<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/assets/src/favicon.svg" type="image/svg+xml"><meta name="color-scheme" content="dark light"><meta name="description" content="An independent DMZ field guide with source-backed records and private, explainable planning."><title>${e(title)} · DMZ Guide</title><link rel="stylesheet" href="/assets/src/styles.css"><script type="module" src="/assets/src/client/navigation.mjs"></script><script type="module" src="/assets/src/client/theme.mjs"></script>${scripts.map((s) => `<script type="module" src="${e(s)}"></script>`).join("")}</head><body data-page="${e(page)}"${packId ? ` data-nav-pack="${e(packId)}"` : ""}><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><a class="brand" href="/" aria-label="DMZ Guide home"><span class="brand-mark" aria-hidden="true">D<span>↗</span></span><span>DMZ<span class="brand-sub">FIELD GUIDE</span></span></a><span class="header-note">INDEPENDENT INTELLIGENCE<br><span>READ. PREPARE. EXTRACT.</span></span><button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme">Light mode</button></header>${navigation}<main id="main" tabindex="-1">${body}</main><footer class="site-footer"><a class="footer-brand" href="/">DMZ / FIELD GUIDE</a><p>Independent community project. Not affiliated with or endorsed by the game publisher.</p><p>Private progress stays in this browser. No accounts, analytics or cloud sync. Local operation needs the static server running. Browser storage is not a backup.</p><a href="/settings/">Backup &amp; privacy</a><a href="/sitemap/">Site map</a></footer></body></html>`;
 }
 export function pageHeading(eyebrow, title, description = "") {
   return `<header class="page-heading"><p class="eyebrow">${e(eyebrow)}</p><h1>${e(title)}</h1>${description ? `<p class="lede">${e(description)}</p>` : ""}</header>`;

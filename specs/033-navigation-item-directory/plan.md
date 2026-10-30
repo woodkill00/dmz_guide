@@ -11,3 +11,8 @@ Evidence unchanged; spoilers projected; static privacy preserved; unknowns expli
 Own render.mjs, styles.css, catalog.mjs, build.mjs, author-target.mjs, author-actions.mjs, Studio startup removal intent, navigation-directory tests and feature033 records. CI worker owns other Studio repair; cherry-pick conflict reviewed explicitly.
 ## Risks
 Header link growth: keep More disclosure and mobile wrapping. Large sitemap: group content bypack in native details; bounded source catalog limits apply. Removal unsafe inference: explicit intent preview only, existing draft save untouched. No claim sourcecount equals complete gamecatalog.
+
+## Coverage repair
+Extract pure renderMainNavigation into src/ui/site-navigation.mjs; native renderLayout delegates with existing dynamic extras/pack state. Studio and saved repository previews render the companion variant and permits only its new fixed stylesheet through the existing asset allowlist. Vite injects that renderer into explicit map/help HTML markers in development and production; main.ts moves the static map navigation below its header. Shared companion CSS is imported via the map tool and served as a fixed Studio asset. Flex layout lets the map fill remaining viewport space with wrapped navigation. No runtime fetch, cross-origin storage access or source-data changes. Retain original drafts and all origin/token guards.
+
+Resize convergence uses Leaflet invalidateSize({pan:true,animate:false}) to counter-pan synchronously before max-bounds move handlers run. This retains the existing overview/minimum-zoom rules and fixes the reproduced key-close drift without changing stored camera/workspace state.

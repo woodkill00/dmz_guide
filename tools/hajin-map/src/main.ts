@@ -80,6 +80,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <dialog id="layers-dialog" aria-labelledby="layers-title"><div class="dialog-top"><span id="layers-title">SOURCES & LAYERS</span><button id="close-layers" aria-label="Close map layers">Close <span aria-hidden="true">×</span></button></div><div class="layers-explanation">Choose a website, then pick the categories you want to see. Your choices are saved in this browser.</div><div id="source-controls" class="dialog-content"></div></dialog>`;
 
 const keyBreakpoint = window.matchMedia('(max-width: 760px)');
+// Keep the server-rendered menu outside map event handling, below its header.
+const sharedNavigation=document.querySelector<HTMLElement>('.companion-nav');
+if(sharedNavigation)document.querySelector('.app-header')!.after(sharedNavigation);
 const keyPanel = document.querySelector<HTMLElement>('#map-key')!;
 const keyToggle = document.querySelector<HTMLButtonElement>('#toggle-key')!;
 let keyOpen = !keyBreakpoint.matches;

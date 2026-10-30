@@ -1,3 +1,4 @@
+import { renderMainNavigation } from "../src/ui/site-navigation.mjs";
 import { authorPath } from "../src/content/author-target.mjs";
 import { renderAuthorActions } from "../src/ui/author-actions.mjs";
 import {
@@ -58,5 +59,5 @@ export function renderSavedPreview(snapshot, packKey, id) {
         }),
       })
     : `<a class="button" href="${e(authorPath({ packKey, packId: pack.id, id, intent: "edit" }))}">Edit this supporting record</a><h1>${e(title)}</h1><p>This supporting record has no public detail route.</p><pre class="panel">${e(JSON.stringify(auxiliary, null, 2))}</pre>`;
-  return `<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/assets/src/favicon.svg" type="image/svg+xml"><title>${e(title)} · Saved repository preview</title><link rel="stylesheet" href="/assets/src/styles.css"></head><body><main id="main"><aside class="notice"><strong>Saved repository preview</strong><p>Content version: ${e(pack.contentVersion)}. Saved revision: <span data-saved-revision>${e(snapshot.revision)}</span>.</p><p>Unsaved Studio drafts and private player profiles are not shown. Reload after saving to see the latest source. The public build is unchanged until you run its build command.</p><a href="/">Return to Content Studio</a></aside>${body}</main></body></html>`;
+  return `<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/assets/src/favicon.svg" type="image/svg+xml"><title>${e(title)} · Saved repository preview</title><link rel="stylesheet" href="/assets/src/styles.css"><link rel="stylesheet" href="/assets/src/ui/companion-navigation.css"></head><body>${renderMainNavigation({ surface: "studio", page: "studio" })}<main id="main"><aside class="notice"><strong>Saved repository preview</strong><p>Content version: ${e(pack.contentVersion)}. Saved revision: <span data-saved-revision>${e(snapshot.revision)}</span>.</p><p>Unsaved Studio drafts and private player profiles are not shown. Reload after saving to see the latest source. The public build is unchanged until you run its build command.</p><a href="/">Return to Content Studio</a></aside>${body}</main></body></html>`;
 }
