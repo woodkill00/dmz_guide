@@ -57,3 +57,7 @@ export function decreaseBossCount(c:Checklists,entryId:string,kind:'kills'|'tags
  if(kind==='kills'){const latest=latestKill(c,entryId);if(latest)undoKill(c,entryId,latest.id);else entry.starting--;}
  else{const latest=latestDogTag(c,entryId);if(latest)undoDogTag(c,entryId,latest.id);else entry.tags={...tagSettings(entry),starting:tagSettings(entry).starting-1};}
 }
+
+export function moveBoss(c:Checklists,entryId:string,targetId:string,side:'before'|'after'){
+ requireValue(side==='before'||side==='after','Choose before or after the target.');requireValue(entryId!==targetId,'Choose a different boss to move beside.');const from=c.entries.findIndex(e=>e.id===entryId),target=c.entries.findIndex(e=>e.id===targetId);requireValue(from>=0&&target>=0,'A boss in this move no longer exists.');const [entry]=c.entries.splice(from,1),at=c.entries.findIndex(e=>e.id===targetId);c.entries.splice(at+(side==='after'?1:0),0,entry);
+}

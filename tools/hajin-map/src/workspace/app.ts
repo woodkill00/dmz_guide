@@ -251,6 +251,7 @@ export function mountWorkspace(
   body.id = "workspace-content";
   let interactionLocks = 0;
   function lockInteraction() {
+    const steadyBossList = !!body.querySelector('.boss-directory');
     const previous =
       document.activeElement instanceof HTMLElement
         ? document.activeElement
@@ -268,12 +269,16 @@ export function mountWorkspace(
       body.inert = nav.inert = interactionLocks > 0;
       body.setAttribute("aria-busy", String(interactionLocks > 0));
       if (cancel) cancel.disabled = interactionLocks > 0;
-      if (!interactionLocks && dialog.open) {
-        if (previous?.isConnected) previous.focus();
+      const activeFocus=document.activeElement;
+      const restoreBossFocus=!steadyBossList||!activeFocus||activeFocus===document.body||activeFocus===dialog||activeFocus===previous;
+      if (!interactionLocks && dialog.open && restoreBossFocus) {
+        const replacement = steadyBossList && previous?.id ? document.getElementById(previous.id) : null;
+        if (replacement instanceof HTMLElement && !('disabled' in replacement && replacement.disabled)) replacement.focus({preventScroll:true});
+        else if (previous?.isConnected) previous.focus({preventScroll:steadyBossList});
         else {
           const title = body.querySelector<HTMLElement>("h3");
           title?.setAttribute("tabindex", "-1");
-          title?.focus();
+          title?.focus({preventScroll:steadyBossList});
         }
       }
     };
@@ -406,7 +411,7 @@ export function mountWorkspace(
     renderKey();
     renderBackupReminder();
     refreshHighlight();
-    if (dialog.open && !dirty && !detailActive) renderPanel();
+    if (dialog.open && !dirty && !detailActive) renderPanel(active==='planner' && !!body.querySelector('.boss-directory'));
   };
   async function commit(
     label: string,
@@ -861,8 +866,9 @@ export function mountWorkspace(
       dirty = true;
   });
 
-  function renderPanel() {
-    dialog.scrollTop = 0;
+  function renderPanel(preservePosition = false) {
+    const scrollTop=dialog.scrollTop,scrollLeft=dialog.scrollLeft,tabsLeft=body.querySelector('.planner-tabs')?.scrollLeft??0;
+    if(!preservePosition)dialog.scrollTop = 0;
     nav
       .querySelectorAll("button")
       .forEach((b) =>
@@ -877,6 +883,7 @@ export function mountWorkspace(
     if(active==='planner')body.append(plannerUI!.panel());
     if(active==='health')body.append(healthPanel({...services,captures:()=>legacy.map(source=>({id:source.id,capturedAt:source.getSnapshot()?.capturedAt??null,records:source.getSnapshot()?.records.length??0,files:source.getSnapshotLocation()})),navigate:target=>{if(!canInspect())return;if(target==='updates'){dialog.close();document.querySelector<HTMLButtonElement>('#toggle-key')?.click();const controls=document.querySelector<HTMLElement>('#map-source-updates');if(controls){controls.tabIndex=-1;controls.focus();controls.scrollIntoView({block:'center'});}}else{active=target;renderPanel();}}}));
     if (active === "explore") body.append(usabilityUI.panel());
+    if(preservePosition){dialog.scrollTop=scrollTop;dialog.scrollLeft=scrollLeft;const tabs=body.querySelector('.planner-tabs');if(tabs)tabs.scrollLeft=tabsLeft;}
   }
   function renderPoints() {
     body.append(

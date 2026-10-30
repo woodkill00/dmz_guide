@@ -29,6 +29,14 @@ The compact directory shows each saved boss, its type, kills against your goal, 
 
 Unsaved detail edits block navigation that would discard them. Save or use the workspace's Cancel control first. After a storage error, the saved count stays intact and the form/draft remains recoverable. Edited forms support retry after fixing storage. A retained quick-action draft can be exported through Backups, then recovered through the existing guarded restore workflow or followed by Reload saved workspace. Concurrent edits are refused rather than overwritten.
 
+## Arrange your boss list
+
+Drag the ↕ handle beneath a boss name and drop above or below another visible row; the highlighted edge shows where it will go. Only the handle starts a drag, so links and counters keep their normal behavior. The saved order survives reload, private backups and source refresh. New source bosses append to your existing order.
+
+For keyboard use, focus the handle and press Arrow Up/Down, Home or End. On touch devices, or to move across pages, open **Position**, enter any slot from 1 to the number of saved bosses, and select **Move**. The list follows the moved boss to its new page. Filtering hides entries without changing their saved relative order.
+
+Counter saves preserve the clicked control and scroll position, so repeated clicks stay in place. A filter may intentionally remove a boss when its goal status changes. Failed or conflicting saves retain the last saved order and use the existing Backups recovery workflow.
+
 ## Track collected dog tags separately
 
 Each boss page has its own dog-tag count, optional goal, date, notes, history and Undo. **Record dog tag collected** adds one tag independently of kills; neither action grants the other or confirms extraction or game rewards. Lieutenant tracking starts enabled and Commander tracking disabled as editable preferences. Enable or pause tracking in target settings. Pausing preserves all existing counts and history. Starting tags account for earlier collections without inventing logs.

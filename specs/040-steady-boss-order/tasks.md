@@ -1,0 +1,4 @@
+- [x] T001 Assessment/spec/plan/consistency; independent definition review before code.
+- [x] T002 FR001 scroll/focus/anchor repair with reproduction-based tests.
+- [x] T003 FR002/003 ordered domain and drag/keyboard/position UI with bounded guards.
+- [x] T004 Units/browser3engines/legacy/build/check/docs/independent review/convergence/acceptance/localcommit.
