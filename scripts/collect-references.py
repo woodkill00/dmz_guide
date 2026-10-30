@@ -106,6 +106,62 @@ class NoRedirect(HTTPRedirectHandler):
         raise ValueError('Redirect refused; review and register the canonical endpoint explicitly.')
 
 
+class BossCandidates(Candidates):
+    """Names/types only from explicitly typed, labelled, linked boss cards."""
+    def __init__(self, source):
+        super().__init__(source)
+        self.card = self.heading = self.label = None
+
+    def add(self, row):
+        pass  # Generic headings, navigation, prose, tables and rewards are excluded.
+
+    def handle_starttag(self, tag, attrs):
+        super().handle_starttag(tag, attrs)
+        attrs = dict(attrs)
+        if any(t in self.stack for t in ('script', 'style', 'nav', 'header', 'footer', 'noscript', 'template')):
+            return
+        classes = attrs.get('class', '').split()
+        if tag == 'article':
+            group = attrs.get('data-group')
+            self.card = {'depth': len(self.stack), 'kind': group, 'labelled': False} if group in ('commander', 'lieutenant') and 'tile' in classes else None
+        if self.card and tag == 'span' and 'tile__tag' in classes:
+            self.label = {'depth': len(self.stack), 'text': []}
+        if self.card and tag == 'h3' and 'tile__name' in classes:
+            self.heading = {'depth': len(self.stack), 'text': [], 'href': None}
+        if self.heading and tag == 'a':
+            self.heading['href'] = attrs.get('href')
+
+    def handle_data(self, text):
+        super().handle_data(text)
+        if any(t in self.stack for t in ('script', 'style', 'nav', 'header', 'footer', 'noscript', 'template')):
+            return
+        for row in (self.label, self.heading):
+            if row and sum(map(len, row['text'])) < 200:
+                row['text'].append(text[:200])
+
+    def handle_endtag(self, tag):
+        if self.label and tag == 'span' and len(self.stack) == self.label['depth']:
+            if self.card:
+                self.card['labelled'] = ' '.join(' '.join(self.label['text']).split()).lower() == self.card['kind']
+            self.label = None
+        if self.heading and tag == 'h3' and len(self.stack) == self.heading['depth']:
+            title = ' '.join(' '.join(self.heading['text']).split())
+            if self.card and self.card['labelled'] and self.heading['href'] and 1 <= len(title) <= 100:
+                raw = urlsplit(urljoin(self.source['url'], self.heading['href']))
+                url = urlunsplit((raw.scheme, raw.netloc, raw.path, '', raw.fragment))
+                if admitted(self.source, url) and urlsplit(url).path.rstrip('/') != '/bosses':
+                    kind = self.card['kind']
+                    identifier = sha(canonical([url, kind, None]))
+                    values = [identifier, kind, title, '', url, None, False]
+                    self.rows[identifier] = dict(zip(['id', 'kind', 'title', 'summary', 'url', 'build', 'spoiler'], values), digest=sha(canonical(values)))
+                    if len(self.rows) > 200:
+                        raise ValueError('Boss roster exceeds200 targets.')
+            self.heading = None
+        if self.card and tag == 'article' and len(self.stack) == self.card['depth']:
+            self.card = self.label = self.heading = None
+        super().handle_endtag(tag)
+
+
 def fetch_raw(url):
     """Parent kills isolated fetch process at15s, including DNS/header/slow-body time."""
     result = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--fetch-child', url],
@@ -135,7 +191,7 @@ def fetch_child(url):
 def capture(source, raw, now=None):
     if len(raw) > MAX_BYTES:
         raise ValueError('Page exceeds 2MiB.')
-    parser = Candidates(source)
+    parser = BossCandidates(source) if source['id'] == 'dmztracker-bosses' else Candidates(source)
     parser.feed(raw.decode('utf-8', errors='replace'))
     if not parser.rows:
         raise ValueError('No admitted candidates; specialized adapter/manual reference needed. Prior capture retained.')

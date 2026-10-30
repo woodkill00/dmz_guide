@@ -53,6 +53,23 @@ class CollectorTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             collector.NoRedirect().redirect_request(None, None, None, None, None, None)
 
+    def test_boss_adapter_only_accepts_explicit_labelled_linked_cards(self):
+        source = {'id': 'dmztracker-bosses', 'url': 'https://www.dmztracker.gg/bosses/', 'candidatePaths': ['/bosses']}
+        html = b'''<nav><h3>BAD navigation</h3></nav>
+        <article class="tile" data-group="commander"><span class="tile__tag">Commander</span><h3 class="tile__name"><a href="/bosses/synthetic-a/">SYNTHETIC Heavy</a></h3><p>Do not copy rewards or tactics</p></article>
+        <article class="tile" data-group="lieutenant"><span class="tile__tag">Lieutenant</span><h3 class="tile__name"><a href="/bosses/synthetic-b/">SYNTHETIC Lieutenant</a></h3></article>
+        <article class="tile" data-group="commander"><span class="tile__tag">Lieutenant</span><h3 class="tile__name"><a href="/bosses/mismatch/">BAD mismatch</a></h3></article>
+        <article class="tile" data-group="lieutenant"><span class="tile__tag">Lieutenant</span><h3 class="tile__name"><a href="https://evil.test/bosses/x/">BAD external</a></h3></article>
+        <article class="tile"><h3 class="tile__name">BAD untyped</h3></article>'''
+        pack = collector.capture(source, html)
+        self.assertEqual([r['kind'] for r in pack['records']], ['commander', 'lieutenant'])
+        self.assertNotIn('BAD', json.dumps(pack))
+        self.assertNotIn('rewards', json.dumps(pack))
+        self.assertTrue(all(r['summary'] == '' and r['build'] is None for r in pack['records']))
+        again = collector.capture(source, html.replace(b'SYNTHETIC Heavy', b'SYNTHETIC Other Heavy'))
+        self.assertEqual(pack['records'][0]['id'], again['records'][0]['id'])
+        self.assertNotEqual(pack['records'][0]['digest'], again['records'][0]['digest'])
+
     def test_failed_refresh_preserves_old_capture_and_records_failure(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

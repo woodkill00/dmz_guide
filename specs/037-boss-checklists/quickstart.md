@@ -1,0 +1,2 @@
+# Local use
+Run npm run map:dev, open127.0.0.1:5175 and Planner section → Boss checklist. Preview locally collected boss roster, review and Apply, or add a custom target. Record manual kills, Undo latest, edit goals/starting count/notes, pin targets for Match mode. Download a private backup before deleting history. Source roster and kill counts are separate; no game account or automatic detection.

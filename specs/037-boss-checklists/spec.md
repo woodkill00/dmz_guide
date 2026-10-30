@@ -1,0 +1,29 @@
+# Feature specification: Boss kill checklists
+
+Created2026-10-30; branch feat/037-boss-checklists. Status: locally implemented and synthetically verified; external gameplay/device checks not-tested.
+Input: build the checklist tracker, beginning with Commander and Lieutenant kills.
+
+## User journeys and acceptance
+
+US1(P1) Open Boss checklist from Planner or compact Match mode. Search targets, filter Commander/Lieutenant and pending/complete/pinned, see goal progress and record kills manually. Reload preserves it. Scope counts describe saved targets only, not the complete game.
+US2(P1) Preview an authorized locally collected boss roster, then explicitly apply it without duplicate entries or lost progress. Names/types remain source reports with links/capture provenance. Refresh changes never award kills or overwrite owner notes/goals; missing roster entries remain retained. No inferred fixed coordinates or invented rewards.
+US3(P1) Add/edit/remove a custom target, set a kill goal and a starting count, pin it for Match mode, and record dated notes. Undo the exact latest log or remove a selected log; destructive entry/history removal requires explicit confirmation. No reset of other targets. Draft, stale revision and storage failures preserve saved data and recoverable drafts.
+US4(P2) Review per-target kill history, associated match name where recorded, and download a private backup/export. Optional owner-selected map location can be shown if current; stale/missing handles stay unresolved. Public links/selection packs exclude private checklist data.
+
+## Requirements
+
+FR001 One Boss checklist section with accessible native controls, bounded search<=256, type/status filters, pages25, saved-target-only progress totals. Adjustable target1–9999, starting kills0–9999, total<=9999. Completion derives from starting count plus log amounts, never external game synchronization or automatic rewards. Record kill adds one. Undo removes the exact latest appended log for that target; goal/settings edits do not erase history.
+FR002 Strict optional FieldGuide.checklists version1, <=200 targets/2000 log entries globally, validated owner notes/text/dates/IDs and source handles. Old backups remain unchanged; private backups include it and map capture identities remain pinned. Empty/invalid/malicious imports rejected. No new public publication path.
+FR003 Source roster uses the existing bounded reference capture pipeline and one exact registered DMZTracker bosses URL. Dedicated inert adapter extracts only short heading names and explicit Commander/Lieutenant labels, no narrative/assets. Preview lists additions/reused/renamed/missing; apply is transactional at expected revision. Match by exact source stable recordID first, then same type and normalized name for unbound custom entries only; collisions/ambiguous aliases refuse instead of silently merging. Source refresh preserves owner display name, goals, starting count, notes, logs and selected location, while updating provenance explicitly. Candidate build unknown stays unknown. Missing targets remain retained. Source-backed target references pin the exact retained candidate digest; deleting sole provenance is refused until the owner detaches the source or deletes the target.
+FR004 Custom targets and source-backed targets can edit owner display names/settings/notes, pin/unpin, choose/detach an exact existing map waypoint, or explicitly detach source provenance. Source-reported type/name shown separately. Names unique by normalized name+type; no automatic aliases such as Tank versus NK Battle Tank. Entry deletion confirms count/history impact, then removes only its logs and entry atomically.
+FR005 Log={id,entryId,date,at,notes,session:null|{id,name}}; each represents one manual kill. <=2000 globally. IDs unique, real dates, timestamps ISO. Default date uses browser-local calendar day. Active match association snapshots ID/name, remains readable after session deletion, and does not silently edit journal history. Starting-count adjustments are clearly separate from individual logs. Kill total cap enforced before save. Repeated roster apply creates no duplicates. Late import/cancel/changed route or record cannot retarget a save.
+FR006 Pinned targets appear in compact Match mode with stable Record kill controls; hide/unpin does not delete progress. Existing route tracker collapse/movement and native guide remain intact. No-route pinned targets still accessible through Boss checklist launcher/Planner. No game account, live kill detection, dog-tag count or claim of a complete roster.
+FR007 Positive/negative units, real adapter extraction receipt, meaningful browser workflow, failure recovery, keyboard/axe320px, full map regression/three engines/build/check/unchanged capacity and independent review/convergence. Physical devices, actual boss kills and screenreader verification remain not-tested until observed. Correct any encountered UTF8 text corruption in the touched field-guide module with a scoped regression assertion.
+
+## Success criteria
+SC001 Saved Commander/Lieutenant checklist can be used locally from roster preview through logging/undo/reload/export without duplicates or lost owner progress.
+SC002 Source/cancellation/conflict/quota failures preserve saved state and provenance, while source refresh never grants or resets kills.
+SC003 Automated checks/review pass with exact receipts; real gameplay/coverage claims remain explicitly unknown.
+
+## Assumptions
+User means Commander and Lieutenant kills. Prior explicit collection permission covers additional provider pages, local only. Build on the existing local map tracker rather than silently editing the published native catalog. Source disagreements about places and names stay visible, not resolved by guessing. Default goal one, starting count zero. This is the first category of a broader checklist, not implementation of all future categories.

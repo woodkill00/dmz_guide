@@ -1,0 +1,5 @@
+# Research — 2026-10-30
+
+[Official Hajin intel](https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-dmz-deep-dive-hajin) distinguishes Lieutenant hunts and Commander encounters. [DMZTracker bosses](https://www.dmztracker.gg/bosses/) provides explicitly labelled linked headings suitable for a bounded names/types adapter. [COD Central Boss Board](https://codcentral.net/blog/mw4-dmz-boss-board/) offers corroborating names and differing location reports. Differences include Bale and Gorani areas, plus Tank/NK Battle Tank naming. Do not infer aliases, exact fixed spawns, current reward mechanics or complete coverage. Keep provider names/types as unverified source reports and allow owner-selected map locations.
+
+Prior owner permission covers collection from these providers, local only. Reuse exact URL allowlisting, raw digest, individual candidate hash, retained source captures, cancellation/time/byte limits and explicit preview/apply. Raw pages and parsed roster stay ignored; Git receives original code, metadata and synthetic fixtures only. Imported roster is not automatic proof of a kill, a goal, or a reward.

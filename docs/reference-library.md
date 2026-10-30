@@ -1,5 +1,7 @@
 # Reference library
 
+The [Boss checklist](boss-checklist.md) adds a specialized DMZTracker boss-roster endpoint to the original source registry. Its explicit name/type adapter and private kill progress are separate from generic reference completion.
+
 Open **Planner section → Reference library** in the local map. The [research assessment](../specs/036-field-command/research.md) covers 27 endpoints across 18 domains, including official Call of Duty guides, Activision Support, PlayStation Blog, CODMunity, WZStats, DMZHub, DMZTracker, DMZ Codex, DMZMap, OGHub, AzerPug, NOMADS, Gamers Heroes, DETONATED, All Things How, DMZ Wiki, Windows Central and PC Gamer. Each registry entry records coverage, limitations and review date. Owner permission covers local collection; public redistribution is not authorized.
 
 From the repository root, run the displayed source command, for example:

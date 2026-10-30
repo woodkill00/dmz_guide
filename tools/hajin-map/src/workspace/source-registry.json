@@ -483,6 +483,22 @@
       "candidatePaths": [
         "/games/call-of-duty/call-of-duty-modern-warfare-4-review"
       ]
+    },
+    {
+      "id": "dmztracker-bosses",
+      "name": "DMZTracker \u00b7 Boss roster",
+      "tier": "community",
+      "url": "https://www.dmztracker.gg/bosses/",
+      "coverage": [
+        "commanders",
+        "lieutenants"
+      ],
+      "assessment": "Explicitly labelled short boss-card headings; community-reported names/types, no complete roster or fixed spawn claim. Dedicated adapter ignores prose/rewards/assets.",
+      "collection": "owner-authorized-local",
+      "checkedAt": "2026-10-30",
+      "candidatePaths": [
+        "/bosses"
+      ]
     }
   ]
 }

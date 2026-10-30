@@ -12,7 +12,7 @@ import type {VisibilityState} from './types.ts';
 import type {ExplorerRecord} from './explorer-index.ts';
 
 export const referenceSources=registry.sources;
-export const referenceKinds=['item','upgrade','weapon','attachment','material','recipe','mission','order','story','reference'] as const;
+export const referenceKinds=['item','upgrade','weapon','attachment','material','recipe','mission','order','story','reference','commander','lieutenant'] as const;
 export interface Candidate{id:string;kind:typeof referenceKinds[number];title:string;summary:string;url:string;build:string|null;spoiler:boolean;digest:string}
 export interface Capture{kind:'dmz-reference-capture';version:1;sourceId:string;sourceURL:string;capturedAt:string;digest:string;extractor:'html-candidates-v1';records:Candidate[]}
 export const panelIDs=['navigation','map-tools','workspace','routes','tracker','gameplay'] as const;

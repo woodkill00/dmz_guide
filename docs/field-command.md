@@ -1,5 +1,7 @@
 # Field command tools
 
+The [Commander and Lieutenant checklist](boss-checklist.md) provides manual kill goals, dated history, roster refreshes and pinned Match mode controls.
+
 Open `http://127.0.0.1:5175/`, choose **My workspace → Planner**, and use the **Planner section** selector. Download a private backup before substantial edits.
 
 **Match mode** adds active journal objectives to the existing collapsible, movable waypoint tracker. Show or reach the next stop manually and open the journal for observations. No live position is recorded. Disable compact mode for the full waypoint list.

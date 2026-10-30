@@ -1,0 +1,12 @@
+{
+  "sourceId": "dmztracker-bosses",
+  "sourceURL": "https://www.dmztracker.gg/bosses/",
+  "capturedAt": "2026-10-30T21:34:23.703Z",
+  "digest": "3af5e38c961d27b6acb92333b3252f101933dfeab9a586c7eea2334f4128a726",
+  "extractor": "html-candidates-v1",
+  "candidateCount": 13,
+  "commanders": 3,
+  "lieutenants": 10,
+  "proseOrAssetsImported": false,
+  "verifiedGameClaims": false
+}

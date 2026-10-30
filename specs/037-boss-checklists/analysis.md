@@ -1,0 +1,11 @@
+# Consistency analysis and convergence
+
+Four journeys map seven requirements to T003–006. Independent definition approval preceded production edits. Existing source privacy and transactional paths are reused. Source names/types remain community reports; locations, tactics, rewards and kill credit are never inferred. Counts, source foreign keys, matching, deletion, default goals and independent history are explicit. Physical game/device/screenreader checks remain external and not-tested.
+
+Independent implementation review identified a draft-loss path when outer filtering or pagination replaced edited row forms. T008 replaces target pagination with guarded rendering and restores prior filter values when navigation is refused. Browser cases edit notes then search/type/filter/page, verify retained fields, and successfully save. History-only pagination does not replace owner forms. Pending log UUID/time survive a failed same-form retry; rapid activation, actual IndexedDB quota injection and stale-revision cases verify no duplicate or overwritten saved counts.
+
+Source captures retain exact record/capture digests. Applying a roster preserves owner names/settings/logs and refuses ambiguous matching; sole provenance cannot be deleted without explicit detachment. Compact control IDs include their root to avoid collisions between HUD and Planner. Optional map handles pin captures and remain unresolved when stale. A scoped UTF8 delimiter repair in the touched field-guide module has a fallback-version regression assertion.
+
+The actual local adapter captured13 explicitly labelled linked cards (3 Commander/10 Lieutenant) on2026-10-30; sanitized receipt is collection-summary.json. This is source coverage, not independently verified game completeness. No raw source articles/assets or private player state enters Git. Final executed results and review closure belong in acceptance.md and the reviewer-owned checklist.
+
+Final convergence:164 map tests,6 collector tests,107 browser groups, three engines, strict build, repository checker and unchanged isolated capacity gates passed. Reviewer-owned checklist closes definition, implementation and capacity review with no remaining actionable blocker. External actual-kill, roster completeness, physical-device and screenreader verification remains not-tested.
