@@ -1,3 +1,4 @@
+import {sourceImpacts} from './operations.ts';
 import {sourceChanges} from './field-guide.ts';
 import { el, button, note } from "./dom.ts";
 import type { UIServices } from "./ui-context.ts";
@@ -490,6 +491,7 @@ export function createSourceUpdates(
         if (incoming) {
           const d = refreshPreview(h.state(), incoming.snapshot);
           const old=h.state().snapshots.filter(e=>e.snapshot.sourceId===o.id).at(-1)?.snapshot??(()=>{try{const raw=h.legacySnapshot(o.id);return raw?adaptOfficial(raw,o.id):undefined;}catch{return undefined;}})();
+          const impacts=sourceImpacts(h.state().fieldGuide,old,incoming.snapshot),impactBox=el('details');impactBox.dataset.sourceImpact=o.id;impactBox.append(el('summary',`${impacts.length} saved plan/tracking/history references affected`));for(const impact of impacts.slice(0,100))impactBox.append(note(`${impact.kind}: ${impact.label} · ${impact.change}${impact.kind==='history'?' · historical capture remains frozen':''}`));if(impacts.length>100)impactBox.append(note('More impacts are available in Planner → Update impacts after applying.'));impactBox.append(note('Source captures can refresh unchanged locations too. Explicitly repair current references in Planner → Update impacts; historical references are never retargeted.'));node.append(impactBox);
           const rows=sourceChanges(old,incoming.snapshot),changes=el('details');changes.dataset.sourceChanges=o.id;
           changes.append(el('summary',`${rows.length} changed locations · names, positions and removals`));let page=0;const list=el('div');
           const show=()=>{list.replaceChildren(note(`Page ${page+1}/${Math.max(1,Math.ceil(rows.length/50))} · up to200 per-source entries shown`));for(const row of rows.slice(page*50,Math.min((page+1)*50,200))){const item=el('article',undefined,'workspace-card');item.append(el('strong',row.types.join(' + ')),note(`Before: ${row.before?.title??'not present'}${row.before?` · X ${row.before.x??'unplaced'}, Y ${row.before.y??'unplaced'}`:''}`),note(`After: ${row.after?.title??'missing from new capture'}${row.after?` · X ${row.after.x??'unplaced'}, Y ${row.after.y??'unplaced'}`:''}`));list.append(item);}const prev=button('Previous changes',()=>{page--;show();}),next=button('Next changes',()=>{page++;show();});prev.disabled=page===0;next.disabled=(page+1)*50>=Math.min(rows.length,200);list.append(prev,next);};show();changes.append(list);if(rows.length>200)changes.append(note('Additional changes remain in the captures; this preview is capped at200 entries.'));node.append(changes);

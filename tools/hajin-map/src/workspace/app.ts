@@ -1,3 +1,4 @@
+import {backupComparisonPanel} from './operations-ui.ts';
 import {createFieldGuideUI} from './field-guide-ui.ts';
 import {plannedDuplicates,decorateRecord} from './field-guide.ts';
 import type {XY} from './roads.ts';
@@ -723,7 +724,7 @@ export function mountWorkspace(
     downloadBackup: () => downloadPrivateBackup(),
   });
   plannerUI=createFieldGuideUI({
-    ...services,map:viewer.map,records:getExplorerRecords,addPoint:point=>openPointAt(point),
+    ...services,map:viewer.map,records:getExplorerRecords,editPoint:id=>openPointEditing(id),addPoint:point=>openPointAt(point),
     allowed:()=>canInspect()&&!unsaved&&!pendingVisibility,
     draftAllowed:()=>!processing&&!interactionLocks&&(!unsaved||(!!plannerUI?.ownsDraft()&&['Map planner saved','Map toolkit saved'].includes(failedLabel??'')))&&!pendingVisibility&&(!dirty||!!plannerUI?.ownsDraft())&&!detailActive,
     setDirty:value=>{dirty=value;if(!value)plannerPick=undefined;},
@@ -1060,6 +1061,7 @@ export function mountWorkspace(
     if (!dialog.open) dialog.showModal();
   };
   viewer.map.on("click", mapPick);
+  function openPointEditing(id:string){if(!canInspect())throw new Error('Save or cancel your draft first.');const point=state.annotations.find(a=>a.id===id);if(!point)throw new Error('Point unavailable.');editing=structuredClone(point);draftPosition=undefined;active='points';renderPanel();if(!dialog.open)dialog.showModal();body.querySelector<HTMLInputElement>('#point-title')?.focus();}
   function openPointAt(point:XY){if(!canInspect())throw new Error('Save or cancel your current draft first.');active='points';editing=undefined;draftPosition={x:point[0],y:point[1]};renderPanel();dirty=true;if(!dialog.open)dialog.showModal();body.querySelector<HTMLInputElement>('#point-title')?.focus();}
   const rightClickPoint = (event: L.LeafletMouseEvent) => {
     if (!hydrated || disposed || interactionLocks || processing) return;
@@ -1430,6 +1432,7 @@ export function mountWorkspace(
                 `${restored.annotations.length} custom points · ${restored.icons.length} icons · ${restored.entities.length} reviewed entities · ${restored.omittedDependencies.length} missing/omitted dependencies. This replaces the current workspace; the previous valid state is retained.`,
               ),
             );
+            node.append(backupComparisonPanel(state,restored));
             for (const d of restored.omittedDependencies.slice(0, 20))
               node.append(note(`${d.kind} · ${d.id} · ${d.reason}`));
             node.append(

@@ -136,7 +136,18 @@ The guide, interactive map, map Help, Content Studio and its saved previews shar
 ### Waypoint and tracking menus
 The expanded movable tracker includes an active-route selector and a scrollable ordered stop list. Show centers a stop; Remove deletes only that route stop. Click a numbered map waypoint for its Remove waypoint action. Clear all waypoints asks for confirmation and clears only the selected route’s stops/progress, keeping its settings and other routes. Minimize tracker still preserves placement and progress. In Tracking / confidence, saved entries are paginated with show/edit/remove actions; unavailable or older-capture entries remain removable. Clear all tracking confirms before removing private flags and evidence notes; it leaves routes, custom points, source locations and layers alone.
 
+## Match operations (035)
+
+Planner section includes Match journal, Road verification, Workspace search, Update impacts, Route alternatives and Backup guide. Journals preserve starting route/objective snapshots and capture end progress separately. Record later route versions explicitly; review temporary marks before ending and promote selected marks as owned POIs. Exports contain owner text, manual coordinates and capture references. Use the [gameplay worksheet](gameplay-verification.md) during actual play; real-game checks remain unverified until observed.
+
+Road reports require date, matching graph fingerprint and explicit gameplay attestation for passable/blocked. Stale reports do not recolor replacement geometry. Manual-stop dragging is opt-in; source stops stay protected. An explicit replacement asks you to pick a new owned detour, without copying source coordinates/title into exported manual stops. Insert after a chosen stop, duplicate with cleared progress, or compare routing modes, gaps and pixel lengths.
+
+Workspace search opens exact editors and road reports. Source-update previews show affected references; repair rebinds only one selected current reference, archives old tracking evidence, resets confidence/date/visit/check flags, retains favorite and sets revisit. Historical journals never retarget automatically. Repair history pins its old source captures until explicitly removed.
+
+Backup guide displays the recorded download receipt and restore walkthrough. Existing backup previews show added/changed/removed objects and settings before the protected replace action; cancellation saves nothing. Missing source files remain separate dependencies. Old backups are supported; new operations fields require the updated reader.
+
 ## Map field toolkit (034)
+
 Use Planner section to reach Missions, Collections, Field tools, Recovery, Packs, Settings and Source comparison. Missions are private owner-authored checklists, not verified game requirements. Link objectives to source/owned references or picked map points, mark them done and create an ordered route. Collections show independent overlays, preserve source masks, and can generate routes from selected members. Waypoint/tracking search/status filters and selection controls support confirmed bulk removal and collection membership.
 
 Field tools measures picked or typed X/Y paths in image pixels; copy includes grid/X/Y with a manual fallback. Right-click/long-press opens quick actions. Temporary note/danger/rally marks and measurements are page-session-only and clear on reload. Field mode exposes compact shortcuts and progress; keyboard shortcuts outside editors are Alt+R/T/M/K for Routes/Tools/Missions/Settings. Settings changes marker size, resets draggable menus and shows additional colored saved routes. Only the active route owns numbered/progress actions.
