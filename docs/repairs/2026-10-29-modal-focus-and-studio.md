@@ -253,3 +253,55 @@ unit tests and verified the unchanged full-suite default and core assertions.
 Local validation of the extension: full runtime suite 620 tests, 619 passed,
 one Windows-only skip, zero failures; formatting and repository contracts pass.
 Native focused/full CI remains pending; local checks certify only instrumentation.
+
+## Confirmed WebKit close-dispatch focus refusal (2026-10-29)
+
+Supplemental native run `40976297636`, head `3fac5c27`, job `123805045019`,
+failed in the fourth fresh context. Artifact `12942128446`, SHA-256
+`54279367f983a51fb35f9219ee0135583e4d00970ef57fbea305448fbe688b88`, retains
+the failing `progressFocus[15]` completion→incomplete trace. At 76ms close is
+called with BODY active; at 93ms row replacement and the close event have run.
+The restoration callback calls focus on the correct connected, enabled SELECT,
+but the immediate after-call active element is still BODY. document.hasFocus()
+is true and :modal is false. BODY remains active at 2162ms. This was a failed
+focus acquisition during close dispatch, not focus acquired then stolen later,
+and not merely an assertion sampled before restoration was attempted.
+
+The shared helper previously posted a task only if a closing control still had
+focus and later blurred. With BODY already active it called restoration directly
+inside close dispatch, where the actual WebKit trace proves focus can be ignored.
+The repair uses the existing single cancellable MessageChannel task in that
+branch too. There is exactly one restoration attempt, no timer/retry/polling, no
+extra test focus command and no acceptance deadline increase. Pending restoration
+still cancels on pointer/key input, navigation, reopen, supersession or newer
+outside focus. An already-closed helper call now also restores from one posted
+task rather than synchronously; this deliberately avoids the same native-cleanup
+boundary. The no-restore navigation branch is unchanged, so the original Windows
+picker failure remains separately open and must not be claimed fixed here.
+
+A deterministic regression models the observed ignored focus during native close
+cleanup. It fails baseline with the exact assertion “Never attempt restoration
+inside native close dispatch” (1 attempt versus expected 0), then passes this
+repair with exactly one later attempt. Existing successful restoration contracts
+now await their specified posted completion; all 20 focus lifecycle tests pass,
+including five additional BODY-branch cancellation/newer-focus cases. The mock
+BODY/documentElement now implement EventTarget like actual DOM elements; an
+initial mock-only TypeError was corrected before recording the baseline failure.
+Actual repaired WebKit diagnostic repetitions and the full required suite remain
+necessary; local lifecycle tests are not a native-browser pass.
+
+Before committing, review of native outside restoration found an important
+compatibility boundary: if native close has already returned focus to the old
+initiator, that same baseline must not suppress a requested correction target.
+The queued close branch therefore snapshots its current active element and
+allows that unchanged baseline; a different outside focus chosen before the task
+still cancels restoration. The post-blur branch continues to reject any newer
+outside focus. Two additional tests cover native-origin→correction and a newer
+outside target superseding that baseline (22 focus tests total). Pointer/key,
+navigation, reopen and supersession cancellation remain unchanged.
+
+Independent final source review passed all 22 focus lifecycle tests and the
+allowed-native-baseline refinement. Full local runtime validation passed 628
+tests total: 627 passed, one Windows-only skipped, zero failures. Formatting,
+repository contracts and diff checks passed. Native repaired acceptance remains
+pending, and the Windows no-restore picker regression is not closed by this patch.

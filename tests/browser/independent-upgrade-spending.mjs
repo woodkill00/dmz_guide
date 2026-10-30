@@ -543,8 +543,10 @@ export async function runIndependentUpgradeSpending({
   browser,
   base,
   captureScreenshots = true,
+  focusedCancellationOnly = false,
   prefix = browser.browserType().name(),
 }) {
+  assert.equal(typeof focusedCancellationOnly, "boolean");
   await mkdir("test-results/upgrade023-spending", { recursive: true });
   const evidence = {
     owner: "verify_upgrade_player_journeys",
@@ -555,25 +557,35 @@ export async function runIndependentUpgradeSpending({
     platform: process.platform,
     browser: browser.version(),
     syntheticStateOnly: true,
+    mode: focusedCancellationOnly ? "focused-cancellation" : "full-suite",
+    requestedCancellationContexts: focusedCancellationOnly ? 20 : 5,
     scenarios: [],
     screenshots: [],
   };
   let failure;
   try {
-    for (const surface of ["progression", "inventory"])
-      await transactionJourney(surface);
-    for (const surface of ["progression", "inventory"])
-      for (const mode of ["quota", "cas"]) await failedPurchase(surface, mode);
-    await inventoryGuards();
-    for (const surface of ["progression", "inventory"])
-      await failedNavigation(surface);
-    for (let attempt = 1; attempt <= 5; attempt++)
-      await cancelledNavigation(attempt);
-    await observedCurrencyBoundary();
-    await migrationAndSnapshots();
-    await protectedMigration();
-    await privateDisplayAndPaging();
-    await responsive();
+    if (focusedCancellationOnly) {
+      // Each exact existing scenario owns a fresh context. Failures propagate
+      // immediately: this loop is coverage, never a retry-until-pass policy.
+      for (let attempt = 1; attempt <= 20; attempt++)
+        await cancelledNavigation(attempt);
+    } else {
+      for (const surface of ["progression", "inventory"])
+        await transactionJourney(surface);
+      for (const surface of ["progression", "inventory"])
+        for (const mode of ["quota", "cas"])
+          await failedPurchase(surface, mode);
+      await inventoryGuards();
+      for (const surface of ["progression", "inventory"])
+        await failedNavigation(surface);
+      for (let attempt = 1; attempt <= 5; attempt++)
+        await cancelledNavigation(attempt);
+      await observedCurrencyBoundary();
+      await migrationAndSnapshots();
+      await protectedMigration();
+      await privateDisplayAndPaging();
+      await responsive();
+    }
   } catch (error) {
     failure = error;
     evidence.failure = { message: error.message, stack: error.stack };

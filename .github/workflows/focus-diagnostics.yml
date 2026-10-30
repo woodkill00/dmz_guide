@@ -30,3 +30,27 @@ jobs:
           path: test-results/upgrade023-independent/webkit-focus-diagnostic-journeys.json
           retention-days: 14
           if-no-files-found: warn
+  chromium-picker-focus:
+    name: Chromium picker cancellation diagnostic repeats (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22.x'
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: npx playwright install chromium
+      - run: node tests/browser/cancellation-focus-diagnostic.mjs chromium
+      - name: Retain bounded synthetic cancellation focus timelines
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: chromium-picker-cancellation-diagnostic
+          path: test-results/upgrade023-spending/win32-chromium-cancellation-focus-diagnostic-spending.json
+          retention-days: 14
+          if-no-files-found: warn
