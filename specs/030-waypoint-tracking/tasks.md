@@ -18,3 +18,7 @@ External gameplay accuracy/physical touch/screenreader evidence not claimed. No 
 - [x] T011 Visibility repair: collapse/restore tracker via accessible compact toggle; retain choice on rerender/reload with storage-failure fallback, no data/mask/route changes; minimized popup focus targets restore. Targeted browser plus build/repository/regression checks and independent review. FR004/SC001.
 
 - [x] T012 Verification repair: maximum-source test replaces MapGenie checkbox with a capacity notice after deselection. Assert checked before clicking and retain capacity/zero-marker after assertions, avoiding uncheck re-reading a detached control. No product assertions removed or budgets loosened. FR005.
+
+- [x] T013 FR006: review scoped menu definition and consistency; implement HUD route switch/list, identity-based popup/list removal and confirmed selected-route clear.
+- [x] T014 FR006: paginated tracked-entry overview, stale entries and confirmed tracking clear; docs.
+- [x] T015 FR006/FR005: focused/full browser, units, build, engine/repository checks; independent review and converge evidence.

@@ -5,3 +5,6 @@ Tests: pure identity/progress/validation/old-private-backup fixtures; focused br
 
 ## Visibility repair plan
 Current HUD always renders status/actions. Add one local UI boolean, guarded display-only localStorage key, and a persistent aria-expanded toggle controlling a hidden detail region. Keep the minimized restore chip within the HUD position; CSS reduces its padding. Existing paint/update routines preserve the boolean, and focus recovery targets the toggle while minimized. Verify collapse/restore, redraw/reload, unchanged workspace/route geometry, popup focus, storage failure, keyboard/mobile and configured axe; retain prior full regressions. No schema or routing-algorithm change.
+
+## Menu extension
+Reuse guarded change/save transactions and normalizeRouteProgress. Centralize identity-based waypoint removal and active-route clear; confirmation precedes bulk deletion. Render bounded scroll lists (32 stops, at most5000 tracking rows paginated25); use safe DOM text. Preserve captured route IDs/tokens, focus back to tracker/editor after removal, and disable unavailable show actions. Tests cover cancel/accept bulk operations, identity/progress cleanup, other-route/source preservation, tracking and reload, drafts and mobile/axe.

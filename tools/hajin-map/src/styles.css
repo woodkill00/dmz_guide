@@ -139,3 +139,8 @@ dialog{color:#e8e9df;background:#191f1a;border:1px solid #697453;max-width:440px
 @media(max-width:600px){.movable-routes{left:132px;bottom:58px}.movable-tracker{left:12px;bottom:158px;max-width:calc(100% - 90px)}.movable-gameplay{left:10px;right:10px;width:calc(100% - 20px)}}
 
 body.map-page{height:100dvh;display:flex;flex-direction:column}body.map-page>#app{flex:1;min-height:0;display:flex;flex-direction:column}body.map-page .app-header{flex-shrink:0}body.map-page #app>.workspace{height:auto;flex:1;min-height:0}
+
+/* Bounded route and tracking menus remain usable over the map. */
+#route-tracker-details{max-height:min(var(--tracker-available-height,30dvh),360px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+#route-tracker-details .workspace-field{margin:6px 0}#route-tracker-details select{width:100%;min-height:44px;background:#243322;color:#eff3e5;font:inherit}
+.tracker-waypoint-list{list-style:none;padding:0;margin:8px 0;display:grid;gap:6px}.tracker-waypoint-list li{border:1px solid #a4b98166;border-radius:4px;padding:8px;overflow-wrap:anywhere}.tracker-waypoint-list strong{display:block}.tracker-waypoint-list .workspace-note{margin:4px 0}.tracker-waypoint-list button{margin:2px}.tracking-entry-list{display:grid;gap:8px}.tracking-entry-list article{overflow-wrap:anywhere}
