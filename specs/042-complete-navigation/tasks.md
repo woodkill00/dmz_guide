@@ -1,0 +1,3 @@
+- [x] T001 Inspect sharednavigation and existingpanel entrypoints; define contracts/reviewbeforecode.
+- [x] T002 Registry/menu/sitemap coverage and strict deep-link routing.
+- [x] T003 Root/maptests, browserallpanelnavigation/draft/noJS/mobile, docs/build/check/review/convergence/acceptance/localcommit.

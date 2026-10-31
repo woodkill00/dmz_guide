@@ -1,3 +1,4 @@
+import mapDestinations from "./map-destinations.json" with { type: "json" };
 // Authored destinations only. No query/private state crosses application origins.
 const escape = (value) =>
   String(value ?? "").replace(
@@ -28,8 +29,10 @@ export function renderMainNavigation({
     ["/items/", "Items", "items"],
     ["/planner/", "Planner", "planner"],
     ["/inventory/", "Inventory", "inventory"],
+    [map + "/?tool=boss-checklist", "Boss checklist", "boss-checklist", "tool"],
   ];
   const secondary = [
+    ["/", "Home", "home"],
     ["/weapons/", "Weapons", "weapons"],
     ["/recipes/", "Recipes", "recipes"],
     ["/guides/", "Guides", "guides"],
@@ -49,8 +52,25 @@ export function renderMainNavigation({
     [map + "/", "Interactive map", "hajin-map", "map"],
     [map + "/help.html", "Map help", "map-help", "map"],
   ];
-  if (surface === "studio")
-    secondary.push(["", "Content Studio", "studio", "current"]);
+  secondary.push(
+    surface === "studio"
+      ? ["", "Content Studio", "studio", "current"]
+      : ["http://127.0.0.1:4174/", "Content Studio", "studio", "external"],
+  );
+  const tools = mapDestinations.tools.map(([id, label]) => [
+    map + "/?tool=" + encodeURIComponent(id),
+    label,
+    "tool-" + id,
+    "tool",
+  ]);
+  const planner = mapDestinations.planner
+    .filter(([id]) => id !== "boss-checklist")
+    .map(([id, label]) => [
+      map + "/?tool=" + encodeURIComponent(id),
+      label,
+      "tool-" + id,
+      "tool",
+    ]);
   const link = ([path, label, key, kind = "guide"]) => {
     if (kind === "current")
       return `<span aria-current="page">${escape(label)}</span>`;
@@ -61,11 +81,13 @@ export function renderMainNavigation({
           (packId && !companion ? "?pack=" + encodeURIComponent(packId) : "")
         : path;
     const newTab =
+      kind === "tool" ||
+      kind === "external" ||
       (kind === "guide" && companion) ||
       (kind === "map" && surface !== "map" && surface !== "help") ||
       (surface === "map" && key === "map-help");
-    return `<a href="${escape(href)}"${page === key ? ' aria-current="page"' : ""}${newTab ? ' target="_blank" rel="noopener noreferrer" title="Opens in a new tab"' : ""}>${escape(label)}</a>`;
+    return `<a href="${escape(href)}"${page === key ? ' aria-current="page"' : ""}${newTab ? ' target="_blank" rel="noopener noreferrer" title="Opens in a new tab"' : ""} tabindex="0">${escape(label)}</a>`;
   };
   const active = secondary.find(([, , key]) => key === page);
-  return `<nav class="site-nav${companion ? " companion-nav" : ""}" aria-label="Main navigation">${primary.map(link).join("")}${link(["/sitemap/", "Site map", "sitemap"])}<details class="nav-more"><summary>More${active ? " · " + escape(active[1]) : ""}</summary><div>${secondary.map(link).join("")}</div></details></nav>`;
+  return `<nav class="site-nav${companion ? " companion-nav" : ""}" aria-label="Main navigation" data-navigation-surface="${escape(surface)}">${primary.map(link).join("")}${link(["/sitemap/", "Site map", "sitemap"])}<details class="nav-more"><summary>More${active ? " · " + escape(active[1]) : ""}</summary><div>${`<p class="nav-group-label">Guide pages &amp; authoring</p>`}${secondary.map(link).join("")}${`<p class="nav-group-label">Map workspace tools</p>`}${tools.map(link).join("")}${`<p class="nav-group-label">Map planning &amp; trackers</p>`}${planner.map(link).join("")}</div></details></nav>`;
 }

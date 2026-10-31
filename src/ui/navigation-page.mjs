@@ -1,3 +1,4 @@
+import mapDestinations from "./map-destinations.json" with { type: "json" };
 import {
   allRecords,
   e,
@@ -8,10 +9,16 @@ import {
 } from "./render.mjs";
 
 export function renderSiteMap(pages, packs) {
+  const mapLinks = [...mapDestinations.tools, ...mapDestinations.planner]
+    .map(
+      ([id, label]) =>
+        `<li><a href="http://127.0.0.1:5175/?tool=${e(encodeURIComponent(id))}" target="_blank" rel="noopener noreferrer">${e(label)}</a></li>`,
+    )
+    .join("");
   const workspaces = pages.filter(
     (page) => /^\/[a-z-]*\/$/.test(page.path) || page.path === "/",
   );
-  return `${pageHeading("FIND YOUR WAY", "Site map", "Every guide workspace and bundled content record, organized by catalog. Private records are only available in your private reader.")}<section class="panel"><h2>Guide pages</h2><ul class="sitemap-links">${workspaces.map((page) => `<li><a data-workspace-link href="${e(page.path)}">${e(page.title)}</a></li>`).join("")}</ul></section><section><h2>Content records</h2><p>Catalogs remain separate. Fixture records are fictional; source reports do not establish current-build accuracy.</p>${packs
+  return `${pageHeading("FIND YOUR WAY", "Site map", "Every guide workspace and bundled content record, organized by catalog. Private records are only available in your private reader.")}<section class="panel"><h2>Guide pages</h2><ul class="sitemap-links">${workspaces.map((page) => `<li><a data-workspace-link href="${e(page.path)}">${e(page.title)}</a></li>`).join("")}</ul></section><section class="panel"><h2>Map tools and trackers</h2><p>These open the separate local map in a new tab. Start its local server first; no service is started or checked automatically.</p><ul class="sitemap-links">${mapLinks}</ul><p><a href="http://127.0.0.1:4174/" target="_blank" rel="noopener noreferrer">Local Content Studio</a></p></section><section><h2>Content records</h2><p>Catalogs remain separate. Fixture records are fictional; source reports do not establish current-build accuracy.</p>${packs
     .map(
       (pack) =>
         `<details class="panel sitemap-pack"><summary>${e(pack.title)}${isFixture(pack) ? " · FICTIONAL FIXTURES" : ""}</summary><p>${e(pack.coverage.note)}</p><ul class="sitemap-links">${allRecords(

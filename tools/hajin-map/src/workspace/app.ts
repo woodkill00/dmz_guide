@@ -2462,6 +2462,7 @@ export function mountWorkspace(
       if(!destination)return false;
       if(disposed||!hydrated)throw new Error('Workspace tools could not open. Check local storage and the workspace status, then try My workspace again.');
       if(dirty||detailActive||processing||interactionLocks||unsaved||pendingVisibility)throw new Error('Save or cancel your current draft before opening another tool.');
+      if(destination.plannerSection){plannerUI!.open(destination.plannerSection);const heading=body.querySelector<HTMLElement>('h3');if(heading){heading.tabIndex=-1;heading.focus();}return true;}
       active=destination.tab;
       if(destination.section)usabilityUI.openSection(destination.section);
       renderPanel();

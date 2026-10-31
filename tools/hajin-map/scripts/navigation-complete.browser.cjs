@@ -1,0 +1,6 @@
+// Synthetic fixtures only. Existing destination/nav journeys are shared with full suites.
+(async()=>{const{createServer}=await import('vite'),engines=require('playwright');let server,browser;try{
+ server=await createServer({define:{'import.meta.env.VITE_LOCAL_PROVIDER_SNAPSHOTS':'"0"'},server:{host:'127.0.0.1',port:5296,strictPort:true,hmr:false}});await server.listen();
+ const name=process.env.DMZ_NAV_ENGINE??'chromium';browser=await engines[name].launch(name==='chromium'?{chromiumSandbox:true}:{});const page=await browser.newPage(),image=Buffer.from(await page.evaluate(()=>{const c=document.createElement('canvas');c.width=c.height=128;return c.toDataURL('image/png').split(',')[1];}),'base64'),fixture={image,snapshot:{schemaVersion:1,sourcePage:'https://www.callofduty.com/guides/modernwarfare4/dmz-maps/hajin',capturedAt:'2026-10-28T00:00:00Z',categories:[],records:[]}};
+ const base='http://127.0.0.1:5296';console.log(name,await require('./navigation.browser.cjs').runNavigationBrowser(page,base,fixture));console.log(name,await require('./help.browser.cjs').runHelpBrowser(page,base,fixture));
+}finally{await browser?.close();await server?.close();}})().catch(error=>{console.error(error);process.exitCode=1;});

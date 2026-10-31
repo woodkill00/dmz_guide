@@ -192,14 +192,17 @@ const authorWorkspace = mountWorkspace(viewer, sources,source=>{const controller
 const disposeMenuLayout = mountMapMenuLayout(document.querySelector<HTMLElement>('.map-workspace')!);
 
 const requestedTool=parseToolTarget(location.search);
+function markToolNavigation(){const bosses=new URLSearchParams(location.search).getAll('boss'),target=requestedTool==='planner'&&bosses.length===1&&bosses[0].length>0&&bosses[0].length<=128?'boss-checklist':requestedTool,nav=document.querySelector('nav[aria-label="Main navigation"]');const match=Array.from(nav?.querySelectorAll<HTMLAnchorElement>('a[href]')??[]).find(a=>{const url=new URL(a.href,location.href);return url.origin===location.origin&&url.searchParams.get('tool')===target;});if(match){nav?.querySelectorAll('[aria-current="page"]').forEach(n=>n.removeAttribute('aria-current'));match.setAttribute('aria-current','page');const summary=nav?.querySelector('summary');if(summary)summary.textContent='More'+(match.closest('.nav-more')?' · '+match.textContent:'');}}
+
 if(requestedTool)void authorWorkspace.ready.then(()=>{
-  if(authorWorkspace.openTool(requestedTool))return;
+  if(authorWorkspace.openTool(requestedTool)){markToolNavigation();return;}
   if(requestedTool==='layers'){layersDialog.showModal();document.querySelector<HTMLElement>('#close-layers')?.focus();}
   else if(requestedTool==='key'||requestedTool==='grid'||requestedTool==='updates'){
     setKeyOpen(true);
     const target=document.querySelector<HTMLElement>(requestedTool==='grid'?'#show-coordinate-grid':requestedTool==='updates'?'#map-source-updates':'#key-show-all');
     if(target){if(requestedTool==='updates')target.tabIndex=-1;target.focus();target.scrollIntoView({block:'center'});}
   }else document.querySelector<HTMLElement>('#map')?.focus();
+  markToolNavigation();
 }).catch(error=>{
   const message=document.createElement('p');message.id='tool-navigation-error';message.className='tool-navigation-error';message.setAttribute('role','alert');message.tabIndex=-1;
   message.textContent=error instanceof Error?error.message:'The requested tool could not open. Use My workspace to inspect its status.';

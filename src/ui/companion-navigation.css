@@ -84,3 +84,24 @@
     right: 8px;
   }
 }
+
+.companion-nav .nav-group-label {
+  margin: 8px 4px 2px;
+  padding: 6px 8px;
+  font-size: 0.8em;
+  font-weight: 700;
+  color: #d4de9b;
+  border-top: 1px solid #81956266;
+}
+
+@media (max-width: 600px) {
+  .companion-nav[data-navigation-surface="studio"] .nav-more {
+    flex-basis: 100%;
+  }
+  .companion-nav[data-navigation-surface="studio"] .nav-more > div {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    max-height: 50dvh;
+  }
+}
