@@ -16,7 +16,7 @@ Alternatively expand **Add a custom target**. Choose Commander or Lieutenant, a 
 
 ## Read the directory and open a boss
 
-The compact directory shows each saved boss, its type, kills against your goal, and collected dog tags. Use the + and − buttons beside either count to adjust it directly from the list. + records one dated event; − removes the latest appended log first, then lowers the starting count when no logs remain. Zero cannot be lowered. Paused dog-tag tracking blocks + until enabled on the boss page; its existing count can still be lowered. Kills and tags stay independent. Click a boss name to open its dedicated page. These links support new tabs, reload and browser Back/Forward. **Back to boss list** returns to the directory. Missing or deleted boss links show an unavailable page.
+The compact board shows Lieutenants first, followed by a separate Commanders list. Lieutenants have kill and collected-tag steppers; Commanders (including the Tank, Deathstalker and Colossus) have kill controls only. Red Lieutenant rows mean at least five tags, with a visible 5+ label; lowering the total below five removes the highlight. This is a display milestone, separate from your kill goal. Use the + and − buttons beside either count to adjust it directly from the list. + records one dated event; − removes the latest appended log first, then lowers the starting count when no logs remain. Zero cannot be lowered. Paused dog-tag tracking blocks + until enabled on the boss page; its existing count can still be lowered. Kills and tags stay independent. Click a boss name to open its dedicated page. These links support new tabs, reload and browser Back/Forward. **Back to boss list** returns to the directory. Missing or deleted boss links show an unavailable page.
 
 ## Use the checklist
 
@@ -31,15 +31,15 @@ Unsaved detail edits block navigation that would discard them. Save or use the w
 
 ## Arrange your boss list
 
-Drag the ↕ handle beneath a boss name and drop above or below another visible row; the highlighted edge shows where it will go. Only the handle starts a drag, so links and counters keep their normal behavior. The saved order survives reload, private backups and source refresh. New source bosses append to your existing order.
+Drag the ↕ handle beside a boss name and drop above or below another visible row; the highlighted edge shows where it will go. Only the handle starts a drag, so links and counters keep their normal behavior. Your existing saved order remains the default within each section and survives reload, private backups and source refresh. Grouping never alphabetizes or resets it. New source bosses append to your existing order.
 
-For keyboard use, focus the handle and press Arrow Up/Down, Home or End. On touch devices, or to move across pages, open **Position**, enter any slot from 1 to the number of saved bosses, and select **Move**. The list follows the moved boss to its new page. Filtering hides entries without changing their saved relative order.
+For keyboard use, focus the handle and press Arrow Up/Down, Home or End. On touch devices, or to move across pages, choose **Arrange list**, open **Position**, and enter any slot from 1 to the number of bosses in that section, and select **Move**. The list follows the moved boss to its new page. Filtering hides entries without changing their saved relative order.
 
 Counter saves preserve the clicked control and scroll position, so repeated clicks stay in place. A filter may intentionally remove a boss when its goal status changes. Failed or conflicting saves retain the last saved order and use the existing Backups recovery workflow.
 
 ## Track collected dog tags separately
 
-Each boss page has its own dog-tag count, optional goal, date, notes, history and Undo. **Record dog tag collected** adds one tag independently of kills; neither action grants the other or confirms extraction or game rewards. Lieutenant tracking starts enabled and Commander tracking disabled as editable preferences. Enable or pause tracking in target settings. Pausing preserves all existing counts and history. Starting tags account for earlier collections without inventing logs.
+Each Lieutenant page has its own dog-tag count, optional goal, date, notes, history and Undo. **Record dog tag collected** adds one tag independently of kills; neither action grants the other or confirms extraction or game rewards. Lieutenant tracking starts enabled. Commander pages have no dog-tag controls. Older Commander tag settings/logs remain intact in private backups and reports; unrelated edits do not erase them. Enable or pause tracking in target settings. Pausing preserves all existing counts and history. Starting tags account for earlier collections without inventing logs.
 
 ## Refresh, export and recovery
 

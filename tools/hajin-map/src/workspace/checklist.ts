@@ -61,3 +61,6 @@ export function decreaseBossCount(c:Checklists,entryId:string,kind:'kills'|'tags
 export function moveBoss(c:Checklists,entryId:string,targetId:string,side:'before'|'after'){
  requireValue(side==='before'||side==='after','Choose before or after the target.');requireValue(entryId!==targetId,'Choose a different boss to move beside.');const from=c.entries.findIndex(e=>e.id===entryId),target=c.entries.findIndex(e=>e.id===targetId);requireValue(from>=0&&target>=0,'A boss in this move no longer exists.');const [entry]=c.entries.splice(from,1),at=c.entries.findIndex(e=>e.id===targetId);c.entries.splice(at+(side==='after'?1:0),0,entry);
 }
+
+export function groupedBosses(entries:BossEntry[]){return{lieutenants:entries.filter(e=>e.type==='lieutenant'),commanders:entries.filter(e=>e.type==='commander')};}
+export function bossTagsComplete(c:Checklists,entry:BossEntry){return entry.type==='lieutenant'&&dogTagTotal(c,entry)>=5;}
