@@ -12,15 +12,20 @@ export async function runRefinedInventoryTests({
   page.setDefaultTimeout(15000);
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  const ready = () =>
-    page.waitForFunction(async () => {
-      const { state } = await import("/assets/src/client/common.mjs");
-      return (
-        state.pack &&
-        !state.loading &&
-        document.querySelector("[data-inventory-item],.compact-progress")
-      );
-    });
+  const ready = async () => {
+    await page.waitForFunction(
+      () =>
+        document.querySelector("main")?.getAttribute("aria-busy") === "false" &&
+        document.querySelector("[data-inventory-item],.compact-progress"),
+    );
+    assert.equal(
+      await page.evaluate(async () => {
+        const { state } = await import("/assets/src/client/common.mjs");
+        return !!state.pack && !state.loading;
+      }),
+      true,
+    );
+  };
   const stock = (id) =>
     page.locator(`[data-id="${id}"][data-field="inventory"]`);
   const reserve = (id) =>
@@ -214,10 +219,15 @@ export async function runRefinedInventoryTests({
     await page.reload();
     await ready();
     await page.waitForFunction(
-      async () =>
-        (await import("/assets/src/client/common.mjs")).state.pack?.items
-          ?.length === 5000 &&
-        document.querySelectorAll("[data-inventory-item]").length === 50,
+      () => document.querySelectorAll("[data-inventory-item]").length === 50,
+    );
+    assert.equal(
+      await page.evaluate(
+        async () =>
+          (await import("/assets/src/client/common.mjs")).state.pack.items
+            .length,
+      ),
+      5000,
     );
     assert.equal(await page.locator("[data-inventory-item]").count(), 50);
     await page.locator('[data-show-use="demo:board"][aria-expanded]').click();
@@ -236,15 +246,27 @@ export async function runRefinedInventoryTests({
     await page
       .locator('[data-completion="demo:usage-mission"]')
       .selectOption("completed");
-    await page.waitForFunction(async () => {
-      const { state } = await import("/assets/src/client/common.mjs");
+    await page.waitForFunction(() => {
+      const control = document.querySelector(
+        '[data-completion="demo:usage-mission"]',
+      );
       return (
-        !state.saving &&
-        state.profile.completion["demo:usage-mission"] === "completed" &&
-        document.querySelector('[data-completion="demo:usage-mission"]') ===
-          document.activeElement
+        control &&
+        !control.disabled &&
+        control.value === "completed" &&
+        document.activeElement === control
       );
     });
+    assert.equal(
+      await page.evaluate(async () => {
+        const { state } = await import("/assets/src/client/common.mjs");
+        return (
+          !state.saving &&
+          state.profile.completion["demo:usage-mission"] === "completed"
+        );
+      }),
+      true,
+    );
     await page.locator('[data-show-use="demo:board"][aria-expanded]').click();
     assert.match(
       await page
@@ -442,6 +464,9 @@ export async function runRefinedInventoryTests({
     const entries = page.locator("details[data-progress-detail]");
     await entries.nth(0).locator(":scope > summary").click();
     await entries.nth(1).locator(":scope > summary").click();
+    await page.waitForFunction(
+      () => !document.querySelectorAll("details[data-progress-detail]")[0].open,
+    );
     assert.equal(await entries.nth(0).evaluate((n) => n.open), false);
     assert.equal(await entries.nth(1).evaluate((n) => n.open), true);
     const control = entries.nth(1).locator('[data-upgrade-field="completion"]');

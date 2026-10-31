@@ -27,3 +27,20 @@ The focused Upgrades page shows the selected catalog's DMZ upgrades. Progress re
 Details retain the sources, evidence, authored tier, prerequisites, manual state and listed costs. The requirement preview uses the existing advisory engine for this upgrade and its known unfinished prerequisite chain, including owned/reserve/available, known consumed/retained amounts and contributor links. It is not your shared-goal allocation. A recorded completion can remove unfinished advice while its listed costs remain visible.
 
 Manual completion/availability changes require the existing **status-only** confirmation and never debit/refund stock. **Record in-game purchase** remains a separate acknowledged operation using saved pre-purchase stock; blocked/unknown costs, duplicate protection, save conflicts, retained snapshots and explicit recovery remain enforced. Meeting known material lines alone does not certify readiness or current-build accuracy. History and recovery remain below the list. Export a private backup regularly; browser storage is not a backup.
+
+Upgrade rows offer a compact **Completed** checkbox directly in the list. Check it to mark complete or uncheck it to mark incomplete. Confirm the status change to save it locally; Cancel keeps the previous status. These actions never deduct or refund items. Use the separate purchase flow when recording spending.
+
+The Upgrades list sorts alphabetically by upgrade name, then by Roman version (I, II, III, IV, etc.) within each name. Filtering and pagination retain that order.
+
+Upgrades use compact bordered rows with sticky desktop column headings. Smaller screens show labelled requirement/readiness groups and a compact sticky list title; full information stays in Details / progress.
+
+## Upgrade checklist workspace
+
+- The catalog summary counts visible upgrades in the selected catalog, independently of filters. It is not a complete-game percentage.
+- **Upgrade view** offers All, Not completed, Tracked, Missing materials and Needs review. It combines with search, source, evidence and manual-state filters. Missing materials means a known positive shortage; unknown-only records remain under Needs review, never treated as covered.
+- **Materials / missing** previews independent direct listed requirements using saved stock after reserves. It does not allocate stock between upgrades or certify readiness. Unknown prices, consumption, stock and conflicting scope evidence remain unknown; different units are never totalled together. Shared planning and full prerequisite advice are separate views.
+- Click an upgrade name or **Details / progress** for its focused material cards, prerequisites, full costs and sources. Material cards link to item records, producing recipes, other uses and source-backed location references where recorded. References are bounded, respect spoiler settings and do not guarantee a spawn; the map workspace remains a separate store.
+- Completion shows a text badge and subtle row accent. A successful completion correction offers **Undo last progress change**, which asks for confirmation and restores only the exact previous completion state. It never refunds stock or rewrites spending history. Any newer local save, catalog switch or reload expires this shortcut; durable compare-and-swap still protects changes from other tabs.
+- **Row spacing** and **Visible columns** let you choose compact/comfortable rows and materials/readiness/evidence columns. Name, completion and actions stay available; hidden information remains in Details, while critical unknown/conflict warnings remain visible. View filters and layout are remembered per catalog in this browser. Search text is not saved. If preference storage is blocked, the controls still work for the session.
+
+Verification commands for this slice: `node --test tests/runtime/upgrade-overview.test.mjs` and `node tests/browser/upgrade-dashboard.mjs` (local guide on4173, or `TEST_BASE`). The dashboard journey is also part of both aggregate browser runners.

@@ -56,7 +56,28 @@ export async function runUpgradePerformance({
         timings,
       };
     }, pack);
-    assert(evidence.p95ms <= 250, `Browser p95 ${evidence.p95ms} exceeds250ms`);
+    // Persist every measurement before gating, including failures. Timing and
+    // conservation checks above are identical; this I/O is outside measured work.
+    await mkdir("test-results/upgrade023-independent", { recursive: true });
+    const attempt = `test-results/upgrade023-independent/performance-attempt-${browser.browserType().name()}-${Date.now()}-${process.pid}.json`;
+    await writeFile(
+      attempt,
+      JSON.stringify(
+        {
+          sourceHead: process.env.GITHUB_SHA || "local",
+          capturedAt: new Date().toISOString(),
+          outcome: evidence.p95ms <= 250 ? "timing-pass" : "timing-fail",
+          ...evidence,
+        },
+        null,
+        2,
+      ),
+    );
+    assert(
+      evidence.p95ms <= 250,
+      `Browser p95 ${evidence.p95ms} exceeds250ms; receipt ${attempt}`,
+    );
+
     // Actual DOM paging proves >100 advisory roots do not enter the capped goal queue.
     const paged = capacityUpgradeFixture(121),
       item = paged.items[0];

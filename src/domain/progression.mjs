@@ -156,6 +156,45 @@ export function progressSources(pack, { reveal = false, track = "" } = {}) {
   return sources;
 }
 
+// Roman parsing is only a display sort key, never a prerequisite/tier rule.
+const upgradeNames = new Intl.Collator("en", {
+  sensitivity: "base",
+  numeric: true,
+});
+function romanVersion(value) {
+  if (
+    typeof value !== "string" ||
+    !value ||
+    value.length > 15 ||
+    !/^(?=[MDCLXVI]+$)M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/.test(
+      value,
+    )
+  )
+    return null;
+  const values = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
+  return [...value].reduce(
+    (sum, char, i) =>
+      sum +
+      (values[char] < (values[value[i + 1]] || 0)
+        ? -values[char]
+        : values[char]),
+    0,
+  );
+}
+function upgradeSortKey(record, guard, reveal) {
+  if (record.spoiler && !reveal) return { hidden: true, name: "", version: 0 };
+  const name = guard.text(record.name || record.title || "");
+  const suffix = name.match(/\s+([MDCLXVI]+)$/);
+  const suffixVersion = suffix ? romanVersion(suffix[1]) : null;
+  const version =
+    romanVersion(guard.text(record.upgrade?.tierLabel)) ?? suffixVersion ?? 0;
+  return {
+    hidden: false,
+    name: suffixVersion === null ? name : name.slice(0, suffix.index),
+    version,
+  };
+}
+
 export function progressRows(
   pack,
   profile,
@@ -168,6 +207,7 @@ export function progressRows(
     reveal = profile.spoilers,
     offset = 0,
     limit = 50,
+    allowedIds = null,
   } = {},
 ) {
   const q = query.trim().toLowerCase(),
@@ -241,6 +281,7 @@ export function progressRows(
   const matching = rows
     .filter(
       ({ record: r, type, track: t }) =>
+        (!allowedIds || allowedIds.has(r.id)) &&
         (!track || t === track) &&
         (!status || r.status === status) &&
         (!progress ||
@@ -267,6 +308,23 @@ export function progressRows(
             .toLowerCase()
             .includes(q)),
     );
+  if (track === "dmz-upgrade") {
+    const keys = new Map(
+      matching.map(({ record }) => [
+        record,
+        upgradeSortKey(record, guard, reveal),
+      ]),
+    );
+    matching.sort((a, b) => {
+      const left = keys.get(a.record),
+        right = keys.get(b.record);
+      return (
+        Number(left.hidden) - Number(right.hidden) ||
+        upgradeNames.compare(left.name, right.name) ||
+        left.version - right.version
+      );
+    });
+  }
   const start = Math.max(
     0,
     Math.min(

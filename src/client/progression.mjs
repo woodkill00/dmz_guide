@@ -1,3 +1,13 @@
+import {
+  upgradeOverview,
+  overviewMatches,
+} from "../domain/upgrade-overview.mjs";
+import {
+  readUpgradeView,
+  writeUpgradeView,
+  missingMarkup,
+  materialPanel,
+} from "./upgrade-dashboard.mjs";
 import { upgradeAdvice } from "../domain/upgrade-advice.mjs";
 import { singleExpansion } from "./compact-lists.mjs";
 import { validateProfile } from "../domain/profile.mjs";
@@ -29,6 +39,12 @@ let resetTarget = null,
   visibleRows = new Map(),
   saving = false,
   offset = 0;
+let overview = null,
+  view = null,
+  viewPack = null,
+  undoProgress = null;
+let overviewPack = null,
+  overviewProfile = null;
 const labelStatus = (value) =>
   value === "verified" ? "Source-backed · live build unverified" : value;
 const reference = (ref) =>
@@ -41,7 +57,7 @@ const provenance = (source) =>
     : "";
 function setBusy(value) {
   for (const control of document.querySelectorAll(
-    "#pack-select, #spoiler-toggle, #progress-reset, #progress-reset-yes, [data-progress-id], [data-upgrade-id], #upgrade-progress-apply, #upgrade-progress-cancel, #upgrade-progress-export",
+    "#pack-select, #spoiler-toggle, #progress-reset, #progress-reset-yes, [data-progress-id], [data-upgrade-id], [data-complete-upgrade], #upgrade-progress-apply, #upgrade-progress-cancel, #upgrade-progress-export, #upgrade-undo",
   ))
     control.disabled = value || control.hasAttribute("data-upgrade-readonly");
 }
@@ -76,7 +92,7 @@ function summaryFor(row, guard) {
     );
   const record = state.pack.objectives.find((r) => r.id === row.id);
   const reasons = upgradeReadinessReasons(state.pack, state.profile, record);
-  return `<span class="upgrade-manual">${row.upgrade.completion === "completed" ? "Recorded completed" : "Not marked complete"}${row.upgrade.tierLabel ? `<small>${esc(guard.text(row.upgrade.tierLabel))}</small>` : ""}</span><span>${row.requirements.filter((r) => !r.hidden).length} visible requirements · ${unknownCost ? "Cost unknown / incomplete" : "Listed cost only"}</span><span class="upgrade-blocker">${row.disputed ? "Evidence conflict · " : ""}${unknownCost ? "Unknown price / consumption · " : ""}${row.upgrade.completion === "completed" ? "Manual report only" : reasons.length ? "Eligibility unknown / blocked" : "Readiness not certified"}</span>`;
+  return `<span class="upgrade-manual">${!row.hidden ? `<label class="upgrade-completion-check"><input type="checkbox" data-complete-upgrade="${esc(row.id)}" aria-label="Completed: ${esc(row.name)}"${row.upgrade.completion === "completed" ? " checked" : ""}${state.profile.schemaVersion < 2 ? " disabled data-upgrade-readonly" : ""}><span>Completed</span></label>` : ""}${row.upgrade.tierLabel ? `<small>${esc(guard.text(row.upgrade.tierLabel))}</small>` : ""}</span><span class="upgrade-requirements" data-upgrade-column="materials">${focusedUpgrades ? missingMarkup(state.pack, overview?.rows.get(row.id)) : `${row.requirements.filter((r) => !r.hidden).length} visible requirements`}</span><span class="upgrade-blocker" data-upgrade-column="readiness"><span class="upgrade-cell-label">Readiness</span>${row.disputed ? "Evidence conflict · " : ""}${unknownCost ? "Unknown price / consumption · " : ""}${row.upgrade.completion === "completed" ? "Manual report only" : reasons.length ? "Eligibility unknown / blocked" : "Readiness not certified"}</span>`;
 }
 function render() {
   if (focusedUpgrades) $("#progress-track").value = "dmz-upgrade";
@@ -85,7 +101,42 @@ function render() {
       (node) => node.dataset.progressDetail,
     ),
   );
-  const selectedSource = $("#progress-source").value;
+  if (focusedUpgrades) {
+    if (viewPack !== state.pack.id) {
+      viewPack = state.pack.id;
+      view = readUpgradeView(viewPack);
+      $("#upgrade-quick").value = view.quick;
+      $("#upgrade-density").value = view.density;
+      for (const key of ["materials", "readiness", "evidence"])
+        $("#upgrade-show-" + key).checked = view[key];
+      $("#progress-status").value = view.status;
+      $("#progress-state").value = view.progress;
+      undoProgress = null;
+    }
+    if (overviewPack !== state.pack || overviewProfile !== state.profile) {
+      overview = upgradeOverview(state.pack, state.profile);
+      overviewPack = state.pack;
+      overviewProfile = state.profile;
+    }
+    $("#upgrade-catalog-summary").textContent =
+      `${overview.completed} recorded completed / ${overview.total} visible upgrades in this catalog; ${overview.total - overview.completed} not marked complete. Coverage is incomplete; these are not game-wide totals.`;
+    if (
+      undoProgress &&
+      (undoProgress.packId !== state.pack.id ||
+        undoProgress.revision !== state.revision ||
+        !overview.rows.has(undoProgress.id))
+    )
+      undoProgress = null;
+    $("#upgrade-undo").hidden = !undoProgress;
+    if (!undoProgress) $("#upgrade-feedback").textContent = "";
+    const shell = $(".upgrade-list-shell");
+    shell.dataset.density = view.density;
+    for (const key of ["materials", "readiness", "evidence"])
+      shell.classList.toggle("hide-" + key, !view[key]);
+  }
+  const selectedSource = focusedUpgrades
+    ? view.source
+    : $("#progress-source").value;
   const sources = progressSources(state.pack, {
     reveal: state.profile.spoilers,
     track: $("#progress-track").value,
@@ -99,6 +150,12 @@ function render() {
     [...$("#progress-source").options].some((o) => o.value === selectedSource)
   )
     $("#progress-source").value = selectedSource;
+  if (
+    focusedUpgrades &&
+    view.source &&
+    [...$("#progress-source").options].some((o) => o.value === view.source)
+  )
+    $("#progress-source").value = view.source;
   const rows = progressRows(state.pack, state.profile, {
     track: $("#progress-track").value,
     query: $("#progress-query").value,
@@ -106,6 +163,14 @@ function render() {
     status: $("#progress-status").value,
     progress: $("#progress-state").value,
     offset,
+    allowedIds:
+      focusedUpgrades && view.quick !== "all"
+        ? new Set(
+            [...overview.rows.values()]
+              .filter((r) => overviewMatches(r, view.quick))
+              .map((r) => r.id),
+          )
+        : null,
   });
   const guard = spoilerGuard(state.pack, state.profile.spoilers);
   visibleRows = new Map(
@@ -134,14 +199,14 @@ function render() {
     rows
       .map(
         (r) =>
-          `<article class="panel compact-progress"><div class="upgrade-summary"><div><h2>${r.url && !r.hidden ? `<a href="${esc(r.url)}" tabindex="0">${esc(r.name)}</a>` : esc(r.name)}</h2><small>${esc(r.track)} · ${esc(labelStatus(r.status))}</small></div>${summaryFor(r, guard)}${r.upgrade && !r.hidden ? `<button type="button" data-track-upgrade="${esc(r.id)}" ${state.profile.goals.some((g) => g.id === r.id) ? "disabled" : ""}>${state.profile.goals.some((g) => g.id === r.id) ? "Tracked" : "Track"}</button>` : ""}</div><details data-progress-detail="${r.hidden ? "protected" : esc(r.id)}" ${openIds.has(r.id) ? "open" : ""}><summary>Details / progress${r.upgrade?.reviewRequired ? " · Review required" : ""}</summary>${
+          `<article class="panel compact-progress${r.upgrade?.completion === "completed" ? " upgrade-is-completed" : ""}"><div class="upgrade-summary"><div><h2>${r.url && !r.hidden ? `<a href="${esc(r.url)}" ${focusedUpgrades ? `data-open-upgrade="${esc(r.id)}" aria-expanded="${openIds.has(r.id)}" aria-controls="progress-detail-${esc(r.id)}"` : ""} tabindex="0">${esc(r.name)}</a>` : esc(r.name)}</h2><small data-upgrade-column="evidence">${focusedUpgrades ? "" : `${esc(r.track)} / `}${esc(labelStatus(r.status))}</small>${r.upgrade?.completion === "completed" ? "<small>Recorded completed</small>" : ""}${focusedUpgrades && !r.hidden && (r.disputed || r.upgrade?.reviewRequired || overview?.rows.get(r.id)?.unknown) ? `<small class="upgrade-critical">${r.disputed ? "Evidence conflict. " : ""}${r.upgrade?.reviewRequired ? "Progress needs review. " : ""}${overview?.rows.get(r.id)?.unknown ? "Costs / stock unknown or partial." : ""}</small>` : ""}</div>${summaryFor(r, guard)}${r.upgrade && !r.hidden ? `<button type="button" data-track-upgrade="${esc(r.id)}" ${state.profile.goals.some((g) => g.id === r.id) ? "disabled" : ""}>${state.profile.goals.some((g) => g.id === r.id) ? "Tracked" : "Track"}</button>` : ""}</div><details ${r.hidden ? "" : `id="progress-detail-${esc(r.id)}"`} data-progress-detail="${r.hidden ? "protected" : esc(r.id)}" ${openIds.has(r.id) ? "open" : ""}><summary>Details / progress${r.upgrade?.reviewRequired ? " · Review required" : ""}</summary>${
             r.hidden
               ? "<p>Reveal spoilers to inspect or track this record.</p>"
               : `
 <p>${esc(r.description)}</p>${r.disputed ? '<p class="notice">Sources disagree. Your manual state does not resolve this evidence conflict or verify readiness.</p>' : ""}
 ${
   r.type === "objective"
-    ? `${r.upgrade ? upgradeControls(r, guard) : `<label>Manual state for ${esc(r.name)}<select data-progress-id="${esc(r.id)}">${progressStates.map((v) => `<option value="${v}" ${r.state === v ? "selected" : ""}>${v}</option>`).join("")}</select></label>`}
+    ? `${r.upgrade ? `${focusedUpgrades ? `<div data-direct-materials="${esc(r.id)}"></div>` : ""}${upgradeControls(r, guard)}` : `<label>Manual state for ${esc(r.name)}<select data-progress-id="${esc(r.id)}">${progressStates.map((v) => `<option value="${v}" ${r.state === v ? "selected" : ""}>${v}</option>`).join("")}</select></label>`}
 <h3>Prerequisite chain</h3>${r.upgrade?.prerequisiteStatus === "unknown" ? '<p class="notice">Prerequisite completeness is unknown. An empty list does not mean there are no prerequisites; missing tiers and unlock rules are not inferred.</p>' : ""}<ul>${r.prerequisites.map((p) => `<li>${reference(p)}: ${esc(p.state)} · evidence ${esc(labelStatus(p.status))}${p.depth ? ` · indirect prerequisite (depth ${p.depth + 1})` : ""}</li>`).join("") || "<li>No listed prerequisites; review source completeness.</li>"}</ul>
 ${r.effects.length ? `<h3>Recorded effects</h3><ul>${r.effects.map((e) => `<li>${esc(e.type)} · ${esc(e.target)}: ${esc(e.value)}</li>`).join("")}</ul><p>Effects use the record’s sources below. They do not create owned items or prove live-game access.</p>` : ""}`
     : ""
@@ -183,7 +248,9 @@ function focusUpgrade(target) {
   if (!target || target.packId !== state.pack?.id) return;
   (
     document.querySelector(
-      `[data-upgrade-id="${CSS.escape(target.id)}"][data-upgrade-field="${target.field}"]`,
+      target.inline
+        ? `[data-complete-upgrade="${CSS.escape(target.id)}"]`
+        : `[data-upgrade-id="${CSS.escape(target.id)}"][data-upgrade-field="${target.field}"]`,
     ) || $("#progress-count")
   ).focus();
 }
@@ -210,11 +277,11 @@ function dismissUpgrade({ focus = true } = {}) {
   $("#upgrade-progress-export").hidden = true;
   $("#upgrade-progress-result").textContent = "";
 }
-function requestUpgrade(control) {
+function requestUpgrade(control, inline = false, savedRow = null) {
   const id = control.dataset.upgradeId,
     field = control.dataset.upgradeField,
     value = control.value,
-    row = visibleRows.get(id);
+    row = savedRow || visibleRows.get(id);
   if (!row?.upgrade || !["completion", "availability"].includes(field)) return;
   // Keep the visible row at its committed value until confirmation and CAS succeed.
   control.value = row.upgrade[field];
@@ -229,6 +296,9 @@ function requestUpgrade(control) {
     contentVersion: state.pack.contentVersion,
     revision: state.revision,
     navigation,
+    inline,
+    previous: row.upgrade[field],
+    row,
   };
   $("#upgrade-progress-target").textContent =
     `${row.name}: change manual ${field} from ${row.upgrade[field]} to ${value}? Selected catalog ${spoilerGuard(state.pack, state.profile.spoilers).text(state.pack.title)}, saved revision ${state.revision}.`;
@@ -282,6 +352,14 @@ $("#upgrade-progress-apply").addEventListener("click", async () => {
     const saved = await save(upgradeCandidate);
     if (target !== upgradeTarget || target.navigation !== navigation) return;
     if (saved) {
+      if (focusedUpgrades) {
+        undoProgress =
+          target.field === "completion"
+            ? { ...target, revision: state.revision }
+            : null;
+        $("#upgrade-feedback").textContent =
+          `${target.row.name}: saved ${target.field} as ${target.value}.`;
+      }
       dismissUpgrade();
       render();
     } else {
@@ -296,10 +374,12 @@ $("#upgrade-progress-apply").addEventListener("click", async () => {
 });
 $("#progress-filters").addEventListener("submit", (event) => {
   event.preventDefault();
+  rememberView();
   offset = 0;
   render();
 });
 $("#progress-filters").addEventListener("input", () => {
+  rememberView();
   offset = 0;
   render();
 });
@@ -315,6 +395,10 @@ $("#progress-next").addEventListener("click", () => {
 });
 $("#progress-clear").addEventListener("click", () => {
   $("#progress-filters").reset();
+  if (focusedUpgrades) {
+    $("#upgrade-quick").value = "all";
+    rememberView();
+  }
   if (focusedUpgrades) $("#progress-track").value = "dmz-upgrade";
   offset = 0;
   render();
@@ -387,6 +471,8 @@ $("#progress-reset-yes").addEventListener("click", async () => {
 });
 document.addEventListener("pack-changing", () => {
   navigation++;
+  undoProgress = null;
+  if (focusedUpgrades) $("#upgrade-feedback").textContent = "";
   dismissUpgrade({ focus: false });
   resetTarget = null;
   offset = 0;
@@ -413,6 +499,52 @@ init(render).catch(error);
 
 singleExpansion($("#progress-rows"), "details[data-progress-detail]");
 $("#progress-rows").addEventListener("click", async (event) => {
+  const opener = event.target.closest("[data-open-upgrade]");
+  if (
+    opener &&
+    event.button === 0 &&
+    !event.ctrlKey &&
+    !event.metaKey &&
+    !event.shiftKey &&
+    !event.altKey
+  ) {
+    event.preventDefault();
+    const details = opener
+      .closest("article")
+      .querySelector("details[data-progress-detail]");
+    details.open = !details.open;
+    details.querySelector(":scope > summary").focus();
+    return;
+  }
+  const scanRow = event.target.closest(".upgrade-summary");
+  if (
+    focusedUpgrades &&
+    scanRow &&
+    !event.target.closest("a, button, input, label, select, summary") &&
+    !window.getSelection()?.toString()
+  ) {
+    const details = scanRow
+      .closest("article")
+      .querySelector("details[data-progress-detail]");
+    details.open = !details.open;
+    details.querySelector(":scope > summary").focus();
+    return;
+  }
+  const completion = event.target.closest("[data-complete-upgrade]");
+  if (completion) {
+    event.preventDefault();
+    const row = visibleRows.get(completion.dataset.completeUpgrade);
+    if (row?.upgrade)
+      requestUpgrade(
+        {
+          dataset: { upgradeId: row.id, upgradeField: "completion" },
+          value:
+            row.upgrade.completion === "completed" ? "incomplete" : "completed",
+        },
+        true,
+      );
+    return;
+  }
   const id = event.target.closest("[data-track-upgrade]")?.dataset.trackUpgrade;
   if (!id || saving || state.loading || !visibleRows.get(id)?.upgrade) return;
   try {
@@ -429,6 +561,13 @@ $("#progress-rows").addEventListener("click", async (event) => {
 });
 
 function renderRequirementBudget(details) {
+  const direct = details.querySelector("[data-direct-materials]");
+  if (direct)
+    direct.innerHTML = materialPanel(
+      state.pack,
+      state.profile,
+      overview?.rows.get(direct.dataset.directMaterials),
+    );
   const root = details.querySelector("[data-upgrade-budget]");
   if (!root) return;
   try {
@@ -470,6 +609,12 @@ function renderRequirementBudget(details) {
 $("#progress-rows").addEventListener(
   "toggle",
   (event) => {
+    if (event.target.matches("details[data-progress-detail]")) {
+      event.target
+        .closest("article")
+        .querySelector("[data-open-upgrade]")
+        ?.setAttribute("aria-expanded", String(event.target.open));
+    }
     if (
       event.target.matches("details[data-progress-detail]") &&
       event.target.open
@@ -478,3 +623,53 @@ $("#progress-rows").addEventListener(
   },
   true,
 );
+
+function rememberView() {
+  if (!focusedUpgrades || !view) return;
+  view.quick = $("#upgrade-quick").value;
+  view.density = $("#upgrade-density").value;
+  view.source = $("#progress-source").value;
+  view.status = $("#progress-status").value;
+  view.progress = $("#progress-state").value;
+  for (const key of ["materials", "readiness", "evidence"])
+    view[key] = $("#upgrade-show-" + key).checked;
+  $("#upgrade-view-note").textContent = writeUpgradeView(state.pack.id, view)
+    ? "View preferences saved on this browser."
+    : "View changed for this session; browser storage unavailable.";
+}
+if (focusedUpgrades) {
+  document.addEventListener("profile-saved", () => {
+    undoProgress = null;
+    $("#upgrade-undo").hidden = true;
+    $("#upgrade-feedback").textContent = "";
+  });
+  $(".upgrade-view-controls").addEventListener("change", () => {
+    rememberView();
+    offset = 0;
+    render();
+  });
+  $("#upgrade-undo").addEventListener("click", () => {
+    const undo = undoProgress;
+    if (
+      !undo ||
+      saving ||
+      state.loading ||
+      undo.packId !== state.pack.id ||
+      undo.contentVersion !== state.pack.contentVersion ||
+      undo.revision !== state.revision
+    )
+      return;
+    const row = {
+      ...undo.row,
+      upgrade: { ...undo.row.upgrade, [undo.field]: undo.value },
+    };
+    requestUpgrade(
+      {
+        dataset: { upgradeId: undo.id, upgradeField: undo.field },
+        value: undo.previous,
+      },
+      undo.inline,
+      row,
+    );
+  });
+}

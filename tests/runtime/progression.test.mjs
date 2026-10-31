@@ -286,3 +286,111 @@ test("large spoiler dictionaries fail closed and source/effect previews have exp
   assert.equal(row.sources.length, 32);
   assert.equal(row.detailsTruncated, true);
 });
+
+test("upgrade lists alphabetize base names and Roman versions before paging without mutating content", () => {
+  const copy = structuredClone(pack);
+  const names = [
+    "Zebra I",
+    "Bank X",
+    "Bank IV",
+    "Bank II",
+    "Bank IX",
+    "Bank I",
+    "Bank III",
+    "Bank",
+    "Alpha II",
+    "Alpha I",
+    "Invalid IIII",
+  ];
+  copy.objectives = names.map((name, i) => ({
+    ...copy.objectives[0],
+    id: `sort:${i}`,
+    name,
+    spoiler: false,
+    track: "dmz-upgrade",
+    upgrade: { tierLabel: null },
+  }));
+  const before = JSON.stringify(copy);
+  const profile = newProfile(copy);
+  const expected = [
+    "Alpha I",
+    "Alpha II",
+    "Bank",
+    "Bank I",
+    "Bank II",
+    "Bank III",
+    "Bank IV",
+    "Bank IX",
+    "Bank X",
+    "Invalid IIII",
+    "Zebra I",
+  ];
+  assert.deepEqual(
+    progressRows(copy, profile, { track: "dmz-upgrade" }).map((r) => r.name),
+    expected,
+  );
+  assert.deepEqual(
+    progressRows(copy, profile, {
+      track: "dmz-upgrade",
+      offset: 3,
+      limit: 4,
+    }).map((r) => r.name),
+    expected.slice(3, 7),
+  );
+  assert.deepEqual(
+    progressRows(copy, profile, { track: "dmz-upgrade", query: "bank" }).map(
+      (r) => r.name,
+    ),
+    expected.slice(2, 9),
+  );
+  assert.equal(JSON.stringify(copy), before);
+});
+
+test("upgrade ordering uses explicit visible tiers and preserves equal-key/source and other-track order", () => {
+  const copy = structuredClone(pack);
+  copy.objectives = [
+    {
+      ...copy.objectives[0],
+      id: "sort:a",
+      name: "Bank",
+      track: "dmz-upgrade",
+      upgrade: { tierLabel: "III" },
+    },
+    {
+      ...copy.objectives[0],
+      id: "sort:b",
+      name: "Bank",
+      track: "dmz-upgrade",
+      upgrade: { tierLabel: "I" },
+    },
+    {
+      ...copy.objectives[0],
+      id: "sort:c",
+      name: "Bank",
+      track: "dmz-upgrade",
+      upgrade: { tierLabel: "I" },
+    },
+    {
+      ...copy.objectives[0],
+      id: "sort:secret",
+      name: "Secret Name",
+      spoiler: true,
+      track: "dmz-upgrade",
+      upgrade: { tierLabel: "II" },
+    },
+  ];
+  const options = { track: "dmz-upgrade" };
+  const first = rowsFor(copy, options).map((r) => r.id);
+  assert.deepEqual(first, ["sort:b", "sort:c", "sort:a", "sort:secret"]);
+  copy.objectives[3].name = "A different secret";
+  copy.objectives[3].upgrade.tierLabel = "IX";
+  assert.deepEqual(
+    rowsFor(copy, options).map((r) => r.id),
+    first,
+  );
+  copy.objectives.forEach((r) => (r.track = "dmz-order"));
+  assert.deepEqual(
+    rowsFor(copy, { track: "dmz-order" }).map((r) => r.id),
+    copy.objectives.map((r) => r.id),
+  );
+});

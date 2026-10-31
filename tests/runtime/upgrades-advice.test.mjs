@@ -1,4 +1,6 @@
 import test from "node:test";
+import { readFileSync } from "node:fs";
+import { validatePack } from "../../src/content/validate.mjs";
 import assert from "node:assert/strict";
 import { upgradeFixture } from "../helpers/upgrades.mjs";
 import { newProfile } from "../../src/domain/profile.mjs";
@@ -345,4 +347,43 @@ test("selected conflicting aliases with different materials gate every possible 
   const result = upgradeAdvice(pack, profile, { scope: "focused" });
   assert.equal(result.rows.length, 2);
   for (const row of result.rows) assert.equal(row.search, null);
+});
+
+test("lazy alias comparison preserves each exact signature field conflict in either order", () => {
+  const schema = JSON.parse(
+    readFileSync(
+      new URL("../../schemas/pack.schema.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  const changes = [
+    (r) => (r.name += " changed"),
+    (r) => (r.description += " changed"),
+    (r) => (r.requirements[0].quantity += 1),
+    (r) => (r.prerequisites = ["test:second"]),
+    (r) =>
+      (r.effects = [{ type: "capacityDelta", target: "synthetic", value: 1 }]),
+    (r) => (r.upgrade.tierLabel = "II"),
+  ];
+  for (const change of changes)
+    for (const reverse of [false, true]) {
+      const pack = upgradeFixture(),
+        profile = newProfile(pack);
+      profile.inventory[pack.items[0].id] = 100;
+      const alias = structuredClone(pack.objectives[0]);
+      alias.id = "test:alias";
+      change(alias);
+      pack.objectives.push(alias);
+      if (reverse) pack.objectives.reverse();
+      validatePack(pack, schema);
+      const result = upgradeAdvice(pack, profile);
+      assert.equal(result.status, "ok");
+      assert.equal(result.rows[0].search, null);
+      assert(
+        result.rows[0].reasons.includes("Consumption not confirmed") ||
+          result.rows[0].reasons.includes(
+            "Requirement evidence unresolved or conflicting",
+          ),
+      );
+    }
 });

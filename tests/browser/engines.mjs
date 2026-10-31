@@ -1,3 +1,4 @@
+import { runUpgradeDashboardTests } from "./upgrade-dashboard.mjs";
 import { runRefinedInventoryTests } from "./refined-inventory.mjs";
 import { runNavigationDirectoryTests } from "./navigation-directory.mjs";
 import { runUpgradeTests } from "./upgrades.mjs";
@@ -24,6 +25,7 @@ try {
         base,
         captureScreenshots: name !== "webkit",
       });
+      await runUpgradeDashboardTests({ browser, base });
       await runRefinedInventoryTests({
         browser,
         base,

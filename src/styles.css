@@ -1311,7 +1311,7 @@ main :where(p, li, a, ul, ol, section, article, div) {
   background: var(--surface);
   border: 2px solid var(--line);
 }
-/* Native modal centering must not inherit the panel’s one-sided spacing. */
+/* Native modal centering must not inherit the panelâ€™s one-sided spacing. */
 #upgrade-spend-confirm {
   margin: auto;
 }
@@ -1909,4 +1909,354 @@ main :where(p, li, a, ul, ol, section, article, div) {
 }
 .upgrade-summary > div > small {
   font-size: 0.9rem;
+}
+@media (max-width: 420px) {
+  .compact-progress.panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .compact-progress .upgrade-summary > :first-child,
+  .compact-progress .upgrade-summary > span,
+  .compact-progress .upgrade-summary > button,
+  .compact-progress > details,
+  .compact-progress > details[open] {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .compact-progress .upgrade-summary > button {
+    justify-self: start;
+  }
+}
+
+.upgrade-summary .upgrade-completion-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  margin: 0;
+  cursor: pointer;
+}
+.upgrade-summary .upgrade-completion-check input {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  margin: 0;
+  accent-color: var(--focus);
+}
+.upgrade-summary .upgrade-completion-check span {
+  font-size: 0.9rem;
+}
+
+/* Scoped checklist presentation; progress/purchase contracts remain unchanged. */
+.upgrade-list-shell {
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  margin-block: 1rem;
+}
+.upgrade-list-heading {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--raised);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0.5rem 0.5rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.upgrade-cell-label {
+  display: none;
+}
+.upgrade-list-shell .compact-progress.panel {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  scroll-margin-top: 5rem;
+}
+.upgrade-list-shell .compact-progress.panel:last-child {
+  border-bottom: 0;
+}
+.upgrade-list-shell .upgrade-summary > span {
+  min-width: 0;
+}
+.upgrade-list-shell .upgrade-summary small {
+  display: block;
+  margin: 0;
+  color: var(--muted);
+}
+.upgrade-list-shell .upgrade-summary .upgrade-manual small {
+  display: inline;
+  margin-left: 0.3rem;
+}
+.upgrade-list-shell .upgrade-summary .upgrade-blocker {
+  border-left: 2px solid var(--line);
+  padding-left: 0.5rem;
+}
+.upgrade-list-shell :is(input, button, summary, a, select) {
+  scroll-margin-top: 6rem;
+}
+.upgrade-list-shell .compact-progress > details[open] {
+  border-top: 1px solid var(--line);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+}
+.upgrade-list-shell .compact-progress > details > :is(p, ul, dl) {
+  margin-block: 0.5rem;
+}
+@media (min-width: 1101px) {
+  .upgrade-list-heading,
+  .upgrade-list-shell .compact-progress .upgrade-summary {
+    display: grid;
+    grid-template-columns:
+      minmax(0, 2fr) minmax(105px, 1fr) minmax(0, 1.2fr)
+      minmax(0, 1.5fr) 70px;
+    gap: 0.65rem;
+    padding-right: 105px;
+    align-items: center;
+  }
+  .upgrade-list-heading {
+    padding: 0.65rem 117px 0.65rem 0.75rem;
+  }
+  .upgrade-details-heading {
+    position: absolute;
+    right: 0.75rem;
+    width: 90px;
+  }
+  .upgrade-list-shell .compact-progress > details > summary {
+    top: 0.5rem;
+  }
+}
+@media (max-width: 1100px) {
+  .upgrade-list-heading {
+    padding: 0.5rem 0.75rem;
+  }
+  .upgrade-list-heading > span {
+    display: none;
+  }
+  .upgrade-list-heading::before {
+    content: "Upgrades";
+  }
+  .upgrade-list-shell .compact-progress.panel {
+    display: block;
+  }
+  .upgrade-list-shell .compact-progress .upgrade-summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 0;
+    gap: 0.35rem 0.75rem;
+  }
+  .upgrade-list-shell .upgrade-summary > :first-child {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  .upgrade-list-shell .upgrade-summary > span {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .upgrade-list-shell .upgrade-summary > button {
+    position: static;
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    max-width: none;
+  }
+  .upgrade-list-shell .upgrade-summary .upgrade-manual {
+    grid-column: 1;
+  }
+  .upgrade-list-shell .upgrade-cell-label {
+    display: inline;
+    color: var(--muted);
+    margin-right: 0.5rem;
+  }
+  .upgrade-list-shell .upgrade-requirements strong {
+    font-weight: 600;
+  }
+  .upgrade-list-shell .upgrade-summary .upgrade-requirements small {
+    display: inline;
+    margin-left: 0.5rem;
+  }
+  .upgrade-list-shell .compact-progress > details > summary {
+    position: static;
+    width: auto;
+  }
+  .upgrade-list-shell .compact-progress > details {
+    margin-top: 0.25rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .upgrade-list-shell .compact-progress .upgrade-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .upgrade-list-shell .upgrade-summary > button {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+}
+
+.upgrade-overview-bar,
+.upgrade-view-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem;
+  margin-block: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--surface);
+}
+.upgrade-overview-bar p {
+  margin: 0;
+}
+.upgrade-view-controls label {
+  margin: 0;
+}
+.upgrade-view-controls > details > label {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 0.5rem;
+}
+.upgrade-view-controls input[type="checkbox"] {
+  width: 18px;
+  min-height: 18px;
+}
+.upgrade-view-controls > p {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.upgrade-is-completed {
+  box-shadow: inset 3px 0 var(--lime);
+}
+.upgrade-is-completed h2 {
+  color: var(--muted);
+}
+.upgrade-list-shell[data-density="comfortable"] .compact-progress.panel {
+  padding-block: 1.1rem;
+}
+.upgrade-list-shell.hide-evidence
+  .upgrade-summary
+  [data-upgrade-column="evidence"],
+.upgrade-list-shell.hide-materials
+  .upgrade-summary
+  [data-upgrade-column="materials"],
+.upgrade-list-shell.hide-readiness
+  .upgrade-summary
+  [data-upgrade-column="readiness"] {
+  display: none;
+}
+.upgrade-requirements {
+  font-size: 0.9rem;
+}
+.upgrade-material-panel {
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  margin-block: 0.75rem;
+}
+.upgrade-material-panel > p {
+  color: var(--muted);
+}
+.upgrade-material-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 0.65rem;
+}
+.upgrade-material-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  padding: 0.65rem;
+  background: var(--raised);
+}
+.upgrade-material-card h4 {
+  margin-block: 0;
+}
+.upgrade-material-card dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-block: 0.5rem;
+}
+.upgrade-material-card dd {
+  margin: 0;
+  font-weight: 600;
+}
+.upgrade-material-card dt {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.upgrade-material-card summary {
+  min-height: 44px;
+  align-content: center;
+}
+.upgrade-material-card p {
+  overflow-wrap: anywhere;
+}
+@media (min-width: 1101px) {
+  .upgrade-list-shell {
+    --materials-track: minmax(0, 1.2fr);
+    --readiness-track: minmax(0, 1.5fr);
+  }
+  .upgrade-list-shell.hide-materials {
+    --materials-track: 0px;
+  }
+  .upgrade-list-shell.hide-readiness {
+    --readiness-track: 0px;
+  }
+  .upgrade-list-shell .upgrade-list-heading,
+  .upgrade-list-shell .compact-progress .upgrade-summary {
+    grid-template-columns:
+      minmax(0, 2fr) minmax(105px, 1fr) var(--materials-track)
+      var(--readiness-track) 70px;
+  }
+  .upgrade-list-shell .upgrade-summary > :nth-child(1),
+  .upgrade-list-heading > :nth-child(1) {
+    grid-column: 1;
+  }
+  .upgrade-list-shell .upgrade-summary > :nth-child(2),
+  .upgrade-list-heading > :nth-child(2) {
+    grid-column: 2;
+  }
+  .upgrade-list-shell .upgrade-summary > :nth-child(3),
+  .upgrade-list-heading > :nth-child(3) {
+    grid-column: 3;
+  }
+  .upgrade-list-shell .upgrade-summary > :nth-child(4),
+  .upgrade-list-heading > :nth-child(4) {
+    grid-column: 4;
+  }
+  .upgrade-list-shell .upgrade-summary > :nth-child(5),
+  .upgrade-list-heading > :nth-child(5) {
+    grid-column: 5;
+  }
+  .upgrade-list-shell.hide-materials .upgrade-list-heading > :nth-child(3),
+  .upgrade-list-shell.hide-readiness .upgrade-list-heading > :nth-child(4) {
+    display: none;
+  }
+  .upgrade-list-shell .upgrade-summary > :nth-child(-n + 5),
+  .upgrade-list-heading > :nth-child(-n + 5) {
+    grid-row: 1;
+  }
+}
+
+.upgrade-list-shell .upgrade-summary .upgrade-critical {
+  display: none;
+}
+.upgrade-list-shell:is(.hide-materials, .hide-readiness)
+  .upgrade-summary
+  .upgrade-critical {
+  display: block;
+}
+
+.upgrade-view-controls > details > summary {
+  min-height: 44px;
+  align-content: center;
 }

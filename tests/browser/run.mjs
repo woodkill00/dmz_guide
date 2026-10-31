@@ -1,3 +1,4 @@
+import { runUpgradeDashboardTests } from "./upgrade-dashboard.mjs";
 import { runRefinedInventoryTests } from "./refined-inventory.mjs";
 import { runNavigationDirectoryTests } from "./navigation-directory.mjs";
 import { runUpgradeTests } from "./upgrades.mjs";
@@ -26,6 +27,7 @@ try {
   const checkHealth = monitorBrowser(browser);
   await mkdir("test-results", { recursive: true });
   await runNavigationDirectoryTests({ browser, base });
+  await runUpgradeDashboardTests({ browser, base });
   await runRefinedInventoryTests({ browser, base });
   await runUpgradeTests({ browser, base, captureScreenshots: true });
   const { runMetadataFloorTests } = await import("./metadata-floor.mjs");

@@ -78,6 +78,15 @@ export function upgradeAdvice(
       r.track === "dmz-upgrade"
         ? progress(r.id).completion === "completed"
         : ["completed", "unlocked"].includes(profile.completion[r.id]);
+    // Scope strings are immutable within an admitted pack snapshot. Cache only
+    // inside this calculation; identity/version changes start a fresh cache.
+    const scopeCache = new WeakMap(),
+      packScope = scopeOf(pack, {});
+    const recordScope = (record) => {
+      if (!scopeCache.has(record))
+        scopeCache.set(record, scopeOf(pack, record));
+      return scopeCache.get(record);
+    };
     const visible = (r) => profile.spoilers || !r.spoiler;
     const guard = spoilerGuard(pack, profile.spoilers);
     let privacyLimited = guard.limited,
@@ -109,7 +118,7 @@ export function upgradeAdvice(
         excluded++;
         continue;
       }
-      assert(scopeOf(pack, r) === scopeOf(pack, {}), "Upgrade scope mismatch");
+      assert(recordScope(r) === packScope, "Upgrade scope mismatch");
       roots.push(r);
     }
     const allKnownKeys = new Map(),
@@ -135,42 +144,50 @@ export function upgradeAdvice(
       b = find(b);
       if (a !== b) canonical.set(a < b ? b : a, a < b ? a : b);
     };
+    const signatureFor = (r) => {
+      if (!signatures.has(r.id))
+        signatures.set(
+          r.id,
+          JSON.stringify([
+            r.name,
+            r.description,
+            r.requirements,
+            r.prerequisites,
+            r.effects,
+            r.upgrade?.tierLabel,
+          ]),
+        );
+      return signatures.get(r.id);
+    };
     // Stable observation equivalence is transitive; names and tier ordinals never join identities.
     for (const r of pack.objectives)
       if (visible(r) && r.track === "dmz-upgrade") canonical.set(r.id, r.id);
     for (const r of pack.objectives) {
       tick();
       if (!canonical.has(r.id)) continue;
-      signatures.set(
-        r.id,
-        JSON.stringify([
-          r.name,
-          r.description,
-          r.requirements,
-          r.prerequisites,
-          r.effects,
-          r.upgrade?.tierLabel,
-        ]),
-      );
       for (const key of r.upgrade?.observationKeys || []) {
         tick();
-        const scopedKey = JSON.stringify([scopeOf(pack, r), key]);
-        const old = allKnownKeys.get(scopedKey);
+        const scope = recordScope(r);
+        if (!allKnownKeys.has(scope)) allKnownKeys.set(scope, new Map());
+        const keys = allKnownKeys.get(scope),
+          old = keys.get(key);
         if (old) union(r.id, old);
-        else allKnownKeys.set(scopedKey, r.id);
+        else keys.set(key, r.id);
       }
     }
     const representatives = new Map(),
       conflictedGroups = new Set(),
       completedGroups = new Set();
-    for (const [id, signature] of signatures) {
+    for (const id of canonical.keys()) {
       tick();
       const root = find(id);
       canonical.set(id, root);
       if (completed(objectives.get(id))) completedGroups.add(root);
-      if (representatives.has(root) && representatives.get(root) !== signature)
-        conflictedGroups.add(root);
-      else representatives.set(root, signature);
+      const record = objectives.get(id);
+      if (representatives.has(root)) {
+        if (signatureFor(representatives.get(root)) !== signatureFor(record))
+          conflictedGroups.add(root);
+      } else representatives.set(root, record);
     }
     for (const [id, root] of canonical)
       if (conflictedGroups.has(root))
@@ -252,7 +269,7 @@ export function upgradeAdvice(
           continue;
         }
         assert(
-          scopeOf(pack, r) === scopeOf(pack, root),
+          recordScope(r) === recordScope(root),
           "Prerequisite scope mismatch",
         );
         if (completed(r) || completedGroups.has(canonical.get(r.id))) {
@@ -320,7 +337,7 @@ export function upgradeAdvice(
         const c = requirementFacts(pack, raw),
           item = items.get(c.itemId);
         assert(
-          item && scopeOf(pack, item) === scopeOf(pack, r),
+          item && recordScope(item) === recordScope(r),
           "Requirement scope mismatch",
         );
         const d = ensure(c.itemId);

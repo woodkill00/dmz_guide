@@ -37,3 +37,23 @@ All active implementation and verification tasks are closed with evidence in acc
 - [x] I015 FR007/SC003 supersedes I014's rejected readiness hypothesis: independent WebKit experiments prove real Tab and pointer focus work; only programmatic focus on the picker 1,778px above the viewport after modal/catalog changes is ignored. Revert both ineffective readiness experiments completely. Prepare the picker with scrollIntoViewIfNeeded before the original focus action, keep the exact2s focus and durable-state assertions and all five cancellation contexts, then verify100 fresh diagnostic contexts and serial aggregates. No global readiness delay/retry ships.
 
 - [x] I016 SC003: strengthen the admitted grouped-browser population to exactly5,000 items (50 mounted across all sections), retaining filter/sort/collapse/invalid-draft/uses/Save/Cancel assertions in allthree engines. Align the optional measured-scale count-label expectation with the privacy-explicit visible-catalog wording, preserving exact count assertions. No application limit is raised.
+
+## Inline completion extension
+- [x] I017 FR014 Add summary completion/reopen action through canonical confirmation and focus handling.
+- [x] I018 FR014 Verify cancellation, completion, reload, undo, unchanged resources/history and responsive bounds; run scoped regression checks and independent review.
+
+FR014 presentation revision: user requested a compact native18px checkbox labelled Completed instead of the button. Preserve44px label hit area, canonical confirmation and checked state from committed completion only. Verify cancel/save/reload/undo in allthree engines.
+
+- [x] I019 FR015 Implement safe alphabetical/Roman ordering before paging; regression tests, browser order/completion checks and independent review.
+
+- [x] I020 FR016 Add scoped sticky headings, concise grouped row information and compact responsive containers.
+- [x] I021 FR016 Verify scrolling/alignment/mobile/zoom/themes and existing completion flow; independent review and acceptance.
+
+## Complete upgrade usability slice
+- [x] I022 FR017/018/020 Pure safe overview/progress filtering, exact missing semantics and regression fixtures.
+- [x] I023 FR018/021 Persisted view filters/columns/density; summary and responsive headings.
+- [x] I024 FR019 Focused requirement panels, guarded item recipe/use/location shortcuts and name activation.
+- [x] I025 FR020 Successful-save feedback/guarded status-only Undo/completed styling.
+- [x] I026 FR017-021 Browser3engines, runtime/spending safety, layout/theme/zoom, repository/build checks; independent review/fix cycle and delivery evidence.
+
+- [x] I027 FR017/SC003 Performance convergence: unchanged5766root/50run/5warmup/250ms Firefox check failed364ms afterfunctionalrun and358ms infreshprocess. Defer unused alias signature serialization until a canonical observation group hasmultiplemembers, preserving exact conflict/evidence/completion semantics and work limits. Add field-conflict regression matrix; rerun original budget, runtime and allbrowser gates without threshold/harness changes.
