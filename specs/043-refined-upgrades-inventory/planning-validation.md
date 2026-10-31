@@ -11,3 +11,10 @@ Standalone fictional concept:
 - Demo has no network assets, profile storage or mutation API. Quantity/purchase buttons explain illustration-only status. View controls/search/Details/theme/density affect only the sample DOM. The prototype's inline CSS/script is a standalone planning artifact, not a production CSP/template decision.
 
 Independent planning/safety review and visual refinement in checklists/requirements.md. All I001–004 production tasks remain unimplemented. Existing app unit/browser suites were not rerun for a planning-only artifact change. Repository structural and diff checks recorded after review.
+
+## Grouped sections / uses extension
+- Independent definition and concept review passed for FR010–013/T004–005. Production I005–006 still pending; no real reverse-index, spoiler, stock, spending or persistence implementation is certified.
+- Fictional concept now has Materials/components and Currency sections, section filter, visible/total sample counts, expand/collapse controls, four wide-screen usage columns and medium/mobile Uses expansion. Named sample links/+N use native disclosure and a labelled fictional-reference dialog, not real catalog navigation.
+-16 visible view/theme/width combinations (Inventory/Upgrades × dark/light ×1440/1024/390/320) passed configuredaxe/no-overflow with zeroJSerrors. Representative inventory rows78px with four wide usage columns,61px at1024 and121px mobile. More content/expanded lists can grow naturally; prior63px figures describe the earlier stock-only prototype.
+- Interaction smoke passed: RecipeB additional-list reference, crafted-output reference, native dialogClose/Escape, searchRecipeC→1/2visible Materials, Currency section filter, collapse/expand all, medium/mobile columns actually hidden (no clipped interactive links), mobile four labelled lists,320px/root200%nohorizontaloverflow.
+- PNG concepts regenerated. No production files were changed or app test suites rerun for this planning-only extension. Structural checker0failures and diff checks pass.
