@@ -79,3 +79,6 @@ Each successful replacement keeps only the **immediately previous** saved profil
 Failed/stale saves do not retry automatically. Export the retained unsaved candidate before reloading or explicitly reconciling. Older clients must reject unsupported v3 rather than drop history. Whole-profile restore replaces the entire history after preview; it never replays purchases. Profile reset clears ordinary stock/progress but preserves spending history. Ledger capacity is 500 events with space reserved for an immediate reversal; export/reconcile instead of silently truncating it.
 
 The existing focused planner on a **legacy v1 content pack** retains its historical unset-stock-as-zero assumption for compatibility and labels that assumption. Enter explicit quantities before relying on it. V2 focused planning refuses exact shortages until every selected input, including chosen crafting intermediates, has an entered held quantity. Root output stock is not required for an additional-output goal unless that item is also an input. Keep/Search never treats missing stock as zero.
+
+
+For grouped stock editing, direct recipe/mission/upgrade links and the focused Upgrades page, see [Inventory and upgrades](inventory-and-upgrades.md).

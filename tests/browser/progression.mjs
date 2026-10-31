@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { revealReviewerControl } from "./reviewer-disclosures.mjs";
 import { readFile, mkdir } from "node:fs/promises";
 const packId = "demo:training-pack";
 const progressURL = "/progression/?pack=demo%3Atraining-pack";
@@ -58,6 +59,7 @@ async function installUpgradeFixture(context) {
   );
 }
 async function confirmUpgrade(page, field, value) {
+  await revealReviewerControl(page, upgradeControl(field));
   await page.selectOption(upgradeControl(field), value);
   await page.waitForSelector("#upgrade-progress-confirm[open]");
   assert.match(
@@ -278,10 +280,18 @@ export async function runProgressionTests({ browser, base }) {
     assert.equal(
       await page
         .locator(
-          '#progress-rows a[href="/local/?pack=demo%3Atraining-pack&id=demo%3Abench-unlock"]',
+          '#progress-rows details[data-progress-detail] a[href="/local/?pack=demo%3Atraining-pack&id=demo%3Abench-unlock"]',
         )
         .count(),
       2,
+    );
+    assert.equal(
+      await page
+        .locator(
+          '#progress-rows .upgrade-summary h2 a[href="/local/?pack=demo%3Atraining-pack&id=demo%3Abench-unlock"]',
+        )
+        .count(),
+      1,
     );
     await page.selectOption("#progress-source", "source:public-fixture");
     assert.equal(await page.locator("#progress-rows article").count(), 1);
@@ -363,6 +373,10 @@ export async function runProgressionTests({ browser, base }) {
       /31, 47/,
     );
     await revealedMap.close();
+    await revealReviewerControl(
+      page,
+      '[data-progress-id="demo:campaign-chapter"]',
+    );
     await page.selectOption(
       '[data-progress-id="demo:campaign-chapter"]',
       "completed",
@@ -499,6 +513,10 @@ export async function runProgressionTests({ browser, base }) {
       false,
     );
     await page.selectOption("#pack-select", packId);
+    await page.waitForSelector(upgradeControl("completion"), {
+      state: "attached",
+    });
+    await revealReviewerControl(page, upgradeControl("completion"));
     await page.waitForSelector(upgradeControl("completion"));
     assert.deepEqual(await profile(page), savedNewer);
     revision = savedNewer.value.revision;
@@ -564,6 +582,10 @@ export async function runProgressionTests({ browser, base }) {
         document.querySelector("#spoiler-toggle").textContent ===
           "Hide spoilers" &&
         !document.querySelector("#spoiler-toggle").disabled,
+    );
+    await revealReviewerControl(
+      page,
+      '[data-progress-id="demo:campaign-chapter"]',
     );
     await page.selectOption(
       '[data-progress-id="demo:campaign-chapter"]',

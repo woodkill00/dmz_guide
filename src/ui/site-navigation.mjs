@@ -29,6 +29,7 @@ export function renderMainNavigation({
     ["/items/", "Items", "items"],
     ["/planner/", "Planner", "planner"],
     ["/inventory/", "Inventory", "inventory"],
+    ["/upgrades/", "Upgrades", "upgrades"],
     [map + "/?tool=boss-checklist", "Boss checklist", "boss-checklist", "tool"],
   ];
   const secondary = [
@@ -36,16 +37,18 @@ export function renderMainNavigation({
     ["/weapons/", "Weapons", "weapons"],
     ["/recipes/", "Recipes", "recipes"],
     ["/guides/", "Guides", "guides"],
-    ...extra.map((p) => [
-      p.path,
-      {
-        editor: "Editor",
-        maps: "Maps",
-        progression: "Progress",
-        community: "Community",
-      }[p.page] || p.title,
-      p.page,
-    ]),
+    ...extra
+      .filter((p) => p.page !== "upgrades")
+      .map((p) => [
+        p.path,
+        {
+          editor: "Editor",
+          maps: "Maps",
+          progression: "Progress",
+          community: "Community",
+        }[p.page] || p.title,
+        p.page,
+      ]),
     ["/local/", "Private reader", "local"],
     ["/map-workspace/", "Local map workspace", "map-workspace"],
     ["/settings/", "Settings", "settings"],

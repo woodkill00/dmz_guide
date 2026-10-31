@@ -1,3 +1,4 @@
+import { singleExpansion } from "./compact-lists.mjs";
 import { spoilerGuard } from "../domain/progression.mjs";
 import { adviceMarkup } from "./upgrade-advice-view.mjs";
 import { saveWatchPin } from "./watch-pin.mjs";
@@ -339,3 +340,8 @@ document.addEventListener("pack-changing", () => {
   adviceOffset = 0;
 });
 init(render).catch(error);
+
+singleExpansion(
+  $("#upgrade-advice-output"),
+  ".compact-advice > article > details",
+);

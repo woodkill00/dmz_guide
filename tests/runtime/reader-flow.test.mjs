@@ -1,3 +1,4 @@
+import { singleExpansion } from "../../src/client/compact-lists.mjs";
 import { spoilerGuard } from "../../src/domain/progression.mjs";
 import { adviceMarkup } from "../../src/client/upgrade-advice-view.mjs";
 import {
@@ -112,6 +113,7 @@ test("Wave2 zero-goal result is actionable without empty panels", () => {
       $,
       esc: String,
       adviceMarkup,
+      singleExpansion,
       spoilerGuard,
       state: {
         pack: { recipes: [], objectives: [], guides: [], items: [] },
@@ -333,6 +335,7 @@ test("ledger preserves item-only headings and sibling navigation controls", () =
       $,
       esc: String,
       adviceMarkup,
+      singleExpansion,
       spoilerGuard,
       state: {
         pack: {

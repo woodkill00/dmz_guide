@@ -1,5 +1,6 @@
 // Independent browser advisory UX. All data/mechanics/holdings are fictional QA.
 import assert from "node:assert/strict";
+import { openParentDetails } from "./reviewer-disclosures.mjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 const PACK = "qa023:synthetic-upgrades",
   ITEM = "qa023:regulator",
@@ -426,6 +427,7 @@ export async function runIndependentUpgradeAdviceUI({
     await page.selectOption("#upgrade-scope", "focused");
     assert((await profile(page)).watchPins.includes(SPARE));
     await page.selectOption("#upgrade-scope", "all-known-incomplete");
+    await openParentDetails(row(page).locator("[data-advice-detail]"));
     await row(page).locator("[data-advice-detail]").click();
     await page.waitForURL("**/local/**");
     await ready(page);
@@ -451,6 +453,11 @@ export async function runIndependentUpgradeAdviceUI({
     await ready(page);
     for (const id of ["qa023:first", "qa023:second"]) {
       revision = (await profile(page)).revision;
+      await openParentDetails(
+        page.locator(
+          `[data-upgrade-id="${id}"][data-upgrade-field="completion"]`,
+        ),
+      );
       await page
         .locator(`[data-upgrade-id="${id}"][data-upgrade-field="completion"]`)
         .selectOption("completed");
@@ -593,6 +600,7 @@ export async function runIndependentUpgradeAdviceUI({
                 : p.locator(
                     `[data-advice-item="${observedItem}"] [data-watch-pin]`,
                   );
+            await openParentDetails(pin);
             await pin.focus();
             await p.keyboard.press("Enter");
             await p

@@ -1,5 +1,8 @@
 import { stockLimit } from "../domain/profile.mjs";
 export const INVENTORY_PAGE_SIZE = 50;
+// Number controls intentionally hide partial exponent/sign text from input.value.
+// Retain an explicit invalid draft instead of converting that browser state to unknown stock.
+export const INVALID_NUMBER_DRAFT = "incomplete-numeric-entry";
 const fields = [
   ["inventory", "owned"],
   ["reserves", "reserve"],
@@ -20,7 +23,8 @@ export function createInventoryDraft(items, profile) {
   let saved = new Map(raw);
   return {
     raw,
-    set(field, id, value, model) {
+    set(field, id, value, model, { badInput = false } = {}) {
+      if (badInput) value = INVALID_NUMBER_DRAFT;
       const prefix = fields.find(([name]) => name === field)?.[1];
       const key = `${prefix}:${id}`;
       if (!prefix || !raw.has(key)) return;

@@ -53,7 +53,7 @@ const surfaces = [
       ["#save-status", 0.8],
       ["#progress-rows dt", 0.75],
       ["#progress-rows dd", 1],
-      ["#progress-rows .eyebrow", 0.9], // .panel p already wins the cascade.
+      ["#progress-rows .upgrade-summary > div > small", 0.9], // Source/track metadata keeps its existing floor after compacting.
       ["#progress-rows .source-list li", 0.85],
       ["#progress-rows .source-list p", 0.8],
       ["#main > p.notice", 0.85],
@@ -246,6 +246,13 @@ export async function runMetadataFloorTests({
             document.querySelector("main")?.getAttribute("aria-busy") ===
             "false",
         );
+      if (surface.name === "progression") {
+        // Compact rows deliberately disclose their evidence before metadata measurements.
+        await page
+          .locator("details[data-progress-detail] > summary")
+          .first()
+          .click();
+      }
       if (surface.privacyText) {
         assert.equal(
           await page.locator(".page-heading .eyebrow").textContent(),

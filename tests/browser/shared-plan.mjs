@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { revealReviewerControl } from "./reviewer-disclosures.mjs";
 export async function runSharedPlanTests({ browser, base }) {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
@@ -87,6 +88,14 @@ export async function runSharedPlanTests({ browser, base }) {
   await page.click("#apply-restore");
   await page.waitForSelector("#restore-preview[hidden]", { state: "attached" });
   await page.goto(base + "/inventory/?pack=demo%3Atraining-pack");
+  await page.waitForSelector(
+    '[data-upgrade-id="demo:bench-unlock"][data-upgrade-field="completion"]',
+    { state: "attached" },
+  );
+  await revealReviewerControl(
+    page,
+    '[data-upgrade-id="demo:bench-unlock"][data-upgrade-field="completion"]',
+  );
   await page.waitForSelector(
     '[data-upgrade-id="demo:bench-unlock"][data-upgrade-field="completion"]',
   );

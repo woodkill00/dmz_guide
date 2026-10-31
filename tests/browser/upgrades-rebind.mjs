@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { revealReviewerControl } from "./reviewer-disclosures.mjs";
 import { mkdir, readFile } from "node:fs/promises";
 import { upgradeFixture } from "../helpers/upgrades.mjs";
 import { newProfile, validateProfile } from "../../src/domain/profile.mjs";
@@ -164,6 +165,7 @@ function assertPlayerState(after, before) {
     assert.deepEqual(after[field], before[field], `${field} remains unchanged`);
 }
 async function stage(page, selector = "#rebind-profile") {
+  await revealReviewerControl(page, selector);
   await page.click(selector);
   await page.locator("#restore-preview").waitFor({ state: "visible" });
 }

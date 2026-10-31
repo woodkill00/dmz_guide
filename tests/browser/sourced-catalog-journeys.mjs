@@ -1,5 +1,6 @@
 // Feature032 independent browser acceptance. All stock and spending below is synthetic QA state.
 import assert from "node:assert/strict";
+import { openParentDetails } from "./reviewer-disclosures.mjs";
 import { mkdir, writeFile } from "node:fs/promises";
 const PACK = "observed:upgrade-review-20261026";
 const SOURCE =
@@ -234,6 +235,7 @@ export async function runSourcedCatalogJourneys({
             .count(),
           0,
         );
+        await openParentDetails(control);
         await control.selectOption("completed");
         await saved(page, before.revision);
         const after = await profile(page);
@@ -252,6 +254,7 @@ export async function runSourcedCatalogJourneys({
         await page.reload();
         await ready(page);
         await findProgress(page, "DMZ Level 40");
+        await openParentDetails(control);
         assert.equal(await control.inputValue(), "completed");
         await noOverflow(page, `Manual milestone/${width}`);
         if (width === 390) {
@@ -307,6 +310,7 @@ export async function runSourcedCatalogJourneys({
         ]) {
           await findProgress(page, name);
           const before = await profile(page);
+          await openParentDetails(page.locator(`[data-upgrade-spend="${id}"]`));
           await page.locator(`[data-upgrade-spend="${id}"]`).click();
           await page.locator("#error").waitFor({ state: "visible" });
           assert.match(
@@ -434,6 +438,9 @@ export async function runSourcedCatalogJourneys({
         await ready(page);
         await findProgress(page, "Vendor Item Upgrade I");
         const prior = await profile(page);
+        await openParentDetails(
+          page.locator('[data-upgrade-spend="observed:vendor-item-upgrade-i"]'),
+        );
         await page
           .locator('[data-upgrade-spend="observed:vendor-item-upgrade-i"]')
           .click();

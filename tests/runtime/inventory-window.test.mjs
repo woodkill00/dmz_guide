@@ -1,3 +1,9 @@
+import { itemUses } from "../../src/domain/item-uses.mjs";
+import {
+  useLabels,
+  useCell,
+  usesList,
+} from "../../src/client/compact-lists.mjs";
 import { stockLimit } from "../../src/domain/profile.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -36,10 +42,15 @@ for (const count of [100, 1000, 5000]) {
     };
     vm.runInNewContext(`${render}\n${filter}\nrender();`, {
       ...helper,
+      itemUses,
+      useLabels,
+      useCell,
+      usesList,
+      planShared: () => ({ ledger: [] }),
       stockLimit,
       renderSpendingSummary() {}, // this extraction exercises inventory rows only
       registerDraftGuard() {},
-      document: { addEventListener() {} },
+      document: { addEventListener() {}, querySelectorAll: () => [] },
       $: (selector) => nodes[selector],
       state: {
         pack: { items, objectives: [] },
@@ -348,4 +359,21 @@ test("v3 cash draft accepts 2M but noncurrency and legacy drafts retain 1M bound
     draft.set("inventory", "test:item", "1000001", profile);
     assert.equal(draft.firstInvalid().id, "test:item");
   }
+});
+
+test("native incomplete-number state survives window remount as invalid instead of clearing saved stock", () => {
+  const items = [{ id: "demo:item", unit: "count" }],
+    model = { inventory: { "demo:item": 10 }, reserves: {} };
+  const draft = helper.createInventoryDraft(items, model);
+  draft.set("inventory", "demo:item", "", model, { badInput: true });
+  assert.equal(draft.raw.get("owned:demo:item"), helper.INVALID_NUMBER_DRAFT);
+  assert(Number.isNaN(model.inventory["demo:item"]));
+  assert.equal(draft.firstInvalid().name, "owned:demo:item");
+  assert(draft.isDirty());
+  draft.set("inventory", "demo:item", "", model);
+  assert.equal(draft.firstInvalid(), null);
+  assert(
+    !Object.hasOwn(model.inventory, "demo:item"),
+    "Only an explicit clear restores unknown stock",
+  );
 });

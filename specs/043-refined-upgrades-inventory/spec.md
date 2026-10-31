@@ -1,5 +1,5 @@
 # Refined upgrades and inventory
-Created2026-10-31. Status: planning only; no production implementation authorized by this planning request.
+Created2026-10-31. Status: implemented and verified locally on 2026-10-31; automated gates and independent production review passed.
 
 ## Journeys
 US1 Find any item in the selected catalog, read/edit owned and reserve quantities in a compact list, see relevant shortages, then explicitly Save or Cancel without losing other draft entries.

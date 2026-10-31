@@ -373,6 +373,7 @@ export async function init(
             "/editor/",
             "/maps/",
             "/progression/",
+            "/upgrades/",
             "/community/",
             "/local/",
           ].includes(target.pathname)

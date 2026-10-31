@@ -1,3 +1,5 @@
+import { itemUses } from "../domain/item-uses.mjs";
+import { useLabels, useCell, usesList } from "./compact-lists.mjs";
 import {
   spendingActions,
   renderSpendingSummary,
@@ -13,6 +15,7 @@ import { setCompletion } from "../domain/progression.mjs";
 import { closeDialog } from "./dialog-focus.mjs";
 import {
   INVENTORY_PAGE_SIZE,
+  INVALID_NUMBER_DRAFT,
   createInventoryDraft,
   filterInventoryIds,
   inventoryPage,
@@ -62,15 +65,107 @@ let inventoryDraft = null;
 let pendingInventoryInvalid = null;
 let inventoryIndex = new Map();
 let inventoryPageNumber = 0;
+let inventoryUses = new Map();
+let inventoryLedger = new Map();
+let inventoryPlanWarning = "";
+let inventoryPack = null;
+const collapsedGroups = new Set();
+function groupFor(item) {
+  return item.category || item.kind || "Other";
+}
+function derivedInventory() {
+  inventoryLedger = new Map();
+  inventoryPlanWarning = "";
+  try {
+    inventoryLedger = new Map(
+      planShared(state.pack, state.profile).ledger.map((row) => [row.id, row]),
+    );
+  } catch {
+    inventoryPlanWarning =
+      "Plan preview unavailable: check quantities, content binding and unresolved requirements.";
+  }
+}
+function updateInventoryPreview() {
+  for (const input of document.querySelectorAll(
+    "#inventory-fields [data-field]",
+  )) {
+    const prefix = input.dataset.field === "inventory" ? "owned" : "reserve";
+    const incomplete =
+      inventoryDraft.raw.get(`${prefix}:${input.dataset.id}`) ===
+      INVALID_NUMBER_DRAFT;
+    input.setCustomValidity(
+      incomplete
+        ? "Incomplete numeric entry retained. Enter a complete number or explicitly clear the stock."
+        : "",
+    );
+    input.setAttribute(
+      "aria-invalid",
+      String(incomplete || !input.validity.valid),
+    );
+  }
+  derivedInventory();
+  const warning = $("#inventory-plan-warning");
+  if (warning) {
+    warning.hidden = !inventoryPlanWarning;
+    warning.textContent = inventoryPlanWarning;
+  }
+  for (const node of document.querySelectorAll("[data-plan-item]")) {
+    const ledger = inventoryLedger.get(node.dataset.planItem);
+    const field = node.dataset.planField;
+    node.textContent =
+      inventoryPlanWarning ||
+      (field === "missing" &&
+        inventoryDraft.raw.get(`owned:${node.dataset.planItem}`) === "")
+        ? "Unknown"
+        : !ledger
+          ? "—"
+          : field === "needed"
+            ? `${ledger.consumed} / ${ledger.retained}`
+            : `${ledger.missing} / ${ledger.retainedMissing}`;
+  }
+  for (const node of document.querySelectorAll("[data-available]")) {
+    const raw = inventoryDraft.raw.get(`owned:${node.dataset.available}`),
+      reserve = inventoryDraft.raw.get(`reserve:${node.dataset.available}`);
+    node.textContent =
+      raw === ""
+        ? "Not entered"
+        : inventoryDraft.firstInvalid()
+          ? "Unknown (invalid draft)"
+          : String(Math.max(0, Number(raw) - Number(reserve)));
+  }
+  for (const button of document.querySelectorAll("[data-stock-step]")) {
+    const raw = inventoryDraft.raw.get(`owned:${button.dataset.id}`);
+    button.disabled =
+      state.saving ||
+      raw === "" ||
+      !Number.isInteger(Number(raw)) ||
+      Number(raw) < 0;
+  }
+}
 function checkpointInventory() {
   inventoryDraft?.checkpoint();
+  const notice = $("#error");
+  if (
+    !inventoryDraft?.firstInvalid() &&
+    notice?.textContent?.includes("Review the focused inventory quantity")
+  ) {
+    notice.textContent = "";
+    notice.hidden = true;
+  }
 }
 function revealInvalidInventory() {
   const invalid = inventoryDraft?.firstInvalid();
   if (!invalid || !$("#inventory-fields")) return;
   $("#inventory-query").value = "";
   $("#inventory-view").value = "all";
-  inventoryPageNumber = Math.floor(invalid.index / INVENTORY_PAGE_SIZE);
+  if ($("#inventory-section")) $("#inventory-section").value = "";
+  if ($("#inventory-sort")) $("#inventory-sort").value = "source";
+  if ($("#inventory-use-filter")) $("#inventory-use-filter").value = "";
+  collapsedGroups.delete(groupFor(inventoryIndex.get(invalid.id)));
+  const ids = [...inventoryIndex.keys()];
+  inventoryPageNumber = Math.floor(
+    ids.indexOf(invalid.id) / INVENTORY_PAGE_SIZE,
+  );
   filterInventory(false);
   $("#error").textContent +=
     " Review the focused inventory quantity; all other edits are retained.";
@@ -88,16 +183,54 @@ document.addEventListener("profile-saved", checkpointInventory);
 function renderInventoryPage(matches) {
   const page = inventoryPage(matches, inventoryPageNumber);
   inventoryPageNumber = page.page;
-  const small = state.pack.items.length <= INVENTORY_PAGE_SIZE;
-  const ids = small ? [...inventoryIndex.keys()] : page.ids;
-  const visible = new Set(matches);
-  $("#inventory-fields").innerHTML = ids
-    .map((id) => {
-      const r = inventoryIndex.get(id);
-      return `<fieldset class="panel" data-inventory-item="${esc(r.id)}" ${small && !visible.has(id) ? "hidden" : ""}><legend>${esc(r.name)} <small>(${esc(r.unit)})</small></legend><label>Owned quantity<input name="owned:${esc(r.id)}" data-id="${esc(r.id)}" data-field="inventory" type="number" min="0" max="${stockLimit(state.profile, r)}" value="${esc(inventoryDraft.raw.get(`owned:${r.id}`))}" placeholder="Not entered"></label><button type="button" data-clear-stock="${esc(r.id)}">Clear stock (not entered)</button><label>Protected reserve<input name="reserve:${esc(r.id)}" data-id="${esc(r.id)}" data-field="reserves" type="number" min="0" max="${stockLimit(state.profile, r)}" value="${esc(inventoryDraft.raw.get(`reserve:${r.id}`))}" required></label></fieldset>`;
-    })
-    .join("");
-  $("#inventory-pagination").hidden = small;
+  const groups = new Map();
+  for (const id of page.ids) {
+    const item = inventoryIndex.get(id),
+      key = groupFor(item);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(item);
+  }
+  $("#inventory-fields").innerHTML =
+    [...groups]
+      .map(([key, items]) => {
+        const total = [...inventoryIndex.values()].filter(
+          (item) => groupFor(item) === key,
+        ).length;
+        const matching = matches.filter(
+          (id) => groupFor(inventoryIndex.get(id)) === key,
+        ).length;
+        return `<section class="inventory-group"><h2><button type="button" data-inventory-group="${esc(key)}" aria-expanded="${!collapsedGroups.has(key)}">${esc(key)} <small>${items.length} on this page · ${matching} matching / ${total} visible catalog items</small></button></h2><div role="list" aria-label="${esc(key)} items" ${collapsedGroups.has(key) ? "hidden" : ""}><div class="inventory-row inventory-head" aria-hidden="true"><span>Item / unit</span><span>Owned</span><span>Reserve</span><span>Needed</span><span>Missing</span>${Object.values(
+          useLabels,
+        )
+          .map((label) => `<span class="inventory-use">${label}</span>`)
+          .join("")}<span>Details</span></div>${items
+          .map((r) => {
+            const uses = inventoryUses.get(r.id);
+            const url = `/local/?pack=${encodeURIComponent(state.pack.id)}&id=${encodeURIComponent(r.id)}`;
+            const quantity = (field, prefix, label) =>
+              `<label class="quantity-cell"><span class="mobile-label">${label}</span><input aria-label="${label} for ${esc(r.name)}" name="${prefix}:${esc(r.id)}" data-id="${esc(r.id)}" data-field="${field}" type="number" min="0" max="${stockLimit(state.profile, r)}" value="${esc(inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "" : inventoryDraft.raw.get(`${prefix}:${r.id}`))}" ${field === "reserves" ? "required" : `placeholder="${inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "Invalid entry" : "Not entered"}"`}></label>`;
+            return `<div class="inventory-entry" role="listitem" data-inventory-item="${esc(r.id)}"><div class="inventory-row"><div class="inventory-name"><a href="${esc(url)}" tabindex="0" target="_blank" rel="noopener noreferrer">${esc(r.name)}</a><small>${esc(r.unit)}</small></div><div class="owned-cell">${quantity("inventory", "owned", "Owned")}<div class="stock-steps"><button type="button" data-stock-step="-1" data-id="${esc(r.id)}" aria-label="Decrease owned ${esc(r.name)}">−</button><button type="button" data-stock-step="1" data-id="${esc(r.id)}" aria-label="Increase owned ${esc(r.name)}">+</button></div></div>${quantity("reserves", "reserve", "Reserve")}<span class="inventory-plan" role="group" aria-label="Needed, consumed / retained"><span class="mobile-label">Needed</span><span data-plan-item="${esc(r.id)}" data-plan-field="needed"></span></span><span class="inventory-plan" role="group" aria-label="Missing, consumed / retained"><span class="mobile-label">Missing</span><span data-plan-item="${esc(r.id)}" data-plan-field="missing"></span></span>${Object.keys(
+              useLabels,
+            )
+              .map((kind) => useCell(uses[kind], kind, r.id))
+              .join(
+                "",
+              )}<button type="button" data-show-use="${esc(r.id)}" aria-expanded="false" aria-label="Uses and details for ${esc(r.name)}">Uses</button></div><div class="inventory-details" data-item-detail="${esc(r.id)}" hidden><h3>${esc(r.name)} · draft details</h3><p>Available after your fixed reserve: <span data-available="${esc(r.id)}"></span>. Blank owned is not entered. Needed/Missing are separate consumed quantities and retained tool floors from your selected goals; units are never combined.</p><button type="button" data-clear-stock="${esc(r.id)}">Clear stock (not entered)</button><p>Catalog uses are references, not quantities allocated or advice to discard.</p>${Object.entries(
+              useLabels,
+            )
+              .map(
+                ([kind, label]) =>
+                  `<section data-uses-kind="${kind}" data-uses-item="${esc(r.id)}"><h4>${label}</h4><div class="uses-page">${usesList(uses[kind])}</div></section>`,
+              )
+              .join(
+                "",
+              )}<section data-uses-kind="acquisition" data-uses-item="${esc(r.id)}"><h4>Obtaining this item: producing recipes</h4><div class="uses-page">${usesList(uses.acquisition)}</div></section></div></div>`;
+          })
+          .join("")}</div></section>`;
+      })
+      .join("") || "<p>No matching visible items.</p>";
+  $("#inventory-pagination").hidden = matches.length <= INVENTORY_PAGE_SIZE;
+  updateInventoryPreview();
   $("#inventory-page-status").textContent =
     `Items ${page.first}–${page.last} of ${matches.length} matches. Page ${page.page + 1} of ${page.pages}.`;
   $("#inventory-previous").setAttribute(
@@ -116,9 +249,26 @@ function renderInventoryPage(matches) {
 function render() {
   pendingInventoryInvalid = null;
   if ($("#inventory-fields")) {
-    inventoryIndex = new Map(state.pack.items.map((item) => [item.id, item]));
+    inventoryUses = itemUses(state.pack, state.profile);
+    inventoryIndex = new Map(
+      [...inventoryUses].map(([id, uses]) => [id, uses.item]),
+    );
+    if (inventoryPack !== state.pack) {
+      inventoryPageNumber = 0;
+      collapsedGroups.clear();
+    }
+    inventoryPack = state.pack;
+    const section = $("#inventory-section");
+    if (section) {
+      const selected = section.value;
+      section.innerHTML =
+        '<option value="">All sections</option>' +
+        [...new Set([...inventoryIndex.values()].map(groupFor))]
+          .map((key) => `<option value="${esc(key)}">${esc(key)}</option>`)
+          .join("");
+      section.value = selected;
+    }
     inventoryDraft = createInventoryDraft(state.pack.items, state.profile);
-    inventoryPageNumber = 0;
     $("#completion-fields").innerHTML = state.pack.objectives
       .filter((r) => !r.spoiler)
       .map((r) =>
@@ -128,7 +278,7 @@ function render() {
       )
       .join("");
     checkpointInventory();
-    filterInventory();
+    filterInventory(false);
   }
   renderSpendingSummary();
   if ($("#migrate-upgrade-profile"))
@@ -151,7 +301,9 @@ $("#inventory-form")?.addEventListener("input", (e) => {
       input.dataset.id,
       input.value,
       state.profile,
+      { badInput: input.validity.badInput },
     );
+    updateInventoryPreview();
     status(
       hasUnsavedDraft()
         ? "Unsaved inventory edits · save locally or export a validated backup."
@@ -223,13 +375,17 @@ $("#completion-fields")?.addEventListener("change", async (e) => {
     return;
   }
   if (e.target.dataset.completion) {
+    const id = e.target.dataset.completion;
     const candidate = setCompletion(
       state.pack,
       state.profile,
-      e.target.dataset.completion,
+      id,
       e.target.value,
     );
-    await persist(candidate);
+    if (await persist(candidate)) {
+      render();
+      document.querySelector(`[data-completion="${CSS.escape(id)}"]`)?.focus();
+    }
   }
 });
 function preview(p) {
@@ -391,12 +547,65 @@ $("#cancel-inventory")?.addEventListener("click", async () => {
   }
 });
 $("#inventory-fields")?.addEventListener("click", (event) => {
-  const id = event.target.dataset.clearStock;
-  if (!id || state.saving) return;
-  inventoryDraft.set("inventory", id, "", state.profile);
-  filterInventory(false);
-  status("Stock unset in draft; reserve unchanged. Save inventory to commit.");
-  document.querySelector(`[data-clear-stock="${CSS.escape(id)}"]`)?.focus();
+  const button = event.target.closest("button");
+  if (!button || state.saving || state.loading) return;
+  if (button.dataset.inventoryGroup !== undefined) {
+    const key = button.dataset.inventoryGroup;
+    if (collapsedGroups.has(key)) collapsedGroups.delete(key);
+    else collapsedGroups.add(key);
+    button.setAttribute("aria-expanded", String(!collapsedGroups.has(key)));
+    button.closest("section").querySelector(":scope > div").hidden =
+      collapsedGroups.has(key);
+  }
+  if (button.dataset.showUse) {
+    const id = button.dataset.showUse;
+    const detail = [...document.querySelectorAll("[data-item-detail]")].find(
+      (node) => node.dataset.itemDetail === id,
+    );
+    const opening = detail.hidden;
+    for (const node of document.querySelectorAll("[data-item-detail]"))
+      node.hidden = true;
+    for (const node of document.querySelectorAll(
+      "[data-show-use][aria-expanded]",
+    ))
+      node.setAttribute("aria-expanded", "false");
+    detail.hidden = !opening;
+    if (opening)
+      button
+        .closest(".inventory-entry")
+        .querySelector("[aria-expanded]")
+        .setAttribute("aria-expanded", "true");
+    updateInventoryPreview();
+  }
+  if (button.dataset.usePage) {
+    const section = button.closest("[data-uses-kind]"),
+      offset = Number(button.dataset.usePage);
+    section.querySelector(".uses-page").innerHTML = usesList(
+      inventoryUses.get(section.dataset.usesItem)[section.dataset.usesKind],
+      offset,
+    );
+    section.querySelector("h4").tabIndex = -1;
+    section.querySelector("h4").focus();
+  }
+  const id = button.dataset.clearStock || button.dataset.id;
+  if (!id) return;
+  const input = [...document.querySelectorAll('[data-field="inventory"]')].find(
+    (node) => node.dataset.id === id,
+  );
+  if (button.dataset.clearStock) input.value = "";
+  else if (button.dataset.stockStep) {
+    if (input.value === "" || !Number.isInteger(Number(input.value))) return;
+    input.value = String(
+      Math.max(
+        0,
+        Math.min(
+          stockLimit(state.profile, inventoryIndex.get(id)),
+          Number(input.value) + Number(button.dataset.stockStep),
+        ),
+      ),
+    );
+  } else return;
+  input.dispatchEvent(new Event("input", { bubbles: true }));
 });
 function upgradeControls(record) {
   const progress = upgradeProgressFor(state.pack, state.profile, record.id);
@@ -542,16 +751,42 @@ function filterInventory(reset = true) {
         " Planning unavailable; clear the filter or resolve profile/content mismatch.";
     }
   }
-  const matches = filterInventoryIds(
+  let matches = filterInventoryIds(
     inventoryIndex,
     state.profile,
     q,
     mode,
     needed,
   );
+  const section = $("#inventory-section")?.value || "",
+    usage = $("#inventory-use-filter")?.value || "";
+  const view = $("#inventory-view").value;
+  if (section)
+    matches = matches.filter(
+      (id) => groupFor(inventoryIndex.get(id)) === section,
+    );
+  if (usage)
+    matches = matches.filter((id) => inventoryUses.get(id)[usage].length);
+  if (view === "not-entered")
+    matches = matches.filter(
+      (id) => inventoryDraft.raw.get(`owned:${id}`) === "",
+    );
+  if (view === "missing") {
+    derivedInventory();
+    matches = matches.filter((id) => {
+      const row = inventoryLedger.get(id);
+      return row && (row.missing || row.retainedMissing);
+    });
+  }
+  const sort = $("#inventory-sort")?.value;
+  if (sort === "name")
+    matches.sort((a, b) =>
+      inventoryIndex.get(a).name.localeCompare(inventoryIndex.get(b).name),
+    );
   renderInventoryPage(matches);
   $("#inventory-count").textContent =
-    `${matches.length} of ${state.pack.items.length} items match.` + warning;
+    `${matches.length} of ${inventoryIndex.size} visible catalog items match.` +
+    warning;
 }
 for (const [id, direction] of [
   ["inventory-previous", -1],
@@ -566,3 +801,61 @@ for (const [id, direction] of [
   });
 $("#inventory-query")?.addEventListener("input", filterInventory);
 $("#inventory-view")?.addEventListener("change", filterInventory);
+
+for (const id of [
+  "inventory-section",
+  "inventory-sort",
+  "inventory-use-filter",
+])
+  $(`#${id}`)?.addEventListener("change", () => filterInventory());
+for (const [id, collapse] of [
+  ["inventory-collapse", true],
+  ["inventory-expand", false],
+])
+  $(`#${id}`)?.addEventListener("click", () => {
+    for (const item of inventoryIndex.values()) {
+      if (collapse) collapsedGroups.add(groupFor(item));
+      else collapsedGroups.delete(groupFor(item));
+    }
+    filterInventory(false);
+  });
+$("#inventory-density")?.addEventListener("change", (event) => {
+  $("#inventory-fields").classList.toggle(
+    "comfortable",
+    event.target.value === "comfortable",
+  );
+  try {
+    localStorage.setItem("dmz-inventory-density", event.target.value);
+  } catch {}
+});
+try {
+  if ($("#inventory-density")) {
+    $("#inventory-density").value =
+      localStorage.getItem("dmz-inventory-density") || "compact";
+    $("#inventory-density").dispatchEvent(new Event("change"));
+  }
+} catch {}
+
+// Native focus scrolling does not account for a sticky footer covering the field.
+// Move only covered focus; quantity edits and uncovered pointer targets stay in place.
+$("#inventory-fields")?.addEventListener("focusin", (event) => {
+  const target = event.target.closest("input,button,a,summary");
+  if (!target) return;
+  const rect = target.getBoundingClientRect(),
+    bar = $(".inventory-save-bar");
+  if (bar && getComputedStyle(bar).position === "sticky") {
+    const bounds = bar.getBoundingClientRect();
+    if (rect.bottom > bounds.top - 12 && rect.top < bounds.bottom) {
+      window.scrollBy(0, rect.bottom - bounds.top + 12);
+      return;
+    }
+  }
+  const head = target
+    .closest(".inventory-group")
+    ?.querySelector(".inventory-head");
+  if (head) {
+    const bounds = head.getBoundingClientRect();
+    if (bounds.height && rect.top < bounds.bottom && rect.bottom > bounds.top)
+      window.scrollBy(0, rect.top - bounds.bottom - 12);
+  }
+});

@@ -1,3 +1,4 @@
+import { runRefinedInventoryTests } from "./refined-inventory.mjs";
 import { runNavigationDirectoryTests } from "./navigation-directory.mjs";
 import { runUpgradeTests } from "./upgrades.mjs";
 import { firefox, webkit } from "playwright";
@@ -19,6 +20,11 @@ try {
     const health = monitorBrowser(browser);
     try {
       await runNavigationDirectoryTests({
+        browser,
+        base,
+        captureScreenshots: name !== "webkit",
+      });
+      await runRefinedInventoryTests({
         browser,
         base,
         captureScreenshots: name !== "webkit",

@@ -2,6 +2,10 @@
 // All holdings below are deliberately synthetic, never values from observations.
 // Integration owner may copy this file into tests/browser/ and import its export.
 import assert from "node:assert/strict";
+import {
+  openInventoryDetails,
+  openParentDetails,
+} from "./reviewer-disclosures.mjs";
 import { installPickerFocusDiagnostics } from "./picker-focus-diagnostics.mjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
@@ -181,6 +185,7 @@ async function setProgressCore(
   { double = false, cancel = false } = {},
 ) {
   const before = await active(page);
+  await openParentDetails(page.locator(upgrade(field)));
   await page.locator(upgrade(field)).selectOption(value);
   await page.locator("#upgrade-progress-confirm").waitFor({ state: "visible" });
   assert.match(
@@ -630,6 +635,7 @@ export async function runIndependentUpgradeJourneys({
       await page.reload();
       await ready(page);
       assert.equal(await page.locator(stock).inputValue(), "0");
+      await openInventoryDetails(page, ITEM);
       await page.locator(`[data-clear-stock="${ITEM}"]`).focus();
       await page.keyboard.press("Enter");
       assert.equal(await page.locator(stock).inputValue(), "");
@@ -648,6 +654,7 @@ export async function runIndependentUpgradeJourneys({
       await page.locator(stock).fill("23");
       const committed = await durable(page),
         progressBefore = structuredClone((await active(page)).upgradeProgress);
+      await openParentDetails(page.locator(upgrade("completion")));
       await page.locator(upgrade("completion")).selectOption("completed");
       assert.equal(
         await page.locator("#upgrade-progress-confirm:visible").count(),
@@ -824,6 +831,7 @@ export async function runIndependentUpgradeJourneys({
               window.failUpgradeCandidateQuota = true;
             });
           const durableBefore = await durable(page);
+          await openParentDetails(page.locator(upgrade("completion")));
           await page.locator(upgrade("completion")).selectOption("completed");
           await page.click("#upgrade-progress-apply");
           await page
@@ -1116,6 +1124,7 @@ export async function runIndependentUpgradeJourneys({
       await page.goto(url(base, "progression"));
       await ready(page);
       const control = page.locator(upgrade("completion"));
+      await openParentDetails(control);
       await control.focus();
       assert.equal(
         await control.evaluate((n) => n === document.activeElement),

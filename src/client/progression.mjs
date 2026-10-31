@@ -1,3 +1,6 @@
+import { upgradeAdvice } from "../domain/upgrade-advice.mjs";
+import { singleExpansion } from "./compact-lists.mjs";
+import { validateProfile } from "../domain/profile.mjs";
 import {
   spendingActions,
   renderSpendingSummary,
@@ -17,6 +20,7 @@ import {
   upgradeCompletionStates,
   upgradeAvailabilityStates,
   setUpgradeProgress,
+  upgradeReadinessReasons,
 } from "../domain/upgrade-progress.mjs";
 let resetTarget = null,
   upgradeTarget = null,
@@ -28,7 +32,9 @@ let resetTarget = null,
 const labelStatus = (value) =>
   value === "verified" ? "Source-backed · live build unverified" : value;
 const reference = (ref) =>
-  ref.url ? `<a href="${esc(ref.url)}">${esc(ref.name)}</a>` : esc(ref.name);
+  ref.url
+    ? `<a href="${esc(ref.url)}" tabindex="0">${esc(ref.name)}</a>`
+    : esc(ref.name);
 const provenance = (source) =>
   source.provenance
     ? `<p>Provenance: ${esc(source.provenance.kind)} · Capture date: ${esc(source.provenance.captureDate || "Unknown")} · Build identity: ${esc(source.provenance.buildStatus)}.</p><p>Observation: ${esc(source.provenance.observationKey)} · Lineage: ${esc(source.provenance.lineageKey)}.</p>`
@@ -53,10 +59,32 @@ ${readonly ? `<p class="notice">This older profile is read-only for upgrade prog
 ${select("completion", upgradeCompletionStates)}${select("availability", upgradeAvailabilityStates)}
 <p>These manual controls correct status only; they never change stock or recorded spending. Use Record in-game purchase below only when saved stock still predates the purchase.</p>
 ${spendingActions(state.pack, state.profile, row.id)}
-<h3>Listed requirements</h3><ul>${row.requirements.map((requirement) => (requirement.hidden ? "<li>Spoiler-protected requirement. Reveal spoilers to inspect it.</li>" : `<li>${reference(requirement)}: ${requirement.quantity === null ? "Quantity unknown" : esc(requirement.quantity)} · ${requirement.consumption === "unknown" ? "Consumption unknown" : esc(requirement.consumption)}</li>`)).join("") || "<li>No requirements listed; this is not evidence of zero cost.</li>"}</ul>
+<div data-upgrade-budget="${esc(row.id)}"></div><h3>Listed requirements</h3><ul>${row.requirements.map((requirement) => (requirement.hidden ? "<li>Spoiler-protected requirement. Reveal spoilers to inspect it.</li>" : `<li>${reference(requirement)}: ${requirement.quantity === null ? "Quantity unknown" : esc(requirement.quantity)} · ${requirement.consumption === "unknown" ? "Consumption unknown" : esc(requirement.consumption)}</li>`)).join("") || "<li>No requirements listed; this is not evidence of zero cost.</li>"}</ul>
 <p>Listed requirements are not a remaining shopping budget. Unknown consumption or quantities prevent exact affected advice; recorded progress does not update held stock.</p>`;
 }
+const focusedUpgrades = !!document.querySelector("[data-focused-upgrades]");
+if (focusedUpgrades) {
+  $("#progress-track").value = "dmz-upgrade";
+  $("#progress-track").disabled = true;
+}
+function summaryFor(row, guard) {
+  if (!row.upgrade) return "";
+  const unknownCost =
+    !row.requirements.length ||
+    row.requirements.some(
+      (r) => r.hidden || r.quantity === null || r.consumption === "unknown",
+    );
+  const record = state.pack.objectives.find((r) => r.id === row.id);
+  const reasons = upgradeReadinessReasons(state.pack, state.profile, record);
+  return `<span class="upgrade-manual">${row.upgrade.completion === "completed" ? "Recorded completed" : "Not marked complete"}${row.upgrade.tierLabel ? `<small>${esc(guard.text(row.upgrade.tierLabel))}</small>` : ""}</span><span>${row.requirements.filter((r) => !r.hidden).length} visible requirements · ${unknownCost ? "Cost unknown / incomplete" : "Listed cost only"}</span><span class="upgrade-blocker">${row.disputed ? "Evidence conflict · " : ""}${unknownCost ? "Unknown price / consumption · " : ""}${row.upgrade.completion === "completed" ? "Manual report only" : reasons.length ? "Eligibility unknown / blocked" : "Readiness not certified"}</span>`;
+}
 function render() {
+  if (focusedUpgrades) $("#progress-track").value = "dmz-upgrade";
+  const openIds = new Set(
+    [...document.querySelectorAll("details[data-progress-detail][open]")].map(
+      (node) => node.dataset.progressDetail,
+    ),
+  );
   const selectedSource = $("#progress-source").value;
   const sources = progressSources(state.pack, {
     reveal: state.profile.spoilers,
@@ -106,7 +134,7 @@ function render() {
     rows
       .map(
         (r) =>
-          `<article class="panel"><p class="eyebrow">${esc(r.track)} · ${esc(labelStatus(r.status))}</p><h2>${esc(r.name)}</h2>${
+          `<article class="panel compact-progress"><div class="upgrade-summary"><div><h2>${r.url && !r.hidden ? `<a href="${esc(r.url)}" tabindex="0">${esc(r.name)}</a>` : esc(r.name)}</h2><small>${esc(r.track)} · ${esc(labelStatus(r.status))}</small></div>${summaryFor(r, guard)}${r.upgrade && !r.hidden ? `<button type="button" data-track-upgrade="${esc(r.id)}" ${state.profile.goals.some((g) => g.id === r.id) ? "disabled" : ""}>${state.profile.goals.some((g) => g.id === r.id) ? "Tracked" : "Track"}</button>` : ""}</div><details data-progress-detail="${r.hidden ? "protected" : esc(r.id)}" ${openIds.has(r.id) ? "open" : ""}><summary>Details / progress${r.upgrade?.reviewRequired ? " · Review required" : ""}</summary>${
             r.hidden
               ? "<p>Reveal spoilers to inspect or track this record.</p>"
               : `
@@ -123,10 +151,14 @@ ${r.related.length ? `<h3>Related records</h3><ul>${r.related.map((ref) => `<li>
 <dl><dt>Scope</dt><dd>${esc(r.scope)}</dd><dt>Content version</dt><dd>${esc(r.contentVersion)}</dd></dl>
 <h3>Evidence &amp; sources</h3><ul class="source-list">${r.sources.map((s) => `<li>${s.url ? `<a href="${esc(s.url)}" rel="noreferrer noopener">${esc(s.title)}</a>` : esc(s.title)}<p>${esc(s.supports)}</p><p>${esc(s.type)} · Published ${esc(s.publishedAt)} · Reviewed ${esc(s.reviewedAt)}</p>${provenance(s)}</li>`).join("") || "<li>No sources recorded. Treat this as unverified.</li>"}</ul>
 ${r.url ? `<p><a href="${esc(r.url)}">Open selected private record</a></p>` : ""}`
-          }</article>`,
+          }</details></article>`,
       )
       .join("") ||
     '<section class="panel"><h2>No matching records.</h2><p>This starter pack may not contain a verified catalog for this track. Clear filters or add a sourced record in the editor.</p></section>';
+  for (const details of document.querySelectorAll(
+    "details[data-progress-detail][open]",
+  ))
+    renderRequirementBudget(details);
   renderSpendingSummary();
   setBusy(saving);
 }
@@ -283,6 +315,7 @@ $("#progress-next").addEventListener("click", () => {
 });
 $("#progress-clear").addEventListener("click", () => {
   $("#progress-filters").reset();
+  if (focusedUpgrades) $("#progress-track").value = "dmz-upgrade";
   offset = 0;
   render();
 });
@@ -377,3 +410,71 @@ window.addEventListener("popstate", () => {
 });
 installSpending({ onSaved: render, isDirty: () => saving });
 init(render).catch(error);
+
+singleExpansion($("#progress-rows"), "details[data-progress-detail]");
+$("#progress-rows").addEventListener("click", async (event) => {
+  const id = event.target.closest("[data-track-upgrade]")?.dataset.trackUpgrade;
+  if (!id || saving || state.loading || !visibleRows.get(id)?.upgrade) return;
+  try {
+    if (state.profile.goals.some((g) => g.id === id)) return;
+    if (state.profile.goals.length >= 100)
+      throw new Error("Maximum 100 goals. Remove a goal in Planner first.");
+    const candidate = structuredClone(state.profile);
+    candidate.goals.push({ id, quantity: 1 });
+    validateProfile(candidate);
+    if (await save(candidate)) render();
+  } catch (reason) {
+    error(reason);
+  }
+});
+
+function renderRequirementBudget(details) {
+  const root = details.querySelector("[data-upgrade-budget]");
+  if (!root) return;
+  try {
+    const advice = upgradeAdvice(
+      state.pack,
+      {
+        ...state.profile,
+        goals: [{ id: root.dataset.upgradeBudget, quantity: 1 }],
+      },
+      { scope: "focused" },
+    );
+    const amount = (n) => (n === null ? "Unknown" : esc(n));
+    root.innerHTML =
+      advice.status === "blocked"
+        ? `<p class="notice">Requirement preview unavailable: ${advice.reasons.map(esc).join("; ")}</p>`
+        : `<h3>Focused upgrade · requirement preview</h3><p>This upgrade and its known unfinished prerequisites, not your shared goal allocation or proof of readiness. Required quantities and retained roles remain distinct; current stock is your saved manual report.</p><div class="table-wrap"><table><thead><tr><th scope="col">Item / unit</th><th scope="col">Owned</th><th scope="col">Reserve</th><th scope="col">Available</th><th scope="col">Required</th><th scope="col">Known consumed</th><th scope="col">Known retained</th><th scope="col">Missing</th><th scope="col">Kept for / uses</th></tr></thead><tbody>${advice.rows
+            .filter((row) => row.contributors.length)
+            .slice(0, 50)
+            .map(
+              (row) =>
+                `<tr><th scope="row"><a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(row.id)}" tabindex="0" target="_blank" rel="noopener noreferrer">${esc(row.name)}</a> · ${esc(row.unit)}</th><td>${row.inventoryEntered ? amount(row.held) : "Not entered"}</td><td>${amount(row.reserve)}</td><td>${row.inventoryEntered ? amount(row.held === null ? null : Math.max(0, row.held - row.reserve)) : "Unknown"}</td><td>${amount(row.required)}</td><td>${amount(row.knownConsumed)}</td><td>${amount(row.knownRetained)}</td><td>${amount(row.upgradeGap)}</td><td><details><summary>Known uses</summary><ul>${row.contributors
+                  .slice(0, 50)
+                  .map(
+                    (use) =>
+                      `<li><a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(use.id)}" tabindex="0" target="_blank" rel="noopener noreferrer">${esc(use.name)}</a> · ${amount(use.quantity)} · ${esc(use.consumption)}</li>`,
+                  )
+                  .join(
+                    "",
+                  )}</ul>${row.contributors.length > 50 ? "<p>First 50 uses; inspect linked records for more.</p>" : ""}</details></td></tr>`,
+            )
+            .join(
+              "",
+            )}</tbody></table></div><p>Up to 50 visible unfinished material lines. Full listed costs remain below even after completion; no listed rows is not evidence of zero cost.</p>`;
+  } catch {
+    root.innerHTML =
+      '<p class="notice">Requirement preview unavailable. Check the profile/content binding; unknown costs are not zero.</p>';
+  }
+}
+$("#progress-rows").addEventListener(
+  "toggle",
+  (event) => {
+    if (
+      event.target.matches("details[data-progress-detail]") &&
+      event.target.open
+    )
+      renderRequirementBudget(event.target);
+  },
+  true,
+);

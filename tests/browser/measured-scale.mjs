@@ -232,10 +232,13 @@ async function preservedDrafts({ browser, base, evidence }) {
         .textContent.includes("switch failed"),
     );
     assert.equal(await page.locator("#pack-select").inputValue(), training);
+    await page.fill("#inventory-query", "");
     assert.equal(await wire.inputValue(), "-1");
     assert.equal(await reserve.inputValue(), "4");
+    await page.fill("#inventory-query", "cell");
     await page.selectOption("#pack-select", "official:mw4-dmz-starter");
     await page.click("#draft-stay");
+    await page.fill("#inventory-query", "");
     assert.equal(await wire.inputValue(), "-1");
     // Re-show only to enter a valid value; hiding it again must not change its checkpoint.
     await page.fill("#inventory-query", "");
@@ -248,6 +251,7 @@ async function preservedDrafts({ browser, base, evidence }) {
     await page.selectOption("#pack-select", "official:mw4-dmz-starter");
     await page.click("#draft-save");
     await page.waitForSelector("#error:not([hidden])");
+    await page.fill("#inventory-query", "");
     assert.equal(await wire.inputValue(), "29");
     assert.equal(await reserve.inputValue(), "4");
     assert.equal(await page.locator("#pack-select").inputValue(), training);
@@ -255,6 +259,7 @@ async function preservedDrafts({ browser, base, evidence }) {
       window.scaleFailSave = false;
     });
     failCatalog = false;
+    await page.fill("#inventory-query", "cell");
     await page.selectOption("#pack-select", "official:mw4-dmz-starter");
     await page.click("#draft-save");
     await page.waitForFunction(
@@ -264,6 +269,8 @@ async function preservedDrafts({ browser, base, evidence }) {
         document.querySelector("main").getAttribute("aria-busy") === "false",
     );
     await page.selectOption("#pack-select", training);
+    await ready(page);
+    await page.fill("#inventory-query", "");
     await page.waitForSelector(
       '[data-field="inventory"][data-id="demo:wire"]',
       { state: "attached" },
@@ -290,6 +297,8 @@ async function preservedDrafts({ browser, base, evidence }) {
         document.querySelector("main").getAttribute("aria-busy") === "false",
     );
     await page.selectOption("#pack-select", training);
+    await ready(page);
+    await page.fill("#inventory-query", "");
     await page.waitForSelector(
       '[data-field="inventory"][data-id="demo:wire"]',
       { state: "attached" },
@@ -699,7 +708,9 @@ async function measure({ browser, base, count, kind, baseline }) {
         );
         assert.equal(
           await page.locator("#inventory-count").textContent(),
-          `${count} of ${count} items ${baseline ? "shown" : "match"}.`,
+          baseline
+            ? `${count} of ${count} items shown.`
+            : `${count} of ${count} visible catalog items match.`,
         );
         result = await page.evaluate(async () => {
           const input = document.querySelector("#inventory-query");

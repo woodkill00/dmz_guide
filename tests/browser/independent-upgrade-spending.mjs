@@ -1,6 +1,10 @@
 // Independent reviewer-owned purchase/spending UI acceptance.
 // Every quantity, identity and mechanic in the fixture is fictional QA data.
 import assert from "node:assert/strict";
+import {
+  openParentDetails,
+  openInventoryDetails,
+} from "./reviewer-disclosures.mjs";
 import { installPickerFocusDiagnostics } from "./picker-focus-diagnostics.mjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
@@ -184,6 +188,7 @@ async function previewEntry(page) {
   );
 }
 async function openPurchase(page, id = FIRST) {
+  await openParentDetails(page.locator(spend(id)));
   await page.locator(spend(id)).focus();
   await page.keyboard.press("Enter");
   await previewEntry(page);
@@ -264,6 +269,7 @@ async function saveInventory(page, packId = PACK) {
 }
 async function correct(page, id, completion) {
   const before = await active(page);
+  await openParentDetails(page.locator(progress(id)));
   await page.locator(progress(id)).selectOption(completion);
   await page.click("#upgrade-progress-apply");
   await saved(page, before.revision);
@@ -287,6 +293,7 @@ async function refused(page, selector, explanation, packId = PACK) {
   const before = await durable(page, packId);
   const control = page.locator(selector);
   if ((await control.count()) && (await control.isEnabled())) {
+    await openParentDetails(control);
     await control.click();
     await page.locator("#error:not([hidden])").waitFor();
     assert.match(await page.locator("#error").textContent(), explanation);
@@ -744,6 +751,7 @@ export async function runIndependentUpgradeSpending({
         cash: { net: 140, gross: 140, reversed: 0 },
       });
       await refused(page, reverse(event.id), /latest|recent|last/i);
+      await openParentDetails(page.locator(reverse(secondId)));
       await page.click(reverse(secondId));
       await previewEntry(page);
       assert.match(
@@ -772,6 +780,7 @@ export async function runIndependentUpgradeSpending({
         cash: { net: 100, gross: 140, reversed: 40 },
       });
       await refused(page, reverse(secondId), /already|reversed|latest/i);
+      await openParentDetails(page.locator(reverse(event.id)));
       await page.click(reverse(event.id));
       await previewEntry(page);
       const reversedFirst = await apply(page, { purchase: false });
@@ -936,6 +945,7 @@ export async function runIndependentUpgradeSpending({
         "Explicit draft Cancel restores the initial active state",
       );
       assert.deepEqual(await durable(page), initialDurable);
+      await openInventoryDetails(page, B);
       await page.click(`[data-clear-stock="${B}"]`);
       await saveInventory(page);
       assert.equal(Object.hasOwn((await active(page)).inventory, B), false);
@@ -983,6 +993,7 @@ export async function runIndependentUpgradeSpending({
       );
       await page.locator(owned(A)).fill("7");
       await saveInventory(page);
+      await openParentDetails(page.locator(reverse(bought.spendHistory[0].id)));
       await page.click(reverse(bought.spendHistory[0].id));
       await previewEntry(page);
       const undone = await apply(page, { purchase: false });
@@ -1273,6 +1284,7 @@ export async function runIndependentUpgradeSpending({
             "Changed current resource name",
           ),
         );
+        await openParentDetails(page.locator(reverse(purchase.id)));
         await page.click(reverse(purchase.id));
         await previewEntry(page);
         assert.match(
@@ -1678,6 +1690,9 @@ export async function runIndependentUpgradeSpending({
         await page.locator("#upgrade-spend-confirm[open]").count(),
         0,
       );
+      // WebKit can ignore offscreen programmatic focus after native modal close.
+      // Prepare the intended visible target; retain the exact focus assertion below.
+      await page.locator("#pack-select").scrollIntoViewIfNeeded();
       await page.locator("#pack-select").focus();
       assert.deepEqual((await durable(page)).value, initial);
       await focusIs(page, "#pack-select");
@@ -1759,6 +1774,7 @@ export async function runIndependentUpgradeSpending({
         gross: 200000,
         reversed: 0,
       });
+      await openParentDetails(page.locator(reverse(after.spendHistory[0].id)));
       await page.click(reverse(after.spendHistory[0].id));
       await previewEntry(page);
       const restored = await apply(page, {

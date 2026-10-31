@@ -1524,3 +1524,389 @@ main :where(p, li, a, ul, ol, section, article, div) {
     max-height: 50dvh;
   }
 }
+/* Compact inventory and focused progression: view-only, no storage semantics. */
+.inventory-group {
+  margin-block: 1rem;
+}
+.inventory-group > h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+.inventory-group > h2 button {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+  text-align: left;
+  background: var(--raised);
+  color: var(--text);
+}
+.inventory-group small,
+.inventory-name small,
+.upgrade-summary small {
+  display: block;
+  color: var(--muted);
+  font-weight: normal;
+}
+#inventory-fields .inventory-row {
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 1.4fr) minmax(92px, 1fr) minmax(76px, 0.7fr)
+    repeat(2, minmax(60px, 0.7fr)) repeat(4, minmax(80px, 1fr)) minmax(
+      80px,
+      0.8fr
+    );
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem;
+  margin: 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+.inventory-entry {
+  overflow-wrap: anywhere;
+}
+#inventory-fields .inventory-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--raised);
+  font-weight: 700;
+  min-height: 44px;
+}
+.inventory-row > * {
+  min-width: 0;
+}
+.inventory-row label {
+  margin: 0;
+}
+.inventory-row input {
+  padding: 0.35rem;
+  font-variant-numeric: tabular-nums;
+}
+.inventory-row button {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+.inventory-use a {
+  display: inline-block;
+  min-height: 44px;
+  align-content: center;
+}
+.mobile-label {
+  display: none;
+}
+.owned-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.owned-cell label {
+  flex: 1;
+  min-width: 0;
+}
+.stock-steps {
+  display: none;
+}
+.inventory-details {
+  padding: 1rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.inventory-details section {
+  margin-block: 0.75rem;
+}
+.inventory-details ul {
+  padding-left: 1.25rem;
+}
+.inventory-details a {
+  display: inline-block;
+  min-height: 44px;
+  align-content: center;
+}
+.inventory-save-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+#inventory-fields.comfortable .inventory-row {
+  padding-block: 1rem;
+}
+.upgrade-summary {
+  display: grid;
+  grid-template-columns: minmax(150px, 2fr) 1fr 1fr minmax(150px, 1.4fr) auto;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+.upgrade-summary h2 {
+  font-size: 1rem;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.compact-progress.panel {
+  padding: 0.75rem;
+  margin-block: 0.5rem;
+}
+.compact-progress > details > summary {
+  min-height: 44px;
+  align-content: center;
+}
+.compact-progress:has(details[open]) {
+  background: var(--surface);
+}
+.compact-advice article.panel {
+  padding: 0.75rem;
+  margin-block: 0.5rem;
+}
+.compact-advice h3,
+.compact-advice p {
+  margin-block: 0.25rem;
+}
+@media (min-width: 1600px) {
+  .stock-steps {
+    display: flex;
+  }
+}
+@media (max-width: 1250px) {
+  #inventory-fields .inventory-row {
+    grid-template-columns:
+      minmax(140px, 2fr) minmax(95px, 1fr) minmax(80px, 1fr)
+      repeat(2, minmax(80px, 1fr)) minmax(90px, 1fr);
+  }
+  .inventory-row .inventory-use {
+    display: none;
+  }
+}
+@media (max-width: 700px) {
+  #inventory-fields .inventory-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.25rem 0.5rem;
+    padding: 0.5rem;
+  }
+  #inventory-fields .inventory-head {
+    display: none;
+  }
+  .inventory-name {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: baseline;
+  }
+  .mobile-label {
+    display: inline;
+    margin-right: 0.35rem;
+    color: var(--muted);
+  }
+  .quantity-cell {
+    display: flex;
+    align-items: center;
+  }
+  .quantity-cell input {
+    min-width: 0;
+  }
+  .inventory-plan {
+    font-size: 0.875rem;
+  }
+  .inventory-row > button {
+    grid-column: 1 / -1;
+  }
+  .upgrade-summary {
+    grid-template-columns: 1fr auto;
+    gap: 0.35rem;
+  }
+  .upgrade-summary > :first-child,
+  .upgrade-blocker {
+    grid-column: 1 / -1;
+  }
+  .inventory-save-bar {
+    position: static;
+  }
+}
+@media (min-width: 1251px) {
+  #inventory-fields .inventory-row {
+    grid-template-columns:
+      minmax(125px, 1.5fr) minmax(90px, 1fr) minmax(70px, 0.7fr)
+      repeat(2, minmax(48px, 0.6fr)) repeat(4, minmax(70px, 1fr)) minmax(
+        74px,
+        0.7fr
+      );
+  }
+}
+.inventory-row .inventory-use a {
+  font-size: 0.875rem;
+}
+.inventory-name small,
+.upgrade-summary small {
+  font-size: 0.875rem;
+}
+@media (max-width: 700px) {
+  #inventory-fields .inventory-row {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .inventory-row .inventory-name {
+    grid-column: auto;
+    display: block;
+  }
+  .inventory-row .quantity-cell {
+    display: block;
+  }
+  .inventory-row .quantity-cell .mobile-label {
+    display: block;
+  }
+  .inventory-row .inventory-plan {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .inventory-row > button {
+    grid-column: auto;
+  }
+  .upgrade-summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .upgrade-summary > :first-child {
+    grid-column: 1;
+  }
+  .upgrade-summary > button {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .upgrade-summary > span {
+    grid-column: 1 / -1;
+  }
+  .compact-progress.panel {
+    padding: 0.5rem;
+  }
+}
+#inventory-fields .inventory-row button {
+  padding: 0.25rem;
+}
+#inventory-fields .inventory-row input {
+  margin-top: 0;
+}
+@media (min-width: 701px) {
+  .compact-progress {
+    position: relative;
+  }
+  .compact-progress > details > summary {
+    position: absolute;
+    right: 0.75rem;
+    top: 0.75rem;
+    width: 90px;
+  }
+  .compact-progress .upgrade-summary {
+    padding-right: 105px;
+  }
+  .upgrade-summary {
+    grid-template-columns:
+      minmax(150px, 2fr) minmax(110px, 1fr) minmax(110px, 1fr)
+      minmax(120px, 1.3fr) auto;
+  }
+}
+@media (max-width: 700px) {
+  #inventory-fields .inventory-row {
+    padding-block: 0.4rem;
+  }
+  .inventory-row .quantity-cell .mobile-label {
+    font-size: 0.875rem;
+  }
+  .compact-progress {
+    position: relative;
+  }
+  .compact-progress .upgrade-summary {
+    display: block;
+    padding-right: 85px;
+  }
+  .compact-progress .upgrade-summary > span {
+    display: block;
+    margin-block: 0.2rem;
+  }
+  .compact-progress .upgrade-summary > button {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    max-width: 80px;
+  }
+  .compact-progress > details > summary {
+    position: absolute;
+    right: 0.5rem;
+    top: 3.8rem;
+    width: 80px;
+    font-size: 0.875rem;
+  }
+  .compact-progress > details[open] > summary {
+    position: static;
+    width: auto;
+  }
+}
+#inventory-fields .inventory-row label {
+  margin: 0;
+}
+#inventory-fields input[type="number"] {
+  appearance: textfield;
+}
+#inventory-fields input::-webkit-inner-spin-button,
+#inventory-fields input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+.upgrade-summary .upgrade-manual small {
+  display: inline;
+  margin-left: 0.5rem;
+}
+@media (max-width: 700px) {
+  .compact-progress.panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 5rem;
+    gap: 0.25rem 0.5rem;
+  }
+  .compact-progress .upgrade-summary {
+    display: contents;
+  }
+  .compact-progress .upgrade-summary > :first-child {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .compact-progress .upgrade-summary > span {
+    grid-column: 1;
+    margin: 0;
+  }
+  .compact-progress .upgrade-summary > button {
+    position: static;
+    grid-column: 2;
+    grid-row: 1;
+    max-width: none;
+    padding: 0.4rem;
+    align-self: start;
+  }
+  .compact-progress > details {
+    grid-column: 2;
+    grid-row: 2 / span 3;
+    min-width: 0;
+  }
+  .compact-progress > details > summary {
+    position: static;
+    width: auto;
+  }
+  .compact-progress > details[open] {
+    grid-column: 1 / -1;
+    grid-row: 5;
+  }
+}
+#progress-rows :is(select, button, summary):focus,
+#inventory-fields :is(input, button):focus {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+.upgrade-summary > div > small {
+  font-size: 0.9rem;
+}

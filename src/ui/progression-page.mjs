@@ -2,7 +2,7 @@ import { escapeHTML as esc } from "./render.mjs";
 const option = (value, label = value) =>
   `<option value="${esc(value)}">${esc(label)}</option>`;
 export function featurePages(packs) {
-  return [
+  const pages = [
     {
       path: "/progression/",
       title: "Progression & field guides",
@@ -34,11 +34,28 @@ export function featurePages(packs) {
 <label>Manual progress<select id="progress-state">${option("", "All manual states")}${option("not-completed", "Upgrades: Not marked complete")}${["unknown", "incomplete", "locked", "unlocked", "completed"].map((s) => option(s)).join("")}${option("not-applicable", "Guides (no completion state)")}</select></label>
 <button type="submit">Filter</button><button type="button" id="progress-clear">Clear filters</button></form>
 <button id="spoiler-toggle" aria-pressed="false">Reveal spoilers</button><p class="notice">Coverage is incomplete. Missing mission records are unknown, not completed. Source-backed does not mean live-build verified. A manual state is your report, not verified readiness.</p>
-<section id="upgrade-spending-summary" class="panel" aria-labelledby="upgrade-spending-title"></section>
 <p id="progress-count" role="status" aria-live="polite" tabindex="-1"></p><p id="progress-limit-note" class="notice" hidden></p><div class="toolbar"><button id="progress-previous">Previous 50 records</button><button id="progress-next">Next 50 records</button></div><div id="progress-rows"></div>
+<section id="upgrade-spending-summary" class="panel" aria-labelledby="upgrade-spending-title"></section>
 <dialog id="upgrade-progress-confirm" class="panel" aria-labelledby="upgrade-progress-title" aria-describedby="upgrade-progress-target upgrade-progress-reminder"><h2 id="upgrade-progress-title">Confirm manual upgrade progress</h2><p id="upgrade-progress-target"></p><p id="upgrade-progress-reminder">Status-only correction: no stock deduction, refund or spending record. If stock already reflects the purchase, this avoids recording it twice.</p><p>Inventory, cash, reserves, focus goals and watch pins stay unchanged. A correction or undo changes progress only; it never refunds items or erases recorded spending.</p><p id="upgrade-progress-result" role="alert"></p><div class="draft-actions"><button type="button" id="upgrade-progress-apply">Confirm progress change</button><button type="button" id="upgrade-progress-cancel" class="secondary" autofocus>Cancel</button><button type="button" id="upgrade-progress-export" class="secondary" hidden>Export unsaved progress candidate</button></div></dialog>
 <section class="panel"><h2>Progress-only reset</h2><button id="progress-reset">Reset manual progress…</button><div id="progress-reset-confirm" role="group" aria-labelledby="progress-reset-target" hidden><p id="progress-reset-target"></p><button id="progress-reset-yes">Confirm progress reset</button><button id="progress-reset-no">Cancel</button></div><p><a href="/settings/">Restore a previous profile snapshot</a></p></section>`,
       scripts: ["/assets/src/client/progression.mjs"],
     },
   ];
+  const focused = {
+    ...pages[0],
+    path: "/upgrades/",
+    title: "Upgrades",
+    page: "upgrades",
+    body: pages[0].body
+      .replace("Progress without the spoilers.", "Your upgrades, at a glance.")
+      .replace(
+        '<form id="progress-filters"',
+        '<form data-focused-upgrades="true" id="progress-filters"',
+      )
+      .replace(
+        '<option value="dmz-upgrade">',
+        '<option value="dmz-upgrade" selected>',
+      ),
+  };
+  return [...pages, focused];
 }

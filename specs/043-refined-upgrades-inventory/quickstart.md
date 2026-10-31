@@ -1,12 +1,11 @@
-# Review the proposed design
-Local concept preview: http://127.0.0.1:5181/design-preview.html (separate loopback-only planning server, not the production guide/map).
+# Try the implementation
 
-Switch Inventory/Upgrades, light/dark theme or density; expand the first sample's Details or resize the window. All values are fictional. Quantity/purchase controls only explain their intended future workflow; nothing is saved.
+Run `npm run build` and `npm start` from the repository root. Open:
+- http://127.0.0.1:4173/inventory/
+- http://127.0.0.1:4173/upgrades/
 
-If the preview server has stopped, from the repository root:
-```powershell
-py -3 -m http.server 5181 --bind 127.0.0.1 --directory specs/043-refined-upgrades-inventory
-```
-Alternatively open design-preview.html directly in your browser. PNG concepts are also saved here for static review. Read plan.md/spec.md/contracts/ui.md for implementation scope and planning-validation.md for exact concept checks. I001–004 remain pending; existing application screens are unchanged.
+Select a catalog; edit stock, filter/collapse groups and explicitly Save/Cancel. Open Uses to follow exact references without losing edits. Open an upgrade Details to inspect evidence and separate manual corrections from purchase recording. See [user instructions](../../docs/inventory-and-upgrades.md) and the implementation acceptance receipt for test scope and known limitations.
 
-Grouped preview: filter or collapse item sections. On wide screens inspect Recipes/Upgrade uses/Mission uses/Crafts; +N expands extra sample links. On smaller screens choose Uses to reveal those lists. Sample links open a fictional reference dialog and do not change stock or progress.
+## Historical planning concept
+
+The original standalone fictional concept remains at http://127.0.0.1:5181/design-preview.html when its planning server is running. It is not connected to real profiles or production controls. Its screenshots and planning-validation.md are design evidence only.
