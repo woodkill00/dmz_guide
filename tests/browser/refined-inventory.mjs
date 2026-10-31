@@ -445,6 +445,7 @@ export async function runRefinedInventoryTests({
       await page.locator("#progress-track").inputValue(),
       "dmz-upgrade",
     );
+    await page.locator("#upgrade-layout").selectOption("flat");
     assert.equal(await page.locator("#progress-track").isDisabled(), true);
     assert.equal(
       await page.locator("details[data-progress-detail][open]").count(),

@@ -1647,7 +1647,7 @@ main :where(p, li, a, ul, ol, section, article, div) {
   font-size: 0.875rem;
   line-height: 1.4;
 }
-.upgrade-summary h2 {
+.upgrade-summary :is(h2, h3) {
   font-size: 1rem;
   margin: 0;
   overflow-wrap: anywhere;
@@ -2135,7 +2135,7 @@ main :where(p, li, a, ul, ol, section, article, div) {
 .upgrade-is-completed {
   box-shadow: inset 3px 0 var(--lime);
 }
-.upgrade-is-completed h2 {
+.upgrade-is-completed :is(h2, h3) {
   color: var(--muted);
 }
 .upgrade-list-shell[data-density="comfortable"] .compact-progress.panel {
@@ -2259,4 +2259,153 @@ main :where(p, li, a, ul, ol, section, article, div) {
 .upgrade-view-controls > details > summary {
   min-height: 44px;
   align-content: center;
+}
+
+.upgrade-family {
+  border-bottom: 2px solid var(--line);
+  padding-top: 0.35rem;
+}
+.upgrade-family > h2 {
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  font-size: 1rem;
+}
+.upgrade-family > h2 small {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+.upgrade-family > details > summary {
+  min-height: 44px;
+  align-content: center;
+  padding: 0.35rem 0.75rem;
+  background: var(--raised);
+  font-size: 0.9rem;
+}
+.upgrade-tier-list {
+  border-left: 3px solid var(--line);
+  margin-left: 0.75rem;
+}
+.upgrade-family .upgrade-summary h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+.inventory-upgrade-need {
+  min-width: 0;
+  min-height: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.inventory-upgrade-need strong {
+  font-weight: 600;
+}
+.inventory-upgrade-need small {
+  font-size: 0.9rem;
+}
+.upgrade-need-label {
+  display: none;
+  font-weight: 600;
+}
+@media (min-width: 1251px) {
+  #inventory-fields.has-upgrade-needs .inventory-row {
+    grid-template-columns:
+      minmax(110px, 1.4fr) minmax(100px, 6rem) minmax(80px, 5rem) repeat(
+        2,
+        minmax(48px, 0.6fr)
+      )
+      repeat(2, minmax(100px, 1fr)) repeat(4, minmax(60px, 0.75fr)) 65px;
+  }
+}
+@media (min-width: 1101px) and (max-width: 1250px) {
+  #inventory-fields.has-upgrade-needs .inventory-row {
+    grid-template-columns:
+      minmax(110px, 1.5fr) minmax(100px, 6rem) minmax(80px, 5rem) repeat(
+        2,
+        50px
+      )
+      repeat(2, minmax(100px, 1fr)) 65px;
+  }
+}
+@media (max-width: 1100px) {
+  #inventory-fields.has-upgrade-needs .inventory-row {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+  #inventory-fields.has-upgrade-needs .inventory-head {
+    display: none;
+  }
+  #inventory-fields.has-upgrade-needs .inventory-use {
+    display: none;
+  }
+  #inventory-fields.has-upgrade-needs .inventory-name {
+    display: block;
+  }
+  #inventory-fields.has-upgrade-needs .quantity-cell {
+    display: block;
+  }
+  #inventory-fields.has-upgrade-needs .mobile-label {
+    display: block;
+  }
+  #inventory-fields.has-upgrade-needs .inventory-plan {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  #inventory-fields.has-upgrade-needs .inventory-row > button {
+    grid-column: 3;
+    grid-row: 2;
+  }
+  #inventory-fields.has-upgrade-needs .inventory-upgrade-need {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.4rem;
+    min-height: 44px;
+    align-items: center;
+  }
+  #inventory-fields.has-upgrade-needs .upgrade-need-label {
+    display: block;
+  }
+}
+
+.inventory-upgrade-need [data-tier-uncertainty] {
+  min-height: 1.4em;
+  color: var(--muted);
+}
+@media (max-width: 1100px) {
+  #inventory-fields.has-upgrade-needs [data-tier-uncertainty] {
+    grid-column: 1 / -1;
+  }
+}
+
+#inventory-fields.has-upgrade-needs .stock-steps {
+  flex-shrink: 0;
+  gap: 0.25rem;
+}
+#inventory-fields.has-upgrade-needs .stock-steps button {
+  min-width: 44px;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+@media (min-width: 1600px) {
+  #inventory-fields.has-upgrade-needs .inventory-row {
+    grid-template-columns:
+      minmax(110px, 1.4fr) 200px minmax(80px, 5rem) repeat(
+        2,
+        minmax(48px, 0.6fr)
+      )
+      repeat(2, minmax(100px, 1fr)) repeat(4, minmax(60px, 0.75fr)) 65px;
+  }
+}
+
+@media (min-width: 1600px) {
+  #inventory-fields.has-upgrade-needs .owned-cell {
+    flex-wrap: wrap;
+  }
+  #inventory-fields.has-upgrade-needs .owned-cell label {
+    min-width: min(100%, 6rem);
+  }
 }

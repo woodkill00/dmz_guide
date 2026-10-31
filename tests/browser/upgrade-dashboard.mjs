@@ -19,6 +19,7 @@ export async function runUpgradeDashboardTests({ browser, base }) {
       `${base}/upgrades/?pack=observed%3Aupgrade-review-20261026`,
     );
     await ready();
+    await page.locator("#upgrade-layout").selectOption("flat");
     assert(
       (await page.locator("#upgrade-catalog-summary").textContent()).includes(
         "28 visible upgrades",

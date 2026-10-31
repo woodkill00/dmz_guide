@@ -1,3 +1,4 @@
+import { upgradeFamilies } from "../domain/upgrade-families.mjs";
 import {
   upgradeOverview,
   overviewMatches,
@@ -43,6 +44,9 @@ let overview = null,
   view = null,
   viewPack = null,
   undoProgress = null;
+let familyModel = null,
+  openFamily = null,
+  familyPage = 0;
 let overviewPack = null,
   overviewProfile = null;
 const labelStatus = (value) =>
@@ -106,15 +110,21 @@ function render() {
       viewPack = state.pack.id;
       view = readUpgradeView(viewPack);
       $("#upgrade-quick").value = view.quick;
+      $("#upgrade-layout").value = view.layout;
       $("#upgrade-density").value = view.density;
       for (const key of ["materials", "readiness", "evidence"])
         $("#upgrade-show-" + key).checked = view[key];
       $("#progress-status").value = view.status;
       $("#progress-state").value = view.progress;
       undoProgress = null;
+      openFamily = null;
+      familyPage = 0;
     }
     if (overviewPack !== state.pack || overviewProfile !== state.profile) {
       overview = upgradeOverview(state.pack, state.profile);
+      familyModel = upgradeFamilies(state.pack, state.profile, {
+        completedIds: overview.completedUpgradeIds,
+      });
       overviewPack = state.pack;
       overviewProfile = state.profile;
     }
@@ -131,6 +141,8 @@ function render() {
     if (!undoProgress) $("#upgrade-feedback").textContent = "";
     const shell = $(".upgrade-list-shell");
     shell.dataset.density = view.density;
+    shell.dataset.layout = view.layout;
+    $("#upgrade-group-explanation").hidden = view.layout !== "grouped";
     for (const key of ["materials", "readiness", "evidence"])
       shell.classList.toggle("hide-" + key, !view[key]);
   }
@@ -156,13 +168,12 @@ function render() {
     [...$("#progress-source").options].some((o) => o.value === view.source)
   )
     $("#progress-source").value = view.source;
-  const rows = progressRows(state.pack, state.profile, {
+  const options = {
     track: $("#progress-track").value,
     query: $("#progress-query").value,
     source: $("#progress-source").value,
     status: $("#progress-status").value,
     progress: $("#progress-state").value,
-    offset,
     allowedIds:
       focusedUpgrades && view.quick !== "all"
         ? new Set(
@@ -171,7 +182,40 @@ function render() {
               .map((r) => r.id),
           )
         : null,
-  });
+  };
+  const groupedUpgrades = focusedUpgrades && view.layout !== "flat";
+  let rows,
+    familyWindow = [];
+  if (groupedUpgrades) {
+    const matches = new Set(
+      progressRows(state.pack, state.profile, { ...options, idsOnly: true }),
+    );
+    const families = familyModel.families.filter((g) =>
+      g.members.some((m) => matches.has(m.id)),
+    );
+    offset = Math.max(0, Math.min(offset, Math.max(0, families.length - 1)));
+    familyWindow = families.slice(offset, offset + 50);
+    const ids = new Set(familyWindow.map((g) => g.current.id));
+    for (const group of familyWindow)
+      if (group.id === openFamily) {
+        const others = group.members.filter((m) => m.id !== group.current.id);
+        familyPage = Math.min(
+          familyPage,
+          Math.max(0, Math.ceil(others.length / 50) - 1),
+        );
+        others
+          .slice(familyPage * 50, familyPage * 50 + 50)
+          .forEach((m) => ids.add(m.id));
+      }
+    rows = progressRows(state.pack, state.profile, {
+      track: "dmz-upgrade",
+      allowedIds: ids,
+      limit: 100,
+    });
+    rows.total = families.length;
+    rows.offset = offset;
+    rows.more = offset + familyWindow.length < families.length;
+  } else rows = progressRows(state.pack, state.profile, { ...options, offset });
   const guard = spoilerGuard(state.pack, state.profile.spoilers);
   visibleRows = new Map(
     rows.filter((row) => !row.hidden).map((row) => [row.id, row]),
@@ -188,21 +232,18 @@ function render() {
   );
   offset = rows.offset;
   $("#progress-count").textContent =
-    `Showing ${rows.length ? offset + 1 : 0}–${offset + rows.length} of ${rows.total} matching records. This is not a completion percentage; coverage is incomplete.`;
+    `Showing ${groupedUpgrades ? (familyWindow.length ? offset + 1 : 0) : rows.length ? offset + 1 : 0}–${offset + (groupedUpgrades ? familyWindow.length : rows.length)} of ${rows.total} matching ${groupedUpgrades ? "upgrade groups" : "records"}. This is not a completion percentage; coverage is incomplete.`;
   $("#progress-previous").disabled = offset === 0;
   $("#progress-next").disabled = !rows.more;
   $("#progress-limit-note").hidden = !rows.privacyLimited && !sources.truncated;
   $("#progress-limit-note").textContent = rows.privacyLimited
     ? "This large spoiler dictionary exceeds the protected-display budget. Text is conservatively hidden; reveal spoilers or use a smaller pack to inspect it."
     : "The source chooser shows its first 500 choices. Narrow the track to reduce this list.";
-  $("#progress-rows").innerHTML =
-    rows
-      .map(
-        (r) =>
-          `<article class="panel compact-progress${r.upgrade?.completion === "completed" ? " upgrade-is-completed" : ""}"><div class="upgrade-summary"><div><h2>${r.url && !r.hidden ? `<a href="${esc(r.url)}" ${focusedUpgrades ? `data-open-upgrade="${esc(r.id)}" aria-expanded="${openIds.has(r.id)}" aria-controls="progress-detail-${esc(r.id)}"` : ""} tabindex="0">${esc(r.name)}</a>` : esc(r.name)}</h2><small data-upgrade-column="evidence">${focusedUpgrades ? "" : `${esc(r.track)} / `}${esc(labelStatus(r.status))}</small>${r.upgrade?.completion === "completed" ? "<small>Recorded completed</small>" : ""}${focusedUpgrades && !r.hidden && (r.disputed || r.upgrade?.reviewRequired || overview?.rows.get(r.id)?.unknown) ? `<small class="upgrade-critical">${r.disputed ? "Evidence conflict. " : ""}${r.upgrade?.reviewRequired ? "Progress needs review. " : ""}${overview?.rows.get(r.id)?.unknown ? "Costs / stock unknown or partial." : ""}</small>` : ""}</div>${summaryFor(r, guard)}${r.upgrade && !r.hidden ? `<button type="button" data-track-upgrade="${esc(r.id)}" ${state.profile.goals.some((g) => g.id === r.id) ? "disabled" : ""}>${state.profile.goals.some((g) => g.id === r.id) ? "Tracked" : "Track"}</button>` : ""}</div><details ${r.hidden ? "" : `id="progress-detail-${esc(r.id)}"`} data-progress-detail="${r.hidden ? "protected" : esc(r.id)}" ${openIds.has(r.id) ? "open" : ""}><summary>Details / progress${r.upgrade?.reviewRequired ? " · Review required" : ""}</summary>${
-            r.hidden
-              ? "<p>Reveal spoilers to inspect or track this record.</p>"
-              : `
+  const rowMarkup = (r) =>
+    `<article class="panel compact-progress${r.upgrade?.completion === "completed" ? " upgrade-is-completed" : ""}"><div class="upgrade-summary"><div><${groupedUpgrades ? "h3" : "h2"}>${r.url && !r.hidden ? `<a href="${esc(r.url)}" ${focusedUpgrades ? `data-open-upgrade="${esc(r.id)}" aria-expanded="${openIds.has(r.id)}" aria-controls="progress-detail-${esc(r.id)}"` : ""} tabindex="0">${esc(r.name)}</a>` : esc(r.name)}</${groupedUpgrades ? "h3" : "h2"}><small data-upgrade-column="evidence">${focusedUpgrades ? "" : `${esc(r.track)} / `}${esc(labelStatus(r.status))}</small>${r.upgrade?.completion === "completed" ? "<small>Recorded completed</small>" : ""}${focusedUpgrades && familyModel.records.get(r.id)?.completed && !familyModel.records.get(r.id)?.ownCompleted ? "<small>Equivalent source identity recorded completed</small>" : ""}${focusedUpgrades && !r.hidden && (r.disputed || r.upgrade?.reviewRequired || overview?.rows.get(r.id)?.unknown) ? `<small class="upgrade-critical">${r.disputed ? "Evidence conflict. " : ""}${r.upgrade?.reviewRequired ? "Progress needs review. " : ""}${overview?.rows.get(r.id)?.unknown ? "Costs / stock unknown or partial." : ""}</small>` : ""}</div>${summaryFor(r, guard)}${r.upgrade && !r.hidden ? `<button type="button" data-track-upgrade="${esc(r.id)}" ${state.profile.goals.some((g) => g.id === r.id) ? "disabled" : ""}>${state.profile.goals.some((g) => g.id === r.id) ? "Tracked" : "Track"}</button>` : ""}</div><details ${r.hidden ? "" : `id="progress-detail-${esc(r.id)}"`} data-progress-detail="${r.hidden ? "protected" : esc(r.id)}" ${openIds.has(r.id) ? "open" : ""}><summary>Details / progress${r.upgrade?.reviewRequired ? " · Review required" : ""}</summary>${
+      r.hidden
+        ? "<p>Reveal spoilers to inspect or track this record.</p>"
+        : `
 <p>${esc(r.description)}</p>${r.disputed ? '<p class="notice">Sources disagree. Your manual state does not resolve this evidence conflict or verify readiness.</p>' : ""}
 ${
   r.type === "objective"
@@ -216,10 +257,27 @@ ${r.related.length ? `<h3>Related records</h3><ul>${r.related.map((ref) => `<li>
 <dl><dt>Scope</dt><dd>${esc(r.scope)}</dd><dt>Content version</dt><dd>${esc(r.contentVersion)}</dd></dl>
 <h3>Evidence &amp; sources</h3><ul class="source-list">${r.sources.map((s) => `<li>${s.url ? `<a href="${esc(s.url)}" rel="noreferrer noopener">${esc(s.title)}</a>` : esc(s.title)}<p>${esc(s.supports)}</p><p>${esc(s.type)} · Published ${esc(s.publishedAt)} · Reviewed ${esc(s.reviewedAt)}</p>${provenance(s)}</li>`).join("") || "<li>No sources recorded. Treat this as unverified.</li>"}</ul>
 ${r.url ? `<p><a href="${esc(r.url)}">Open selected private record</a></p>` : ""}`
-          }</details></article>`,
-      )
-      .join("") ||
-    '<section class="panel"><h2>No matching records.</h2><p>This starter pack may not contain a verified catalog for this track. Clear filters or add a sourced record in the editor.</p></section>';
+    }</details></article>`;
+  const rowById = new Map(rows.map((r) => [r.id, r]));
+  const empty =
+    '<section class="panel"><h2>No matching records.</h2><p>Clear filters or select a catalog with known upgrades for this track.</p></section>';
+  $("#progress-rows").innerHTML = groupedUpgrades
+    ? familyWindow
+        .map((group) => {
+          const others = group.members.filter((m) => m.id !== group.current.id),
+            expanded = group.id === openFamily;
+          const tierRows = expanded
+            ? others
+                .slice(familyPage * 50, familyPage * 50 + 50)
+                .map((m) => rowById.get(m.id))
+                .filter(Boolean)
+                .map(rowMarkup)
+                .join("")
+            : "";
+          return `<section class="upgrade-family" data-upgrade-family-id="${esc(group.id)}" data-total-tiers="${group.members.length}"><h2>${esc(group.name)}<small>${group.complete ? "All listed tier identities recorded completed" : `Current: ${esc(group.current.name)} - lowest listed incomplete tier`}${group.ambiguous ? " - tier ordering needs review" : ""}</small></h2>${rowMarkup(rowById.get(group.current.id))}${others.length ? `<details data-tier-family="${esc(group.id)}" ${expanded ? "open" : ""}><summary data-toggle-tier-family="${esc(group.id)}">Other tiers (${others.length}) - current tier shown above</summary>${expanded ? `<div class="upgrade-tier-list">${tierRows}${others.length > 50 ? `<div class="draft-actions"><button type="button" data-tier-page="-1" ${familyPage === 0 ? "disabled" : ""}>Previous tiers</button><span>${familyPage * 50 + 1}-${Math.min(others.length, familyPage * 50 + 50)} of ${others.length} other tiers</span><button type="button" data-tier-page="1" ${(familyPage + 1) * 50 >= others.length ? "disabled" : ""}>Next tiers</button></div>` : ""}</div>` : ""}</details>` : ""}</section>`;
+        })
+        .join("") || empty
+    : rows.map(rowMarkup).join("") || empty;
   for (const details of document.querySelectorAll(
     "details[data-progress-detail][open]",
   ))
@@ -251,7 +309,13 @@ function focusUpgrade(target) {
       target.inline
         ? `[data-complete-upgrade="${CSS.escape(target.id)}"]`
         : `[data-upgrade-id="${CSS.escape(target.id)}"][data-upgrade-field="${target.field}"]`,
-    ) || $("#progress-count")
+    ) ||
+    (focusedUpgrades && familyModel?.byRecord.get(target.id)
+      ? document.querySelector(
+          `[data-complete-upgrade="${CSS.escape(familyModel.byRecord.get(target.id).current.id)}"]`,
+        )
+      : null) ||
+    $("#progress-count")
   ).focus();
 }
 function dismissUpgrade({ focus = true } = {}) {
@@ -499,6 +563,27 @@ init(render).catch(error);
 
 singleExpansion($("#progress-rows"), "details[data-progress-detail]");
 $("#progress-rows").addEventListener("click", async (event) => {
+  const familyToggle = event.target.closest("[data-toggle-tier-family]");
+  if (familyToggle) {
+    event.preventDefault();
+    const id = familyToggle.dataset.toggleTierFamily;
+    openFamily = openFamily === id ? null : id;
+    familyPage = 0;
+    render();
+    document
+      .querySelector(`[data-toggle-tier-family="${CSS.escape(id)}"]`)
+      ?.focus();
+    return;
+  }
+  const tierPage = event.target.closest("[data-tier-page]");
+  if (tierPage) {
+    familyPage = Math.max(0, familyPage + Number(tierPage.dataset.tierPage));
+    render();
+    document
+      .querySelector(`[data-toggle-tier-family="${CSS.escape(openFamily)}"]`)
+      ?.focus();
+    return;
+  }
   const opener = event.target.closest("[data-open-upgrade]");
   if (
     opener &&
@@ -627,6 +712,7 @@ $("#progress-rows").addEventListener(
 function rememberView() {
   if (!focusedUpgrades || !view) return;
   view.quick = $("#upgrade-quick").value;
+  view.layout = $("#upgrade-layout").value;
   view.density = $("#upgrade-density").value;
   view.source = $("#progress-source").value;
   view.status = $("#progress-status").value;

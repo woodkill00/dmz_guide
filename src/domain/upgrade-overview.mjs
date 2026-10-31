@@ -5,7 +5,10 @@ import { upgradeProgressFor } from "./upgrade-progress.mjs";
 // Direct independent costs only. Full prerequisite advice remains a separate scope.
 export function upgradeOverview(pack, profile) {
   const guard = spoilerGuard(pack, profile.spoilers);
-  const advice = upgradeAdvice(pack, profile);
+  const advice = upgradeAdvice(pack, profile, {
+    includeIdentityState: true,
+    strictVisibility: true,
+  });
   const rows = new Map();
   const tracked = new Set(profile.goals.map((g) => g.id));
   for (const record of pack.objectives) {
@@ -90,6 +93,7 @@ export function upgradeOverview(pack, profile) {
   }
   return {
     rows,
+    completedUpgradeIds: advice.completedUpgradeIds || [],
     completed: [...rows.values()].filter((r) => r.completed).length,
     total: rows.size,
     blocked: advice.status === "blocked",

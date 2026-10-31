@@ -44,3 +44,18 @@ Upgrades use compact bordered rows with sticky desktop column headings. Smaller 
 - **Row spacing** and **Visible columns** let you choose compact/comfortable rows and materials/readiness/evidence columns. Name, completion and actions stay available; hidden information remains in Details, while critical unknown/conflict warnings remain visible. View filters and layout are remembered per catalog in this browser. Search text is not saved. If preference storage is blocked, the controls still work for the session.
 
 Verification commands for this slice: `node --test tests/runtime/upgrade-overview.test.mjs` and `node tests/browser/upgrade-dashboard.mjs` (local guide on4173, or `TEST_BASE`). The dashboard journey is also part of both aggregate browser runners.
+
+## Tier groups and next/full material needs
+
+Upgrades now default to **Upgrade groups**. Each group shows its lowest visible listed unfinished tier. **Other tiers** expands the earlier/later versions in Roman order without duplicating the current row; long sublists have50-tier pages. Completing a tier advances the header; Undo restores it. This is display ordering from known records, not verified unlock order. Missing tiers remain unknown. If every known identity is completed, the group says so. Ambiguous duplicate/conflicting tiers remain separate for review; equivalent source identities are explicitly labelled and do not create duplicate costs or change your own per-record checkbox automatically.
+
+Filters find groups when any tier matches, while the header keeps the actual current tier for context. **All tiers (flat list)** remains an optional remembered layout for comparing individual records. Only one Other tiers list is expanded at a time, with at most50 group heads plus50 other tier rows mounted.
+
+Inventory has two automatic upgrade columns, even with no tracked planner goals:
+
+- **Next upgrade tiers:** one lowest unfinished root per group, plus its declared unfinished prerequisites.
+- **All unfinished upgrades:** all known remaining upgrade costs and declared unfinished prerequisites.
+
+Each shows required quantities and additional missing stock (including a fixed reserve shortfall). All already includes Next: compare these scopes rather than adding them together. Goal need/Goal missing remain your separate selected-plan preview. Consumed quantities add; shared retained tools use a maximum floor; observation aliases and shared prerequisites count once. Unknown quantities, consumption, inventory or evidence stay Unknown, and numeric partial facts carry a visible qualifier.
+
+An item remains in **Needed by goals or unfinished upgrades** until its known unfinished uses are completed, even when you own enough and Missing is0. Next/all filters narrow that membership. Completion removes only finished demand; it never consumes/refunds stock. Item Uses shows bounded per-scope contributors and existing recipe/mission references; no arbitrary quantities are invented for unselected missions or recipes. Draft edits update previews; Save/Cancel retain their existing meaning.

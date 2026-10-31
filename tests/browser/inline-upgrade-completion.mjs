@@ -10,6 +10,7 @@ for (const engine of [chromium, firefox, webkit]) {
     );
     const action = page.locator("[data-complete-upgrade]").first();
     await action.waitFor();
+    await page.locator("#upgrade-layout").selectOption("flat");
     const names = await page.locator(".upgrade-summary h2").allTextContents();
     assert.deepEqual(
       names.filter((name) => name.startsWith("Bank Upgrade ")),

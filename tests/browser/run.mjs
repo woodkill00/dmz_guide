@@ -1,3 +1,4 @@
+import { runTieredUpgradeTests } from "./tiered-upgrades.mjs";
 import { runUpgradeDashboardTests } from "./upgrade-dashboard.mjs";
 import { runRefinedInventoryTests } from "./refined-inventory.mjs";
 import { runNavigationDirectoryTests } from "./navigation-directory.mjs";
@@ -27,6 +28,7 @@ try {
   const checkHealth = monitorBrowser(browser);
   await mkdir("test-results", { recursive: true });
   await runNavigationDirectoryTests({ browser, base });
+  await runTieredUpgradeTests({ browser, base });
   await runUpgradeDashboardTests({ browser, base });
   await runRefinedInventoryTests({ browser, base });
   await runUpgradeTests({ browser, base, captureScreenshots: true });

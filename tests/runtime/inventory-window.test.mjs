@@ -1,5 +1,11 @@
 import { itemUses } from "../../src/domain/item-uses.mjs";
 import {
+  upgradeNeedCell,
+  needsValues,
+  upgradeNeedsDetail,
+} from "../../src/client/upgrade-needs-view.mjs";
+import { upgradeNeeds } from "../../src/domain/upgrade-needs.mjs";
+import {
   useLabels,
   useCell,
   usesList,
@@ -45,6 +51,10 @@ for (const count of [100, 1000, 5000]) {
       itemUses,
       useLabels,
       useCell,
+      upgradeNeedCell,
+      upgradeNeeds,
+      needsValues,
+      upgradeNeedsDetail,
       usesList,
       planShared: () => ({ ledger: [] }),
       stockLimit,

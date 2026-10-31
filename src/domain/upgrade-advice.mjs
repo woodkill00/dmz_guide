@@ -24,7 +24,13 @@ const MAX = 1e12;
 export function upgradeAdvice(
   pack,
   profile,
-  { scope = "all-known-incomplete", workLimit = 500000 } = {},
+  {
+    scope = "all-known-incomplete",
+    rootIds = null,
+    includeIdentityState = false,
+    strictVisibility = false,
+    workLimit = 500000,
+  } = {},
 ) {
   const identity = {
     packId: pack.id,
@@ -37,7 +43,7 @@ export function upgradeAdvice(
     validateProfile(profile);
     validateInventoryForPack(profile, pack);
     assert(
-      ["all-known-incomplete", "focused"].includes(scope),
+      ["all-known-incomplete", "focused", "selected-upgrades"].includes(scope),
       "Unknown advice scope",
     );
     assert(
@@ -87,7 +93,12 @@ export function upgradeAdvice(
         scopeCache.set(record, scopeOf(pack, record));
       return scopeCache.get(record);
     };
-    const visible = (r) => profile.spoilers || !r.spoiler;
+    const visible = (r) =>
+      (profile.spoilers || !r.spoiler) &&
+      (!strictVisibility ||
+        (!guard.limited &&
+          !guard.contains(r.id) &&
+          !guard.contains(r.name || "")));
     const guard = spoilerGuard(pack, profile.spoilers);
     let privacyLimited = guard.limited,
       partial = false,
@@ -101,8 +112,38 @@ export function upgradeAdvice(
           "Unresolved focused goal; review retained references in Settings before calculating this scope",
         );
       }
-    const candidates =
-      scope === "focused"
+    let selectedRoots = null;
+    if (scope === "selected-upgrades") {
+      assert(
+        Array.isArray(rootIds) &&
+          rootIds.length <= 20000 &&
+          rootIds.length <= pack.objectives.length,
+        "Invalid selected upgrade roots",
+      );
+      selectedRoots = new Set();
+      for (const id of rootIds) {
+        tick();
+        const record = objectives.get(id);
+        assert(
+          typeof id === "string" &&
+            !selectedRoots.has(id) &&
+            record?.track === "dmz-upgrade" &&
+            visible(record) &&
+            !guard.limited &&
+            !guard.contains(id) &&
+            !guard.contains(record.name),
+          "Unknown, duplicate or protected selected upgrade",
+        );
+        selectedRoots.add(id);
+      }
+    } else
+      assert(
+        rootIds === null,
+        "Selected roots require selected-upgrades scope",
+      );
+    const candidates = selectedRoots
+      ? pack.objectives.filter((r) => selectedRoots.has(r.id))
+      : scope === "focused"
         ? profile.goals
             .map((g) => objectives.get(g.id))
             .filter((r) => r?.track === "dmz-upgrade")
@@ -469,6 +510,17 @@ export function upgradeAdvice(
     return {
       ...identity,
       status: "ok",
+      ...(includeIdentityState
+        ? {
+            completedUpgradeIds: [...canonical.keys()].filter(
+              (id) =>
+                completedGroups.has(canonical.get(id)) &&
+                !guard.limited &&
+                !guard.contains(id) &&
+                !guard.contains(objectives.get(id).name),
+            ),
+          }
+        : {}),
       rows,
       includedCount: selected.length,
       unknownCount: selected.filter(

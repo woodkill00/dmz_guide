@@ -47,15 +47,21 @@ export function featurePages(packs) {
     title: "Upgrades",
     page: "upgrades",
     body: pages[0].body
+      .replace("Previous 50 records", "Previous 50 groups")
+      .replace("Next 50 records", "Next 50 groups")
+      .replace(
+        '<div id="progress-rows"></div>',
+        '<div id="progress-rows"></div>',
+      )
       .replace("Progress without the spoilers.", "Your upgrades, at a glance.")
       .replace(
         '<div id="progress-rows"></div>',
-        `<section class="upgrade-list-shell" aria-label="Upgrade checklist"><div class="upgrade-list-heading"><span>Upgrade</span><span>Completion</span><span>Missing materials</span><span>Readiness</span><span>Track</span><span class="upgrade-details-heading">Details</span></div><div id="progress-rows"></div></section>`,
+        `<p id="upgrade-group-explanation" class="notice">Groups match filters when any listed tier matches. Each header keeps the lowest visible listed incomplete tier for context; this is not verified unlock order. Expand Other tiers to inspect earlier/later versions.</p><section class="upgrade-list-shell" aria-label="Upgrade checklist"><div class="upgrade-list-heading"><span>Upgrade</span><span>Completion</span><span>Missing materials</span><span>Readiness</span><span>Track</span><span class="upgrade-details-heading">Details</span></div><div id="progress-rows"></div></section>`,
       )
 
       .replace(
         '<section class="upgrade-list-shell"',
-        `<section class="upgrade-overview-bar" aria-label="Upgrade overview"><p id="upgrade-catalog-summary" role="status"></p><p id="upgrade-feedback" role="status"></p><button type="button" id="upgrade-undo" hidden>Undo last progress change</button></section><div class="upgrade-view-controls"><label>Upgrade view<select id="upgrade-quick"><option value="all">All upgrades</option><option value="incomplete">Not completed</option><option value="tracked">Tracked</option><option value="missing">Missing materials (known shortfalls)</option><option value="review">Needs review / unknown</option></select></label><label>Row spacing<select id="upgrade-density"><option value="compact">Compact</option><option value="comfortable">Comfortable</option></select></label><details><summary>Visible columns</summary><label><input type="checkbox" id="upgrade-show-materials" checked> Materials / missing</label><label><input type="checkbox" id="upgrade-show-readiness" checked> Readiness</label><label><input type="checkbox" id="upgrade-show-evidence" checked> Evidence</label><p>Hidden columns remain available in upgrade Details.</p></details><p id="upgrade-view-note" role="status"></p></div><section class="upgrade-list-shell"`,
+        `<section class="upgrade-overview-bar" aria-label="Upgrade overview"><p id="upgrade-catalog-summary" role="status"></p><p id="upgrade-feedback" role="status"></p><button type="button" id="upgrade-undo" hidden>Undo last progress change</button></section><div class="upgrade-view-controls"><label>List layout<select id="upgrade-layout"><option value="grouped">Upgrade groups</option><option value="flat">All tiers (flat list)</option></select></label><label>Upgrade view<select id="upgrade-quick"><option value="all">All upgrades</option><option value="incomplete">Not completed</option><option value="tracked">Tracked</option><option value="missing">Missing materials (known shortfalls)</option><option value="review">Needs review / unknown</option></select></label><label>Row spacing<select id="upgrade-density"><option value="compact">Compact</option><option value="comfortable">Comfortable</option></select></label><details><summary>Visible columns</summary><label><input type="checkbox" id="upgrade-show-materials" checked> Materials / missing</label><label><input type="checkbox" id="upgrade-show-readiness" checked> Readiness</label><label><input type="checkbox" id="upgrade-show-evidence" checked> Evidence</label><p>Hidden columns remain available in upgrade Details.</p></details><p id="upgrade-view-note" role="status"></p></div><section class="upgrade-list-shell"`,
       )
       .replace(
         '<form id="progress-filters"',

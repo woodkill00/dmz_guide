@@ -161,7 +161,7 @@ const upgradeNames = new Intl.Collator("en", {
   sensitivity: "base",
   numeric: true,
 });
-function romanVersion(value) {
+export function romanVersion(value) {
   if (
     typeof value !== "string" ||
     !value ||
@@ -181,7 +181,7 @@ function romanVersion(value) {
     0,
   );
 }
-function upgradeSortKey(record, guard, reveal) {
+export function upgradeSortKey(record, guard, reveal) {
   if (record.spoiler && !reveal) return { hidden: true, name: "", version: 0 };
   const name = guard.text(record.name || record.title || "");
   const suffix = name.match(/\s+([MDCLXVI]+)$/);
@@ -208,6 +208,7 @@ export function progressRows(
     offset = 0,
     limit = 50,
     allowedIds = null,
+    idsOnly = false,
   } = {},
 ) {
   const q = query.trim().toLowerCase(),
@@ -325,6 +326,8 @@ export function progressRows(
       );
     });
   }
+  // Internal family matching needs identities, never thousands of full detail projections.
+  if (idsOnly) return matching.map(({ record }) => record.id);
   const start = Math.max(
     0,
     Math.min(

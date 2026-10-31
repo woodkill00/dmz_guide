@@ -1,3 +1,9 @@
+import { upgradeNeeds } from "../domain/upgrade-needs.mjs";
+import {
+  upgradeNeedCell,
+  needsValues,
+  upgradeNeedsDetail,
+} from "./upgrade-needs-view.mjs";
 import { itemUses } from "../domain/item-uses.mjs";
 import { useLabels, useCell, usesList } from "./compact-lists.mjs";
 import {
@@ -68,6 +74,9 @@ let inventoryPageNumber = 0;
 let inventoryUses = new Map();
 let inventoryLedger = new Map();
 let inventoryPlanWarning = "";
+let inventoryUpgradeNeeds = null,
+  needsPack = null,
+  needsFingerprint = "";
 let inventoryPack = null;
 const collapsedGroups = new Set();
 function groupFor(item) {
@@ -76,6 +85,21 @@ function groupFor(item) {
 function derivedInventory() {
   inventoryLedger = new Map();
   inventoryPlanWarning = "";
+  const fingerprint = JSON.stringify([
+    state.profile.schemaVersion,
+    state.profile.contentVersion,
+    state.profile.spoilers,
+    state.profile.inventory,
+    state.profile.reserves,
+    state.profile.completion,
+    state.profile.upgradeProgress,
+  ]);
+  if (needsPack !== state.pack || fingerprint !== needsFingerprint) {
+    inventoryUpgradeNeeds = upgradeNeeds(state.pack, state.profile);
+    needsPack = state.pack;
+    needsFingerprint = fingerprint;
+  }
+
   try {
     inventoryLedger = new Map(
       planShared(state.pack, state.profile).ledger.map((row) => [row.id, row]),
@@ -123,6 +147,27 @@ function updateInventoryPreview() {
             ? `${ledger.consumed} / ${ledger.retained}`
             : `${ledger.missing} / ${ledger.retainedMissing}`;
   }
+  for (const cell of document.querySelectorAll("[data-upgrade-need]")) {
+    const values = needsValues(
+      inventoryUpgradeNeeds[cell.dataset.upgradeNeed],
+      cell.dataset.item,
+    );
+    cell.querySelector("[data-tier-required]").textContent = values.required;
+    cell.querySelector("[data-tier-missing]").textContent = values.missing;
+    const scope = inventoryUpgradeNeeds[cell.dataset.upgradeNeed];
+    cell.querySelector("[data-tier-uncertainty]").textContent =
+      scope.used.has(cell.dataset.item) && scope.partial
+        ? "Partial / unknown scope"
+        : "";
+  }
+  for (const details of document.querySelectorAll(
+    "[data-upgrade-needs-detail]",
+  ))
+    details.innerHTML = upgradeNeedsDetail(
+      state.pack,
+      inventoryUpgradeNeeds,
+      details.dataset.upgradeNeedsDetail,
+    );
   for (const node of document.querySelectorAll("[data-available]")) {
     const raw = inventoryDraft.raw.get(`owned:${node.dataset.available}`),
       reserve = inventoryDraft.raw.get(`reserve:${node.dataset.available}`);
@@ -199,7 +244,7 @@ function renderInventoryPage(matches) {
         const matching = matches.filter(
           (id) => groupFor(inventoryIndex.get(id)) === key,
         ).length;
-        return `<section class="inventory-group"><h2><button type="button" data-inventory-group="${esc(key)}" aria-expanded="${!collapsedGroups.has(key)}">${esc(key)} <small>${items.length} on this page · ${matching} matching / ${total} visible catalog items</small></button></h2><div role="list" aria-label="${esc(key)} items" ${collapsedGroups.has(key) ? "hidden" : ""}><div class="inventory-row inventory-head" aria-hidden="true"><span>Item / unit</span><span>Owned</span><span>Reserve</span><span>Needed</span><span>Missing</span>${Object.values(
+        return `<section class="inventory-group"><h2><button type="button" data-inventory-group="${esc(key)}" aria-expanded="${!collapsedGroups.has(key)}">${esc(key)} <small>${items.length} on this page · ${matching} matching / ${total} visible catalog items</small></button></h2><div role="list" aria-label="${esc(key)} items" ${collapsedGroups.has(key) ? "hidden" : ""}><div class="inventory-row inventory-head" aria-hidden="true"><span>Item / unit</span><span>Owned</span><span>Reserve</span><span>Goal need</span><span>Goal missing</span><span>Next upgrade tiers<br><small>Required / missing</small></span><span>All unfinished upgrades<br><small>Required / missing</small></span>${Object.values(
           useLabels,
         )
           .map((label) => `<span class="inventory-use">${label}</span>`)
@@ -209,13 +254,13 @@ function renderInventoryPage(matches) {
             const url = `/local/?pack=${encodeURIComponent(state.pack.id)}&id=${encodeURIComponent(r.id)}`;
             const quantity = (field, prefix, label) =>
               `<label class="quantity-cell"><span class="mobile-label">${label}</span><input aria-label="${label} for ${esc(r.name)}" name="${prefix}:${esc(r.id)}" data-id="${esc(r.id)}" data-field="${field}" type="number" min="0" max="${stockLimit(state.profile, r)}" value="${esc(inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "" : inventoryDraft.raw.get(`${prefix}:${r.id}`))}" ${field === "reserves" ? "required" : `placeholder="${inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "Invalid entry" : "Not entered"}"`}></label>`;
-            return `<div class="inventory-entry" role="listitem" data-inventory-item="${esc(r.id)}"><div class="inventory-row"><div class="inventory-name"><a href="${esc(url)}" tabindex="0" target="_blank" rel="noopener noreferrer">${esc(r.name)}</a><small>${esc(r.unit)}</small></div><div class="owned-cell">${quantity("inventory", "owned", "Owned")}<div class="stock-steps"><button type="button" data-stock-step="-1" data-id="${esc(r.id)}" aria-label="Decrease owned ${esc(r.name)}">−</button><button type="button" data-stock-step="1" data-id="${esc(r.id)}" aria-label="Increase owned ${esc(r.name)}">+</button></div></div>${quantity("reserves", "reserve", "Reserve")}<span class="inventory-plan" role="group" aria-label="Needed, consumed / retained"><span class="mobile-label">Needed</span><span data-plan-item="${esc(r.id)}" data-plan-field="needed"></span></span><span class="inventory-plan" role="group" aria-label="Missing, consumed / retained"><span class="mobile-label">Missing</span><span data-plan-item="${esc(r.id)}" data-plan-field="missing"></span></span>${Object.keys(
+            return `<div class="inventory-entry" role="listitem" data-inventory-item="${esc(r.id)}"><div class="inventory-row"><div class="inventory-name"><a href="${esc(url)}" tabindex="0" target="_blank" rel="noopener noreferrer">${esc(r.name)}</a><small>${esc(r.unit)}</small></div><div class="owned-cell">${quantity("inventory", "owned", "Owned")}<div class="stock-steps"><button type="button" data-stock-step="-1" data-id="${esc(r.id)}" aria-label="Decrease owned ${esc(r.name)}">−</button><button type="button" data-stock-step="1" data-id="${esc(r.id)}" aria-label="Increase owned ${esc(r.name)}">+</button></div></div>${quantity("reserves", "reserve", "Reserve")}<span class="inventory-plan" role="group" aria-label="Needed, consumed / retained"><span class="mobile-label">Goal need</span><span data-plan-item="${esc(r.id)}" data-plan-field="needed"></span></span><span class="inventory-plan" role="group" aria-label="Missing, consumed / retained"><span class="mobile-label">Goal missing</span><span data-plan-item="${esc(r.id)}" data-plan-field="missing"></span></span>${upgradeNeedCell(r.id, "next", "Next upgrade tiers")}${upgradeNeedCell(r.id, "all", "All unfinished upgrades")}${Object.keys(
               useLabels,
             )
               .map((kind) => useCell(uses[kind], kind, r.id))
               .join(
                 "",
-              )}<button type="button" data-show-use="${esc(r.id)}" aria-expanded="false" aria-label="Uses and details for ${esc(r.name)}">Uses</button></div><div class="inventory-details" data-item-detail="${esc(r.id)}" hidden><h3>${esc(r.name)} · draft details</h3><p>Available after your fixed reserve: <span data-available="${esc(r.id)}"></span>. Blank owned is not entered. Needed/Missing are separate consumed quantities and retained tool floors from your selected goals; units are never combined.</p><button type="button" data-clear-stock="${esc(r.id)}">Clear stock (not entered)</button><p>Catalog uses are references, not quantities allocated or advice to discard.</p>${Object.entries(
+              )}<button type="button" data-show-use="${esc(r.id)}" aria-expanded="false" aria-label="Uses and details for ${esc(r.name)}">Uses</button></div><div class="inventory-details" data-item-detail="${esc(r.id)}" hidden><h3>${esc(r.name)} · draft details</h3><p>Available after your fixed reserve: <span data-available="${esc(r.id)}"></span>. Blank owned is not entered. Needed/Missing are separate consumed quantities and retained tool floors from your selected goals; units are never combined.</p><button type="button" data-clear-stock="${esc(r.id)}">Clear stock (not entered)</button><p>Catalog uses are references, not quantities allocated or advice to discard.</p><div data-upgrade-needs-detail="${esc(r.id)}"></div>${Object.entries(
               useLabels,
             )
               .map(
@@ -739,7 +784,8 @@ function filterInventory(reset = true) {
     mode = $("#inventory-view").value;
   let needed = new Set(),
     warning = "";
-  if (mode === "needed") {
+  if (["needed", "upgrade-next", "upgrade-all"].includes(mode)) {
+    derivedInventory();
     try {
       needed = new Set(
         planShared(state.pack, state.profile)
@@ -751,6 +797,13 @@ function filterInventory(reset = true) {
         " Planning unavailable; clear the filter or resolve profile/content mismatch.";
     }
   }
+  if (mode === "needed")
+    for (const id of inventoryIndex.keys())
+      if (
+        inventoryUpgradeNeeds.all.used.has(id) ||
+        inventoryUpgradeNeeds.all.membershipLimited
+      )
+        needed.add(id);
   let matches = filterInventoryIds(
     inventoryIndex,
     state.profile,
@@ -758,6 +811,13 @@ function filterInventory(reset = true) {
     mode,
     needed,
   );
+  if (mode === "upgrade-next" || mode === "upgrade-all") {
+    const scope =
+      inventoryUpgradeNeeds[mode === "upgrade-next" ? "next" : "all"];
+    matches = matches.filter(
+      (id) => scope.used.has(id) || scope.membershipLimited,
+    );
+  }
   const section = $("#inventory-section")?.value || "",
     usage = $("#inventory-use-filter")?.value || "";
   const view = $("#inventory-view").value;
@@ -775,7 +835,10 @@ function filterInventory(reset = true) {
     derivedInventory();
     matches = matches.filter((id) => {
       const row = inventoryLedger.get(id);
-      return row && (row.missing || row.retainedMissing);
+      const upgrade = inventoryUpgradeNeeds.all.rows.get(id);
+      return (
+        (row && (row.missing || row.retainedMissing)) || upgrade?.search > 0
+      );
     });
   }
   const sort = $("#inventory-sort")?.value;

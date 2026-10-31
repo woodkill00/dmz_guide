@@ -3,6 +3,7 @@ import { itemUses } from "../domain/item-uses.mjs";
 import { spoilerGuard } from "../domain/progression.mjs";
 const defaults = () => ({
   quick: "all",
+  layout: "grouped",
   density: "compact",
   materials: true,
   readiness: true,
@@ -16,6 +17,7 @@ export function cleanUpgradeView(raw) {
   if (!raw || typeof raw !== "object") return view;
   if (["all", "incomplete", "tracked", "missing", "review"].includes(raw.quick))
     view.quick = raw.quick;
+  if (["grouped", "flat"].includes(raw.layout)) view.layout = raw.layout;
   if (["compact", "comfortable"].includes(raw.density))
     view.density = raw.density;
   for (const key of ["materials", "readiness", "evidence"])
