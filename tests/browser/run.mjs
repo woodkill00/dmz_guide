@@ -1,3 +1,4 @@
+import { runCollectionTests } from "./collection-needs.mjs";
 import { runTieredUpgradeTests } from "./tiered-upgrades.mjs";
 import { runUpgradeDashboardTests } from "./upgrade-dashboard.mjs";
 import { runRefinedInventoryTests } from "./refined-inventory.mjs";
@@ -29,6 +30,7 @@ try {
   await mkdir("test-results", { recursive: true });
   await runNavigationDirectoryTests({ browser, base });
   await runTieredUpgradeTests({ browser, base });
+  await runCollectionTests({ browser, base });
   await runUpgradeDashboardTests({ browser, base });
   await runRefinedInventoryTests({ browser, base });
   await runUpgradeTests({ browser, base, captureScreenshots: true });

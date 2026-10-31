@@ -1,0 +1,194 @@
+import assert from "node:assert/strict";
+import { chromium, firefox, webkit } from "playwright";
+import { pathToFileURL } from "node:url";
+import { collectionFixture } from "../helpers/collection-needs.mjs";
+export async function runCollectionTests({ browser, base }) {
+  const context = await browser.newContext(),
+    page = await context.newPage();
+  const ready = () =>
+    page.waitForFunction(
+      () =>
+        document.querySelector("main")?.getAttribute("aria-busy") === "false",
+    );
+  const badge = () => page.locator('[data-collection-state="craft:wire"]');
+  const wire = () => page.locator('[name="owned:craft:wire"]');
+  try {
+    await page.goto(`${base}/inventory/?pack=demo%3Atraining-pack`);
+    await ready();
+    await page.evaluate(async (pack) => {
+      const { validatePack } = await import("/assets/src/content/validate.mjs");
+      validatePack(
+        pack,
+        await (await fetch("/assets/schemas/pack.schema.json")).json(),
+      );
+      const { commitRecord, saveProfile } = await import(
+        "/assets/src/storage/store.mjs"
+      );
+      const { newProfile } = await import("/assets/src/domain/profile.mjs");
+      await commitRecord("content", pack.id, { pack, revision: 0 }, 0);
+      const profile = newProfile(pack);
+      for (const i of pack.items)
+        if (i.id !== "craft:wire") profile.inventory[i.id] = 0;
+      profile.goals = [{ id: "craft:unrelated-recipe", quantity: 1 }];
+      await saveProfile(profile, 0);
+    }, collectionFixture());
+    const inventory = async () => {
+      await page.goto(`${base}/inventory/?pack=qa044%3Acollection`);
+      await ready();
+    };
+    await inventory();
+    await page.locator("#inventory-view").selectOption("needed");
+    assert.equal(
+      await page.locator('[data-inventory-item="craft:spare"]').count(),
+      0,
+    );
+    assert.equal(await badge().getAttribute("data-state"), "review");
+    assert.match(await badge().textContent(), /Crafting ingredient/);
+    await wire().fill("0");
+    await page.waitForFunction(
+      () =>
+        document.querySelector('[data-collection-state="craft:wire"]').dataset
+          .state === "short",
+    );
+    assert.match(await badge().textContent(), /More needed/);
+    await wire().fill("12");
+    await page.waitForFunction(
+      () =>
+        document.querySelector('[data-collection-state="craft:wire"]').dataset
+          .state === "covered",
+    );
+    const node = await wire().elementHandle();
+    await wire().fill("13");
+    assert(await wire().evaluate((el, old) => el === old, node));
+    await wire().fill("12");
+    await page.locator('#inventory-form button[type="submit"]').click();
+    await page.waitForFunction(
+      () =>
+        !document
+          .querySelector("#inventory-form")
+          .matches('[aria-busy="true"]'),
+    );
+    await inventory();
+    await page.locator("#inventory-view").selectOption("needed");
+    assert.equal(await wire().inputValue(), "12");
+    assert.equal(await badge().getAttribute("data-state"), "covered");
+    await page.locator('[name="reserve:craft:wire"]').fill("2");
+    assert.equal(await badge().getAttribute("data-state"), "short");
+    await page.locator("#cancel-inventory").click();
+    await page.waitForFunction(
+      () =>
+        document.querySelector('[name="reserve:craft:wire"]')?.value === "0",
+    );
+    assert.equal(await badge().getAttribute("data-state"), "covered");
+    await page.locator('[data-show-use="craft:wire"]').first().click();
+    assert.match(
+      await page
+        .locator('[data-upgrade-needs-detail="craft:wire"]')
+        .textContent(),
+      /Required 12; missing 0/,
+    );
+    for (const width of [320, 390, 900, 1440, 1920])
+      for (const theme of ["dark", "light"]) {
+        await page.setViewportSize({ width, height: 1000 });
+        await page.evaluate(
+          (t) => (document.documentElement.dataset.theme = t),
+          theme,
+        );
+        assert(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth + 1,
+          ),
+        );
+        for (const [stock, state] of [
+          ["0", "short"],
+          ["", "review"],
+          ["12", "covered"],
+        ]) {
+          await wire().fill(stock);
+          assert.equal(await badge().getAttribute("data-state"), state);
+          assert(
+            await badge().evaluate((el) => {
+              const style = getComputedStyle(el);
+              const linear = (c) => {
+                const v = c / 255;
+                return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+              };
+              const luminance = (color) =>
+                color
+                  .match(/[\d.]+/g)
+                  .slice(0, 3)
+                  .map(Number)
+                  .map(linear)
+                  .reduce((n, v, i) => n + v * [0.2126, 0.7152, 0.0722][i], 0);
+              const a = luminance(style.color),
+                b = luminance(style.backgroundColor);
+              return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) >= 4.5;
+            }),
+            `${state} text contrast`,
+          );
+        }
+        await page.evaluate(
+          () => (document.documentElement.style.fontSize = "200%"),
+        );
+        assert(
+          await page.evaluate(
+            () =>
+              parseFloat(getComputedStyle(document.documentElement).fontSize) >=
+              32,
+          ),
+        );
+        assert(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth + 1,
+          ),
+        );
+        await wire().scrollIntoViewIfNeeded();
+        await wire().focus();
+        await page.evaluate(() => new Promise(requestAnimationFrame));
+        const enlargedBox = await wire().boundingBox();
+        for (const [stock, state] of [
+          ["0", "short"],
+          ["", "review"],
+          ["12", "covered"],
+        ]) {
+          await wire().fill(stock);
+          assert.equal(await badge().getAttribute("data-state"), state);
+          assert.deepEqual(
+            await wire().boundingBox(),
+            enlargedBox,
+            `${width}/${theme}/200% stable status geometry`,
+          );
+        }
+        await page.evaluate(
+          () => (document.documentElement.style.fontSize = ""),
+        );
+      }
+    await page.goto(`${base}/upgrades/?pack=qa044%3Acollection`);
+    await ready();
+    await page.locator('[data-complete-upgrade="craft:upgrade"]').click();
+    await page.locator("#upgrade-progress-apply").click();
+    await page.waitForFunction(
+      () => !document.querySelector("#upgrade-progress-confirm").open,
+    );
+    await inventory();
+    await page.locator("#inventory-view").selectOption("needed");
+    assert.equal(await page.locator("[data-inventory-item]").count(), 0);
+    console.log(
+      `${browser.browserType().name()} collection unfinished/crafting/yellow/red/green/reserves/Save/Cancel/completion/themes PASS`,
+    );
+  } finally {
+    await context.close();
+  }
+}
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)
+  for (const engine of [chromium, firefox, webkit]) {
+    const browser = await engine.launch();
+    try {
+      await runCollectionTests({
+        browser,
+        base: process.env.TEST_BASE || "http://127.0.0.1:4173",
+      });
+    } finally {
+      await browser.close();
+    }
+  }

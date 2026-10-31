@@ -93,6 +93,7 @@ function derivedInventory() {
     state.profile.reserves,
     state.profile.completion,
     state.profile.upgradeProgress,
+    state.profile.routes,
   ]);
   if (needsPack !== state.pack || fingerprint !== needsFingerprint) {
     inventoryUpgradeNeeds = upgradeNeeds(state.pack, state.profile);
@@ -108,6 +109,9 @@ function derivedInventory() {
     inventoryPlanWarning =
       "Plan preview unavailable: check quantities, content binding and unresolved requirements.";
   }
+  if (inventoryUpgradeNeeds.collection.limited)
+    inventoryPlanWarning +=
+      " Collection needs reached a safety limit; membership and quantities are incomplete. Resolve content before relying on this list.";
 }
 function updateInventoryPreview() {
   for (const input of document.querySelectorAll(
@@ -159,6 +163,25 @@ function updateInventoryPreview() {
       scope.used.has(cell.dataset.item) && scope.partial
         ? "Partial / unknown scope"
         : "";
+  }
+  for (const badge of document.querySelectorAll("[data-collection-state]")) {
+    const need = inventoryUpgradeNeeds.collection.get(
+      badge.dataset.collectionState,
+    );
+    badge.hidden = !need?.used;
+    badge.dataset.state = need?.state || "none";
+    const description = need?.used
+      ? `${need.label}${need.craft ? " · Crafting ingredient" : ""}`
+      : "";
+    badge.setAttribute("aria-label", description);
+    badge.title = description;
+    badge.querySelector(".collection-short").textContent = need?.used
+      ? { short: "Short", covered: "Met", review: "Check" }[need.state]
+      : "";
+    badge.querySelector(".collection-kind").textContent = need?.craft
+      ? "Craft"
+      : "";
+    badge.querySelector(".collection-description").textContent = description;
   }
   for (const details of document.querySelectorAll(
     "[data-upgrade-needs-detail]",
@@ -254,7 +277,7 @@ function renderInventoryPage(matches) {
             const url = `/local/?pack=${encodeURIComponent(state.pack.id)}&id=${encodeURIComponent(r.id)}`;
             const quantity = (field, prefix, label) =>
               `<label class="quantity-cell"><span class="mobile-label">${label}</span><input aria-label="${label} for ${esc(r.name)}" name="${prefix}:${esc(r.id)}" data-id="${esc(r.id)}" data-field="${field}" type="number" min="0" max="${stockLimit(state.profile, r)}" value="${esc(inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "" : inventoryDraft.raw.get(`${prefix}:${r.id}`))}" ${field === "reserves" ? "required" : `placeholder="${inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "Invalid entry" : "Not entered"}"`}></label>`;
-            return `<div class="inventory-entry" role="listitem" data-inventory-item="${esc(r.id)}"><div class="inventory-row"><div class="inventory-name"><a href="${esc(url)}" tabindex="0" target="_blank" rel="noopener noreferrer">${esc(r.name)}</a><small>${esc(r.unit)}</small></div><div class="owned-cell">${quantity("inventory", "owned", "Owned")}<div class="stock-steps"><button type="button" data-stock-step="-1" data-id="${esc(r.id)}" aria-label="Decrease owned ${esc(r.name)}">−</button><button type="button" data-stock-step="1" data-id="${esc(r.id)}" aria-label="Increase owned ${esc(r.name)}">+</button></div></div>${quantity("reserves", "reserve", "Reserve")}<span class="inventory-plan" role="group" aria-label="Needed, consumed / retained"><span class="mobile-label">Goal need</span><span data-plan-item="${esc(r.id)}" data-plan-field="needed"></span></span><span class="inventory-plan" role="group" aria-label="Missing, consumed / retained"><span class="mobile-label">Goal missing</span><span data-plan-item="${esc(r.id)}" data-plan-field="missing"></span></span>${upgradeNeedCell(r.id, "next", "Next upgrade tiers")}${upgradeNeedCell(r.id, "all", "All unfinished upgrades")}${Object.keys(
+            return `<div class="inventory-entry" role="listitem" data-inventory-item="${esc(r.id)}"><div class="inventory-row"><div class="inventory-name"><a href="${esc(url)}" tabindex="0" target="_blank" rel="noopener noreferrer">${esc(r.name)}</a><small>${esc(r.unit)}</small><small class="collection-state" data-collection-state="${esc(r.id)}" hidden><span class="collection-short"></span><span class="collection-kind"></span><span class="sr-only collection-description"></span></small></div><div class="owned-cell">${quantity("inventory", "owned", "Owned")}<div class="stock-steps"><button type="button" data-stock-step="-1" data-id="${esc(r.id)}" aria-label="Decrease owned ${esc(r.name)}">−</button><button type="button" data-stock-step="1" data-id="${esc(r.id)}" aria-label="Increase owned ${esc(r.name)}">+</button></div></div>${quantity("reserves", "reserve", "Reserve")}<span class="inventory-plan" role="group" aria-label="Needed, consumed / retained"><span class="mobile-label">Goal need</span><span data-plan-item="${esc(r.id)}" data-plan-field="needed"></span></span><span class="inventory-plan" role="group" aria-label="Missing, consumed / retained"><span class="mobile-label">Goal missing</span><span data-plan-item="${esc(r.id)}" data-plan-field="missing"></span></span>${upgradeNeedCell(r.id, "next", "Next upgrade tiers")}${upgradeNeedCell(r.id, "all", "All unfinished upgrades")}${Object.keys(
               useLabels,
             )
               .map((kind) => useCell(uses[kind], kind, r.id))
@@ -797,13 +820,10 @@ function filterInventory(reset = true) {
         " Planning unavailable; clear the filter or resolve profile/content mismatch.";
     }
   }
+  if (mode === "needed") needed = new Set();
   if (mode === "needed")
     for (const id of inventoryIndex.keys())
-      if (
-        inventoryUpgradeNeeds.all.used.has(id) ||
-        inventoryUpgradeNeeds.all.membershipLimited
-      )
-        needed.add(id);
+      if (inventoryUpgradeNeeds.collection.get(id)?.used) needed.add(id);
   let matches = filterInventoryIds(
     inventoryIndex,
     state.profile,

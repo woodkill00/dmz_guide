@@ -59,3 +59,18 @@ Inventory has two automatic upgrade columns, even with no tracked planner goals:
 Each shows required quantities and additional missing stock (including a fixed reserve shortfall). All already includes Next: compare these scopes rather than adding them together. Goal need/Goal missing remain your separate selected-plan preview. Consumed quantities add; shared retained tools use a maximum floor; observation aliases and shared prerequisites count once. Unknown quantities, consumption, inventory or evidence stay Unknown, and numeric partial facts carry a visible qualifier.
 
 An item remains in **Needed by goals or unfinished upgrades** until its known unfinished uses are completed, even when you own enough and Missing is0. Next/all filters narrow that membership. Completion removes only finished demand; it never consumes/refunds stock. Item Uses shows bounded per-scope contributors and existing recipe/mission references; no arbitrary quantities are invented for unselected missions or recipes. Draft edits update previews; Save/Cancel retain their existing meaning.
+
+
+## Collection colors and crafting ingredients
+
+The **Needed by unfinished upgrades / missions** filter includes unfinished upgrades and missions (DMZ orders/story, mission records and labelled campaign records), plus their recipe ingredients. Completed roots and unrelated planner-only goals are excluded. Completing the final use removes its ingredients from Needed; owning enough keeps the item listed as covered. Selected-plan columns still describe your separate planner goals.
+
+Each item has a text status as well as color:
+
+- **Red — Short (more needed):** a known positive stock shortage.
+- **Green — Met (listed amount covered):** the known required quantity is covered after reserves.
+- **Yellow — Check (amount unresolved):** quantities, evidence, stock, recipe choice or a dependency cycle need review.
+
+The **Craft** tag identifies an indirect crafting ingredient even when its quantity state is red or green. Open **Uses** for the combined collection requirement, missing quantity and contributors. The Next/All upgrade columns remain upgrade-only; the separate collection explanation includes mission and crafting demand. Do not add these alternative summaries together.
+
+The projection uses listed batch yields, stock held in intermediate outputs, shared consumed quantities and retained-tool maxima. It uses your explicit recipe route, or the sole fully visible producer. Alternatives, hidden recipe endpoints and unknown costs are never guessed. Covered quantities do not certify crafting access, unlocks, location, input-pool eligibility or complete current-game costs. Advice never crafts, consumes stock, adds goals or marks progress automatically. Save/Cancel and private browser storage work as before.

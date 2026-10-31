@@ -2,6 +2,7 @@ import { upgradeFamilies } from "./upgrade-families.mjs";
 import { upgradeAdvice } from "./upgrade-advice.mjs";
 import { scopeOf } from "../content/validate.mjs";
 import { spoilerGuard } from "./progression.mjs";
+import { collectionNeeds } from "./collection-needs.mjs";
 // Pure advisory scopes; never add all these roots to the persisted goal queue.
 export function upgradeNeeds(pack, profile) {
   const all = upgradeAdvice(pack, profile, {
@@ -95,5 +96,11 @@ export function upgradeNeeds(pack, profile) {
     membershipLimited: membership.limited,
     rows: new Map(advice.rows.map((r) => [r.id, r])),
   });
-  return { groups, next: project(next, nextUses), all: project(all, allUses) };
+  const result = {
+    groups,
+    next: project(next, nextUses),
+    all: project(all, allUses),
+  };
+  result.collection = collectionNeeds(pack, profile, result);
+  return result;
 }

@@ -2409,3 +2409,76 @@ main :where(p, li, a, ul, ol, section, article, div) {
     min-width: min(100%, 6rem);
   }
 }
+.collection-state {
+  display: block;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid currentColor;
+  border-radius: 0.3rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.collection-state[hidden] {
+  display: block;
+  visibility: hidden;
+}
+.collection-short,
+.collection-kind {
+  display: block;
+  line-height: 1.4;
+  min-block-size: 1.4em;
+}
+.collection-state[data-state="short"] {
+  color: #ffb4b4;
+  background: #4d1720;
+}
+.collection-state[data-state="covered"] {
+  color: #bcf5cc;
+  background: #143b26;
+}
+.collection-state[data-state="review"] {
+  color: #ffe49a;
+  background: #42340e;
+}
+[data-theme="light"] .collection-state[data-state="short"] {
+  color: #851624;
+  background: #ffe8e8;
+}
+[data-theme="light"] .collection-state[data-state="covered"] {
+  color: #14542c;
+  background: #e0f5e7;
+}
+[data-theme="light"] .collection-state[data-state="review"] {
+  color: #614800;
+  background: #fff2be;
+}
+@media (max-width: 700px) {
+  #inventory-fields.has-upgrade-needs .inventory-row {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+  }
+  #inventory-fields.has-upgrade-needs .inventory-name,
+  #inventory-fields.has-upgrade-needs .inventory-plan,
+  #inventory-fields.has-upgrade-needs .inventory-row > button {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  #inventory-fields.has-upgrade-needs .inventory-plan {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+  #inventory-fields.has-upgrade-needs .inventory-upgrade-need {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  #inventory-fields.has-upgrade-needs .collection-state,
+  #inventory-fields.has-upgrade-needs .collection-state[hidden] {
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    gap: 0.5rem;
+    max-inline-size: 100%;
+  }
+  #inventory-fields.has-upgrade-needs .quantity-cell .mobile-label {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+}
