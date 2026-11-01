@@ -1,5 +1,7 @@
 # Documentation
 
+- [Weapon and attachment database research](weapon-database-research.md): sources, coverage gaps, database model and implementation slices.
+
 - [Compact interface and navigation](compact-interface.md)
 
 ## Get started

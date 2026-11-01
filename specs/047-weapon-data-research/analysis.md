@@ -1,0 +1,9 @@
+# Analysis
+
+R001 maps to the source matrix/registry; R002 to local audit and proposed entities; R003 to update stages, UI, delivery and tests; R004 to section-level applicability and explicit limitations. Official launch data is a baseline, not a current DMZ proof. The dedicated official weapons directory is pending. CODMunity comparator is Multiplayer; weapon attachment table says Warzone; source averages and pending-loading base values cannot become DMZ per-build measurements. Official October 28 numeric tuning is in Multiplayer. COD Loadout is largely derived and does not provide independent confirmation. Beta and upcoming entries remain separate. Failed or unreadable pages are recorded.
+
+No production implementation or bulk collection occurred. Research/source discovery is complete; independent review and repository validation pending. Existing permission context covers local research/collection; no new legal or publication guarantee is introduced.
+
+Validation caught an initial audit overstatement: M4 has an explicit unknown/null fire-rate observation, while the other three starter weapons have empty stats arrays. The research brief now states that exact baseline; no numeric performance is populated. Validation was corrected to assess numeric coverage rather than assume all arrays are empty.
+
+Convergence: independent research/documentation review PASS, including online spot-checks and local baseline/registry audit. Validation passed for 23 unique HTTPS leads, resolved acyclic lineage, local Markdown links, UTF-8 and exact zero-numeric local baseline. Repository check: zero failures; whitespace check passed. Runtime/browser tests not applicable because this slice changes only research documents and documentation index. No production dataset completeness or future implementation approval is claimed. T001-T005 complete.

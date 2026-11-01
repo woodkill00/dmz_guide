@@ -1,0 +1,229 @@
+{
+  "version": 1,
+  "reviewedAt": "2026-11-01",
+  "purpose": "Research source leads, not runtime importer configuration or a populated game catalog",
+  "permissionContext": "Prior owner confirmation covers additional providers for local collection. No public redistribution permission inferred. See specs/036-field-command/source-registry.json.",
+  "sources": [
+    {
+      "id": "official-launch",
+      "tier": "official",
+      "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-launch-multiplayer-operators-weapons-equipment-create-a-class",
+      "inspection": "opened",
+      "assessment": "Launch roster and baseline fields; not current DMZ numeric verification",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "official-fob",
+      "tier": "official",
+      "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-dmz-how-to-play-forward-operating-base-guide",
+      "inspection": "opened",
+      "assessment": "DMZ acquisition and progression systems; not a complete attachment-stat catalog",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "official-patches",
+      "tier": "official",
+      "url": "https://www.callofduty.com/patchnotes/2026/10/call-of-duty-modern-warfare-4-launch-patch-notes",
+      "inspection": "opened",
+      "assessment": "Mode/date-specific updates; do not infer DMZ from Multiplayer section",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "official-guides",
+      "tier": "official",
+      "url": "https://www.callofduty.com/guides/modernwarfare4",
+      "inspection": "opened",
+      "assessment": "Dedicated weapon guide not yet available",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "codmunity-weapon",
+      "tier": "community-direct",
+      "url": "https://codmunity.gg/weapon/mw4/han-86",
+      "inspection": "opened",
+      "assessment": "Attachment tables include Warzone labels despite DMZ builds on same page",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "codmunity-comparator",
+      "tier": "community-direct",
+      "url": "https://codmunity.gg/weapon-stats/mw4",
+      "inspection": "opened",
+      "assessment": "Multiplayer; loading warning means displayed base stats may not include attachments",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "codmunity-attachment",
+      "tier": "community-direct",
+      "url": "https://codmunity.gg/attachment/mw4/5-56-nato-high-velocity",
+      "inspection": "opened",
+      "assessment": "Average effects cannot substitute for weapon-specific values",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "codmunity-dmz",
+      "tier": "community-direct",
+      "url": "https://codmunity.gg/mw4-dmz",
+      "inspection": "opened",
+      "assessment": "DMZ editorial builds and source date",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "wzstats-dmz",
+      "tier": "community-direct",
+      "url": "https://wzstats.gg/mw4/dmz",
+      "inspection": "opened",
+      "assessment": "DMZ recommendations, not numeric measurement proof",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "wzstats-weapon",
+      "tier": "community-direct",
+      "url": "https://wzstats.gg/best-loadouts/han-86-mw4",
+      "inspection": "opened",
+      "assessment": "Separate DMZ and MP sections; unrelated footer games must be excluded",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "dmzcodex-attachments",
+      "tier": "community-direct",
+      "url": "https://dmzcodex.com/attachments/",
+      "inspection": "opened",
+      "assessment": "Includes upcoming entries; preserve availability",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "dmzcodex-example",
+      "tier": "community-direct",
+      "url": "https://dmzcodex.com/attachments/fss-is300/",
+      "inspection": "opened",
+      "assessment": "Attachment evidence and contextual fit/cost reports",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "ggranked-weapon",
+      "tier": "community-direct",
+      "url": "https://ggranked.com/games/call-of-duty-modern-warfare-4/meta/weapons/han-86",
+      "inspection": "opened",
+      "assessment": "Attachment/stat cross-check candidate; mode must remain explicit",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "ggranked-ranking",
+      "tier": "community-direct",
+      "url": "https://ggranked.com/games/call-of-duty-modern-warfare-4/meta/weapons",
+      "inspection": "opened",
+      "assessment": "Total TTK method is not ideal firing-only TTK",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "codloadout-method",
+      "tier": "community-derived",
+      "url": "https://codloadout.gitlab.io/mw4/data-and-assumptions/",
+      "inspection": "opened",
+      "assessment": "Methodology and JSON discovery; derived reports not independent corroboration",
+      "derivedFrom": [
+        "official-launch",
+        "codmunity-comparator",
+        "codmunity-weapon",
+        "ggranked-weapon",
+        "dmzcodex-attachments"
+      ],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "codloadout-attachments",
+      "tier": "community-derived",
+      "url": "https://codloadout.gitlab.io/mw4/attachments/",
+      "inspection": "opened",
+      "assessment": "Reported coverage counts are provider claims, not this project denominator",
+      "derivedFrom": [
+        "codloadout-method"
+      ],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "codloadout-json",
+      "tier": "structured-candidate",
+      "url": "https://codloadout.gitlab.io/data/mw4-community-attachments.json",
+      "inspection": "opened-not-imported",
+      "assessment": "Public JSON route inspected; not validated or imported",
+      "derivedFrom": [
+        "codloadout-method"
+      ],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "loadoutvault",
+      "tier": "community-derived",
+      "url": "https://loadoutvault.com/mw4/dmz/weapons/",
+      "inspection": "opened",
+      "assessment": "Official-data cross-check with unlock discrepancies",
+      "derivedFrom": [
+        "official-launch"
+      ],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "nomads",
+      "tier": "community-direct",
+      "url": "https://nomaddmzhub.com/",
+      "inspection": "opened",
+      "assessment": "Builder/cost candidate; site says stats planned",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "mw4-online",
+      "tier": "historical",
+      "url": "https://mw4.online/attachments/",
+      "inspection": "opened",
+      "assessment": "Beta evidence only, not launch authority",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "sym-legacy",
+      "tier": "historical",
+      "url": "https://sym.gg/legacy/?game=mw2&page=gunsmith",
+      "inspection": "opened",
+      "assessment": "MW2 legacy; no confirmed MW4 DMZ coverage",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "truegamedata",
+      "tier": "unconfirmed",
+      "url": "https://www.truegamedata.com/",
+      "inspection": "unreadable",
+      "assessment": "No readable body; current MW4 DMZ coverage not established",
+      "derivedFrom": [],
+      "checkedAt": "2026-11-01"
+    },
+    {
+      "id": "cyberneticpunks",
+      "tier": "community-derived",
+      "url": "https://cyberneticpunks.com/dmz",
+      "inspection": "landing-only",
+      "assessment": "Weapons child fetch failed; child coverage not assessed",
+      "derivedFrom": [
+        "official-launch"
+      ],
+      "checkedAt": "2026-11-01"
+    }
+  ]
+}
