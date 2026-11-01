@@ -1,3 +1,4 @@
+import { runCodmunityTests } from "./codmunity.mjs";
 import { runGunsmithTests } from "./gunsmith.mjs";
 import { runArmoryWorkbenchTests } from "./armory-workbench.mjs";
 import { runWeaponManagerTests } from "./weapon-manager.mjs";
@@ -30,6 +31,7 @@ try {
     try {
       await runArmoryTests({ browser, base });
       await runGunsmithTests({ browser, base });
+      await runCodmunityTests({ browser, base });
       await runArmoryWorkbenchTests({ browser, base });
       await runWeaponManagerTests({ browser, base });
       await runNavigationDirectoryTests({

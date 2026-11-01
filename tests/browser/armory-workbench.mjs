@@ -56,6 +56,7 @@ export async function runArmoryWorkbenchTests({
     await page.waitForFunction(
       () => document.querySelector("main").dataset.armoryReady === "true",
     );
+    await page.locator("#compare-mode").selectOption("launch");
     assert.match(await page.locator("#comparison-result").innerText(), /740/);
     await tab(page, "builder");
     assert.match(

@@ -50,3 +50,8 @@ Apply uses an exclusive writer lock and compares the database revision against t
 A crash can leave `.local/weapon-updates/writer.lock`; new writers stop instead of taking over. Confirm no updater is running, inspect the proposal/current file/backup, and remove only that stale lock when appropriate. Do not restore over a newer database without reviewing it. Recovery is manual; no operation silently overwrites a newer valid state. Backups/proposals/raw captures stay ignored locally.
 
 The initial reviewed population used `scripts/populate_weapons.py` and captured source inputs; it is intentionally not a repeat updater and refuses to overwrite the intelligence document. Ongoing official patch updates use the commands above. Original source URLs/lineage are retained in `content/weapon-intel.json`; see [research047](weapon-database-research.md) and [feature048 acceptance](../specs/048-weapon-database-updates/acceptance.md).
+
+
+## Preferred CODMunity baseline
+
+The [CODMunity baseline](codmunity-baseline.md) supplies preferred base stats/damage marked \*WZ and explicitly untested in DMZ. Separate DMZ readiness probes run on manager startup and every six hours while running. Accepted updates require review; original source reports retain their scopes.

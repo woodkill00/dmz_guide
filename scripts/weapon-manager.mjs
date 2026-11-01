@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { assertSafePath, readCatalogFile } from "./catalog.mjs";
 import { parseBounded } from "../src/content/limits.mjs";
 import { renderWeaponManager } from "../src/ui/weapon-manager-page.mjs";
+import { codmunityStatus, monitorCodmunity } from "./codmunity.mjs";
 const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const statusPath = ".local/weapon-updates/manager-status.json";
 const assets = new Set([
@@ -67,7 +68,18 @@ export function runWeaponJob(root, action, fields = {}) {
   const loader =
     "import sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);import weapon_database as w;root=Path(sys.argv[2]);sys.argv=[str(Path(sys.argv[1])/'weapon_database.py'),*sys.argv[3:]];sys.exit(w.main(root))";
   let command, args, timeout;
-  if (action === "build") {
+  if (action.startsWith("codmunity-")) {
+    if (
+      !["codmunity-check", "codmunity-apply", "codmunity-monitor"].includes(
+        action,
+      )
+    )
+      throw Error("Unknown CODMunity action");
+    command = process.execPath;
+    args = [join(sourceRoot, "scripts/codmunity.mjs"), action.slice(10), root];
+    if (action === "codmunity-apply") args.push(fields.proposalHash);
+    timeout = 50000;
+  } else if (action === "build") {
     command = process.execPath;
     args = ["scripts/build.mjs"];
     timeout = 120000;
@@ -157,7 +169,15 @@ export async function createWeaponManager({
   port = 4176,
   sessionMs = 12 * 60 * 60 * 1000,
   runner = runWeaponJob,
+  monitor = false,
+  probe = monitorCodmunity,
+  monitorMs = 6 * 60 * 60 * 1000,
 } = {}) {
+  if (
+    monitor &&
+    (!Number.isFinite(monitorMs) || monitorMs < 10 || monitorMs > 86400000)
+  )
+    throw Error("Invalid monitor interval");
   root = resolve(root);
   if (!Number.isInteger(port) || port < 0 || port > 65535)
     throw new Error("Invalid manager port");
@@ -176,10 +196,17 @@ export async function createWeaponManager({
   let origin,
     busy = false,
     stateWork = null;
+  let closing = false,
+    probeWork = null,
+    probeController = null,
+    probeTimer = null,
+    startProbeTimer = null;
   const current = async () => {
     if (stateWork) return stateWork;
     const work = (async () => ({
       ...(await runner(root, "status")),
+      codmunity: await codmunityStatus(root),
+      monitorPolicy: { enabled: monitor, intervalHours: monitorMs / 3600000 },
       receipt: await receipt(root),
     }))();
     stateWork = work;
@@ -303,6 +330,9 @@ export async function createWeaponManager({
           build: ["action"],
           apply: ["action", "proposalHash"],
           rollback: ["action", "expectedRevision"],
+          "codmunity-check": ["action"],
+          "codmunity-monitor": ["action"],
+          "codmunity-apply": ["action", "proposalHash"],
         }[body.action];
         if (!keys || Object.keys(body).sort().join() !== keys.sort().join())
           reject("Unsupported action fields", 422);
@@ -316,6 +346,14 @@ export async function createWeaponManager({
         busy = true;
         try {
           const before = await current();
+          if (body.action.startsWith("codmunity-") && before.codmunity.locked)
+            reject("CODMunity writer lock requires inspection", 409);
+          if (
+            body.action === "codmunity-apply" &&
+            (before.codmunity.proposal?.hash !== body.proposalHash ||
+              before.codmunity.proposal?.stale)
+          )
+            reject("CODMunity proposal changed; check and review again", 409);
           if (before.locked) reject("Writer lock requires inspection", 409);
           if (before.pendingRollback && body.action !== "rollback")
             reject("Resume interrupted rollback first", 409);
@@ -386,9 +424,46 @@ export async function createWeaponManager({
     server.listen(port, "127.0.0.1", ok);
   });
   origin = `http://127.0.0.1:${server.address().port}`;
+  async function tick() {
+    if (closing || busy) return;
+    busy = true;
+    probeController = new AbortController();
+    probeWork = (async () => {
+      try {
+        const status = await codmunityStatus(root);
+        if (
+          !status.locked &&
+          !(await assertSafePath(root, ".local/weapon-updates/writer.lock", {
+            optional: true,
+          }))
+        )
+          await probe(root, { signal: probeController.signal });
+      } catch {
+      } finally {
+        busy = false;
+        stateWork = null;
+        probeController = null;
+      }
+    })();
+    await probeWork;
+  }
+  if (monitor) {
+    if (!Number.isFinite(monitorMs) || monitorMs < 10 || monitorMs > 86400000)
+      throw Error("Invalid monitor interval");
+    startProbeTimer = setTimeout(() => void tick(), 0);
+    probeTimer = setInterval(() => void tick(), monitorMs);
+    probeTimer.unref();
+  }
   return {
     url: origin,
-    close: () => new Promise((resolveClose) => server.close(resolveClose)),
+    close: async () => {
+      closing = true;
+      clearTimeout(startProbeTimer);
+      clearInterval(probeTimer);
+      probeController?.abort();
+      await probeWork;
+      await new Promise((resolveClose) => server.close(resolveClose));
+    },
   };
 }
 if (
@@ -408,10 +483,10 @@ if (
       throw new Error("Usage: npm run weapons:manage -- [--port4176]");
     port = Number(args[1]);
   }
-  createWeaponManager({ port })
+  createWeaponManager({ port, monitor: true })
     .then((app) => {
       console.log(
-        `Local weapon update dashboard: ${app.url}. No automatic network checks.`,
+        `Local weapon update dashboard: ${app.url}. DMZ readiness probe on startup and every six hours; no automatic apply.`,
       );
       for (const signal of ["SIGINT", "SIGTERM"])
         process.once(signal, async () => {

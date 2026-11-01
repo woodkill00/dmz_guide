@@ -18,7 +18,7 @@ import {
   bytesFromBase64,
   hashBytes,
 } from "../content/portable.mjs";
-const { db, refs, metrics } = JSON.parse(
+const { db, refs, metrics, codmunity, codMetrics } = JSON.parse(
   document.querySelector("#armory-public-data").textContent,
 );
 const $ = (s) => document.querySelector(s),
@@ -234,6 +234,25 @@ function compare() {
     $("#comparison-result").textContent =
       "Choose two to four different weapons.";
     $("#comparison-observations").replaceChildren();
+    return;
+  }
+  if (mode === "codmunity") {
+    $("#comparison-observations").replaceChildren();
+    const source = codmunity?.modes.mw4;
+    const rows = codMetrics
+      .filter((m) => !m.id.startsWith("avgTtk"))
+      .map((m) => [
+        e(m.name),
+        ...ids.map((id) => {
+          const value = source?.weapons[id]?.stats[m.id];
+          return value === undefined
+            ? "Not reported"
+            : `${e(value)} ${e(m.unit || "unit unspecified")} <abbr title="CODMunity MW4 Multiplayer; not tested in DMZ">*WZ</abbr>`;
+        }),
+      ]);
+    $("#comparison-result").innerHTML =
+      `<p class="notice">*WZ — CODMunity MW4 Multiplayer base values; not tested in DMZ. WZ is this guide's marker, not Warzone mode. ${e(source?.sourceDate || "No source import yet")}. No combined-build or DMZ prediction.</p>` +
+      table(["Metric", ...ids.map(name)], rows);
     return;
   }
   if (mode === "dmz") {

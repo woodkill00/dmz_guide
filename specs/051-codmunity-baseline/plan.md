@@ -1,0 +1,9 @@
+# Plan
+
+Manual pinned full Spec Kit lifecycle and constitution review. Add a separate validated `content/codmunity-stats.json` so048 data/private049 profiles remain stable. A pure literal parser reads only the comparator's inert `weaponStats` serialized array, never evaluates JS. Normalize allowlisted numeric fields and exact known weapon identities; body damage and range bands retain source scope and missing values. SSR graph references only within parsed array may be resolved; executable syntax, unsafe keys, unresolved/circular refs, over-depth/size and duplicate identity fail.
+
+Fixed Node CLI/service module fetches only the two approved URLs, no redirects, ≤2MiB/page,20s/page,45s/check, bounded aggregate. Stage proposal with accepted-file SHA, review/apply with exclusive lock, validate/re-read CAS, backup prior bytes and atomic replacement. Use safe-path/bounded-file helpers. Content absent on older temp fixtures uses an explicit empty validated state; never migrate owner state. Reader embeds accepted public reports only. Manager adds separate actions and a readonly status card; official updater remains unchanged.
+
+Six-hour manager DMZ monitor starts once service is ready, shares busy serialization, writes ignored status only, preserves accepted/proposal files and closes its owned timer/job on teardown. No background auto-apply. Data check explicitly stages both source snapshots; apply remains review-bound. UI source report summary/profile/coverage displays `*WZ`, actual source mode, dates and DMZ readiness without manufactured scores.
+
+Verification: synthetic parser/transaction/manager tests and live no-op repeated update; browser workflows/layout/source labels and damage tables in all3engines, a11y, affected048-050 regressions, full runtime/repo/format/build, independent review and clean local delivery.

@@ -14,11 +14,17 @@ const $ = (s) => document.querySelector(s),
 let session = null,
   state = null,
   busy = false;
+let busyPoll = null;
 const error = (reason) => {
   $("#manager-error").hidden = false;
   $("#manager-error").textContent = reason.message || String(reason);
 };
 function buttons() {
+  if (state?.busy && !busy && !busyPoll)
+    busyPoll = setTimeout(() => {
+      busyPoll = null;
+      if (!busy) refresh().catch(error);
+    }, 1000);
   const blocked =
     busy ||
     state?.busy ||
@@ -37,7 +43,18 @@ function buttons() {
     !(state?.backupAvailable || state?.pendingRollback) ||
     !$("#manager-rollback-review").checked;
   $("#manager-refresh").disabled = busy;
+  const cod = state?.codmunity;
+  $("#codmunity-check").disabled = blocked || cod?.locked;
+  $("#codmunity-probe").disabled = blocked || cod?.locked;
+  $("#codmunity-apply").disabled =
+    blocked ||
+    cod?.locked ||
+    !cod?.proposal ||
+    cod.proposal.stale ||
+    cod.proposal.unchanged ||
+    !$("#codmunity-review").checked;
 }
+window.addEventListener("pagehide", () => clearTimeout(busyPoll));
 function render() {
   if (!state) return;
   $("#manager-summary").innerHTML =
@@ -47,6 +64,16 @@ function render() {
         .join(" · "),
     )}</dd><dt>Last check</dt><dd>${e(state.receipt?.lastCheck?.time || "Not checked by this dashboard yet")} · ${e(state.receipt?.lastCheck?.result || "unknown")}</dd><dt>Last operation</dt><dd>${e(state.receipt?.lastOperation ? `${state.receipt.lastOperation.action} · ${state.receipt.lastOperation.result} · ${state.receipt.lastOperation.time}` : "None recorded")}</dd><dt>Recovery</dt><dd>${state.locked ? "Writer lock exists: inspect before continuing." : state.pendingRollback ? "Interrupted rollback target retained; explicitly resume." : "No pending writer/rollback lock."} Backup ${state.backupAvailable ? "available" : "not available"}.</dd>`;
   const proposal = state.proposal;
+  const cod = state.codmunity;
+  $("#codmunity-review").checked = false;
+  if (cod) {
+    const monitor = cod.monitor;
+    $("#codmunity-status").innerHTML =
+      `<p>Accepted MW4: ${cod.coverage.mw4.weapons}/${cod.coverage.mw4.total} weapons; ${cod.coverage.mw4.damage}/${cod.coverage.mw4.total} damage profiles. Accepted DMZ: ${cod.coverage.dmz.damage}/${cod.coverage.dmz.total} damage profiles (${e(cod.coverage.dmz.status)}).</p><p>Background DMZ probe: ${state.monitorPolicy?.enabled ? `startup and every ${e(state.monitorPolicy.intervalHours)} hours while this service runs` : "disabled for this service"}. Latest source check / probe attempt: ${e(monitor?.latestAttempt || "none")}. ${monitor?.error ? `Failed — ${e(monitor.error)}; previous successful result below is stale.` : ""}</p><p>Last successful DMZ probe: ${e(monitor?.lastSuccess?.time || "none")} · ${e(monitor?.lastSuccess?.result?.coverage?.status || "not checked")} · ${e(monitor?.lastSuccess?.result?.warning || "")}</p>`;
+    $("#codmunity-proposal").innerHTML = cod.proposal
+      ? `<p>${cod.proposal.stale ? "Stale proposal: check again before applying." : cod.proposal.unchanged ? "No normalized fact changes; no apply needed." : "Changes require review."}</p><p>Reviewed hash: <code>${e(cod.proposal.hash)}</code></p><pre class="cod-review" tabindex="0">${e(JSON.stringify(cod.proposal.diff, null, 2))}</pre><details><summary>Inspect exact prior and proposed source values</summary><pre class="cod-review" tabindex="0">${e(JSON.stringify({ accepted: cod.sources, proposed: cod.proposal.content?.modes }, null, 2))}</pre></details>`
+      : "<p>No CODMunity proposal staged.</p>";
+  }
   $("#manager-review").checked = false;
   $("#manager-rollback-review").checked = false;
   $("#manager-proposal").innerHTML = proposal
@@ -110,6 +137,13 @@ async function run(action, fields = {}) {
   }
 }
 $("#manager-review").addEventListener("change", buttons);
+$("#codmunity-review").addEventListener("change", buttons);
+$("#codmunity-check").addEventListener("click", () => run("codmunity-check"));
+$("#codmunity-probe").addEventListener("click", () => run("codmunity-monitor"));
+$("#codmunity-apply").addEventListener("click", () => {
+  if (state?.codmunity?.proposal && $("#codmunity-review").checked)
+    run("codmunity-apply", { proposalHash: state.codmunity.proposal.hash });
+});
 $("#manager-rollback-review").addEventListener("change", buttons);
 $("#manager-refresh").addEventListener("click", () => refresh().catch(error));
 $("#manager-check").addEventListener("click", () => run("check"));
@@ -129,8 +163,9 @@ try {
       "Restart the expired local manager service, then reload this page.",
     );
   await refresh();
-  $("#manager-status").textContent =
-    "Local dashboard ready. No network check has run automatically.";
+  $("#manager-status").textContent = state.monitorPolicy?.enabled
+    ? "Local dashboard ready. DMZ monitoring runs on startup and every six hours; applying data remains explicit."
+    : "Local dashboard ready. Background monitoring is disabled in this service.";
   document.querySelector("main").dataset.managerReady = "true";
 } catch (reason) {
   error(reason);

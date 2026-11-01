@@ -1,0 +1,319 @@
+[
+  {
+    "better": "higher",
+    "group": "mobility",
+    "id": "movement",
+    "name": "Movement speed",
+    "unit": "m/s",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "mobility",
+    "id": "ads_movement",
+    "name": "ADS movement speed",
+    "unit": "m/s",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "mobility",
+    "id": "sprint",
+    "name": "Sprint speed",
+    "unit": "m/s",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "mobility",
+    "id": "tac_sprint",
+    "name": "Tactical sprint speed",
+    "unit": "m/s",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "mobility",
+    "id": "crouch_movement",
+    "name": "Crouch movement speed",
+    "unit": "m/s",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "mobility",
+    "id": "strafe_movement",
+    "name": "Strafe speed",
+    "unit": "m/s",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "mobility",
+    "id": "firing_movement",
+    "name": "Firing movement speed",
+    "unit": "m/s",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "handling",
+    "id": "ads",
+    "name": "ADS speed",
+    "unit": "ms",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "handling",
+    "id": "ads_out",
+    "name": "ADS out speed",
+    "unit": "ms",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "handling",
+    "id": "stf",
+    "name": "Sprint to fire speed",
+    "unit": "ms",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "handling",
+    "id": "reload",
+    "name": "Reload time",
+    "unit": "ms",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "handling",
+    "id": "raise_speed",
+    "name": "Raise speed",
+    "unit": "ms",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "handling",
+    "id": "drop_speed",
+    "name": "Drop speed",
+    "unit": "ms",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "recoil",
+    "id": "vert_recoil",
+    "name": "Vertical recoil",
+    "unit": "",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "recoil",
+    "id": "horiz_recoil",
+    "name": "Horizontal recoil",
+    "unit": "",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "recoil",
+    "id": "vert_gun_kick",
+    "name": "Vertical gun kick",
+    "unit": "",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "recoil",
+    "id": "horiz_gun_kick",
+    "name": "Horizontal gun kick",
+    "unit": "",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "recoil",
+    "id": "ads_idle_sway",
+    "name": "ADS idle sway",
+    "unit": "\u00b0",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "recoil",
+    "id": "ads_gun_bob",
+    "name": "ADS gun bob",
+    "unit": "\u00b0",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "range",
+    "id": "bv",
+    "name": "Bullet velocity",
+    "unit": "m/s",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "range",
+    "id": "range",
+    "name": "Damage range",
+    "unit": "%",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "range",
+    "id": "bullet_penetration",
+    "name": "Bullet penetration",
+    "unit": "in",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "accuracy",
+    "id": "hip_idle_sway",
+    "name": "Hip idle sway",
+    "unit": "\u00b0",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "accuracy",
+    "id": "hip_gun_bob",
+    "name": "Hip gun bob",
+    "unit": "\u00b0",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "accuracy",
+    "id": "hip_turn_sway",
+    "name": "Hip turn sway",
+    "unit": "\u00b0",
+    "signed": false
+  },
+  {
+    "better": "lower",
+    "group": "accuracy",
+    "id": "flinch_received",
+    "name": "Flinch received",
+    "unit": "x",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "ammo",
+    "id": "rpm",
+    "name": "Fire rate",
+    "unit": "rpm",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "ammo",
+    "id": "mag_size",
+    "name": "Magazine size",
+    "unit": "rounds",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "ammo",
+    "id": "reserve_ammo",
+    "name": "Ammo reported (reserve_ammo)",
+    "unit": "rounds",
+    "signed": false
+  },
+  {
+    "better": "higher",
+    "group": "ammo",
+    "id": "head_multiplier",
+    "name": "Headshot multiplier",
+    "unit": "x",
+    "signed": false
+  },
+  {
+    "id": "hip_strafe_accuracy",
+    "name": "Hip strafe accuracy",
+    "unit": "\u00b0",
+    "group": "source extras",
+    "signed": true
+  },
+  {
+    "id": "hitscan_range",
+    "name": "Hitscan range",
+    "unit": "m",
+    "group": "source extras",
+    "signed": false
+  },
+  {
+    "id": "pre_fire_delay",
+    "name": "Pre-fire delay",
+    "unit": "ms",
+    "group": "source extras",
+    "signed": false
+  },
+  {
+    "id": "burst_size",
+    "name": "Burst size",
+    "unit": "rounds",
+    "group": "source extras",
+    "signed": false
+  },
+  {
+    "id": "burst_rpm",
+    "name": "Burst fire rate",
+    "unit": "RPM",
+    "group": "source extras",
+    "signed": false
+  },
+  {
+    "id": "burst_delay_ms",
+    "name": "Burst delay",
+    "unit": "ms",
+    "group": "source extras",
+    "signed": false
+  },
+  {
+    "id": "tac_sprint_duration",
+    "name": "Tactical sprint duration",
+    "unit": "s",
+    "group": "source extras",
+    "signed": false
+  },
+  {
+    "id": "avgTtk1",
+    "name": "Provider average TTK bucket 1 (assumptions unspecified)",
+    "unit": "ms",
+    "group": "source extras",
+    "signed": false
+  },
+  {
+    "id": "avgTtk2",
+    "name": "Provider average TTK bucket 2 (assumptions unspecified)",
+    "unit": "ms",
+    "group": "source extras",
+    "signed": false
+  },
+  {
+    "id": "avgTtk3",
+    "name": "Provider average TTK bucket 3 (assumptions unspecified)",
+    "unit": "ms",
+    "group": "source extras",
+    "signed": false
+  },
+  {
+    "id": "avgTtk4",
+    "name": "Provider average TTK bucket 4 (assumptions unspecified)",
+    "unit": "ms",
+    "group": "source extras",
+    "signed": false
+  }
+]

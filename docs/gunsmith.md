@@ -1,5 +1,7 @@
 # Weapon armory and Gunsmith
 
+Preferred numeric summaries and damage profiles use the [CODMunity baseline](codmunity-baseline.md), labelled \*WZ (MW4 Multiplayer, not tested in DMZ). Official launch fallbacks and missing profiles are explicitly identified.
+
 Open [the local weapon armory](http://127.0.0.1:4173/armory/). It follows the game's weapon-list and Gunsmith arrangement while retaining the guide's source labels and private workbench.
 
 Use the class buttons or Class selector and search to narrow the scrollable list. Selecting a weapon previews its base figure and launch ammunition/fire-rate reports. Open details enters that weapon's Gunsmith. Every row also has a native detail link that works without JavaScript.

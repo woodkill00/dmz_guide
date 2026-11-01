@@ -1,5 +1,7 @@
 # Documentation
 
+- [CODMunity baseline and DMZ checks](codmunity-baseline.md): preferred damage/stats, \*WZ labels, reviewed updates and six-hour local monitoring.
+
 - [Weapon armory and Gunsmith](gunsmith.md): game-inspired list, weapon displays, slot navigation and local artwork.
 
 - [Armory workbench](armory-workbench.md): comparisons, builds, private evidence, acquisition, backups and local update dashboard.

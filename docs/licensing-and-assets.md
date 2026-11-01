@@ -33,3 +33,8 @@ Publish human-readable credits alongside the asset pack or product that uses the
 ## Local weapon figures050
 
 Feature050's official base-weapon artwork is used only in the authorized local checkout. `src/ui/weapon-figures.json` records fixed publisher URLs, SHA256, dimensions and display crops for all33 weapons; ignored `.local/weapon-art/` holds the files and local collection receipt. Figure collection is explicit, hash-bound and separate from public static builds. No private reference screenshots are copied or committed. The visual skin is original HTML/CSS inspired by the user's references. Source artwork is neither project-original/MIT nor cleared for public redistribution. The two initially uncertain image captions were resolved by inspecting the actual official Cronen Squall and PM-40 Anvil figures. Reviewed source/date: feature050,2026-11-01; final review in its checklist.
+
+
+## Local CODMunity reports051
+
+The owner explicitly selected CODMunity MW4 as the preferred source and previously authorized local provider collection. `content/codmunity-stats.json` retains structured factual numeric reports, mode/date/hash/coverage and untested flags from the two fixed comparator URLs; no provider scripts, long descriptions or artwork are bundled. Local permission is not an MIT grant or public distribution license. See [baseline guide](codmunity-baseline.md) and feature051 reviewer receipt.

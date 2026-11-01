@@ -1,3 +1,5 @@
+import { readCodmunity } from "../content/codmunity.mjs";
+import { renderCodmunity } from "./codmunity-view.mjs";
 import {
   gunsmithHeader,
   renderWeaponRoster,
@@ -20,7 +22,13 @@ const row = (cells, attrs = "") =>
   `<tr ${attrs}>${cells.map((c, i) => (i === 0 ? `<th scope="row">${c}</th>` : `<td>${c}</td>`)).join("")}</tr>`;
 const disclosure = `<aside class="notice"><strong>Dated source reports, not a verified current DMZ simulation.</strong> Official launch values are from 19 October. Community base stats describe Multiplayer; attachment effect mode is uncertain. Missing effects mean not reported. Patch reports retain their own mode/date and do not overwrite the original baseline. Damage/TTK are not established here.</aside>`;
 
-export function renderArmory(db, weaponId = null, nativeIds = null) {
+export function renderArmory(
+  db,
+  weaponId = null,
+  nativeIds = null,
+  codmunity = null,
+) {
+  db = codmunity ? { ...db, codmunity } : db;
   const weapon = weaponId ? db.weapons.find((w) => w.id === weaponId) : null;
   const count = db.attachments.filter((a) => a.kind === "standard").length;
   const header = gunsmithHeader(weapon);
@@ -107,6 +115,7 @@ export function renderArmory(db, weaponId = null, nativeIds = null) {
     return (
       header +
       renderWeaponRoster(db) +
+      renderCodmunity(db, codmunity) +
       intro +
       attachmentView +
       patchView +
@@ -143,6 +152,7 @@ export function renderArmory(db, weaponId = null, nativeIds = null) {
   return (
     header +
     renderGunsmith(db, weapon) +
+    renderCodmunity(db, codmunity, weapon) +
     intro +
     detail +
     attachmentView +
@@ -164,13 +174,14 @@ export async function featurePages(packs = []) {
     packs.flatMap((pack) => pack.items.map((item) => item.id)),
   );
   const db = await readWeaponIntel();
+  const codmunity = (await readCodmunity()).value;
   const pages = [null, ...db.weapons.map((w) => w.id)].map((id) => ({
     path: id ? `/armory/${id}/` : "/armory/",
     title: id
       ? db.weapons.find((w) => w.id === id).name + " · Weapon database"
       : "Weapon database",
     page: "armory",
-    body: renderArmory(db, id, nativeIds),
+    body: renderArmory(db, id, nativeIds, codmunity),
     scripts: ["/assets/src/client/armory.mjs"],
     styles: ["/assets/src/ui/gunsmith.css"],
   }));

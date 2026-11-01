@@ -70,6 +70,12 @@ export async function captureBuildSources(root) {
     "package-lock.json",
   ])
     await walk(relative);
+  try {
+    await lstat(join(root, "content/codmunity-stats.json"));
+    await walk("content/codmunity-stats.json");
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
   return sortedHashes(files);
 }
 export async function describeGit(root) {

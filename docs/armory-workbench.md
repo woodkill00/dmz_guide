@@ -28,6 +28,6 @@ Run `npm run weapons:manage` in the repository, then open [the local dashboard](
 
 Rollback requires explicit review of the current revision and retains the replaced state as backup. Interrupted rollback retains a candidate and journal for explicit recovery. Owner edits conflict instead of being overwritten. The service never takes over an existing writer lock; inspect stale locks only after verifying no updater is running. Status, proposals and backups stay ignored by Git.
 
-The service binds to loopback with same-origin and session-token checks. It exposes fixed actions, not arbitrary commands, paths or URLs. Sessions expire after 12 hours; restart and reload. Checks are manual, bounded and dependent on publisher layouts; future layouts may require parser maintenance. No schedule is installed.
+The service binds to loopback with same-origin and session-token checks. It exposes fixed actions, not arbitrary commands, paths or URLs. Sessions expire after 12 hours; restart and reload. Official patch checks and applying data are manual. CODMunity DMZ readiness probes run on manager startup and every six hours while the service runs; see [baseline monitoring](codmunity-baseline.md). Checks are bounded and publisher-layout dependent. No OS/cloud schedule is installed.
 
 See [database source limits](weapon-database.md) and [feature049 acceptance](../specs/049-armory-workbench/acceptance.md).

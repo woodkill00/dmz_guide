@@ -2907,3 +2907,21 @@ body[data-page="collection"] main > nav a {
 [data-workbench-panel][hidden] {
   display: none;
 }
+
+.cod-badge {
+  font-size: 0.72em;
+  font-weight: 750;
+  white-space: nowrap;
+  color: var(--accent);
+  text-decoration: none;
+}
+.gs-surface .cod-badge {
+  color: var(--gs-gold);
+}
+.cod-review {
+  max-height: calc(12rem + 15vh);
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 0.8rem;
+}
