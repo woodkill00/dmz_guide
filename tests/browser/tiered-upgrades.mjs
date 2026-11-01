@@ -33,6 +33,20 @@ export async function runTieredUpgradeTests({ browser, base }) {
   const cell = (scope) =>
     page.locator(`[data-upgrade-need="${scope}"][data-item="${item}"]`);
   const values = async (scope, required, missing) => {
+    await page.waitForFunction(
+      ({ scope, item, required, missing }) => {
+        const cell = document.querySelector(
+          `[data-upgrade-need="${scope}"][data-item="${item}"]`,
+        );
+        return (
+          cell?.querySelector("[data-tier-required]")?.textContent ===
+            String(required) &&
+          cell?.querySelector("[data-tier-missing]")?.textContent ===
+            String(missing)
+        );
+      },
+      { scope, item, required, missing },
+    );
     assert.equal(
       await cell(scope).locator("[data-tier-required]").textContent(),
       String(required),
@@ -133,12 +147,15 @@ export async function runTieredUpgradeTests({ browser, base }) {
       before,
       "valid quantity edits preserve input geometry",
     );
-    await page.locator('#inventory-form button[type="submit"]').click();
-    await page.waitForFunction(() =>
-      document
-        .querySelector("#save-status")
-        ?.textContent.includes("Saved locally"),
+    const savedRevision = await page.evaluate(
+      async () =>
+        (await import("/assets/src/client/common.mjs")).state.revision,
     );
+    await page.locator('#inventory-form button[type="submit"]').click();
+    await page.waitForFunction(async (previous) => {
+      const { state } = await import("/assets/src/client/common.mjs");
+      return !state.saving && state.revision === previous + 1;
+    }, savedRevision);
     await page.reload();
     await ready();
     await page.locator("#inventory-view").selectOption("needed");

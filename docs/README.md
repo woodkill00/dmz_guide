@@ -1,6 +1,7 @@
 # Documentation
 
 ## Get started
+- [Collection workbench](collection-workbench.md): shopping priorities, why-needed chains, recipe choices, safe local crafting, progress/data review and calibrated collection routes.
 - [Local map workspace](local-map-workspace.md): opt-in Hajin viewer, interactive key/source layers, local-only asset boundaries and synthetic validation.
 - [Reader and author quickstart](quickstart.md): read the guide, distinguish private editing from repository authoring, and diagnose startup.
 - [Developer quickstart](developer-quickstart.md): optional coding tools, active feature and development checks.

@@ -28,6 +28,8 @@ export function collectionNeeds(pack, profile, upgrades) {
         direct: false,
         craft: false,
         names: new Set(),
+        rootIds: new Set(),
+        causes: [],
         used: false,
       });
     return rows.get(id);
@@ -79,6 +81,14 @@ export function collectionNeeds(pack, profile, upgrades) {
       for (const c of r?.contributors || []) {
         tick();
         included.add(c.id);
+        ensure(id).rootIds.add(c.id);
+        ensure(id).causes.push({
+          id: c.id,
+          kind: "objective",
+          name: c.name,
+          quantity: c.quantity,
+          consumption: c.consumption,
+        });
         ensure(id).unknown ||= c.partial;
         if (ensure(id).names.size < 50)
           ensure(id).names.add(
@@ -102,7 +112,7 @@ export function collectionNeeds(pack, profile, upgrades) {
         const c = requirementFacts(pack, raw),
           item = items.get(c.itemId);
         tick();
-        if (item && scopeOf(pack, item) === scopeOf(pack, r))
+        if (item && scopeOf(pack, item) === scopeOf(pack, r)) {
           add(
             c.itemId,
             unsafe.has(r.status) || unsafe.has(c.status) ? null : c.quantity,
@@ -112,6 +122,17 @@ export function collectionNeeds(pack, profile, upgrades) {
               unsafe.has(c.status),
             r.track === "campaign" ? `Campaign: ${r.name}` : r.name,
           );
+          const d = ensure(c.itemId);
+          d.rootIds.add(r.id);
+          d.causes.push({
+            id: r.id,
+            kind: "objective",
+            name: r.track === "campaign" ? `Campaign: ${r.name}` : r.name,
+            quantity:
+              unsafe.has(r.status) || unsafe.has(c.status) ? null : c.quantity,
+            consumption: c.consumption,
+          });
+        }
       }
     }
     const producers = new Map();
@@ -226,6 +247,19 @@ export function collectionNeeds(pack, profile, upgrades) {
             r.name,
             true,
           );
+          const child = ensure(c.itemId);
+          child.causes.push({
+            id: r.id,
+            kind: "recipe",
+            name: r.name,
+            parentItemId: id,
+            quantity: q,
+            consumption: c.consumption,
+          });
+          for (const rootId of d.rootIds) {
+            tick();
+            child.rootIds.add(rootId);
+          }
         }
         degree.set(c.itemId, degree.get(c.itemId) - 1);
         if (degree.get(c.itemId) === 0) ready.push(c.itemId);
@@ -262,6 +296,7 @@ export function collectionNeeds(pack, profile, upgrades) {
           const d = ensure(id);
           d.used = true;
           d.unknown = true;
+          d.explanationLimited = true;
           d.craft ||= !d.direct;
           d.required = null;
           d.missing = null;

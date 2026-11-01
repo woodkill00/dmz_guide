@@ -6,6 +6,7 @@ import { projectMapPack } from "../domain/progression.mjs";
 import { loadBundledPayloads } from "../content/bundled-assets.mjs";
 import { $, esc, state, init, error } from "./common.mjs";
 import { readRecord } from "../storage/store.mjs";
+import { readCollectionRouteContext } from "../domain/collection-route.mjs";
 import {
   projectLocation,
   placementReason,
@@ -18,6 +19,17 @@ import {
 const NS = "http://www.w3.org/2000/svg";
 let viewPack = null;
 let navigationContext = null;
+let collectionRoute = null;
+let activeCollectionToken = null;
+let packRequest = 0;
+function clearCollectionRouteQuery() {
+  const clean = new URL(location.href);
+  clean.searchParams.delete("collectionRoute");
+  history.replaceState(null, "", clean);
+}
+let collectionToken = new URL(location.href).searchParams.get(
+  "collectionRoute",
+);
 let filters = {},
   selectedId = "",
   camera = { x: 0, y: 0, size: 100 },
@@ -210,6 +222,51 @@ function renderResults() {
       ? " No verified location relation matches these unmet needs."
       : "");
   showDetail();
+  renderCollectionRoute();
+}
+function renderCollectionRoute() {
+  const panel = $("#collection-route-panel"),
+    layer = $("#collection-route-layer");
+  layer.replaceChildren();
+  panel.hidden =
+    !collectionRoute ||
+    collectionRoute.map.id !== filters.mapId ||
+    Boolean(filters.floor && filters.floor !== collectionRoute.floor);
+  if (panel.hidden) {
+    panel.replaceChildren();
+    return;
+  }
+  const points = collectionRoute.stops.map((l) =>
+    projectLocation(currentMap(), l),
+  );
+  layer.append(
+    svg("polyline", {
+      points: points.map((p) => `${p.x},${p.y}`).join(" "),
+      fill: "none",
+      stroke: "#e4ba66",
+      "stroke-width": 1,
+      "stroke-dasharray": "2 1",
+      "pointer-events": "none",
+    }),
+  );
+  panel.innerHTML = `<h2>Collection route</h2><p>Straight connections in your selected order. These are not roads, optimized travel or guaranteed spawns.</p><ol>${collectionRoute.stops.map((l, i) => `<li><button type="button" data-collection-stop="${i}">${esc(l.name)}</button> · ${esc(floorOf(l))}</li>`).join("")}</ol><a href="/collection/?pack=${encodeURIComponent(state.pack.id)}">Edit collection route</a>`;
+  for (const b of panel.querySelectorAll("[data-collection-stop]"))
+    b.addEventListener("click", () => {
+      const l = collectionRoute.stops[Number(b.dataset.collectionStop)];
+      filters.query = "";
+      filters.category = "";
+      filters.sourceId = "";
+      filters.coordinateVersion = "";
+      filters.goalOnly = false;
+      filters.floor = collectionRoute.floor;
+      $("#location-search").value = "";
+      $("#location-category").value = "";
+      $("#location-source").value = "";
+      $("#coordinate-version").value = "";
+      $("#goal-locations").checked = false;
+      $("#floor-select").value = filters.floor;
+      selectLocation(l.id);
+    });
 }
 function renderMapContext() {
   const m = currentMap();
@@ -375,7 +432,8 @@ function mapChanged() {
   if (!viewPack) return;
   generation++;
   selectedId = "";
-  filters.floor = "";
+  filters.floor =
+    collectionRoute?.map.id === filters.mapId ? collectionRoute.floor : "";
   const m = currentMap();
   $("#floor-select").innerHTML =
     option("", "All floors") +
@@ -387,6 +445,7 @@ function mapChanged() {
     ]
       .map((f) => option(f, f))
       .join("");
+  $("#floor-select").value = filters.floor;
   resetCamera();
   renderMapContext();
   renderResults();
@@ -394,19 +453,64 @@ function mapChanged() {
   loadNeeds(generation);
 }
 async function packChanged() {
-  const token = generation;
+  const request = ++packRequest,
+    token = generation,
+    pack = state.pack,
+    profile = state.profile;
   if (navigationContext)
     await verifyReaderContext(
-      state.pack,
+      pack,
       navigationContext,
-      Boolean(state.profile.spoilers),
+      Boolean(profile.spoilers),
     );
-  if (token !== generation) return;
-  viewPack = projectMapPack(state.pack, Boolean(state.profile.spoilers));
+  if (
+    request !== packRequest ||
+    token !== generation ||
+    pack !== state.pack ||
+    profile !== state.profile
+  )
+    return;
+  const projected = projectMapPack(pack, Boolean(profile.spoilers));
+  const requested = collectionToken || activeCollectionToken;
+  const initial = Boolean(collectionToken);
+  let route = null;
+  if (requested) {
+    try {
+      route = await readCollectionRouteContext(pack, profile, requested);
+    } catch (reason) {
+      if (
+        request !== packRequest ||
+        token !== generation ||
+        pack !== state.pack ||
+        profile !== state.profile
+      )
+        return;
+      if (initial) {
+        collectionToken = null;
+        activeCollectionToken = null;
+        collectionRoute = null;
+        clearCollectionRouteQuery();
+        throw reason;
+      }
+      clearCollectionRouteQuery();
+    }
+  }
+  if (
+    request !== packRequest ||
+    token !== generation ||
+    pack !== state.pack ||
+    profile !== state.profile
+  )
+    return;
+  viewPack = projected;
+  collectionRoute = route;
+  activeCollectionToken = route ? requested : null;
+  collectionToken = null;
   generation++;
   releaseImage();
   filters = {
     mapId:
+      collectionRoute?.map.id ||
       (navigationContext &&
         viewPack.locations.find((l) =>
           l.itemIds.includes(navigationContext.targetId),
@@ -444,6 +548,11 @@ async function packChanged() {
   mapChanged();
 }
 $("#map-select").addEventListener("change", (e) => {
+  if (collectionRoute?.map.id !== e.target.value) {
+    collectionRoute = null;
+    activeCollectionToken = null;
+    clearCollectionRouteQuery();
+  }
   filters.mapId = e.target.value;
   mapChanged();
 });
@@ -488,6 +597,11 @@ $("#location-map").addEventListener("keydown", (e) => {
   }
 });
 document.addEventListener("pack-changing", () => {
+  packRequest++;
+  collectionRoute = null;
+  $("#collection-route-panel").hidden = true;
+  $("#collection-route-panel").replaceChildren();
+  $("#collection-route-layer").replaceChildren();
   viewPack = null;
   $("#location-list").replaceChildren();
   $("#location-detail").replaceChildren();

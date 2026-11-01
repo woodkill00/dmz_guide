@@ -29,6 +29,7 @@ export function renderMainNavigation({
     ["/items/", "Items", "items"],
     ["/planner/", "Planner", "planner"],
     ["/inventory/", "Inventory", "inventory"],
+    ["/collection/", "Collect", "collection"],
     ["/upgrades/", "Upgrades", "upgrades"],
     [map + "/?tool=boss-checklist", "Boss checklist", "boss-checklist", "tool"],
   ];

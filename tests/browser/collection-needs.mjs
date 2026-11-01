@@ -61,13 +61,15 @@ export async function runCollectionTests({ browser, base }) {
     await wire().fill("13");
     assert(await wire().evaluate((el, old) => el === old, node));
     await wire().fill("12");
-    await page.locator('#inventory-form button[type="submit"]').click();
-    await page.waitForFunction(
-      () =>
-        !document
-          .querySelector("#inventory-form")
-          .matches('[aria-busy="true"]'),
+    const savedRevision = await page.evaluate(
+      async () =>
+        (await import("/assets/src/client/common.mjs")).state.revision,
     );
+    await page.locator('#inventory-form button[type="submit"]').click();
+    await page.waitForFunction(async (previous) => {
+      const { state } = await import("/assets/src/client/common.mjs");
+      return !state.saving && state.revision === previous + 1;
+    }, savedRevision);
     await inventory();
     await page.locator("#inventory-view").selectOption("needed");
     assert.equal(await wire().inputValue(), "12");

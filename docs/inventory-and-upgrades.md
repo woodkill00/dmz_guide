@@ -74,3 +74,8 @@ Each item has a text status as well as color:
 The **Craft** tag identifies an indirect crafting ingredient even when its quantity state is red or green. Open **Uses** for the combined collection requirement, missing quantity and contributors. The Next/All upgrade columns remain upgrade-only; the separate collection explanation includes mission and crafting demand. Do not add these alternative summaries together.
 
 The projection uses listed batch yields, stock held in intermediate outputs, shared consumed quantities and retained-tool maxima. It uses your explicit recipe route, or the sole fully visible producer. Alternatives, hidden recipe endpoints and unknown costs are never guessed. Covered quantities do not certify crafting access, unlocks, location, input-pool eligibility or complete current-game costs. Advice never crafts, consumes stock, adds goals or marks progress automatically. Save/Cancel and private browser storage work as before.
+
+
+## Collection workbench
+
+Use **Collect** in navigation or `/collection/` for detailed why-needed roots/recipe chains, status filters and priorities, full filtered shopping export, recipe choices/readiness, confirmed local craft previews and session Undo, progress/source review and calibrated native-map collection routes. See [the Collection workbench guide](collection-workbench.md) for the exact scopes, safety/recovery behavior and current data limits. Inventory remains the place to enter holdings; selecting a recipe or recording a craft does not complete an upgrade or mission.

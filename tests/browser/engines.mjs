@@ -1,3 +1,4 @@
+import { runWorkbenchTests } from "./collection-workbench.mjs";
 import { runCollectionTests } from "./collection-needs.mjs";
 import { runTieredUpgradeTests } from "./tiered-upgrades.mjs";
 import { runUpgradeDashboardTests } from "./upgrade-dashboard.mjs";
@@ -29,6 +30,7 @@ try {
       });
       await runTieredUpgradeTests({ browser, base });
       await runCollectionTests({ browser, base });
+      await runWorkbenchTests({ browser, base });
       await runUpgradeDashboardTests({ browser, base });
       await runRefinedInventoryTests({
         browser,

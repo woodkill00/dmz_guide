@@ -2482,3 +2482,147 @@ main :where(p, li, a, ul, ol, section, article, div) {
     word-break: normal;
   }
 }
+.collection-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0.75rem;
+}
+.collection-stats > div {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+.collection-stats strong,
+.collection-stats span {
+  display: block;
+}
+.collection-stats strong {
+  font-size: 1.2rem;
+}
+.collection-list {
+  display: grid;
+  gap: 0.6rem;
+}
+.collection-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(10rem, 0.8fr);
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow-wrap: anywhere;
+}
+.collection-item h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.collection-item p {
+  margin: 0.35rem 0;
+}
+.collection-item small {
+  display: block;
+}
+.collection-item .actions {
+  align-self: start;
+}
+.collection-badge {
+  display: inline-block;
+  border: 1px solid currentColor;
+  border-radius: 0.3rem;
+  padding: 0.2rem 0.4rem;
+}
+.collection-badge[data-state="short"] {
+  color: #ffb4b4;
+  background: #4d1720;
+}
+.collection-badge[data-state="covered"] {
+  color: #bcf5cc;
+  background: #143b26;
+}
+.collection-badge[data-state="review"] {
+  color: #ffe49a;
+  background: #42340e;
+}
+[data-theme="light"] .collection-badge[data-state="short"] {
+  color: #851624;
+  background: #ffe8e8;
+}
+[data-theme="light"] .collection-badge[data-state="covered"] {
+  color: #14542c;
+  background: #e0f5e7;
+}
+[data-theme="light"] .collection-badge[data-state="review"] {
+  color: #614800;
+  background: #fff2be;
+}
+#collection-route-stops li {
+  padding: 0.5rem 0;
+  overflow-wrap: anywhere;
+}
+#collection-why,
+#craft-dialog {
+  max-inline-size: min(54rem, calc(100vw - 2rem));
+  max-block-size: calc(100dvh - 2rem);
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
+#collection-why section {
+  border-block-start: 1px solid var(--border);
+  padding-block: 0.75rem;
+}
+#collection-why small {
+  display: block;
+}
+#collection-why select,
+#craft-batches {
+  max-inline-size: 100%;
+}
+#collection-why button,
+#craft-dialog button,
+.collection-item button {
+  min-block-size: 44px;
+  max-inline-size: 100%;
+  white-space: normal;
+}
+@media (max-width: 900px) {
+  .collection-item {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  #shopping.panel,
+  #crafting.panel,
+  #coverage.panel,
+  #collection-route.panel,
+  #collection-route-panel.panel {
+    padding: 0.5rem;
+  }
+  .collection-item {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+  .collection-item .actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .collection-item .actions button,
+  #collection-why button,
+  #craft-dialog button,
+  #collection-route-panel button {
+    padding: 0.25rem;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  #collection-why,
+  #craft-dialog {
+    padding: 0.5rem;
+    max-inline-size: calc(100vw - 1rem);
+  }
+}
+#craft-dialog {
+  position: fixed;
+  inset-block-start: 1rem;
+  inset-block-end: auto;
+  margin-block: 0;
+  scrollbar-gutter: stable;
+}

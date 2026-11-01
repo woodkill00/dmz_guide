@@ -11,6 +11,7 @@ test("033 coverage repair: every layout type has one shared navigation landmark"
     "catalog",
     "planner",
     "inventory",
+    "collection",
     "item",
     "weapon",
     "source",
@@ -26,6 +27,7 @@ test("033 coverage repair: every layout type has one shared navigation landmark"
     });
     assert.equal((html.match(/aria-label="Main navigation"/g) || []).length, 1);
     assert.match(html, /href="\/items\/\?pack=community%3Asynthetic"/);
+    assert.match(html, /href="\/collection\/\?pack=community%3Asynthetic"/);
     assert.match(
       html,
       /href="http:\/\/127\.0\.0\.1:5175\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/,

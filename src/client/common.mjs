@@ -369,6 +369,7 @@ export async function init(
             "/map-workspace/",
             "/planner/",
             "/inventory/",
+            "/collection/",
             "/settings/",
             "/editor/",
             "/maps/",

@@ -144,6 +144,7 @@ async function generate(dist) {
   }
   for (const moduleName of [
     "private-pages",
+    "collection-page",
     "features",
     "editor-page",
     "local-page",
