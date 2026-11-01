@@ -152,6 +152,7 @@ async function generate(dist) {
     "progression-page",
     "community-page",
     "armory-page",
+    "armory-workbench-page",
   ]) {
     const file = join(root, `src/ui/${moduleName}.mjs`);
     try {
@@ -226,7 +227,6 @@ async function generate(dist) {
     "src/client/studio.mjs",
     "src/content/studio-recovery.mjs",
     "src/client/studio-media.mjs",
-    "src/client/raster-editor.mjs",
     "src/ui/studio-page.mjs",
     "src/ui/studio.css",
   ]);

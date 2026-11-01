@@ -29,7 +29,8 @@
     "weapons:check": "node scripts/weapon-database.mjs check",
     "weapons:apply": "node scripts/weapon-database.mjs apply",
     "weapons:validate": "node scripts/weapon-database.mjs validate",
-    "test:weapons": "node scripts/weapon-database.mjs test"
+    "test:weapons": "node scripts/weapon-database.mjs test",
+    "weapons:manage": "node scripts/weapon-manager.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2",

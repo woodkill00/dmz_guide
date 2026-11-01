@@ -37,6 +37,7 @@ export function renderMainNavigation({
     ["/", "Home", "home"],
     ["/weapons/", "Weapons", "weapons"],
     ["/armory/", "Weapon database", "armory"],
+    ["/armory/workbench/", "Armory workbench", "armory-workbench"],
     ["/armory/updates/", "Weapon updates", "weapon-updates"],
     ["/recipes/", "Recipes", "recipes"],
     ["/guides/", "Guides", "guides"],

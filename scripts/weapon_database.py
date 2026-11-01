@@ -429,6 +429,7 @@ def preview(db, proposal):
 
 
 def check(root=ROOT, fetch=None):
+    require(not safe_path(root, '.local/weapon-updates/rollback-pending.json').exists(), 'Interrupted rollback needs recovery before check')
     db, raw = read_json(safe_path(root, DB))
     validate_database(db)
     fetch = fetch or Fetcher().get
@@ -460,7 +461,7 @@ def check(root=ROOT, fetch=None):
     return proposal, changes
 
 
-def apply(root=ROOT):
+def apply(root=ROOT, proposal_hash=None):
     lock = safe_path(root, '.local/weapon-updates/writer.lock', create=True)
     try:
         fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
@@ -471,7 +472,10 @@ def apply(root=ROOT):
         target = safe_path(root, DB)
         db, raw = read_json(target)
         validate_database(db)
-        proposal, _ = read_json(safe_path(root, PROPOSAL), 4*1024*1024)
+        proposal, proposal_raw = read_json(safe_path(root, PROPOSAL), 4*1024*1024)
+        if proposal_hash is not None:
+            require(re.fullmatch('[a-f0-9]{64}', proposal_hash) and proposal_hash == sha(proposal_raw), 'Reviewed proposal changed; check and review again')
+        require(not safe_path(root, '.local/weapon-updates/rollback-pending.json').exists(), 'Interrupted rollback needs explicit recovery before apply')
         changes = preview(db, proposal)
         if not changes['added'] and not changes['changed']: return changes
         require(proposal['baseRevision'] == sha(raw), 'Database changed since check; run weapons:check again')
@@ -490,21 +494,95 @@ def apply(root=ROOT):
         lock.unlink()
 
 
-def main():
+def rollback(root=ROOT, expected_revision=None):
+    require(isinstance(expected_revision, str) and re.fullmatch('[a-f0-9]{64}', expected_revision), 'Rollback requires the reviewed current revision')
+    lock = safe_path(root, '.local/weapon-updates/writer.lock', create=True)
+    try:
+        fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+    except FileExistsError as error:
+        raise ValueError('Writer lock exists; inspect before retrying rollback') from error
+    try:
+        with os.fdopen(fd, 'w') as stream: stream.write(str(os.getpid()))
+        target = safe_path(root, DB)
+        current, current_raw = read_json(target)
+        validate_database(current)
+        require(sha(current_raw) == expected_revision, 'Database changed since rollback review')
+        candidate = safe_path(root, '.local/weapon-updates/rollback-target.json', create=True)
+        journal = safe_path(root, '.local/weapon-updates/rollback-pending.json', create=True)
+        backup = safe_path(root, '.local/weapon-updates/backup.json', create=True)
+        if journal.exists():
+            intent, _ = read_json(journal, 4096)
+            exact(intent, ('version', 'beforeHash', 'targetHash'))
+            require(type(intent['version']) is int and intent['version'] == 1 and all(isinstance(intent[k], str) and re.fullmatch('[a-f0-9]{64}', intent[k]) for k in ('beforeHash', 'targetHash')), 'Invalid rollback journal')
+            previous, previous_raw = read_json(candidate)
+            validate_database(previous)
+            require(sha(previous_raw) == intent['targetHash'], 'Rollback candidate hash mismatch')
+            require(expected_revision in (intent['beforeHash'], intent['targetHash']), 'Owner changes conflict with interrupted rollback')
+            if expected_revision == intent['targetHash']:
+                journal.unlink(); candidate.unlink()
+                return {'restored': False, 'completedInterrupted': True}
+        else:
+            previous, previous_raw = read_json(backup)
+            validate_database(previous)
+            intent = {'version': 1, 'beforeHash': sha(current_raw), 'targetHash': sha(previous_raw)}
+            atomic(candidate, previous_raw)
+            atomic(journal, encoded(intent))
+        atomic(backup, current_raw)
+        require(sha(target.read_bytes()) == expected_revision, 'Database changed during rollback; inspect retained candidate')
+        atomic(target, previous_raw)
+        journal.unlink(); candidate.unlink()
+        return {'restored': True, 'completedInterrupted': False}
+    finally:
+        lock.unlink()
+
+
+def manager_state(root=ROOT):
+    db, raw = read_json(safe_path(root, DB))
+    validate_database(db)
+    state = {'revision': sha(raw), 'weapons': len(db['weapons']), 'attachments': len(db['attachments']),
+             'reports': len(db['patches']), 'sourceDates': {key: value['date'] for key, value in db['sources'].items()},
+             'backupAvailable': False, 'pendingRollback': False, 'locked': False, 'proposal': None}
+    backup = safe_path(root, '.local/weapon-updates/backup.json')
+    if backup.exists():
+        validate_database(read_json(backup)[0]); state['backupAvailable'] = True
+    journal = safe_path(root, '.local/weapon-updates/rollback-pending.json')
+    if journal.exists():
+        intent, _ = read_json(journal, 4096)
+        exact(intent, ('version', 'beforeHash', 'targetHash'))
+        state['pendingRollback'] = True
+    state['locked'] = safe_path(root, '.local/weapon-updates/writer.lock').exists()
+    staged = safe_path(root, PROPOSAL)
+    if staged.exists():
+        proposal, proposal_raw = read_json(staged, 4*1024*1024)
+        changes = preview(db, proposal)
+        state['proposal'] = {'hash': sha(proposal_raw), 'baseRevision': proposal['baseRevision'], 'articles': proposal['articles'],
+                             'added': changes['added'], 'changed': changes['changed'], 'unchanged': len(changes['unchanged']), 'warnings': proposal['warnings']}
+    return state
+
+
+def main(root=ROOT):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('check', 'apply', 'validate'))
+    parser.add_argument('action', choices=('check', 'apply', 'validate', 'rollback', 'status'))
     parser.add_argument('--fail-on-new', action='store_true', help='check exits2 when reports need review')
+    parser.add_argument('--proposal-hash')
+    parser.add_argument('--expected-revision')
     args = parser.parse_args()
     if args.action == 'validate':
-        validate_database(read_json(safe_path(ROOT, DB))[0])
+        validate_database(read_json(safe_path(root, DB))[0])
         print('Weapon intelligence valid')
         return 0
     if args.action == 'check':
-        proposal, changes = check()
+        proposal, changes = check(root)
         print(json.dumps({'articles': len(proposal['articles']), **{k: len(v) for k, v in changes.items()}, 'warnings': proposal['warnings']}))
         print('Review .local/weapon-patch-proposal.json, then npm run weapons:apply. No baseline stats changed.')
         return 2 if args.fail_on_new and (changes['added'] or changes['changed']) else 0
-    changes = apply()
+    if args.action == 'status':
+        print(json.dumps(manager_state(root)))
+        return 0
+    if args.action == 'rollback':
+        print(json.dumps(rollback(root, args.expected_revision)))
+        return 0
+    changes = apply(root, args.proposal_hash)
     print(json.dumps({k: len(v) for k, v in changes.items()}))
     print('Patch ledger applied; baseline measurements retained. Run npm run build to refresh pages. Prior database: .local/weapon-updates/backup.json')
     return 0

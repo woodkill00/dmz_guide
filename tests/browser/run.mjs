@@ -1,3 +1,5 @@
+import { runArmoryWorkbenchTests } from "./armory-workbench.mjs";
+import { runWeaponManagerTests } from "./weapon-manager.mjs";
 import { runArmoryTests } from "./armory.mjs";
 import { runCompactUITests } from "./compact-ui.mjs";
 import { runWorkbenchTests } from "./collection-workbench.mjs";
@@ -32,6 +34,8 @@ try {
   const checkHealth = monitorBrowser(browser);
   await mkdir("test-results", { recursive: true });
   await runArmoryTests({ browser, base });
+  await runArmoryWorkbenchTests({ browser, base });
+  await runWeaponManagerTests({ browser, base });
   await runNavigationDirectoryTests({ browser, base });
   await runTieredUpgradeTests({ browser, base });
   await runCollectionTests({ browser, base });

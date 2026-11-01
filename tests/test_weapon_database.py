@@ -233,6 +233,71 @@ class WeaponUpdates(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'node limit'):
             w.bounded_tree([[0] * 1000 for _ in range(151)])
 
+    def test_049_reviewed_proposal_hash_is_checked_under_lock(self):
+        self.proposal(); reviewed = w.sha((self.root / w.PROPOSAL).read_bytes())
+        changed = copy.deepcopy(self.event); changed['after'] = 'newer unreviewed report'
+        self.proposal([changed]); before = (self.root / w.DB).read_bytes()
+        with self.assertRaisesRegex(ValueError, 'Reviewed proposal changed'): w.apply(self.root, reviewed)
+        self.assertEqual((self.root / w.DB).read_bytes(), before)
+
+    def test_049_rollback_restores_previous_and_retains_current_as_backup(self):
+        original = (self.root / w.DB).read_bytes(); self.proposal(); w.apply(self.root)
+        current = (self.root / w.DB).read_bytes()
+        self.assertTrue(w.rollback(self.root, w.sha(current))['restored'])
+        self.assertEqual((self.root / w.DB).read_bytes(), original)
+        self.assertEqual((self.root / '.local/weapon-updates/backup.json').read_bytes(), current)
+        self.assertFalse((self.root / '.local/weapon-updates/rollback-pending.json').exists())
+
+    def test_049_interrupted_rollback_retains_target_and_resumes_after_replace_failure(self):
+        original = (self.root / w.DB).read_bytes(); self.proposal(); w.apply(self.root)
+        current = (self.root / w.DB).read_bytes(); native = w.atomic
+        def fail_replace(path, data):
+            if path.name == 'weapon-intel.json': raise OSError('synthetic rollback replace failure')
+            native(path, data)
+        with patch.object(w, 'atomic', side_effect=fail_replace):
+            with self.assertRaises(OSError): w.rollback(self.root, w.sha(current))
+        self.assertEqual((self.root / w.DB).read_bytes(), current)
+        self.assertEqual((self.root / '.local/weapon-updates/rollback-target.json').read_bytes(), original)
+        self.assertTrue(w.manager_state(self.root)['pendingRollback'])
+        with self.assertRaisesRegex(ValueError, 'Interrupted rollback'): w.apply(self.root)
+        w.rollback(self.root, w.sha(current))
+        self.assertEqual((self.root / w.DB).read_bytes(), original)
+
+    def test_049_owner_edit_conflicts_with_pending_rollback_and_preserves_candidate(self):
+        self.proposal(); w.apply(self.root); current = (self.root / w.DB).read_bytes(); native=w.atomic
+        def fail_replace(path,data):
+            if path.name=='weapon-intel.json': raise OSError('synthetic failure')
+            native(path,data)
+        with patch.object(w,'atomic',side_effect=fail_replace):
+            with self.assertRaises(OSError): w.rollback(self.root,w.sha(current))
+        candidate=(self.root / '.local/weapon-updates/rollback-target.json').read_bytes()
+        owner=copy.deepcopy(self.db);owner['weapons'][0]['unlockReports'].append('Synthetic owner edit')
+        owner_raw=w.encoded(owner);(self.root / w.DB).write_bytes(owner_raw)
+        with self.assertRaisesRegex(ValueError,'Owner changes conflict'):w.rollback(self.root,w.sha(owner_raw))
+        self.assertEqual((self.root / w.DB).read_bytes(),owner_raw)
+        self.assertEqual((self.root / '.local/weapon-updates/rollback-target.json').read_bytes(),candidate)
+
+    def test_049_invalid_backup_or_stale_rollback_does_not_write(self):
+        self.proposal();w.apply(self.root);current=(self.root / w.DB).read_bytes()
+        with self.assertRaisesRegex(ValueError,'changed since rollback'):w.rollback(self.root,'0'*64)
+        (self.root / '.local/weapon-updates/backup.json').write_text('{}')
+        with self.assertRaises(ValueError):w.rollback(self.root,w.sha(current))
+        self.assertEqual((self.root / w.DB).read_bytes(),current)
+
+    def test_049_crash_after_promotion_preserves_backup_and_resumes_cleanup(self):
+        original=(self.root / w.DB).read_bytes();self.proposal();w.apply(self.root)
+        current=(self.root / w.DB).read_bytes()
+        native=Path.unlink
+        def fail_cleanup(path,*args,**kwargs):
+            if path.name=='rollback-pending.json':raise OSError('synthetic cleanup crash')
+            return native(path,*args,**kwargs)
+        with patch.object(Path,'unlink',fail_cleanup):
+            with self.assertRaisesRegex(OSError,'cleanup crash'):w.rollback(self.root,w.sha(current))
+        self.assertEqual((self.root / w.DB).read_bytes(),original)
+        self.assertEqual((self.root / '.local/weapon-updates/backup.json').read_bytes(),current)
+        self.assertTrue(w.rollback(self.root,w.sha(original))['completedInterrupted'])
+        self.assertEqual((self.root / '.local/weapon-updates/backup.json').read_bytes(),current)
+
 
 if __name__ == '__main__':
     unittest.main()

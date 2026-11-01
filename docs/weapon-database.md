@@ -43,6 +43,8 @@ With `--fail-on-new`, exit 2 means new/corrected reports need review, 0 means no
 
 ## Safety and recovery
 
+The [armory workbench](armory-workbench.md) adds private comparisons, builds, evidence and acquisition tracking. Run `npm run weapons:manage` for the loopback-only browser check/review/apply/rollback dashboard. Existing CLI commands remain supported. Accepted ledger changes require a separate rebuild.
+
 Apply uses an exclusive writer lock and compares the database revision against the staged proposal. If actual changes are pending and the database changed, recheck/review. Applying identical reports again is a byte-identical no-op. Other weapon/attachment/base fields are retained. A validated complete replacement is atomic, with exact prior database bytes at `.local/weapon-updates/backup.json`.
 
 A crash can leave `.local/weapon-updates/writer.lock`; new writers stop instead of taking over. Confirm no updater is running, inspect the proposal/current file/backup, and remove only that stale lock when appropriate. Do not restore over a newer database without reviewing it. Recovery is manual; no operation silently overwrites a newer valid state. Backups/proposals/raw captures stay ignored locally.

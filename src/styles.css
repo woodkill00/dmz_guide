@@ -2813,3 +2813,97 @@ body[data-page="collection"] main > nav a {
 .armory-filters output {
   align-self: center;
 }
+
+.armory-tabs,
+.armory-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-gap);
+  margin-block: var(--ui-pad);
+}
+.armory-tabs a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--ui-control);
+  padding: 0.375rem 0.625rem;
+  border: 1px solid var(--line);
+  border-radius: var(--ui-radius);
+}
+.armory-tabs [aria-current] {
+  border-color: var(--accent);
+}
+.armory-control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: var(--ui-gap);
+  margin-block: var(--ui-pad);
+}
+.armory-control-grid label,
+.armory-control-grid input,
+.armory-control-grid select,
+.armory-control-grid textarea {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.armory-control-grid input,
+.armory-control-grid select {
+  min-block-size: var(--ui-control);
+}
+.armory-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 0.25rem var(--ui-gap);
+  max-block-size: 28rem;
+  overflow: auto;
+  padding: 0.25rem;
+}
+.armory-choices label,
+.check-label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  min-block-size: var(--ui-control);
+  margin: 0;
+}
+.armory-choices input,
+.check-label input {
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  flex-shrink: 0;
+}
+.compact-armory-card {
+  padding: var(--ui-pad);
+  margin-block: var(--ui-gap);
+  border: 1px solid var(--line);
+  border-radius: var(--ui-radius);
+}
+.compact-armory-card h3,
+.compact-armory-card h4 {
+  margin-block: 0 0.375rem;
+  font-size: 1rem;
+}
+.armory-evidence-picture {
+  display: block;
+  max-inline-size: min(100%, 32rem);
+  block-size: auto;
+  margin-block: var(--ui-pad);
+}
+#armory-status {
+  min-block-size: calc(2.9em + 1.25rem);
+}
+#armory-error {
+  padding: var(--ui-pad);
+  border: 1px solid var(--accent);
+  overflow-wrap: anywhere;
+}
+#manager-summary dd,
+#manager-proposal code {
+  overflow-wrap: anywhere;
+}
+#manager-proposal {
+  max-block-size: 60dvh;
+  overflow: auto;
+}
+[data-workbench-panel][hidden] {
+  display: none;
+}
