@@ -6,4 +6,4 @@
 - [x] T004 Private CAS storage, evidence/screenshots, acquisition and backups (FR003/006/007).
 - [x] T005 Local manager, proposal binding, rollback and update UI (FR004).
 - [x] T006 Navigation/docs and three-engine/a11y/security/runtime/live verification (FR007/008).
-- [ ] T007 Independent convergence, clean local commit/build/source and preview delivery.
+- [x] T007 Independent convergence, clean local commit/build/source and preview delivery.

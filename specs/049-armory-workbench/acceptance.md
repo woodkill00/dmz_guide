@@ -35,6 +35,8 @@ Final receipts (2026-11-01, Windows, Node24):
 
 Accessibility probes alone use a CSP-bypassing context for axe injection; functional workflows use the normal strict policy and monitor console/script/request errors. Existing map bundle-size advisory remains. No dependencies changed. Source files matched the tested build identity before commit; final clean-build equivalence is checked after the local commit. The late browser-only reporting repair is covered by all three final workbench runs; it did not change the Node/Python domain or manager paths covered by the aggregate tests.
 
+Independent final implementation review passed. Implementation commit `b5c4075` rebuilt cleanly: all 113 source hashes and captured catalog/pack/media hashes equal the frozen tested build. Five-page strict-health delivery smoke passed for Guide, Studio, map, map help and update manager, including the shared workbench navigation link. Receipt: `.local/armory049-delivery2.log`. The final acceptance-only commit is rebuilt and checked against the same frozen source inputs. Owned local previews remain running at ports4173/4174/5175/4176. No remote publication, push or merge performed.
+
 ## Limits
 
 Browser experiments are synthetic QA, not real DMZ measurements. Compatibility and source effects retain their original scope; no exact combined-stat prediction, TTK, new verified drop location or unlock fact is invented. Manager mutation tests use disposable databases. Private data is origin-local and requires backups; the updater is manual and depends on supported official source layouts.
