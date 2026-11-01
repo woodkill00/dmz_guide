@@ -151,6 +151,7 @@ async function generate(dist) {
     "maps-page",
     "progression-page",
     "community-page",
+    "armory-page",
   ]) {
     const file = join(root, `src/ui/${moduleName}.mjs`);
     try {

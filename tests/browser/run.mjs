@@ -1,3 +1,4 @@
+import { runArmoryTests } from "./armory.mjs";
 import { runCompactUITests } from "./compact-ui.mjs";
 import { runWorkbenchTests } from "./collection-workbench.mjs";
 import { runCollectionTests } from "./collection-needs.mjs";
@@ -30,6 +31,7 @@ try {
   const { monitorBrowser } = await import("./health.mjs");
   const checkHealth = monitorBrowser(browser);
   await mkdir("test-results", { recursive: true });
+  await runArmoryTests({ browser, base });
   await runNavigationDirectoryTests({ browser, base });
   await runTieredUpgradeTests({ browser, base });
   await runCollectionTests({ browser, base });

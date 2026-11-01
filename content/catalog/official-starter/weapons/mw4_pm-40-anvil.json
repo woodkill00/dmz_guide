@@ -1,0 +1,109 @@
+{
+  "aliases": [],
+  "category": "launcher",
+  "description": "Official launch identity and basic observations (2026-10-19). Current DMZ combat performance is not verified. Attachment reports and later patch history are available in the Weapon database.",
+  "id": "mw4:pm-40-anvil",
+  "kind": "weapon",
+  "name": "PM-40 Anvil",
+  "sourceIds": [
+    "source:weapons"
+  ],
+  "stats": [
+    {
+      "context": {
+        "attachments": "publisher launch base sheet",
+        "method": "Official launch observation, not current live DMZ verification",
+        "rangeMeters": null,
+        "stance": "not specified",
+        "target": "not a damage measurement"
+      },
+      "label": "Launch fire rate",
+      "metric": "fire-rate",
+      "reviewedAt": "2026-11-01",
+      "scope": {
+        "build": "launch-sheet-2026-10-19",
+        "gameId": "mw4",
+        "mode": "shared-launch"
+      },
+      "sourceIds": [
+        "source:weapons"
+      ],
+      "status": "observed",
+      "unit": "rounds/min",
+      "value": 38
+    },
+    {
+      "context": {
+        "attachments": "publisher launch base sheet",
+        "method": "Official launch observation, not current live DMZ verification",
+        "rangeMeters": null,
+        "stance": "not specified",
+        "target": "not a damage measurement"
+      },
+      "label": "Launch magazine capacity",
+      "metric": "magazine-capacity",
+      "reviewedAt": "2026-11-01",
+      "scope": {
+        "build": "launch-sheet-2026-10-19",
+        "gameId": "mw4",
+        "mode": "shared-launch"
+      },
+      "sourceIds": [
+        "source:weapons"
+      ],
+      "status": "observed",
+      "unit": "rounds",
+      "value": 3
+    },
+    {
+      "context": {
+        "attachments": "publisher launch base sheet",
+        "method": "Official launch observation, not current live DMZ verification",
+        "rangeMeters": null,
+        "stance": "not specified",
+        "target": "not a damage measurement"
+      },
+      "customUnit": "rounds",
+      "label": "Launch reserve ammunition",
+      "metric": "custom",
+      "reviewedAt": "2026-11-01",
+      "scope": {
+        "build": "launch-sheet-2026-10-19",
+        "gameId": "mw4",
+        "mode": "shared-launch"
+      },
+      "sourceIds": [
+        "source:weapons"
+      ],
+      "status": "observed",
+      "unit": "custom",
+      "value": 6
+    },
+    {
+      "context": {
+        "attachments": "publisher launch base sheet",
+        "method": "Official launch observation, not current live DMZ verification",
+        "rangeMeters": null,
+        "stance": "not specified",
+        "target": "not a damage measurement"
+      },
+      "customUnit": "levels",
+      "label": "Launch weapon levels",
+      "metric": "custom",
+      "reviewedAt": "2026-11-01",
+      "scope": {
+        "build": "launch-sheet-2026-10-19",
+        "gameId": "mw4",
+        "mode": "shared-launch"
+      },
+      "sourceIds": [
+        "source:weapons"
+      ],
+      "status": "observed",
+      "unit": "custom",
+      "value": 46
+    }
+  ],
+  "status": "verified",
+  "unit": "count"
+}

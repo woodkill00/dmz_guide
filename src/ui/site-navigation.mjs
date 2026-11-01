@@ -36,6 +36,8 @@ export function renderMainNavigation({
   const secondary = [
     ["/", "Home", "home"],
     ["/weapons/", "Weapons", "weapons"],
+    ["/armory/", "Weapon database", "armory"],
+    ["/armory/updates/", "Weapon updates", "weapon-updates"],
     ["/recipes/", "Recipes", "recipes"],
     ["/guides/", "Guides", "guides"],
     ...extra

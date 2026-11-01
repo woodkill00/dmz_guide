@@ -1,3 +1,4 @@
+import { runArmoryTests } from "./armory.mjs";
 import { runCompactUITests } from "./compact-ui.mjs";
 import { runWorkbenchTests } from "./collection-workbench.mjs";
 import { runCollectionTests } from "./collection-needs.mjs";
@@ -24,6 +25,7 @@ try {
     const browser = await engine.launch({ headless: true });
     const health = monitorBrowser(browser);
     try {
+      await runArmoryTests({ browser, base });
       await runNavigationDirectoryTests({
         browser,
         base,

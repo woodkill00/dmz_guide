@@ -2749,3 +2749,67 @@ body[data-page="collection"] main > nav a {
     transition: border-color 120ms ease;
   }
 }
+
+/* Dense reference tables retain a labelled local scrolling region. */
+.armory-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-gap);
+  margin-block: var(--ui-pad);
+}
+.armory-links a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--ui-control);
+}
+.armory-table-wrap {
+  contain: layout paint;
+  max-inline-size: 100%;
+  max-block-size: min(65dvh, 48rem);
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--ui-radius);
+  scrollbar-gutter: stable;
+}
+.armory-table {
+  inline-size: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+.armory-table th,
+.armory-table td {
+  padding: clamp(0.375rem, calc(0.25rem + 0.3vw), 0.625rem);
+  text-align: start;
+  vertical-align: top;
+  border-block-end: 1px solid var(--line);
+  overflow-wrap: anywhere;
+  min-inline-size: 7rem;
+}
+.armory-table thead th {
+  position: sticky;
+  inset-block-start: 0;
+  background: var(--raised);
+  z-index: 1;
+}
+.armory-table tbody th {
+  font-weight: 600;
+}
+.armory-table a {
+  display: inline-block;
+  padding-block: 0.25rem;
+}
+.armory-table tr[hidden] {
+  display: none;
+}
+.armory-filters {
+  margin-block: var(--ui-pad);
+}
+.armory-filters input,
+.armory-filters select {
+  min-block-size: var(--ui-control);
+}
+.armory-filters output {
+  align-self: center;
+}

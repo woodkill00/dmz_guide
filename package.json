@@ -25,7 +25,11 @@
     "map:build": "npm --prefix tools/hajin-map run build",
     "map:test": "npm --prefix tools/hajin-map test",
     "map:test:capacity": "npm --prefix tools/hajin-map run test:capacity",
-    "map:test:browser": "npm --prefix tools/hajin-map run test:browser"
+    "map:test:browser": "npm --prefix tools/hajin-map run test:browser",
+    "weapons:check": "node scripts/weapon-database.mjs check",
+    "weapons:apply": "node scripts/weapon-database.mjs apply",
+    "weapons:validate": "node scripts/weapon-database.mjs validate",
+    "test:weapons": "node scripts/weapon-database.mjs test"
   },
   "devDependencies": {
     "playwright": "1.58.2",

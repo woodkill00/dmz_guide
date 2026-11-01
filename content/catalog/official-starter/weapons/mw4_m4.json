@@ -1,7 +1,7 @@
 {
   "aliases": [],
   "category": "assault-rifle",
-  "description": "Assault rifle. Numeric DMZ performance has not been verified for this pack.",
+  "description": "Official launch identity and basic observations (2026-10-19). Current DMZ combat performance is not verified. Attachment reports and later patch history are available in the Weapon database.",
   "id": "mw4:m4",
   "kind": "weapon",
   "name": "M4",
@@ -12,19 +12,97 @@
   "stats": [
     {
       "context": {
-        "attachments": "unknown",
-        "method": "No live DMZ measurement verified.",
+        "attachments": "publisher launch base sheet",
+        "method": "Official launch observation, not current live DMZ verification",
         "rangeMeters": null,
-        "stance": "unknown",
-        "target": "unknown"
+        "stance": "not specified",
+        "target": "not a damage measurement"
       },
-      "label": "Fire rate",
+      "label": "Launch fire rate",
       "metric": "fire-rate",
-      "reviewedAt": "2026-10-21",
-      "sourceIds": [],
-      "status": "unknown",
+      "reviewedAt": "2026-11-01",
+      "scope": {
+        "build": "launch-sheet-2026-10-19",
+        "gameId": "mw4",
+        "mode": "shared-launch"
+      },
+      "sourceIds": [
+        "source:weapons"
+      ],
+      "status": "observed",
       "unit": "rounds/min",
-      "value": null
+      "value": 810
+    },
+    {
+      "context": {
+        "attachments": "publisher launch base sheet",
+        "method": "Official launch observation, not current live DMZ verification",
+        "rangeMeters": null,
+        "stance": "not specified",
+        "target": "not a damage measurement"
+      },
+      "label": "Launch magazine capacity",
+      "metric": "magazine-capacity",
+      "reviewedAt": "2026-11-01",
+      "scope": {
+        "build": "launch-sheet-2026-10-19",
+        "gameId": "mw4",
+        "mode": "shared-launch"
+      },
+      "sourceIds": [
+        "source:weapons"
+      ],
+      "status": "observed",
+      "unit": "rounds",
+      "value": 30
+    },
+    {
+      "context": {
+        "attachments": "publisher launch base sheet",
+        "method": "Official launch observation, not current live DMZ verification",
+        "rangeMeters": null,
+        "stance": "not specified",
+        "target": "not a damage measurement"
+      },
+      "customUnit": "rounds",
+      "label": "Launch reserve ammunition",
+      "metric": "custom",
+      "reviewedAt": "2026-11-01",
+      "scope": {
+        "build": "launch-sheet-2026-10-19",
+        "gameId": "mw4",
+        "mode": "shared-launch"
+      },
+      "sourceIds": [
+        "source:weapons"
+      ],
+      "status": "observed",
+      "unit": "custom",
+      "value": 90
+    },
+    {
+      "context": {
+        "attachments": "publisher launch base sheet",
+        "method": "Official launch observation, not current live DMZ verification",
+        "rangeMeters": null,
+        "stance": "not specified",
+        "target": "not a damage measurement"
+      },
+      "customUnit": "levels",
+      "label": "Launch weapon levels",
+      "metric": "custom",
+      "reviewedAt": "2026-11-01",
+      "scope": {
+        "build": "launch-sheet-2026-10-19",
+        "gameId": "mw4",
+        "mode": "shared-launch"
+      },
+      "sourceIds": [
+        "source:weapons"
+      ],
+      "status": "observed",
+      "unit": "custom",
+      "value": 72
     }
   ],
   "status": "verified",

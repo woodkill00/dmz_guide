@@ -65,6 +65,7 @@ export async function captureBuildSources(root) {
     "schemas",
     "scripts",
     "content/site.json",
+    "content/weapon-intel.json",
     "package.json",
     "package-lock.json",
   ])

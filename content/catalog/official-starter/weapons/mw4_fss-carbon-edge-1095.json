@@ -1,0 +1,39 @@
+{
+  "aliases": [],
+  "category": "melee",
+  "description": "Official launch identity and basic observations (2026-10-19). Current DMZ combat performance is not verified. Attachment reports and later patch history are available in the Weapon database.",
+  "id": "mw4:fss-carbon-edge-1095",
+  "kind": "weapon",
+  "name": "FSS Carbon Edge 1095",
+  "sourceIds": [
+    "source:weapons"
+  ],
+  "stats": [
+    {
+      "context": {
+        "attachments": "publisher launch base sheet",
+        "method": "Official launch observation, not current live DMZ verification",
+        "rangeMeters": null,
+        "stance": "not specified",
+        "target": "not a damage measurement"
+      },
+      "customUnit": "levels",
+      "label": "Launch weapon levels",
+      "metric": "custom",
+      "reviewedAt": "2026-11-01",
+      "scope": {
+        "build": "launch-sheet-2026-10-19",
+        "gameId": "mw4",
+        "mode": "shared-launch"
+      },
+      "sourceIds": [
+        "source:weapons"
+      ],
+      "status": "observed",
+      "unit": "custom",
+      "value": 46
+    }
+  ],
+  "status": "verified",
+  "unit": "count"
+}

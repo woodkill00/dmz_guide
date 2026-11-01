@@ -148,6 +148,11 @@ async function fixture(t, { build = false } = {}) {
       await cp(join(source, part), join(root, part), { recursive: true });
     await put(
       root,
+      "content/weapon-intel.json",
+      await readFile(join(source, "content/weapon-intel.json")),
+    );
+    await put(
+      root,
       "content/site.json",
       await readFile(join(source, "content/site.json")),
     );

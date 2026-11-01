@@ -36,6 +36,7 @@ test("static source changes are detected and missing Git is honestly unknown", a
       await mkdir(join(root, name));
     for (const name of [
       "content/site.json",
+      "content/weapon-intel.json",
       "package.json",
       "package-lock.json",
       "schemas/pack.schema.json",
@@ -61,6 +62,7 @@ test("generated Python caches are excluded from source evidence", async () => {
       await mkdir(join(root, name));
     for (const name of [
       "content/site.json",
+      "content/weapon-intel.json",
       "package.json",
       "package-lock.json",
       "schemas/pack.schema.json",

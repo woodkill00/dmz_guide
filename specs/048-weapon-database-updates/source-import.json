@@ -1,0 +1,26 @@
+{
+  "reviewedAt": "2026-11-01",
+  "parserVersion": 1,
+  "scope": "Owner-authorized local factual data; no artwork or public redistribution grant",
+  "inputs": [
+    {
+      "capture": "launch",
+      "sha256": "948957ed90589a0fdfe45657d0557b1cc3b942d1d0d8f441ad92ba375783c7c7"
+    },
+    {
+      "capture": "attachments",
+      "sha256": "92690c1422047efc0b7c9aef1c3d1a84b680cc35e7c55691aee8ec4a85dab494"
+    },
+    {
+      "capture": "stats",
+      "sha256": "bf7dad143b2f1d41854ac4758426af429e665e448a15e01a94f7028e75df8ec2"
+    }
+  ],
+  "counts": {
+    "weapons": 33,
+    "standardAttachments": 615,
+    "apexAttachments": 28,
+    "effectPairs": 991,
+    "officialPatchReports": 65
+  }
+}

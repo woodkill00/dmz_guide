@@ -32,7 +32,36 @@
       "mw4:medium-backpack",
       "mw4:han-86",
       "mw4:kastov-762",
-      "mw4:axion"
+      "mw4:axion",
+      "mw4:hyeon-burst",
+      "mw4:patriot-xmr",
+      "mw4:oden",
+      "mw4:cronen-squall",
+      "mw4:iso-nightshade",
+      "mw4:vel-46",
+      "mw4:wz-55-striga",
+      "mw4:ppsh-41",
+      "mw4:x-58-nyx",
+      "mw4:rezi-12",
+      "mw4:warlord",
+      "mw4:finn-lmg",
+      "mw4:type-73",
+      "mw4:apoc-338",
+      "mw4:mar-9",
+      "mw4:oris-8-6",
+      "mw4:mosin-nagant",
+      "mw4:kg-7-vulcan",
+      "mw4:astaroth-57",
+      "mw4:signal-50",
+      "mw4:sang-9mm",
+      "mw4:krait-p68",
+      "mw4:50-gs",
+      "mw4:mojave-357",
+      "mw4:pila",
+      "mw4:rpg-8",
+      "mw4:jokr",
+      "mw4:pm-40-anvil",
+      "mw4:fss-carbon-edge-1095"
     ],
     "locations": [
       "mw4:imjin-farmland",
@@ -72,10 +101,10 @@
     ]
   },
   "pack": {
-    "contentVersion": "2026.10.21.1",
+    "contentVersion": "2026.11.01.1",
     "coverage": {
       "expectedTotal": null,
-      "note": "Coverage not established. Selected starter records only; combat statistics, full Orders, campaign walkthroughs and calibrated map imagery are not yet verified."
+      "note": "All33 official launch weapon identities/basic observations; current DMZ combat stats and full non-weapon coverage remain unverified. Other starter records retained."
     },
     "description": "Selected independently checked facts, not a complete catalog or live-build validation. Unknown values remain unknown. No third-party artwork included.",
     "game": {

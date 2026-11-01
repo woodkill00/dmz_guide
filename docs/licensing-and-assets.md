@@ -23,3 +23,8 @@ This empty register makes no claim that future assets are cleared. Add approved 
 ## Public credits
 
 Publish human-readable credits alongside the asset pack or product that uses the asset, preserving notices required by its actual license. Game names and trademarks identify the subject; do not imply endorsement. Ask the owner for a decision where rights remain uncertain rather than inventing legal clearance.
+
+
+## Local weapon-intelligence dataset048
+
+`content/weapon-intel.json` and the added native weapon observations contain factual identity/stat reports from Activision's official launch overview/patch notes and the COD Loadout structured community snapshots (upstream CODMunity, ggranked, DMZ Codex and others recorded in the document). Local collection/use is covered by the owner's earlier explicit additional-provider permission confirmation in this session, recorded in feature036's source registry. This is not an MIT grant or a public redistribution license. No weapon/attachment artwork or long provider descriptions are included. Attribution URLs, dates, mode and status remain in the dataset and reader. Reviewed scope/date: local feature048,2026-11-01; independent review receipt lives in its checklist. Source data transformation: normalized identities/compatibility/multipliers, separate dated patch reports and explicit missing/uncertain values. No public publication is authorized by this entry.

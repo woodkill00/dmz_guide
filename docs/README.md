@@ -1,5 +1,7 @@
 # Documentation
 
+- [Weapon database and official patch checks](weapon-database.md): populated weapons/attachments, source scope, update commands and recovery.
+
 - [Weapon and attachment database research](weapon-database-research.md): sources, coverage gaps, database model and implementation slices.
 
 - [Compact interface and navigation](compact-interface.md)
