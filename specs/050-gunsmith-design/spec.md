@@ -1,0 +1,12 @@
+# Game-inspired weapon directory and Gunsmith
+
+User request: reproduce Screenshot127's categorized weapon list/large preview and Screenshot128's individual gun/attachment layout. Screenshots are local visual references, not redistribution grants or verified current statistics.
+
+- FR001: `/armory/` shows all33 current catalog weapons in a compact scrollable list with search, nine class filters plus All, thumbnail, active selection, large weapon preview, scoped ammunition/fire-rate data and native detail link. Selection and filtering stay consistent, including zero matches and keyboard use. Do not invent cost, prestige or owned counts.
+- FR002: Every current `/armory/{id}/` starts with a Gunsmith-style large gun display, supported attachment slot links and compatible counts, Apex when applicable, launch stats and build action. Slots filter/scroll to the existing compatible attachment table. Mobile uses flowing slot controls rather than overlapping gun labels.
+- FR003: Preserve full source, community, attachment and patch context, existing route/filter/native links and readable no-JS content. Unknown damage/range/accuracy/mobility/handling are explicitly unknown, not fabricated bars. Source dates/modes remain visible.
+- FR004: Build action opens the separate existing private builder with the known weapon selected without automatic storage writes or replacement of saved builds.
+- FR005: Use only official locally collected weapon figures under existing local provider authorization. No original user screenshots, player data or game artwork committed/bundled. Fixed readonly local artwork endpoint with bounded validated files and safe unavailable fallback; no arbitrary file paths/remote fetching via HTTP. Missing art never borrows another weapon's image. No changes to gameplay facts/profile schema.
+- FR006: Compact responsive CSS with calc/clamp/min sizing, dark/light themes, keyboard/focus/reduced-motion and200% text. Tests cover selection/filtering/empty states, slots, builder handoff, no-JS and artwork endpoint boundaries; existing armory/workbench/nav regressions, three engines, accessibility, repository and build checks. Independent review before acceptance.
+
+Clarified by task context: this is a locally hosted reference guide, not a game client. No purchase, rotate3D, wallet, appearance or prestige control is simulated. Official2D art is shown as a source figure, not an interactive3D model. Launcher/melee supported slot differences and missing figures stay explicit.

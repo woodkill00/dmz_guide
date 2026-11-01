@@ -3,6 +3,21 @@ import { stat, readFile } from "node:fs/promises";
 import { resolve, join, extname, sep, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../dist");
+// Static release archives retain the standalone server without repository tools.
+let weaponArtReader;
+async function weaponArt(raw) {
+  weaponArtReader ||= import("./weapon-art.mjs").then(
+    ({ createWeaponArtReader }) =>
+      createWeaponArtReader({ root: resolve(root, "..") }),
+  );
+  try {
+    return await (
+      await weaponArtReader
+    )(raw);
+  } catch {
+    return { status: 404 };
+  }
+}
 const args = process.argv.slice(2),
   portIndex = args.indexOf("--port");
 const port = Number(
@@ -47,6 +62,18 @@ const server = createServer(async (req, res) => {
     return res.end("Method not allowed");
   }
   try {
+    if (req.url?.startsWith("/local-weapon-art/")) {
+      const art = await weaponArt(req.url);
+      res.writeHead(art.status, {
+        "Content-Type": art.type || "text/plain",
+        "Cache-Control": "no-store",
+      });
+      return res.end(
+        req.method === "HEAD"
+          ? undefined
+          : art.bytes || "Artwork request unavailable",
+      );
+    }
     const raw = (req.url || "/").split("?")[0];
     const path = decodeURIComponent(raw);
     if (

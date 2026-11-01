@@ -1,3 +1,8 @@
+import {
+  gunsmithHeader,
+  renderWeaponRoster,
+  renderGunsmith,
+} from "./gunsmith-view.mjs";
 import { readWeaponIntel } from "../content/weapon-intel.mjs";
 import { e, pageHeading, recordUrl } from "./render.mjs";
 
@@ -18,11 +23,7 @@ const disclosure = `<aside class="notice"><strong>Dated source reports, not a ve
 export function renderArmory(db, weaponId = null, nativeIds = null) {
   const weapon = weaponId ? db.weapons.find((w) => w.id === weaponId) : null;
   const count = db.attachments.filter((a) => a.kind === "standard").length;
-  const header = pageHeading(
-    "WEAPON DATABASE",
-    weapon?.name || "Weapons & attachments",
-    `${db.weapons.length} launch weapons · ${count} reported standard attachments · ${db.attachments.length - count} Apex attachments`,
-  );
+  const header = gunsmithHeader(weapon);
   const intro = `<div class="armory-links"><a href="/armory/">All weapons</a><a href="/armory/#attachments">Attachment directory</a><a href="/armory/#patch-history">Official patch history</a><a href="/weapons/">Catalog records</a><a href="/armory/updates/">Check for updates</a><a href="/armory/workbench/">Compare / build / track</a></div>${disclosure}`;
   const metrics = new Map(db.metrics.map((m) => [m.id, m]));
   const patches = db.patches
@@ -92,7 +93,10 @@ export function renderArmory(db, weaponId = null, nativeIds = null) {
     (a) => !weapon || a.weapons.includes(weapon.id),
   );
   const attachmentView = `<section id="attachments" class="section"><h2>${weapon ? "Reported compatible attachments" : "Attachment directory"}</h2><p>Provider-reported fit; verify in the current Gunsmith. Percentages are per-weapon multipliers on that provider's baseline, not a validated stacking model. Positive duration changes can be worse. Unknown-mode effects are not confirmed DMZ performance.</p><form class="filter-bar armory-filters" data-armory-filter><label>Find attachment<input type="search" data-armory-search placeholder="Name, slot or Apex"></label><label>Slot<select data-armory-slot><option value="">All slots</option>${[
-    ...new Set(attachments.map((a) => a.slot)),
+    ...new Set([
+      ...attachments.map((a) => a.slot),
+      ...(weapon?.slots || []).map((s) => s.toLowerCase().replace(/\s+/g, "-")),
+    ]),
   ]
     .sort()
     .map((s) => `<option>${e(s)}</option>`)
@@ -102,37 +106,14 @@ export function renderArmory(db, weaponId = null, nativeIds = null) {
   if (!weapon)
     return (
       header +
+      renderWeaponRoster(db) +
       intro +
-      `<section class="section"><h2>Launch weapons</h2><form class="filter-bar armory-filters" data-weapon-filter><label>Find weapon<input type="search" data-weapon-search></label><label>Class<select data-weapon-class><option value="">All classes</option>${[
-        ...new Set(db.weapons.map((w) => w.category)),
-      ]
-        .sort()
-        .map((c) => `<option>${e(c)}</option>`)
-        .join(
-          "",
-        )}</select></label><output data-weapon-count aria-live="polite">${db.weapons.length} weapons</output></form>${table(
-        ["Weapon", "Class", "Fire rate", "Magazine / reserve", "Attachments"],
-        db.weapons.map((w) =>
-          row(
-            [
-              `<a href="/armory/${e(w.id)}/">${e(w.name)}</a>`,
-              e(w.category),
-              value(w.official.rpm),
-              `${value(w.official.magazine)} / ${value(w.official.reserve)}`,
-              String(
-                db.attachments.filter((a) => a.weapons.includes(w.id)).length,
-              ),
-            ],
-            `data-weapon-row data-search="${e(w.name.toLowerCase())}" data-class="${e(w.category)}"`,
-          ),
-        ),
-      )}</section>` +
       attachmentView +
       patchView +
       sources(db)
     );
   const native = recordUrl("weapon", "mw4:" + weapon.id);
-  const detail = `<section class="section"><h2>Official launch sheet</h2><p>${link(db.sources["official-launch"].url, "Publisher source")} · ${e(db.sources["official-launch"].date)} · shared launch baseline. ${nativeIds && !nativeIds.has("mw4:" + weapon.id) ? "Native catalog record is not in this checkout." : `<a href="${e(native)}">Open catalog record</a>`}</p>${table(
+  const detail = `<section class="section" id="weapon-intel"><h2>Official launch sheet</h2><p>${link(db.sources["official-launch"].url, "Publisher source")} · ${e(db.sources["official-launch"].date)} · shared launch baseline. ${nativeIds && !nativeIds.has("mw4:" + weapon.id) ? "Native catalog record is not in this checkout." : `<a href="${e(native)}">Open catalog record</a>`}</p>${table(
     ["Metric", "Launch observation"],
     Object.entries(weapon.official).map(([k, v]) =>
       row([
@@ -159,10 +140,17 @@ export function renderArmory(db, weaponId = null, nativeIds = null) {
       ]),
     ),
   )}<p>The provider's reserve_ammo key is retained as reported; it may represent total ammunition rather than reserve-only. Damage-range units and generic recoil scales are not converted.</p></section>`;
-  return header + intro + detail + attachmentView + patchView;
+  return (
+    header +
+    renderGunsmith(db, weapon) +
+    intro +
+    detail +
+    attachmentView +
+    patchView
+  );
 }
 function sources(db) {
-  return `<section class="section"><h2>Sources & coverage</h2><p>Imported ${e(db.importedAt)}. Provider reports may be incomplete, stale or conflicting. No image assets were imported.</p><ul>${Object.entries(
+  return `<section class="section"><h2>Sources & coverage</h2><p>Imported ${e(db.importedAt)}. Provider reports may be incomplete, stale or conflicting. Weapon figures load separately from ignored local files; no artwork is bundled with the guide.</p><ul>${Object.entries(
     db.sources,
   )
     .map(
@@ -184,6 +172,7 @@ export async function featurePages(packs = []) {
     page: "armory",
     body: renderArmory(db, id, nativeIds),
     scripts: ["/assets/src/client/armory.mjs"],
+    styles: ["/assets/src/ui/gunsmith.css"],
   }));
   pages.push({
     path: "/armory/updates/",

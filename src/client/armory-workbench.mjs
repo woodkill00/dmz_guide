@@ -979,6 +979,27 @@ compare();
 tabs();
 load()
   .then(() => {
+    const requested = new URL(location.href).searchParams.getAll("weapon");
+    if (location.hash === "#builder" && requested.length) {
+      const weapon =
+        requested.length === 1 && db.weapons.find((w) => w.id === requested[0]);
+      if (weapon) {
+        loadBuild({
+          id: newId(),
+          weapon: weapon.id,
+          name: `${weapon.name} build`,
+          attachments: [],
+          notes: "",
+          updatedAt: today(),
+        });
+        status(
+          `${weapon.name} selected as a new unsaved draft. Save explicitly to keep it.`,
+        );
+      } else
+        status(
+          "Unknown or repeated weapon selection ignored; saved workspace is unchanged.",
+        );
+    }
     document.querySelector("main").dataset.armoryReady = "true";
   })
   .catch((error) => {

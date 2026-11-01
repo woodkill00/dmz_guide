@@ -1,5 +1,7 @@
 # Documentation
 
+- [Weapon armory and Gunsmith](gunsmith.md): game-inspired list, weapon displays, slot navigation and local artwork.
+
 - [Armory workbench](armory-workbench.md): comparisons, builds, private evidence, acquisition, backups and local update dashboard.
 
 - [Weapon database and official patch checks](weapon-database.md): populated weapons/attachments, source scope, update commands and recovery.

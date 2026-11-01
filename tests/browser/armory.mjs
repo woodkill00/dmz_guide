@@ -101,8 +101,7 @@ export async function runArmoryTests({
       await p.goto(base + "/armory/");
       assert.equal(await p.locator("[data-weapon-row]").count(), 33);
       await p
-        .locator("[data-weapon-row] a")
-        .filter({ hasText: "Han 86" })
+        .getByRole("link", { name: "Open Han 86 Gunsmith", exact: true })
         .click();
       assert.equal(new URL(p.url()).pathname, "/armory/han-86/");
     } finally {

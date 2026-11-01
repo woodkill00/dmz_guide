@@ -1,0 +1,233 @@
+{
+  "han-86": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-009.webp",
+    "sha256": "c70f4d10aea72e63c635256653d7e10fbc15f294e1b75787540afd8e81da1737",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "m4": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-010.webp",
+    "sha256": "d11926017b64f81017fcfdeb2de732993d793b0c4e52d109eba36b8e128f343f",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "hyeon-burst": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-011.webp",
+    "sha256": "46661ff3117b706960db81b1f2d0963b7bad83e0c63e9d707972d0169b28be80",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "patriot-xmr": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-012.webp",
+    "sha256": "659549151c8a402ce3a44bb1d4672016d386b6b765280ae8ad022a659eaf8dbd",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "kastov-762": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-013.webp",
+    "sha256": "a13eceb90bb0b3a9cf60f6e28468e86d02d7ed8ca4acf5e9b061bb13fa044339",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "oden": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-014.webp",
+    "sha256": "e441fe077d684fa23bf764074ddcb42856d79422af92b7f3af2e23702b3f495b",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "axion": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-015.webp",
+    "sha256": "08bfa0596510beef70639bfeb365cc1bf318c80fa40fdf362a76cbdb31499d34",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "cronen-squall": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-016.webp",
+    "sha256": "49573e3fe73d4ff0941c5eb461115e0d5146619553b8b02b2dd199a8f6eabdeb",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "iso-nightshade": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-017.webp",
+    "sha256": "4fd3721214fd29eac0e1d0daae1f647b1d1bec898f7dd763eddc1166b93eeef8",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "vel-46": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-018.webp",
+    "sha256": "7264926fe801583138e8d663ffbaf68656aa52fe5c28058f5ce331b8acb1ea55",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "wz-55-striga": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-019.webp",
+    "sha256": "c02262ab46d57dcdc0a2197b31ec8cab47bc91512732b267207604f7b9e5ad80",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "ppsh-41": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-020.webp",
+    "sha256": "8ced4ccbe08a4405b6cb8809ffacac79835a9763ffcb57084764d85cf0fcffe8",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "x-58-nyx": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-021.webp",
+    "sha256": "aa1c8c059baf46119a885d495a9686d3d1037963288783f89b6f1aedb6bbf5a5",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "rezi-12": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-022.webp",
+    "sha256": "304de5da2c0b4077a6ac99ed1c7c0c337c3228916de73e2cf10c87d0859e3b58",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "warlord": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-023.webp",
+    "sha256": "d31a3f5df64cf0863ea8d4d3aa274e710919ed1bbdf3a637c4cc3d365bcfc5d8",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "finn-lmg": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-024.webp",
+    "sha256": "9b40294b1637cb3f925817554da7cedccddb25d25e9238975707edfce185e9a2",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "type-73": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-025.webp",
+    "sha256": "adb83a28ca86126b9180083411a1bd68934b7eb32e78d94dc856f466393f62c6",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "apoc-338": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-026.webp",
+    "sha256": "472e2d1d92364556f2459ad991e0e3b8dc311ea804b16cf2f0a3d4c2c3487364",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "mar-9": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-027.webp",
+    "sha256": "0381919803744b6fba8b4febfa77a7a6e39571a209766d4b41b267b20b9536c9",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "oris-8-6": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-028.webp",
+    "sha256": "e2f51e19f8d34869042af8d6442e20a24de6a04adf11d6a9a28b4add0171fdb9",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "mosin-nagant": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-029.webp",
+    "sha256": "2525f4d41c810b2f16d52c305f6bb3955be28a02936fb17c7e4a67ced0afa857",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "kg-7-vulcan": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-030.webp",
+    "sha256": "e6d3ddb1d07aae26f017d496266564a40ed8aedba1268a003cb0a53ea7ee34eb",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "astaroth-57": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-031.webp",
+    "sha256": "962c46229029e9e2e4816da45e8947b9e837cca94ba470617e35b73e0085f022",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "signal-50": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-032.webp",
+    "sha256": "38ce51315ab119ad5729ebe43e514fb4f66a34b6fca189d1c1d6e11c59df8f79",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "sang-9mm": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-033.webp",
+    "sha256": "00f8f6e30638a283c84b3c67fef25876fd9189549799f559ca0fbf72df04f341",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "krait-p68": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-034.webp",
+    "sha256": "0efd8654211afb4bcaaabfea251fff489c53b84c7ee96a7acc1d24c3c745c029",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "50-gs": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-035.webp",
+    "sha256": "44c9424b9c4a82531b3822cc657811736509e2c75139007a046e61af665ea856",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "mojave-357": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-036.webp",
+    "sha256": "729b942584521b23f42174af2c81f07b3ec026382e3bed2244b385f602da25cc",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "pila": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-037.webp",
+    "sha256": "a233734378273fc90c73af58ce8d37d64e3f847163481c74a34be8ae488a828d",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "rpg-8": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-038.webp",
+    "sha256": "73532edfe1b45ee44fdd89e2a1a26973c879988e623a7aa3ce9610f9305a523c",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  },
+  "jokr": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-039.webp",
+    "sha256": "56db9c10bb58d10736482f4520073c5fff19a18e1ade9a4969bd1b4edda0f3ad",
+    "width": 1920,
+    "height": 1080,
+    "crop": [140, 110, 1640, 800]
+  },
+  "pm-40-anvil": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-040.webp",
+    "sha256": "e801ab087c288f0d6275cc5cf59441c9793126a5399e4a035ff003e89693ae9a",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 560]
+  },
+  "fss-carbon-edge-1095": {
+    "sourceURL": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/rfl-ops-and-weapons/MW4-RFL-OPS-WEAPONS-041.webp",
+    "sha256": "cb25014a87197e6dac12637134f2754fd6f49bd626c2f637922ce72cd2393c70",
+    "width": 1920,
+    "height": 1080,
+    "crop": [45, 115, 1830, 530]
+  }
+}
