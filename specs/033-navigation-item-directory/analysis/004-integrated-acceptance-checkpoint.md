@@ -70,3 +70,9 @@ application code remain unchanged. Three deterministic readiness tests and
 three observer-supervision tests pass; independent source and actual-pixel review
 passed. Final-head Windows acceptance must be established before completion. Full details and artifact hash
 remain in the linked repair evidence.
+
+## Later functional-gate amendment — feature046, 2026-11-01
+
+The historical30-second receipts above remain unchanged. Feature046's current full catalog on this local filesystem measured10374.5ms read,29248.2ms transactional save and10141.3ms exact post-save verification in an isolated copy. Both historical30-second browser response failures and the measurement are retained in feature046 acceptance. There is no product30-second save SLA, and no server transaction behavior was changed.
+
+Feature046 explicitly amends Studio's functional HTTP response bound to the named90-second `STUDIO_API_FUNCTIONAL_DEADLINE_MS`; this relaxes the historical test bound and must not be described as latency recovery or an unchanged-deadline pass. Request dispatch and follow-up response phases are observed separately. Actual status/body, exact saved content, restart/import, conflict/recovery and health assertions remain. Interaction/readiness, image decode, adversarial and performance deadlines remain separate and unchanged. This measured functional-gate amendment was independently reviewed; current execution receipts belong to [feature046](../../046-compact-responsive-ui/acceptance.md).

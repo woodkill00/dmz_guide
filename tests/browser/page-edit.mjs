@@ -1,4 +1,5 @@
 import { observeBrowserAction } from "./action-observers.mjs";
+import { STUDIO_API_FUNCTIONAL_DEADLINE_MS } from "./studio-functional-deadline.mjs";
 import assert from "node:assert/strict";
 import {
   cp,
@@ -35,6 +36,7 @@ export async function openStudioForEvidence(page, action) {
     (response) =>
       response.url().endsWith("/api/changes") &&
       response.request().method() === "GET",
+    { timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS },
   );
   const [response] = await observeBrowserAction(action, [changes]);
   assert.equal(response.status(), 200);
@@ -503,6 +505,7 @@ export async function runPageEditTests({
       (response) =>
         response.url() === author.url + "/api/save" &&
         response.request().method() === "POST",
+      { timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS },
     );
     await page.click("#save-repository");
     const result = await response;

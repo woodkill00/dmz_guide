@@ -70,6 +70,13 @@ export async function runCollectionTests({ browser, base }) {
       const { state } = await import("/assets/src/client/common.mjs");
       return !state.saving && state.revision === previous + 1;
     }, savedRevision);
+    const saved = await page.evaluate(async () => {
+      const { state } = await import("/assets/src/client/common.mjs");
+      const { readRecord } = await import("/assets/src/storage/store.mjs");
+      return readRecord("profiles", state.pack.id);
+    });
+    assert.equal(saved.value.revision, savedRevision + 1);
+    assert.equal(saved.value.inventory["craft:wire"], 12);
     await inventory();
     await page.locator("#inventory-view").selectOption("needed");
     assert.equal(await wire().inputValue(), "12");

@@ -1,4 +1,5 @@
 import { observeBrowserAction } from "../browser/action-observers.mjs";
+import { STUDIO_API_FUNCTIONAL_DEADLINE_MS } from "../browser/studio-functional-deadline.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -80,6 +81,10 @@ async function exercise(mode) {
     goto: async () => (mode === "observer" ? new Promise(() => {}) : undefined),
     waitForSelector: async () => {},
     waitForFunction: async () => {},
+    waitForRequest: async () => ({
+      url: () => current.url + "/api/save",
+      method: () => "POST",
+    }),
     waitForResponse: async () => {
       if (mode === "observer") throw new Error("observer sentinel");
       return {
@@ -123,6 +128,7 @@ async function exercise(mode) {
   };
   const sandbox = {
     assert,
+    STUDIO_API_FUNCTIONAL_DEADLINE_MS,
     JSON,
     Buffer,
     process: { env: {} },

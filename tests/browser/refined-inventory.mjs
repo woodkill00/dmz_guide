@@ -95,9 +95,10 @@ export async function runRefinedInventoryTests({
     const href = await recipes.first().getAttribute("href");
     assert.match(href, /pack=demo%3Atraining-pack&id=/);
     assert.equal(await recipes.first().getAttribute("target"), "_blank");
-    const opened = context.waitForEvent("page");
-    await recipes.first().click();
-    const reference = await opened;
+    const [reference] = await Promise.all([
+      context.waitForEvent("page"),
+      recipes.first().click(),
+    ]);
     await reference.waitForLoadState();
     assert(reference.url().includes("/local/?pack=demo%3Atraining-pack&id="));
     await reference.close();

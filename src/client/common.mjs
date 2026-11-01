@@ -43,7 +43,12 @@ export function error(reason) {
 let statusRevision = 0;
 export function status(text) {
   statusRevision++;
-  if ($("#save-status")) $("#save-status").textContent = text;
+  const container = $("#save-status");
+  if (container) {
+    const label = container.firstElementChild;
+    (label?.hasAttribute("data-status-text") ? label : container).textContent =
+      text;
+  }
 }
 export function download(name, data, type = "application/json") {
   const blob = new Blob(

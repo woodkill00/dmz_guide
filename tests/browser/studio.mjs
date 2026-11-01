@@ -1,4 +1,5 @@
 import { runDirectoryRemovalTests } from "./navigation-directory.mjs";
+import { STUDIO_API_FUNCTIONAL_DEADLINE_MS } from "./studio-functional-deadline.mjs";
 import { runUpgradeStudioRoundtrip } from "./upgrades-studio.mjs";
 import assert from "node:assert/strict";
 import {
@@ -594,6 +595,7 @@ export async function runStudioTests({
         (response) =>
           response.url().endsWith("/api/save") &&
           response.request().method() === "POST",
+        { timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS },
       );
       await page.click("#save-repository");
       const result = await response;
@@ -1444,6 +1446,7 @@ export async function runStudioTests({
         (response) =>
           response.url() === author.url + "/api/save" &&
           response.request().method() === "POST",
+        { timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS },
       );
       await stalePage.click("#save-repository");
       const conflict = await response;
@@ -1643,6 +1646,7 @@ export async function runStudioTests({
     });
     const catalogResponse = libraryPage.waitForResponse(
       (response) => response.url() === author.url + "/api/catalog",
+      { timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS },
     );
     await libraryPage.goto(author.url);
     const metadata = await (await catalogResponse).json();

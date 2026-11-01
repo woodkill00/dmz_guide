@@ -146,6 +146,9 @@ test("033 FR-004: intermediary navigation carries only a bounded pack to same-or
     ];
     vm.runInNewContext(source, {
       ID,
+      // This VM isolates catalog propagation. Real DOM dismissal is exercised
+      // in compact-ui.mjs across all three browser engines.
+      setupNavigationMenu: () => {},
       URL,
       location: {
         href: "https://guide.test/sitemap/" + search,

@@ -919,11 +919,28 @@ try {
   }
 } catch {}
 
-// Native focus scrolling does not account for a sticky footer covering the field.
-// Move only covered focus; quantity edits and uncovered pointer targets stay in place.
+// Pointer targets are already hit-tested at the press position. Do not move
+// them between press and release; keyboard/programmatic focus still reveals
+// controls hidden by the sticky header/footer.
+let inventoryPointerFocus = null;
+$("#inventory-fields")?.addEventListener(
+  "pointerdown",
+  (event) => {
+    inventoryPointerFocus = event.target.closest("input,button,a,summary");
+  },
+  true,
+);
+for (const type of ["pointerup", "pointercancel", "keydown"])
+  document.addEventListener(
+    type,
+    () => {
+      inventoryPointerFocus = null;
+    },
+    true,
+  );
 $("#inventory-fields")?.addEventListener("focusin", (event) => {
   const target = event.target.closest("input,button,a,summary");
-  if (!target) return;
+  if (!target || target === inventoryPointerFocus) return;
   const rect = target.getBoundingClientRect(),
     bar = $(".inventory-save-bar");
   if (bar && getComputedStyle(bar).position === "sticky") {

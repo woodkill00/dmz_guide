@@ -1,4 +1,6 @@
 import { ID } from "../content/limits.mjs";
+import { setupNavigationMenu } from "./navigation-menu.mjs";
+setupNavigationMenu();
 
 // Carry only a bounded catalog identity, never query text or private player data.
 const pack =

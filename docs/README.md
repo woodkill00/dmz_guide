@@ -1,5 +1,7 @@
 # Documentation
 
+- [Compact interface and navigation](compact-interface.md)
+
 ## Get started
 - [Collection workbench](collection-workbench.md): shopping priorities, why-needed chains, recipe choices, safe local crafting, progress/data review and calibrated collection routes.
 - [Local map workspace](local-map-workspace.md): opt-in Hajin viewer, interactive key/source layers, local-only asset boundaries and synthetic validation.

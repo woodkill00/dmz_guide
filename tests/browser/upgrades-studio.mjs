@@ -1,4 +1,5 @@
 import { observeBrowserAction } from "./action-observers.mjs";
+import { STUDIO_API_FUNCTIONAL_DEADLINE_MS } from "./studio-functional-deadline.mjs";
 import assert from "node:assert/strict";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 /** Actual Studio v1/v2 guided→JSON→save→restart→export/import; isolated repository only. */
@@ -44,6 +45,7 @@ export async function runUpgradeStudioRoundtrip({
   const open = async (key) => {
     const changes = page.waitForResponse(
       (r) => r.url().endsWith("/api/changes") && r.request().method() === "GET",
+      { timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS },
     );
     const [response] = await observeBrowserAction(
       () => page.goto(author.url),
@@ -73,11 +75,22 @@ export async function runUpgradeStudioRoundtrip({
   const save = async () => {
     await page.click("#preview-content");
     await page.waitForSelector("#content-stage:not([hidden])");
-    const pending = page.waitForResponse(
-      (r) => r.url().endsWith("/api/save") && r.request().method() === "POST",
+    const dispatched = page.waitForRequest(
+      (r) => r.url().endsWith("/api/save") && r.method() === "POST",
     );
-    const changes = page.waitForResponse(
-      (r) => r.url().endsWith("/api/changes") && r.request().method() === "GET",
+    const pending = dispatched.then((request) =>
+      page.waitForResponse((response) => response.request() === request, {
+        timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS,
+      }),
+    );
+    // Each HTTP phase has an explicit functional bound. The follow-up starts
+    // after the save response, rather than spending its budget during saving.
+    const changes = pending.then(() =>
+      page.waitForResponse(
+        (r) =>
+          r.url().endsWith("/api/changes") && r.request().method() === "GET",
+        { timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS },
+      ),
     );
     const [response, summary] = await observeBrowserAction(
       () => page.click("#save-repository"),

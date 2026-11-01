@@ -1,0 +1,63 @@
+@import "./layout-tokens.css";
+
+.site-nav > a,
+.site-nav .nav-more > summary {
+  min-block-size: var(--ui-control);
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.375rem;
+}
+.site-nav > a:hover,
+.site-nav .nav-more > summary:hover {
+  background: var(--raised, #35432b);
+}
+.site-nav .nav-more > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: var(--ui-gap);
+  inline-size: min(54rem, calc(100vw - var(--ui-gutter) * 2));
+  max-inline-size: calc(100vw - var(--ui-gutter) * 2);
+  max-block-size: min(65dvh, calc(100dvh - var(--ui-gutter) * 2));
+  padding: var(--ui-pad);
+  border-radius: var(--ui-radius);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.site-nav .nav-more:not([open]) > div {
+  display: none;
+}
+.site-nav .nav-menu-group {
+  min-inline-size: 0;
+}
+.site-nav .nav-menu-group .nav-group-label {
+  margin: 0 0 0.25rem;
+  padding: 0.5rem;
+  font-size: 0.8125rem;
+  border-block-start: 0;
+  border-block-end: 1px solid currentColor;
+}
+.site-nav .nav-menu-group a,
+.site-nav .nav-menu-group span[aria-current="page"] {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--ui-control);
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.375rem;
+}
+@media (max-width: 600px) {
+  .site-nav:not([data-navigation-surface="map"]):not(
+      [data-navigation-surface="help"]
+    )
+    .nav-more
+    > div {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    max-block-size: 50dvh;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .site-nav a,
+  .site-nav summary {
+    transition: border-color 120ms ease;
+  }
+}

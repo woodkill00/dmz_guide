@@ -1,3 +1,4 @@
+import { runCompactUITests } from "./compact-ui.mjs";
 import { runWorkbenchTests } from "./collection-workbench.mjs";
 import { runCollectionTests } from "./collection-needs.mjs";
 import { runTieredUpgradeTests } from "./tiered-upgrades.mjs";
@@ -31,6 +32,7 @@ try {
       await runTieredUpgradeTests({ browser, base });
       await runCollectionTests({ browser, base });
       await runWorkbenchTests({ browser, base });
+      await runCompactUITests({ browser, base });
       await runUpgradeDashboardTests({ browser, base });
       await runRefinedInventoryTests({
         browser,

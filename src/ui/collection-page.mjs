@@ -1,6 +1,6 @@
 import { escapeHTML as e } from "./render.mjs";
 export function featurePages(packs) {
-  const picker = `<label>Content pack<select disabled data-startup-disabled id="pack-select">${packs.map((p) => `<option value="${e(p.id)}">${e(p.title)}</option>`).join("")}</select></label><button disabled data-startup-disabled id="export-current-profile" type="button">Export current private profile</button><p id="pack-note" class="notice"></p><p id="save-status" role="status" aria-live="polite">Loading local profile…</p><p id="error" class="notice" role="alert" tabindex="-1" hidden></p>`;
+  const picker = `<section class="profile-toolbar" aria-label="Catalog and private profile"><label>Content pack<select disabled data-startup-disabled id="pack-select">${packs.map((p) => `<option value="${e(p.id)}">${e(p.title)}</option>`).join("")}</select></label><button disabled data-startup-disabled id="export-current-profile" type="button">Export current private profile</button></section><p id="pack-note" class="notice"></p><p id="save-status" role="status" aria-live="polite">Loading local profile…</p><p id="error" class="notice" role="alert" tabindex="-1" hidden></p>`;
   return [
     {
       path: "collection",
