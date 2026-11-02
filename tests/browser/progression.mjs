@@ -339,6 +339,12 @@ export async function runProgressionTests({ browser, base }) {
         document.querySelector("#spoiler-toggle").textContent ===
         "Hide spoilers",
     );
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#progress-query").value ===
+        "end of the exercise",
+    );
+    await page.click("#progress-clear");
     assert.match(
       await page.locator("#progress-rows").textContent(),
       /Hidden relay activation/,
@@ -373,6 +379,8 @@ export async function runProgressionTests({ browser, base }) {
       /31, 47/,
     );
     await revealedMap.close();
+    // 058 preserves list filters across reload; leave the earlier hidden-text search before editing another track.
+    await page.click("#progress-clear");
     await revealReviewerControl(
       page,
       '[data-progress-id="demo:campaign-chapter"]',

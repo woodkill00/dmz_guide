@@ -12,7 +12,8 @@
     "test:capacity": "node --experimental-strip-types tests/workspace-capacity.mjs",
     "test:inputs": "node --experimental-strip-types --test tests/inputs.test.ts",
     "test:engines": "node scripts/test-engines.cjs",
-    "test:key-grid": "node --experimental-strip-types tests/key-grid-browser.mjs"
+    "test:key-grid": "node --experimental-strip-types tests/key-grid-browser.mjs",
+    "test:workflows": "node --experimental-strip-types tests/field-workflow-browser.mjs"
   },
   "dependencies": {
     "leaflet": "1.9.4"

@@ -1,3 +1,4 @@
+import { buildUnifiedIndex } from "../src/content/unified-index.mjs";
 import {
   captureBuildSources,
   createBuildIdentity,
@@ -86,6 +87,7 @@ async function generate(dist) {
       title: "Prepare for the next run",
       body: renderHome(packs),
       page: "home",
+      scripts: ["/assets/src/client/hub.mjs"],
     },
   ];
   for (const [path, title, type] of [
@@ -154,6 +156,7 @@ async function generate(dist) {
     "armory-page",
     "armory-workbench-page",
     "keys-page",
+    "hub-page",
   ]) {
     const file = join(root, `src/ui/${moduleName}.mjs`);
     try {
@@ -245,6 +248,10 @@ async function generate(dist) {
     });
   }
   await mkdir(join(dist, "assets/content/packs"), { recursive: true });
+  await emit(
+    join(dist, "assets/content/unified-search.json"),
+    JSON.stringify(await buildUnifiedIndex(packs)),
+  );
   for (const { key, pack } of catalog.entries) {
     await emit(
       join(dist, "assets/content/packs", `${key}.json`),

@@ -161,9 +161,10 @@ export async function runDraftSafetyTests({
 }
 
 async function exportBackup(page, selector) {
-  const event = page.waitForEvent("download");
-  await page.click(selector);
-  const download = await event;
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    page.click(selector),
+  ]);
   const filename = download.suggestedFilename();
   assert.match(filename, /^[a-zA-Z0-9_.-]+\.json$/);
   assert(filename.length <= 200, "Backup filename bounded");
@@ -223,12 +224,14 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
       "Escape restores initiating link focus",
     );
     // A full current-page link is a real reload, not a fragment-only no-op.
-    const selfLink = page.getByRole("link", { name: "Inventory", exact: true });
+    const selfLink = page.locator('.site-nav [data-feature-id="inventory"]');
     assert.equal(
       new URL(await selfLink.getAttribute("href"), page.url()).hash,
       "",
       "Self-link regression targets a full navigation, not skip-to-content",
     );
+    if (!(await page.locator(".nav-more").evaluate((n) => n.open)))
+      await page.locator(".nav-more > summary").click();
     await selfLink.click();
     await page.waitForSelector("#draft-navigation:visible");
     await page.click("#draft-stay");
@@ -266,6 +269,8 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
       await page.waitForSelector("#draft-navigation:visible");
       await page.click("#draft-stay");
     }
+    if (await page.locator(".nav-more").evaluate((n) => n.open))
+      await page.keyboard.press("Escape");
     // Export does not save the draft or clear departure protection.
     const backup = await exportBackup(page, "#export-current-profile");
     assert.equal(backup.inventory["demo:wire"], 23);

@@ -403,16 +403,18 @@ test("expiry fixture ages only its token without rewinding existing context cloc
   );
 });
 
-test("home honest radar caption remains outside clipped decoration", () => {
+test("058 home offers map, unified search and all task groups without fictional terrain decoration", () => {
   const markup = renderHome([]);
-  assert.doesNotMatch(markup, /radar-label|YOUR NEXT MOVE|STARTS HERE/);
-  assert.match(
-    markup,
-    /<figure class="radar-figure"><div class="radar-art"[^>]*>.*?<\/div><figcaption class="art-caption">ORIGINAL ILLUSTRATION \/ NOT A GAME MAP<\/figcaption><\/figure>/s,
-  );
-  const css = source("src/styles.css");
-  const caption = css.match(/\.art-caption\s*\{([^}]+)\}/)[1];
-  assert.match(caption, /font-size:\s*0\.875rem/);
-  assert.doesNotMatch(caption, /position:\s*absolute|overflow:\s*hidden|mask/);
-  assert.equal([...css.matchAll(/\.art-caption\s*\{/g)].length, 1);
+  assert.match(markup, /action="\/search\/"/);
+  assert.match(markup, /Open map/);
+  for (const label of [
+    "Prepare",
+    "Track",
+    "Reference",
+    "Manage",
+    "Pinned tools",
+    "Recent work",
+  ])
+    assert(markup.includes(label));
+  assert(!markup.includes("radar-art"));
 });

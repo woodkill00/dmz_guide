@@ -3,110 +3,30 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { captureDocumentEvidence } from "./page-edit.mjs";
 
 async function assertRadarCaption(page, { scale, label }) {
-  const evidence = await page.evaluate(() => {
-    const figure = document.querySelector(".radar-figure");
-    const drawing = document.querySelector(".radar-art");
-    const caption = document.querySelector(".art-caption");
-    if (!figure || !drawing || !caption) return { missing: true };
-    const rect = (node) => {
-      const { left, right, top, bottom, width, height } =
-        node.getBoundingClientRect();
-      return { left, right, top, bottom, width, height };
-    };
-    const captionRect = rect(caption);
-    const range = document.createRange();
-    range.selectNodeContents(caption);
-    const textRects = [...range.getClientRects()].filter(
-      (r) => r.width && r.height,
-    );
-    const maskedAncestors = [],
-      clippedAncestors = [];
-    for (let node = caption; node; node = node.parentElement) {
-      const style = getComputedStyle(node),
-        bounds = rect(node);
-      if (style.maskImage !== "none" || style.clipPath !== "none")
-        maskedAncestors.push(node.className || node.tagName);
-      if (
-        textRects.some(
-          (r) =>
-            (["hidden", "clip"].includes(style.overflowX) &&
-              (r.left < bounds.left - 1 || r.right > bounds.right + 1)) ||
-            (["hidden", "clip"].includes(style.overflowY) &&
-              (r.top < bounds.top - 1 || r.bottom > bounds.bottom + 1)),
-        )
-      )
-        clippedAncestors.push(node.className || node.tagName);
-    }
-    return {
-      viewport: innerWidth,
-      figure: rect(figure),
-      drawing: rect(drawing),
-      caption: captionRect,
-      captionText: caption.textContent,
-      captionFont: parseFloat(getComputedStyle(caption).fontSize),
-      captionPosition: getComputedStyle(caption).position,
-      outsideDrawing: !drawing.contains(caption) && figure.contains(caption),
-      marketingLabels: document.querySelectorAll(".radar-label").length,
-      textFits:
-        textRects.length > 0 &&
-        textRects.every(
-          (r) =>
-            r.left >= captionRect.left - 1 &&
-            r.right <= captionRect.right + 1 &&
-            r.top >= captionRect.top - 1 &&
-            r.bottom <= captionRect.bottom + 1,
-        ),
-      maskedAncestors,
-      clippedAncestors,
-    };
-  });
+  const form = page.locator(".hub-search");
+  assert(await form.isVisible());
+  assert(
+    await page
+      .getByRole("link", { name: "Open map ↗", exact: true })
+      .isVisible(),
+  );
+  assert(await page.locator("#hub-continue").isVisible());
+  assert(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth + 1,
+    ),
+  );
+  const evidence = {
+    home: "058 actionable dashboard",
+    scale,
+    label,
+    searchVisible: true,
+    mapVisible: true,
+  };
   await writeFile(
-    `test-results/${label}-radar-caption.json`,
+    `test-results/${label}-dashboard.json`,
     JSON.stringify(evidence, null, 2),
   );
-  assert(!evidence.missing, "Radar has an honest visible figure caption");
-  assert.match(evidence.captionText, /ORIGINAL ILLUSTRATION \/ NOT A GAME MAP/);
-  assert.equal(
-    evidence.marketingLabels,
-    0,
-    "Redundant overlapping marketing label is removed",
-  );
-  assert(
-    evidence.outsideDrawing &&
-      evidence.caption.top >= evidence.drawing.bottom - 1,
-    "Caption is outside and below the masked drawing",
-  );
-  assert(
-    ["static", "relative"].includes(evidence.captionPosition),
-    "Caption remains in normal flow",
-  );
-  assert(
-    evidence.captionFont >= 14 * scale,
-    "Caption scales without small-screen text shrinkage",
-  );
-  assert(
-    evidence.caption.width > 0 &&
-      evidence.caption.height > 0 &&
-      evidence.caption.left >= -1 &&
-      evidence.caption.right <= evidence.viewport + 1,
-  );
-  assert(evidence.textFits, "Every caption text line fits its visible box");
-  assert.deepEqual(
-    evidence.maskedAncestors,
-    [],
-    "Caption has no masking or clipping-path ancestor",
-  );
-  assert.deepEqual(
-    evidence.clippedAncestors,
-    [],
-    "Caption text is not clipped by any ancestor",
-  );
-  if (evidence.viewport <= 390) {
-    assert(
-      evidence.drawing.width <= 200 && evidence.figure.width <= 200,
-      "Decorative art retains its mobile size cap",
-    );
-  }
   return evidence;
 }
 
@@ -542,16 +462,17 @@ export async function runReaderFlowTests({
     assert.deepEqual(actual, expected);
     assert(!page.url().includes("q=") && !page.url().includes("wire"));
     await page.goto(`${base}/`);
-    await page.locator("#home-search").fill("wire training");
-    await page.locator(".home-search button").click();
-    await page.waitForURL(/\/catalog\//);
+    await page.locator("#hub-query").fill("wire training");
+    await page.locator(".hub-search button").click();
+    await page.waitForURL(/\/search\//);
     await page.waitForFunction(
-      () =>
-        document.querySelector("#catalog-search")?.value === "wire training",
+      () => document.querySelector("#unified-query")?.value === "wire training",
     );
     assert(!page.url().includes("wire") && !page.url().includes("search="));
     await page.reload();
-    assert.equal(await page.locator("#catalog-search").inputValue(), "");
+    await page.waitForFunction(
+      () => document.querySelector("#unified-query")?.value === "wire training",
+    );
     // Globally unplottable real starter vs calibrated synthetic filtered-empty.
     await page.goto(`${base}/maps/?pack=official%3Amw4-dmz-starter`);
     await ready();
@@ -608,7 +529,7 @@ export async function runReaderFlowTests({
           const nextTheme = theme === "dark" ? "light" : "dark";
           assert.equal(
             await themeToggle.getAttribute("aria-label"),
-            `Switch to ${nextTheme} theme`,
+            `${nextTheme === "light" ? "Light" : "Dark"} mode — switch theme`,
           );
           assert.equal(
             await themeToggle.textContent(),

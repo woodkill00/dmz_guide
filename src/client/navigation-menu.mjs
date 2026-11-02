@@ -4,6 +4,29 @@ export function setupNavigationMenu(root = document) {
     if (menu.dataset.enhanced) continue;
     menu.dataset.enhanced = "true";
     const summary = menu.querySelector(":scope > summary");
+    const filter = menu.querySelector("[data-navigation-filter]");
+    if (filter) {
+      filter.hidden = false;
+      filter.addEventListener("input", () => {
+        const words = filter.value
+          .toLowerCase()
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean);
+        for (const group of menu.querySelectorAll(".nav-menu-group")) {
+          for (const a of group.querySelectorAll("a"))
+            a.hidden = !words.every((w) =>
+              (group.getAttribute("aria-label") + " " + a.textContent)
+                .toLowerCase()
+                .includes(w),
+            );
+          group.hidden = ![...group.querySelectorAll("a")].some(
+            (a) => !a.hidden,
+          );
+        }
+      });
+    }
+
     menu.addEventListener("keydown", (event) => {
       if (event.key !== "Escape" || !menu.open) return;
       event.preventDefault();

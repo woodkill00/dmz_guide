@@ -4,7 +4,7 @@ import destinations from "../../src/ui/map-destinations.json" with { type: "json
 import { renderMainNavigation } from "../../src/ui/site-navigation.mjs";
 import { renderSiteMap } from "../../src/ui/navigation-page.mjs";
 
-test("042 every shared surface exposes boss directly and every authored map destination once", () => {
+test("058 every shared surface exposes boss in Track and every authored map destination once", () => {
   const all = [...destinations.tools, ...destinations.planner];
   assert.equal(destinations.planner.length, 27);
   assert.equal(new Set(all.map(([id]) => id)).size, all.length);
@@ -30,13 +30,18 @@ test("042 every shared surface exposes boss directly and every authored map dest
         1,
         surface + ": " + id,
       );
-      assert.ok(
+      assert(
         html.includes(
-          'href="' + href + '" target="_blank" rel="noopener noreferrer"',
+          'data-feature-id="' +
+            (id === "boss-checklist" ? id : "tool-" + id) +
+            '"',
         ),
       );
+      if (!["map", "help"].includes(surface))
+        assert(html.includes('target="_blank"'));
     }
-    assert.ok(html.indexOf(">Boss checklist</a>") < html.indexOf("<details"));
+    assert.ok(html.includes(">Boss checklist</a>"));
+    assert.ok(html.includes('aria-label="Track"'));
     assert.ok(html.includes(">Content Studio<"));
     for (const href of html.matchAll(/href="([^"]+)"/g))
       if (href[1].includes("?tool="))

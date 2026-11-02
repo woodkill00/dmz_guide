@@ -45,7 +45,16 @@ export async function runReflowTests({ browser, base }) {
       await page.locator(".nav-more summary").focus();
       await page.keyboard.press("Enter");
       assert(await page.locator(".nav-more").evaluate((n) => n.open));
-      assert(await page.locator('.nav-more a[href*="/settings/"]').isVisible());
+      assert(
+        await page
+          .locator('.site-nav > a[data-feature-id="settings"]')
+          .isVisible(),
+      );
+      assert(
+        await page
+          .locator('.nav-more a[data-feature-id="inventory"]')
+          .isVisible(),
+      );
       assert(
         await page.locator(".nav-more>div").evaluate((n) => {
           const r = n.getBoundingClientRect();

@@ -50,7 +50,7 @@ const surfaces = [
     path: "/progression/?pack=demo%3Atraining-pack",
     targets: [
       ["#pack-note", 0.85],
-      ["#save-status", 0.8],
+      ["#save-status, #save-status > [data-status-text]", 0.8],
       ["#progress-rows dt", 0.75],
       ["#progress-rows dd", 1],
       ["#progress-rows .upgrade-summary > div > small", 0.9], // Source/track metadata keeps its existing floor after compacting.
@@ -67,7 +67,7 @@ const surfaces = [
       [".source-list li", 0.85],
       [".fixture-notice strong, .fixture-notice p", 0.85],
       ["#pack-note, #local-records > p.notice", 0.85],
-      ["#save-status", 0.8],
+      ["#save-status, #save-status > [data-status-text]", 0.8],
     ],
   },
   ...[
@@ -80,7 +80,7 @@ const surfaces = [
     targets: [
       [".page-heading .eyebrow", 0.65],
       ["#pack-note", 0.85],
-      ["#save-status", 0.8],
+      ["#save-status, #save-status > [data-status-text]", 0.8],
     ],
   })),
 ];

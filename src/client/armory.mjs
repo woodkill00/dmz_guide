@@ -35,7 +35,9 @@ function setup(
   };
   form.addEventListener("submit", (e) => e.preventDefault());
   form.addEventListener("input", update);
-  form.addEventListener("change", update);
+  form.addEventListener("change", (event) => {
+    if (event.target !== search) update();
+  });
   update();
   form.dataset.enhanced = "true";
 }

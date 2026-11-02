@@ -52,6 +52,7 @@ export async function runGunsmithTests({
     );
     await page.locator("[data-open-gunsmith]").click();
     assert.equal(new URL(page.url()).pathname, "/armory/han-86/");
+    await page.waitForSelector('[data-armory-filter][data-enhanced="true"]');
     const expected = db.attachments.filter(
       (a) => a.weapons.includes("han-86") && a.slot === "optic",
     ).length;

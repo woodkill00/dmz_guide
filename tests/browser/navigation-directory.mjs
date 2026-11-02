@@ -83,7 +83,7 @@ export async function runNavigationDirectoryTests({
       (
         await page
           .locator(".site-nav")
-          .getByRole("link", { name: "Inventory", exact: true })
+          .locator('a[data-feature-id="inventory"]')
           .getAttribute("href")
       ).includes("pack=demo%3Atraining-pack"),
     );

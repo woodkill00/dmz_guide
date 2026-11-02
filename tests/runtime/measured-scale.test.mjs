@@ -210,6 +210,10 @@ async function initializationHarness({
   const context = vm.createContext({
     state,
     statusRevision: 0,
+    documentDeparted: false,
+    catalogReadController: new AbortController(),
+    catalogSelectionHandler: null,
+    resumeInitialization: null,
     hasUnsavedDraft: () => false,
     createCatalogLoader: (options) =>
       createCatalogLoader({ ...options, fetcher: context.fetch }),
@@ -232,6 +236,7 @@ async function initializationHarness({
     },
     requestDeparture: async (proceed) => proceed(),
     document: {
+      body: { dataset: {} },
       activeElement: input,
       querySelectorAll: (selector) => (selector === "a[href]" ? [] : controls),
       querySelector: () => main,

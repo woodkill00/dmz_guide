@@ -75,7 +75,7 @@ export async function runWorkbenchTests({ browser, base }) {
     await go();
     assert.equal(
       await page
-        .getByRole("link", { name: "Collect", exact: true })
+        .locator('.site-nav [data-feature-id="collection"]')
         .getAttribute("aria-current"),
       "page",
     );
@@ -286,7 +286,9 @@ export async function runWorkbenchTests({ browser, base }) {
       "qa045:workbench",
     );
     const url = page.url();
-    await page.getByRole("link", { name: "Inventory", exact: true }).click();
+    if (!(await page.locator(".nav-more").evaluate((n) => n.open)))
+      await page.locator(".nav-more > summary").click();
+    await page.locator('.site-nav [data-feature-id="inventory"]').click();
     assert.equal(page.url(), url);
     assert(await page.locator("#craft-recovery").isVisible());
     page.once("dialog", (d) => d.accept());

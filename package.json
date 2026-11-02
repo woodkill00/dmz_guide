@@ -35,7 +35,9 @@
     "weapons:art": "node scripts/collect-weapon-art.mjs",
     "weapons:source-check": "node scripts/codmunity.mjs check",
     "weapons:source-status": "node scripts/codmunity.mjs status",
-    "test:keys": "node tests/browser/keys-run.mjs"
+    "test:keys": "node tests/browser/keys-run.mjs",
+    "test:home": "node tests/browser/home-run.mjs",
+    "test:home:a11y": "node tests/browser/home-accessibility.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2",

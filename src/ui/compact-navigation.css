@@ -61,3 +61,12 @@
     transition: border-color 120ms ease;
   }
 }
+.site-nav [data-navigation-filter] {
+  grid-column: 1 / -1;
+  inline-size: 100%;
+  min-block-size: 44px;
+}
+.site-nav a[hidden],
+.nav-menu-group[hidden] {
+  display: none;
+}

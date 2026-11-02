@@ -729,6 +729,19 @@ export function mountKeyWorkspace(onChange = () => {}) {
       event.returnValue = "";
     }
   });
+  window.addEventListener("pageshow", (event) => {
+    if (!event.persisted) return;
+    disposed = false;
+    if (dirty || invalidInputs.size || saving || restoring) {
+      blocked = true;
+      error(
+        Error(
+          "Returned to an unsaved key draft. Export it, then reload saved keys before continuing.",
+        ),
+      );
+      paint();
+    } else void load();
+  });
   window.addEventListener("pagehide", () => {
     disposed = true;
     readToken++;

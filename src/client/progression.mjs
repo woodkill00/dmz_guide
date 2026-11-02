@@ -82,6 +82,14 @@ ${spendingActions(state.pack, state.profile, row.id)}
 <div data-upgrade-budget="${esc(row.id)}"></div><h3>Listed requirements</h3><ul>${row.requirements.map((requirement) => (requirement.hidden ? "<li>Spoiler-protected requirement. Reveal spoilers to inspect it.</li>" : `<li>${reference(requirement)}: ${requirement.quantity === null ? "Quantity unknown" : esc(requirement.quantity)} · ${requirement.consumption === "unknown" ? "Consumption unknown" : esc(requirement.consumption)}</li>`)).join("") || "<li>No requirements listed; this is not evidence of zero cost.</li>"}</ul>
 <p>Listed requirements are not a remaining shopping budget. Unknown consumption or quantities prevent exact affected advice; recorded progress does not update held stock.</p>`;
 }
+const focusedMissions = !!document.querySelector("[data-focused-missions]");
+if (focusedMissions) {
+  document
+    .querySelector('#progress-state option[value="not-completed"]')
+    ?.remove();
+  for (const o of [...document.querySelector("#progress-track").options])
+    if (o.value && !["dmz-order", "dmz-story"].includes(o.value)) o.remove();
+}
 const focusedUpgrades = !!document.querySelector("[data-focused-upgrades]");
 if (focusedUpgrades) {
   $("#progress-track").value = "dmz-upgrade";
@@ -174,8 +182,13 @@ function render() {
     source: $("#progress-source").value,
     status: $("#progress-status").value,
     progress: $("#progress-state").value,
-    allowedIds:
-      focusedUpgrades && view.quick !== "all"
+    allowedIds: focusedMissions
+      ? new Set(
+          state.pack.objectives
+            .filter((r) => ["dmz-order", "dmz-story"].includes(r.track))
+            .map((r) => r.id),
+        )
+      : focusedUpgrades && view.quick !== "all"
         ? new Set(
             [...overview.rows.values()]
               .filter((r) => overviewMatches(r, view.quick))
@@ -248,6 +261,7 @@ function render() {
 ${
   r.type === "objective"
     ? `${r.upgrade ? `${focusedUpgrades ? `<div data-direct-materials="${esc(r.id)}"></div>` : ""}${upgradeControls(r, guard)}` : `<label>Manual state for ${esc(r.name)}<select data-progress-id="${esc(r.id)}">${progressStates.map((v) => `<option value="${v}" ${r.state === v ? "selected" : ""}>${v}</option>`).join("")}</select></label>`}
+${!r.upgrade ? `<h3>Listed requirements</h3><ul>${r.requirements.map((requirement) => (requirement.hidden ? "<li>Spoiler-protected requirement.</li>" : `<li>${reference(requirement)}: ${requirement.quantity === null ? "Quantity unknown" : esc(requirement.quantity)} · ${esc(requirement.consumption)}</li>`)).join("") || "<li>No requirements listed; source coverage may be incomplete.</li>"}</ul><p><a href="/collection/?pack=${encodeURIComponent(state.pack.id)}">Review collection needs</a></p>` : ""}
 <h3>Prerequisite chain</h3>${r.upgrade?.prerequisiteStatus === "unknown" ? '<p class="notice">Prerequisite completeness is unknown. An empty list does not mean there are no prerequisites; missing tiers and unlock rules are not inferred.</p>' : ""}<ul>${r.prerequisites.map((p) => `<li>${reference(p)}: ${esc(p.state)} · evidence ${esc(labelStatus(p.status))}${p.depth ? ` · indirect prerequisite (depth ${p.depth + 1})` : ""}</li>`).join("") || "<li>No listed prerequisites; review source completeness.</li>"}</ul>
 ${r.effects.length ? `<h3>Recorded effects</h3><ul>${r.effects.map((e) => `<li>${esc(e.type)} · ${esc(e.target)}: ${esc(e.value)}</li>`).join("")}</ul><p>Effects use the record’s sources below. They do not create owned items or prove live-game access.</p>` : ""}`
     : ""
@@ -260,7 +274,7 @@ ${r.url ? `<p><a href="${esc(r.url)}">Open selected private record</a></p>` : ""
     }</details></article>`;
   const rowById = new Map(rows.map((r) => [r.id, r]));
   const empty =
-    '<section class="panel"><h2>No matching records.</h2><p>Clear filters or select a catalog with known upgrades for this track.</p></section>';
+    '<section class="panel"><h2>No matching records.</h2><p>Clear filters or select a catalog with known records for this track. Missing mission coverage is unknown.</p></section>';
   $("#progress-rows").innerHTML = groupedUpgrades
     ? familyWindow
         .map((group) => {

@@ -1,101 +1,85 @@
-import mapDestinations from "./map-destinations.json" with { type: "json" };
-// Authored destinations only. No query/private state crosses application origins.
-const escape = (value) =>
-  String(value ?? "").replace(
+import {
+  features,
+  featureGroups,
+  featureURL,
+  featureForPage,
+} from "./feature-registry.mjs";
+const e = (v) =>
+  String(v ?? "").replace(
     /[&<>"']/g,
     (c) =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
         c
       ],
   );
-const defaults = [
-  { path: "/maps/", page: "maps", title: "Maps" },
-  { path: "/progression/", page: "progression", title: "Progress" },
-  { path: "/editor/", page: "editor", title: "Editor" },
-  { path: "/community/", page: "community", title: "Community" },
-];
 export function renderMainNavigation({
   page = "",
   packId = "",
-  extra = defaults,
+  extra = [],
   surface = "guide",
 } = {}) {
-  const companion = surface !== "guide";
-  const guide = companion ? "http://127.0.0.1:4173" : "";
-  const map =
-    surface === "map" || surface === "help" ? "" : "http://127.0.0.1:5175";
-  const primary = [
-    ["/catalog/", "Catalog", "catalog"],
-    ["/items/", "Items", "items"],
-    ["/planner/", "Planner", "planner"],
-    ["/inventory/", "Inventory", "inventory"],
-    ["/collection/", "Collect", "collection"],
-    ["/upgrades/", "Upgrades", "upgrades"],
-    [map + "/?tool=boss-checklist", "Boss checklist", "boss-checklist", "tool"],
-  ];
-  const secondary = [
-    ["/", "Home", "home"],
-    ["/weapons/", "Weapons", "weapons"],
-    ["/armory/", "Weapon database", "armory"],
-    ["/armory/workbench/", "Armory workbench", "armory-workbench"],
-    ["/armory/updates/", "Weapon updates", "weapon-updates"],
-    ["/recipes/", "Recipes", "recipes"],
-    ["/keys/", "Keys", "keys"],
-    ["/guides/", "Guides", "guides"],
-    ...extra
-      .filter((p) => p.page !== "upgrades")
-      .map((p) => [
-        p.path,
-        {
-          editor: "Editor",
-          maps: "Maps",
-          progression: "Progress",
-          community: "Community",
-        }[p.page] || p.title,
-        p.page,
-      ]),
-    ["/local/", "Private reader", "local"],
-    ["/map-workspace/", "Local map workspace", "map-workspace"],
-    ["/settings/", "Settings", "settings"],
-    [map + "/", "Interactive map", "hajin-map", "map"],
-    [map + "/help.html", "Map help", "map-help", "map"],
-  ];
-  secondary.push(
-    surface === "studio"
-      ? ["", "Content Studio", "studio", "current"]
-      : ["http://127.0.0.1:4174/", "Content Studio", "studio", "external"],
-  );
-  const tools = mapDestinations.tools.map(([id, label]) => [
-    map + "/?tool=" + encodeURIComponent(id),
-    label,
-    "tool-" + id,
-    "tool",
-  ]);
-  const planner = mapDestinations.planner
-    .filter(([id]) => id !== "boss-checklist")
-    .map(([id, label]) => [
-      map + "/?tool=" + encodeURIComponent(id),
-      label,
-      "tool-" + id,
-      "tool",
-    ]);
-  const link = ([path, label, key, kind = "guide"]) => {
-    if (kind === "current")
-      return `<span aria-current="page">${escape(label)}</span>`;
-    const href =
-      kind === "guide"
-        ? guide +
-          path +
-          (packId && !companion ? "?pack=" + encodeURIComponent(packId) : "")
-        : path;
-    const newTab =
-      kind === "tool" ||
-      kind === "external" ||
-      (kind === "guide" && companion) ||
-      (kind === "map" && surface !== "map" && surface !== "help") ||
-      (surface === "map" && key === "map-help");
-    return `<a href="${escape(href)}"${page === key ? ' aria-current="page"' : ""}${newTab ? ' target="_blank" rel="noopener noreferrer" title="Opens in a new tab"' : ""} tabindex="0">${escape(label)}</a>`;
+  const current = featureForPage(page),
+    primary = [
+      "home",
+      "hajin-map",
+      "planner",
+      "missions",
+      "catalog",
+      "settings",
+      "search",
+    ];
+  const labels = {
+    "hajin-map": "Map",
+    planner: "Prepare",
+    missions: "Track",
+    catalog: "Reference",
+    settings: "Manage",
+    search: "Search",
   };
-  const active = secondary.find(([, , key]) => key === page);
-  return `<nav class="site-nav${companion ? " companion-nav" : ""}" aria-label="Main navigation" data-navigation-surface="${escape(surface)}">${primary.map(link).join("")}${link(["/sitemap/", "Site map", "sitemap"])}<details class="nav-more"><summary>More${active ? " · " + escape(active[1]) : ""}</summary><div><section class="nav-menu-group" aria-label="Guide pages and authoring"><p class="nav-group-label">Guide pages &amp; authoring</p>${secondary.map(link).join("")}</section><section class="nav-menu-group" aria-label="Map workspace tools"><p class="nav-group-label">Map workspace tools</p>${tools.map(link).join("")}</section><section class="nav-menu-group" aria-label="Map planning and trackers"><p class="nav-group-label">Map planning &amp; trackers</p>${planner.map(link).join("")}</section></div></details></nav>`;
+  const link = (f, label = f.label) => {
+    const external =
+      (f.kind !== "guide" &&
+        !(f.kind === "map" && ["map", "help"].includes(surface))) ||
+      (surface !== "guide" && f.kind === "guide");
+    let url = featureURL(f, surface);
+    if (packId && surface === "guide" && f.kind === "guide")
+      url += "?pack=" + encodeURIComponent(packId);
+    return `<a href="${e(url)}" ${page === f.id ? 'aria-current="page" ' : ""}data-feature-id="${e(f.id)}"${page !== "home" && ["planner", "missions", "catalog", "settings", "hajin-map"].includes(f.id) && current?.group === f.group ? ' data-active-group="true"' : ""}${external ? ' target="_blank" rel="noopener noreferrer" title="Opens in a new tab"' : ""}>${e(label)}</a>`;
+  };
+  const additional = extra
+    .filter((p) => !features.some((f) => f.path === p.path))
+    .map((p) => ({
+      id: p.page,
+      label: p.title,
+      group: "Reference",
+      path: p.path,
+      kind: "guide",
+    }));
+  return `<nav class="site-nav${surface !== "guide" ? " companion-nav" : ""}" aria-label="Main navigation" data-navigation-surface="${e(surface)}">${primary
+    .map((id) =>
+      link(
+        features.find((f) => f.id === id),
+        labels[id],
+      ),
+    )
+    .join(
+      "",
+    )}<details class="nav-more"><summary>More · ${e(current && !primary.includes(current.id) ? current.label : "All features")}</summary><div><input data-navigation-filter hidden type="search" maxlength="100" aria-label="Find a link in this menu" placeholder="Find a tool…">${featureGroups
+    .map(
+      (group) =>
+        `<section class="nav-menu-group" aria-label="${group}"><p class="nav-group-label">${group}</p>${[
+          ...features,
+          ...additional,
+        ]
+          .filter((f) => f.group === group && !primary.includes(f.id))
+          .map((f) => link(f))
+          .join("")}</section>`,
+    )
+    .join("")}</div></details></nav>`;
+}
+export function renderBreadcrumbs(page, title = "") {
+  const f = featureForPage(page);
+  return page === "home"
+    ? ""
+    : `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span>${f ? `<a href="/features/#${f.group.toLowerCase()}">${e(f.group)}</a><span aria-hidden="true">/</span>${title && title !== f.label ? `<a href="${e(featureURL(f))}">${e(f.label)}</a><span aria-hidden="true">/</span><span aria-current="page">${e(title)}</span>` : `<span aria-current="page">${e(f.label)}</span>`}` : "<span>Details</span>"}</nav>`;
 }

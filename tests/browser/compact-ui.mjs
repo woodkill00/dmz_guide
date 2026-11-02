@@ -39,7 +39,7 @@ export async function runCompactUITests({ browser, base }) {
               panel.x >= -1 && panel.x + panel.width <= width + 1,
               "menu fits viewport",
             );
-            assert.equal(await menu.locator(".nav-menu-group").count(), 3);
+            assert.equal(await menu.locator(".nav-menu-group").count(), 5);
             const last = menu.getByRole("link").last();
             await last.scrollIntoViewIfNeeded();
             await last.focus();
@@ -178,10 +178,7 @@ export async function runCompactUITests({ browser, base }) {
     const page = await fallback.newPage();
     await page.goto(`${base}/items/`);
     await page.locator(".nav-more > summary").click();
-    await page
-      .locator('.nav-menu-group[aria-label="Guide pages and authoring"]')
-      .getByRole("link", { name: "Settings", exact: true })
-      .click();
+    await page.locator('.site-nav > a[data-feature-id="settings"]').click();
     assert.equal(
       new URL(page.url()).pathname,
       "/settings/",

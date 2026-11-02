@@ -32,7 +32,40 @@ export const state = {
   loading: true,
   saving: false,
 };
+let documentDeparted = false;
+let catalogReadController = new AbortController(),
+  catalogSelectionHandler = null,
+  resumeInitialization = null;
+function resumeCatalogReads(retry) {
+  documentDeparted = false;
+  if (catalogReadController.signal.aborted)
+    catalogReadController = new AbortController();
+  if (retry && state.loading && !state.pack) void resumeInitialization?.();
+  else if (retry && state.loading && state.pack) {
+    state.loading = false;
+    for (const [node, disabled] of disabledControls) node.disabled = disabled;
+    disabledControls = [];
+    const select = document.querySelector("#pack-select");
+    if (select) {
+      select.disabled = false;
+      select.value = state.pack.id;
+    }
+    document.querySelector("main")?.setAttribute("aria-busy", "false");
+    status(
+      "Returned to the retained catalog after an interrupted load. Previous edits remain available.",
+    );
+  }
+}
+window.addEventListener("pageshow", (event) =>
+  resumeCatalogReads(event.persisted),
+);
+window.addEventListener("pagehide", () => {
+  documentDeparted = true;
+  catalogReadController.abort();
+  generation++;
+});
 export function error(reason) {
+  if (documentDeparted) return;
   const element = $("#error");
   if (element) {
     element.hidden = false;
@@ -122,6 +155,7 @@ async function requestDeparture(proceed, origin, documentNavigation = false) {
   });
   try {
     if (decision === "stay") {
+      origin?.closest?.(".nav-more")?.setAttribute("open", "");
       origin?.focus();
       return;
     }
@@ -143,22 +177,30 @@ async function requestDeparture(proceed, origin, documentNavigation = false) {
 window.addEventListener("pageshow", () => {
   leaving = false;
 });
-for (const type of ["pointerdown", "keydown"])
+for (const type of ["pointerdown", "keydown", "click"])
   document.addEventListener(
     type,
     (event) => {
-      if (event.isTrusted) leaving = false;
+      if (event.isTrusted) {
+        leaving = false;
+        if (documentDeparted) resumeCatalogReads(true);
+      }
     },
     true,
   );
 window.addEventListener("beforeunload", (event) => {
   if (leaving) {
+    documentDeparted = true;
+    catalogReadController.abort();
     leaving = false;
     return;
   }
   if (hasUnsavedDraft()) {
     event.preventDefault();
     event.returnValue = "";
+  } else {
+    documentDeparted = true;
+    catalogReadController.abort();
   }
 });
 document.addEventListener("click", (event) => {
@@ -207,24 +249,46 @@ export async function init(
   render,
   { requestedPack, opaqueContext = false } = {},
 ) {
-  disabledControls = [
-    ...document.querySelectorAll("main button, main input, main select"),
-  ].map((node) => [
-    node,
-    node.hasAttribute("data-startup-disabled") ? false : node.disabled,
-  ]);
+  resumeInitialization = () =>
+    init(render, { requestedPack, opaqueContext }).catch(error);
+  if (!disabledControls.length)
+    disabledControls = [
+      ...document.querySelectorAll("main button, main input, main select"),
+    ].map((node) => [
+      node,
+      node.hasAttribute("data-startup-disabled") ? false : node.disabled,
+    ]);
   for (const [node] of disabledControls) node.disabled = true;
   document.querySelector("main").setAttribute("aria-busy", "true");
   for (const id of ["export-current-profile", "export-profile"])
     $(`#${id}`)?.addEventListener("click", exportProfile);
-  const schemaResponse = await fetch("/assets/schemas/pack.schema.json");
-  if (!schemaResponse.ok) throw new Error("Content schema unavailable.");
-  const schema = await schemaResponse.json();
-  const manifestResponse = await fetch("/assets/content/manifest.json");
-  if (!manifestResponse.ok) throw new Error("Content manifest unavailable.");
+  const owner = catalogReadController;
+  let schema, manifest;
+  try {
+    const schemaResponse = await fetch("/assets/schemas/pack.schema.json", {
+      signal: owner.signal,
+    });
+    if (!schemaResponse.ok) throw Error("Content schema unavailable.");
+    schema = await schemaResponse.json();
+    const manifestResponse = await fetch("/assets/content/manifest.json", {
+      signal: owner.signal,
+    });
+    if (!manifestResponse.ok) throw Error("Content manifest unavailable.");
+    manifest = parseCatalogManifest(await manifestResponse.text());
+  } catch (reason) {
+    if (owner.signal.aborted || owner !== catalogReadController) return;
+    throw reason;
+  }
+  if (
+    owner.signal.aborted ||
+    owner !== catalogReadController ||
+    documentDeparted
+  )
+    return;
   catalogLoader = createCatalogLoader({
-    manifest: parseCatalogManifest(await manifestResponse.text()),
+    manifest,
     schema,
+    fetcher: (path) => fetch(path, { signal: catalogReadController.signal }),
   });
   state.packs = [];
   const choices = [...catalogLoader.catalogs].sort(
@@ -286,7 +350,8 @@ export async function init(
     return { pack, warning, storageFailure };
   }
   async function change(id) {
-    const token = ++generation;
+    const token = ++generation,
+      readOwner = catalogReadController;
     const previous = state.pack;
     if (!state.loading && state.pack) {
       disabledControls = [
@@ -307,13 +372,23 @@ export async function init(
           "Private navigation context unavailable. Return to the planner; no different pack was substituted.",
         );
       let { pack, warning, storageFailure } = await selectedCatalog(id);
-      if (token !== generation) return;
+      if (
+        token !== generation ||
+        readOwner.signal.aborted ||
+        readOwner !== catalogReadController
+      )
+        return;
       let profile = newProfile(pack),
         revision = 0;
       try {
         const record = await loadProfile(pack.id);
         storageFailure = null;
-        if (token !== generation) return;
+        if (
+          token !== generation ||
+          readOwner.signal.aborted ||
+          readOwner !== catalogReadController
+        )
+          return;
         if (record?.value) {
           try {
             validateProfile(record.value);
@@ -328,14 +403,25 @@ export async function init(
           }
         }
       } catch (reason) {
-        if (token !== generation) return;
+        if (
+          token !== generation ||
+          readOwner.signal.aborted ||
+          readOwner !== catalogReadController
+        )
+          return;
         storageFailure = reason;
         warning = reason;
       }
-      if (token !== generation) return;
+      if (
+        token !== generation ||
+        readOwner.signal.aborted ||
+        readOwner !== catalogReadController
+      )
+        return;
       // No draft/checkpoint-clearing event until the exact new identity is ready.
       document.dispatchEvent(new Event("pack-changing"));
       state.pack = pack;
+      document.body.dataset.catalogVersion = pack.contentVersion;
       state.profile = profile;
       state.revision = revision;
       activated = true;
@@ -365,6 +451,12 @@ export async function init(
           !opaqueContext &&
           target.origin === location.origin &&
           [
+            "/",
+            "/missions/",
+            "/features/",
+            "/search/",
+            "/keys/",
+            "/armory/",
             "/catalog/",
             "/items/",
             "/weapons/",
@@ -391,7 +483,12 @@ export async function init(
       await render();
       if (token === generation && warning) error(warning);
     } catch (reason) {
-      if (token !== generation) return;
+      if (
+        token !== generation ||
+        readOwner.signal.aborted ||
+        readOwner !== catalogReadController
+      )
+        return;
       if (!activated) {
         refreshChoices(previous?.id);
         status(
@@ -408,7 +505,11 @@ export async function init(
         );
       } else error(reason);
     } finally {
-      if (token === generation) {
+      if (
+        token === generation &&
+        !readOwner.signal.aborted &&
+        readOwner === catalogReadController
+      ) {
         state.loading = false;
         if (state.pack) {
           for (const [node, disabled] of disabledControls)
@@ -420,7 +521,9 @@ export async function init(
       }
     }
   }
-  select.addEventListener("change", () => {
+  if (catalogSelectionHandler)
+    select.removeEventListener?.("change", catalogSelectionHandler);
+  catalogSelectionHandler = () => {
     const selected = select.value;
     select.value = state.pack?.id || "";
     if (!selected || state.loading) return;
@@ -429,7 +532,8 @@ export async function init(
       return;
     }
     requestDeparture(() => change(selected), select).catch(error);
-  });
+  };
+  select.addEventListener("change", catalogSelectionHandler);
   await change(requested ?? (opaqueContext ? null : choices[0]?.id));
   // Discovery is informative and never delays selected readiness or rerenders drafts.
   const discoveryGeneration = generation;

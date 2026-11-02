@@ -53,3 +53,7 @@ The owner must settle release scope, target game/build, hosting and community ow
 Original project code is licensed under [MIT](LICENSE). Game artwork, maps, third-party data and assets are not relicensed by that grant. Upstream tooling retains its own notices. See [licensing and asset rights](docs/licensing-and-assets.md).
 
 This is an independent community project, not an official game service. No affiliation or endorsement is claimed.
+
+## Local home dashboard and navigation
+
+The local field desk now provides grouped access to Map, Prepare, Track, Reference and Manage, unified public search, pinned/recent workspaces and read-only progress summaries. Upgrades and Missions have dedicated entry points and tested requirement/progress/return journeys. See [Home and navigation](docs/home-navigation.md) for behavior, source-coverage limits, separate map tools and verification commands. This local feature does not claim a remote merge or deployment.

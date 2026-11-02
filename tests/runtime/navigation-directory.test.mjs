@@ -138,7 +138,7 @@ test("033 FR-004: intermediary navigation carries only a bounded pack to same-or
   const source = readFileSync(
     new URL("../../src/client/navigation.mjs", import.meta.url),
     "utf8",
-  ).replace(/^import .*?;\n/gms, "");
+  ).replace(/^import .*?;\r?\n/gms, "");
   const run = (search, owningPack = "") => {
     const anchors = [
       { href: "https://guide.test/items/" },
@@ -149,6 +149,7 @@ test("033 FR-004: intermediary navigation carries only a bounded pack to same-or
       // This VM isolates catalog propagation. Real DOM dismissal is exercised
       // in compact-ui.mjs across all three browser engines.
       setupNavigationMenu: () => {},
+      rememberFeature: () => {},
       URL,
       location: {
         href: "https://guide.test/sitemap/" + search,
@@ -157,6 +158,7 @@ test("033 FR-004: intermediary navigation carries only a bounded pack to same-or
       document: {
         body: { dataset: { navPack: owningPack } },
         querySelectorAll: () => anchors,
+        addEventListener: () => {},
       },
     });
     return anchors;
@@ -184,7 +186,7 @@ test("033 pointer blur cannot reparent an already sorted pressed item link", () 
   const source = readFileSync(
     new URL("../../src/client/catalog.mjs", import.meta.url),
     "utf8",
-  ).replace(/^import .*?;\n/gms, "");
+  ).replace(/^import .*?;\r?\n/gms, "");
   const listeners = {},
     fields = {
       "#catalog-search": { value: "" },

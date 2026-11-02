@@ -1,3 +1,4 @@
+import {mountFieldToolbar} from './map/field-toolbar.ts';
 import {keyGridFocus} from './map/key-grid-control.ts';
 import { parseToolTarget } from './tool-links.ts';
 import 'leaflet/dist/leaflet.css';
@@ -193,6 +194,10 @@ document.querySelector('#map')!.addEventListener('keydown', event => {
   if ((event as KeyboardEvent).key.toLowerCase() === 'r' && state === 'ready') { event.preventDefault(); viewer.reset(); }
 });
 const authorWorkspace = mountWorkspace(viewer, sources,source=>{const controller=createSource(source);sources.push(controller);return controller;});
+let workflowDisposed=false;window.addEventListener('pagehide',()=>workflowDisposed=true);window.addEventListener('pageshow',()=>workflowDisposed=false);
+const openWorkflow=async(target:import('./tool-links.ts').ToolTarget)=>{await authorWorkspace.ready;if(workflowDisposed)return;if(target==='layers'){document.querySelector<HTMLButtonElement>('#layers')?.click();return;}if(['key','grid','updates'].includes(target)){setKeyOpen(true);document.querySelector<HTMLElement>(target==='grid'?'#show-coordinate-grid':target==='updates'?'#map-source-updates':'#key-show-all')?.focus();return;}if(target==='map'){document.querySelector<HTMLElement>('#map')?.focus();return;}if(!authorWorkspace.openTool(target))throw Error('This tool is not available yet.');};
+const disposeFieldToolbar=mountFieldToolbar(viewer.map,openWorkflow);
+sharedNavigation?.addEventListener('click',event=>{if(event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const a=(event.target as Element).closest<HTMLAnchorElement>('a[href]');if(!a)return;const url=new URL(a.href,location.href);if(url.origin!==location.origin)return;const target=parseToolTarget(url.search);if(!target)return;event.preventDefault();void openWorkflow(target).then(()=>{if(workflowDisposed)return;sharedNavigation.querySelectorAll('[aria-current]').forEach(n=>n.removeAttribute('aria-current'));a.setAttribute('aria-current','page');}).catch(error=>{if(workflowDisposed)return;let p=document.querySelector<HTMLElement>('#workflow-navigation-status');if(!p){p=document.createElement('p');p.id='workflow-navigation-status';p.setAttribute('role','alert');sharedNavigation.after(p);}p.textContent=error instanceof Error?error.message:'Tool unavailable';});});
 const disposeMenuLayout = mountMapMenuLayout(document.querySelector<HTMLElement>('.map-workspace')!);
 
 const requestedTool=parseToolTarget(location.search);
@@ -213,6 +218,6 @@ if(requestedTool)void authorWorkspace.ready.then(()=>{
   document.querySelector('.map-workspace')?.append(message);message.focus();
 });
 
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeMenuLayout(); authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeFieldToolbar(); disposeMenuLayout(); authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
 }
 void startSources();

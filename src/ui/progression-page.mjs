@@ -72,5 +72,25 @@ export function featurePages(packs) {
         '<option value="dmz-upgrade" selected>',
       ),
   };
-  return [...pages, focused];
+  const missions = {
+    ...pages[0],
+    path: "/missions/",
+    title: "Missions",
+    page: "missions",
+    body: pages[0].body
+      .replace("Progress without the spoilers.", "Your missions, in one place.")
+      .replace(
+        "<noscript>",
+        `<p class="actions"><a href="http://127.0.0.1:5175/?tool=missions" target="_blank" rel="noopener noreferrer">Open map mission tracker ↗</a><a href="/collection/">Review collection needs</a></p><noscript>`,
+      )
+      .replace(
+        '<form id="progress-filters"',
+        '<form data-focused-missions="true" id="progress-filters"',
+      )
+      .replace(
+        "DMZ Orders, upgrades and campaign are separate.",
+        "DMZ Orders and story missions are shown here. Upgrades and campaign remain separate.",
+      ),
+  };
+  return [...pages, focused, missions];
 }
