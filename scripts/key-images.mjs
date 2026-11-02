@@ -1,8 +1,11 @@
-import figures from "../src/ui/key-images.json" with { type: "json" };
+import { keyAssets as figures } from "../src/content/keys.mjs";
 import { readCatalogFile } from "./catalog.mjs";
 import { imageInfo } from "../src/content/portable.mjs";
 import { createHash } from "node:crypto";
 
+const iconUnavailable = new TextEncoder().encode(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 72 72"><rect width="72" height="72" rx="6" fill="#182018"/><g fill="none" stroke="#d4c68b" stroke-width="5"><circle cx="44" cy="25" r="12"/><path d="M35 34L14 55v7h9v-8h8v-8"/></g></svg>`,
+);
 const unavailable = new TextEncoder().encode(
   `<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080"><rect width="1920" height="1080" fill="#141a1d"/><path d="M850 320h220m-110-110v220" stroke="#84907e" stroke-width="3"/><text x="960" y="480" text-anchor="middle" fill="#ced4ca" font-family="sans-serif" font-size="38">Screenshot unavailable locally</text></svg>`,
 );
@@ -27,7 +30,7 @@ export function createKeyImageReader({
     const fallback = {
       status: 200,
       type: "image/svg+xml",
-      bytes: unavailable,
+      bytes: id.startsWith("icon-") ? iconUnavailable : unavailable,
       available: false,
     };
     if (!entry) return fallback;

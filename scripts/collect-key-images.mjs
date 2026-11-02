@@ -2,10 +2,15 @@ import { mkdir, writeFile, rename, unlink } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash, randomUUID } from "node:crypto";
-import { keyImages } from "../src/content/keys.mjs";
+import { keyAssets as keyImages } from "../src/content/keys.mjs";
 import { imageInfo } from "../src/content/portable.mjs";
 import { assertSafePath } from "./catalog.mjs";
-export async function fetchKeyImage(entry, { fetcher = fetch } = {}) {
+export async function fetchKeyImage(
+  entry,
+  { fetcher = fetch, maxBytes = 2 * 1024 * 1024 } = {},
+) {
+  if (!Number.isInteger(maxBytes) || maxBytes < 1 || maxBytes > 2 * 1024 * 1024)
+    throw Error("Invalid screenshot byte budget");
   if (
     !Object.values(keyImages).some(
       (v) => v.url === entry.url && v.sha256 === entry.sha256,
@@ -29,7 +34,8 @@ export async function fetchKeyImage(entry, { fetcher = fetch } = {}) {
     let size = 0;
     for await (const chunk of response.body) {
       size += chunk.length;
-      if (size > 2 * 1024 * 1024) throw Error("Screenshot exceeds 2MiB");
+      if (size > maxBytes)
+        throw Error("Screenshot exceeds the remaining byte budget");
       chunks.push(chunk);
     }
     const bytes = Buffer.concat(chunks),
@@ -66,7 +72,12 @@ export async function collectKeyImages(
   let total = 0,
     count = 0;
   for (const [id, entry] of Object.entries(keyImages)) {
-    const bytes = await fetchKeyImage(entry, { fetcher });
+    const remaining = 36 * 1024 * 1024 - total;
+    if (remaining <= 0) throw Error("Screenshot run exceeds 36MiB");
+    const bytes = await fetchKeyImage(entry, {
+      fetcher,
+      maxBytes: Math.min(2 * 1024 * 1024, remaining),
+    });
     total += bytes.length;
     if (total > 36 * 1024 * 1024) throw Error("Screenshot run exceeds 36MiB");
     const relative = `.local/key-images/${id}.webp`,

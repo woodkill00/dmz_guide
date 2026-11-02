@@ -1,4 +1,5 @@
 import data from "../ui/keys.json" with { type: "json" };
+import icons from "../ui/key-icons.json" with { type: "json" };
 import images from "../ui/key-images.json" with { type: "json" };
 export const KEY_SOURCE =
   "https://game8.co/games/Call-of-Duty-Modern-Warfare-4/archives/634455";
@@ -102,5 +103,14 @@ export function validateKeyGuide(value, registry) {
   return value;
 }
 export const keyGuide = validateKeyGuide(data, images);
+validateKeyGuide(data, icons);
 export const keyImages = images;
+export const keyIcons = icons;
+export const keyAssets = {
+  ...images,
+  ...Object.fromEntries(
+    Object.entries(icons).map(([id, entry]) => ["icon-" + id, entry]),
+  ),
+};
+requireValue(Object.keys(keyAssets).length === data.keys.length * 2);
 export { keyMatches } from "../domain/key-search.mjs";

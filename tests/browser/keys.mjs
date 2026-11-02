@@ -7,6 +7,39 @@ export async function runKeysTests({ browser, base, localImages = false }) {
     await page.goto(base + "/keys/");
     await page.locator("#key-filters:not([hidden])").waitFor();
     assert.equal(await page.locator("[data-key-row]:visible").count(), 18);
+    assert.equal(await page.locator(".key-item-link img").count(), 18);
+    assert.equal(
+      await page
+        .locator(".key-item-link")
+        .first()
+        .evaluate((a) => getComputedStyle(a).display),
+      "flex",
+    );
+    for (const key of keyGuide.keys) {
+      const link = page.getByRole("link", { name: key.name, exact: true });
+      assert.equal(await link.locator("img").getAttribute("alt"), "");
+      assert.equal(
+        await link.locator("img").getAttribute("src"),
+        `/local-key-images/icon-${key.id}.webp`,
+      );
+      const response = await context.request.get(
+        base + `/local-key-images/icon-${key.id}.webp`,
+      );
+      assert.equal(response.status(), 200);
+      assert(
+        localImages
+          ? response.headers()["content-type"] === "image/webp"
+          : ["image/webp", "image/svg+xml"].includes(
+              response.headers()["content-type"],
+            ),
+      );
+    }
+    await page.locator(".key-item-link img").first().click();
+    assert(await page.locator("h1").innerText());
+    assert(page.url().includes("/keys/blackmarket-weapons-locker/"));
+    await page.goto(base + "/keys/");
+    await page.locator("#key-filters:not([hidden])").waitFor();
+
     await page.locator("#key-search").fill("casino F4");
     assert.equal(await page.locator("[data-key-row]:visible").count(), 2);
     await page.locator("#key-search").fill("");

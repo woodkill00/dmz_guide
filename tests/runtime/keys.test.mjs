@@ -13,6 +13,8 @@ import { join } from "node:path";
 import {
   keyGuide,
   keyImages,
+  keyIcons,
+  keyAssets,
   validateKeyGuide,
   keyMatches,
 } from "../../src/content/keys.mjs";
@@ -223,4 +225,42 @@ test("053 explicit collector rejects unknown URLs, HTTP/MIME/oversize/digest cha
     /offline/,
   );
   assert.equal(await readFile(path, "utf8"), "previous fixture");
+});
+
+test("054 directory link icons cover all keys while retaining screenshot identities", () => {
+  assert.equal(Object.keys(keyIcons).length, 18);
+  assert.equal(Object.keys(keyAssets).length, 36);
+  assert.equal(new Set(Object.values(keyIcons).map((v) => v.url)).size, 5);
+  const directory = featurePages()[0].body;
+  for (const key of keyGuide.keys) {
+    assert.equal(keyIcons[key.id].width, 72);
+    assert.equal(keyIcons[key.id].height, 72);
+    assert.deepEqual(keyAssets[key.id], keyImages[key.id]);
+    assert.deepEqual(keyAssets["icon-" + key.id], keyIcons[key.id]);
+    assert(
+      directory.includes(
+        `href="/keys/${key.id}/"><img src="/local-key-images/icon-${key.id}.webp" alt=""`,
+      ),
+    );
+  }
+});
+test("054 missing or changed registered icons use a safe square generic key fallback", async () => {
+  const reader = createKeyImageReader({
+    root: tmpdir(),
+    read: async () => Buffer.from("changed image"),
+  });
+  const result = await reader(
+    "/local-key-images/icon-mirae-electrical-room.webp",
+  );
+  assert.equal(result.status, 200);
+  assert.equal(result.type, "image/svg+xml");
+  assert.equal(result.available, false);
+  const svg = new TextDecoder().decode(result.bytes);
+  assert(svg.includes('width="72"'));
+  assert(!svg.includes("changed image"));
+  assert.equal(
+    (await reader("/local-key-images/icon-mirae-electrical-room.webp?x=1"))
+      .status,
+    404,
+  );
 });

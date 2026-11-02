@@ -4,7 +4,7 @@ const source = (key) =>
   keyGuide.sourceURL + (key ? "#" + key.sourceAnchor : "#hl_2");
 const external = (url, label) =>
   `<a href="${e(url)}" target="_blank" rel="noopener noreferrer">${e(label)} ↗</a>`;
-const notice = `<p class="notice">${keyGuide.keys.length} keys reported by Game8 on ${e(keyGuide.sourceDate)}; checked ${e(keyGuide.checkedAt)}. Source reports, not a verified complete in-game catalog. ${external(source(), "Game8 key guide")}</p>`;
+const notice = `<p class="notice">${keyGuide.keys.length} keys reported by Game8 on ${e(keyGuide.sourceDate)}; checked ${e(keyGuide.checkedAt)}. Source reports, not a verified complete in-game catalog. Key icons: Game8 / Activision. ${external(source(), "Game8 key guide")}</p>`;
 const locations = (key) =>
   key.locations
     .map((l) => `${e(l.name)} <strong class="key-grid">${e(l.grid)}</strong>`)
@@ -31,7 +31,7 @@ export function featurePages() {
     .sort((a, b) => a.name.localeCompare(b.name))
     .map(
       (k) =>
-        `<tr data-key-row data-category="${k.category}" data-search="${e(searchText(k))}"><th scope="row"><a href="/keys/${k.id}/">${e(k.name)}</a><small>${KEY_TYPES[k.category]}</small></th><td>${e(k.acquisition)}</td><td>${locations(k)}</td></tr>`,
+        `<tr data-key-row data-category="${k.category}" data-search="${e(searchText(k))}"><th scope="row"><a class="key-item-link" href="/keys/${k.id}/"><img src="/local-key-images/icon-${k.id}.webp" alt="" width="36" height="36" loading="lazy"><span>${e(k.name)}</span></a><small>${KEY_TYPES[k.category]}</small></th><td>${e(k.acquisition)}</td><td>${locations(k)}</td></tr>`,
     )
     .join(
       "",
