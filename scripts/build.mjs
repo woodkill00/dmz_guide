@@ -35,6 +35,7 @@ import {
   pageHeading,
   setNavigation,
   publicTitle,
+  isFixture,
   setBundledAssets,
 } from "../src/ui/render.mjs";
 import {
@@ -125,6 +126,15 @@ async function generate(dist) {
     const guidance = guidancePath(entry.key, record.id);
     pages.push({
       path: recordUrl(record),
+      fixture: isFixture(record.pack),
+      ownerPath:
+        record.recordType === "objective" && !record.spoiler
+          ? record.track === "dmz-upgrade"
+            ? "/upgrades/"
+            : ["dmz-order", "dmz-story"].includes(record.track)
+              ? "/missions/"
+              : "/progression/"
+          : undefined,
       title: publicTitle(record),
       packId: record.pack.id,
       body: renderDetail(record, packs, {
@@ -140,6 +150,7 @@ async function generate(dist) {
     });
     pages.push({
       path: guidance,
+      fixture: isFixture(record.pack),
       title: "Edit " + publicTitle(record),
       packId: record.pack.id,
       body: renderAuthorGuidance(record, entry.key),

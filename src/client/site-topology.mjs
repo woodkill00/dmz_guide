@@ -1,3 +1,4 @@
+import { mountHomeMindmap } from "./home-mindmap.mjs";
 import { validateTopology } from "../domain/site-topology.mjs";
 import { readPublicJSON } from "./public-data.mjs";
 const $ = (s) => document.querySelector(s),
@@ -317,6 +318,7 @@ try {
   data = validateTopology(
     await readPublicJSON("/assets/content/site-topology.json", 12582912),
   );
+  mountHomeMindmap(data);
   for (const n of data.nodes) byId.set(n.id, n);
   for (const name of [...new Set(data.nodes.map((n) => n.group))]) {
     const b = make("button", name);
@@ -412,6 +414,10 @@ try {
   new ResizeObserver(drawLines).observe($(".topology-map"));
   render();
 } catch (e) {
+  document.querySelector("#mindmap-load-error").hidden = false;
+  document.querySelector("#mindmap-load-error").textContent =
+    "The visual map could not load. Use the readable directory below. " +
+    e.message;
   $("#topology-error").hidden = false;
   $("#topology-error").textContent =
     "The visual inventory could not load. The readable site map below is still available. " +

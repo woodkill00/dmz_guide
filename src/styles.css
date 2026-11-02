@@ -3638,3 +3638,229 @@ html[data-key-density="comfortable"] .key-directory td {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+/* Home-rooted note map. Internal scrolling is deliberate; page links stay native. */
+.mindmap-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.mindmap-heading h2 {
+  margin-top: 0;
+}
+.mindmap-toolbar {
+  display: flex;
+  align-items: end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.mindmap-toolbar label {
+  flex: 1 1 16rem;
+}
+.mindmap-toolbar label input {
+  width: 100%;
+  min-width: 0;
+}
+.mindmap-toolbar button {
+  font-size: 0.875rem;
+  padding: 0.55rem 0.75rem;
+}
+.mindmap-toolbar output {
+  align-self: center;
+  min-width: 3.5rem;
+  text-align: center;
+}
+.mindmap-legend {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.mindmap-viewport {
+  position: relative;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  height: clamp(26rem, calc(100vh - 16rem), 44rem);
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 20px 20px;
+  cursor: grab;
+  scrollbar-gutter: stable;
+}
+.mindmap-viewport.is-panning {
+  cursor: grabbing;
+  user-select: none;
+}
+.mindmap-stage {
+  position: relative;
+  overflow: hidden;
+  min-width: 100%;
+  min-height: 100%;
+}
+.mindmap-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+#mindmap-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+#mindmap-lines path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0.7;
+}
+.home-mindmap .map-note {
+  position: absolute;
+  box-sizing: border-box;
+  width: 14.75rem;
+  height: 7rem;
+  padding: 0.65rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.3rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 0.6rem;
+  box-shadow: 0 5px 18px #0002;
+  cursor: default;
+}
+.map-note[data-branch="map"] {
+  border-left-color: #80b7c3;
+}
+.map-note[data-branch="track"] {
+  border-left-color: #a8bdf2;
+}
+.map-note[data-branch="reference"] {
+  border-left-color: #c1a5df;
+}
+.map-note[data-branch="manage"] {
+  border-left-color: #dbab91;
+}
+.home-mindmap .map-note-home {
+  border: 2px solid var(--accent);
+  background: var(--raised);
+}
+.home-mindmap .note-link {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-decoration: none;
+  font-size: 1rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.home-mindmap .note-link:hover {
+  text-decoration: underline;
+  color: var(--accent);
+}
+.home-mindmap .note-external {
+  font-size: 0.875rem;
+}
+.home-mindmap .map-note small {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.note-heading {
+  min-width: 0;
+}
+.note-heading small {
+  display: block;
+  margin-top: 0.25rem;
+}
+.home-mindmap button.note-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  min-height: 1.7rem;
+  background: var(--raised);
+  color: var(--text);
+  border: 1px solid var(--line);
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+.home-mindmap button.note-toggle:disabled {
+  opacity: 0.8;
+}
+.home-mindmap button.note-more {
+  font-size: 1rem;
+  white-space: normal;
+  padding: 0.5rem;
+}
+.note-leaf {
+  display: block;
+}
+.mindmap-outline {
+  overflow: auto;
+  max-height: 44rem;
+  border: 1px solid var(--line);
+  padding: clamp(0.4rem, 2vw, 1rem);
+}
+.mindmap-outline ul {
+  list-style: none;
+  margin: 0.5rem 0;
+  padding-left: clamp(0.4rem, 2vw, 1.2rem);
+  border-left: 1px solid var(--line);
+}
+.home-mindmap .mindmap-outline .map-note {
+  position: static;
+  width: auto;
+  height: auto;
+  min-height: 6rem;
+  margin-block: 0.5rem;
+  box-shadow: none;
+}
+.home-mindmap .mindmap-outline .note-link {
+  display: block;
+  overflow: visible;
+}
+.mindmap-audit {
+  margin-block: 1.5rem;
+}
+.mindmap-audit > summary {
+  font-size: 1.05rem;
+  font-weight: 650;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--surface);
+}
+.home-mindmap [hidden] {
+  display: none !important;
+}
+@media (max-width: 550px) {
+  .home-mindmap {
+    padding: clamp(0.5rem, 2vw, 1rem);
+  }
+  .mindmap-toolbar label {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+  .mindmap-toolbar button {
+    flex: 1 1 auto;
+  }
+  .mindmap-viewport {
+    height: 32rem;
+  }
+  .mindmap-outline {
+    max-height: 32rem;
+  }
+}
+.home-mindmap .mindmap-outline .map-note {
+  padding: 0.4rem;
+}
+.home-mindmap .mindmap-outline ul {
+  padding-left: 0.25rem;
+}

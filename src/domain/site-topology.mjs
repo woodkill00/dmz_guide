@@ -190,6 +190,8 @@ export function buildSiteTopology(pages, renderedPages) {
       featureIds: [],
       controls: [],
       sections: [],
+      fixture: page.fixture === true,
+      ...(page.ownerPath ? { ownerPath: page.ownerPath } : {}),
     };
     nodes.push(node);
     byPath.set(page.path, node);
@@ -411,6 +413,12 @@ export function validateTopology(value) {
       node.href.length > 2048
     )
       throw Error("Invalid topology node");
+    if (
+      (node.fixture !== undefined && typeof node.fixture !== "boolean") ||
+      (node.ownerPath !== undefined &&
+        !["/upgrades/", "/missions/", "/progression/"].includes(node.ownerPath))
+    )
+      throw Error("Invalid hierarchy ownership metadata");
     const u = new URL(node.href, guideOrigin);
     if (
       (u.origin !== guideOrigin && !companionOrigins.has(u.origin)) ||

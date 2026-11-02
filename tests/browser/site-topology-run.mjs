@@ -17,6 +17,7 @@ try {
       const context = await browser.newContext(),
         p = await context.newPage();
       await p.goto(server.base + "/sitemap/");
+      await p.locator("#detailed-link-audit > summary").click();
       await p.locator("#topology-app:not([hidden])").waitFor();
       assert.equal(await p.locator("#topology-error").isVisible(), false);
       assert((await p.locator("#topology-nodes button").count()) <= 40);
@@ -124,6 +125,7 @@ try {
         const ac = await axeBrowser.newContext(),
           ap = await ac.newPage();
         await ap.goto(server.base + "/sitemap/");
+        await ap.locator("#detailed-link-audit > summary").click();
         await ap.locator("#topology-app:not([hidden])").waitFor();
         await ap
           .locator('#topology-groups button[data-group="Prepare"]')
