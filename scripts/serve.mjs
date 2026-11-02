@@ -32,6 +32,20 @@ async function weaponArt(raw) {
     return { status: 404 };
   }
 }
+let siteAuditReader;
+async function siteAudit(raw) {
+  try {
+    siteAuditReader ||= import("./site-audit-report.mjs").then(
+      ({ createSiteAuditReader }) =>
+        createSiteAuditReader({ root: resolve(root, "..") }),
+    );
+    return await (
+      await siteAuditReader
+    )(raw);
+  } catch {
+    return { status: 404 };
+  }
+}
 const args = process.argv.slice(2),
   portIndex = args.indexOf("--port");
 const port = Number(
@@ -76,6 +90,26 @@ const server = createServer(async (req, res) => {
     return res.end("Method not allowed");
   }
   try {
+    if (req.url?.startsWith("/local-site-audit/")) {
+      if (
+        !["127.0.0.1", "::1", "::ffff:127.0.0.1"].includes(
+          req.socket.remoteAddress,
+        )
+      ) {
+        res.writeHead(403);
+        return res.end("Local report only");
+      }
+      const report = await siteAudit(req.url);
+      res.writeHead(report.status, {
+        "Content-Type": report.type || "text/plain; charset=utf-8",
+        "Cache-Control": "no-store",
+      });
+      return res.end(
+        req.method === "HEAD"
+          ? undefined
+          : report.bytes || "Report route not found",
+      );
+    }
     if (req.url?.startsWith("/local-key-images/")) {
       const image = await keyImage(req.url);
       res.writeHead(image.status, {

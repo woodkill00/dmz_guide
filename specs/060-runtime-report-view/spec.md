@@ -1,0 +1,8 @@
+# 060 Runtime report browser delivery repair
+
+Reproduction:059final linked .local/site-topology-audit/report.html through the application file viewer; that displays HTMLsource instead of rendering a web page. The guide server serves dist only, so no HTTP report address exists. Scope: provide one fixed read-only loopback HTTP report URL and link it on /sitemap/. Never expose .local as a directory or execute stored HTML.
+
+FR001 GET/HEAD /local-site-audit/ renders trusted escaped report markup from bounded audited JSON, using existing site styles/CSP. Missing/malformed report shows useful instructions, never raw JSON/HTML or private bytes. Requests from nonloopback peers are refused. Other methods are405 and unrecognizedpaths remain404.
+FR002 Read only exact .local/site-topology-audit/audit.json through existing guarded catalog file reader, at most2MiB and100000parsednodes; exactreportformat/version,49registered target allowlist (map/studio plusmanager), maximum60targets,400controls/target,200tabs,40headings, labels180characters. No form values, arbitrary links/files, writes or network collection.
+FR003 Sitemap has native Open runtime report link; topology explicitly records this runtime-only destination separately from897generated guide pages. Existing readable directory, public build and static archives remain functional without local report/module; no report is bundled publicly.
+FR004 Reproduce in real browser with text/html header, renderedheading/native details, no escaped document source, fullCSP/HEAD/missing/hostile-route tests. Independent review and final local preview required. Manual scoped full-cycle fallback; no automated bug skill invoked.

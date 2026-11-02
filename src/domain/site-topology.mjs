@@ -234,6 +234,20 @@ export function buildSiteTopology(pages, renderedPages) {
     controls: [],
     sections: [],
   });
+  const runtimeReport = {
+    id: "runtime:site-audit",
+    label: "Runtime menu and tab report",
+    href: "/local-site-audit/",
+    kind: "runtime",
+    group: "Manage",
+    family: "local report",
+    service: "Guide",
+    featureIds: [],
+    controls: [],
+    sections: [],
+  };
+  nodes.push(runtimeReport);
+  byPath.set(runtimeReport.href, runtimeReport);
   const resolve = (from, link, kind) => {
     let u;
     try {
