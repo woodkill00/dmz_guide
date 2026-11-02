@@ -3025,3 +3025,255 @@ body[data-page="collection"] main > nav a {
   display: block;
   margin-block: 0.35rem;
 }
+.key-private-controls[hidden],
+.key-use-actions[hidden],
+#key-workspace[hidden],
+.key-trip-panel[hidden],
+#key-restore-preview[hidden] {
+  display: none;
+}
+.key-private-controls {
+  margin-block-start: 0.4rem;
+  font-weight: normal;
+}
+.key-stock-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.key-stock-line button {
+  min-inline-size: 2rem;
+  min-block-size: 2rem;
+  padding: 0.2rem 0.45rem;
+}
+.key-quantity-label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  margin: 0;
+}
+.key-stock-line input {
+  inline-size: calc(3.5rem + 1vw);
+  min-inline-size: 0;
+  padding: 0.25rem;
+}
+.key-stock-extra {
+  margin-block-start: 0.25rem;
+}
+.key-stock-extra summary {
+  font-size: 0.8rem;
+  padding-block: 0.25rem;
+  cursor: pointer;
+}
+.key-stock-extra input,
+.key-stock-extra textarea {
+  inline-size: 100%;
+  max-inline-size: 100%;
+}
+.key-stock-extra label {
+  display: block;
+  margin-block: 0.4rem;
+}
+.key-workspace-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.key-workspace-heading h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+.key-workspace p:empty {
+  display: none;
+}
+.key-backup-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-block: 0.6rem;
+}
+.key-backup-buttons label {
+  flex: 1 1 14rem;
+}
+.key-trip-panel {
+  max-block-size: calc(16rem + 35dvh);
+  overflow: auto;
+  margin-block-start: 0.75rem;
+  border-block-start: 1px solid var(--line);
+}
+.key-trip-panel li {
+  margin-block: 0.4rem;
+}
+.key-packing-list {
+  list-style: none;
+  padding-inline-start: 0;
+}
+.key-packing-list li {
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.3rem;
+}
+.key-packing-list label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.key-packing-list span {
+  display: block;
+  font-size: 0.85rem;
+}
+.key-use-actions {
+  display: grid;
+  gap: 0.35rem;
+  margin-block-start: 0.5rem;
+}
+.key-use-actions label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+.key-readiness {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--accent);
+}
+.key-readiness[data-readiness="missing"] {
+  color: var(--danger);
+}
+.key-readiness[data-readiness="recorded-ready"] {
+  color: var(--lime);
+}
+.key-map-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-block: 0.3rem;
+}
+.key-directory .key-map-link {
+  font-size: 0.8rem;
+}
+.key-room-more > summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding-block: 0.4rem;
+}
+.key-room-facts {
+  display: grid;
+  grid-template-columns: minmax(5rem, auto) minmax(0, 1fr);
+  gap: 0.3rem 0.6rem;
+}
+.key-room-facts dt {
+  font-weight: 650;
+}
+.key-room-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.key-filter-menu {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 12;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  padding: 0.4rem;
+}
+.key-filter-menu > summary {
+  cursor: pointer;
+  font-weight: 650;
+  padding: 0.35rem;
+}
+#key-archive-summary,
+#key-copy-fallback,
+#key-workspace-error,
+#key-action-status {
+  overflow-wrap: anywhere;
+}
+#key-copy-fallback {
+  inline-size: 100%;
+}
+html[data-key-density="compact"] .key-directory th,
+html[data-key-density="compact"] .key-directory td {
+  padding: 0.45rem;
+  font-size: 0.85rem;
+}
+html[data-key-density="comfortable"] .key-directory th,
+html[data-key-density="comfortable"] .key-directory td {
+  padding: 0.8rem;
+}
+@media (max-width: 600px) {
+  .key-directory,
+  .key-directory tbody {
+    display: block;
+    inline-size: 100%;
+  }
+  .key-directory thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .key-directory tr {
+    display: block;
+    border-block-end: 2px solid var(--line);
+    padding-block: 0.4rem;
+  }
+  .key-directory tr[hidden] {
+    display: none;
+  }
+  .key-directory th,
+  .key-directory td {
+    display: block;
+    min-inline-size: 0;
+    inline-size: 100%;
+    border: 0;
+  }
+  .key-directory td::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 700;
+    margin-block-end: 0.25rem;
+  }
+  .key-directory .key-stock-line button {
+    min-block-size: 44px;
+    min-inline-size: 44px;
+  }
+  .key-directory .key-stock-line input {
+    min-block-size: 44px;
+  }
+  .key-use-actions label,
+  .key-packing-list label,
+  #key-restore-preview > label {
+    min-block-size: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .key-backup-buttons button {
+    flex: 1 1 auto;
+  }
+  .key-room-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media print {
+  .site-header,
+  .site-nav,
+  .key-filter-menu,
+  .key-private-controls,
+  .key-backup-tools,
+  #key-toggle-trip,
+  .key-backup-buttons {
+    display: none !important;
+  }
+  .key-trip-panel {
+    max-block-size: none;
+    overflow: visible;
+  }
+}

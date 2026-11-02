@@ -26,10 +26,10 @@ const edge = (u, target, possible = false) =>
     status: possible ? "unconfirmed-identity" : "community-reported",
     sources: [{ ...report }],
   });
-test("055 twenty unique keys cover exactly twenty-five uses in fifteen authored location groups", () => {
-  assert.equal(allKeys.length, 20);
-  assert.equal(keyAccess.uses.length, 25);
-  assert.equal(keyAccess.groups.length, 15);
+test("057 sixty-two unique keys cover seventy-one uses in twenty-one location groups", () => {
+  assert.equal(allKeys.length, 62);
+  assert.equal(keyAccess.uses.length, 71);
+  assert.equal(keyAccess.groups.length, 21);
   for (const k of allKeys)
     for (const l of k.locations)
       assert.equal(
@@ -41,10 +41,10 @@ test("055 twenty unique keys cover exactly twenty-five uses in fifteen authored 
     4,
   );
   const pages = featurePages();
-  assert.equal(pages.length, 21);
+  assert.equal(pages.length, 63);
   const html = pages[0].body;
-  assert.equal((html.match(/data-key-group=/g) || []).length, 15);
-  assert.equal((html.match(/data-key-row /g) || []).length, 25);
+  assert.equal((html.match(/data-key-group=/g) || []).length, 21);
+  assert.equal((html.match(/data-key-row /g) || []).length, 71);
   assert(html.includes("Access keys needed first"));
   assert(html.includes("Not recorded"));
 });
@@ -157,7 +157,7 @@ test("055 source/status validation fails closed for unknown or misleading relati
   }
 });
 test("055 supplemental records preserve independent provenance and reject duplicate base identities", () => {
-  assert.equal(validateSupplemental(supplemental).keys.length, 2);
+  assert.equal(validateSupplemental(supplemental).keys.length, 44);
   for (const alter of [
     (v) => (v.keys[0].id = "mirae-electrical-room"),
     (v) => (v.keys[0].sources = []),

@@ -14,6 +14,14 @@
       "name": "Cheongun Village"
     },
     {
+      "id": "cheonwang-peak-array",
+      "name": "Cheonwang Peak Array"
+    },
+    {
+      "id": "construction-zone",
+      "name": "Construction Zone"
+    },
+    {
       "id": "deadtown",
       "name": "Deadtown"
     },
@@ -30,8 +38,16 @@
       "name": "Hanrim Village"
     },
     {
+      "id": "hotel-lucera",
+      "name": "Hotel Lucera"
+    },
+    {
       "id": "imjin-farmland",
       "name": "Imjin Farmland"
+    },
+    {
+      "id": "imjin-suburb",
+      "name": "Imjin Suburb"
     },
     {
       "id": "mirae-general-hospital",
@@ -40,6 +56,10 @@
     {
       "id": "nurigo-mall",
       "name": "NuriGO Mall"
+    },
+    {
+      "id": "nurigo-west",
+      "name": "NuriGO West"
     },
     {
       "id": "pynghwa-village",
@@ -52,6 +72,10 @@
     {
       "id": "songdo-wharf",
       "name": "Songdo Wharf"
+    },
+    {
+      "id": "south-hajin",
+      "name": "South Hajin"
     },
     {
       "id": "the-grid",
@@ -379,6 +403,574 @@
         "date": "2026-11-02",
         "statement": "Player confirmed that Hospital Chemical Lab is needed to reach Hospital Chemical Lockers at Mirae General Hospital."
       }
+    },
+    {
+      "id": "air-base-access-card-multi-use--admin-complex-no-2-server-room-b5",
+      "keyId": "air-base-access-card-multi-use",
+      "locationName": "Admin Complex No. 2 server room",
+      "grid": "B5",
+      "groupId": "chang-san-air-base",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "air-base-armory-card-single-use--chang-san-air-base-bunker-b5",
+      "keyId": "air-base-armory-card-single-use",
+      "locationName": "Chang-san Air Base bunker",
+      "grid": "B5",
+      "groupId": "chang-san-air-base",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "air-base-drc-weapons-locker--chang-san-air-base-bunker-b6",
+      "keyId": "air-base-drc-weapons-locker",
+      "locationName": "Chang-san Air Base bunker",
+      "grid": "B6",
+      "groupId": "chang-san-air-base",
+      "requiredUses": [
+        "air-base-armory-card-single-use--chang-san-air-base-bunker-b5"
+      ],
+      "possibleUses": [],
+      "status": "community-reported",
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "note": "Source-reported entry prerequisite; match the named doors and review other access requirements."
+    },
+    {
+      "id": "bank-branch-vault-access--cheongun-village-bank-branch-f4",
+      "keyId": "bank-branch-vault-access",
+      "locationName": "Cheongun Village bank branch",
+      "grid": "F4",
+      "groupId": "cheongun-village",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "bank-branch-vault-access--songdo-wharf-bank-branch-i7",
+      "keyId": "bank-branch-vault-access",
+      "locationName": "Songdo Wharf bank branch",
+      "grid": "I7",
+      "groupId": "songdo-wharf",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "bank-branch-vault-access--south-hajin-bank-branch-f8",
+      "keyId": "bank-branch-vault-access",
+      "locationName": "South Hajin bank branch",
+      "grid": "F8",
+      "groupId": "south-hajin",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "bank-branch-vault-access--nurigo-west-bank-branch-unknown",
+      "keyId": "bank-branch-vault-access",
+      "locationName": "NuriGO West bank branch",
+      "grid": "Unknown",
+      "groupId": "nurigo-west",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "bank-branch-vault-access--wolves-stadium-bank-branches-two-reported-unknown",
+      "keyId": "bank-branch-vault-access",
+      "locationName": "Wolves Stadium bank branches (two reported)",
+      "grid": "Unknown",
+      "groupId": "wolves-stadium",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "commandant-office--admin-complex-no-2-chang-san-air-base-b5",
+      "keyId": "commandant-office",
+      "locationName": "Admin Complex No. 2, Chang-san Air Base",
+      "grid": "B5",
+      "groupId": "chang-san-air-base",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "fire-station-storage--cheongun-village-fire-station-e4",
+      "keyId": "fire-station-storage",
+      "locationName": "Cheongun Village fire station",
+      "grid": "E4",
+      "groupId": "cheongun-village",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "gangbyeon-apartment-a--compound-echo-hajin-river-heights-g7",
+      "keyId": "gangbyeon-apartment-a",
+      "locationName": "Compound Echo, Hajin River Heights",
+      "grid": "G7",
+      "groupId": "hajin-river-heights",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "gas-station-electrical-room--construction-zone-gas-station-h7",
+      "keyId": "gas-station-electrical-room",
+      "locationName": "Construction Zone gas station",
+      "grid": "H7",
+      "groupId": "construction-zone",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "gorani-s-scout-overlook--rice-mill-imjin-farmland-d8",
+      "keyId": "gorani-s-scout-overlook",
+      "locationName": "Rice Mill, Imjin Farmland",
+      "grid": "D8",
+      "groupId": "imjin-farmland",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "haejeok-radio-station--imjin-suburb-radio-mast-d6",
+      "keyId": "haejeok-radio-station",
+      "locationName": "Imjin Suburb radio mast",
+      "grid": "D6",
+      "groupId": "imjin-suburb",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "hajin-art-center--the-grid-g6",
+      "keyId": "hajin-art-center",
+      "locationName": "The Grid",
+      "grid": "G6",
+      "groupId": "the-grid",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "haksan-school-armory--haksan-school-deadtown-b7",
+      "keyId": "haksan-school-armory",
+      "locationName": "Haksan School, Deadtown",
+      "grid": "B7",
+      "groupId": "deadtown",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "hanex-guard-station--hanex-bank-tower-the-grid-g6",
+      "keyId": "hanex-guard-station",
+      "locationName": "Hanex Bank tower, The Grid",
+      "grid": "G6",
+      "groupId": "the-grid",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "hanwoori-art-records-room--hanwoori-design-complex-the-grid-g7",
+      "keyId": "hanwoori-art-records-room",
+      "locationName": "Hanwoori Design Complex, The Grid",
+      "grid": "G7",
+      "groupId": "the-grid",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "hazard-storehouse--haneul-nuclear-reactor-i5",
+      "keyId": "hazard-storehouse",
+      "locationName": "Haneul Nuclear Reactor",
+      "grid": "I5",
+      "groupId": "haneul-nuclear-reactor",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "hoesik-supply-room--rice-mill-imjin-farmland-d8",
+      "keyId": "hoesik-supply-room",
+      "locationName": "Rice Mill, Imjin Farmland",
+      "grid": "D8",
+      "groupId": "imjin-farmland",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "hotel-lucera-lobby--hotel-lucera-next-to-the-hanex-tower-h7",
+      "keyId": "hotel-lucera-lobby",
+      "locationName": "Hotel Lucera, next to the Hanex tower",
+      "grid": "H7",
+      "groupId": "hotel-lucera",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "iskra-s-control-room--cheonwang-peak-array-f7",
+      "keyId": "iskra-s-control-room",
+      "locationName": "Cheonwang Peak Array",
+      "grid": "F7",
+      "groupId": "cheonwang-peak-array",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "jang-ui-s-converted-power-room--nurigo-mall-h6",
+      "keyId": "jang-ui-s-converted-power-room",
+      "locationName": "NuriGO Mall",
+      "grid": "H6",
+      "groupId": "nurigo-mall",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "jin-tae-s-private-lounge--heavenly-luck-casino-penthouse-f4",
+      "keyId": "jin-tae-s-private-lounge",
+      "locationName": "Heavenly Luck Casino penthouse",
+      "grid": "F4",
+      "groupId": "cheongun-village",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "kang-s-arms-incinerator--the-citadel-14th-political-prison-b3",
+      "keyId": "kang-s-arms-incinerator",
+      "locationName": "The Citadel, 14th Political Prison",
+      "grid": "B3",
+      "groupId": "14th-political-prison",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "lucera-suite-703-bedroom--hotel-lucera-h7",
+      "keyId": "lucera-suite-703-bedroom",
+      "locationName": "Hotel Lucera",
+      "grid": "H7",
+      "groupId": "hotel-lucera",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "mechanic-s-shack--cheongun-village-f5",
+      "keyId": "mechanic-s-shack",
+      "locationName": "Cheongun Village",
+      "grid": "F5",
+      "groupId": "cheongun-village",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "militia-arms-depot--gangbyeon-apartment-b-hajin-river-heights-g7",
+      "keyId": "militia-arms-depot",
+      "locationName": "Gangbyeon Apartment B, Hajin River Heights",
+      "grid": "G7",
+      "groupId": "hajin-river-heights",
+      "requiredUses": [
+        "gangbyeon-apartment-b--compound-echo-hajin-river-heights-g7"
+      ],
+      "possibleUses": [],
+      "status": "community-reported",
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "note": "Source-reported entry prerequisite; match the named doors and review other access requirements."
+    },
+    {
+      "id": "mill-explosives-lab--rice-mill-imjin-farmland-d8",
+      "keyId": "mill-explosives-lab",
+      "locationName": "Rice Mill, Imjin Farmland",
+      "grid": "D8",
+      "groupId": "imjin-farmland",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "netshin-it-room--netshin-tech-complex-the-grid-g6",
+      "keyId": "netshin-it-room",
+      "locationName": "Netshin Tech Complex, The Grid",
+      "grid": "G6",
+      "groupId": "the-grid",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "police-weapon-depository--wolves-stadium-g7",
+      "keyId": "police-weapon-depository",
+      "locationName": "Wolves Stadium",
+      "grid": "G7",
+      "groupId": "wolves-stadium",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "prison-encampment-storage--14th-political-prison-camp-c3",
+      "keyId": "prison-encampment-storage",
+      "locationName": "14th Political Prison camp",
+      "grid": "C3",
+      "groupId": "14th-political-prison",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "rail-depot-storage--cheongun-village-train-depot-e5",
+      "keyId": "rail-depot-storage",
+      "locationName": "Cheongun Village train depot",
+      "grid": "E5",
+      "groupId": "cheongun-village",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "reactor-drc-locker--haneul-nuclear-reactor-reactor-02-h4",
+      "keyId": "reactor-drc-locker",
+      "locationName": "Haneul Nuclear Reactor, Reactor 02",
+      "grid": "H4",
+      "groupId": "haneul-nuclear-reactor",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "rice-mill-bunker--rice-mill-imjin-farmland-d8",
+      "keyId": "rice-mill-bunker",
+      "locationName": "Rice Mill, Imjin Farmland",
+      "grid": "D8",
+      "groupId": "imjin-farmland",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "south-block-armory--the-citadel-14th-political-prison-b3",
+      "keyId": "south-block-armory",
+      "locationName": "The Citadel, 14th Political Prison",
+      "grid": "B3",
+      "groupId": "14th-political-prison",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "supreme-leader-s-bunker-access-card--chang-san-air-base-bunker-behind-admin-complex-no-2-b6",
+      "keyId": "supreme-leader-s-bunker-access-card",
+      "locationName": "Chang-san Air Base bunker, behind Admin Complex No. 2",
+      "grid": "B6",
+      "groupId": "chang-san-air-base",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "the-chemist-s-secure-armory--haneul-nuclear-reactor-northeast-bunker-i4",
+      "keyId": "the-chemist-s-secure-armory",
+      "locationName": "Haneul Nuclear Reactor, northeast bunker",
+      "grid": "I4",
+      "groupId": "haneul-nuclear-reactor",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "the-citadel-main-control-room--the-citadel-14th-political-prison-b3",
+      "keyId": "the-citadel-main-control-room",
+      "locationName": "The Citadel, 14th Political Prison",
+      "grid": "B3",
+      "groupId": "14th-political-prison",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "the-citadel-secondary-control-room--the-citadel-14th-political-prison-b3",
+      "keyId": "the-citadel-secondary-control-room",
+      "locationName": "The Citadel, 14th Political Prison",
+      "grid": "B3",
+      "groupId": "14th-political-prison",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "the-citadel-south-wing--the-citadel-14th-political-prison-b3",
+      "keyId": "the-citadel-south-wing",
+      "locationName": "The Citadel, 14th Political Prison",
+      "grid": "B3",
+      "groupId": "14th-political-prison",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "the-doctor-s-command-office--mirae-general-hospital-floor-7-f5",
+      "keyId": "the-doctor-s-command-office",
+      "locationName": "Mirae General Hospital, floor 7",
+      "grid": "F5",
+      "groupId": "mirae-general-hospital",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "underground-equipment-storage--re-education-center-underground-b7",
+      "keyId": "underground-equipment-storage",
+      "locationName": "Re-Education Center underground",
+      "grid": "B7",
+      "groupId": "deadtown",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "underground-propaganda-store-room--re-education-center-basement-b7",
+      "keyId": "underground-propaganda-store-room",
+      "locationName": "Re-Education Center basement",
+      "grid": "B7",
+      "groupId": "deadtown",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "utility-maintenance-storage--haneul-nuclear-reactor-transformer-yard-h4",
+      "keyId": "utility-maintenance-storage",
+      "locationName": "Haneul Nuclear Reactor transformer yard",
+      "grid": "H4",
+      "groupId": "haneul-nuclear-reactor",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "weapons-mod-workshop--chang-san-air-base-repair-garage-b5",
+      "keyId": "weapons-mod-workshop",
+      "locationName": "Chang-san Air Base repair garage",
+      "grid": "B5",
+      "groupId": "chang-san-air-base",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
     }
   ]
 }

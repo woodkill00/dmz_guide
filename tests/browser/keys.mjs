@@ -58,10 +58,10 @@ export async function runKeysTests({ browser, base, localImages = false }) {
     await page.locator("#key-filters:not([hidden])").waitFor();
 
     await page.locator("#key-search").fill("casino F4");
-    assert.equal(await page.locator("[data-key-row]:visible").count(), 2);
+    assert.equal(await page.locator("[data-key-row]:visible").count(), 3);
     await page.locator("#key-search").fill("");
     await page.locator("#key-type").selectOption("story");
-    assert.equal(await page.locator("[data-key-row]:visible").count(), 4);
+    assert.equal(await page.locator("[data-key-row]:visible").count(), 6);
     await page.locator("#key-search").fill("no matching synthetic term");
     assert(await page.locator("#key-empty").isVisible());
     await page.getByRole("button", { name: "Clear filters" }).click();
@@ -69,17 +69,20 @@ export async function runKeysTests({ browser, base, localImages = false }) {
       await page.locator("[data-key-row]:visible").count(),
       keyAccess.uses.length,
     );
-    assert.equal(await page.locator("[data-key-group]").count(), 15);
+    assert.equal(
+      await page.locator("[data-key-group]").count(),
+      keyAccess.groups.length,
+    );
     await page.locator("#key-location").selectOption("mirae-general-hospital");
-    assert.equal(await page.locator("[data-key-row]:visible").count(), 3);
+    assert.equal(await page.locator("[data-key-row]:visible").count(), 4);
     assert.equal(await page.locator("[data-key-group]:visible").count(), 1);
-    assert.match(await page.locator("#key-count").innerText(), /3 of 20 keys/);
+    assert.match(await page.locator("#key-count").innerText(), /4 of 62 keys/);
     await page.locator("#key-location").selectOption("");
     await page.locator("#key-search").fill("Police");
-    assert.equal(await page.locator("[data-key-row]:visible").count(), 4);
-    assert.match(await page.locator("#key-count").innerText(), /1 of 20 keys/);
+    assert.equal(await page.locator("[data-key-row]:visible").count(), 5);
+    assert.match(await page.locator("#key-count").innerText(), /2 of 62 keys/);
     await page.locator("#key-search").fill("F4");
-    assert.equal(await page.locator("[data-key-row]:visible").count(), 4);
+    assert.equal(await page.locator("[data-key-row]:visible").count(), 6);
     assert.equal(await page.locator("[data-key-group]:visible").count(), 1);
     await page.getByRole("button", { name: "Clear filters" }).click();
     await page
@@ -218,7 +221,7 @@ export async function runKeysTests({ browser, base, localImages = false }) {
       await noJS.close();
     }
     console.log(
-      "053 keys PASS: 18 source/detail/image mappings, search/type/reset/empty, navigation/no-JS, GET/HEAD/POST and 64 layouts; 055 grouped25uses/20unique/filter/player-reported chain/provenance",
+      "053 keys PASS: 18 source/detail/image mappings, search/type/reset/empty, navigation/no-JS, GET/HEAD/POST and 64 layouts; 057 grouped71uses/62unique/filter/player-reported chain/provenance",
     );
   } finally {
     await context.close();

@@ -124,7 +124,7 @@ test("Studio defaults dark and offers the standalone persisted theme toggle", as
   assert.match(html, /<html lang="en" data-theme="dark">/);
   assert.match(
     html,
-    /id="theme-toggle"[^>]+aria-label="Switch to light theme"/,
+    /id="theme-toggle"[^>]+aria-label="Light mode — switch theme"/,
   );
   assert.match(html, /src="\/assets\/src\/client\/theme.mjs"/);
   assert.match(html, /rel="icon" href="\/assets\/src\/favicon.svg"/);

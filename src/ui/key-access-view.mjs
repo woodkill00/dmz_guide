@@ -1,3 +1,12 @@
+import {
+  privateKeyControls,
+  privateUseControls,
+  keyMapLinks,
+  keyRoomFacts,
+  keyWorkspacePanel,
+  keyWorkspaceData,
+  keySourceReview,
+} from "./key-workspace-view.mjs";
 import { keyGuide, keyIcons, KEY_TYPES } from "../content/keys.mjs";
 import {
   allKeys,
@@ -13,7 +22,7 @@ const external = (url, label) =>
   `<a href="${e(url)}" target="_blank" rel="noopener noreferrer">${e(label)} ↗</a>`;
 const sources = (rows) =>
   rows.map((s) => external(s.url, s.label) + ` · ${e(s.date)}`).join("<br>");
-export const keyCoverageNotice = `<p class="notice">${allKeys.length} source-reported keys: ${keyGuide.keys.length} from ${external(keyGuide.sourceURL + "#hl_2", "Game8")} and ${supplementalKeys.length} supplemental hospital records. Checked ${e(keyGuide.checkedAt)}. Source reports, not a verified complete in-game catalog. Access links retain their source status. Key icons: Game8 / Activision; supplemental records use a generic icon.</p>`;
+export const keyCoverageNotice = `<p class="notice">${allKeys.length} source-reported keys: ${keyGuide.keys.length} from ${external(keyGuide.sourceURL + "#hl_2", "Game8")} and ${supplementalKeys.length} supplemental source records. Checked ${e(keyGuide.checkedAt)}. Source reports, not a verified complete in-game catalog. Access links retain their source status. Key icons: Game8 / Activision; supplemental records use a generic icon.</p>`;
 export const renderKeySources = (k) =>
   k.sources
     ? sources(k.sources)
@@ -43,7 +52,7 @@ export function renderAccessDetails(k, model = keyAccess) {
     .filter((u) => u.keyId === k.id)
     .map(
       (u) =>
-        `<section class="key-access-use"><h3>${e(u.locationName)} · ${e(u.grid)}</h3>${renderAccessCell(u, model)}${
+        `<section class="key-access-use"><h3>${e(u.locationName)} · ${e(u.grid)}</h3><div class="key-map-actions">${keyMapLinks(u, byKey(u.keyId))}</div>${privateUseControls(u)}${renderAccessCell(u, model)}${
           u.requiredUses.length
             ? `<ol class="key-access-chain">${requiredKeyChain(u, model.uses)
                 .map(
@@ -75,7 +84,7 @@ export function renderKeyDirectory() {
     .map(([id, name]) => `<option value="${id}">${name}</option>`)
     .join(
       "",
-    )}</select></label><label>Map location<select id="key-location"><option value="">All locations</option>${keyAccess.groups.map((g) => `<option value="${g.id}">${e(g.name)}</option>`).join("")}</select></label><button type="reset">Clear filters</button></form>`;
+    )}</select></label><label>Map location<select id="key-location"><option value="">All locations</option>${keyAccess.groups.map((g) => `<option value="${g.id}">${e(g.name)}</option>`).join("")}</select></label><label>My view<select id="key-view" disabled><option value="all">All keys</option><option value="owned">Owned keys</option><option value="ready">What can I open? · recorded keys</option><option value="missing">Missing recorded keys</option><option value="favorites">Favorites</option><option value="unopened">Not opened before</option></select></label><label>Density<select id="key-density" disabled><option value="compact">Compact</option><option value="comfortable">Comfortable</option></select></label><button type="reset">Clear filters</button></form>`;
   const groups = keyAccess.groups
     .map((g) => {
       const uses = keyAccess.uses
@@ -97,10 +106,10 @@ export function renderKeyDirectory() {
                 (id) => byKey(byUse(id).keyId).name,
               ),
             ].join(" ");
-          return `<tr data-key-row data-key-id="${k.id}" data-group="${g.id}" data-category="${k.category}" data-search="${e(search)}"><th scope="row">${keyLink(k)}<small>${KEY_TYPES[k.category]}</small></th><td>${e(u.locationName)} <strong class="key-grid">${e(u.grid)}</strong></td><td>${renderAccessCell(u)}</td><td>${e(k.acquisition)}</td></tr>`;
+          return `<tr data-key-row data-key-id="${k.id}" data-group="${g.id}" data-category="${k.category}" data-search="${e(search)}"><th scope="row">${keyLink(k)}<small>${KEY_TYPES[k.category]}</small>${privateKeyControls(k)}</th><td data-label="Where to use / grid">${e(u.locationName)} <strong class="key-grid">${e(u.grid)}</strong><div class="key-map-actions">${keyMapLinks(u, k)}</div><details class="key-room-more"><summary>Room details</summary>${keyRoomFacts(k)}</details></td><td data-label="Access keys needed first">${renderAccessCell(u)}${privateUseControls(u)}</td><td data-label="How to get">${e(k.acquisition)}</td></tr>`;
         })
         .join("")}</tbody></table></div></details>`;
     })
     .join("");
-  return `${pageHeading("HAJIN FIELD GUIDE", "Keys", "Keys grouped by map location, with access keys to check before you travel.")}${keyCoverageNotice}${filters}<p id="key-count" role="status" aria-live="polite">${allKeys.length} keys · ${keyAccess.uses.length} use locations · ${keyAccess.groups.length} map areas</p><p class="muted">Keys used in several places appear in each relevant group. “Not recorded” means the sources have not established whether another key is needed. Possible links need confirmation.</p><p id="key-empty" hidden>No keys match these filters. Try another name, place or grid, or clear the filters.</p>${groups}<noscript><p>All grouped tables and key links work without JavaScript. Enable JavaScript to filter the list.</p></noscript><script type="module" src="/assets/src/client/keys.mjs"></script>`;
+  return `${pageHeading("HAJIN FIELD GUIDE", "Keys", "Keys grouped by map location, with access keys to check before you travel.")}${keyCoverageNotice}${keyWorkspacePanel()}<details id="key-filter-menu" class="key-filter-menu" open><summary>Search and filters</summary>${filters}</details><p id="key-count" role="status" aria-live="polite">${allKeys.length} keys · ${keyAccess.uses.length} use locations · ${keyAccess.groups.length} map areas</p><p class="muted">Keys used in several places appear in each relevant group. “Not recorded” means the sources have not established whether another key is needed. Possible links need confirmation.</p><p id="key-empty" hidden>No keys match these filters. Try another name, place or grid, or clear the filters.</p>${groups}${keySourceReview()}<noscript><p>All grouped tables and key links work without JavaScript. Enable JavaScript to filter the list.</p></noscript>${keyWorkspaceData()}<script type="module" src="/assets/src/client/keys.mjs"></script>`;
 }

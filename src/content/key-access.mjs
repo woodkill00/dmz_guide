@@ -3,6 +3,8 @@ import supplement from "../ui/key-supplemental.json" with { type: "json" };
 import access from "../ui/key-access.json" with { type: "json" };
 export const KEY_ACCESS_SOURCES = [
   keyGuide.sourceURL,
+  "https://dmztracker.com/keys/",
+  "https://dmztracker.gg/guides/keys-guide/",
   "https://www.modern-warfare4.wiki/guide/mw4-dmz-irradiated-container",
   "https://codcentral.net/blog/mw4-dmz-keys/",
 ];
@@ -57,7 +59,7 @@ export function validateSupplemental(value, base = keyGuide.keys) {
     value.version === 1 &&
       date(value.checkedAt) &&
       Array.isArray(value.keys) &&
-      value.keys.length <= 16 &&
+      value.keys.length <= 110 &&
       base.length + value.keys.length <= 128 &&
       Buffer.byteLength(JSON.stringify(value)) <= 65536,
   );

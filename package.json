@@ -34,7 +34,8 @@
     "keys:images": "node scripts/collect-key-images.mjs",
     "weapons:art": "node scripts/collect-weapon-art.mjs",
     "weapons:source-check": "node scripts/codmunity.mjs check",
-    "weapons:source-status": "node scripts/codmunity.mjs status"
+    "weapons:source-status": "node scripts/codmunity.mjs status",
+    "test:keys": "node tests/browser/keys-run.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2",

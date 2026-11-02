@@ -8,6 +8,8 @@ export const KEY_TYPES = {
   level: "Level reward",
   local: "Specific location",
   loot: "Random loot",
+  boss: "Lieutenant drop",
+  unknown: "Not established",
 };
 const requireValue = (ok) => {
   if (!ok) throw new Error("Invalid key guide or image register");

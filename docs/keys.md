@@ -1,29 +1,43 @@
-# Hajin keys
+# Hajin keys and private planning
 
-Open [Keys](http://127.0.0.1:4173/keys/) or choose **More → Keys** in the shared navigation. The directory preserves all 18 keys reported in [Game8 article 634455](https://game8.co/games/Call-of-Duty-Modern-Warfare-4/archives/634455), updated 2026-10-28 and checked 2026-11-02. Two independently sourced hospital records bring the directory to 20 keys. This is source coverage, not a verified complete in-game catalog.
+Open [Keys](http://127.0.0.1:4173/keys/) or choose **More → Keys**. The current source snapshot contains **62 keys, 71 use locations and 21 map groups**. It preserves the original 18 Game8 records and two hospital supplements, then adds 42 distinct records from the DMZTracker index checked on 2026-11-02. These are source reports, not a verified complete current-game catalog.
 
-Search names, aliases, places, grid labels, acquisition details and access requirements. Multiple words narrow results together. Filter story rewards, level rewards, location-specific drops or random loot, and use Clear filters to reset. The Citadel’s grid accepts either B-C3 or B–C3. Tables are grouped by 15 map locations. Select a map location to narrow the groups; groups with no matches disappear. Keys used in several places appear under each location, and the count distinguishes 20 unique keys from 25 use locations. Without JavaScript, all grouped tables and detail links remain usable.
+Search names, aliases, places, grid labels, acquisition details, access requirements and your private notes. Multiple words narrow results together. Acquisition and map-location filters combine with **My view**: all, owned, recorded keys ready, missing, favorites or not opened before. Clear filters keeps your stash. Counts distinguish unique keys from use locations. Compact/comfortable density persists; small screens show labeled row cards and collapsible filters. Native grouped lists and detail links work without JavaScript.
 
-Individual pages show acquisition, all reported use locations/grids, concise original access directions, requirements/hazards and exact Game8 section links. Optional mission spawn suggestions are labelled optional. Random spawns remain random; costs, durability and loot rewards not established by the article stay unknown. Multiple use locations are preserved. No pixel coordinates, map pins, route waypoints, inventory or mission completion are inferred or written.
+## Record your stash
 
-Each directory link includes the corresponding Game8 key-item icon beside its name; clicking either opens the same detail page. Icons are decorative for screen readers, so names are announced once. If an icon is missing, a generic key placeholder preserves the readable link.
+Use **− / Owned / +** in any row or detail page. Several locations for one key share the same stock. Expand **Uses and private notes** to record the optional total remaining uses across owned copies. Blank means unknown; zero means exhausted. Changing quantity resets the total to unknown. Favorites and **Opened before** are manual. Nothing reads the game or automatically consumes keys.
 
-Each key has Game8’s original location/access collage, with meaningful alt text and a full-size native image link. Images are local-only, credited to Game8 with underlying Activision game art; external source-image links are available if local bytes are missing. Original screenshots are not copied to dist or Git.
+**What can I open?** checks the selected key and its exact recorded required access chain against your stash. Missing or exhausted types are shown. Unknown durability and access remain warnings; recorded keys ready is not a guaranteed accessible door. A possible relationship is not mandatory. Mill Explosives Lab has conflicting route reports and a reportedly unlocked door, so its key necessity remains unverified.
 
-## Local images and updates
+Private state uses a separate `dmz-keys-local` IndexedDB database. It does not change your inventory, missions, armory or map workspace. Browser storage is not a backup. Temporary-session and unsaved-draft messages explicitly mean changes are not durably saved.
 
-The user’s existing additional-provider collection permission and explicit request cover this local import. Public redistribution is not authorized. The screenshot register is `src/ui/key-images.json` and key-item icons are in `src/ui/key-icons.json`; factual key reports are `src/ui/keys.json`. Ignored files live under `.local/key-images/`. Source URLs, SHA256, decoded dimensions and format bind each reviewed image. The two user URLs are one article, so they create no duplicate source or key records. Actual heading anchors are used because the article overview links are offset.
+## Plan a trip
 
-To restore registered images, explicitly run `npm run keys:images`. It restores both registered screenshots and icons (36 mapped files, with five shared icon source URLs), using only those fixed Game8 image URLs, serially, without redirects, under size/deadline limits. Changed bytes fail rather than silently replacing reviewed images. Normal reader/build/test operations never fetch providers. A newer article needs a separate factual/image review; this feature does not add automatic Game8 scraping or a new update button.
+Select **Add to trip** on up to 32 use locations. Open **Trip checklist** for ordered recorded prerequisites and a deduplicated list of key types. Check packed types manually; remove individual destinations or clear targets/packing checks. Clearing a trip retains stock, notes, favorites and opened history.
 
-The local reader serves only exact registered image paths, checks bytes/hash/dimensions, refuses traversal/query/unregistered requests and gives a safe placeholder for missing or corrupt local images. Static release archives intentionally lack the private image bridge and image bytes; their visible source link still works. This guide is separate from the map’s layer visibility key.
+Counts describe selected use locations, not how many copies will be consumed. Other source-reported requirements and conflicting core counts remain visible; they are not combined into an invented total. Copy/download a packing list for reference; private notes are omitted. The checklist is separate from road routing and waypoint tracking.
 
+## Back up and recover
 
-## Keys needed to reach another lock
+Under **Backups and recovery**, export the private key backup periodically. Import first shows a replacement preview; review and Apply explicitly, or Cancel without changing saved data. A previous valid snapshot is also available. Valid historical IDs remain archived/exportable if later absent from the catalog; they are never rebound by name.
 
-The table’s Access keys needed first column and each key’s detail page distinguish known source-reported prerequisites, unknown access (Not recorded), and possible identity matches. A required chain lists exact-use prerequisites before the selected key. The prerequisite’s page links back to locks it is required to reach. These relationships concern room access, not obtaining the key itself; a key found in a room does not establish a prerequisite.
+A two-tab conflict or storage failure retains your draft. Export it, then deliberately reload saved data before continuing. Invalid in-progress numbers pause saving/exporting until corrected. Internal navigation waits for saves; browser departure warns about unsaved work.
 
-The owner confirmed on 2026-11-02 that Hospital Chemical Lab is needed to reach Hospital Chemical Lockers at Mirae General Hospital. This one chain is labelled player-reported, with its date/statement separate from Website context. The locker page shows lab→locker order and the lab page links back to the locker. Searches accept the player’s names Chemist Lab and Chem Lab Locker. This does not upgrade the older website reports to independently verified proof; COD Central’s exact-door uncertainty remains contextual. Other possible/unknown relationships retain their existing status.
+Corrupt saved data is never automatically reset. Export its recovery record, preview a valid backup or previous snapshot, then review Apply. Recovery atomically preserves the exact damaged record alongside earlier recovery history. The archive is bounded to eight records/16 MiB; invalid/full/oversized records fail closed and need manual recovery from exports. Recovery exports are evidence, not normal importable backups.
 
+## Room facts and map links
 
-Access metadata is src/ui/key-access.json; supplemental reports are src/ui/key-supplemental.json. Relationships reference stable use IDs bound to a key’s exact location name and grid, so one destination’s prerequisites cannot spread to every location where a multi-use key works. Validation refuses missing/duplicate/self/same-key links and cycles, including possible links. Nothing updates inventory, missions, map markers or private progress.
+Detail pages and expandable room panels separate acquisition, entrance, floor, possible loot, hazards and sources. Unknown facts stay unknown. The source-comparison panel accounts for all 60 DMZTracker rows: 42 new, 15 name matches, two grid conflicts and one unresolved identity. Existing grids are retained. Hospital Chemistry Lab remains an unresolved candidate, separate from the owner-confirmed Hospital Chemical Lab identity.
+
+**Map F5** and similar links open the local companion at port 5175 and highlight the calibrated tactical grid area. Door positions are not verified. Grid ranges offer individual cells; unknown grids have no invented pin. Start `npm run map:dev` if the companion is not running. Dismiss the highlighted area when finished. Links carry only public key names/grid references, never private notes or stock.
+
+The owner confirmed on 2026-11-02 that Hospital Chemical Lab is required to reach Hospital Chemical Lockers at Mirae General Hospital. This is **player-reported**, with its statement/date separate from website context. Lab→locker ordering and reverse links preserve that distinction. Two additional community-reported entry chains remain source-labeled; keys merely found inside another room do not create access dependencies.
+
+## Local images and source maintenance
+
+The original 18 Game8 keys retain local item icons and access collages, credited to Game8/Activision. Other keys use a generic icon; no new artwork was collected. Original bytes stay in ignored `.local/key-images/`, never Git or static releases. If missing, safe placeholders and source links remain.
+
+`npm run keys:images` explicitly restores only registered Game8 images (36 mapped files, five shared icon source URLs). Fixed URLs, size/deadline limits, hashes and decoded dimensions bind reviewed assets; changed bytes fail rather than silently replace. Normal builds/readers/tests never scrape providers. A source update requires factual review, including conflicts and identities; no automatic key refresh is claimed.
+
+Catalog files: `src/ui/keys.json`, `key-supplemental.json`, `key-access.json` and `key-room-details.json`. Source snapshots and original screenshots stay local. Collection permission covers local import; public redistribution of provider artwork is not implied.

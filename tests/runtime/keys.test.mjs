@@ -58,7 +58,7 @@ test("053 schema rejects duplicate/missing source identities and unsafe image re
     (v) => v.keys.push(v.keys[0]),
     (v) => (v.keys[1].sourceAnchor = v.keys[0].sourceAnchor),
     (v) => (v.keys[0].locations = []),
-    (v) => (v.keys[0].category = "unknown"),
+    (v) => (v.keys[0].category = "unsupported"),
     (v) => (v.sourceURL = "https://example.invalid"),
     (v) => (v.keys[0].steps = ["x".repeat(401)]),
   ]) {

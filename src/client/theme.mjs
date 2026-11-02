@@ -9,7 +9,7 @@ function apply() {
     button.textContent = selected === "dark" ? "Light mode" : "Dark mode";
     button.setAttribute(
       "aria-label",
-      `Switch to ${selected === "dark" ? "light" : "dark"} theme`,
+      `${selected === "dark" ? "Light" : "Dark"} mode — switch theme`,
     );
   }
 }

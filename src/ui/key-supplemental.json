@@ -69,6 +69,1094 @@
         }
       ],
       "status": "source-reported-unverified"
+    },
+    {
+      "id": "air-base-access-card-multi-use",
+      "name": "Air Base Access Card (Multi Use)",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "An Iron Citadel-linked office-desk find was reported; no guaranteed spawn.",
+      "locations": [
+        {
+          "name": "Admin Complex No. 2 server room",
+          "grid": "B5"
+        }
+      ],
+      "steps": [
+        "Use the conversion terminal in Admin Complex No. 2’s server room."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "air-base-armory-card-single-use",
+      "name": "Air Base Armory Card (Single Use)",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "Convert the multi-use Air Base card at the Admin No. 2 terminal during Iron Citadel.",
+      "locations": [
+        {
+          "name": "Chang-san Air Base bunker",
+          "grid": "B5"
+        }
+      ],
+      "steps": [
+        "Follow the bunker tunnel to the armory access-card door."
+      ],
+      "requirements": [
+        "A run-specific bunker code is also reported; do not reuse a code from another match."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "air-base-drc-weapons-locker",
+      "name": "Air Base DRC Weapons Locker",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Chang-san Air Base bunker",
+          "grid": "B6"
+        }
+      ],
+      "steps": [
+        "The white locker is in the bunker warehouse beyond the armory."
+      ],
+      "requirements": [
+        "A run-specific bunker code is also reported; do not reuse a code from another match."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "bank-branch-vault-access",
+      "name": "Bank Branch Vault Access",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "Reported inside the same bank, including teller-counter finds.",
+      "locations": [
+        {
+          "name": "Cheongun Village bank branch",
+          "grid": "F4"
+        },
+        {
+          "name": "Songdo Wharf bank branch",
+          "grid": "I7"
+        },
+        {
+          "name": "South Hajin bank branch",
+          "grid": "F8"
+        },
+        {
+          "name": "NuriGO West bank branch",
+          "grid": "Unknown"
+        },
+        {
+          "name": "Wolves Stadium bank branches (two reported)",
+          "grid": "Unknown"
+        }
+      ],
+      "steps": [
+        "Power the bank reader, then use the access card and the run-specific code."
+      ],
+      "requirements": [
+        "The source reports powering the reader with a Car Battery and resolving the run-specific bank code."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "commandant-office",
+      "name": "Commandant Office",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Admin Complex No. 2, Chang-san Air Base",
+          "grid": "B5"
+        }
+      ],
+      "steps": [
+        "Find the Conference Room sign in Admin Complex No. 2."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "fire-station-storage",
+      "name": "Fire Station Storage",
+      "aliases": [],
+      "category": "unknown",
+      "acquisition": "The source has not established an acquisition route.",
+      "locations": [
+        {
+          "name": "Cheongun Village fire station",
+          "grid": "E4"
+        }
+      ],
+      "steps": [
+        "Use the storage door on the fire station’s upper landing."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "gangbyeon-apartment-a",
+      "name": "Gangbyeon Apartment A",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Compound Echo, Hajin River Heights",
+          "grid": "G7"
+        }
+      ],
+      "steps": [
+        "Use the named entrance at Apartment A in Compound Echo."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "gas-station-electrical-room",
+      "name": "Gas Station Electrical Room",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Construction Zone gas station",
+          "grid": "H7"
+        }
+      ],
+      "steps": [
+        "Look for the electrical room at the Construction Zone gas station."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "gorani-s-scout-overlook",
+      "name": "Gorani's Scout Overlook",
+      "aliases": [],
+      "category": "boss",
+      "acquisition": "Reported Gorani Lieutenant drop; not guaranteed.",
+      "locations": [
+        {
+          "name": "Rice Mill, Imjin Farmland",
+          "grid": "D8"
+        }
+      ],
+      "steps": [
+        "Find the named Gorani loot room near the Rice Mill."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "haejeok-radio-station",
+      "name": "Haejeok Radio Station",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Imjin Suburb radio mast",
+          "grid": "D6"
+        }
+      ],
+      "steps": [
+        "Find the radio station at the Imjin Suburb mast."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "hajin-art-center",
+      "name": "Hajin Art Center",
+      "aliases": [],
+      "category": "unknown",
+      "acquisition": "The source has not established an acquisition route.",
+      "locations": [
+        {
+          "name": "The Grid",
+          "grid": "G6"
+        }
+      ],
+      "steps": [
+        "Match the Art Center door against the key name."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "haksan-school-armory",
+      "name": "Haksan School Armory",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Haksan School, Deadtown",
+          "grid": "B7"
+        }
+      ],
+      "steps": [
+        "Find the named armory at Haksan School."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "hanex-guard-station",
+      "name": "Hanex Guard Station",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Hanex Bank tower, The Grid",
+          "grid": "G6"
+        }
+      ],
+      "steps": [
+        "Find the guard station at the Hanex Bank tower."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "hanwoori-art-records-room",
+      "name": "Hanwoori Art Records Room",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Hanwoori Design Complex, The Grid",
+          "grid": "G7"
+        }
+      ],
+      "steps": [
+        "Find the records room in Hanwoori Design Complex."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "hazard-storehouse",
+      "name": "Hazard Storehouse",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Haneul Nuclear Reactor",
+          "grid": "I5"
+        }
+      ],
+      "steps": [
+        "Look for the white storage shed near the reactor island’s southern SAM site."
+      ],
+      "requirements": [
+        "Radiation protection and combat preparation are needed for the reactor area."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "hoesik-supply-room",
+      "name": "Hoesik Supply Room",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Rice Mill, Imjin Farmland",
+          "grid": "D8"
+        }
+      ],
+      "steps": [
+        "Find the supply closet in the rice mill’s southern office building."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "hotel-lucera-lobby",
+      "name": "Hotel Lucera Lobby",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Hotel Lucera, next to the Hanex tower",
+          "grid": "H7"
+        }
+      ],
+      "steps": [
+        "Use Hotel Lucera’s glass street entrance."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "iskra-s-control-room",
+      "name": "Iskra's Control Room",
+      "aliases": [],
+      "category": "boss",
+      "acquisition": "Reported Iskra Lieutenant drop.",
+      "locations": [
+        {
+          "name": "Cheonwang Peak Array",
+          "grid": "F7"
+        }
+      ],
+      "steps": [
+        "Climb the broadcast building’s stairs to the wooden control-room door."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "jang-ui-s-converted-power-room",
+      "name": "Jang-ui's Converted Power Room",
+      "aliases": [],
+      "category": "boss",
+      "acquisition": "Reported Jang-ui Lieutenant drop.",
+      "locations": [
+        {
+          "name": "NuriGO Mall",
+          "grid": "H6"
+        }
+      ],
+      "steps": [
+        "Match the named converted power-room door at NuriGO Mall."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "jin-tae-s-private-lounge",
+      "name": "Jin-Tae's Private Lounge",
+      "aliases": [],
+      "category": "boss",
+      "acquisition": "Reported Jin-Tae Lieutenant drop.",
+      "locations": [
+        {
+          "name": "Heavenly Luck Casino penthouse",
+          "grid": "F4"
+        }
+      ],
+      "steps": [
+        "Find the casino penthouse lounge; its route may involve restoring power."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "kang-s-arms-incinerator",
+      "name": "Kang's Arms Incinerator",
+      "aliases": [],
+      "category": "unknown",
+      "acquisition": "A Warden drop is suggested by the source but remains unconfirmed.",
+      "locations": [
+        {
+          "name": "The Citadel, 14th Political Prison",
+          "grid": "B3"
+        }
+      ],
+      "steps": [
+        "Match the incinerator door in The Citadel."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "lucera-suite-703-bedroom",
+      "name": "Lucera Suite 703 Bedroom",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Hotel Lucera",
+          "grid": "H7"
+        }
+      ],
+      "steps": [
+        "Reach Suite 703 using the lobby lifts; only the bedroom is keyed."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "mechanic-s-shack",
+      "name": "Mechanic's Shack",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "One moving-train locker find was reported; not a fixed spawn.",
+      "locations": [
+        {
+          "name": "Cheongun Village",
+          "grid": "F5"
+        }
+      ],
+      "steps": [
+        "Find the named mechanic’s shack in Cheongun Village."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "militia-arms-depot",
+      "name": "Militia Arms Depot",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "A duffel-bag find in the Citadel East Wing was reported.",
+      "locations": [
+        {
+          "name": "Gangbyeon Apartment B, Hajin River Heights",
+          "grid": "G7"
+        }
+      ],
+      "steps": [
+        "Enter Gangbyeon Apartment B before finding the armory’s white door."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "mill-explosives-lab",
+      "name": "Mill Explosives Lab",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "A key was reported on a rice-mill control-room desk.",
+      "locations": [
+        {
+          "name": "Rice Mill, Imjin Farmland",
+          "grid": "D8"
+        }
+      ],
+      "steps": [
+        "DMZTracker.com places an unlocked door on the south side of the main mill’s top floor.",
+        "Another provider describes an underground lab route. The exact room identity and key requirement remain unresolved."
+      ],
+      "requirements": [
+        "One source reports the door was unlocked; do not treat carrying this key as a verified prerequisite."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        },
+        {
+          "url": "https://dmztracker.gg/guides/keys-guide/",
+          "label": "DMZTracker.gg · checked 2026-11-02",
+          "date": "2026-11-02"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "netshin-it-room",
+      "name": "Netshin IT Room",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "An apartment-locker find was reported; no fixed building established.",
+      "locations": [
+        {
+          "name": "Netshin Tech Complex, The Grid",
+          "grid": "G6"
+        }
+      ],
+      "steps": [
+        "Find the IT/server-room door in Netshin Tech Complex."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "police-weapon-depository",
+      "name": "Police Weapon Depository",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Wolves Stadium",
+          "grid": "G7"
+        }
+      ],
+      "steps": [
+        "Find the named depository at Wolves Stadium."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "prison-encampment-storage",
+      "name": "Prison Encampment Storage",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "14th Political Prison camp",
+          "grid": "C3"
+        }
+      ],
+      "steps": [
+        "Find the storage room in the prison encampment."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "rail-depot-storage",
+      "name": "Rail Depot Storage",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Cheongun Village train depot",
+          "grid": "E5"
+        }
+      ],
+      "steps": [
+        "Descend into the railway depot and follow the room to its far-end door."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "reactor-drc-locker",
+      "name": "Reactor DRC Locker",
+      "aliases": [],
+      "category": "story",
+      "acquisition": "Reported Operation Fallen Ember reward.",
+      "locations": [
+        {
+          "name": "Haneul Nuclear Reactor, Reactor 02",
+          "grid": "H4"
+        }
+      ],
+      "steps": [
+        "Enter damaged Reactor 02 and search the reported western-pool approach."
+      ],
+      "requirements": [
+        "Radiation protection and combat preparation are needed for the reactor area."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "rice-mill-bunker",
+      "name": "Rice Mill Bunker",
+      "aliases": [],
+      "category": "unknown",
+      "acquisition": "The source has not established an acquisition route.",
+      "locations": [
+        {
+          "name": "Rice Mill, Imjin Farmland",
+          "grid": "D8"
+        }
+      ],
+      "steps": [
+        "Use the concrete stairs beside the silos to the dark-green bunker door."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "south-block-armory",
+      "name": "South Block Armory",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "A counter find inside Citadel Main Control Room was reported, not guaranteed.",
+      "locations": [
+        {
+          "name": "The Citadel, 14th Political Prison",
+          "grid": "B3"
+        }
+      ],
+      "steps": [
+        "Use the nearby window to reach the South Block’s inner armory."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "supreme-leader-s-bunker-access-card",
+      "name": "Supreme Leader's Bunker Access Card",
+      "aliases": [],
+      "category": "story",
+      "acquisition": "Reported Operation Iron Citadel reward.",
+      "locations": [
+        {
+          "name": "Chang-san Air Base bunker, behind Admin Complex No. 2",
+          "grid": "B6"
+        }
+      ],
+      "steps": [
+        "Descend through Admin No. 2 stairwell 02 to the bunker blast door."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "the-chemist-s-secure-armory",
+      "name": "The Chemist's Secure Armory",
+      "aliases": [],
+      "category": "boss",
+      "acquisition": "Reported Chemist Lieutenant drop; field-loot reports also exist.",
+      "locations": [
+        {
+          "name": "Haneul Nuclear Reactor, northeast bunker",
+          "grid": "I4"
+        }
+      ],
+      "steps": [
+        "Use the right-hand bunker door near the reactor’s northeast boathouse."
+      ],
+      "requirements": [
+        "Radiation protection and combat preparation are needed for the reactor area."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "the-citadel-main-control-room",
+      "name": "The Citadel Main Control Room",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "A key is reported behind the East Wing terminal that takes four K9 Battery Cores.",
+      "locations": [
+        {
+          "name": "The Citadel, 14th Political Prison",
+          "grid": "B3"
+        }
+      ],
+      "steps": [
+        "Use the door beside the Officers Only sign."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "the-citadel-secondary-control-room",
+      "name": "The Citadel Secondary Control Room",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "A South Wing side-room find after operating the cell controls was reported.",
+      "locations": [
+        {
+          "name": "The Citadel, 14th Political Prison",
+          "grid": "B3"
+        }
+      ],
+      "steps": [
+        "Find the central Citadel security station and its camera controls."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "the-citadel-south-wing",
+      "name": "The Citadel South Wing",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "The Citadel, 14th Political Prison",
+          "grid": "B3"
+        }
+      ],
+      "steps": [
+        "Use the South Wing entrance into The Citadel’s cell block."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "the-doctor-s-command-office",
+      "name": "The Doctor's Command Office",
+      "aliases": [],
+      "category": "boss",
+      "acquisition": "Reported Doctor Lieutenant drop; not guaranteed.",
+      "locations": [
+        {
+          "name": "Mirae General Hospital, floor 7",
+          "grid": "F5"
+        }
+      ],
+      "steps": [
+        "Find the Doctor’s named office in Mirae General Hospital."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "underground-equipment-storage",
+      "name": "Underground Equipment Storage",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Field-loot reports include the Re-Education Center and moving train.",
+      "locations": [
+        {
+          "name": "Re-Education Center underground",
+          "grid": "B7"
+        }
+      ],
+      "steps": [
+        "Take the Re-Education Center stairs down, then follow the left-hand corridors."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "underground-propaganda-store-room",
+      "name": "Underground Propaganda Store Room",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Re-Education Center basement",
+          "grid": "B7"
+        }
+      ],
+      "steps": [
+        "Search the Re-Education Center’s underground cells for the blue-door area."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "utility-maintenance-storage",
+      "name": "Utility Maintenance Storage",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Haneul Nuclear Reactor transformer yard",
+          "grid": "H4"
+        }
+      ],
+      "steps": [
+        "Find the maintenance storage at the reactor transformer yard."
+      ],
+      "requirements": [
+        "Radiation protection and combat preparation are needed for the reactor area."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "weapons-mod-workshop",
+      "name": "Weapons Mod Workshop",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no fixed spawn established.",
+      "locations": [
+        {
+          "name": "Chang-san Air Base repair garage",
+          "grid": "B5"
+        }
+      ],
+      "steps": [
+        "Use the repair garage west of the base clinic."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker · key index",
+          "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
     }
   ]
 }

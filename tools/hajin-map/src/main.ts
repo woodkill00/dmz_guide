@@ -1,3 +1,4 @@
+import {keyGridFocus} from './map/key-grid-control.ts';
 import { parseToolTarget } from './tool-links.ts';
 import 'leaflet/dist/leaflet.css';
 import './styles.css';
@@ -106,8 +107,10 @@ keyBreakpoint.addEventListener('change', event => setKeyOpen(!event.matches));
 
 const status = document.querySelector<HTMLDivElement>('#map-status')!;
 let state: MapState = 'loading';
+let focusRequestedKeyGrid=()=>{};
 function updateState(next: MapState) {
   state = next;
+  if(next==='ready') focusRequestedKeyGrid();
   document.querySelector('#map')!.setAttribute('aria-busy', String(next === 'loading'));
   document.querySelectorAll<HTMLButtonElement>('[data-map-control]').forEach(button => { button.disabled = next !== 'ready'; });
   status.hidden = next === 'ready';
@@ -123,6 +126,7 @@ export const viewer = createMapView(document.querySelector<HTMLElement>('#map')!
   document.querySelector('#grid-position')!.textContent=grid??'—';
   document.querySelector('#position')!.textContent = x === null ? 'X —   Y —' : `X ${String(x).padStart(4, '0')}   Y ${String(y).padStart(4, '0')}`;
 }, zoom => { document.querySelector('#zoom-level')!.textContent = `ZOOM ${Math.round(100 * 2 ** (zoom - 4))}%`; });
+focusRequestedKeyGrid=keyGridFocus(viewer.map,viewer.coordinateGrid.supported,location.search);
 const gridToggle=document.querySelector<HTMLInputElement>('#show-coordinate-grid')!;
 gridToggle.checked=viewer.coordinateGrid.isVisible();gridToggle.disabled=!viewer.coordinateGrid.supported;
 gridToggle.addEventListener('change',()=>viewer.coordinateGrid.setVisible(gridToggle.checked));
