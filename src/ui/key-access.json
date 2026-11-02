@@ -1,0 +1,380 @@
+{
+  "version": 1,
+  "groups": [
+    {
+      "id": "14th-political-prison",
+      "name": "14th Political Prison"
+    },
+    {
+      "id": "chang-san-air-base",
+      "name": "Chang-san Air Base"
+    },
+    {
+      "id": "cheongun-village",
+      "name": "Cheongun Village"
+    },
+    {
+      "id": "deadtown",
+      "name": "Deadtown"
+    },
+    {
+      "id": "hajin-river-heights",
+      "name": "Hajin River Heights"
+    },
+    {
+      "id": "haneul-nuclear-reactor",
+      "name": "Haneul Nuclear Reactor"
+    },
+    {
+      "id": "hanrim-village",
+      "name": "Hanrim Village"
+    },
+    {
+      "id": "imjin-farmland",
+      "name": "Imjin Farmland"
+    },
+    {
+      "id": "mirae-general-hospital",
+      "name": "Mirae General Hospital"
+    },
+    {
+      "id": "nurigo-mall",
+      "name": "NuriGO Mall"
+    },
+    {
+      "id": "pynghwa-village",
+      "name": "Pynghwa Village"
+    },
+    {
+      "id": "revolution-dam",
+      "name": "Revolution Dam"
+    },
+    {
+      "id": "songdo-wharf",
+      "name": "Songdo Wharf"
+    },
+    {
+      "id": "the-grid",
+      "name": "The Grid"
+    },
+    {
+      "id": "wolves-stadium",
+      "name": "Wolves Stadium"
+    }
+  ],
+  "uses": [
+    {
+      "id": "mirae-electrical-room--mirae-general-hospital-f5",
+      "keyId": "mirae-electrical-room",
+      "locationName": "Mirae General Hospital",
+      "grid": "F5",
+      "groupId": "mirae-general-hospital",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "counting-room-vault--heavenly-luck-casino-cheongun-village-f4",
+      "keyId": "counting-room-vault",
+      "locationName": "Heavenly Luck Casino · Cheongun Village",
+      "grid": "F4",
+      "groupId": "cheongun-village",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "coin-mining-den--nurigo-mall-g6",
+      "keyId": "coin-mining-den",
+      "locationName": "NuriGO Mall",
+      "grid": "G6",
+      "groupId": "nurigo-mall",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "rozes-highrise-armory--netshin-tech-complex-the-grid-g6",
+      "keyId": "rozes-highrise-armory",
+      "locationName": "Netshin Tech Complex · The Grid",
+      "grid": "G6",
+      "groupId": "the-grid",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "gangbyeon-apartment-b--compound-echo-hajin-river-heights-g7",
+      "keyId": "gangbyeon-apartment-b",
+      "locationName": "Compound Echo · Hajin River Heights",
+      "grid": "G7",
+      "groupId": "hajin-river-heights",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "gun-store-weapons-locker--western-cheongun-village-f4",
+      "keyId": "gun-store-weapons-locker",
+      "locationName": "Western Cheongun Village",
+      "grid": "F4",
+      "groupId": "cheongun-village",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "gun-store-weapons-locker--northern-songdo-wharf-i7",
+      "keyId": "gun-store-weapons-locker",
+      "locationName": "Northern Songdo Wharf",
+      "grid": "I7",
+      "groupId": "songdo-wharf",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "blackmarket-weapons-locker--southern-deadtown-b7",
+      "keyId": "blackmarket-weapons-locker",
+      "locationName": "Southern Deadtown",
+      "grid": "B7",
+      "groupId": "deadtown",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "blackmarket-weapons-locker--hanrim-village-c2",
+      "keyId": "blackmarket-weapons-locker",
+      "locationName": "Hanrim Village",
+      "grid": "C2",
+      "groupId": "hanrim-village",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "vault-armory--heavenly-luck-casino-cheongun-village-f4",
+      "keyId": "vault-armory",
+      "locationName": "Heavenly Luck Casino · Cheongun Village",
+      "grid": "F4",
+      "groupId": "cheongun-village",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "field-depot--chang-san-air-base-b5",
+      "keyId": "field-depot",
+      "locationName": "Chang-san Air Base",
+      "grid": "B5",
+      "groupId": "chang-san-air-base",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "reactor-02-control-room--haneul-nuclear-reactor-h4",
+      "keyId": "reactor-02-control-room",
+      "locationName": "Haneul Nuclear Reactor",
+      "grid": "H4",
+      "groupId": "haneul-nuclear-reactor",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "shop-records-room--wolves-stadium-f7",
+      "keyId": "shop-records-room",
+      "locationName": "Wolves Stadium",
+      "grid": "F7",
+      "groupId": "wolves-stadium",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "old-barber-shop--southern-songdo-wharf-i7",
+      "keyId": "old-barber-shop",
+      "locationName": "Southern Songdo Wharf",
+      "grid": "I7",
+      "groupId": "songdo-wharf",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "shopping-drc-locker--nurigo-mall-drc-labs-h6",
+      "keyId": "shopping-drc-locker",
+      "locationName": "NuriGO Mall · DRC Labs",
+      "grid": "H6",
+      "groupId": "nurigo-mall",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "imjin-mill-foremans-office--imjin-firmland-rice-mill-d8",
+      "keyId": "imjin-mill-foremans-office",
+      "locationName": "Imjin Firmland · Rice Mill",
+      "grid": "D8",
+      "groupId": "imjin-farmland",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "executive-arms-auction--dbn-headquarters-the-grid-g6",
+      "keyId": "executive-arms-auction",
+      "locationName": "DBN Headquarters · The Grid",
+      "grid": "G6",
+      "groupId": "the-grid",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "re-education-center-annex--deadtown-b7",
+      "keyId": "re-education-center-annex",
+      "locationName": "Deadtown",
+      "grid": "B7",
+      "groupId": "deadtown",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "police-station-armory--western-cheongun-village-f4",
+      "keyId": "police-station-armory",
+      "locationName": "Western Cheongun Village",
+      "grid": "F4",
+      "groupId": "cheongun-village",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "police-station-armory--northern-nurigo-mall-h6",
+      "keyId": "police-station-armory",
+      "locationName": "Northern NuriGO Mall",
+      "grid": "H6",
+      "groupId": "nurigo-mall",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "police-station-armory--revolution-dam-d3",
+      "keyId": "police-station-armory",
+      "locationName": "Revolution Dam",
+      "grid": "D3",
+      "groupId": "revolution-dam",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "police-station-armory--southern-pynghwa-village-c5",
+      "keyId": "police-station-armory",
+      "locationName": "Southern Pynghwa Village",
+      "grid": "C5",
+      "groupId": "pynghwa-village",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "the-citadel-side-access--the-citadel-14th-political-prison-b-c3",
+      "keyId": "the-citadel-side-access",
+      "locationName": "The Citadel · 14th Political Prison",
+      "grid": "B–C3",
+      "groupId": "14th-political-prison",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "hospital-chemical-lab--mirae-general-hospital-f5",
+      "keyId": "hospital-chemical-lab",
+      "locationName": "Mirae General Hospital",
+      "grid": "F5",
+      "groupId": "mirae-general-hospital",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "hospital-chemical-lockers--mirae-general-hospital-f5",
+      "keyId": "hospital-chemical-lockers",
+      "locationName": "Mirae General Hospital",
+      "grid": "F5",
+      "groupId": "mirae-general-hospital",
+      "requiredUses": [],
+      "possibleUses": [
+        "hospital-chemical-lab--mirae-general-hospital-f5"
+      ],
+      "status": "unconfirmed-identity",
+      "sources": [
+        {
+          "url": "https://www.modern-warfare4.wiki/guide/mw4-dmz-irradiated-container",
+          "label": "MW4 Wiki · hospital lab and inner lockers",
+          "date": "2026-11-01"
+        },
+        {
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+          "label": "COD Central · Hospital Chemical Lockers",
+          "date": "2026-10-28"
+        }
+      ],
+      "note": "The wiki describes separately keyed lockers inside the lab. It does not identify the exact locker key; COD Central still marks the named locker door unconfirmed. This is a possible connection, not a confirmed required key."
+    }
+  ]
+}

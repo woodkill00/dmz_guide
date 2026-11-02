@@ -1,3 +1,4 @@
+import { allKeys } from "../../src/content/key-access.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -42,8 +43,8 @@ test("053 source snapshot contains eighteen unique keys, real heading anchors an
     ),
   );
   const pages = featurePages();
-  assert.equal(pages.length, 19);
-  assert.equal(new Set(pages.map((p) => p.path)).size, 19);
+  assert.equal(pages.length, allKeys.length + 1);
+  assert.equal(new Set(pages.map((p) => p.path)).size, allKeys.length + 1);
   for (const k of keyGuide.keys) {
     const html = pages.find((p) => p.path === `/keys/${k.id}/`).body;
     assert(html.includes(`#${k.sourceAnchor}`));

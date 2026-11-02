@@ -1,0 +1,18 @@
+# Acceptance and convergence — 055
+
+Manual pinned full-cycle feature extension,2026-11-02. Implemented /keys/ as15native collapsible location tables over20unique keys/25exactuse records. Multi-location keys repeat byuse; counts remain unique-key aware. Location/search/acquisition/reset filters hide emptygroups and search current destination, preserving icons/native/no-JS navigation. No map coordinates/markers or private progress are written.
+
+Exact-use graph supports source-reported requiredchains and direct reverse-required links, with strict ID/name/grid joins, complete usecoverage, source/status/cap checks, cycles/self/same-key/duplicate/dangling rejection. Unknown access says Not recorded. A possible identity link is direct-only and excluded from requiredchain traversal and reverse-required lists. Sources concern access, not automatic keyacquisition prerequisites.
+
+Two supplemental hospital records have independent sourceURLs/dates, generic authoredicons and no invented source screenshot. Existing18Game8facts and36imageassets remain unchanged. Research supports a lab door and separately keyed innerlockers, but does not bind the exact named HospitalChemicalLockers item to those lockers; CODCentral says its actualdoor is unknown. Optional owner-nameclarification remains unanswered. Therefore the candidate lab/locker link is explicitly unconfirmed-identity, not a required edge or assumed ownerconfirmation. No full-game catalog/confirmed route claim is made.
+
+Executed evidence:
+
+-22focused runtime tests PASS,0failed/skipped/cancelled:6new use-graph/supplemental/source/uncertainty tests plus16existing key/image/weapon-art checks. .local/keys055-runtime-final.log. Synthetic prerequisite edges are test-only, not persisted game facts. Prior full743-test receipt is historical; no new aggregate claim.
+-Postrepair Chromium/Firefox/WebKit strict health PASS: locationfilter, unique vsusecounts, F4search scoped tocurrentlocation, fourPoliceStation uses countedonce, possiblelinkexcludedfromrequiredchain/reverse list, genericiconload, all18originalicons/screenshots/source mappings, nativeimageclick, noJS/site-map/nav and64responsive/theme/200%-text cases perengine. .local/keys055-engines-final.log.
+-24accessibility scans over directory/lab/locker details,320/1440widths,light/dark,200%text; zero WCAG2A/AA/2.1AA violations. Axe-only CSP-bypass injection context; normal functional browser contexts enforce CSP. .local/keys055-axe-final.log, test-results/keys055-axe.json.
+-Static build851independent routes plus404. Repositorychecker0failures, formattingPASS, whitespacecheckclean. .local/keys055-build-frozen.log, keys055-check.log, keys055-format.log.
+-141current observed build-source hashes match finalreader/model/data/CSS: .local/keys055-tested-sources.json. Observed equivalence is not game verification or a signature.
+-Actual defaultgrouped table, filteredMirae table and uncertainlocker detail screenshots inspected: .local/keys055-directory.png, keys055-hospital-table.png, keys055-locker-detail.png. Groupborders useexisting --line token; inlineuncertaintyhelp given own line; singulararea/key labels corrected. .local/keys055-visual.log.
+
+Independent definition review prevented promoting a cross-source identity assumption into a mandatory requirement. possibleUses now remains separate and failclosed. Independent model/source review reran6graph tests and confirmed original18facts/media absent from diff. Finalverdict is reviewer-owned in checklists/requirements.md. No deployment/remote Git/publicassetrights or actualgameverification inferred. Future definiteedges require named evidence or explicit matching ownerreport provenance.

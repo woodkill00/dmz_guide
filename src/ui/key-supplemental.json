@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "checkedAt": "2026-11-02",
+  "keys": [
+    {
+      "id": "hospital-chemical-lab",
+      "name": "Hospital Chemical Lab",
+      "aliases": [
+        "Hospital Chemical Lab Key"
+      ],
+      "category": "local",
+      "acquisition": "Hospital searches include upper-floor offices; no guaranteed spawn is established.",
+      "locations": [
+        {
+          "name": "Mirae General Hospital",
+          "grid": "F5"
+        }
+      ],
+      "steps": [
+        "The source describes a Hospital Chemical Lab door with a matching key.",
+        "Inner chemical lockers have separate keys, but the exact locker-item identity remains unconfirmed."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://www.modern-warfare4.wiki/guide/mw4-dmz-irradiated-container",
+          "label": "MW4 Wiki \u00b7 hospital lab and inner lockers",
+          "date": "2026-11-01"
+        },
+        {
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+          "label": "COD Central \u00b7 Hospital Chemical Lockers",
+          "date": "2026-10-28"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "hospital-chemical-lockers",
+      "name": "Hospital Chemical Lockers",
+      "aliases": [
+        "Hospital Chemical Lockers Key"
+      ],
+      "category": "local",
+      "acquisition": "Reported on hospital lab desks and storeroom shelves; not a guaranteed spawn.",
+      "locations": [
+        {
+          "name": "Mirae General Hospital",
+          "grid": "F5"
+        }
+      ],
+      "steps": [
+        "Look for the matching named locker within Mirae General Hospital.",
+        "COD Central has not confirmed its exact door; this key did not open the lab entrance in its report."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://www.modern-warfare4.wiki/guide/mw4-dmz-irradiated-container",
+          "label": "MW4 Wiki \u00b7 hospital lab and inner lockers",
+          "date": "2026-11-01"
+        },
+        {
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+          "label": "COD Central \u00b7 Hospital Chemical Lockers",
+          "date": "2026-10-28"
+        }
+      ],
+      "status": "source-reported-unverified"
+    }
+  ]
+}

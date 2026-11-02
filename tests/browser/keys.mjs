@@ -1,3 +1,4 @@
+import { allKeys, keyAccess } from "../../src/content/key-access.mjs";
 import assert from "node:assert/strict";
 import { keyGuide, keyImages } from "../../src/content/keys.mjs";
 export async function runKeysTests({ browser, base, localImages = false }) {
@@ -6,8 +7,14 @@ export async function runKeysTests({ browser, base, localImages = false }) {
   try {
     await page.goto(base + "/keys/");
     await page.locator("#key-filters:not([hidden])").waitFor();
-    assert.equal(await page.locator("[data-key-row]:visible").count(), 18);
-    assert.equal(await page.locator(".key-item-link img").count(), 18);
+    assert.equal(
+      await page.locator("[data-key-row]:visible").count(),
+      keyAccess.uses.length,
+    );
+    assert.equal(
+      await page.locator(".key-item-link img").count(),
+      keyAccess.uses.length,
+    );
     assert.equal(
       await page
         .locator(".key-item-link")
@@ -16,7 +23,9 @@ export async function runKeysTests({ browser, base, localImages = false }) {
       "flex",
     );
     for (const key of keyGuide.keys) {
-      const link = page.getByRole("link", { name: key.name, exact: true });
+      const link = page
+        .locator(`.key-item-link[href="/keys/${key.id}/"]`)
+        .first();
       assert.equal(await link.locator("img").getAttribute("alt"), "");
       assert.equal(
         await link.locator("img").getAttribute("src"),
@@ -34,9 +43,17 @@ export async function runKeysTests({ browser, base, localImages = false }) {
             ),
       );
     }
+    const firstTarget = await page
+      .locator(".key-item-link")
+      .first()
+      .getAttribute("href");
     await page.locator(".key-item-link img").first().click();
     assert(await page.locator("h1").innerText());
-    assert(page.url().includes("/keys/blackmarket-weapons-locker/"));
+    assert(page.url().endsWith(firstTarget));
+    assert.equal(
+      await page.locator("h1").innerText(),
+      allKeys.find((k) => firstTarget === `/keys/${k.id}/`).name,
+    );
     await page.goto(base + "/keys/");
     await page.locator("#key-filters:not([hidden])").waitFor();
 
@@ -48,7 +65,47 @@ export async function runKeysTests({ browser, base, localImages = false }) {
     await page.locator("#key-search").fill("no matching synthetic term");
     assert(await page.locator("#key-empty").isVisible());
     await page.getByRole("button", { name: "Clear filters" }).click();
-    assert.equal(await page.locator("[data-key-row]:visible").count(), 18);
+    assert.equal(
+      await page.locator("[data-key-row]:visible").count(),
+      keyAccess.uses.length,
+    );
+    assert.equal(await page.locator("[data-key-group]").count(), 15);
+    await page.locator("#key-location").selectOption("mirae-general-hospital");
+    assert.equal(await page.locator("[data-key-row]:visible").count(), 3);
+    assert.equal(await page.locator("[data-key-group]:visible").count(), 1);
+    assert.match(await page.locator("#key-count").innerText(), /3 of 20 keys/);
+    await page.locator("#key-location").selectOption("");
+    await page.locator("#key-search").fill("Police");
+    assert.equal(await page.locator("[data-key-row]:visible").count(), 4);
+    assert.match(await page.locator("#key-count").innerText(), /1 of 20 keys/);
+    await page.locator("#key-search").fill("F4");
+    assert.equal(await page.locator("[data-key-row]:visible").count(), 4);
+    assert.equal(await page.locator("[data-key-group]:visible").count(), 1);
+    await page.getByRole("button", { name: "Clear filters" }).click();
+    await page
+      .locator('.key-item-link[href="/keys/hospital-chemical-lockers/"]')
+      .click();
+    assert.match(
+      await page.locator(".key-access-use").innerText(),
+      /Possible access key[\s\S]*identity unconfirmed/,
+    );
+    assert.equal(await page.locator(".key-access-chain").count(), 0);
+    await page
+      .locator('.key-access-link[href="/keys/hospital-chemical-lab/"]')
+      .click();
+    assert.equal(await page.locator("h1").innerText(), "Hospital Chemical Lab");
+    assert.equal(
+      await page
+        .getByRole("heading", { name: "This key is needed to reach" })
+        .count(),
+      0,
+    );
+    const generic = await context.request.get(
+      base + "/assets/src/key-generic.svg",
+    );
+    assert.equal(generic.status(), 200);
+    await page.goto(base + "/keys/");
+    await page.locator("#key-filters:not([hidden])").waitFor();
     await page.locator("#key-search").fill("12 battery");
     assert.equal(await page.locator("[data-key-row]:visible").count(), 1);
     await page
@@ -91,6 +148,7 @@ export async function runKeysTests({ browser, base, localImages = false }) {
       "/keys/",
       "/keys/shopping-drc-locker/",
       "/keys/police-station-armory/",
+      "/keys/hospital-chemical-lockers/",
     ]) {
       await page.goto(base + path);
       assert.equal(
@@ -137,7 +195,10 @@ export async function runKeysTests({ browser, base, localImages = false }) {
       plain = await noJS.newPage();
     try {
       await plain.goto(base + "/keys/");
-      assert.equal(await plain.locator("[data-key-row]").count(), 18);
+      assert.equal(
+        await plain.locator("[data-key-row]").count(),
+        keyAccess.uses.length,
+      );
       await plain
         .getByRole("link", { name: "Mirae Electrical Room", exact: true })
         .click();
@@ -149,7 +210,7 @@ export async function runKeysTests({ browser, base, localImages = false }) {
       await noJS.close();
     }
     console.log(
-      "053 keys PASS: 18 source/detail/image mappings, search/type/reset/empty, navigation/no-JS, GET/HEAD/POST and 48 layouts",
+      "053 keys PASS: 18 source/detail/image mappings, search/type/reset/empty, navigation/no-JS, GET/HEAD/POST and 64 layouts; 055 grouped25uses/20unique/filter/possible-chain safety",
     );
   } finally {
     await context.close();
