@@ -188,7 +188,22 @@ export async function runKeysTests({ browser, base, localImages = false }) {
           }
     }
     await page.goto(base + "/sitemap/");
-    assert.equal(await page.locator('a[href="/keys/"]').count(), 2);
+    assert.equal(await page.locator('a[href="/keys/"]').count(), 3);
+    assert.equal(await page.locator('.site-nav a[href="/keys/"]').count(), 1);
+    assert.equal(
+      await page.locator('a[data-workspace-link][href="/keys/"]').count(),
+      1,
+    );
+    const completeDirectory = page.locator("section.panel").filter({
+      has: page.getByRole("heading", {
+        name: "Complete generated route directory",
+        exact: true,
+      }),
+    });
+    assert.equal(
+      await completeDirectory.locator('a[href="/keys/"]').count(),
+      1,
+    );
     const head = await context.request.head(
       base + "/local-key-images/mirae-electrical-room.webp",
     );

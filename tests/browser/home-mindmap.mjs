@@ -29,14 +29,14 @@ try {
       );
       assert.equal(await p.locator("#mindmap-lines path").count(), 6);
       const prepare = () =>
-        p.getByRole("button", { name: "Expand Prepare", exact: false });
+        p.getByRole("button", { name: "Expand DMZ Guide", exact: false });
       await prepare().focus();
       await p.keyboard.press("Enter");
       await p.waitForFunction(
         () =>
           document.activeElement
             ?.getAttribute("aria-label")
-            ?.split(" · ")[0] === "Collapse Prepare",
+            ?.split(" · ")[0] === "Collapse DMZ Guide",
       );
       await p.keyboard.press("Tab");
       assert.equal(await p.evaluate(() => document.activeElement.tagName), "A");
@@ -44,7 +44,7 @@ try {
         await p.evaluate(
           () => document.activeElement.closest("[data-note]")?.dataset.note,
         ),
-        "route:/armory/workbench/",
+        "route:/keys/",
       );
       const keys = notes.locator('[data-note="route:/keys/"] a');
       await keys.focus();
@@ -161,7 +161,7 @@ try {
       assert(
         Number(
           (await p.locator("#mindmap-zoom").textContent()).replace("%", ""),
-        ) >= 50,
+        ) >= 25,
       );
       await p.locator("#mindmap-home").click();
       await p.setViewportSize({ width: 800, height: 900 });
@@ -227,7 +227,7 @@ try {
       await p.goto(server.base + "/sitemap/");
       await p.locator("#home-mindmap-app:not([hidden])").waitFor();
       await p
-        .getByRole("button", { name: "Expand Prepare", exact: false })
+        .getByRole("button", { name: "Expand DMZ Guide", exact: false })
         .click();
       for (const [width, zoom] of [
         [1440, false],

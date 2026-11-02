@@ -453,6 +453,9 @@ export async function init(
           [
             "/",
             "/missions/",
+            "/dmz-guide/",
+            "/dmz-fob/",
+            "/dmz-weapons/",
             "/features/",
             "/search/",
             "/keys/",

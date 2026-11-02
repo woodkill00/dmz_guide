@@ -27,7 +27,20 @@ test("061 every existing page/tool occurs once under Home with an acyclic parent
     }
   }
   assert.equal(tree.sourceCount, topology.nodes.length);
-  assert.equal(tree.nodes.get("route:/keys/").parent, "branch:prepare");
+  assert.equal(tree.nodes.get("route:/keys/").parent, "route:/dmz-guide/");
+  assert.equal(tree.nodes.get("route:/upgrades/").parent, "route:/dmz-fob/");
+  assert.equal(tree.nodes.get("route:/armory/").parent, "route:/dmz-weapons/");
+  assert.deepEqual(
+    tree.nodes.get(tree.root).children.map((id) => tree.nodes.get(id).label),
+    [
+      "Map",
+      "DMZ Guide",
+      "DMZ FOB",
+      "DMZ Weapons",
+      "Tools & settings",
+      "Source websites",
+    ],
+  );
   assert.equal(
     tree.nodes.get("feature:tool-icons").parent,
     "feature:hajin-map",
@@ -51,7 +64,7 @@ test("061 contribution instructions nest beneath the originating record, longest
 });
 test("061 branch paging and mounted-note cap retain full data and refuse oversized views without mutation", () => {
   const tree = buildHomeHierarchy(topology),
-    open = new Set([tree.root, "branch:prepare", "route:/keys/"]),
+    open = new Set([tree.root, "route:/dmz-guide/", "route:/keys/"]),
     view = visibleHomeHierarchy(tree, open);
   assert(
     view.rows.some((n) => n.kind === "more" && n.owner === "route:/keys/"),

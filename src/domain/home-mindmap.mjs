@@ -1,11 +1,3 @@
-const branches = ["Map", "Prepare", "Track", "Reference", "Manage"];
-const landing = {
-  Map: "http://127.0.0.1:5175/",
-  Prepare: "/planner/",
-  Track: "/missions/",
-  Reference: "/catalog/",
-  Manage: "/settings/",
-};
 export function buildHomeHierarchy(topology) {
   const nodes = new Map(
       topology.nodes.map((n) => [n.id, { ...n, children: [], parent: null }]),
@@ -18,23 +10,40 @@ export function buildHomeHierarchy(topology) {
     if (nodes.has(n.id)) throw Error("Duplicate hierarchy identity");
     nodes.set(n.id, { children: [], parent: null, ...n });
   };
-  for (const group of branches)
-    add({
-      id: "branch:" + group.toLowerCase(),
-      label: group,
-      href: landing[group],
-      kind: "branch",
-      group,
-      service: "Navigation branch",
-      family: "Branch",
-    });
   const parent = (id, p) => {
     if (!nodes.has(p) || id === p) throw Error("Invalid hierarchy parent");
     nodes.get(id).parent = p;
   };
-  for (const group of branches)
-    parent("branch:" + group.toLowerCase(), root.id);
-  const map = nodes.get("feature:hajin-map");
+  const pathOwner = (path) =>
+    [...nodes.values()].find((n) => n.href === path && n.service === "Guide");
+  const map = nodes.get("feature:hajin-map"),
+    guide = pathOwner("/dmz-guide/"),
+    fob = pathOwner("/dmz-fob/"),
+    weapons = pathOwner("/dmz-weapons/"),
+    tools = pathOwner("/settings/");
+  if (!map || !guide || !fob || !weapons || !tools)
+    throw Error(
+      "Main hubs are missing. Rebuild the guide before opening its mindmap.",
+    );
+  map.label = "Map";
+  tools.label = "Tools & settings";
+  const main = [map.id, guide.id, fob.id, weapons.id, tools.id];
+  const fobPaths = new Set([
+    "/upgrades/",
+    "/inventory/",
+    "/items/",
+    "/recipes/",
+    "/planner/",
+    "/collection/",
+  ]);
+  const guidePaths = new Set([
+    "/catalog/",
+    "/keys/",
+    "/missions/",
+    "/progression/",
+    "/guides/",
+    "/local/",
+  ]);
   const workspaces = topology.nodes
     .filter(
       (n) => n.kind === "workspace" && n.href.startsWith("/") && n.href !== "/",
@@ -70,19 +79,27 @@ export function buildHomeHierarchy(topology) {
   for (const original of topology.nodes) {
     if (original.id === root.id) continue;
     let p;
-    if (original.service === "Map" && map && original.id !== map.id) p = map.id;
+    if (main.includes(original.id)) p = root.id;
+    else if (
+      original.service === "Map" ||
+      ["/maps/", "/map-workspace/"].includes(original.href)
+    )
+      p = map.id;
     else if (
       original.kind === "workspace" ||
       original.kind === "companion" ||
       original.kind === "runtime"
-    )
-      p =
-        "branch:" +
-        (branches.includes(original.group)
-          ? original.group
-          : "Manage"
-        ).toLowerCase();
-    else if (original.kind === "authoring")
+    ) {
+      if (
+        original.href.startsWith("/armory/") ||
+        original.href === "/weapons/" ||
+        original.service === "Weapon manager"
+      )
+        p = weapons.id;
+      else if (fobPaths.has(original.href)) p = fob.id;
+      else if (guidePaths.has(original.href)) p = guide.id;
+      else p = tools.id;
+    } else if (original.kind === "authoring")
       p = authorOwners.get(original.id) || ownerByPath.get("/community/");
     else
       p =
@@ -92,7 +109,7 @@ export function buildHomeHierarchy(topology) {
         )?.id ||
         ownerByPath.get(fallback[original.family]) ||
         ownerByPath.get("/sitemap/");
-    parent(original.id, p || "branch:reference");
+    parent(original.id, p || guide.id);
   }
   const websites = new Map();
   for (const source of topology.externals || []) {
@@ -159,6 +176,8 @@ export function buildHomeHierarchy(topology) {
           nodes.get(a).label.localeCompare(nodes.get(b).label) ||
           a.localeCompare(b),
       );
+  const rootOrder = [...main, "branch:websites"];
+  root.children.sort((a, b) => rootOrder.indexOf(a) - rootOrder.indexOf(b));
   return {
     root: root.id,
     nodes,
@@ -278,5 +297,30 @@ export function layoutHomeHierarchy(visible, unit = 1) {
     positions,
     width: Math.max(...[...positions.values()].map((p) => p.x + w)) + margin,
     height: Math.max(...[...positions.values()].map((p) => p.y + h)) + margin,
+  };
+}
+
+export const mindmapZoomLimits = Object.freeze({ min: 0.25, max: 2 });
+export function clampMindmapZoom(value) {
+  if (!Number.isFinite(value)) return 1;
+  return Math.max(
+    mindmapZoomLimits.min,
+    Math.min(mindmapZoomLimits.max, value),
+  );
+}
+export function wheelMindmapZoom(scale, delta, mode = 0, pageHeight = 800) {
+  if (
+    ![scale, delta, mode, pageHeight].every(Number.isFinite) ||
+    pageHeight <= 0
+  )
+    return clampMindmapZoom(scale);
+  const pixels = delta * (mode === 1 ? 16 : mode === 2 ? pageHeight : 1),
+    bounded = Math.max(-240, Math.min(240, pixels));
+  return clampMindmapZoom(scale * Math.exp(-bounded * 0.002));
+}
+export function anchoredMindmapScroll(left, top, x, y, from, to) {
+  return {
+    left: ((left + x) / from) * to - x,
+    top: ((top + y) / from) * to - y,
   };
 }

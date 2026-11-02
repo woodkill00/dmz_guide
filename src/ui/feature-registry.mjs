@@ -1,6 +1,27 @@
 import destinations from "./map-destinations.json" with { type: "json" };
 export const featureGroups = ["Map", "Prepare", "Track", "Reference", "Manage"];
 const rows = [
+  [
+    "dmz-guide",
+    "DMZ Guide",
+    "Reference",
+    "/dmz-guide/",
+    "Missions, keys and field reference",
+  ],
+  [
+    "dmz-fob",
+    "DMZ FOB",
+    "Prepare",
+    "/dmz-fob/",
+    "Upgrades, inventory, crafting and preparation",
+  ],
+  [
+    "dmz-weapons",
+    "DMZ Weapons",
+    "Reference",
+    "/dmz-weapons/",
+    "Weapons, attachments and loadout tools",
+  ],
   ["home", "Home", "Prepare", "/", "Your field desk and recent work"],
   ["hajin-map", "Interactive map", "Map", "/", "Explore Hajin", "map"],
   ["maps", "Maps", "Map", "/maps/", "Native map and location list"],

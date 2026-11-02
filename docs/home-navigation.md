@@ -6,7 +6,7 @@ Open [Home](http://127.0.0.1:4173/) for your field desk. The guide remains local
 
 The main navigation is Home, Map, Prepare, Track, Reference and Manage. Search opens the unified public index. More groups every remaining destination by task and offers a menu filter; All features is the full searchable directory. Native links and disclosure menus work without JavaScript. Escape closes an open menu and restores focus; outside clicks/focus also dismiss it. Breadcrumbs identify the workspace and detail page.
 
-There are73 registered destinations, including every prior map tool. Map tools open the companion explicitly. Within the map, plain tool-menu clicks and the workflow toolbar open the existing tool without reloading; modified clicks retain normal browser behavior. Existing dirty-draft guards still control departure/tool changes.
+There are76 registered destinations, including every prior map tool. Map tools open the companion explicitly. Within the map, plain tool-menu clicks and the workflow toolbar open the existing tool without reloading; modified clicks retain normal browser behavior. Existing dirty-draft guards still control departure/tool changes.
 
 ## Your home dashboard
 
@@ -42,3 +42,5 @@ The map toolbar exposes Search, Layers, Routes and Trackers. Advanced retains so
 - `npm test`, `npm run map:test`, `npm run build`, `npm run map:build` and repository checks cover the remaining boundaries.
 
 Feature058 specifications, independent review and exact executed receipts are under `specs/058-home-navigation-workflows/`.
+
+Home prominently links Map, [DMZ Guide](http://127.0.0.1:4173/dmz-guide/), [DMZ FOB](http://127.0.0.1:4173/dmz-fob/) and [DMZ Weapons](http://127.0.0.1:4173/dmz-weapons/). They are also in the shared feature directory/menu. FOB has an Upgrades section linking the original tracker; these public hubs do not initialize private progress. The mindmap follows the same main hubs, with pointer-anchored wheel zoom25–200%; task categories in the shared menu remain available.

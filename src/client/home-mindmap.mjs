@@ -3,6 +3,10 @@ import {
   searchHomeHierarchy,
   visibleHomeHierarchy,
   layoutHomeHierarchy,
+  mindmapZoomLimits,
+  clampMindmapZoom,
+  wheelMindmapZoom,
+  anchoredMindmapScroll,
 } from "../domain/home-mindmap.mjs";
 const make = (tag, text, cls) => {
   const n = document.createElement(tag);
@@ -227,17 +231,55 @@ export function mountHomeMindmap(topology) {
     stage.style.width = Math.ceil(layout.width * scale) + "px";
     stage.style.height = Math.ceil(layout.height * scale) + "px";
     $("#mindmap-zoom").textContent = Math.round(scale * 100) + "%";
-    $("#mindmap-zoom-out").disabled = scale <= 0.5;
-    $("#mindmap-zoom-in").disabled = scale >= 1.5;
+    $("#mindmap-zoom-out").disabled = scale <= mindmapZoomLimits.min;
+    $("#mindmap-zoom-in").disabled = scale >= mindmapZoomLimits.max;
   }
-  function zoom(next) {
-    const x = (viewport.scrollLeft + viewport.clientWidth / 2) / scale,
-      y = (viewport.scrollTop + viewport.clientHeight / 2) / scale;
-    scale = Math.max(0.5, Math.min(1.5, next));
+  function zoom(next, point = null) {
+    const x = point?.x ?? viewport.clientWidth / 2,
+      y = point?.y ?? viewport.clientHeight / 2;
+    const target = clampMindmapZoom(next),
+      scroll = anchoredMindmapScroll(
+        viewport.scrollLeft,
+        viewport.scrollTop,
+        x,
+        y,
+        scale,
+        target,
+      );
+    scale = target;
     applyScale();
-    viewport.scrollLeft = x * scale - viewport.clientWidth / 2;
-    viewport.scrollTop = y * scale - viewport.clientHeight / 2;
+    viewport.scrollLeft = scroll.left;
+    viewport.scrollTop = scroll.top;
   }
+  viewport.addEventListener(
+    "wheel",
+    (event) => {
+      if (
+        outlineMode ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        !event.deltaY ||
+        Math.abs(event.deltaX) > Math.abs(event.deltaY)
+      )
+        return;
+      event.preventDefault();
+      const rect = viewport.getBoundingClientRect();
+      zoom(
+        wheelMindmapZoom(
+          scale,
+          event.deltaY,
+          event.deltaMode,
+          viewport.clientHeight,
+        ),
+        {
+          x: event.clientX - rect.left - viewport.clientLeft,
+          y: event.clientY - rect.top - viewport.clientTop,
+        },
+      );
+    },
+    { passive: false },
+  );
   function centerHome() {
     const p = layout.positions.get(tree.root);
     viewport.scrollLeft = Math.max(0, p.x * scale - 24);

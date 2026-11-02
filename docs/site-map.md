@@ -6,11 +6,11 @@ The complete directory includes the guide workspaces, bundled record details, ke
 
 ## Read the Home hierarchy
 
-The primary view is now a connected note canvas rooted at **Home**. Follow Map, Prepare, Track, Reference and Manage to their workspaces, then expand record pages and related edit instructions. Upgrade records nest under Upgrades; DMZ Orders/story records under Missions; other progression stays under Progress. Companion tools nest under the separate interactive map. Source websites have a separate reference branch. Fictional records are explicitly labeled.
+The primary view is now a connected note canvas rooted at **Home**. Follow **Map**, **DMZ Guide**, **DMZ FOB**, **DMZ Weapons** and **Tools & settings**, then expand their pages and related edit instructions. The three DMZ hubs are real landing pages linked prominently from Home. FOB has an Upgrades section and links to inventory, materials, crafting and planning; the original upgrade tracker and saved progress remain at `/upgrades/`. DMZ Guide groups missions, keys and field reference. DMZ Weapons groups the armory, attachments, workbench and update tools. Companion tools nest under the separate interactive map. Source websites have a separate reference branch. Fictional records are explicitly labeled.
 
 - Click a note’s **title** to open its exact page immediately. Companion/source links show ↗ and open a new tab. Standard keyboard, Ctrl/Command-click and context-menu link behavior are retained.
 - Click the separate **+/− child control** to expand/collapse; it does not navigate. Large branches show25children at a time with an explicit More note. Every page remains in the full hierarchy; expansion is limited to250mounted notes and refuses excess visibly instead of dropping data.
-- Drag empty canvas to pan, or use normal scrolling. Zoom, Fit view and Home view adjust display only; no private records or preferences are saved.
+- Use the **mouse wheel** over the canvas to zoom around the pointer (up=in, down=out), from25%to200%. Drag empty canvas to pan; Shift+wheel or a horizontal wheel keeps native panning. Ctrl/Command+wheel keeps browser zoom. Wheel outside the canvas, including Outline view, scrolls normally. Zoom buttons and Fit view share the same limits. Pointer anchoring is naturally clamped at canvas edges. Display adjustments stay in memory; saved progress is untouched.
 - Search page titles/URLs and source domains. Results include their ancestor path from Home, with40matches per page. Clear search to expand branches normally.
 - **Outline view** provides the same visible hierarchy as native linked lists, including keyboard expansion and full enlarged text. Only the active representation mounts notes; logical focus survives expansion and resize.
 - **Detailed connection audit** below the canvas retains the original searchable graph inspector, incoming/outgoing page links, shared menus, directory membership, static sections/controls, JSON download and runtime report. Its connections are distinct from the primary browsing hierarchy: one structural parent does not mean it is the page’s only incoming link or that separate services synchronize data.
@@ -20,12 +20,12 @@ The primary view is now a connected note canvas rooted at **Home**. Follow Map, 
 
 | Area | Main connected workspaces |
 |---|---|
-| Home | Search, pinned/recent workspaces, grouped tools and read-only progress summaries |
-| Prepare | Planner, inventory, collection needs, upgrades, recipes, keys and armory workbench |
-| Track | Missions, progression and companion mission/boss/session trackers |
-| Reference | Catalog, items, weapons, attachments, guides and private reader entry |
-| Map | Native location list and the separate Hajin map’s sources, layers, points, icons, routes and field tools |
-| Manage | Settings/backups, private editor, repository Studio, source review, weapon update tools and site map |
+| Home | Map, DMZ Guide, DMZ FOB, DMZ Weapons, Tools & settings and source websites |
+| Map | Separate Hajin map, native location list, source layers, routes and field tools |
+| DMZ Guide | Missions, keys, progression, catalog, guides and private reader entry |
+| DMZ FOB | Upgrades, inventory, items, collection needs, recipes and planner |
+| DMZ Weapons | Weapon database/reference, attachments, workbench and update tools |
+| Tools & settings | Backups, private editor, Studio, search, feature directory and site audits |
 
 These are navigation/workflow connections. They do not imply automatic private-data synchronization across services. The actual page-by-page connections are generated from rendered links and can be inspected in the mindmap.
 
@@ -48,3 +48,5 @@ Run `npm run test:sitemap` for the three-engine interactive/no-JS/navigation reg
 The snapshot is a bounded review tool. Builds refuse oversized graph admission rather than silently omitting pages. Current limits and exact acceptance evidence are in `specs/059-site-topology/`.
 
 The primary Home hierarchy tests run with `node tests/browser/home-mindmap.mjs` (three engines, native link navigation, keyboard/resize focus, paging/search, pan/zoom,24layouts and27axe scans including outline). `npm run test:sitemap` retains the prior detailed-audit/navigation regression; it opens the audit disclosure before inspecting those controls.
+
+Wheel and new hub checks run with `node tests/browser/wheel-hubs.mjs`: real wheel/anchor/range/default gestures, Home→FOB→Upgrades catalog context, no database reads on static hubs, and36page/layout/theme accessibility scans across three engines.
