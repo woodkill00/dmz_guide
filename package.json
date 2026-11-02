@@ -31,6 +31,7 @@
     "weapons:validate": "node scripts/weapon-database.mjs validate",
     "test:weapons": "node scripts/weapon-database.mjs test",
     "weapons:manage": "node scripts/weapon-manager.mjs",
+    "keys:images": "node scripts/collect-key-images.mjs",
     "weapons:art": "node scripts/collect-weapon-art.mjs",
     "weapons:source-check": "node scripts/codmunity.mjs check",
     "weapons:source-status": "node scripts/codmunity.mjs status"

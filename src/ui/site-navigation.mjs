@@ -40,6 +40,7 @@ export function renderMainNavigation({
     ["/armory/workbench/", "Armory workbench", "armory-workbench"],
     ["/armory/updates/", "Weapon updates", "weapon-updates"],
     ["/recipes/", "Recipes", "recipes"],
+    ["/keys/", "Keys", "keys"],
     ["/guides/", "Guides", "guides"],
     ...extra
       .filter((p) => p.page !== "upgrades")

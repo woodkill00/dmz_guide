@@ -1,0 +1,389 @@
+{
+  "version": 1,
+  "sourceURL": "https://game8.co/games/Call-of-Duty-Modern-Warfare-4/archives/634455",
+  "sourceName": "Game8 · MW4 Walkthrough Team",
+  "sourceDate": "2026-10-28",
+  "checkedAt": "2026-11-02",
+  "status": "source-reported-unverified",
+  "keys": [
+    {
+      "id": "mirae-electrical-room",
+      "name": "Mirae Electrical Room",
+      "aliases": [],
+      "category": "story",
+      "acquisition": "Story reward: Operation Critical Extraction.",
+      "locations": [
+        {
+          "name": "Mirae General Hospital",
+          "grid": "F5"
+        }
+      ],
+      "steps": [
+        "Use the northwest hospital parking entrance; turn left and descend to the basement.",
+        "Unlock the single door beside the purple wall marked Danger."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_2"
+    },
+    {
+      "id": "counting-room-vault",
+      "name": "Counting Room Vault",
+      "aliases": [],
+      "category": "story",
+      "acquisition": "Story reward: Operation Silent Ledger.",
+      "locations": [
+        {
+          "name": "Heavenly Luck Casino · Cheongun Village",
+          "grid": "F4"
+        }
+      ],
+      "steps": [
+        "Enter the casino front entrance; take the right corridor.",
+        "Turn left, then unlock the door at the far end."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_3"
+    },
+    {
+      "id": "coin-mining-den",
+      "name": "Coin Mining Den",
+      "aliases": [
+        "Coin Mining Den Key"
+      ],
+      "category": "story",
+      "acquisition": "Story reward: Operation Shopping Hacks.",
+      "locations": [
+        {
+          "name": "NuriGO Mall",
+          "grid": "G6"
+        }
+      ],
+      "steps": [
+        "Find the apartment north of The Grid, east of the western gas station.",
+        "Go to floor 3; use the right-hand door."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_4"
+    },
+    {
+      "id": "rozes-highrise-armory",
+      "name": "Roze's Highrise Armory",
+      "aliases": [],
+      "category": "story",
+      "acquisition": "Story reward: Operation Grid Assault.",
+      "locations": [
+        {
+          "name": "Netshin Tech Complex · The Grid",
+          "grid": "G6"
+        }
+      ],
+      "steps": [
+        "Use Netshin’s rear entrance, stairs and fire exit.",
+        "On floor 14, turn right to the OFFICE glass door."
+      ],
+      "requirements": [
+        "Critical threat area: armored enemies."
+      ],
+      "sourceAnchor": "hm_5"
+    },
+    {
+      "id": "gangbyeon-apartment-b",
+      "name": "Gangbyeon Apartment B",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "Random spawn inside Gangbyeon Apartment A, Compound Echo.",
+      "locations": [
+        {
+          "name": "Compound Echo · Hajin River Heights",
+          "grid": "G7"
+        }
+      ],
+      "steps": [
+        "Search Apartment A, beside Apartment B, for a random desk or shelf key spawn.",
+        "Climb the exterior pipes into A’s window; if needed, use the LTV from B’s basement garage as a platform.",
+        "Use the key at Apartment B."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_6"
+    },
+    {
+      "id": "gun-store-weapons-locker",
+      "name": "Gun Store Weapons Locker",
+      "aliases": [],
+      "category": "level",
+      "acquisition": "Explosives Equipment Kit at levels 16 and 19; Trap Equipment Kit at level 42.",
+      "locations": [
+        {
+          "name": "Western Cheongun Village",
+          "grid": "F4"
+        },
+        {
+          "name": "Northern Songdo Wharf",
+          "grid": "I7"
+        }
+      ],
+      "steps": [
+        "Unlock a weapons locker inside either listed gun store."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_7"
+    },
+    {
+      "id": "blackmarket-weapons-locker",
+      "name": "Blackmarket Weapons Locker",
+      "aliases": [
+        "Blackmarket Weapons Locker Key"
+      ],
+      "category": "level",
+      "acquisition": "Recon Equipment Kit at levels 19 and 46.",
+      "locations": [
+        {
+          "name": "Southern Deadtown",
+          "grid": "B7"
+        },
+        {
+          "name": "Hanrim Village",
+          "grid": "C2"
+        }
+      ],
+      "steps": [
+        "Unlock a weapons locker inside either listed blackmarket."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_8"
+    },
+    {
+      "id": "vault-armory",
+      "name": "Vault Armory",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Random loot; no guaranteed spawn reported.",
+      "locations": [
+        {
+          "name": "Heavenly Luck Casino · Cheongun Village",
+          "grid": "F4"
+        }
+      ],
+      "steps": [
+        "Take the casino rear entrance and right-hand double doors.",
+        "Cross to the emergency exit; descend to parking.",
+        "Continue through the blue-wall double doors to the armory."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_9"
+    },
+    {
+      "id": "field-depot",
+      "name": "Field Depot",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Random loot; no guaranteed spawn reported.",
+      "locations": [
+        {
+          "name": "Chang-san Air Base",
+          "grid": "B5"
+        }
+      ],
+      "steps": [
+        "Find the flag-marked supply warehouse northeast of the air-base clinic.",
+        "On floor 1, use the left door behind the Ammo Armor Cache to reach the maintenance room."
+      ],
+      "requirements": [
+        "Critical threat area: armored enemies."
+      ],
+      "sourceAnchor": "hm_10"
+    },
+    {
+      "id": "reactor-02-control-room",
+      "name": "Reactor 02 Control Room",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Random loot; no guaranteed spawn reported.",
+      "locations": [
+        {
+          "name": "Haneul Nuclear Reactor",
+          "grid": "H4"
+        }
+      ],
+      "steps": [
+        "From the northeast checkpoint, climb pipes behind the substation.",
+        "Drop left and break the Reactor 02 skylight to enter.",
+        "Use the damaged crane to reach the left-hand control-room door."
+      ],
+      "requirements": [
+        "Heavy guards and radiation; bring Radiation Blockers and a Gas Mask."
+      ],
+      "sourceAnchor": "hm_11"
+    },
+    {
+      "id": "shop-records-room",
+      "name": "Shop Records Room",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Random loot; no guaranteed spawn reported.",
+      "locations": [
+        {
+          "name": "Wolves Stadium",
+          "grid": "F7"
+        }
+      ],
+      "steps": [
+        "Find the Goh24 south of the stadium clinic.",
+        "The records room is upstairs."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_12"
+    },
+    {
+      "id": "old-barber-shop",
+      "name": "Old Barber Shop",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Random loot; no guaranteed spawn reported.",
+      "locations": [
+        {
+          "name": "Southern Songdo Wharf",
+          "grid": "I7"
+        }
+      ],
+      "steps": [
+        "Look beside the crab shack on the wharf’s south side."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_13"
+    },
+    {
+      "id": "shopping-drc-locker",
+      "name": "Shopping DRC Locker",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Random loot; no guaranteed spawn reported.",
+      "locations": [
+        {
+          "name": "NuriGO Mall · DRC Labs",
+          "grid": "H6"
+        }
+      ],
+      "steps": [
+        "Optional: Operation Shopping Hacks can help locate the DRC Labs; it is not listed as a key prerequisite.",
+        "Reach NuriGO’s secured lower parking area and DRC Labs terminal.",
+        "Spend 4 K9 Battery Cores to enter the labs.",
+        "At the far-right tent, spend 8 more cores; find the white locker in the upper-left area."
+      ],
+      "requirements": [
+        "12 K9 Battery Cores total; loot downed K9s before detonation."
+      ],
+      "sourceAnchor": "hm_14"
+    },
+    {
+      "id": "imjin-mill-foremans-office",
+      "name": "Imjin Mill Foreman's Office",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Random loot; no guaranteed spawn reported.",
+      "locations": [
+        {
+          "name": "Imjin Firmland · Rice Mill",
+          "grid": "D8"
+        }
+      ],
+      "steps": [
+        "Find the rice mill’s central building.",
+        "On floor 1, unlock the brown OFFICE door."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_15"
+    },
+    {
+      "id": "executive-arms-auction",
+      "name": "Executive Arms Auction",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Random loot; no guaranteed spawn reported.",
+      "locations": [
+        {
+          "name": "DBN Headquarters · The Grid",
+          "grid": "G6"
+        }
+      ],
+      "steps": [
+        "Optional: Operation Grid Assault can start you in The Grid.",
+        "Enter DBN and find the northwest ground-floor fire exit.",
+        "Take the ascenders to floor 22, then the left door.",
+        "Unlock the left-hand Dining Room double doors."
+      ],
+      "requirements": [
+        "Critical threat area: armored enemies."
+      ],
+      "sourceAnchor": "hm_16"
+    },
+    {
+      "id": "re-education-center-annex",
+      "name": "Re-Education Center Annex",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Random loot; no guaranteed spawn reported.",
+      "locations": [
+        {
+          "name": "Deadtown",
+          "grid": "B7"
+        }
+      ],
+      "steps": [
+        "Enter the central propaganda-fronted building.",
+        "Turn right and unlock the west-wing brown door."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_17"
+    },
+    {
+      "id": "police-station-armory",
+      "name": "Police Station Armory",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Random loot; no guaranteed spawn reported.",
+      "locations": [
+        {
+          "name": "Western Cheongun Village",
+          "grid": "F4"
+        },
+        {
+          "name": "Northern NuriGO Mall",
+          "grid": "H6"
+        },
+        {
+          "name": "Revolution Dam",
+          "grid": "D3"
+        },
+        {
+          "name": "Southern Pynghwa Village",
+          "grid": "C5"
+        }
+      ],
+      "steps": [
+        "Unlock an armory at any of the four reported police stations."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_18"
+    },
+    {
+      "id": "the-citadel-side-access",
+      "name": "The Citadel Side Access",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Random loot; no guaranteed spawn reported.",
+      "locations": [
+        {
+          "name": "The Citadel · 14th Political Prison",
+          "grid": "B–C3"
+        }
+      ],
+      "steps": [
+        "Look for security-grille doors with Korean lettering.",
+        "The key works at side entrances and roof access doors."
+      ],
+      "requirements": [],
+      "sourceAnchor": "hm_19"
+    }
+  ]
+}

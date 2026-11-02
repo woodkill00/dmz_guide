@@ -4,6 +4,20 @@ import { resolve, join, extname, sep, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../dist");
 // Static release archives retain the standalone server without repository tools.
+let keyImageReader;
+async function keyImage(raw) {
+  keyImageReader ||= import("./key-images.mjs").then(
+    ({ createKeyImageReader }) =>
+      createKeyImageReader({ root: resolve(root, "..") }),
+  );
+  try {
+    return await (
+      await keyImageReader
+    )(raw);
+  } catch {
+    return { status: 404 };
+  }
+}
 let weaponArtReader;
 async function weaponArt(raw) {
   weaponArtReader ||= import("./weapon-art.mjs").then(
@@ -62,6 +76,18 @@ const server = createServer(async (req, res) => {
     return res.end("Method not allowed");
   }
   try {
+    if (req.url?.startsWith("/local-key-images/")) {
+      const image = await keyImage(req.url);
+      res.writeHead(image.status, {
+        "Content-Type": image.type || "text/plain",
+        "Cache-Control": "no-store",
+      });
+      return res.end(
+        req.method === "HEAD"
+          ? undefined
+          : image.bytes || "Screenshot unavailable locally",
+      );
+    }
     if (req.url?.startsWith("/local-weapon-art/")) {
       const art = await weaponArt(req.url);
       res.writeHead(art.status, {

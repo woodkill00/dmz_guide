@@ -1,0 +1,10 @@
+# 053 Game8 Hajin key guide
+
+User requests all keys/information/screenshots from exact Game8 MW4 article634455 and its hm_2 fragment. Both refer to one article. Research2026-11-02: normal Node fetch200; web reader402 is an access-tool failure, not missing data. Visible article date2026-10-28, eighteen overview rows and eighteen matching detail headings, one location/gameplay collage per key. Overview anchors are off by one; use actual heading IDs, not overview hrefs.
+
+FR001 Provide a compact searchable /keys/ directory and eighteen detail routes. Include source-reported acquisition, every listed use location/grid, original concise access directions, hazards/prerequisites where present. No claim of complete in-game catalog or verified current mechanics. No inferred map coordinates or automatic inventory/tracker changes.
+FR002 Download all eighteen article key screenshots for authorized local use, record fixed sourceURL/SHA256/type/dimensions/attribution, display zoomable full screenshots with meaningful alt text/captions and original source links. Local bytes remain ignored and are never bundled in public static output. Fail-safe placeholder for unavailable/corrupt images. Never proxy arbitrary URLs or serve arbitrary local files.
+FR003 Add Keys to shared navigation/site map, retain native no-JS reading and accessible keyboard/mobile/search/empty state. Search name/acquisition/location/grid/details, filter acquisition type; reset clearly.
+FR004 Validate unique IDs/names/source anchors, bounded source text/images/paths/URLs and exact factual coverage. Test escaping, search/filter/no-JS/navigation, safe local image boundary/missing/hash mismatch, responsive200%/threeengines/accessibility. Explicit bounded collector only; normal build/reader/tests do not fetch providers.
+
+Local authorization: user previously confirmed permission for additional providers and now explicitly requests this source/screenshots. Scope stays local; no public redistribution rights inferred. Game8/Activision attribution retained. Never copy article prose wholesale: short original factual directions, distinct source reports, no page/ad/scripts copied.

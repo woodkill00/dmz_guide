@@ -41,3 +41,5 @@
 The older planning documents describe proposals at their recorded date. The constitution and current change artifacts govern new work. Neither roadmap checklists nor research recommendations establish that tests or agent skills have run.
 
 - [Repository Content Studio](content-studio.md): local JSON/media authoring and manual Git sharing.
+
+- [Hajin keys and local screenshots](keys.md) — searchable Game8-reported key directory, access directions, source images and local collection.

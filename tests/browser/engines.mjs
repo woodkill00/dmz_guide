@@ -1,3 +1,4 @@
+import { runKeysTests } from "./keys.mjs";
 import { runCodmunityTests } from "./codmunity.mjs";
 import { runGunsmithTests } from "./gunsmith.mjs";
 import { runArmoryWorkbenchTests } from "./armory-workbench.mjs";
@@ -32,6 +33,7 @@ try {
       await runArmoryTests({ browser, base });
       await runGunsmithTests({ browser, base });
       await runCodmunityTests({ browser, base });
+      await runKeysTests({ browser, base });
       await runArmoryWorkbenchTests({ browser, base });
       await runWeaponManagerTests({ browser, base });
       await runNavigationDirectoryTests({
