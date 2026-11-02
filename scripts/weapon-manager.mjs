@@ -8,6 +8,7 @@ import { assertSafePath, readCatalogFile } from "./catalog.mjs";
 import { parseBounded } from "../src/content/limits.mjs";
 import { renderWeaponManager } from "../src/ui/weapon-manager-page.mjs";
 import { codmunityStatus, monitorCodmunity } from "./codmunity.mjs";
+import codmunityMetrics from "../src/domain/codmunity-metrics.json" with { type: "json" };
 const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const statusPath = ".local/weapon-updates/manager-status.json";
 const assets = new Set([
@@ -18,6 +19,7 @@ const assets = new Set([
   "src/client/navigation-menu.mjs",
   "src/client/navigation-menu-entry.mjs",
   "src/client/weapon-manager.mjs",
+  "src/client/codmunity-review.mjs",
   "src/favicon.svg",
 ]);
 async function receipt(root) {
@@ -206,6 +208,7 @@ export async function createWeaponManager({
     const work = (async () => ({
       ...(await runner(root, "status")),
       codmunity: await codmunityStatus(root),
+      codmunityMetrics,
       monitorPolicy: { enabled: monitor, intervalHours: monitorMs / 3600000 },
       receipt: await receipt(root),
     }))();

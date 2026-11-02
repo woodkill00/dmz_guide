@@ -2925,3 +2925,16 @@ body[data-page="collection"] main > nav a {
   overflow-wrap: anywhere;
   font-size: 0.8rem;
 }
+.cod-source-review {
+  margin-block: 1rem;
+}
+.cod-weapon-review {
+  margin-block: 0.4rem;
+}
+.cod-source-review summary {
+  padding-block: 0.45rem;
+  cursor: pointer;
+}
+.cod-reference {
+  overflow-wrap: anywhere;
+}

@@ -120,6 +120,15 @@ export async function runCodmunityTests({ browser, base }) {
         .querySelector("#codmunity-proposal")
         .textContent.includes("Changes require review."),
     );
+    assert.equal(await manager.locator("#codmunity-proposal pre").count(), 0);
+    assert.match(
+      await manager.locator("#codmunity-proposal").innerText(),
+      /Weapons with damage profiles/,
+    );
+    const added = manager.locator(".cod-weapon-review").first();
+    await added.locator("summary").click();
+    assert.match(await added.innerText(), /Current[\s\S]*Proposed/);
+    assert.match(await added.innerText(), /Damage band 1/);
     assert(await manager.locator("#codmunity-apply").isDisabled());
     await manager.locator("#codmunity-review").check();
     await manager.locator("#codmunity-apply").click();

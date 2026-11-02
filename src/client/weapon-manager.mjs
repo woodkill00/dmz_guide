@@ -1,3 +1,4 @@
+import { renderSourceReview } from "./codmunity-review.mjs";
 const $ = (s) => document.querySelector(s),
   e = (v) =>
     String(v ?? "").replace(
@@ -70,9 +71,10 @@ function render() {
     const monitor = cod.monitor;
     $("#codmunity-status").innerHTML =
       `<p>Accepted MW4: ${cod.coverage.mw4.weapons}/${cod.coverage.mw4.total} weapons; ${cod.coverage.mw4.damage}/${cod.coverage.mw4.total} damage profiles. Accepted DMZ: ${cod.coverage.dmz.damage}/${cod.coverage.dmz.total} damage profiles (${e(cod.coverage.dmz.status)}).</p><p>Background DMZ probe: ${state.monitorPolicy?.enabled ? `startup and every ${e(state.monitorPolicy.intervalHours)} hours while this service runs` : "disabled for this service"}. Latest source check / probe attempt: ${e(monitor?.latestAttempt || "none")}. ${monitor?.error ? `Failed — ${e(monitor.error)}; previous successful result below is stale.` : ""}</p><p>Last successful DMZ probe: ${e(monitor?.lastSuccess?.time || "none")} · ${e(monitor?.lastSuccess?.result?.coverage?.status || "not checked")} · ${e(monitor?.lastSuccess?.result?.warning || "")}</p>`;
-    $("#codmunity-proposal").innerHTML = cod.proposal
-      ? `<p>${cod.proposal.stale ? "Stale proposal: check again before applying." : cod.proposal.unchanged ? "No normalized fact changes; no apply needed." : "Changes require review."}</p><p>Reviewed hash: <code>${e(cod.proposal.hash)}</code></p><pre class="cod-review" tabindex="0">${e(JSON.stringify(cod.proposal.diff, null, 2))}</pre><details><summary>Inspect exact prior and proposed source values</summary><pre class="cod-review" tabindex="0">${e(JSON.stringify({ accepted: cod.sources, proposed: cod.proposal.content?.modes }, null, 2))}</pre></details>`
-      : "<p>No CODMunity proposal staged.</p>";
+    $("#codmunity-proposal").innerHTML = renderSourceReview(
+      cod,
+      state.codmunityMetrics,
+    );
   }
   $("#manager-review").checked = false;
   $("#manager-rollback-review").checked = false;

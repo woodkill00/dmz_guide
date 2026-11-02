@@ -1,0 +1,13 @@
+# Repair acceptance — 052
+
+Manual pinned fallback feature-cycle repair; no bug-extension commands claimed. Assessment/reproduction and FR001–003 are in spec.md. The prior dashboard rendered two raw JSON blocks. Pure client rendering now shows separate source coverage tables, counts of added/changed/removed weapons and expandable current/proposed value tables. Changed weapons precede a collapsed unchanged group. Exact numbers, unknown versus absent values, eight-region damage fields, bands, authored units, source dates/warnings/URL/mode/fingerprint and update reference remain inspectable without JSON. No persistence, collection, monitor or apply semantics changed. Local status gains authored metric definitions; the renderer module is explicitly allowlisted.
+
+Verification:
+
+- 16 focused runtime tests passed, zero failed/skipped/cancelled: new readable review/escaping/add/change/remove/no-op/stale tests, existing parser/transaction/monitor tests and manager HTTP/ownership/session tests. `.local/codmunity052-runtime.log`.
+- Chromium, Firefox and WebKit run the existing source/manager workflow with new assertions for zero JSON blocks and expandable current/proposed damage values. Real disposable CLI apply/no-op, private baseline retention, source warnings, 24 reader/eight manager layout cases per engine; strict browser health. `.local/codmunity052-engines-final.log`.
+- Eight accessibility scans on the actual manager with weapon and metadata tables expanded: light/dark, 320/1440 widths and 200% text; zero WCAG2A/AA/2.1AA violations. Axe-only injection uses a CSP-bypass context; normal functional browsers enforce CSP. `.local/codmunity052-axe.log`, `test-results/codmunity052-axe.json`.
+- Actual dashboard screenshot inspected, raw JSON absent. Expanded mobile weapon table at390px/200% text stays in its labelled keyboard-focusable horizontal scroll region. `.local/codmunity052-dashboard.png`, `codmunity052-expanded-mobile.png`, `codmunity052-visual.log`.
+- Static build830 independent routes plus404; repository checker0failures; formattingPASS; gitdiffwhitespaceclean. Current observed source hashes match127files including new renderer; `.local/codmunity052-tested-sources.json`.
+
+Independent source review identified missing URL/mode/fingerprint metadata; repaired with readable rows and exact-value regression assertions. Final verdict belongs to checklists/requirements.md. No new source fetch, data apply, migration, deployment or remote Git operation was needed for this presentation repair. Full733-test prior feature receipt remains historical; this repair runs the relevant16-test scope, not a new aggregate claim.

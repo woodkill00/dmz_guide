@@ -21,3 +21,5 @@ CLI checks: `npm run weapons:source-check` and `npm run weapons:source-status`. 
 Apply binds proposal and accepted-file hashes, validates under ownership, backs up and atomically replaces the document. Identical normalized facts leave accepted bytes unchanged despite HTML/fetch noise. Removals and coverage regressions require review. Failed requests, changed layouts, unsafe syntax or size/deadline errors preserve accepted content and the previous proposal. Older status cannot replace newer attempts/successes.
 
 Only an inert serialized base-data array is parsed; provider scripts are not executed or selected builds imported as base stats. New layouts/metric fields may require maintenance. Existing owner permission covers local collection; no public redistribution license or publication is asserted.
+
+The dashboard review uses coverage tables and expandable weapon rows with current/proposed values. Changed records appear first; unchanged weapons are grouped separately. Source dates, warnings and exact source references remain available in labelled details, without raw JSON blocks.
