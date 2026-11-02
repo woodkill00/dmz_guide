@@ -1,0 +1,9 @@
+# 059 Site topology and review mindmap
+
+Scope: update /sitemap/ with an interactive visual inventory of the implemented guide, shared navigation, public detail/contribution pages and companion tools. No game data, private storage, provider collection, publication or database changes. Manual pinned full Spec Kit lifecycle; no automated skill execution claimed.
+
+FR001 Inventory every generated route and registered feature, with service boundaries, page kinds and real static link relationships. Distinguish shared navigation, hierarchy and contextual links; include controls/menus/tabs present in generated HTML without claiming they are routes.
+FR002 Searchable, filterable, keyboard-accessible visual mindmap with expand/collapse, inspect incoming/outgoing connections, native Open link and equivalent readable directory. Large catalogs remain grouped by default, not thousands of overlapping nodes. Reset view and JSON download for review.
+FR003 Validate internal route and fragment links from generated HTML, preserve query context, identify missing targets and absent incoming contextual links without claiming global nav proves usable workflows. External links are inventoried, not remotely certified. Check map destinations in isolated browser contexts and record observed menus/tabs/controls in a local audit; never save form values, notes, source payloads or session tokens.
+FR004 Retain existing sitemap links/catalog groups/spoiler masking/no-JS behavior. Graph uses public rendered labels only, never profile reads. Bounded inert rendering, safe destinations, responsive dark/light/200% text and explicit declared-versus-observed coverage.
+FR005 Reproducible rebuild/audit commands, documented results and independent definition/final review. Current source scope and runtime audit limits visible; tests cover completeness, malformed/untrusted links, keyboard search/filter/reset/inspect/export, mobile and existing sitemap journeys.

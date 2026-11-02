@@ -1,0 +1,9 @@
+# Analysis
+
+Manual full-cycle feature scope. Existing /sitemap/ enumerates top-level guide workspaces and bundled records but omits armory/keys detail families and contribution pages from its body inventory; shared registry holds73 features. New topology must derive from the complete build pages array, include /sitemap/ itself, preserve existing readable content and keep source-reported/spoiler distinctions.
+
+Declared static links and observed companion opens are distinct evidence. No link audit can establish arbitrary state-dependent form actions, external provider availability or game-data completeness. Record these limits explicitly.
+
+Implementation convergence: named input/textarea/select labels are inventoried without form values; nested spoiler disclosures are removed from searchable labels, while their IDs and hrefs remain audit-only. UTF8 admission and a shared150k parsed-value budget align producer/consumer. The404page is included explicitly. Directory links are classified separately from contextual links to avoid a false reachability pass. Absolute runtime deadlines preserve a result for every planned companion target.
+
+Observed repairs: node foreground/background specificity corrected after axe contrast finding; enlarged320px text uses single-column branches after actual screenshot review. Axe's own SVGmeasurement CSS diagnostics run in a separate browser, preserving strict functional browser health. WebKit screenshots follow existing repository policy, with functional/layout/axe still required. A premature test start during build replacement caused stale snapshot/CSS fixture failures; these are failed attempts, not acceptance evidence. Final checks run against a completed unchanged build. Runtime build-process30second deadlines remain unchanged; final runtime runs without simultaneous browser/audit CPU load after one loaded run exceeded the child deadline.

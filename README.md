@@ -57,3 +57,5 @@ This is an independent community project, not an official game service. No affil
 ## Local home dashboard and navigation
 
 The local field desk now provides grouped access to Map, Prepare, Track, Reference and Manage, unified public search, pinned/recent workspaces and read-only progress summaries. Upgrades and Missions have dedicated entry points and tested requirement/progress/return journeys. See [Home and navigation](docs/home-navigation.md) for behavior, source-coverage limits, separate map tools and verification commands. This local feature does not claim a remote merge or deployment.
+
+The [visual site map and link audit](docs/site-map.md) now provide a generated inventory of every built page and companion destination, with searchable branches, connection inspection, named controls and reproducible local menu/tab checks.

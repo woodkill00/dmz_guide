@@ -45,3 +45,5 @@ The older planning documents describe proposals at their recorded date. The cons
 - [Hajin keys and local screenshots](keys.md) — searchable Game8-reported key directory, access directions, source images and local collection.
 
 - [Home, navigation and verified workflows](home-navigation.md): dashboard, public search, shortcuts, map tools, upgrades and missions.
+
+The [visual site map](site-map.md) inventories all built pages, companion destinations and their connections, with a separate runtime menu/tab audit.

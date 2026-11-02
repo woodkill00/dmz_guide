@@ -3417,3 +3417,224 @@ html[data-key-density="comfortable"] .key-directory td {
     font-size: 0.875rem;
   }
 }
+/* Public topology review: native buttons and an equivalent readable directory. */
+.topology-review {
+  min-width: 0;
+}
+.topology-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.topology-stats {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-block: 1rem;
+}
+.topology-stats span {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.3rem;
+  font-size: 0.875rem;
+}
+.topology-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(18rem, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+.topology-layout > * {
+  min-width: 0;
+}
+.topology-map {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(6rem, 0.6fr) minmax(7rem, 0.8fr) minmax(
+      0,
+      1.4fr
+    );
+  gap: clamp(0.5rem, 1vw, 1.5rem);
+  align-items: start;
+  max-height: calc(100vh - 12rem);
+  min-height: 24rem;
+  overflow: auto;
+  padding: 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+}
+.topology-root {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+.topology-root span {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+#topology-groups,
+#topology-nodes {
+  display: grid;
+  gap: 0.6rem;
+  z-index: 1;
+}
+#topology-groups button,
+.topology-node {
+  display: grid;
+  gap: 0.2rem;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-width: 0;
+  width: 100%;
+  font-size: 0.875rem;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  position: relative;
+}
+.topology-node small,
+#topology-groups small {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.topology-review button[aria-pressed="true"] {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 var(--accent);
+}
+.topology-lines {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: visible;
+}
+.topology-lines path {
+  stroke: var(--muted);
+  stroke-width: 1.2;
+  fill: none;
+  opacity: 0.55;
+}
+.topology-inspector {
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 3rem);
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background: var(--panel);
+}
+.topology-inspector h3 {
+  margin-top: 0;
+}
+.topology-inspector .toolbar {
+  gap: 0.35rem;
+}
+.topology-inspector button {
+  font-size: 0.875rem;
+  white-space: normal;
+  text-align: left;
+}
+.topology-connections {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.topology-connections li {
+  display: grid;
+  gap: 0.25rem;
+}
+.topology-connections small,
+.topology-inspector li small {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 0.875rem;
+}
+.topology-path {
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+.topology-review [hidden] {
+  display: none !important;
+}
+.topology-review input,
+.topology-review select {
+  max-width: 100%;
+  min-width: 0;
+}
+.topology-review > details {
+  margin-block: 0.8rem;
+}
+#topology-audit p {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1000px) {
+  .topology-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .topology-inspector {
+    position: static;
+    max-height: 32rem;
+  }
+  .topology-map {
+    max-height: 36rem;
+  }
+}
+@media (max-width: 550px) {
+  .topology-map {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    max-height: 32rem;
+  }
+  .topology-root {
+    margin-top: 0;
+  }
+  #topology-groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .topology-lines {
+    display: none;
+  }
+  .topology-layout .toolbar {
+    flex-wrap: wrap;
+  }
+  .topology-inspector {
+    max-height: 30rem;
+  }
+}
+.topology-map,
+.topology-node,
+#topology-groups button,
+.topology-inspector {
+  background: var(--surface);
+}
+.topology-lines .topology-crosslink {
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 5 3;
+  opacity: 1;
+}
+.topology-review button.topology-node,
+#topology-groups button {
+  background: var(--surface);
+  color: var(--text);
+}
+@media (max-width: 550px) {
+  .topology-review {
+    padding: clamp(0.5rem, 2vw, 1rem);
+  }
+  .topology-map {
+    padding: clamp(0.4rem, 2vw, 1rem);
+  }
+  #topology-groups {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

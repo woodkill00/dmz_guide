@@ -1,3 +1,4 @@
+import { buildSiteTopology } from "../src/domain/site-topology.mjs";
 import { buildUnifiedIndex } from "../src/content/unified-index.mjs";
 import {
   captureBuildSources,
@@ -24,6 +25,7 @@ import {
 import { resolve, dirname, join, relative } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
+  e,
   renderLayout,
   renderHome,
   renderCatalog,
@@ -195,7 +197,30 @@ async function generate(dist) {
     title: "Site map",
     page: "sitemap",
     body: renderSiteMap(pages, packs),
+    scripts: ["/assets/src/client/site-topology.mjs"],
   });
+  const notFoundPage = {
+    path: "/404.html",
+    title: "Record not found",
+    page: "404",
+    body:
+      pageHeading(
+        "404 / NOT FOUND",
+        "This route is off the map.",
+        "The record may have moved, or the address may be incomplete.",
+      ) +
+      '<a class="button primary" href="/catalog/">Return to the catalog</a>',
+  };
+  const siteMapPage = pages.find((page) => page.path === "/sitemap/");
+  const routeFamilies = new Map();
+  for (const page of [...pages, notFoundPage]) {
+    const family = page.path.startsWith("/contribute/")
+      ? "Authoring guidance"
+      : page.page || "Other pages";
+    if (!routeFamilies.has(family)) routeFamilies.set(family, []);
+    routeFamilies.get(family).push(page);
+  }
+  siteMapPage.body += `<section class="panel"><h2>Complete generated route directory</h2><p>Every generated page, including weapon/key details and contribution guidance. The mindmap uses this same build inventory.</p>${[...routeFamilies].map(([family, entries]) => `<details><summary>${e(family)} (${entries.length})</summary><ul class="sitemap-links">${entries.map((page) => `<li><a href="${e(page.path)}">${e(page.title)}</a></li>`).join("")}</ul></details>`).join("")}</section>`;
   setNavigation(pages);
   const paths = new Set();
   for (const page of pages) {
@@ -205,25 +230,16 @@ async function generate(dist) {
       throw new Error(`Duplicate output route: ${page.path}`);
     paths.add(page.path);
   }
+  const renderedPages = new Map(
+    pages.map((page) => [page.path, renderLayout(page)]),
+  );
   for (const page of pages) {
     const file = join(dist, page.path, "index.html");
     await mkdir(dirname(file), { recursive: true });
-    await emit(file, renderLayout(page));
+    await emit(file, renderedPages.get(page.path));
   }
-  await emit(
-    join(dist, "404.html"),
-    renderLayout({
-      title: "Record not found",
-      page: "404",
-      body:
-        pageHeading(
-          "404 / NOT FOUND",
-          "This route is off the map.",
-          "The record may have moved, or the address may be incomplete.",
-        ) +
-        '<a class="button primary" href="/catalog/">Return to the catalog</a>',
-    }),
-  );
+  renderedPages.set(notFoundPage.path, renderLayout(notFoundPage));
+  await emit(join(dist, "404.html"), renderedPages.get(notFoundPage.path));
   await mkdir(join(dist, "assets"), { recursive: true });
   const authorOnly = new Set([
     "src/content/author-target.mjs",
@@ -248,6 +264,10 @@ async function generate(dist) {
     });
   }
   await mkdir(join(dist, "assets/content/packs"), { recursive: true });
+  await emit(
+    join(dist, "assets/content/site-topology.json"),
+    JSON.stringify(buildSiteTopology([...pages, notFoundPage], renderedPages)),
+  );
   await emit(
     join(dist, "assets/content/unified-search.json"),
     JSON.stringify(await buildUnifiedIndex(packs)),

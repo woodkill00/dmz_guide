@@ -37,7 +37,9 @@
     "weapons:source-status": "node scripts/codmunity.mjs status",
     "test:keys": "node tests/browser/keys-run.mjs",
     "test:home": "node tests/browser/home-run.mjs",
-    "test:home:a11y": "node tests/browser/home-accessibility.mjs"
+    "test:home:a11y": "node tests/browser/home-accessibility.mjs",
+    "sitemap:audit": "node scripts/site-topology-audit.mjs",
+    "test:sitemap": "node tests/browser/site-topology-run.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2",
