@@ -87,18 +87,26 @@ export async function runKeysTests({ browser, base, localImages = false }) {
       .click();
     assert.match(
       await page.locator(".key-access-use").innerText(),
-      /Possible access key[\s\S]*identity unconfirmed/,
+      /Bring first[\s\S]*player-reported/,
     );
-    assert.equal(await page.locator(".key-access-chain").count(), 0);
+    assert.equal(await page.locator(".key-access-chain").count(), 1);
+    const chain = await page.locator(".key-access-chain li").allTextContents();
+    assert(chain[0].startsWith("Hospital Chemical Lab"));
+    assert(chain[1].startsWith("Hospital Chemical Lockers"));
+    assert.match(
+      await page.locator(".key-access-use").innerText(),
+      /Player report[\s\S]*Website context:/,
+    );
     await page
       .locator('.key-access-link[href="/keys/hospital-chemical-lab/"]')
+      .first()
       .click();
     assert.equal(await page.locator("h1").innerText(), "Hospital Chemical Lab");
     assert.equal(
       await page
         .getByRole("heading", { name: "This key is needed to reach" })
         .count(),
-      0,
+      1,
     );
     const generic = await context.request.get(
       base + "/assets/src/key-generic.svg",
@@ -210,7 +218,7 @@ export async function runKeysTests({ browser, base, localImages = false }) {
       await noJS.close();
     }
     console.log(
-      "053 keys PASS: 18 source/detail/image mappings, search/type/reset/empty, navigation/no-JS, GET/HEAD/POST and 64 layouts; 055 grouped25uses/20unique/filter/possible-chain safety",
+      "053 keys PASS: 18 source/detail/image mappings, search/type/reset/empty, navigation/no-JS, GET/HEAD/POST and 64 layouts; 055 grouped25uses/20unique/filter/player-reported chain/provenance",
     );
   } finally {
     await context.close();

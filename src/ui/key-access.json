@@ -357,11 +357,11 @@
       "locationName": "Mirae General Hospital",
       "grid": "F5",
       "groupId": "mirae-general-hospital",
-      "requiredUses": [],
-      "possibleUses": [
+      "requiredUses": [
         "hospital-chemical-lab--mirae-general-hospital-f5"
       ],
-      "status": "unconfirmed-identity",
+      "possibleUses": [],
+      "status": "player-reported",
       "sources": [
         {
           "url": "https://www.modern-warfare4.wiki/guide/mw4-dmz-irradiated-container",
@@ -374,7 +374,11 @@
           "date": "2026-10-28"
         }
       ],
-      "note": "The wiki describes separately keyed lockers inside the lab. It does not identify the exact locker key; COD Central still marks the named locker door unconfirmed. This is a possible connection, not a confirmed required key."
+      "note": "Player-confirmed access relationship. Website reports remain contextual; the exact locker position has not been independently verified.",
+      "ownerReport": {
+        "date": "2026-11-02",
+        "statement": "Player confirmed that Hospital Chemical Lab is needed to reach Hospital Chemical Lockers at Mirae General Hospital."
+      }
     }
   ]
 }

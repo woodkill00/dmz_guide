@@ -6,7 +6,8 @@
       "id": "hospital-chemical-lab",
       "name": "Hospital Chemical Lab",
       "aliases": [
-        "Hospital Chemical Lab Key"
+        "Hospital Chemical Lab Key",
+        "Chemist Lab"
       ],
       "category": "local",
       "acquisition": "Hospital searches include upper-floor offices; no guaranteed spawn is established.",
@@ -18,18 +19,18 @@
       ],
       "steps": [
         "The source describes a Hospital Chemical Lab door with a matching key.",
-        "Inner chemical lockers have separate keys, but the exact locker-item identity remains unconfirmed."
+        "The wiki describes inner lockers with separate keys; see the player-reported access chain on this page."
       ],
       "requirements": [],
       "sources": [
         {
           "url": "https://www.modern-warfare4.wiki/guide/mw4-dmz-irradiated-container",
-          "label": "MW4 Wiki \u00b7 hospital lab and inner lockers",
+          "label": "MW4 Wiki · hospital lab and inner lockers",
           "date": "2026-11-01"
         },
         {
           "url": "https://codcentral.net/blog/mw4-dmz-keys/",
-          "label": "COD Central \u00b7 Hospital Chemical Lockers",
+          "label": "COD Central · Hospital Chemical Lockers",
           "date": "2026-10-28"
         }
       ],
@@ -39,7 +40,8 @@
       "id": "hospital-chemical-lockers",
       "name": "Hospital Chemical Lockers",
       "aliases": [
-        "Hospital Chemical Lockers Key"
+        "Hospital Chemical Lockers Key",
+        "Chem Lab Locker"
       ],
       "category": "local",
       "acquisition": "Reported on hospital lab desks and storeroom shelves; not a guaranteed spawn.",
@@ -57,12 +59,12 @@
       "sources": [
         {
           "url": "https://www.modern-warfare4.wiki/guide/mw4-dmz-irradiated-container",
-          "label": "MW4 Wiki \u00b7 hospital lab and inner lockers",
+          "label": "MW4 Wiki · hospital lab and inner lockers",
           "date": "2026-11-01"
         },
         {
           "url": "https://codcentral.net/blog/mw4-dmz-keys/",
-          "label": "COD Central \u00b7 Hospital Chemical Lockers",
+          "label": "COD Central · Hospital Chemical Lockers",
           "date": "2026-10-28"
         }
       ],

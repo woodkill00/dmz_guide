@@ -23,11 +23,11 @@ export const renderKeySources = (k) =>
       ) + ` · updated ${e(keyGuide.sourceDate)}`;
 const keyLink = (k, small = false) =>
   `<a class="${small ? "key-access-link" : "key-item-link"}" href="/keys/${k.id}/">${small ? "" : `<img src="${Object.hasOwn(keyIcons, k.id) ? `/local-key-images/icon-${k.id}.webp` : "/assets/src/key-generic.svg"}" alt="" width="36" height="36" loading="lazy">`}<span>${e(k.name)}</span></a>`;
-export function renderAccessCell(use) {
+export function renderAccessCell(use, model = keyAccess) {
   if (use.requiredUses.length)
-    return `<span class="key-access-state">Bring first · source-reported</span>${requiredKeyChain(
+    return `<span class="key-access-state">Bring first · ${use.status === "player-reported" ? "player-reported" : "source-reported"}</span>${requiredKeyChain(
       use,
-      keyAccess.uses,
+      model.uses,
     )
       .filter((u) => u.id !== use.id)
       .map(
@@ -38,28 +38,25 @@ export function renderAccessCell(use) {
     return `<span class="key-access-state">Possible access key · identity unconfirmed</span>${use.possibleUses.map((id) => keyLink(byKey(byUse(id).keyId), true)).join(", ")}<small>Open the key page for evidence and uncertainty.</small>`;
   return "<span>Not recorded</span>";
 }
-export function renderAccessDetails(k) {
-  return `<section class="panel"><h2>Access keys needed first</h2>${keyAccess.uses
+export function renderAccessDetails(k, model = keyAccess) {
+  return `<section class="panel"><h2>Access keys needed first</h2>${model.uses
     .filter((u) => u.keyId === k.id)
     .map(
       (u) =>
-        `<section class="key-access-use"><h3>${e(u.locationName)} · ${e(u.grid)}</h3>${renderAccessCell(u)}${
+        `<section class="key-access-use"><h3>${e(u.locationName)} · ${e(u.grid)}</h3>${renderAccessCell(u, model)}${
           u.requiredUses.length
-            ? `<ol class="key-access-chain">${requiredKeyChain(
-                u,
-                keyAccess.uses,
-              )
+            ? `<ol class="key-access-chain">${requiredKeyChain(u, model.uses)
                 .map(
                   (s) =>
                     `<li>${keyLink(byKey(s.keyId), true)} · ${e(s.locationName)} ${e(s.grid)}</li>`,
                 )
                 .join("")}</ol>`
             : ""
-        }<p>${e(u.note)}</p>${u.sources.length ? `<p>${sources(u.sources)}</p>` : ""}${
-          requiredBy(u.id, keyAccess.uses).length
+        }${u.ownerReport ? `<p><strong>Player report · ${e(u.ownerReport.date)}</strong> ${e(u.ownerReport.statement)}</p>` : ""}<p>${e(u.note)}</p>${u.sources.length ? `<p>${u.ownerReport ? "Website context: " : ""}${sources(u.sources)}</p>` : ""}${
+          requiredBy(u.id, model.uses).length
             ? `<h4>This key is needed to reach</h4><ul>${requiredBy(
                 u.id,
-                keyAccess.uses,
+                model.uses,
               )
                 .map(
                   (s) =>

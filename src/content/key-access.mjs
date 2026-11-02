@@ -140,7 +140,8 @@ export function validateKeyAccess(value, keys) {
   for (const u of value.uses) {
     exact(
       u,
-      "id keyId locationName grid groupId requiredUses possibleUses status sources note",
+      "id keyId locationName grid groupId requiredUses possibleUses status sources note" +
+        (Object.hasOwn(u, "ownerReport") ? " ownerReport" : ""),
     );
     const e = expected.get(u.id);
     requireValue(
@@ -169,8 +170,21 @@ export function validateKeyAccess(value, keys) {
       requireValue(u.requiredUses.length > 0 && !u.possibleUses.length);
     else if (u.status === "unconfirmed-identity")
       requireValue(!u.requiredUses.length && u.possibleUses.length > 0);
-    else requireValue(false);
-    sources(u.sources, u.status !== "unknown");
+    else if (u.status === "player-reported") {
+      requireValue(
+        u.requiredUses.length > 0 &&
+          !u.possibleUses.length &&
+          Object.hasOwn(u, "ownerReport"),
+      );
+      exact(u.ownerReport, "date statement");
+      requireValue(date(u.ownerReport.date) && text(u.ownerReport.statement));
+    } else requireValue(false);
+    if (u.status !== "player-reported")
+      requireValue(!Object.hasOwn(u, "ownerReport"));
+    sources(
+      u.sources,
+      u.status !== "unknown" && u.status !== "player-reported",
+    );
     byId.set(u.id, u);
   }
   requireValue(byId.size === expected.size);

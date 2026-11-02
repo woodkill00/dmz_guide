@@ -1,3 +1,4 @@
+import { renderAccessDetails } from "../../src/ui/key-access-view.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -70,26 +71,29 @@ test("055 exact-use prerequisite chains order ancestors first and reverse only r
     [police[1].id],
   );
 });
-test("055 unconfirmed hospital identity never becomes a required chain or reverse prerequisite", () => {
-  const lab = keyAccess.uses.find((u) => u.keyId === "hospital-chemical-lab"),
-    locker = keyAccess.uses.find(
-      (u) => u.keyId === "hospital-chemical-lockers",
-    );
+test("055 synthetic unconfirmed hospital identity never becomes a required chain or reverse prerequisite", () => {
+  const possible = fixture();
+  const lab = possible.uses.find((u) => u.keyId === "hospital-chemical-lab"),
+    locker = possible.uses.find((u) => u.keyId === "hospital-chemical-lockers");
+  delete locker.ownerReport;
+  edge(locker, lab, true);
+  validateKeyAccess(possible, allKeys);
   assert.equal(locker.status, "unconfirmed-identity");
   assert.deepEqual(locker.requiredUses, []);
   assert.deepEqual(locker.possibleUses, [lab.id]);
   assert.deepEqual(
-    requiredKeyChain(locker, keyAccess.uses).map((u) => u.id),
+    requiredKeyChain(locker, possible.uses).map((u) => u.id),
     [locker.id],
   );
-  assert.deepEqual(requiredBy(lab.id, keyAccess.uses), []);
-  const html = featurePages().find(
-    (p) => p.path === "/keys/hospital-chemical-lockers/",
-  ).body;
+  assert.deepEqual(requiredBy(lab.id, possible.uses), []);
+  const html = renderAccessDetails(
+    allKeys.find((k) => k.id === "hospital-chemical-lockers"),
+    possible,
+  );
   assert(html.includes("Possible access key"));
   assert(html.includes("identity unconfirmed"));
   assert(!html.includes('class="key-access-chain"'));
-  assert(html.includes("exact door"));
+  assert(html.includes("identity unconfirmed"));
   const v = fixture(),
     [a, b, c] = v.uses;
   edge(a, b, true);
@@ -166,4 +170,54 @@ test("055 supplemental records preserve independent provenance and reject duplic
     alter(v);
     assert.throws(() => validateSupplemental(v));
   }
+});
+
+test("056 player report establishes only the named hospital chain and preserves separate website context", () => {
+  const lab = keyAccess.uses.find((u) => u.keyId === "hospital-chemical-lab"),
+    locker = keyAccess.uses.find(
+      (u) => u.keyId === "hospital-chemical-lockers",
+    );
+  assert.equal(locker.status, "player-reported");
+  assert.equal(locker.ownerReport.date, "2026-11-02");
+  assert.deepEqual(locker.possibleUses, []);
+  assert.deepEqual(
+    requiredKeyChain(locker, keyAccess.uses).map((u) => u.id),
+    [lab.id, locker.id],
+  );
+  assert.deepEqual(
+    requiredBy(lab.id, keyAccess.uses).map((u) => u.id),
+    [locker.id],
+  );
+  const html = renderAccessDetails(allKeys.find((k) => k.id === locker.keyId));
+  assert(html.includes("Bring first · player-reported"));
+  assert(html.includes("Player report · 2026-11-02"));
+  assert(html.includes("Website context:"));
+  assert(!html.includes("Possible access key"));
+  const independent = fixture();
+  independent.uses.find((u) => u.id === locker.id).sources = [];
+  validateKeyAccess(independent, allKeys);
+});
+test("056 player provenance is required, bounded, calendar-valid, status-bound and escaped", () => {
+  for (const alter of [
+    (u) => delete u.ownerReport,
+    (u) => (u.ownerReport.date = "2026-02-30"),
+    (u) => (u.ownerReport.statement = ""),
+    (u) => (u.ownerReport.statement = "x".repeat(401)),
+    (u) => (u.ownerReport.url = "https://example.invalid"),
+    (u) => (u.status = "community-reported"),
+  ]) {
+    const v = fixture();
+    alter(v.uses.find((u) => u.status === "player-reported"));
+    assert.throws(() => validateKeyAccess(v, allKeys));
+  }
+  const v = fixture();
+  v.uses.find((u) => u.status === "player-reported").ownerReport.statement =
+    '<script>alert("fixture")</script>';
+  validateKeyAccess(v, allKeys);
+  const html = renderAccessDetails(
+    allKeys.find((k) => k.id === "hospital-chemical-lockers"),
+    v,
+  );
+  assert(html.includes("&lt;script&gt;"));
+  assert(!html.includes("<script>"));
 });
