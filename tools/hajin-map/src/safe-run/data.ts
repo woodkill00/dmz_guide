@@ -5,6 +5,10 @@ import { boundedBytes } from "../map/bounded-input.ts";
 import { parseSnapshot } from "../map/source-snapshot.ts";
 import { parseRoadGraph } from "../workspace/roads.ts";
 import { extractStops } from "./domain.ts";
+import baseKeys from "../../../../src/ui/keys.json";
+import supplementalKeys from "../../../../src/ui/key-supplemental.json";
+import { keyIdentities } from "./access.ts";
+const guideKeys = keyIdentities([...baseKeys.keys, ...supplementalKeys.keys]);
 
 async function read(path: string, limit: number) {
   const controller = new AbortController(),
@@ -63,7 +67,7 @@ export async function loadDataset() {
     r.status === "fulfilled" ? [r.value] : [],
   );
   return {
-    data: extractStops(captures),
+    data: extractStops(captures, guideKeys),
     sources: captures.map(({ source, snapshot }) => ({
       name: source.name,
       page: source.page,

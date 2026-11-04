@@ -4,6 +4,7 @@ import { chromium, firefox, webkit } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
+import { gridGeometry } from "../src/map/tactical-grid.ts";
 const server = await createServer({
   server: { host: "127.0.0.1", port: 5279, strictPort: true, hmr: false },
 });
@@ -77,6 +78,10 @@ const graph = {
     },
   ],
 };
+fixture.records[0].notes = "Synthetic test data. Needs an access key.";
+fixture.records[1].notes = "Synthetic test data. No key needed.";
+fixture.records[2].notes =
+  "Synthetic test data. Bank vault: solve the puzzle to open it.";
 try {
   for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     const browser = await engine.launch();
@@ -93,9 +98,26 @@ try {
         pointerMode = "missing",
         holdRoads = false,
         releaseRoads = null;
-      page.on("pageerror", (e) => errors.push(e.message));
+      const failedRequests = [];
+      let phase = "initial";
+      page.on("requestfailed", (r) => {
+        if (failedRequests.length < 128)
+          failedRequests.push({ url: r.url(), error: r.failure()?.errorText });
+      });
+      page.on("pageerror", (e) =>
+        errors.push({
+          message: e.message,
+          stack: e.stack,
+          url: page.url(),
+          phase,
+        }),
+      );
       await context.addInitScript(() => {
         window.__holdWorker = false;
+        window.__holdReady = false;
+        window.__queuedReady = [];
+        window.__postedSolves = [];
+        window.__terminatedWorkers = 0;
         window.__queuedWorkers = [];
         window.__workerCount = 0;
         window.__writes = 0;
@@ -106,11 +128,26 @@ try {
             window.__workerCount++;
           }
           set onmessage(fn) {
+            this.__safeBootstrapHandler = fn;
             super.onmessage = (event) => {
-              if (window.__holdWorker)
+              if (event.data?.ready && window.__holdReady) {
+                window.__queuedReady.push(() =>
+                  this.__safeBootstrapHandler(event),
+                );
+                return;
+              }
+              if (window.__holdWorker && !event.data?.ready)
                 window.__queuedWorkers.push(() => fn(event));
               else fn(event);
             };
+          }
+          postMessage(data, ...args) {
+            window.__postedSolves.push(data.stops?.map((stop) => stop.key));
+            return super.postMessage(data, ...args);
+          }
+          terminate() {
+            window.__terminatedWorkers++;
+            return super.terminate();
           }
         };
         const set = Storage.prototype.setItem;
@@ -230,11 +267,158 @@ try {
         "official:d",
       ]);
       assert.equal(
+        await page.locator(".safe-number-marker.safe-locked").count(),
+        2,
+        "explicit key and puzzle gates are red",
+      );
+      assert.equal(
+        await page.locator(".safe-lock-cue").count(),
+        2,
+        "non-color access cue",
+      );
+      assert.match(
+        await page
+          .locator('.safe-choice:has([data-safe="official:a"])')
+          .innerText(),
+        /Key required/,
+      );
+      assert.match(
+        await page
+          .locator('.safe-choice:has([data-safe="official:c"])')
+          .innerText(),
+        /Puzzle-gated vault/,
+      );
+      assert.equal(
+        await page
+          .locator('.safe-choice:has([data-safe="official:b"]) [data-access]')
+          .count(),
+        0,
+        "no-key report not labelled required",
+      );
+      await page
+        .locator('.safe-number-marker[title^="Synthetic Alpha"]')
+        .click();
+      assert.match(
+        await page.locator(".leaflet-popup").innerText(),
+        /Required key identity has not been established/,
+      );
+      await page.locator(".leaflet-popup-close-button").click();
+      phase = "bootstrap-coalescing";
+      // Simulate a slow module bootstrap: A→B edits must share one pending
+      // worker, post no stale A job and solve only B when ready is delivered.
+      await page.locator("#select-none").click();
+      const bootBefore = await page.evaluate(() => {
+        window.__holdReady = true;
+        window.__queuedReady = [];
+        return {
+          workers: window.__workerCount,
+          posts: window.__postedSolves.length,
+        };
+      });
+      await page.locator("#select-all").click();
+      await page.waitForFunction(() => window.__queuedReady.length === 1);
+      await page.locator('[data-safe="official:c"]').uncheck();
+      assert.equal(
+        await page.evaluate(() => window.__workerCount),
+        bootBefore.workers + 1,
+        "coalesce pending imports into one worker",
+      );
+      assert.equal(
+        await page.evaluate(() => window.__postedSolves.length),
+        bootBefore.posts,
+        "do not post before ready",
+      );
+      await page.evaluate(() => {
+        window.__holdReady = false;
+        window.__queuedReady.splice(0).forEach((fn) => fn());
+      });
+      await solved();
+      assert.deepEqual(
+        await page.evaluate(
+          (i) => window.__postedSolves.slice(i),
+          bootBefore.posts,
+        ),
+        [["official:a", "official:b", "official:d"]],
+        "post only latest B selection",
+      );
+      assert.deepEqual(await order(), [
+        "official:a",
+        "official:b",
+        "official:d",
+      ]);
+      await page.locator("#select-all").click();
+      await solved();
+      assert.deepEqual(await order(), [
+        "official:a",
+        "official:c",
+        "official:b",
+        "official:d",
+      ]);
+      phase = "bootstrap-timeout-retry";
+      // A never-ready startup must release at its own deadline, ignore a
+      // late ready notification, and permit a successful Optimize retry.
+      const startOrder = await order(),
+        startup = await page.evaluate(() => {
+          window.__holdReady = true;
+          window.__queuedReady = [];
+          return {
+            workers: window.__workerCount,
+            terminated: window.__terminatedWorkers,
+            posts: window.__postedSolves.length,
+          };
+        });
+      await page.locator("#optimize").click();
+      await page.waitForFunction(() => window.__queuedReady.length === 1);
+      await page.waitForFunction(
+        () =>
+          document
+            .querySelector("#route-status")
+            .textContent.includes("could not start within 10 seconds"),
+        {},
+        { timeout: 15000 },
+      );
+      assert.deepEqual(await order(), startOrder);
+      assert.equal(
+        await page.evaluate(() => window.__terminatedWorkers),
+        startup.terminated + 1,
+      );
+      await page.evaluate(() => {
+        window.__holdReady = false;
+        window.__queuedReady.splice(0).forEach((fn) => fn());
+      });
+      assert.equal(
+        await page.evaluate(() => window.__postedSolves.length),
+        startup.posts,
+      );
+      assert.match(
+        await page.locator("#route-status").innerText(),
+        /could not start/,
+      );
+      await page.locator("#optimize").click();
+      await solved();
+      assert.equal(
+        await page.evaluate(() => window.__workerCount),
+        startup.workers + 2,
+      );
+      assert.deepEqual(await order(), startOrder);
+      assert.equal(
         await page.locator(".safe-number-marker:not(.safe-excluded)").count(),
         4,
       );
       await page.locator('[data-safe="official:c"]').uncheck();
       await solved();
+      const excluded = page.locator(".safe-locked.safe-excluded");
+      assert.equal(
+        await excluded.count(),
+        1,
+        "excluded restricted safe retains red access cue",
+      );
+      const colors = await excluded.evaluate((n) => ({
+        fill: getComputedStyle(n).backgroundColor,
+        border: getComputedStyle(n).borderColor,
+      }));
+      assert.equal(colors.fill, "rgb(65, 78, 66)");
+      assert.equal(colors.border, "rgb(255, 152, 163)");
       assert.equal((await order()).includes("official:c"), false);
       await page.locator("#safe-search").fill("Delta");
       assert.equal(await page.locator("#safe-list input").count(), 1);
@@ -354,6 +538,7 @@ try {
       );
       assert.deepEqual(await order(), before);
       fail = false;
+      phase = "capture-races";
       // Deliver a deliberately queued obsolete worker reply after a NEW dataset
       // commits, while the new road read is held. Termination alone is not enough.
       await page.evaluate(() => {
@@ -498,6 +683,134 @@ try {
         "unchanged",
       );
       assert.equal(await page.evaluate(() => window.__idb), 0);
+      phase = "key-access-journey";
+      // A named access requirement AND matching calibrated grid links the
+      // existing key page. Same-grid unrelated safe never inherits it.
+      const cell = gridGeometry().cells.find(
+        (c) => c.reference === "D6",
+      ).center;
+      currentFixture = structuredClone(fixture);
+      Object.assign(currentFixture.records[0], {
+        name: "Safe: Haejeok Radio Station",
+        notes: "Synthetic requirement: needs the station key.",
+        x: cell.x / 4096,
+        y: cell.y / 4096,
+      });
+      Object.assign(currentFixture.records[1], {
+        x: (cell.x + 8) / 4096,
+        y: cell.y / 4096,
+      });
+      await page.locator("#reload-data").click();
+      await page.waitForFunction(
+        () => !document.querySelector("#reload-data").disabled,
+      );
+      const keyLink = page.locator(
+        '#safe-list [data-safe-key="haejeok-radio-station"]',
+      );
+      assert.equal(await keyLink.count(), 1);
+      assert.equal(
+        await keyLink.getAttribute("href"),
+        "http://127.0.0.1:4173/keys/haejeok-radio-station/",
+      );
+      assert.equal(await keyLink.getAttribute("target"), "_blank");
+      assert.match(await keyLink.getAttribute("rel"), /noopener/);
+      assert.equal(
+        await page
+          .locator('.safe-choice:has([data-safe="official:b"]) [data-safe-key]')
+          .count(),
+        0,
+      );
+      assert.equal(
+        await page
+          .locator('#visit-order [data-safe-key="haejeok-radio-station"]')
+          .count(),
+        1,
+      );
+      await page.locator("#safe-search").fill("key required");
+      assert.equal(await page.locator("#safe-list input").count(), 1);
+      await page.locator("#safe-search").fill("");
+      await page
+        .locator('.safe-choice:has([data-safe="official:a"])')
+        .getByRole("button", { name: "Locate", exact: true })
+        .click();
+      // Locate opens the exact safe even when another same-grid marker is
+      // only eight image pixels away and overlaps it on the map.
+      assert.equal(
+        await page
+          .locator('.leaflet-popup [data-safe-key="haejeok-radio-station"]')
+          .count(),
+        1,
+      );
+      // Measure the readable steady state, not Leaflet's 200ms fade over
+      // the synthetic white terrain (which transiently lowers contrast).
+      await page.waitForFunction(
+        () =>
+          getComputedStyle(document.querySelector(".leaflet-popup")).opacity ===
+          "1",
+      );
+      phase = "keyed-popup-axe";
+      const popupAxe = await new AxeBuilder({ page }).analyze();
+      assert.deepEqual(
+        popupAxe.violations.map((v) => ({
+          id: v.id,
+          nodes: v.nodes.map((n) => n.target),
+        })),
+        [],
+        name + " keyed safe popup axe",
+      );
+      await page.setViewportSize({ width: 320, height: 760 });
+      await page.waitForFunction(() => {
+        const close = document
+            .querySelector(".leaflet-popup-close-button")
+            .getBoundingClientRect(),
+          map = document.querySelector("#safe-map").getBoundingClientRect(),
+          tools = document
+            .querySelector(".safe-map-tools")
+            .getBoundingClientRect();
+        return (
+          close.width > 0 &&
+          close.top >= map.top &&
+          close.bottom <= map.bottom &&
+          close.left >= map.left &&
+          close.right <= map.right &&
+          !(
+            close.left < tools.right &&
+            close.right > tools.left &&
+            close.top < tools.bottom &&
+            close.bottom > tools.top
+          )
+        );
+      });
+      await page.locator(".leaflet-popup-close-button").click();
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      currentFixture.records[0].notes =
+        "Synthetic reports: needs the station key. No key needed.";
+      await page.locator("#reload-data").click();
+      await page.waitForFunction(
+        () => !document.querySelector("#reload-data").disabled,
+      );
+      assert.match(
+        await page
+          .locator('.safe-choice:has([data-safe="official:a"])')
+          .innerText(),
+        /Conflicting access reports/,
+      );
+      currentFixture.records[0].notes =
+        "Synthetic updated report. No key needed.";
+      await page.locator("#reload-data").click();
+      await page.waitForFunction(
+        () => !document.querySelector("#reload-data").disabled,
+      );
+      assert.equal(await page.locator("#safe-list [data-safe-key]").count(), 0);
+      assert.equal(
+        await page.locator(".safe-number-marker.safe-locked").count(),
+        1,
+        "fresh reports remove stale access classification",
+      );
+      // Also verify the refreshed dataset's route before navigating into a
+      // different fixture. Its calculation starts after capture loading.
+      await solved();
+      phase = "capacity-reloads";
       // Explicit overflow has no silent first-64 selection; a rejected 65th
       // checkbox is restored to unchecked and does not change saved order.
       currentFixture = structuredClone(fixture);
@@ -553,6 +866,7 @@ try {
         /At most 64/,
       );
       currentFixture = structuredClone(fixture);
+      phase = "corruption-reload";
       // Corrupt preference recovery is visible; storage denial keeps controls usable.
       await page.evaluate(
         (k) => localStorage.setItem(k, '{"version":99}'),
@@ -585,6 +899,7 @@ try {
       await page.locator("#safe-map").focus();
       await page.keyboard.press("+");
       await page.keyboard.press("ArrowRight");
+      phase = "responsive-axe";
       for (const viewport of [
         { width: 1440, height: 1000 },
         { width: 320, height: 760 },
@@ -616,11 +931,13 @@ try {
           path: ".local/safe-run-synthetic.png",
           fullPage: true,
         });
+      if (errors.length)
+        console.error(JSON.stringify({ engine: name, errors, failedRequests }));
       assert.deepEqual(errors, []);
       assert.deepEqual(remote, []);
       console.log(
         name +
-          " safe-run PASS: spawn/manual/right-click, select/search, optimize/manual drag/keyboard, persistence/corruption/quota, road gaps/failure, atomic reload/races, 4 responsive/text-size axe scans, zero IDB/main-map writes/remote requests",
+          " safe-run PASS: locked/key/puzzle/unknown colors+labels, exact key links/grid and overlapping Locate popup, conflict/fresh removal, spawn/manual/right-click, select/search, optimize/manual drag/keyboard, persistence/corruption/quota, road gaps/failure, atomic reload/races/cap/deadline, pending-bootstrap A→B coalescing/startup-timeout/late-ready/retry, 5 popup/responsive/text-size axe scans, zero IDB/main-map writes/remote requests/page errors",
       );
     } finally {
       await browser.close();

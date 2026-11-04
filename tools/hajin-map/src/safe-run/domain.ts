@@ -15,6 +15,12 @@ import {
   type RoadLeg,
 } from "../workspace/roads.ts";
 import { validateJsonTree } from "../workspace/validation.ts";
+import {
+  classifyAccess,
+  mergeAccess,
+  type KeyIdentity,
+  type SafeAccess,
+} from "./access.ts";
 
 export const limits = { candidates: 200, selected: 64, stateBytes: 32768 };
 export const stateKey = "hajin-safe-run-v1";
@@ -30,6 +36,7 @@ export interface Stop {
   floor: string | null;
   matches: string[];
   nearby: number;
+  access?: SafeAccess;
 }
 export interface Preference {
   version: 1;
@@ -48,6 +55,7 @@ export interface Dataset {
 }
 export function extractStops(
   captures: { source: MarkerSource; snapshot: Snapshot }[],
+  keyCatalog: readonly KeyIdentity[] = [],
 ): Dataset {
   requireValue(captures.length <= 5, "Too many sources.");
   const safes: Stop[] = [],
@@ -89,6 +97,7 @@ export function extractStops(
         matches: [],
         nearby: 0,
       };
+      if (kind === "safe") stop.access = classifyAccess(stop, keyCatalog);
       (kind === "safe" ? safes : spawns).push(stop);
     }
   }
@@ -111,10 +120,15 @@ export function extractStops(
       })),
     );
     requireValue(!result.truncated, "Duplicate comparison limit reached.");
-    for (const g of result.groups)
+    for (const g of result.groups) {
       rows.find((s) => s.key === g.representative.key)!.matches = g.members
         .filter((m) => m.key !== g.representative.key)
         .map((m) => m.sourceId + ": " + m.title);
+      if (category === "safe")
+        rows.find((s) => s.key === g.representative.key)!.access = mergeAccess(
+          g.members.map((m) => rows.find((s) => s.key === m.key)!.access!),
+        );
+    }
     return rows
       .filter((s) => !result.suppressed.has(s.key))
       .sort((a, b) => a.key.localeCompare(b.key, "en"));

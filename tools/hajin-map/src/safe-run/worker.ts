@@ -9,3 +9,5 @@ self.onmessage = (event) => {
     });
   }
 };
+// Signal after the worker module's evaluation has completed.
+setTimeout(() => self.postMessage({ ready: true }), 0);

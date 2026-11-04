@@ -1,4 +1,5 @@
 import L from "leaflet";
+import SafeRunWorker from "./worker.ts?worker&inline";
 import "leaflet/dist/leaflet.css";
 import "./style.css";
 import { createMapView } from "../map/map-view.ts";
@@ -17,6 +18,7 @@ import {
   type SolveOutput,
 } from "./domain.ts";
 import { loadDataset, loadRoads } from "./data.ts";
+import { accessLabel, unknownAccess } from "./access.ts";
 
 document.querySelector("#app")!.innerHTML = `
 <header class="safe-header"><div><p>HAJIN · FIELD PLANNING</p><h1>Safe runs</h1></div><a href="/">Open full map</a></header>
@@ -29,7 +31,7 @@ document.querySelector("#app")!.innerHTML = `
 <form id="manual-start"><div class="safe-xy"><label>X <input id="start-x" type="number" min="0" max="4096" step="any" required></label><label>Y <input id="start-y" type="number" min="0" max="4096" step="any" required></label></div><button type="submit">Set manual start</button></form>
 <label for="route-mode">Route geometry</label><select id="route-mode"><option value="direct">Direct lines · not roads</option><option value="roads">Local roads · partial, unverified</option></select><p id="road-status">Checking local road coverage…</p>
 <div class="safe-actions"><button id="optimize" type="button">Optimize order</button><button id="fit-route" type="button">Fit run</button></div><p class="safe-note">Efficient nearest-neighbor order, not a guaranteed shortest tour. Open route, no return to spawn. Distances are image pixels, not game meters or travel times.</p></fieldset>
-<fieldset disabled id="safe-choices"><legend>2 · Safe candidates</legend><label for="safe-search">Search safes, source, notes or grid</label><input id="safe-search" type="search" maxlength="200"><div class="safe-actions"><button id="select-all" type="button">Select all safes</button><button id="select-none" type="button">Deselect all</button></div><p id="selection-count"></p><p class="safe-note">Search changes the list only. Matching names within 24 image pixels and compatible floors share one marker; differently named nearby entries stay separate for review.</p><div id="safe-list"></div></fieldset>
+<fieldset disabled id="safe-choices"><legend>2 · Safe candidates</legend><label for="safe-search">Search safes, keys, access, source, notes or grid</label><input id="safe-search" type="search" maxlength="200"><div class="safe-actions"><button id="select-all" type="button">Select all safes</button><button id="select-none" type="button">Deselect all</button></div><p id="selection-count"></p><p class="safe-note safe-access-legend"><strong>Red !</strong>: source-reported locked/key/puzzle access. Gold: access not recorded, not guaranteed unlocked. Gray fill: excluded; red border still flags access requirements.</p><p class="safe-note">Search changes the list only. Matching names within 24 image pixels and compatible floors share one marker; differently named nearby entries stay separate for review. Key guides are linked only for a named access requirement in the same calibrated grid, never proximity alone.</p><div id="safe-list"></div></fieldset>
 <section aria-labelledby="route-heading"><h2 id="route-heading">3 · Visit order</h2><p id="route-status" role="status">Choose your start to plan a run.</p><p class="safe-note">Drag rows or use ↑ / ↓. Manual order stays until you choose Optimize.</p><ol id="visit-order"></ol></section>
 <details><summary>Source captures and limitations</summary><ul id="source-list"></ul><p>Safes may overlap across providers, have access requirements, or be absent in a match. Nearby warnings are review hints, not confirmed duplicates. This page rereads reviewed local captures; update providers through the main map. It does not collect new remote data.</p><p>Road mode uses the separate local road file, not the main workspace’s private road edits. Missing road legs are left undrawn and listed below; dashed lines are off-road connectors.</p><a href="${hajin.source}" target="_blank" rel="noopener noreferrer">Official map background</a></details>
 </aside><section class="safe-terrain" aria-label="Safe-run map"><div id="safe-map" tabindex="0" role="region" aria-label="Hajin safe-run map. Arrow keys pan; plus and minus zoom."></div><div class="safe-map-tools" role="group" aria-label="Map controls"><button id="safe-zoom-in" type="button" aria-label="Zoom in">+</button><button id="safe-zoom-out" type="button" aria-label="Zoom out">−</button><button id="safe-reset" type="button">Full map</button><label><input id="safe-grid" type="checkbox" checked> Grid</label></div><p id="terrain-status" role="status"></p><p class="safe-map-credit">Source-reported safe locations · © Activision · manual planning</p></section></main>`;
@@ -59,12 +61,15 @@ const viewer = createMapView(
 const map = viewer.map,
   markers = L.layerGroup().addTo(map),
   lines = L.layerGroup().addTo(map);
+const safeMarkers = new Map<string, L.Marker>();
 let active = true,
   loadEpoch = 0;
 let data: Dataset = { safes: [], spawns: [], referenceOnly: 0 },
   p: Preference | null = null,
   graph: RoadGraph | null = null,
   worker: Worker | null = null,
+  workerReady = false,
+  bootstrapTimer: ReturnType<typeof setTimeout> | null = null,
   timer: ReturnType<typeof setTimeout> | null = null,
   epoch = 0,
   loading = false,
@@ -89,6 +94,65 @@ function button(label: string, action: () => void) {
 }
 const grid = (s: Stop) => gridReferenceAt(...s.point) ?? "—";
 const display = (s: Stop) => `${s.name} · ${grid(s)} · ${s.sourceName}`;
+const access = (s: Stop) => s.access ?? unknownAccess();
+const restricted = (s: Stop) => access(s).state !== "unknown";
+function accessInfo(s: Stop, details = false) {
+  const info = access(s),
+    root = el("div", undefined, "safe-access-info");
+  root.dataset.access = info.state;
+  if (info.state !== "unknown" || details)
+    root.append(
+      el(
+        "small",
+        accessLabel(info),
+        info.state === "unknown" ? "safe-access-unknown" : "safe-access-badge",
+      ),
+    );
+  for (const k of info.keys) {
+    const link = el("a", "Key guide: " + k.name);
+    link.href = "http://127.0.0.1:4173/keys/" + encodeURIComponent(k.id) + "/";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.dataset.safeKey = k.id;
+    link.title = "Source-reported named key and matching grid; confirm in game";
+    root.append(link);
+  }
+  if (details) {
+    if (info.state === "key-required" && !info.keys.length)
+      root.append(
+        el(
+          "p",
+          "Required key identity has not been established for this safe.",
+        ),
+      );
+    if (info.state === "conflict")
+      root.append(
+        el(
+          "p",
+          "Sources disagree about access. Check the reports before relying on this route.",
+        ),
+      );
+    if (info.reports.length) {
+      const evidence = el("details"),
+        summary = el(
+          "summary",
+          "Access evidence · " + info.reports.length + " source report(s)",
+        );
+      evidence.append(summary);
+      for (const report of info.reports) {
+        const paragraph = el("p", report.evidence + " "),
+          link = el("a", report.sourceId + " · " + report.capturedAt);
+        link.href = report.page;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        paragraph.append(link);
+        evidence.append(paragraph);
+      }
+      root.append(evidence);
+    }
+  }
+  return root;
+}
 const find = (key: string) => data.safes.find((s) => s.key === key)!;
 function save() {
   if (!p) return;
@@ -103,10 +167,21 @@ function save() {
       "Run is usable, but preferences could not be saved. Browser storage is unavailable or full.";
   }
 }
+function releaseWorker(owned: Worker | null = worker) {
+  owned?.terminate();
+  if (owned === worker) {
+    worker = null;
+    workerReady = false;
+    if (bootstrapTimer) clearTimeout(bootstrapTimer);
+    bootstrapTimer = null;
+  }
+}
 function stopWork() {
   epoch++;
-  worker?.terminate();
-  worker = null;
+  // Coalesce edits while the dependency graph loads. Cancelling a module
+  // import midway leaks an import error in WebKit's development worker path.
+  // Once ready, a busy calculation can be terminated immediately as before.
+  if (workerReady) releaseWorker();
   if (timer) clearTimeout(timer);
   timer = null;
   lines.clearLayers();
@@ -138,6 +213,7 @@ function chooseStart(point: XY | null, spawnKey: string | null) {
 }
 function draw() {
   markers.clearLayers();
+  safeMarkers.clear();
   if (!p) return;
   if (p.start)
     L.marker([p.start[1], p.start[0]], {
@@ -166,28 +242,42 @@ function draw() {
     );
     if (s.matches.length)
       content.append(el("p", "Also reported by " + s.matches.join(", ")));
+    content.append(accessInfo(s, true));
     content.append(
       button(index < 0 ? "Include safe" : "Exclude safe", () =>
         toggle(s.key, index < 0),
       ),
     );
-    L.marker([s.point[1], s.point[0]], {
+    const marker = L.marker([s.point[1], s.point[0]], {
       icon: L.divIcon({
-        className: "safe-number-marker" + (index < 0 ? " safe-excluded" : ""),
-        html: index < 0 ? "−" : String(index + 1),
+        className:
+          "safe-number-marker" +
+          (restricted(s) ? " safe-locked" : "") +
+          (index < 0 ? " safe-excluded" : ""),
+        html:
+          (index < 0 ? "−" : String(index + 1)) +
+          (restricted(s)
+            ? '<span class="safe-lock-cue" aria-hidden="true">!</span>'
+            : ""),
         iconSize: [28, 28],
       }),
-      title: display(s),
-      alt: display(s),
+      title: display(s) + " · " + accessLabel(access(s)),
+      alt: display(s) + " · " + accessLabel(access(s)),
     })
       .addTo(markers)
-      .bindPopup(content, { maxHeight: 200, maxWidth: 300 });
+      .bindPopup(content, {
+        maxHeight: 200,
+        maxWidth: 300,
+        className: "readable-marker-popup",
+      });
+    safeMarkers.set(s.key, marker);
   }
 }
 function focusSafe(s: Stop) {
   map.setView([s.point[1], s.point[0]], Math.max(map.getZoom(), 2), {
     animate: false,
   });
+  safeMarkers.get(s.key)?.openPopup();
 }
 function toggle(key: string, on: boolean) {
   if (!p) return;
@@ -219,10 +309,23 @@ function renderChoices() {
     query = ($("safe-search") as HTMLInputElement).value.trim().toLowerCase();
   root.replaceChildren();
   const shown = data.safes.filter((s) =>
-    (display(s) + " " + s.notes).toLowerCase().includes(query),
+    (
+      display(s) +
+      " " +
+      s.notes +
+      " " +
+      accessLabel(access(s)) +
+      " " +
+      access(s)
+        .keys.map((k) => k.name)
+        .join(" ") +
+      (restricted(s) ? " locked restricted" : "")
+    )
+      .toLowerCase()
+      .includes(query),
   );
   $("selection-count").textContent =
-    `${p.order.length} selected / ${data.safes.length} source candidates · ${shown.length} listed · maximum 64 per run`;
+    `${p.order.length} selected / ${data.safes.length} source candidates · ${data.safes.filter(restricted).length} reported access restrictions · ${shown.length} listed · maximum 64 per run`;
   for (const s of shown) {
     const row = el("div", undefined, "safe-choice"),
       label = el("label"),
@@ -236,6 +339,7 @@ function renderChoices() {
       label,
       button("Locate", () => focusSafe(s)),
     );
+    if (restricted(s)) row.append(accessInfo(s));
     if (s.nearby)
       row.append(
         el(
@@ -280,6 +384,7 @@ function renderOrder() {
     const locate = button(display(s), () => focusSafe(s));
     locate.dataset.key = key;
     row.append(locate);
+    if (restricted(s)) row.append(accessInfo(s));
     const controls = el("div", undefined, "safe-actions"),
       up = button("↑", () => move(key, p!.order[i - 1])),
       down = button("↓", () => move(key, p!.order[i + 1])),
@@ -325,11 +430,31 @@ function calculate(optimize: boolean) {
   }
   const request = epoch;
   status.textContent = "Calculating run…";
-  worker = new Worker(new URL("./worker.ts", import.meta.url), {
-    type: "module",
-  });
+  // Production is bundled inline; Vite's dev worker still imports modules.
+  // Keep one pending bootstrap and send only the latest requested solve.
+  if (!worker) {
+    worker = new SafeRunWorker();
+    workerReady = false;
+    const booting = worker;
+    bootstrapTimer = setTimeout(() => {
+      if (worker !== booting) return;
+      releaseWorker(booting);
+      if (active && p?.start && p.order.length)
+        status.textContent =
+          "Route worker could not start within 10 seconds. Choose Optimize to retry.";
+    }, 10000);
+  }
+  const ownedWorker = worker;
+  const input = {
+    start: p.start,
+    stops: p.order.map((key) => ({ key, point: find(key).point })),
+    mode: p.mode,
+    optimize,
+    graph: p.mode === "roads" ? graph : null,
+  };
   const fail = (message: string) => {
-    if (request !== epoch) return;
+    if (request !== epoch || worker !== ownedWorker) return;
+    releaseWorker(ownedWorker);
     stopWork();
     status.textContent = message;
   };
@@ -340,21 +465,32 @@ function calculate(optimize: boolean) {
       ),
     10000,
   );
-  worker.onerror = (e) => {
+  ownedWorker.onerror = (e) => {
     e.preventDefault();
     fail(
       "Route worker failed. Previous order retained; choose Optimize to retry.",
     );
   };
-  worker.onmessage = (e) => {
+  ownedWorker.onmessage = (e) => {
+    if (e.data.ready) {
+      if (worker !== ownedWorker) return;
+      workerReady = true;
+      if (bootstrapTimer) clearTimeout(bootstrapTimer);
+      bootstrapTimer = null;
+      if (request !== epoch || !active || !p) {
+        releaseWorker(ownedWorker);
+        return;
+      }
+      ownedWorker.postMessage(input);
+      return;
+    }
     if (request !== epoch || !p) return;
     if (e.data.error) {
       fail(e.data.error);
       return;
     }
     result = e.data.result as SolveOutput;
-    worker?.terminate();
-    worker = null;
+    releaseWorker(ownedWorker);
     if (timer) clearTimeout(timer);
     timer = null;
     if (optimize) {
@@ -401,13 +537,7 @@ function calculate(optimize: boolean) {
         ).addTo(lines);
     });
   };
-  worker.postMessage({
-    start: p.start,
-    stops: p.order.map((key) => ({ key, point: find(key).point })),
-    mode: p.mode,
-    optimize,
-    graph: p.mode === "roads" ? graph : null,
-  });
+  if (workerReady) ownedWorker.postMessage(input);
 }
 async function load() {
   if (loading || !active) return;

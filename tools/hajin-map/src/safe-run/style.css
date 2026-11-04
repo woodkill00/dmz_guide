@@ -304,6 +304,59 @@ summary {
   color: #fff;
   border-color: #d6ddcf;
 }
+.safe-locked {
+  background: #a72937;
+  color: #fff;
+  border-color: #ffd1d7;
+}
+.safe-locked.safe-excluded {
+  background: #414e42;
+  color: #fff;
+  border-color: #ff98a3;
+  box-shadow: 0 0 0 2px #a72937;
+}
+.safe-lock-cue {
+  position: absolute;
+  right: -6px;
+  top: -7px;
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff0f1;
+  color: #751321;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: bold;
+  border: 1px solid #751321;
+}
+.safe-access-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+  overflow-wrap: anywhere;
+}
+.safe-choice > .safe-access-info {
+  grid-column: 1/-1;
+}
+.safe-access-badge {
+  color: #ffb6c1;
+  font-weight: bold;
+}
+.safe-access-info a {
+  font-size: 0.85rem;
+}
+.safe-access-info > details {
+  width: 100%;
+}
+#visit-order .safe-access-info {
+  margin: 5px 0;
+}
+.safe-access-legend strong {
+  color: #ffb6c1;
+}
 .safe-start-marker {
   background: #b9e9f1;
   color: #152017;
@@ -317,9 +370,13 @@ summary {
 .safe-run-page .leaflet-popup-content {
   line-height: 1.5;
   overflow-wrap: anywhere;
+  max-width: calc(100vw - 80px);
 }
 .safe-run-page .leaflet-popup-content button {
   width: 100%;
+}
+.safe-run-page .leaflet-popup-content a {
+  color: var(--safe-accent);
 }
 .safe-run-page .leaflet-container a.leaflet-popup-close-button {
   color: #fff;
@@ -328,6 +385,10 @@ summary {
   color: #fff;
 }
 @media (max-width: 760px) {
+  .safe-terrain:has(.leaflet-popup) .safe-map-tools {
+    top: auto;
+    bottom: 36px;
+  }
   .safe-layout {
     display: flex;
     flex-direction: column-reverse;
