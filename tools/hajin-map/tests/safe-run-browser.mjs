@@ -435,10 +435,30 @@ try {
         "official:a",
       ]);
       // HTML drag-and-drop has keyboard equivalents tested above.
-      await page
-        .locator("#visit-order li")
-        .last()
-        .dragTo(page.locator("#visit-order li").first());
+      const sourceGrip = page
+          .locator("#visit-order li")
+          .last()
+          .locator(".safe-stop-drag"),
+        targetGrip = page
+          .locator("#visit-order li")
+          .first()
+          .locator(".safe-stop-drag");
+      await sourceGrip.scrollIntoViewIfNeeded();
+      const grip = await sourceGrip.boundingBox();
+      await page.mouse.move(grip.x + grip.width / 2, grip.y + grip.height / 2);
+      await page.mouse.down();
+      // Start a real native drag before scrolling the route pane to its target.
+      await page.mouse.move(
+        grip.x + grip.width / 2 + 10,
+        grip.y + grip.height / 2,
+        { steps: 3 },
+      );
+      await targetGrip.scrollIntoViewIfNeeded();
+      const drop = await targetGrip.boundingBox();
+      await page.mouse.move(drop.x + drop.width / 2, drop.y + drop.height / 2, {
+        steps: 4,
+      });
+      await page.mouse.up();
       await solved();
       assert.equal((await order())[0], "official:d");
       await page.reload();

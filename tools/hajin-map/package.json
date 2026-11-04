@@ -14,7 +14,8 @@
     "test:engines": "node scripts/test-engines.cjs",
     "test:key-grid": "node --experimental-strip-types tests/key-grid-browser.mjs",
     "test:workflows": "node --experimental-strip-types tests/field-workflow-browser.mjs",
-    "test:safes": "node tests/safe-run-browser.mjs"
+    "test:safes": "node tests/safe-run-browser.mjs",
+    "test:sidebars": "node tests/sidebar-browser.mjs"
   },
   "dependencies": {
     "leaflet": "1.9.4"

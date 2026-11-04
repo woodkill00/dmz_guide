@@ -1,3 +1,4 @@
+import { mountSidebarSections } from "../map/sidebar-sections.ts";
 import L from "leaflet";
 import SafeRunWorker from "./worker.ts?worker&inline";
 import "leaflet/dist/leaflet.css";
@@ -23,20 +24,32 @@ import { accessLabel, unknownAccess } from "./access.ts";
 document.querySelector("#app")!.innerHTML = `
 <header class="safe-header"><div><p>HAJIN · FIELD PLANNING</p><h1>Safe runs</h1></div><a href="/">Open full map</a></header>
 <main class="safe-layout"><aside id="safe-controls" tabindex="-1" aria-label="Safe-run planner">
-<p class="safe-intro">Choose a start and safes to visit. These are source-reported candidates, not live or guaranteed spawns.</p>
+<div id="safe-intelligence" role="region" aria-label="Run status and source loading" tabindex="0"><p class="safe-intro">Choose a start and safes to visit. These are source-reported candidates, not live or guaranteed spawns.</p>
 <p id="data-status" role="status">Loading local source captures…</p><p id="saved-status" role="status"></p><button id="reload-data" type="button">Reload local captures</button>
-<fieldset disabled id="safe-settings"><legend>1 · Start and routing</legend>
+</div><div id="safe-start-pane" data-section-name="start and routing" role="region" aria-label="Start and routing" tabindex="0"><fieldset disabled id="safe-settings"><legend>1 · Start and routing</legend>
 <label for="spawn-select">Spawn location</label><select id="spawn-select"><option value="">Choose spawn or set a manual start</option></select>
 <p id="start-label">No start selected.</p><div class="safe-actions"><button id="pick-start" type="button" aria-pressed="false">Pick start on map</button><button id="clear-start" type="button">Clear start</button></div>
 <form id="manual-start"><div class="safe-xy"><label>X <input id="start-x" type="number" min="0" max="4096" step="any" required></label><label>Y <input id="start-y" type="number" min="0" max="4096" step="any" required></label></div><button type="submit">Set manual start</button></form>
 <label for="route-mode">Route geometry</label><select id="route-mode"><option value="direct">Direct lines · not roads</option><option value="roads">Local roads · partial, unverified</option></select><p id="road-status">Checking local road coverage…</p>
 <div class="safe-actions"><button id="optimize" type="button">Optimize order</button><button id="fit-route" type="button">Fit run</button></div><p class="safe-note">Efficient nearest-neighbor order, not a guaranteed shortest tour. Open route, no return to spawn. Distances are image pixels, not game meters or travel times.</p></fieldset>
-<fieldset disabled id="safe-choices"><legend>2 · Safe candidates</legend><label for="safe-search">Search safes, keys, access, source, notes or grid</label><input id="safe-search" type="search" maxlength="200"><div class="safe-actions"><button id="select-all" type="button">Select all safes</button><button id="select-none" type="button">Deselect all</button></div><p id="selection-count"></p><p class="safe-note safe-access-legend"><strong>Red !</strong>: source-reported locked/key/puzzle access. Gold: access not recorded, not guaranteed unlocked. Gray fill: excluded; red border still flags access requirements.</p><p class="safe-note">Search changes the list only. Matching names within 24 image pixels and compatible floors share one marker; differently named nearby entries stay separate for review. Key guides are linked only for a named access requirement in the same calibrated grid, never proximity alone.</p><div id="safe-list"></div></fieldset>
-<section aria-labelledby="route-heading"><h2 id="route-heading">3 · Visit order</h2><p id="route-status" role="status">Choose your start to plan a run.</p><p class="safe-note">Drag rows or use ↑ / ↓. Manual order stays until you choose Optimize.</p><ol id="visit-order"></ol></section>
+</div><div id="safe-start-divider" role="separator" aria-label="Resize start and safe candidate sections" tabindex="0"></div><div id="safe-candidates-pane" data-section-name="safe candidates" role="region" aria-label="Safe candidates" tabindex="0"><fieldset disabled id="safe-choices"><legend>2 · Safe candidates</legend><label for="safe-search">Search safes, keys, access, source, notes or grid</label><input id="safe-search" type="search" maxlength="200"><div class="safe-actions"><button id="select-all" type="button">Select all safes</button><button id="select-none" type="button">Deselect all</button></div><p id="selection-count"></p><p class="safe-note safe-access-legend"><strong>Red !</strong>: source-reported locked/key/puzzle access. Gold: access not recorded, not guaranteed unlocked. Gray fill: excluded; red border still flags access requirements.</p><p class="safe-note">Search changes the list only. Matching names within 24 image pixels and compatible floors share one marker; differently named nearby entries stay separate for review. Key guides are linked only for a named access requirement in the same calibrated grid, never proximity alone.</p><div id="safe-list"></div></fieldset>
+</div><div id="safe-route-divider" role="separator" aria-label="Resize safe candidates and visit order" tabindex="0"></div><div id="safe-route-pane" data-section-name="visit order" role="region" aria-label="Visit order and source notes" tabindex="0"><section aria-labelledby="route-heading"><h2 id="route-heading">3 · Visit order</h2><p id="route-status" role="status">Choose your start to plan a run.</p><p class="safe-note">Drag the ↕ handle or use ↑ / ↓. Manual order stays until you choose Optimize.</p><ol id="visit-order"></ol></section>
 <details><summary>Source captures and limitations</summary><ul id="source-list"></ul><p>Safes may overlap across providers, have access requirements, or be absent in a match. Nearby warnings are review hints, not confirmed duplicates. This page rereads reviewed local captures; update providers through the main map. It does not collect new remote data.</p><p>Road mode uses the separate local road file, not the main workspace’s private road edits. Missing road legs are left undrawn and listed below; dashed lines are off-road connectors.</p><a href="${hajin.source}" target="_blank" rel="noopener noreferrer">Official map background</a></details>
-</aside><section class="safe-terrain" aria-label="Safe-run map"><div id="safe-map" tabindex="0" role="region" aria-label="Hajin safe-run map. Arrow keys pan; plus and minus zoom."></div><div class="safe-map-tools" role="group" aria-label="Map controls"><button id="safe-zoom-in" type="button" aria-label="Zoom in">+</button><button id="safe-zoom-out" type="button" aria-label="Zoom out">−</button><button id="safe-reset" type="button">Full map</button><label><input id="safe-grid" type="checkbox" checked> Grid</label></div><p id="terrain-status" role="status"></p><p class="safe-map-credit">Source-reported safe locations · © Activision · manual planning</p></section></main>`;
+</div></aside><section class="safe-terrain" aria-label="Safe-run map"><div id="safe-map" tabindex="0" role="region" aria-label="Hajin safe-run map. Arrow keys pan; plus and minus zoom."></div><div class="safe-map-tools" role="group" aria-label="Map controls"><button id="safe-zoom-in" type="button" aria-label="Zoom in">+</button><button id="safe-zoom-out" type="button" aria-label="Zoom out">−</button><button id="safe-reset" type="button">Full map</button><label><input id="safe-grid" type="checkbox" checked> Grid</label></div><p id="terrain-status" role="status"></p><p class="safe-map-credit">Source-reported safe locations · © Activision · manual planning</p></section></main>`;
 const $ = <T extends HTMLElement>(id: string) =>
   document.getElementById(id) as T;
+mountSidebarSections({
+  root: $("safe-controls"),
+  panes: [
+    $("safe-start-pane"),
+    $("safe-candidates-pane"),
+    $("safe-route-pane"),
+  ],
+  dividers: [$("safe-start-divider"), $("safe-route-divider")],
+  fixed: [$("safe-intelligence")],
+  shares: [0.3, 0.35, 0.35],
+  minimum: 80,
+});
 const status = $("route-status"),
   savedStatus = $("saved-status"),
   dataStatus = $("data-status");
@@ -381,6 +394,15 @@ function renderOrder() {
       row = el("li");
     row.draggable = true;
     row.dataset.stop = key;
+    const handle = el("span", "↕", "safe-stop-drag");
+    handle.draggable = true;
+    handle.setAttribute("role", "img");
+    handle.setAttribute(
+      "aria-label",
+      `Drag safe ${i + 1} to reorder; use Up/Down buttons with keyboard or touch`,
+    );
+    handle.title = "Drag to reorder";
+    row.append(handle);
     const locate = button(display(s), () => focusSafe(s));
     locate.dataset.key = key;
     row.append(locate);
@@ -399,6 +421,7 @@ function renderOrder() {
     row.addEventListener("dragstart", (e) => {
       dragKey = key;
       e.dataTransfer?.setData("text/plain", key);
+      if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
     });
     row.addEventListener("dragover", (e) => e.preventDefault());
     row.addEventListener("drop", (e) => {

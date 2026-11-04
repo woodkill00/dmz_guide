@@ -1,3 +1,4 @@
+import {mountSidebarSections} from './map/sidebar-sections.ts';
 import {mountFieldToolbar} from './map/field-toolbar.ts';
 import {keyGridFocus} from './map/key-grid-control.ts';
 import { parseToolTarget } from './tool-links.ts';
@@ -56,8 +57,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <main class="workspace">
     <aside id="map-key" class="sidebar" aria-label="Map key">
       <div class="sidebar-heading"><span class="section-number">MAP KEY</span><button id="close-key" class="key-close" aria-label="Hide map key">×</button></div>
-      <div class="key-toolbar"><p>Choose the symbols shown on your map.</p><label class="grid-toggle"><input id="show-coordinate-grid" type="checkbox" checked aria-describedby="coordinate-grid-help"> Coordinate grid (A–J / 1–9)</label><p id="coordinate-grid-help" class="small-note">Source-aligned tactical grid. Unlabelled margins show —.</p><div class="layer-bulk"><button id="key-show-all" disabled>Show all</button><button id="key-hide-all" disabled>Hide all</button></div><p id="key-summary" role="status">Loading icons…</p></div>
-      <div id="map-key-content" class="key-content"></div>
+      <div id="key-controls" data-section-name="controls" class="key-toolbar"><p>Choose the symbols shown on your map.</p><label class="grid-toggle"><input id="show-coordinate-grid" type="checkbox" checked aria-describedby="coordinate-grid-help"> Coordinate grid (A–J / 1–9)</label><p id="coordinate-grid-help" class="small-note">Source-aligned tactical grid. Unlabelled margins show —.</p><div class="layer-bulk"><button id="key-show-all" disabled>Show all</button><button id="key-hide-all" disabled>Hide all</button></div><p id="key-summary" role="status">Loading icons…</p></div>
+      <div id="map-key-resizer" class="key-resizer" role="separator" aria-label="Resize map key sections" aria-orientation="horizontal" aria-controls="key-controls map-key-content" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" tabindex="0" title="Drag or use Up and Down to resize map key sections"></div>
+      <div id="map-key-content" data-section-name="layers" class="key-content"></div>
       <div class="overlay-summary">${icon('map')}<div><strong id="official-summary">Loading official locations…</strong><span>No authored markers yet</span></div><span id="official-summary-count" class="marker-count">—</span></div>
     </aside>
     <section class="map-workspace" aria-label="Hajin interactive map">
@@ -87,12 +89,19 @@ const sharedNavigation=document.querySelector<HTMLElement>('.companion-nav');
 if(sharedNavigation)document.querySelector('.app-header')!.after(sharedNavigation);
 const keyPanel = document.querySelector<HTMLElement>('#map-key')!;
 const keyToggle = document.querySelector<HTMLButtonElement>('#toggle-key')!;
+const keyControls = document.querySelector<HTMLElement>('#key-controls')!;
+const keyDivider = document.querySelector<HTMLElement>('#map-key-resizer')!;
+const keyHeading = document.querySelector<HTMLElement>('.sidebar-heading')!;
+const keySummary = document.querySelector<HTMLElement>('.overlay-summary')!;
+const keySplit=mountSidebarSections({root:keyPanel,panes:[keyControls,document.querySelector<HTMLElement>('#map-key-content')!],dividers:[keyDivider],fixed:[keyHeading,keySummary],shares:[.42,.58],minimum:120});
+const scheduleKeySplitSync=keySplit.refresh;
 let keyOpen = !keyBreakpoint.matches;
 function setKeyOpen(open: boolean, returnFocus = false) {
   keyOpen = open;
   keyPanel.hidden = !open;
   document.querySelector('.workspace')!.classList.toggle('key-hidden', !open);
   keyToggle.setAttribute('aria-expanded', String(open));
+  if (open) scheduleKeySplitSync();
   if (returnFocus) keyToggle.focus();
 }
 setKeyOpen(keyOpen);

@@ -123,10 +123,25 @@ h2 {
 }
 #safe-controls {
   padding: 12px;
-  overflow: auto;
+  overflow: hidden;
+  height: 100%;
   overscroll-behavior: contain;
   min-width: 0;
   border-right: 1px solid var(--safe-line);
+}
+#safe-intelligence {
+  flex: 0 0 auto;
+  max-block-size: clamp(96px, 22dvh, 160px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding-block-end: 8px;
+  border-bottom: 1px solid var(--safe-line);
+}
+#safe-controls > .sidebar-scroll-section fieldset {
+  margin: 0;
+}
+#safe-controls > .sidebar-scroll-section {
+  padding-block: 8px;
 }
 fieldset {
   margin: 16px 0;
@@ -190,15 +205,13 @@ fieldset > select {
   grid-column: 1/-1;
 }
 #safe-list {
-  max-height: calc(36dvh + 30px);
-  overflow: auto;
-  overscroll-behavior: contain;
   padding-right: 3px;
 }
 #visit-order {
   padding-left: 24px;
 }
 #visit-order li {
+  position: relative;
   padding: 6px;
   border-bottom: 1px solid var(--safe-line);
   overflow-wrap: anywhere;
@@ -207,6 +220,26 @@ fieldset > select {
   width: 100%;
   text-align: left;
   background: #1d281f;
+  padding-inline-start: 38px;
+}
+.safe-stop-drag {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  min-height: 34px;
+  border: 1px solid #849477;
+  border-radius: 4px;
+  color: var(--safe-accent);
+  font-size: 20px;
+  cursor: grab;
+  user-select: none;
+}
+.safe-stop-drag:active {
+  cursor: grabbing;
 }
 #route-status span {
   display: block;
@@ -400,7 +433,8 @@ summary {
     min-height: 300px;
   }
   #safe-controls {
-    overflow: visible;
+    height: clamp(560px, 90dvh, 920px);
+    flex: none;
     border-right: 0;
   }
   .safe-header {
