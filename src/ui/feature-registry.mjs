@@ -24,6 +24,14 @@ const rows = [
   ],
   ["home", "Home", "Prepare", "/", "Your field desk and recent work"],
   ["hajin-map", "Interactive map", "Map", "/", "Explore Hajin", "map"],
+  [
+    "safe-runs",
+    "Safe runs",
+    "Map",
+    "/safes.html",
+    "Select safes and a spawn to plan a visit order",
+    "map",
+  ],
   ["maps", "Maps", "Map", "/maps/", "Native map and location list"],
   [
     "map-workspace",

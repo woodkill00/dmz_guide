@@ -43,7 +43,10 @@ export function captureSource(value: CaptureDescriptor): MarkerSource {
     recordLink: () => p.page,
   };
 }
-export async function loadCurrentCaptures(): Promise<MarkerSource[]> {
+export async function loadCurrentCaptureSelection(): Promise<{
+  present: boolean;
+  sources: MarkerSource[];
+}> {
   const controller = new AbortController(),
     timer = setTimeout(() => controller.abort(), 5000);
   try {
@@ -51,7 +54,7 @@ export async function loadCurrentCaptures(): Promise<MarkerSource[]> {
       signal: controller.signal,
       cache: "no-store",
     });
-    if (response.status === 404) return [];
+    if (response.status === 404) return { present: false, sources: [] };
     const data = JSON.parse(
       new TextDecoder("utf-8", { fatal: true }).decode(
         await boundedBytes(response, 32768),
@@ -73,8 +76,11 @@ export async function loadCurrentCaptures(): Promise<MarkerSource[]> {
           s.id,
           "Owner-enabled reviewed local capture pointer.",
         );
-    return sources;
+    return { present: true, sources };
   } finally {
     clearTimeout(timer);
   }
+}
+export async function loadCurrentCaptures(): Promise<MarkerSource[]> {
+  return (await loadCurrentCaptureSelection()).sources;
 }

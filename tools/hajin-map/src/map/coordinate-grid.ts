@@ -1,8 +1,11 @@
 import L from "leaflet";
 import { gridGeometry, tacticalGrid } from "./tactical-grid.ts";
 import { hajin } from "./hajin.ts";
-const preferenceKey = "hajin-coordinate-grid-v1";
-export function createCoordinateGrid(map: L.Map, bounds: L.LatLngBounds) {
+export function createCoordinateGrid(
+  map: L.Map,
+  bounds: L.LatLngBounds,
+  preferenceKey: string | null = "hajin-coordinate-grid-v1",
+) {
   const supported =
     hajin.coordinateSpaceVersion === tacticalGrid.canonicalVersion &&
     hajin.provenance.sha256 === tacticalGrid.canonicalDigest &&
@@ -42,7 +45,8 @@ export function createCoordinateGrid(map: L.Map, bounds: L.LatLngBounds) {
   });
   let visible = true;
   try {
-    visible = localStorage.getItem(preferenceKey) !== "0";
+    visible =
+      preferenceKey === null || localStorage.getItem(preferenceKey) !== "0";
   } catch {
     /* Advisory preference; default on. */
   }
@@ -72,7 +76,8 @@ export function createCoordinateGrid(map: L.Map, bounds: L.LatLngBounds) {
       visible = value;
       display();
       try {
-        localStorage.setItem(preferenceKey, value ? "1" : "0");
+        if (preferenceKey !== null)
+          localStorage.setItem(preferenceKey, value ? "1" : "0");
       } catch {
         /* View remains usable without persistence. */
       }

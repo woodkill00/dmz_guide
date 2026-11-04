@@ -1,0 +1,365 @@
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #edf1e7;
+  background: #131815;
+  color-scheme: dark;
+  font-size: 14px;
+  --safe-line: #54604b;
+  --safe-accent: #e0e8ae;
+}
+.hajin-coordinate-grid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hajin-coordinate-grid line {
+  stroke: #e9f2d7;
+  stroke-opacity: 0.42;
+  stroke-width: 1;
+}
+.coordinate-grid-cell {
+  fill: #f0f5df;
+  stroke: #111b13;
+  stroke-width: 2.5;
+  paint-order: stroke fill;
+  font-family: "Courier New", monospace;
+  font-weight: 700;
+  dominant-baseline: hanging;
+  pointer-events: none;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+a {
+  color: var(--safe-accent);
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button,
+select,
+input {
+  min-height: calc(2rem + 6px);
+  max-width: 100%;
+  border: 1px solid #738364;
+  border-radius: 4px;
+  background: #253025;
+  color: #edf1e7;
+  padding: 6px 9px;
+}
+button {
+  cursor: pointer;
+}
+button:hover {
+  background: #384735;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+input[type="checkbox"] {
+  min-height: 20px;
+  width: 20px;
+  flex-shrink: 0;
+  accent-color: #d9e79a;
+}
+:focus-visible {
+  outline: 3px solid #ffdc83;
+  outline-offset: 3px;
+}
+p {
+  line-height: 1.5;
+}
+small,
+.safe-note {
+  color: #c1ccb7;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.safe-skip {
+  position: absolute;
+  top: -80px;
+  left: 8px;
+  z-index: 2000;
+  background: #172119;
+  padding: 12px;
+}
+.safe-skip:focus {
+  top: 8px;
+}
+.safe-header {
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--safe-line);
+}
+.safe-header p {
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  margin: 0;
+  color: #c4d297;
+}
+h1 {
+  font-size: 1.6rem;
+  margin: 3px 0;
+}
+h2 {
+  font-size: 1rem;
+}
+.safe-layout {
+  display: grid;
+  grid-template-columns: clamp(290px, calc(26vw + 35px), 390px) minmax(0, 1fr);
+  height: calc(100dvh - 135px);
+  min-height: 500px;
+}
+#safe-controls {
+  padding: 12px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  min-width: 0;
+  border-right: 1px solid var(--safe-line);
+}
+fieldset {
+  margin: 16px 0;
+  padding: 10px;
+  border: 1px solid var(--safe-line);
+  min-width: 0;
+}
+legend {
+  font-weight: bold;
+  color: var(--safe-accent);
+  padding: 0 6px;
+}
+fieldset > label {
+  display: block;
+  margin: 8px 0 5px;
+}
+fieldset > input,
+fieldset > select {
+  width: 100%;
+}
+.safe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 7px 0;
+}
+.safe-xy {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+.safe-xy label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.safe-xy input {
+  width: 100%;
+  min-width: 0;
+}
+#manual-start {
+  border-top: 1px solid var(--safe-line);
+  margin-top: 10px;
+}
+.safe-choice {
+  padding: 8px 0;
+  border-top: 1px solid var(--safe-line);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: center;
+}
+.safe-choice label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow-wrap: anywhere;
+}
+.safe-choice small {
+  grid-column: 1/-1;
+}
+#safe-list {
+  max-height: calc(36dvh + 30px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding-right: 3px;
+}
+#visit-order {
+  padding-left: 24px;
+}
+#visit-order li {
+  padding: 6px;
+  border-bottom: 1px solid var(--safe-line);
+  overflow-wrap: anywhere;
+}
+#visit-order li > button {
+  width: 100%;
+  text-align: left;
+  background: #1d281f;
+}
+#route-status span {
+  display: block;
+  margin-bottom: 6px;
+}
+details {
+  padding: 12px 0;
+  border-top: 1px solid var(--safe-line);
+  line-height: 1.5;
+}
+summary {
+  cursor: pointer;
+  color: var(--safe-accent);
+}
+#source-list {
+  padding-left: 20px;
+  overflow-wrap: anywhere;
+}
+.safe-intro {
+  margin-top: 0;
+}
+#saved-status {
+  font-size: 0.85rem;
+  color: #d1dfad;
+}
+#data-status {
+  overflow-wrap: anywhere;
+}
+.safe-terrain {
+  position: relative;
+  min-width: 0;
+  isolation: isolate;
+  background: #0c120f;
+}
+#safe-map {
+  width: 100%;
+  height: 100%;
+  background: #0c120f;
+}
+.safe-map-tools {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 450;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  max-width: calc(100% - 24px);
+  padding: 5px;
+  background: #152017ee;
+  border: 1px solid var(--safe-line);
+  border-radius: 5px;
+}
+.safe-map-tools label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+#terrain-status {
+  position: absolute;
+  left: 15%;
+  top: 40%;
+  max-width: 70%;
+  z-index: 500;
+  background: #172119;
+  padding: 12px;
+  border-radius: 5px;
+}
+.safe-map-credit {
+  position: absolute;
+  bottom: 4px;
+  left: 10px;
+  z-index: 400;
+  background: #152017ee;
+  padding: 5px;
+  max-width: calc(100% - 20px);
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+.safe-number-marker,
+.safe-start-marker {
+  display: grid;
+  place-items: center;
+  background: #f4d274;
+  color: #152017;
+  border: 2px solid #111b12;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 13px;
+  box-shadow: 0 1px 5px #000;
+}
+.safe-excluded {
+  background: #414e42;
+  color: #fff;
+  border-color: #d6ddcf;
+}
+.safe-start-marker {
+  background: #b9e9f1;
+  color: #152017;
+  border-radius: 4px;
+}
+.safe-run-page .leaflet-popup-content-wrapper,
+.safe-run-page .leaflet-popup-tip {
+  background: #1b281e;
+  color: #edf1e7;
+}
+.safe-run-page .leaflet-popup-content {
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.safe-run-page .leaflet-popup-content button {
+  width: 100%;
+}
+.safe-run-page .leaflet-container a.leaflet-popup-close-button {
+  color: #fff;
+}
+.safe-run-page .leaflet-grid-label {
+  color: #fff;
+}
+@media (max-width: 760px) {
+  .safe-layout {
+    display: flex;
+    flex-direction: column-reverse;
+    height: auto;
+    min-height: 0;
+  }
+  .safe-terrain {
+    height: calc(55dvh + 30px);
+    min-height: 300px;
+  }
+  #safe-controls {
+    overflow: visible;
+    border-right: 0;
+  }
+  .safe-header {
+    padding: 8px 12px;
+  }
+  .safe-header a {
+    max-width: 45%;
+    text-align: right;
+  }
+  .safe-map-tools {
+    top: 8px;
+    right: 8px;
+    max-width: calc(100% - 16px);
+  }
+  .safe-header h1 {
+    font-size: 1.4rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}

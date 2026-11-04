@@ -27,6 +27,18 @@ These paths are ignored. Never force-add unknown-rights assets, private screensh
 
 ## Map controls
 
+### Safe-run map
+
+Open **More → Safe runs**, or `http://127.0.0.1:5175/safes.html`, for a separate safe-planning page. It reuses your local Hajin terrain and current reviewed captures without changing main-map layers or private routes. It lists positioned source-reported safe candidates, not a certified complete/live safe catalog. Sources and capture dates are shown on the page. If a capture fails validation or cannot reload, the previous valid run stays available; a fresh page shows a retry message.
+
+Choose a reported spawn, use **Pick start on map**, right-click terrain, or enter canonical image X/Y. Check the safes you want; search does not change selection. **Optimize order** calculates a deterministic nearest-neighbor open route with no return to the start. Drag visit rows or use their up/down buttons to set a manual order; changing the start or selecting more safes preserves that order until Optimize. Remove individual stops or Deselect all to clear the run. Fit run frames selected stops. Run preferences persist separately in this browser; they are not a backup or part of the main workspace’s private route export.
+
+Direct lines show image-pixel planning distance, not traversable roads, meters or travel time. Road mode uses `/maps/hajin/roads.local.json`, a separate validated but partial/unverified local network; it does not read private road edits. Solid gold lines are available road paths, dashed pale lines off-road connectors, and missing legs are left undrawn and named in the visit summary. No globally shortest route, live positioning, safe access or current match availability is promised.
+
+Matching normalized names within 24 image pixels and compatible floors share a display marker. Differently named nearby source entries remain separate with a possible-overlap warning: inspect them and deselect entries you consider the same physical safe. No source evidence is deleted. Reference-only unregistered points stay unplotted. At most 200 safe candidates and 200 spawns are accepted, with 64 selected stops per run. Larger fresh candidate sets start unselected; new entries that would overflow 64 stay unselected with an explanation. Existing manual order/exclusions are preserved.
+
+**Reload local captures** rereads reviewed files only; use the main map’s update workflow to acquire new source captures. Permission for collection does not imply permission to publish the downloaded assets. For synthetic three-browser safe-run verification, run `npm --prefix tools/hajin-map run test:safes`; domain tests are included in `npm run map:test`.
+
 Map key always opens the legend directly, including before Layers. Clicking Map key again leaves it visible. Close with × or Escape within the panel. Every supplied category shows its icon, name and count; zero-count categories remain listed without invented markers. Individual checkboxes and Show all / Hide all share state with Sources & Layers.
 
 Sources & Layers organizes imported points by website and category. Visibility changes retain a source's custom mix. Selecting one icon from a hidden source displays that category alone. Preferences are browser-local; storage failure falls back safely, and browser storage is not a backup. Private authored markers and Reviewed map have their own controls. My workspace provides point editing, icons, source inspection/calibration, evidence review and private backups; see the [workspace workflow](../tools/hajin-map/README.md).

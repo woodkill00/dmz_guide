@@ -7,7 +7,7 @@ import { gridReferenceAt } from './tactical-grid.ts';
 
 export type MapState = 'loading' | 'ready' | 'failed';
 
-export function createMapView(element: HTMLElement, onState: (state: MapState) => void, onPosition: (x: number | null, y: number | null, grid?:string|null) => void, onZoom: (zoom: number) => void) {
+export function createMapView(element: HTMLElement, onState: (state: MapState) => void, onPosition: (x: number | null, y: number | null, grid?:string|null) => void, onZoom: (zoom: number) => void, options:{gridPreferenceKey?:string|null}={}) {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const crs = Object.assign({}, L.CRS.Simple, { transformation: new L.Transformation(1 / 16, 0, 1 / 16, 0) });
   const bounds = L.latLngBounds([0, 0], [hajin.height, hajin.width]);
@@ -22,7 +22,7 @@ export function createMapView(element: HTMLElement, onState: (state: MapState) =
   basemapPane.style.zIndex = '200';
   basemapPane.style.pointerEvents = 'none';
   const overlay = L.layerGroup().addTo(map);
-  const coordinateGrid=createCoordinateGrid(map,bounds);
+  const coordinateGrid=createCoordinateGrid(map,bounds,options.gridPreferenceKey);
   let image: L.ImageOverlay | undefined;
   let generation = 0;
   let overview = true;

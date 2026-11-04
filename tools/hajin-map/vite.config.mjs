@@ -7,13 +7,13 @@ const root = fileURLToPath(new URL(".", import.meta.url));
 export default defineConfig(({ mode }) => ({
   plugins: [
     referencePlugin(),
-    {name:"shared-page-navigation",transformIndexHtml(html,context){const help=context.filename.endsWith("help.html");return html.replace("<!-- MAIN_NAVIGATION -->",renderMainNavigation({surface:help?"help":"map",page:help?"map-help":"hajin-map"}));}},
+    {name:"shared-page-navigation",transformIndexHtml(html,context){const help=context.filename.endsWith("help.html"),safe=context.filename.endsWith("safes.html");return html.replace("<!-- MAIN_NAVIGATION -->",renderMainNavigation({surface:help?"help":"map",page:help?"map-help":safe?"safe-runs":"hajin-map"}));}},
     sourceUpdatePlugin({
       root,
       enabled: loadEnv(mode, root, "DMZ_").DMZ_ENABLE_SOURCE_UPDATES === "1",
     }),
   ],
-  build:{rollupOptions:{input:{map:fileURLToPath(new URL("index.html",import.meta.url)),help:fileURLToPath(new URL("help.html",import.meta.url))}}},
+  build:{rollupOptions:{input:{map:fileURLToPath(new URL("index.html",import.meta.url)),help:fileURLToPath(new URL("help.html",import.meta.url)),safes:fileURLToPath(new URL("safes.html",import.meta.url))}}},
   server: {
     fs: {
       allow: [
