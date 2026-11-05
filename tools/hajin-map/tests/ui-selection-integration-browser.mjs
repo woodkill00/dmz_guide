@@ -238,6 +238,17 @@ try {
           route.data.fieldGuide.routes[0].waypoints[0].kind,
           "record",
         );
+        // IndexedDB visibility precedes receipt verification and the owning UI refresh.
+        // Observe the real committed revision and unlocked controls before choosing Back.
+        await page.waitForFunction((revision) => {
+          const body = document.querySelector("#workspace-content");
+          return (
+            document.querySelector("#workspace-dialog")?.dataset.revision ===
+              String(revision) &&
+            body?.getAttribute("aria-busy") === "false" &&
+            !body.inert
+          );
+        }, route.revision);
         // A confirmed mutation may return to the owning task; otherwise leave
         // the still-valid readonly source through its real Back action.
         if (await page.locator("#ui-selection-back").count())

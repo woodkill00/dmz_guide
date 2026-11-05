@@ -314,10 +314,19 @@ html[data-ui-variant="modern"] :is(.notice, .workspace-status) {
   html[data-ui-variant="modern"] .site-nav > .nav-more {
     position: static;
   }
-  html[data-ui-variant="modern"] .nav-more > div {
+  html[data-ui-variant="modern"]
+    .site-nav[data-navigation-surface]
+    .nav-more
+    > div {
+    box-sizing: border-box;
     left: 10px;
     right: 10px;
-    max-width: calc(100vw - 20px);
+    inline-size: min(100%, calc(100vw - 20px));
+    max-inline-size: calc(100vw - 20px);
+  }
+  html[data-ui-variant="modern"] .hub-card:has(> h3) {
+    flex-direction: column;
+    align-items: stretch;
   }
   html[data-ui-variant="modern"] main:not(.workspace) {
     padding: 0.8rem;
@@ -404,4 +413,6 @@ html[data-ui-variant="modern"] :is(button, .button, input, select, textarea) {
   border-color: var(--ws-control-line);
 }
 
-html[data-ui-variant=modern] .site-nav :is(summary,button){color:var(--ws-text)}
+html[data-ui-variant="modern"] .site-nav :is(summary, button) {
+  color: var(--ws-text);
+}
