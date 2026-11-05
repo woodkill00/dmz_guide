@@ -1,0 +1,89 @@
+/* Presentation only: checklist ordering, counters and saved events remain domain owned. */
+html[data-ui-variant="modern"] #boss-checklist {
+  container: boss-checklist / inline-size;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  font-size: max(14px, 0.875rem);
+  line-height: 1.4;
+}
+html[data-ui-variant="modern"]
+  #boss-checklist
+  :is(.boss-group, .boss-name, td, th) {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+html[data-ui-variant="modern"] #boss-checklist .boss-group {
+  margin-block: 0.75rem;
+}
+html[data-ui-variant="modern"]
+  #boss-checklist
+  :is(.boss-name > a, .boss-mobile-label, .boss-count-status) {
+  font-size: max(14px, 0.875rem);
+  line-height: 1.4;
+}
+html[data-ui-variant="modern"] #boss-checklist .boss-counter-actions {
+  flex-shrink: 0;
+  gap: 0.125rem;
+}
+html[data-ui-variant="modern"] #boss-checklist .boss-counter-actions strong {
+  min-inline-size: 3ch;
+  font-variant-numeric: tabular-nums;
+}
+html[data-ui-variant="modern"]
+  #boss-checklist
+  :is(.boss-counter-actions button, .boss-order-handle) {
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  margin: 0;
+}
+@container boss-checklist (max-width: 38rem) {
+  html[data-ui-variant="modern"] #boss-checklist .boss-directory,
+  html[data-ui-variant="modern"] #boss-checklist .boss-directory tbody {
+    display: block;
+  }
+  html[data-ui-variant="modern"] #boss-checklist .boss-directory thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  html[data-ui-variant="modern"] #boss-checklist .boss-directory tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding-block: 0.25rem;
+    border-block-end: 1px solid var(--ws-line, #60715e);
+  }
+  html[data-ui-variant="modern"] #boss-checklist .boss-directory td {
+    display: block;
+    padding: 0.125rem 0.25rem;
+    border: 0;
+  }
+  html[data-ui-variant="modern"]
+    #boss-checklist
+    .boss-directory
+    td:first-child {
+    grid-column: 1 / -1;
+  }
+  html[data-ui-variant="modern"] #boss-checklist .boss-mobile-label {
+    display: block;
+    min-block-size: 1.4em;
+  }
+  html[data-ui-variant="modern"] #boss-checklist .boss-count-status {
+    display: none;
+  }
+}
+@container boss-checklist (max-width: 18rem) {
+  html[data-ui-variant="modern"] #boss-checklist .boss-directory tr {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  html[data-ui-variant="modern"]
+    #boss-checklist
+    .boss-directory
+    td:not(:first-child) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+}
