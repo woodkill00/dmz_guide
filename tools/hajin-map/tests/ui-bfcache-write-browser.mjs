@@ -38,198 +38,265 @@ try {
     const browser = await engine.launch();
     try {
       for (const departure of [false, true]) {
-        const context = await browser.newContext({
-            viewport: { width: 1440, height: 1000 },
-          }),
-          page = await context.newPage(),
-          errors = [],
-          external = [];
-        const row = {
-          engine: engineName,
-          departure,
-          syntheticPersistedEvents: true,
-          actualBFcacheEligibility: "not tested",
-        };
-        try {
-          page.on("pageerror", (e) => errors.push(e.message));
-          await context.route("**/*", (r) => {
-            const u = new URL(r.request().url());
-            if (u.origin === "http://127.0.0.1:5296") return r.continue();
-            external.push(u.origin + u.pathname);
-            return r.abort();
-          });
-          const image = await page.evaluate(() => {
-            const c = document.createElement("canvas");
-            c.width = c.height = 128;
-            c.getContext("2d").fillRect(0, 0, 128, 128);
-            return c.toDataURL().split(",")[1];
-          });
-          await context.route("**/maps/hajin/v1/background.webp", (r) =>
-            r.fulfill({
-              contentType: "image/png",
-              body: Buffer.from(image, "base64"),
+        for (const acknowledgement of ["after-resume", "while-suspended"]) {
+          const context = await browser.newContext({
+              viewport: { width: 1440, height: 1000 },
             }),
-          );
-          await context.route("**/maps/hajin/official/markers.json", (r) =>
-            r.fulfill({
-              json: {
-                schemaVersion: 1,
-                sourcePage:
-                  "https://www.callofduty.com/guides/modernwarfare4/dmz-maps/hajin",
-                capturedAt: "2026-11-05T00:00:00Z",
-                categories: [],
-                records: [],
-              },
-            }),
-          );
-          await context.route("**/src/workspace/store.ts", async (r) => {
-            const response = await r.fetch();
-            let source = await response.text();
-            assert(source.includes("export async function openWorkspace("));
-            source = source.replace(
-              "export async function openWorkspace(",
-              "async function originalWorkspace(",
-            );
-            source +=
-              "\nexport async function openWorkspace(options){const real=await originalWorkspace(options);return {...real,commit:async(...args)=>{window.__writeAttempts=(window.__writeAttempts??0)+1;const receipt=await real.commit(...args);window.__durableWrites=(window.__durableWrites??0)+1;if(window.__holdAck)await new Promise(resolve=>window.__releaseAck=resolve);window.__acks=(window.__acks??0)+1;return receipt;}};}";
-            await r.fulfill({ response, body: source });
-          });
-          await page.goto("http://127.0.0.1:5296/");
-          await page.waitForSelector(
-            'html[data-ui-variant="modern"][data-ui-contract="071-v1"][data-ui-mounted="071-v1"][data-ui-adapter="map-pane"]',
-          );
-          await page.locator("#workspace-open").click();
-          const initial = await durable(page),
-            title = "Synthetic durable point across persisted events";
-          await page.locator("#point-title").fill(title);
-          await page.locator("#point-owned").check();
-          await page.evaluate(() => (window.__holdAck = true));
-          const guard = page.locator("#ui-pane-departure-guard");
-          if (departure) {
-            await page.locator("#workspace-tab-icons").click();
-            await guard
-              .getByRole("button", { name: "Save and continue", exact: true })
-              .click();
-          } else await page.locator("#save-point").click();
-          await page.waitForFunction(() => !!window.__releaseAck);
-          const held = await durable(page);
-          assert.equal(
-            held.current.data.annotations.length,
-            (initial.current?.data.annotations.length ?? 0) + 1,
-          );
-          assert.equal(held.writes, initial.writes + 1);
-          assert.equal(held.current.data.annotations.at(-1).title, title);
-          row.held = {
-            revision: held.current.revision,
-            count: held.current.data.annotations.length,
-            attempts: held.attempts,
-            writes: held.writes,
+            page = await context.newPage(),
+            errors = [],
+            external = [];
+          const row = {
+            engine: engineName,
+            departure,
+            acknowledgement,
+            syntheticPersistedEvents: true,
+            actualBFcacheEligibility: "not tested",
           };
-          await page.evaluate(() => {
-            window.dispatchEvent(
-              new PageTransitionEvent("pagehide", { persisted: true }),
+          try {
+            page.on("pageerror", (e) => errors.push(e.message));
+            await context.route("**/*", (r) => {
+              const u = new URL(r.request().url());
+              if (u.origin === "http://127.0.0.1:5296") return r.continue();
+              external.push(u.origin + u.pathname);
+              return r.abort();
+            });
+            const image = await page.evaluate(() => {
+              const c = document.createElement("canvas");
+              c.width = c.height = 128;
+              c.getContext("2d").fillRect(0, 0, 128, 128);
+              return c.toDataURL().split(",")[1];
+            });
+            await context.route("**/maps/hajin/v1/background.webp", (r) =>
+              r.fulfill({
+                contentType: "image/png",
+                body: Buffer.from(image, "base64"),
+              }),
             );
-            window.dispatchEvent(
-              new PageTransitionEvent("pageshow", { persisted: true }),
+            await context.route("**/maps/hajin/official/markers.json", (r) =>
+              r.fulfill({
+                json: {
+                  schemaVersion: 1,
+                  sourcePage:
+                    "https://www.callofduty.com/guides/modernwarfare4/dmz-maps/hajin",
+                  capturedAt: "2026-11-05T00:00:00Z",
+                  categories: [],
+                  records: [],
+                },
+              }),
             );
-          });
-          assert.equal(
-            await page.locator("#icon-studio").count(),
-            0,
-            "No destination during outstanding write",
-          );
-          assert.equal(
-            (await durable(page)).attempts,
-            held.attempts,
-            "Resume must not resubmit",
-          );
-          await page.evaluate(() => {
-            window.__holdAck = false;
-            window.__releaseAck();
-          });
-          await page.waitForFunction(
-            () =>
-              document
-                .querySelector("#workspace-content")
-                ?.getAttribute("aria-busy") === "false",
-          );
-          await page.waitForTimeout(100);
-          const confirmed = await durable(page);
-          row.confirmed = {
-            revision: confirmed.current.revision,
-            count: confirmed.current.data.annotations.length,
-            attempts: confirmed.attempts,
-            writes: confirmed.writes,
-            icons: await page.locator("#icon-studio").count(),
-            guard: await guard.isVisible(),
-            title: (await page.locator("#point-title").count())
-              ? await page.locator("#point-title").inputValue()
-              : null,
-          };
-          assert.equal(
-            confirmed.attempts,
-            held.attempts,
-            "Receipt must not replay",
-          );
-          assert.equal(confirmed.current.revision, held.current.revision);
-          assert.equal(
-            confirmed.current.data.annotations.length,
-            held.current.data.annotations.length,
-          );
-          assert.equal(
-            await page.locator("#icon-studio").count(),
-            0,
-            "Old departure intent cannot navigate after persisted lifecycle change",
-          );
-          if (await guard.isVisible())
-            await guard
-              .getByRole("button", { name: "Stay", exact: true })
-              .click();
-          // An enabled retained submit must never create a second copy of the same confirmed draft.
-          if (
-            (await page.locator("#point-title").inputValue()) === title &&
-            (await page.locator("#save-point").isEnabled())
-          ) {
-            await page.locator("#save-point").click();
+            await context.route("**/src/workspace/store.ts", async (r) => {
+              const response = await r.fetch();
+              let source = await response.text();
+              assert(source.includes("export async function openWorkspace("));
+              source = source.replace(
+                "export async function openWorkspace(",
+                "async function originalWorkspace(",
+              );
+              source +=
+                "\nexport async function openWorkspace(options){const real=await originalWorkspace(options);return {...real,commit:async(...args)=>{window.__writeAttempts=(window.__writeAttempts??0)+1;const receipt=await real.commit(...args);window.__durableWrites=(window.__durableWrites??0)+1;if(window.__holdAck)await new Promise(resolve=>window.__releaseAck=resolve);window.__acks=(window.__acks??0)+1;return receipt;}};}";
+              await r.fulfill({ response, body: source });
+            });
+            await page.goto("http://127.0.0.1:5296/");
+            await page.waitForSelector(
+              'html[data-ui-variant="modern"][data-ui-contract="071-v1"][data-ui-mounted="071-v1"][data-ui-adapter="map-pane"]',
+            );
+            await page.locator("#workspace-open").click();
+            const initial = await durable(page),
+              title = "Synthetic durable point across persisted events";
+            await page.locator("#point-title").fill(title);
+            await page.locator("#point-owned").check();
+            await page.evaluate(() => (window.__holdAck = true));
+            const guard = page.locator("#ui-pane-departure-guard");
+            if (departure) {
+              await page.locator("#workspace-tab-icons").click();
+              await guard
+                .getByRole("button", { name: "Save and continue", exact: true })
+                .click();
+            } else await page.locator("#save-point").click();
+            await page.waitForFunction(() => !!window.__releaseAck);
+            const held = await durable(page);
+            assert.equal(
+              held.current.data.annotations.length,
+              (initial.current?.data.annotations.length ?? 0) + 1,
+            );
+            assert.equal(held.writes, initial.writes + 1);
+            assert.equal(held.current.data.annotations.at(-1).title, title);
+            row.held = {
+              revision: held.current.revision,
+              count: held.current.data.annotations.length,
+              attempts: held.attempts,
+              writes: held.writes,
+            };
+            const originalURL = page.url();
+            await page.evaluate(() =>
+              window.dispatchEvent(
+                new PageTransitionEvent("pagehide", { persisted: true }),
+              ),
+            );
+            if (acknowledgement === "after-resume")
+              await page.evaluate(() =>
+                window.dispatchEvent(
+                  new PageTransitionEvent("pageshow", { persisted: true }),
+                ),
+              );
+            else await page.locator("#ui-map-view").focus();
+            const hiddenFocusBefore = await page.evaluate(
+              () => document.activeElement?.id,
+            );
+            assert.equal(
+              await page.locator("#icon-studio").count(),
+              0,
+              "No destination during outstanding write",
+            );
+            assert.equal(
+              (await durable(page)).attempts,
+              held.attempts,
+              "Lifecycle must not resubmit",
+            );
+            await page.evaluate(() => {
+              window.__holdAck = false;
+              window.__releaseAck();
+            });
             await page.waitForFunction(
               () =>
                 document
                   .querySelector("#workspace-content")
                   ?.getAttribute("aria-busy") === "false",
             );
+            await page.waitForTimeout(100);
+            if (acknowledgement === "while-suspended") {
+              const hidden = await durable(page);
+              row.hidden = {
+                revision: hidden.current.revision,
+                count: hidden.current.data.annotations.length,
+                attempts: hidden.attempts,
+                writes: hidden.writes,
+                focusBefore: hiddenFocusBefore,
+                focusAfter: await page.evaluate(
+                  () => document.activeElement?.id,
+                ),
+                title: await page.locator("#point-title").inputValue(),
+              };
+              assert.equal(
+                row.hidden.focusAfter,
+                hiddenFocusBefore,
+                "Acknowledgement while suspended cannot steal focus",
+              );
+              assert.equal(
+                row.hidden.title,
+                title,
+                "Confirmed form reconciliation must defer while suspended",
+              );
+              assert.equal(hidden.current.revision, held.current.revision);
+              assert.equal(
+                hidden.current.data.annotations.length,
+                held.current.data.annotations.length,
+              );
+              assert.equal(hidden.attempts, held.attempts);
+              assert.equal(
+                await page.locator("#icon-studio").count(),
+                0,
+                "Suspended receipt must not navigate",
+              );
+              await page.evaluate(() =>
+                window.dispatchEvent(
+                  new PageTransitionEvent("pageshow", { persisted: true }),
+                ),
+              );
+              await page.waitForTimeout(100);
+            }
+            assert.equal(
+              page.url(),
+              originalURL,
+              "Lifecycle receipt cannot change URL",
+            );
+            assert.equal(
+              context.pages().length,
+              1,
+              "Lifecycle receipt cannot open a new page",
+            );
+            const confirmed = await durable(page);
+            row.confirmed = {
+              revision: confirmed.current.revision,
+              count: confirmed.current.data.annotations.length,
+              attempts: confirmed.attempts,
+              writes: confirmed.writes,
+              icons: await page.locator("#icon-studio").count(),
+              guard: await guard.isVisible(),
+              title: (await page.locator("#point-title").count())
+                ? await page.locator("#point-title").inputValue()
+                : null,
+            };
+            assert.equal(
+              confirmed.attempts,
+              held.attempts,
+              "Receipt must not replay",
+            );
+            assert.equal(confirmed.current.revision, held.current.revision);
+            assert.equal(
+              confirmed.current.data.annotations.length,
+              held.current.data.annotations.length,
+            );
+            assert.equal(
+              await page.locator("#icon-studio").count(),
+              0,
+              "Old departure intent cannot navigate after persisted lifecycle change",
+            );
+            if (await guard.isVisible())
+              await guard
+                .getByRole("button", { name: "Stay", exact: true })
+                .click();
+            // An enabled retained submit must never create a second copy of the same confirmed draft.
+            if (
+              (await page.locator("#point-title").inputValue()) === title &&
+              (await page.locator("#save-point").isEnabled())
+            ) {
+              await page.locator("#save-point").click();
+              await page.waitForFunction(
+                () =>
+                  document
+                    .querySelector("#workspace-content")
+                    ?.getAttribute("aria-busy") === "false",
+              );
+            }
+            const after = await durable(page);
+            row.afterRetry = {
+              revision: after.current.revision,
+              count: after.current.data.annotations.length,
+              attempts: after.attempts,
+              writes: after.writes,
+            };
+            assert.equal(
+              after.current.data.annotations.length,
+              held.current.data.annotations.length,
+              "Confirmed retained draft must not be resubmittable as a duplicate",
+            );
+            assert.equal(
+              after.current.revision,
+              held.current.revision,
+              "Confirmed draft reconciliation must not issue another write",
+            );
+            assert.notEqual(
+              await page.locator("#point-title").inputValue(),
+              title,
+              "Confirmed owned form reconciles before admitting another write",
+            );
+            assert.deepEqual(errors, []);
+            assert.deepEqual(external, []);
+            row.pass = true;
+          } catch (e) {
+            row.pass = false;
+            row.failure = e.message;
+            failures.push({
+              engine: engineName,
+              departure,
+              acknowledgement,
+              message: e.message,
+            });
+          } finally {
+            rows.push(row);
+            await context.close();
           }
-          const after = await durable(page);
-          row.afterRetry = {
-            revision: after.current.revision,
-            count: after.current.data.annotations.length,
-            attempts: after.attempts,
-            writes: after.writes,
-          };
-          assert.equal(
-            after.current.data.annotations.length,
-            held.current.data.annotations.length,
-            "Confirmed retained draft must not be resubmittable as a duplicate",
-          );
-          assert.equal(
-            after.current.revision,
-            held.current.revision,
-            "Confirmed draft reconciliation must not issue another write",
-          );
-          assert.notEqual(
-            await page.locator("#point-title").inputValue(),
-            title,
-            "Confirmed owned form reconciles before admitting another write",
-          );
-          assert.deepEqual(errors, []);
-          assert.deepEqual(external, []);
-          row.pass = true;
-        } catch (e) {
-          row.pass = false;
-          row.failure = e.message;
-          failures.push({ engine: engineName, departure, message: e.message });
-        } finally {
-          rows.push(row);
-          await context.close();
         }
       }
     } finally {
