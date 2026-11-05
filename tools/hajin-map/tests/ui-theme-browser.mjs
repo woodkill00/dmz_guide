@@ -1,5 +1,6 @@
 // Modern display only. Synthetic terrain/captures, no owner profile or provider reads.
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { createServer as netServer } from "node:net";
 import { createServer } from "vite";
@@ -29,7 +30,10 @@ const marker = (id, name, category, x, y) => ({
   coordinateSpaceVersion: "hajin-official-v1-4096",
   x: x / 4096,
   y: y / 4096,
-  notes: "Synthetic theme fixture only.",
+  notes:
+    category === "safe"
+      ? "SYNTHETIC inside a locked room. Requires Example key."
+      : "Synthetic theme fixture only.",
 });
 const snapshot = {
   schemaVersion: 1,
@@ -108,7 +112,6 @@ async function camera(page, surface) {
     const module = await import(
       surface === "safe" ? "/src/safe-run/app.ts" : "/src/main.ts"
     );
-    assert:;
     const map = module.viewer?.map;
     if (!map) throw new Error("Exact camera API unavailable for " + surface);
     return { center: map.getCenter(), zoom: map.getZoom() };
@@ -158,6 +161,13 @@ try {
                 : route.fulfill({ body: image, contentType: "image/png" });
             return route.continue();
           });
+          if (process.env.DMZ_TEST_THEME_CSS)
+            await context.route("**/src/map/modern-theme.css*", async (route) =>
+              route.fulfill({
+                contentType: "text/css",
+                body: await readFile(process.env.DMZ_TEST_THEME_CSS, "utf8"),
+              }),
+            );
           await context.route("**/__theme-text.css", (route) =>
             route.fulfill({
               contentType: "text/css",
@@ -181,6 +191,27 @@ try {
           }
           if (zoom === 200)
             await page.addStyleTag({ url: base + "/__theme-text.css" });
+          const sourceStyle = () =>
+            page.evaluate(() => {
+              const icon = document.querySelector(
+                ".official-pin,.safe-number-marker",
+              );
+              if (!icon) return null;
+              const style = getComputedStyle(icon),
+                image = icon.querySelector("img");
+              return {
+                background: style.backgroundColor,
+                color: style.color,
+                border: style.borderColor,
+                filter: image ? getComputedStyle(image).filter : null,
+                src: image?.getAttribute("src") ?? null,
+              };
+            });
+          const iconBefore = await sourceStyle();
+          if (surface === "safe" && width === 1440 && zoom === 100) {
+            await page.locator(".safe-number-marker").first().click();
+            await page.locator(".leaflet-popup-content").waitFor();
+          }
           for (const theme of ["light", "dark"]) {
             const before = await camera(page, surface);
             await setTheme(page, theme);
@@ -196,15 +227,18 @@ try {
             assert.deepEqual(
               report.violations.map((v) => ({
                 id: v.id,
-                nodes: v.nodes
-                  .slice(0, 8)
-                  .map((n) => ({
-                    target: n.target,
-                    summary: n.failureSummary,
-                  })),
+                nodes: v.nodes.slice(0, 8).map((n) => ({
+                  target: n.target,
+                  summary: n.failureSummary,
+                })),
               })),
               [],
               JSON.stringify({ name, surface, width, zoom, theme }),
+            );
+            assert.deepEqual(
+              await sourceStyle(),
+              iconBefore,
+              "provider marker/image CSS colors remain source-owned across theme changes",
             );
             assert.equal(
               await page.evaluate(
@@ -215,6 +249,8 @@ try {
             );
             if (surface === "map") await hit(page, "#point-title");
             if (surface === "safe") await hit(page, "#start-x");
+            if (surface === "help")
+              await hit(page, '.contents a[href="#move-map-menus"]');
             if (surface !== "help")
               assert.deepEqual(
                 await camera(page, surface),
@@ -228,6 +264,11 @@ try {
                   camera: "theme switch",
                 }),
               );
+          }
+          const skip = page.locator(".safe-skip,.skip-link,.skip").first();
+          if (await skip.count()) {
+            await skip.focus();
+            await hit(page, ".safe-skip,.skip-link,.skip");
           }
           assert.deepEqual(errors, []);
           assert.deepEqual(external, []);
