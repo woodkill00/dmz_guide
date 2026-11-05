@@ -14,7 +14,7 @@ const port = probe.address().port;
 await new Promise((resolve) => probe.close(resolve));
 const server = await createServer({
   root,
-  cacheDir: root + "/.local/ui-selection-integration-vite",
+  cacheDir: root + `/.local/ui-selection-integration-${process.pid}-${port}`,
   server: { host: "127.0.0.1", port, strictPort: true, hmr: false },
   define: { "import.meta.env.VITE_LOCAL_PROVIDER_SNAPSHOTS": '"0"' },
 });
@@ -239,7 +239,10 @@ try {
           "record",
         );
         await page.locator("#ui-selection-back").click();
-        await clickMarker(page, "selection-0");
+        // Its new route stop intentionally owns pointer hit testing at this
+        // coordinate; native keyboard activation still reaches the source marker.
+        await page.locator('[data-official-id="selection-0"]').focus();
+        await page.keyboard.press("Enter");
         await page
           .locator("#ui-selection-detail")
           .getByRole("button", { name: "Add waypoint", exact: true })
@@ -248,6 +251,48 @@ try {
         const duplicate = await read(page);
         assert.equal(duplicate.data.fieldGuide.routes[0].waypoints.length, 1);
         assert.equal(duplicate.revision, route.revision);
+        await page.locator("#ui-selection-back").click();
+        await page.locator("#workspace-tab-planner").click();
+        await page.locator("#planner-route-select").waitFor();
+        const stop = page.locator('[data-route-waypoint="0"]');
+        if (!(await stop.isVisible()))
+          await page.locator("#ui-map-view").click();
+        await stop.focus();
+        await stop.click();
+        await page.locator("#ui-selection-detail").waitFor();
+        assert.match(
+          await page
+            .locator("#ui-selection-detail .marker-popup-title")
+            .textContent(),
+          /^Waypoint 1:/,
+        );
+        await page
+          .locator("#ui-selection-detail")
+          .getByRole("button", { name: "Mark reached", exact: true })
+          .click();
+        const reached = await stored(
+          page,
+          (r) => r?.data.fieldGuide?.routes?.[0]?.reached?.length === 1,
+        );
+        assert.equal(reached.data.fieldGuide.routes[0].waypoints.length, 1);
+        assert.equal(reached.data.fieldGuide.routes.length, 1);
+        assert.equal(reached.revision, route.revision + 1);
+        await page.waitForFunction(
+          () =>
+            document
+              .querySelector("#workspace-content")
+              ?.getAttribute("aria-busy") === "false",
+        );
+        const settledSelection = (await page
+          .locator("#ui-selection-detail")
+          .count())
+          ? await page.locator("#ui-selection-detail").textContent()
+          : "";
+        assert.equal(
+          settledSelection.includes("Pending on this route"),
+          false,
+          "confirmed reached action cannot leave a stale Pending selection",
+        );
         t.verify();
       } finally {
         await t.context.close();
@@ -267,7 +312,20 @@ try {
         const guard = p.locator("#ui-pane-departure-guard");
         await guard.waitFor({ state: "visible" });
         assert.equal(await p.locator("#ui-selection-detail").count(), 0);
+        assert.equal(await p.locator(".ui-map-selection-pending").count(), 1);
+        assert.equal(
+          await p
+            .locator(".ui-map-selection-pending .map-marker-popup")
+            .isVisible(),
+          false,
+          "pending source never floats over the map/editor",
+        );
         await guard.getByRole("button", { name: "Stay", exact: true }).click();
+        assert.equal(
+          await p.locator(".ui-map-selection-pending").count(),
+          0,
+          "Stay releases only its pending source chrome",
+        );
         assert.equal(
           await p.evaluate(
             () =>
@@ -319,6 +377,36 @@ try {
         assert.equal(after.revision, saved.revision);
         assert.equal(after.data.annotations.length, 1);
         dirty.verify();
+      } catch (error) {
+        console.error(
+          "Synthetic selection guard diagnostic",
+          await p.evaluate(async () => {
+            const { viewer } = await import("/src/main.ts");
+            const popups = [];
+            viewer.map.eachLayer((layer) => {
+              const popup = layer.getPopup?.();
+              if (popup)
+                popups.push({
+                  title: layer.getElement?.()?.dataset.officialId,
+                  open: viewer.map.hasLayer(popup),
+                  content: typeof popup.getContent(),
+                  parent: popup.getContent()?.parentElement?.className,
+                });
+            });
+            return {
+              guard: document.querySelector("#ui-pane-departure-status")
+                ?.textContent,
+              guardOpen: document.querySelector("#ui-pane-departure-guard")
+                ?.open,
+              issue: document.querySelector("#workspace-message")?.textContent,
+              title: document.querySelector("#point-title")?.value,
+              selection: document.querySelector("#ui-selection-detail")
+                ?.textContent,
+              popups,
+            };
+          }),
+        );
+        throw error;
       } finally {
         await dirty.context.close();
       }
