@@ -40,3 +40,6 @@ Run the scoped automated suites against an already-built modern reader with `npm
 
 
 When the map and left menu fit side by side, drag the grip on the menu’s right edge to resize it. Focus the divider and use Left/Right arrows for16px steps, Shift+arrows for64px, or Home/End for the allowed limits. The map keeps usable terrain space and remembers your width in this browser. Temporary viewport constraints clamp the displayed width without replacing that preference. Full task, Half, Peek and narrow layouts hide the horizontal divider.
+
+
+**All map categories** groups imported markers by type, such as Keys, Locations, Safes and Fortresses. A type checkbox controls its represented source categories; a mixed checkbox means some are enabled. Named sites and original provider labels remain in the website sections for detailed checks. Unmapped types are grouped under Other. Show all / Hide all still applies to the whole relevant section.

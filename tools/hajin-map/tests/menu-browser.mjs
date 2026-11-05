@@ -50,13 +50,13 @@ try {
             categories: [
               {
                 id: "synthetic-other",
-                name: "Synthetic stations",
+                name: "Gas Stations",
                 group: "Facilities",
                 icon,
               },
               {
                 id: "dmz_gasStation",
-                name: "Synthetic stations",
+                name: "Gas Stations",
                 group: "Facilities",
                 icon,
               },
@@ -93,7 +93,7 @@ try {
         categories: [
           {
             id: "provider-stations",
-            name: "Synthetic stations",
+            name: "Gas Stations",
             group: "Facilities",
             icon: "/maps/hajin/providers/codmunity/icons/synthetic.png",
           },
@@ -299,6 +299,19 @@ try {
       await page.locator('[data-official-id="synthetic-one"]').waitFor();
       // Authoritative private-data removal also overrides a deferred pan redraw.
       const mapBox = await page.locator("#map").boundingBox();
+      // Marker visibility is optimistic. Wait for the owning save acknowledgement
+      // before starting an unrelated editing action (especially WebKit IDB).
+      await page.waitForFunction(
+        () =>
+          document.querySelector("#workspace-message")?.textContent ===
+          "Combined categories saved",
+      );
+      await page.evaluate(
+        () =>
+          new Promise((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(resolve)),
+          ),
+      );
       await page.mouse.click(
         mapBox.x + mapBox.width / 2,
         mapBox.y + mapBox.height / 2 + 90,
@@ -398,6 +411,14 @@ try {
         .getByRole("button", { name: "Delete point", exact: true })
         .click();
       await page.locator("#confirm-delete-point").click();
+      // Completion belongs to the original controller, not the earlier marker redraw.
+      await page.locator("#confirm-delete-point").waitFor({ state: "hidden" });
+      await page.waitForFunction(
+        () =>
+          document
+            .querySelector("#workspace-content")
+            ?.getAttribute("aria-busy") !== "true",
+      );
       await page.waitForFunction(
         () => !document.querySelector("[data-annotation]"),
       );
@@ -566,13 +587,11 @@ try {
       });
       await page.locator("#workspace-open").click();
       await page.locator("#workspace-tab-sources").click();
-      await page
-        .locator("#snapshot-file")
-        .setInputFiles({
-          name: "synthetic-subset.json",
-          mimeType: "application/json",
-          buffer: Buffer.from(JSON.stringify(subset)),
-        });
+      await page.locator("#snapshot-file").setInputFiles({
+        name: "synthetic-subset.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify(subset)),
+      });
       await page.locator("#preview-snapshot").click();
       await page
         .getByLabel(

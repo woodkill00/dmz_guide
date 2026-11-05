@@ -1,3 +1,4 @@
+import { groupMapCategories, type CategoryInput } from "../map/category-groups.ts";
 import {mountSelectionPane} from '../map/selection-pane.ts';
 import {createPaneViewState} from './pane-view-state.ts';
 import {createOperationOwnership,type OperationTicket} from '../../../../src/ui/operation-ownership.mjs';
@@ -530,7 +531,13 @@ export function mountWorkspace(
     return commit(label, (draft) => {
       draft.visibility = structuredClone(value);
     }).then(() => {
-      if (pendingVisibility === value) pendingVisibility = undefined;
+      if (pendingVisibility === value) {
+        pendingVisibility = undefined;
+        // Before explicit migration the legacy filters are still authoritative
+        // on reload. Mirror only the confirmed final user change; migrated
+        // sources disable legacy persistence and keep their old bytes intact.
+        applyLegacyFilters(true);
+      }
       paneHost?.refresh();
     });
   }
@@ -2332,25 +2339,21 @@ export function mountWorkspace(
     combined.id = "combined-map-categories";
     combined.dataset.menuSection = "combined";
     combined.open = disclosureState.get("combined") ?? false;
-    combined.append(el("summary", "Combined map categories"));
-    const categories = new Map<string, {name:string; members:{sourceId:string;categoryId:string}[]}>();
-    const addCategory = (sourceId:string, categoryId:string, name:string) => {
-      const key=name.normalize("NFKC").trim().toLocaleLowerCase();
-      const entry=categories.get(key) ?? {name,members:[]};
-      if(!entry.members.some(m=>m.sourceId===sourceId&&m.categoryId===categoryId)) entry.members.push({sourceId,categoryId});
-      categories.set(key,entry);
-    };
+    combined.append(el("summary", "All map categories"),note("Types combine source categories. Original labels remain under each website."));
+    const categoryInputs: CategoryInput[] = [];
+    const addCategory = (sourceId:string, categoryId:string, path:string[]) => categoryInputs.push({sourceId,categoryId,path});
     for(const source of legacy){
       const entries=state.snapshots.filter(e=>e.snapshot.sourceId===source.id);
       const selected=entries.find(e=>e.key===selectedSnapshots.get(source.id))??entries.at(-1);
       if(selected&&!selected.legacy)continue;
-      for(const c of source.getSnapshot()?.categories??[])addCategory(source.id,c.id,c.name);
+      for(const c of source.getSnapshot()?.categories??[])addCategory(source.id,c.id,[c.group,c.name]);
     }
     for(const policy of Object.values(sourcePolicies)) {
       const entries=state.snapshots.filter(e=>e.snapshot.sourceId===policy.id);
       const entry=entries.find(e=>e.key===selectedSnapshots.get(policy.id)) ?? entries.at(-1);
-      if(entry&&!entry.legacy) for(const c of entry.snapshot.categories) addCategory(policy.id,c.id,c.path.join(" / "));
+      if(entry&&!entry.legacy) for(const c of entry.snapshot.categories) addCategory(policy.id,c.id,c.path);
     }
+    const categories = new Map(groupMapCategories(categoryInputs).map(category=>[category.id,category]));
     const sectionBulk = (id:string, label:string, members:{sourceId:string;categoryId:string}[]) => {
       const bulk=el('div',undefined,'layer-bulk section-layer-bulk');
       for(const [text,show] of [['Show all',true],['Hide all',false]] as const){
