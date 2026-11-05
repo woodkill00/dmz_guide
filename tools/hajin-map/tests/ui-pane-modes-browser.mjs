@@ -107,6 +107,11 @@ try {
         .click();
       await mode(p, "peek");
       assert.equal(
+        await p.locator("#ui-map-task-title").textContent(),
+        "New private point",
+        "Peek names the current task",
+      );
+      assert.equal(
         await p
           .locator(".ui-map-task-body")
           .evaluate((e) => e.hidden && e.inert),

@@ -41,6 +41,7 @@ html[data-ui-variant=modern] .ui-map-mode-feedback{flex-basis:100%;margin:.25rem
 html[data-ui-variant=modern] .ui-map-task-body{min-width:0}
 html[data-ui-variant=modern] #ui-map-task{scroll-padding-block:calc(var(--ui-task-header-height,0px) + .5rem) .5rem}
 html[data-ui-variant=modern][data-map-space=scroll] .ui-map-task-header{position:static}
+html[data-ui-variant=modern] #ui-map-task[data-ui-header-flow=true] .ui-map-task-header{position:static}
 html[data-ui-variant=modern][data-map-layout=peek] .workspace,html[data-ui-variant=modern][data-map-layout=half] .workspace{grid-template-columns:minmax(0,1fr)}
 html[data-ui-variant=modern][data-map-layout=peek] .workspace{grid-template-rows:minmax(0,1fr) auto auto}
 html[data-ui-variant=modern][data-map-layout=peek] .map-workspace,html[data-ui-variant=modern][data-map-layout=half] .map-workspace{grid-column:1;grid-row:1}

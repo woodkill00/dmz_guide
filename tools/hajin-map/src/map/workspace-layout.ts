@@ -58,6 +58,20 @@ export function mountMapWorkspaceLayout() {
       wasTask = focused instanceof HTMLElement && content.contains(focused),
       wasMap = focused instanceof HTMLElement && terrain.contains(focused);
     if (requested === "auto" && wasTask) chosen = "task";
+    const dialog =
+      content.querySelector<HTMLDialogElement>("#workspace-dialog");
+    const ownerHeading =
+      content.querySelector<HTMLElement>(
+        "#workspace-content form h2, #workspace-content form h3",
+      ) ??
+      content.querySelector<HTMLElement>(
+        "#workspace-content h2, #workspace-content h3",
+      );
+    const taskTitle = dialog?.open
+      ? ownerHeading?.textContent?.trim() || "Map task"
+      : "Map layers";
+    title.textContent = taskTitle.slice(0, 120);
+    title.title = taskTitle;
     const peekRequested = requested === "peek";
     minimize.hidden = half.hidden = peekRequested;
     expand.hidden = requested === "full";
@@ -85,7 +99,10 @@ export function mountMapWorkspaceLayout() {
       headerHeight = header.getBoundingClientRect().height,
       halfFits = visibleHeight - routeHeight >= 26 * font + headerHeight,
       peekFits = visibleHeight - routeHeight >= 12 * font + headerHeight,
-      dock = r.width >= 58 * font && visibleHeight - routeHeight >= 26 * font;
+      dock =
+        r.width >= 58 * font &&
+        visibleHeight - routeHeight >=
+          Math.max(26 * font, 14 * font + headerHeight);
     document.documentElement.dataset.mapSpace =
       available < 14 * font ? "scroll" : "fit";
     let mode: "map" | "task" | "docked" | "peek" | "half";
@@ -101,9 +118,14 @@ export function mountMapWorkspaceLayout() {
     document.documentElement.dataset.mapView = chosen;
     // Revealing the destination first makes focus possible before hiding the old view.
     if (mode !== "map") task.hidden = false;
+    const headerFlows =
+      available < 14 * font ||
+      (mode === "task" &&
+        visibleHeight - routeHeight < headerHeight + 14 * font);
+    task.dataset.uiHeaderFlow = String(headerFlows);
     task.style.setProperty(
       "--ui-task-header-height",
-      `${available < 14 * font ? 0 : headerHeight}px`,
+      `${headerFlows ? 0 : headerHeight}px`,
     );
     // Move focus before hiding/inerting its original subtree.
     if ((mode === "peek" || mode === "map") && wasTask) {
@@ -129,12 +151,6 @@ export function mountMapWorkspaceLayout() {
         title.focus({ preventScroll: true });
       expand.hidden = true;
     }
-    const dialog =
-      content.querySelector<HTMLDialogElement>("#workspace-dialog");
-    title.textContent =
-      dialog?.open && dialog.dataset.uiToolTarget
-        ? dialog.dataset.uiToolTarget.replaceAll("-", " ")
-        : "Map task";
     minimize.setAttribute("aria-pressed", String(mode === "peek"));
     half.setAttribute("aria-pressed", String(mode === "half"));
     expand.setAttribute("aria-pressed", String(mode === "task"));
