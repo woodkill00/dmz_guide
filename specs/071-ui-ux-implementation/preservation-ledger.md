@@ -16,3 +16,5 @@ All baseline assertions remain available in legacy mode. New071suites explicitly
 Historical065 aggregate: `npm run map:test:browser` recorded failure at `tools/hajin-map/scripts/upgrades.browser.cjs:70` where selected inspector intercepted `.marker-popup-details.hover()`. No dedicated raw065log was found; do not invent one.067explicit inspector activation plausibly repairs interception but does not prove aggregate success. Keep this limitation until a real terminal baseline aggregate pass/reproduced owning repair is recorded. Never use force clicks or isVisible in place of original wheel/hit checks.
 
 Initial implementation baseline: .local/ui-layout-baseline.json,18fresh Chromium Guide view/width observations, zero page errors;44177b5 source baseline. Synthetic/isolated browser state, no owner profile mutation. Runtime/interface tests are recorded separately as they execute.
+
+Independent reviewer approved the Studio root assertion update in tests/runtime/studio-ui.test.mjs: retain exact dark/lang identity and require the new exact surface/legacy/contract metadata. No theme, toggle, script or favicon assertion removed. Focused19/19 pass.

@@ -1,6 +1,11 @@
 {
   "source": "src/ui/feature-registry.mjs",
-  "date": "2026-11-05",
+  "head": "123ebd7bb48e71ba7398327989b94c31edeb79c4",
+  "hashes": {
+    "src/ui/feature-registry.mjs": "1246e00abaafadb1e6a7af6626f4d059bcda07b53a8af5bb2142982ce3066983",
+    "src/ui/map-destinations.json": "7eda40618c784083b520f1ad9c356fe3d284ce83a394389f9d6527beb7da85f0",
+    "specs/071-ui-ux-implementation/feature-coverage.md": "6e47b8d4a694e8d3ad9fb565f86c3751dc59fa9ae50ba364575e8ec516a2310f"
+  },
   "count": 77,
   "features": [
     {

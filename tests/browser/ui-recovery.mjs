@@ -32,7 +32,12 @@ export async function runUIRecoveryTests({
       name: "Profile backups & recovery",
       exact: true,
     });
-    assert.equal(await profileBackup.getAttribute("href"), "/settings/");
+    const backupURL = new URL(
+      await profileBackup.getAttribute("href"),
+      page.url(),
+    );
+    assert.equal(backupURL.pathname, "/settings/");
+    assert.equal(backupURL.searchParams.get("pack"), "demo:training-pack");
     await profileBackup.click();
     await page.waitForURL("**/settings/**");
     await page.waitForFunction(

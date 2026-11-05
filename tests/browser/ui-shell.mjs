@@ -57,7 +57,11 @@ export async function runUIShellTests({ browser, base }) {
         ),
         false,
       );
-      await page.waitForFunction(expected=>document.documentElement.dataset.uiNavigationLayout===expected,width<700?"mobile":"desktop");
+      await page.waitForFunction(
+        (expected) =>
+          document.documentElement.dataset.uiNavigationLayout === expected,
+        width < 700 ? "mobile" : "desktop",
+      );
       const nav = page.locator(".site-nav");
       if (width < 700) {
         const summary = nav.locator(".ui-mobile-sections > summary");

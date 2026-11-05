@@ -290,11 +290,16 @@ export async function runAuthoringBrowser(parent, base) {
   await page.locator("#backup-before-restore").click();
   await oldDownload;
   await page.locator("#confirm-restore-workspace").click();
+  try {
   await page.waitForFunction(() =>
     document
       .querySelector("#workspace-message")
       ?.textContent.includes("Backup restored"),
   );
+  } catch (cause) {
+    console.error('Synthetic restore diagnostic',await page.evaluate(()=>({variant:document.documentElement.dataset.uiVariant,message:document.querySelector('#workspace-message')?.textContent,revision:document.querySelector<HTMLElement>('#workspace-dialog')?.dataset.revision,ready:document.querySelector<HTMLElement>('#workspace-dialog')?.dataset.ready,confirmDisabled:(document.querySelector('#confirm-restore-workspace') as HTMLButtonElement|null)?.disabled})));
+    throw cause;
+  }
   state = await read();
   assert.equal(state.annotations.length, 2);
   assert.equal(state.snapshots.length, 0);

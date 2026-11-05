@@ -17,6 +17,7 @@ const guide = [
   "ui-shell",
   "ui-feature-coverage",
   "ui-directory",
+  "ui-catalog-pagination",
   "ui-reference-directories",
   "ui-progression-journeys",
   "ui-weapons",
@@ -27,6 +28,7 @@ const guide = [
 const map = [
   "ui-layout-browser",
   "ui-state-browser",
+  "ui-rollback-browser",
   "ui-bfcache-write-browser",
   "ui-lifecycle-browser",
   "ui-selection-integration-browser",

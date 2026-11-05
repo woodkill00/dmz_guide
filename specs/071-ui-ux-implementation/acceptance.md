@@ -1,5 +1,7 @@
 # Pre-implementation planning acceptance
 
+> Historical planning receipt. The later user instruction “implement” superseded the stop boundary below. Current implementation evidence and open gates are in [implementation-status.md](implementation-status.md); this historical receipt is not runtime acceptance.
+
 2026-11-05 · Branch plan/071-ui-ux-implementation. Status: independent pre-implementation readiness checklist PASS; stop before implementation. User requested a final layout/feature stress roundtable, then a Spec Kit feature plan with tasks→analysis→artifact fixes→analysis convergence BEFORE implementation.
 
 Delivered: spec28FR/6SC with5prioritized stories; technical plan/research/data model; layout/lifecycle/workspace/rollout contracts; exact77registry and generated-family/management coverage;70future tasks with source/test owners/dependencies and quickstart; stress roundtable and preserved analysis01/repairs/analysis02.

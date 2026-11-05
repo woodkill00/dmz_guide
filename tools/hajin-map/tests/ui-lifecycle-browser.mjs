@@ -48,7 +48,7 @@ try {
           "async function originalWorkspace(",
         );
         source +=
-          '\nexport async function openWorkspace(options){const real=await originalWorkspace(options);return {...real,read:async()=>{const result=await real.read();if(window.__tamperNextRead&&result.current){window.__tamperNextRead=false;window.__tamperedRead=true;const altered=structuredClone(result);altered.current.data.annotations.at(-1).title="Synthetic unmatched payload";return altered;}return result;},commit:async(...args)=>{window.__saveAttempts=(window.__saveAttempts??0)+1;if(window.__denySave)throw Error("Synthetic denied write");const receipt=await real.commit(...args);window.__realWrites=(window.__realWrites??0)+1;if(window.__holdSave)await new Promise(resolve=>window.__releaseSave=resolve);return window.__invalidReceipt?{...receipt,revision:receipt.revision+7}:receipt;}};}';
+          '\nexport async function openWorkspace(options){const real=await originalWorkspace(options);return {...real,read:async()=>{if(window.__rejectVerificationOnce){window.__rejectVerificationOnce=false;throw Error("Synthetic verification read failed after durable write");}const result=await real.read();if(window.__tamperNextRead&&result.current){window.__tamperNextRead=false;window.__tamperedRead=true;const altered=structuredClone(result);altered.current.data.annotations.at(-1).title="Synthetic unmatched payload";return altered;}return result;},commit:async(...args)=>{window.__saveAttempts=(window.__saveAttempts??0)+1;if(window.__denySave)throw Error("Synthetic denied write");const receipt=await real.commit(...args);window.__realWrites=(window.__realWrites??0)+1;if(window.__holdSave)await new Promise(resolve=>window.__releaseSave=resolve);if(window.__failVerificationAfterWrite)window.__rejectVerificationOnce=true;return window.__invalidReceipt?{...receipt,revision:receipt.revision+7}:receipt;}};}';
         await r.fulfill({ response, body: source });
       });
       await context.route("**/maps/hajin/official/markers.json", (r) =>
@@ -290,11 +290,44 @@ try {
       await page.locator("#workspace-tab-icons").click();
       await page.locator('#workspace-tab-icons[aria-current="true"]').waitFor();
       assert(await guard.isHidden());
+      await page.locator('#icon-design-description').fill('Synthetic guarded icon');
+      await page.evaluate(()=>{window.__holdSave=true;window.__releaseSave=undefined;});
+      await page.locator('#workspace-tab-health').click();
+      await guard.getByRole('button',{name:'Save and continue',exact:true}).click();
+      await page.waitForFunction(()=>typeof window.__releaseSave==='function');
+      await page.waitForFunction(()=>document.querySelector('#ui-pane-departure-status').textContent.includes('Still waiting'),{},{timeout:13000});
+      assert(await guard.getByRole('button',{name:'Discard and continue'}).isDisabled());
+      const savedIcon=await page.evaluate(async()=>{const {openWorkspace}=await import('/src/workspace/store.ts');const store=await openWorkspace();try{return(await store.read()).current;}finally{store.close();}});
+      assert.equal(savedIcon.data.icons.length,reconciled.current.data.icons.length+1);
+      assert.equal(savedIcon.revision,reconciled.current.revision+1);
+      assert.deepEqual(savedIcon.data.annotations,reconciled.current.data.annotations);
+      assert.equal(await page.locator('#workspace-tab-health[aria-current=true]').count(),0);
+      await page.evaluate(()=>{window.__holdSave=false;window.__releaseSave();});
+      await guard.waitFor({state:'hidden'});
+      await page.locator('#workspace-tab-health[aria-current=true]').waitFor();
+      await page.locator('#workspace-tab-points').click();
+      await page.locator('#point-title').fill('Synthetic verification failure point');
+      await page.locator('#point-owned').check();
+      await page.evaluate(()=>window.__failVerificationAfterWrite=true);
+      await page.locator('#workspace-tab-icons').click();
+      await guard.getByRole('button',{name:'Save and continue',exact:true}).click();
+      try{await page.waitForFunction(()=>document.querySelector('#workspace-message').textContent.includes('Synthetic verification read failed'));}catch(cause){console.error('Synthetic verification case',await page.evaluate(()=>({status:document.querySelector('#workspace-message').textContent,guard:document.querySelector('#ui-pane-departure-status').textContent,attempts:window.__saveAttempts,writes:window.__realWrites,fail:window.__failVerificationAfterWrite,once:window.__rejectVerificationOnce,title:document.querySelector('#point-title')?.value})));throw cause;}
+      assert(await guard.getByRole('button',{name:'Save and continue',exact:true}).isDisabled(),'A committed write with failed verification is not retryable');
+      assert(await guard.getByRole('button',{name:'Discard and continue',exact:true}).isDisabled());
+      const afterReadFailure=await page.evaluate(async()=>{window.__failVerificationAfterWrite=false;const {openWorkspace}=await import('/src/workspace/store.ts');const store=await openWorkspace();try{return{current:(await store.read()).current,attempts:window.__saveAttempts,writes:window.__realWrites};}finally{store.close();}});
+      assert.equal(afterReadFailure.current.revision,savedIcon.revision+1);
+      assert.equal(afterReadFailure.current.data.annotations.length,savedIcon.data.annotations.length+1);
+      await guard.getByRole('button',{name:'Stay',exact:true}).click();
+      await page.locator('#workspace-check-save').click();
+      await page.locator('#workspace-check-save').waitFor({state:'hidden'});
+      assert.deepEqual(await page.evaluate(()=>({attempts:window.__saveAttempts,writes:window.__realWrites})),{attempts:afterReadFailure.attempts,writes:afterReadFailure.writes});
+      await page.locator('#workspace-tab-icons').click();
+      await page.locator('#workspace-tab-icons[aria-current=true]').waitFor();
       assert.deepEqual(errors, []);
       assert.deepEqual(external, []);
       await context.close();
       console.log(
-        `${name} full-app pane lifecycle PASS: held durable receipt, frozen departure, original draft, guarded discard, exact revision/nonmutation, denied-save explicit retry, invalid receipt and exact-payload reconciliation without replay`,
+        `${name} full-app pane lifecycle PASS: held durable receipt, frozen departure, original draft, guarded discard, exact revision/nonmutation, denied-save explicit retry, invalid receipt and exact-payload reconciliation without replay, guarded SVG watchdog, committed-write/read-failure confirmation without replay`,
       );
     } finally {
       await browser.close();

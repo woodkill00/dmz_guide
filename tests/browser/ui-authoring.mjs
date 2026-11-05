@@ -57,7 +57,7 @@ export async function runUIAuthoringTests({
             "editor-transfer",
           ]) {
             const link = page.locator(
-              `nav[aria-label="Private editor sections"] a[href="#${id}"]`,
+              `nav[aria-label="Private editor sections"] a[href$="#${id}"]`,
             );
             await link.click();
             assert.equal(new URL(page.url()).hash, "#" + id);

@@ -79,6 +79,14 @@ try {
           );
           await page.waitForTimeout(150);
         }
+        await page.locator('#ui-task-view').click();
+        await page.locator('#show-coordinate-grid').waitFor({state:'visible'});
+        await page.locator('#show-coordinate-grid').focus();
+        await page.keyboard.press('Escape');
+        await page.waitForFunction(()=>document.documentElement.dataset.mapLayout==='map');
+        assert.equal(await page.locator('#ui-map-task').isVisible(),false,'Explicit Map view owns the whole canvas on desktop too');
+        await page.locator('#ui-task-view').click();
+        assert(await page.locator('#show-coordinate-grid').isVisible(),'Task restore retains the key across viewport/Escape changes');
         await page.locator("#workspace-open").click();
         await page.locator("#point-title").fill("Synthetic preserved draft");
         await page.locator("#point-title").focus();

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import {
   features,
   featureURL,
@@ -10,6 +11,30 @@ import { featureHub, featureLabel } from "../../src/ui/workspace-shell.mjs";
 import { renderMainNavigation } from "../../src/ui/site-navigation.mjs";
 
 test("071 static registry admission matches frozen inventory; this is not browser activation", async () => {
+  const fixture = JSON.parse(
+    await readFile(
+      new URL("../fixtures/ui-feature-coverage.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  assert.deepEqual(
+    fixture.features,
+    features.map(({ id, label, kind, path, group }) => ({
+      id,
+      label,
+      kind,
+      path,
+      group,
+    })),
+  );
+  for (const [path, hash] of Object.entries(fixture.hashes))
+    assert.equal(
+      createHash("sha256")
+        .update(await readFile(new URL("../../" + path, import.meta.url)))
+        .digest("hex"),
+      hash,
+      `Reconcile reviewed ownership inventory: ${path}`,
+    );
   const snapshot = JSON.parse(
     await readFile(
       new URL(

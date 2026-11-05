@@ -56,6 +56,14 @@ try {
       await page.waitForSelector(
         'html[data-ui-mounted="071-v1"][data-ui-adapter="map-pane"]',
       );
+      // Information reuses its original content in the one nonmodal task owner.
+      await page.evaluate(() => { window.__infoOriginal = document.querySelector('#info-dialog .dialog-content'); });
+      await page.locator('#info').click();
+      await page.locator('#ui-information-back').waitFor({state: 'visible'});
+      assert.equal(await page.locator('#info-dialog').evaluate(node => node.open), false);
+      assert.equal(await page.evaluate(() => document.querySelector('#ui-map-task').contains(window.__infoOriginal)), true);
+      await page.locator('#ui-information-back').click();
+      assert.equal(await page.evaluate(() => document.querySelector('#info-dialog').contains(window.__infoOriginal)), true);
       await page.locator("#workspace-open").click();
       // Clean presentation search is not a draft, and must survive tool departure/return.
       await page.locator("#points-search").fill("Synthetic clean query");
