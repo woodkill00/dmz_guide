@@ -1,3 +1,4 @@
+import { resolvePresentation } from "./presentation-config.mjs";
 import { features, featureURL } from "./feature-registry.mjs";
 import { e, pageHeading } from "./render.mjs";
 const card = (id) => {
@@ -6,9 +7,11 @@ const card = (id) => {
   return `<article class="hub-card"><h3><a data-workspace-link data-feature-id="${e(f.id)}" href="${e(featureURL(f))}">${e(f.label)}</a></h3><p>${e(f.description)}</p></article>`;
 };
 const section = (id, title, copy, ids) =>
-  `<section id="${id}" class="panel"><h2>${title}</h2><p>${copy}</p><div class="hub-grid">${ids.map(card).join("")}</div></section>`;
-const links =
-  '<p><a data-workspace-link href="/">Home</a> · <a data-workspace-link href="/dmz-guide/">DMZ Guide</a> · <a data-workspace-link href="/dmz-fob/">DMZ FOB</a> · <a data-workspace-link href="/dmz-weapons/">DMZ Weapons</a> · <a href="http://127.0.0.1:5175/" target="_blank" rel="noopener noreferrer">Map ↗</a></p>';
+  `<section id="${id}" class="panel" aria-labelledby="${id}-title"><h2 id="${id}-title">${title}</h2><p>${copy}</p><div class="hub-grid">${ids.map(card).join("")}</div></section>`;
+const links = () =>
+  resolvePresentation("guide").variant === "modern"
+    ? ""
+    : '<p><a data-workspace-link href="/">Home</a> · <a data-workspace-link href="/dmz-guide/">DMZ Guide</a> · <a data-workspace-link href="/dmz-fob/">DMZ FOB</a> · <a data-workspace-link href="/dmz-weapons/">DMZ Weapons</a> · <a href="http://127.0.0.1:5175/" target="_blank" rel="noopener noreferrer">Map ↗</a></p>';
 export function featurePages() {
   return [
     {
@@ -21,7 +24,7 @@ export function featurePages() {
           "DMZ Guide",
           "Find missions, keys and the reference information for your next deployment.",
         ) +
-        links +
+        links() +
         section(
           "missions",
           "Missions and progression",
@@ -45,7 +48,7 @@ export function featurePages() {
           "DMZ FOB",
           "Prepare your upgrades, materials and loadout. Existing trackers remain the place to record progress.",
         ) +
-        links +
+        links() +
         section(
           "upgrades",
           "Upgrades",
@@ -75,7 +78,7 @@ export function featurePages() {
           "DMZ Weapons",
           "Browse weapons and attachments, plan builds and review sourced statistics.",
         ) +
-        links +
+        links() +
         section(
           "database",
           "Weapons and attachments",

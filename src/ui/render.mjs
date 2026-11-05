@@ -1,4 +1,7 @@
-import {resolvePresentation,presentationAttributes} from "./presentation-config.mjs";
+import {
+  resolvePresentation,
+  presentationAttributes,
+} from "./presentation-config.mjs";
 import { renderDashboard } from "./hub-page.mjs";
 import { renderBreadcrumbs } from "./site-navigation.mjs";
 import { renderMainNavigation } from "./site-navigation.mjs";
@@ -108,8 +111,15 @@ export function renderLayout({
   styles = [],
   packId = "",
 }) {
-  const ui=resolvePresentation("guide");
-  if(ui.variant==="modern"){styles=[...styles,"/assets/src/ui/workspace-shell.css","/assets/src/ui/directory-view.css"];scripts=[...scripts,"/assets/src/client/workspace-shell.mjs"];}
+  const ui = resolvePresentation("guide");
+  if (ui.variant === "modern") {
+    styles = [
+      ...styles,
+      "/assets/src/ui/workspace-shell.css",
+      "/assets/src/ui/directory-view.css",
+    ];
+    scripts = [...scripts, "/assets/src/client/workspace-shell.mjs"];
+  }
   if (page === "home") scripts = [...scripts, "/assets/src/client/catalog.mjs"];
   const navigation = renderMainNavigation({
     page,
@@ -129,10 +139,36 @@ export const statusLabel = (record) =>
   record.status === "verified" && !isFixture(record.pack)
     ? "Source-backed · live build unverified"
     : record.status;
-export function renderCard(record) {
+function referenceFacts(record) {
+  if (record.spoiler)
+    return "<p data-reference-facts>Protected content · open the record to choose whether to reveal it.</p>";
+  const pack = record.pack;
+  const related = (id) => {
+    const target = allRecords([pack]).find((entry) => entry.id === id);
+    return target
+      ? `<a href="${e(recordUrl(target))}">${e(publicTitle(target))}</a>`
+      : `${e(id)} (unresolved reference)`;
+  };
+  const scope = record.scope || pack.game || {};
+  let facts = `<dt>Applicability</dt><dd>${e(scope.mode || "Unknown mode")} · ${e(scope.build || "Unknown build")}</dd>`;
+  if (record.recordType === "recipe") {
+    facts += `<dt>Output</dt><dd>${record.output ? `${e(record.output.quantity ?? "Unknown")} × ${related(record.output.itemId)}` : "Unknown output"}</dd><dt>Inputs and tools</dt><dd><ul>${(record.inputs || []).map((input) => `<li>${e(input.quantity ?? "Unknown")} × ${related(input.itemId)} · ${input.consumption === "unknown" || (input.consumption == null && input.consumed == null) ? "Consumption unknown" : input.consumption === "consumed" || input.consumed === true ? "Consumed material" : "Retained tool"}</li>`).join("") || "<li>No listed inputs; this does not establish a free craft.</li>"}</ul></dd><dt>Requirement completeness</dt><dd>${record.ingredientsKnown === true ? "Known for this scoped record" : "Unknown; do not assume complete"}</dd><dt>Station / eligibility</dt><dd>${e(record.station || "Unknown station")} · ${e(record.eligibility || "Unknown eligibility")}</dd>`;
+  }
+  if (["map", "location"].includes(record.recordType)) {
+    facts += `<dt>Map</dt><dd>${record.mapId ? related(record.mapId) : record.recordType === "map" ? e(publicTitle(record)) : "Unknown map"}</dd><dt>Grid / floor</dt><dd>${e(record.grid ?? "Unknown grid")} · ${e(record.coordinates?.floor ?? "Unknown floor")}</dd><dt>Coordinates</dt><dd>${record.coordinates ? `x ${e(record.coordinates.x)}, y ${e(record.coordinates.y)} · source coordinate frame; not verified meters` : "Unknown position; use recorded directions"}</dd><dt>Spawn evidence</dt><dd>${e(record.spawnKind || "Unknown")} · a named location does not guarantee loot</dd>`;
+  }
+  if (record.recordType === "item")
+    facts += `<dt>Unit</dt><dd>${e(record.unit || "Unknown")}</dd><dt>Private stock / remaining need</dt><dd><a href="/inventory/?pack=${encodeURIComponent(pack.id)}">Review inventory and unfinished needs</a>; not inferred from this reference.</dd>`;
+  const sources = pack.sources
+    .filter((source) => (record.sourceIds || []).includes(source.id))
+    .map((source) => maskedValue(source, guardFor(pack)));
+  facts += `<dt>Sources</dt><dd>${sources.length ? sources.map((source) => `${e(source.title)} · reviewed ${e(source.reviewedAt || "Unknown")}`).join("<br>") : "No source recorded"}</dd><dt>Catalog / coverage</dt><dd>${e(pack.title)} · ${e(pack.contentVersion)} · ${e(pack.coverage.note)}</dd>`;
+  return `<details data-reference-facts><summary>Reference details</summary><dl>${facts}</dl></details>`;
+}
+export function renderCard(record, { directory = false } = {}) {
   record = displayRecord(record);
   const kind = record.recordType === "item" ? record.kind : record.recordType;
-  return `<article class="record-card" data-record-card data-search="${e(recordSearchText(record))}" data-type="${e(kind)}" data-pack="${e(record.pack.id)}"><div class="card-meta"><span>${e(kind)}</span><span class="badge ${record.status === "fictional" ? "fixture" : ""}">${e(statusLabel(record))}</span></div><h3><a href="${recordUrl(record)}">${e(publicTitle(record))}<span aria-hidden="true"> ↗</span></a></h3><p>${e(record.spoiler ? "Spoiler content. Open this record and choose Reveal spoiler content to read it." : record.description || record.body || record.category || record.station || "Open the record for evidence and scope.")}</p><div class="card-foot">${isFixture(record.pack) ? '<strong class="fixture-text">FICTIONAL FIXTURE · NOT GAME DATA</strong>' : `<span>${e(record.category || record.recordType)} · ${e(record.pack.contentVersion)}</span>`}</div></article>`;
+  return `<article class="record-card${directory ? " item-row" : ""}" data-record-card data-search="${e(recordSearchText(record))}" data-type="${e(kind)}" data-pack="${e(record.pack.id)}">${directory ? '<div class="item-identity">' : ""}<div class="card-meta"><span>${e(kind)}</span><span class="badge ${record.status === "fictional" ? "fixture" : ""}">${e(statusLabel(record))}</span></div><h3><a href="${recordUrl(record)}">${e(publicTitle(record))}<span aria-hidden="true"> ↗</span></a></h3><p>${e(record.spoiler ? "Spoiler content. Open this record and choose Reveal spoiler content to read it." : record.description || record.body || record.category || record.station || "Open the record for evidence and scope.")}</p>${directory ? referenceFacts(record) : ""}<div class="card-foot">${isFixture(record.pack) ? '<strong class="fixture-text">FICTIONAL FIXTURE · NOT GAME DATA</strong>' : `<span>${e(record.category || record.recordType)} · ${e(record.pack.contentVersion)}</span>`}</div>${directory ? `</div><div class="item-row-actions"><a href="${e(recordUrl(record))}">Details<span class="sr-only"> ${e(publicTitle(record))}</span></a></div>` : ""}</article>`;
 }
 export function renderHome() {
   return renderDashboard();
@@ -146,6 +182,7 @@ export function renderCatalog(
     authorTargets = {},
   } = {},
 ) {
+  const modern = resolvePresentation("guide").variant === "modern";
   packs = [...packs].sort(
     (a, b) => Number(isFixture(a)) - Number(isFixture(b)),
   );
@@ -163,7 +200,7 @@ export function renderCatalog(
   return `${pageHeading("FIELD REFERENCE", title, "Find a record. Check its evidence. Keep the unknowns in view.")}${type === "weapon" ? '<p><a class="button" href="/armory/">Open weapon database, attachments &amp; patch history</a></p>' : ""}<form class="filter-bar" id="catalog-filters" data-default-pack="${e(defaultPack)}" action="" method="get"><label class="search-field">Search records<input type="search" maxlength="200" id="catalog-search" placeholder="Try Medkit, resources, or M4…" autocomplete="off"></label><label>Record type<select name="type" id="catalog-type"><option value="">All types</option>${types.map((t) => `<option value="${e(t)}">${e(t)}</option>`).join("")}</select></label><label>Content pack<select name="pack" id="catalog-pack"><option value="">All packs</option>${packs.map((p) => `<option value="${e(p.id)}" ${p.id === defaultPack ? "selected" : ""}>${e(p.title)}${isFixture(p) ? " (fictional)" : ""}</option>`).join("")}</select></label>${compact ? '<label>Sort items<select id="catalog-sort" name="sort"><option value="name">Name</option><option value="type">Type</option><option value="status">Evidence status</option></select></label>' : ""}<button type="submit" class="button primary">Search</button><a class="text-link" href="?" id="clear-filters">Clear filters</a></form>${compact ? '<p class="notice directory-help">Edit and Remove open exact-record instructions for your local Content Studio. Removal is previewed and blocked when referenced; nothing changes until you explicitly confirm and save. Private player inventory is untouched. <a href="/local/">Browse private records</a> or <a href="/editor/">open the private editor</a>.</p>' : ""}<p class="result-count" id="catalog-count" role="status">${filtered.length} records. Coverage not established.</p><noscript><p class="notice">Search filters require JavaScript. All records are listed below and can be read without it.</p></noscript><div class="empty-state" id="catalog-empty" hidden><h2>No matching records.</h2><p>Try another word or clear the filters.</p><a class="button secondary" href="?">Clear filters</a></div>${packs
     .map(
       (pack) =>
-        `<section class="catalog-section" data-catalog-section><div class="section-heading"><div><p class="eyebrow">${isFixture(pack) ? "FICTIONAL FIXTURES · NOT GAME DATA" : "SOURCE-BACKED STARTER REFERENCE"}</p><h2>${e(pack.title)}</h2><p>${e(pack.coverage.note)}</p></div></div><div class="${compact ? "item-directory" : "card-grid"}">${filtered
+        `<section class="catalog-section" data-catalog-section${modern ? ' data-ui-directory data-ui-directory-layout="live" data-ui-directory-pagination="false"' : ""}><div class="section-heading"><div><p class="eyebrow">${isFixture(pack) ? "FICTIONAL FIXTURES · NOT GAME DATA" : "SOURCE-BACKED STARTER REFERENCE"}</p><h2>${e(pack.title)}</h2><p>${e(pack.coverage.note)}</p></div></div><div class="${compact || modern ? "item-directory" : "card-grid"}">${filtered
           .filter((r) => r.pack.id === pack.id)
           .sort((a, b) =>
             compact ? publicTitle(a).localeCompare(publicTitle(b)) : 0,
@@ -174,7 +211,7 @@ export function renderCatalog(
                   record,
                   authorTargets[record.pack.id]?.[record.id],
                 )
-              : renderCard(record),
+              : renderCard(record, { directory: modern }),
           )
           .join("")}</div></section>`,
     )
@@ -184,7 +221,7 @@ export function renderCatalog(
 export function renderItemRow(record, target) {
   record = displayRecord(record);
   const title = publicTitle(record);
-  return `<article class="item-row" data-record-card data-search="${e(recordSearchText(record))}" data-name="${e(title.toLowerCase())}" data-type="${e(record.kind)}" data-status="${e(statusLabel(record))}" data-pack="${e(record.pack.id)}"><div class="item-identity"><h3><a href="${e(recordUrl(record))}" tabindex="0">${e(title)}</a></h3><p>${e(record.kind)} · ${e(record.spoiler ? "Spoiler-protected" : record.category || "Uncategorized")} · ${e(statusLabel(record))}</p></div><div class="item-row-actions" aria-label="Actions for ${e(title)}"><a href="${e(recordUrl(record))}" tabindex="0">Details</a>${target ? `<a data-directory-edit href="${e(target + "#edit")}" tabindex="0">Edit<span class="sr-only"> ${e(title)}</span></a><a data-directory-remove href="${e(target + "#remove")}" tabindex="0">Remove<span class="sr-only"> ${e(title)}</span></a>` : ""}</div></article>`;
+  return `<article class="item-row" data-record-card data-search="${e(recordSearchText(record))}" data-name="${e(title.toLowerCase())}" data-type="${e(record.kind)}" data-status="${e(statusLabel(record))}" data-pack="${e(record.pack.id)}"><div class="item-identity"><h3><a href="${e(recordUrl(record))}" tabindex="0">${e(title)}</a></h3><p>${e(record.kind)} · ${e(record.spoiler ? "Spoiler-protected" : record.category || "Uncategorized")} · ${e(statusLabel(record))}</p>${resolvePresentation("guide").variant === "modern" ? referenceFacts(record) : ""}</div><div class="item-row-actions" aria-label="Actions for ${e(title)}"><a href="${e(recordUrl(record))}" tabindex="0">Details</a>${target ? `<a data-directory-edit href="${e(target + "#edit")}" tabindex="0">Edit<span class="sr-only"> ${e(title)}</span></a><a data-directory-remove href="${e(target + "#remove")}" tabindex="0">Remove<span class="sr-only"> ${e(title)}</span></a>` : ""}</div></article>`;
 }
 
 function sourceMarkup(source) {
