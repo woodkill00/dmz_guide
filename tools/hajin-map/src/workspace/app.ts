@@ -301,7 +301,7 @@ export function mountWorkspace(
   const viewCache=createPaneViewState(body,()=>({workspace:'hajin',pack:null,profile:null,revision,capture:String(backgroundRequest)}));
   const viewTask=()=>currentTool??active;
   const captureCleanView=()=>{if(modern&&!dirty&&!detailActive&&!processing&&!unsaved)viewCache.capture(viewTask());};
-  const paneHost=mountPaneHost(dialog,{getState:()=>({dirty:dirty||detailActive||!!unsaved,committing:writing>0||unconfirmedWrite||(!!pendingVisibility&&!retainedFailure),processing:!!processing||interactionLocks>0}),save:async()=>saveActiveDraft?saveActiveDraft():false,discard:()=>{if(writing||unsaved||unconfirmedWrite||processing||interactionLocks)throw new Error('Wait for the existing operation to finish.');detailCleanup?.();detailCleanup=undefined;detailActive=false;dirty=false;editing=undefined;draftPosition=undefined;plannerPick=undefined;plannerUI?.reset();renderPanel();},revealTask:()=>document.querySelector<HTMLButtonElement>('#ui-task-view')?.click(),onClose:()=>document.querySelector<HTMLButtonElement>('#ui-map-view')?.click(),onBlocked:message=>error(message)});
+  const paneHost=mountPaneHost(dialog,{getState:()=>({dirty:dirty||(detailActive&&!usabilityDetail)||!!unsaved,committing:writing>0||unconfirmedWrite||(!!pendingVisibility&&!retainedFailure),processing:!!processing||interactionLocks>0}),save:async()=>saveActiveDraft?saveActiveDraft():false,discard:()=>{if(writing||unsaved||unconfirmedWrite||processing||interactionLocks)throw new Error('Wait for the existing operation to finish.');detailCleanup?.();detailCleanup=undefined;detailActive=false;dirty=false;editing=undefined;draftPosition=undefined;plannerPick=undefined;plannerUI?.reset();renderPanel();},revealTask:()=>document.querySelector<HTMLButtonElement>('#ui-task-view')?.click(),onClose:()=>document.querySelector<HTMLButtonElement>('#ui-map-view')?.click(),onBlocked:message=>error(message)});
   function openWorkspacePane(){if(paneHost)paneHost.open();else dialog.showModal();}
   const backupReminder = el("section", undefined, "workspace-backup-reminder");
   backupReminder.id = "backup-reminder";
@@ -560,7 +560,7 @@ export function mountWorkspace(
     dirty = false;
     renderPanel();
     if(modern){if(dialog.matches(":modal"))dialog.close();openWorkspacePane();viewCache.restore(viewTask(),{focus:true});}
-    if (dialog.open)
+    if (dialog.open&&!modern)
       nav.querySelector<HTMLButtonElement>(`[data-tab="${active}"]`)?.focus();
   };
   const cancelProcessing = button(
@@ -2624,8 +2624,8 @@ export function mountWorkspace(
       const destination=workspaceDestination(target);
       if(!destination)return false;
       if(disposed||suspended||!hydrated)throw new Error('Workspace tools could not open. Check local storage and the workspace status, then try My workspace again.');
-      if(paneHost){if(currentTool===target){openWorkspacePane();return true;}if(dirty||detailActive||processing||interactionLocks||unsaved||pendingVisibility){paneHost.request({id:`tool:${target}`,label:`Open ${target.replaceAll('-',' ')}`,run:()=>{openTool(target);},revalidate:()=>!disposed&&hydrated});return true;}}
-      if(dirty||detailActive||processing||interactionLocks||unsaved||pendingVisibility)throw new Error('Save or cancel your current draft before opening another tool.');
+      if(paneHost){if(currentTool===target){openWorkspacePane();return true;}if(dirty||(detailActive&&!usabilityDetail)||processing||interactionLocks||unsaved||pendingVisibility){paneHost.request({id:`tool:${target}`,label:`Open ${target.replaceAll('-',' ')}`,run:()=>{openTool(target);},revalidate:()=>!disposed&&hydrated});return true;}}
+      if(dirty||(detailActive&&!usabilityDetail)||processing||interactionLocks||unsaved||pendingVisibility)throw new Error('Save or cancel your current draft before opening another tool.');
       captureCleanView();
       currentTool=target;dialog.dataset.uiToolTarget=target;
       if(destination.plannerSection){plannerUI!.open(destination.plannerSection);const heading=body.querySelector<HTMLElement>('h3');if(heading){heading.tabIndex=-1;heading.focus();}return true;}

@@ -73,6 +73,7 @@ const viewer = createMapView(
   () => {},
   { gridPreferenceKey: null },
 );
+if(document.documentElement.dataset.uiVariant==='modern')viewer.map.on('popupopen',()=>document.querySelector<HTMLButtonElement>('#safe-map-view')?.click());
 const map = viewer.map,
   markers = L.layerGroup().addTo(map),
   lines = L.layerGroup().addTo(map);

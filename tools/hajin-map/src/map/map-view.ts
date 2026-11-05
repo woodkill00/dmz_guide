@@ -105,17 +105,23 @@ export function createMapView(
     overview = true;
   };
   const resize = () => {
+    // Hidden Task-only terrain has no fit geometry. Its camera belongs to the
+    // last visible allocation and will refresh when ResizeObserver sees it again.
+    if(!element.clientWidth||!element.clientHeight)return;
     const keepOverview = overview;
-    const center = map.getCenter();
+    const center = map.getCenter(),keepZoom=map.getZoom();
     // Counter-pan synchronously so max-bounds enforcement never sees a shifted center.
     map.invalidateSize({ pan: true, animate: false });
     // getBoundsZoom clamps to the existing minimum; release the old viewport's limit first.
     map.setMinZoom(-4);
     const minimum = map.getBoundsZoom(bounds, false, L.point(48, 48));
-    map.setMinZoom(Math.min(minimum, 4));
+    map.setMinZoom(Math.min(minimum, 4, keepOverview?Infinity:keepZoom));
+    // Runtime Leaflet supports reset; published ZoomPanOptions omits it.
+    // Avoid accumulating rounded pan offsets when the pane changes size.
+    const resizeOptions: L.ZoomPanOptions & {reset:boolean}={animate:false,reset:true};
     if (keepOverview) fit();
     else
-      map.setView(center, Math.max(map.getZoom(), minimum), { animate: false, reset: true });
+      map.setView(center, keepZoom, resizeOptions);
     map.eachLayer((layer) => {
       if (
         layer instanceof L.Popup &&

@@ -67,6 +67,8 @@ const checks = [];
   assert.equal(await page.locator('.key-item').count(), 4);
   assert.ok(await page.locator('[data-key-category="dmz_exfil"]').isDisabled());
   await page.locator('#key-hide-all').click(); assert.equal(await count(), 0);
+  //067 groups source controls in a native disclosure; open it through its real control.
+  await page.locator('#map-key details[data-menu-section="source-official"] > summary').click();
   await page.locator('[data-key-category="dmz_ammoCache"]').check(); assert.equal(await count(), 3);
   await page.locator('#layers').click();
   assert.ok(await page.locator('[data-category="dmz_ammoCache"]').isChecked());
