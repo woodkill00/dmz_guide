@@ -191,6 +191,97 @@ try {
       );
       assert(half.map.bottom <= half.task.top + 1);
       await original();
+      // Exercise the exact Half -> Full boundary and the extra visible fallback message.
+      await p.setViewportSize({ width: 768, height: 1000 });
+      await mode(p, "half");
+      const boundary = await p.evaluate(() => ({
+        top: document.querySelector(".workspace").getBoundingClientRect().top,
+        header: document
+          .querySelector(".ui-map-task-header")
+          .getBoundingClientRect().height,
+        route: document.querySelector("#ui-map-route").getBoundingClientRect()
+          .height,
+        font: parseFloat(
+          getComputedStyle(document.querySelector(".workspace")).fontSize,
+        ),
+      }));
+      await p.setViewportSize({
+        width: 768,
+        height:
+          Math.floor(
+            boundary.top +
+              boundary.route +
+              26 * boundary.font +
+              boundary.header,
+          ) - 1,
+      });
+      await mode(p, "full");
+      const fallback = await p.evaluate(() => {
+        const task = document.querySelector("#ui-map-task"),
+          header = document.querySelector(".ui-map-task-header");
+        return {
+          header: header.getBoundingClientRect().height,
+          padding: parseFloat(getComputedStyle(task).scrollPaddingTop),
+          flow: getComputedStyle(header).position === "static",
+          rootFont: parseFloat(
+            getComputedStyle(document.documentElement).fontSize,
+          ),
+          feedback: !document.querySelector(".ui-map-mode-feedback").hidden,
+        };
+      });
+      assert(
+        fallback.feedback && fallback.header > boundary.header,
+        JSON.stringify({ boundary, fallback }),
+      );
+      assert(
+        Math.abs(
+          fallback.padding -
+            (fallback.flow ? 0 : fallback.header) -
+            fallback.rootFont * 0.5,
+        ) < 0.1,
+        "Scroll padding includes the final visible fallback message: " +
+          JSON.stringify(fallback),
+      );
+      // Between the dry and final header budgets, only the message makes sticky unsafe.
+      await p.setViewportSize({
+        width: 768,
+        height: Math.floor(
+          boundary.top +
+            boundary.route +
+            14 * boundary.font +
+            (boundary.header + fallback.header) / 2,
+        ),
+      });
+      await mode(p, "full");
+      await p.waitForFunction(
+        () =>
+          document.querySelector("#ui-map-task").dataset.uiHeaderFlow ===
+          "true",
+      );
+      await p.locator("#point-icon").focus();
+      await p.keyboard.press("Tab");
+      assert.equal(
+        await p
+          .locator("#point-owned")
+          .evaluate((e) => e === document.activeElement),
+        true,
+        "Native Tab reaches the last visible owner field",
+      );
+      const hit = await p.locator("#point-owned").evaluate((e) => {
+        const r = e.getBoundingClientRect();
+        const hit = document.elementFromPoint(
+          r.x + r.width / 2,
+          r.y + r.height / 2,
+        );
+        return { ok: hit === e || e.contains(hit), rect: r.toJSON() };
+      });
+      assert(
+        hit.ok,
+        "Last field stays reachable past fallback header: " +
+          JSON.stringify(hit),
+      );
+      await original();
+
       await p.locator("#point-title").focus();
       await p.setViewportSize({ width: 320, height: 400 });
       await mode(p, "full");
@@ -264,10 +355,67 @@ try {
       await p.waitForTimeout(150);
       assert.deepEqual(await camera(p), before, "Modes never change camera");
       assert.equal(await stored(p), record, "Modes never save draft/domain");
+      // A real global guard remains usable above Peek's intentionally inert body.
+      await p
+        .getByRole("button", { name: "Minimize task", exact: true })
+        .click();
+      await mode(p, "peek");
+      await p.locator(".field-toolbar details > summary").click();
+      await p
+        .locator(".field-toolbar")
+        .getByRole("button", { name: "Backups", exact: true })
+        .click();
+      const guard = p.locator("#ui-pane-departure-guard");
+      await guard.waitFor({ state: "visible" });
+      assert.equal(
+        await guard.evaluate((e) => e.matches(":modal")),
+        true,
+        "Departure uses the real top layer",
+      );
+      const stay = guard.getByRole("button", { name: "Stay", exact: true });
+      await stay.focus();
+      const guardHit = await stay.evaluate((e) => {
+        const r = e.getBoundingClientRect();
+        return (
+          document.activeElement === e &&
+          document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2) === e
+        );
+      });
+      assert(guardHit, "Guard focus and real pointer target remain above Peek");
+      await stay.click();
+      await original();
+      // Restoring to the task is an explicit owner action; inspect the same draft via Icons.
+      await p
+        .getByRole("button", { name: "Minimize task", exact: true })
+        .click();
+      await mode(p, "peek");
+      await p.getByRole("button", { name: "Expand task", exact: true }).click();
+      await mode(p, "full");
+      await p.locator("#workspace-tab-icons").click();
+      await guard.waitFor({ state: "visible" });
+      assert.equal(await guard.evaluate((e) => e.matches(":modal")), true);
+      await guard.getByRole("button", { name: "Stay", exact: true }).click();
+      await original();
+      assert.equal(
+        await stored(p),
+        record,
+        "Both Stay paths preserve domain state",
+      );
+      await p.locator("#ui-map-view").click();
+      await mode(p, "closed");
+      await centered();
+      assert.deepEqual(
+        await camera(p),
+        before,
+        "Guard workflows preserve exact camera",
+      );
       assert.deepEqual(errors, []);
       rows.push({
         engine: name,
         peek: true,
+        boundary,
+        fallback,
+        guardStay: true,
         half,
         fullDesktop: true,
         shortFallback: true,

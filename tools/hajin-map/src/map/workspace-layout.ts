@@ -118,15 +118,6 @@ export function mountMapWorkspaceLayout() {
     document.documentElement.dataset.mapView = chosen;
     // Revealing the destination first makes focus possible before hiding the old view.
     if (mode !== "map") task.hidden = false;
-    const headerFlows =
-      available < 14 * font ||
-      (mode === "task" &&
-        visibleHeight - routeHeight < headerHeight + 14 * font);
-    task.dataset.uiHeaderFlow = String(headerFlows);
-    task.style.setProperty(
-      "--ui-task-header-height",
-      `${headerFlows ? 0 : headerHeight}px`,
-    );
     // Move focus before hiding/inerting its original subtree.
     if ((mode === "peek" || mode === "map") && wasTask) {
       (mode === "peek" ? expand : tools).focus({ preventScroll: true });
@@ -151,6 +142,18 @@ export function mountMapWorkspaceLayout() {
         title.focus({ preventScroll: true });
       expand.hidden = true;
     }
+    // Fit selection excludes fallback feedback, but scrolling uses the final visible header.
+    // The fallback adds a message and changes controls, so its actual height can differ.
+    const finalHeaderHeight = header.getBoundingClientRect().height;
+    const headerFlows =
+      available < 14 * font ||
+      (mode === "task" &&
+        visibleHeight - routeHeight < finalHeaderHeight + 14 * font);
+    task.dataset.uiHeaderFlow = String(headerFlows);
+    task.style.setProperty(
+      "--ui-task-header-height",
+      `${headerFlows ? 0 : finalHeaderHeight}px`,
+    );
     minimize.setAttribute("aria-pressed", String(mode === "peek"));
     half.setAttribute("aria-pressed", String(mode === "half"));
     expand.setAttribute("aria-pressed", String(mode === "task"));
