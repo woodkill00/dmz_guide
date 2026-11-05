@@ -280,6 +280,31 @@ try {
             body: await readFile(process.env.DMZ_TEST_CATALOG_SOURCE, "utf8"),
           }),
         );
+      // Incoming-directory Back must reach its actual previous document. A
+      // pagehide replaceState can cancel this traversal in all three engines.
+      for (const edited of [false, true]) {
+        await p.goto(server.base + "/features/");
+        await p
+          .locator('main [data-feature-card] a[data-feature-id="recipes"]')
+          .click();
+        await p.locator("#catalog-pagination").waitFor();
+        if (edited)
+          await p.locator("#catalog-search").fill("synthetic-back-check");
+        await p.goBack();
+        assert.equal(
+          new URL(p.url()).pathname,
+          "/features/",
+          "incoming catalog native Back preserves previous document",
+        );
+        await p.goForward();
+        await p.locator("#catalog-pagination").waitFor();
+        assert.equal(new URL(p.url()).pathname, "/recipes/");
+        if (edited)
+          assert.equal(
+            await p.locator("#catalog-search").inputValue(),
+            "synthetic-back-check",
+          );
+      }
       await p.goto(server.base + "/catalog/");
       assert.equal(
         await p.locator("html").getAttribute("data-ui-variant"),

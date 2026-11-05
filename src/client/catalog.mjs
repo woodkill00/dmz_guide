@@ -203,12 +203,23 @@ function mountModernCatalog(form) {
         (current?.dmzCatalog071 === undefined ||
           validView(current.dmzCatalog071));
       sessionOnly = !safe;
+      const target = location.pathname + (params.size ? "?" + params : "");
+      // A dirty input also emits change on navigation blur. Its input event
+      // already saved this exact view; repeating replaceState during traversal
+      // can cancel Back even when no pagehide handler writes history.
+      if (
+        target === location.pathname + location.search &&
+        (!safe ||
+          JSON.stringify(current?.dmzCatalog071) ===
+            JSON.stringify(fallbackView))
+      )
+        return;
       // Unknown/oversized namespaces and non-object foreign state are preserved,
       // including their exact payload. Only the approved public URL is normalized.
       history.replaceState(
         safe ? { ...current, dmzCatalog071: fallbackView } : current,
         "",
-        location.pathname + (params.size ? "?" + params : ""),
+        target,
       );
     } catch {
       sessionOnly = true;
@@ -455,7 +466,9 @@ function mountModernCatalog(form) {
     true,
   );
   window.addEventListener("popstate", readURL);
-  window.addEventListener("pagehide", saveView);
+  // View edits and native detail clicks save synchronously while this document
+  // is active. Writing history during pagehide can cancel a pending Back/Forward
+  // traversal and strand the user on this outgoing directory.
   window.addEventListener("pageshow", (event) => {
     if (event.persisted) readURL();
   });
