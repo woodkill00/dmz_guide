@@ -27,6 +27,7 @@ export interface SelectionPaneOptions {
 }
 interface Frame {
   popup: Popup;
+  raw: ReturnType<Popup["getContent"]>;
   node: HTMLElement;
   parent: Node;
   next: ChildNode | null;
@@ -41,6 +42,32 @@ interface Frame {
   focusChanged: (event: FocusEvent) => void;
 }
 const sourceClass = "ui-map-selection-source";
+// Leaflet already evaluated a function on open. Read that exact DOM result;
+// evaluating the factory here would duplicate actions and lose its identity.
+function renderedContent(
+  popup: Popup,
+  raw = popup.getContent(),
+): HTMLElement | null {
+  if (raw instanceof HTMLElement) return raw;
+  if (typeof raw !== "function") return null;
+  const parent = popup.getElement()?.querySelector(".leaflet-popup-content");
+  return parent?.childNodes.length === 1 &&
+    parent.firstChild instanceof HTMLElement
+    ? parent.firstChild
+    : null;
+}
+function retainsSource(frame: Frame) {
+  if (frame.popup.getContent() !== frame.raw) return false;
+  if (typeof frame.raw !== "function") return frame.raw === frame.node;
+  const parent = frame.popup
+    .getElement()
+    ?.querySelector(".leaflet-popup-content");
+  return (
+    !!parent &&
+    (!parent.childNodes.length ||
+      renderedContent(frame.popup, frame.raw) === frame.node)
+  );
+}
 
 /** One read-only selection frame. Domain nodes/actions and the camera remain owner controlled. */
 export function mountSelectionPane(
@@ -80,7 +107,7 @@ export function mountSelectionPane(
       }
     }
     if (!frame.node.parentNode || frame.node.parentNode === frame.paneParent) {
-      if (frame.popup.getContent() === frame.node) {
+      if (retainsSource(frame)) {
         frame.parent.insertBefore(
           frame.node,
           frame.next?.parentNode === frame.parent ? frame.next : null,
@@ -103,7 +130,8 @@ export function mountSelectionPane(
   const open = (event: PopupEvent) => {
     if (disposed) return;
     const popup = event.popup,
-      node = popup.getContent(),
+      raw = popup.getContent(),
+      node = renderedContent(popup, raw),
       chrome = popup.getElement();
     if (
       !(node instanceof HTMLElement) ||
@@ -138,7 +166,8 @@ export function mountSelectionPane(
     const valid = () =>
       !disposed &&
       map.hasLayer(popup) &&
-      popup.getContent() === node &&
+      popup.getContent() === raw &&
+      renderedContent(popup, raw) === node &&
       node.parentNode === parent &&
       allowed();
     const run = () => {
@@ -146,6 +175,7 @@ export function mountSelectionPane(
       if (active) finish(active, "replace");
       const frame: Frame = {
         popup,
+        raw,
         node,
         parent,
         next,
@@ -161,7 +191,7 @@ export function mountSelectionPane(
         },
         contentChanged: () => {
           if (active !== frame) return;
-          if (popup.getContent() !== node) {
+          if (!retainsSource(frame)) {
             if (allowed()) finish(frame, "source-update");
             return; // A source refresh cannot remove a protected editor/draft.
           }

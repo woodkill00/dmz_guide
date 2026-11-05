@@ -117,12 +117,24 @@ try {
           },
           onClose: (reason) => state.closes.push(reason),
         });
-        const functional=L.popup({autoPan:false,autoClose:false,closeOnClick:false}).setLatLng([2,2]).setContent(()=>{
-          state.factoryCalls=(state.factoryCalls??0)+1;
-          const content=document.createElement('section');content.id='function-content';
-          const action=document.createElement('button');action.id='function-action';action.textContent='Functional source action';action.onclick=()=>state.functionHits=(state.functionHits??0)+1;
-          content.append(action);return content;
-        });
+        const functional = L.popup({
+          autoPan: false,
+          autoClose: false,
+          closeOnClick: false,
+        })
+          .setLatLng([2, 2])
+          .setContent(() => {
+            state.factoryCalls = (state.factoryCalls ?? 0) + 1;
+            const content = document.createElement("section");
+            content.id = "function-content";
+            const action = document.createElement("button");
+            action.id = "function-action";
+            action.textContent = "Functional source action";
+            action.onclick = () =>
+              (state.functionHits = (state.functionHits ?? 0) + 1);
+            content.append(action);
+            return content;
+          });
         window.selectionFixture = {
           map,
           functional,
@@ -304,16 +316,86 @@ try {
         selectionFixture.map.closePopup(selectionFixture.next),
       );
       assert.equal(await page.locator("#pane #next-content").count(), 0);
-      await page.evaluate(()=>selectionFixture.functional.openOn(selectionFixture.map));
-      assert.equal(await page.locator('#pane #function-content').count(),1);
-      assert.equal(await page.evaluate(()=>selectionFixture.state.factoryCalls),1,"adapter never invokes the source factory again");
-      await page.locator('#function-action').click();
-      assert.equal(await page.evaluate(()=>selectionFixture.state.functionHits),1);
-      await page.locator('#function-content').evaluate(node=>window.__functionIdentity=node);
-      await page.evaluate(()=>{document.querySelector('#map').style.height='450px';selectionFixture.map.invalidateSize({pan:false,animate:false});document.querySelector('#map').style.height='500px';selectionFixture.map.invalidateSize({pan:false,animate:false});});
-      assert.equal(await page.evaluate(()=>document.querySelector('#pane #function-content')===window.__functionIdentity),true);
-      assert.equal(await page.evaluate(()=>selectionFixture.state.factoryCalls),1);
-      await page.locator('#selection-back').click();
+      await page.evaluate(() =>
+        selectionFixture.functional.openOn(selectionFixture.map),
+      );
+      assert.equal(await page.locator("#pane #function-content").count(), 1);
+      assert.equal(
+        await page.evaluate(() => selectionFixture.state.factoryCalls),
+        1,
+        "adapter never invokes the source factory again",
+      );
+      await page.locator("#function-action").click();
+      assert.equal(
+        await page.evaluate(() => selectionFixture.state.functionHits),
+        1,
+      );
+      await page
+        .locator("#function-content")
+        .evaluate((node) => (window.__functionIdentity = node));
+      await page.evaluate(() => {
+        document.querySelector("#map").style.height = "450px";
+        selectionFixture.map.invalidateSize({ pan: false, animate: false });
+        document.querySelector("#map").style.height = "500px";
+        selectionFixture.map.invalidateSize({ pan: false, animate: false });
+      });
+      assert.equal(
+        await page.evaluate(
+          () =>
+            document.querySelector("#pane #function-content") ===
+            window.__functionIdentity,
+        ),
+        true,
+      );
+      assert.equal(
+        await page.evaluate(() => selectionFixture.state.factoryCalls),
+        1,
+      );
+      await page.evaluate(() => {
+        selectionFixture.state.allowed = false;
+        selectionFixture.functional.update();
+      });
+      assert.equal(
+        await page.evaluate(
+          () =>
+            document.querySelector("#pane #function-content") ===
+            window.__functionIdentity,
+        ),
+        true,
+        "protected functional source refresh keeps its existing editor frame",
+      );
+      assert.equal(
+        await page.evaluate(() => selectionFixture.state.factoryCalls),
+        2,
+      );
+      await page.evaluate(() => {
+        selectionFixture.state.allowed = true;
+        selectionFixture.state.back();
+      });
+      assert.equal(
+        await page.evaluate(
+          () =>
+            selectionFixture.functional
+              .getElement()
+              .querySelector(".leaflet-popup-content").childNodes.length,
+        ),
+        1,
+        "stale old node is never restored beside the newer factory result",
+      );
+      await page.evaluate(() => {
+        selectionFixture.functional.openOn(selectionFixture.map);
+        selectionFixture.functional.update();
+      });
+      assert.equal(
+        await page.locator("#pane #function-content").count(),
+        0,
+        "readonly functional source generation change releases the obsolete pane",
+      );
+      assert.equal(
+        await page.evaluate(() => selectionFixture.state.factoryCalls),
+        4,
+        "only Leaflet invokes the factory, once per owner update/open",
+      );
       await page.evaluate(() => {
         selectionFixture.open();
         selectionFixture.cleanup();
