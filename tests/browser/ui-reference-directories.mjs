@@ -2,6 +2,38 @@ import assert from "node:assert/strict";
 import { chromium, firefox, webkit } from "playwright";
 import { startBrowserServer } from "./server.mjs";
 import { monitorBrowser } from "./health.mjs";
+import { fixtureCatalog } from "../helpers/catalog.mjs";
+import { renderCatalog } from "../../src/ui/render.mjs";
+// Synthetic rendering probe: public evidence must use the same spoiler masking
+// as identities and approved search text, even when a source title contains it.
+const previousVariant = process.env.DMZ_UI_VARIANT;
+try {
+  process.env.DMZ_UI_VARIANT = "modern";
+  const pack = structuredClone(
+    fixtureCatalog.entries
+      .map((entry) => entry.pack)
+      .find((pack) => pack.guides.some((guide) => guide.spoiler)),
+  );
+  const secret = pack.guides.find((guide) => guide.spoiler).title;
+  pack.sources[0].title = secret;
+  const recipe = pack.recipes.find(
+    (recipe) => !recipe.spoiler && recipe.inputs.length,
+  );
+  recipe.sourceIds = [pack.sources[0].id];
+  recipe.inputs[0].consumption = "unknown";
+  delete recipe.inputs[0].consumed;
+  const html = renderCatalog([pack]);
+  assert.equal(
+    html.includes(secret),
+    false,
+    "new reference facts never expose protected source titles",
+  );
+  assert.match(html, /Consumption unknown/);
+  assert.match(html, /data-ui-directory-pagination="false"/);
+} finally {
+  if (previousVariant === undefined) delete process.env.DMZ_UI_VARIANT;
+  else process.env.DMZ_UI_VARIANT = previousVariant;
+}
 const server = await startBrowserServer();
 let failure;
 try {
@@ -71,6 +103,34 @@ try {
         );
       }
       await page.goto(`${server.base}/recipes/?pack=demo%3Atraining-pack`);
+      await context.route("**/__reference-text-zoom.css", (route) =>
+        route.fulfill({
+          contentType: "text/css",
+          body: ":root{font-size:200%}",
+        }),
+      );
+      await page.addStyleTag({
+        url: `${server.base}/__reference-text-zoom.css`,
+      });
+      await page.setViewportSize({ width: 320, height: 640 });
+      const expandedRecipe = page.locator("[data-record-card]:visible").first();
+      await expandedRecipe
+        .locator("[data-reference-facts]")
+        .evaluate((node) => {
+          node.open = true;
+        });
+      await expandedRecipe.locator("h3 a").evaluate((node) => {
+        node.textContent = "SyntheticVeryLongUnbrokenReferenceIdentity".repeat(
+          5,
+        );
+      });
+      assert.equal(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth > innerWidth + 1,
+        ),
+        false,
+        "expanded recipe and long identity wrap at 320px and 200% text",
+      );
       const recipes = await page
         .locator("[data-reference-facts]")
         .allTextContents();
