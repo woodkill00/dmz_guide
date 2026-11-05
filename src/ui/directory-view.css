@@ -1,0 +1,129 @@
+/* Modern opt-in presentation only: this never changes domain values or hides no-JS rows. */
+html[data-ui-variant="modern"] [data-ui-directory] {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+html[data-ui-variant="modern"] [data-ui-directory] [data-ui-directory-scroll] {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scroll-padding-block-start: calc(
+    var(--ui-directory-head-height, 3rem) + 0.5rem
+  );
+  scroll-padding-block-end: 0.75rem;
+  scroll-padding-inline: 0.75rem;
+}
+html[data-ui-variant="modern"] [data-ui-directory] table {
+  inline-size: 100%;
+  min-inline-size: calc(var(--ui-directory-columns, 1) * 8rem);
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+html[data-ui-variant="modern"] [data-ui-directory] :is(th, td) {
+  min-inline-size: 0;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+html[data-ui-variant="modern"] [data-ui-directory] thead th {
+  position: sticky;
+  inset-block-start: var(--ui-directory-sticky-top, 0px);
+  z-index: 2;
+  background: var(--ui-surface, var(--surface, #1d2923));
+  color: var(--ui-text, var(--text, #eef3ea));
+}
+html[data-ui-variant="modern"]
+  [data-ui-directory][data-ui-directory-sticky-identity="true"]
+  tbody
+  > tr
+  > :first-child {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  background: var(--ui-surface, var(--surface, #1d2923));
+}
+html[data-ui-variant="modern"]
+  [data-ui-directory]
+  :is(button, input, select, textarea, a, summary) {
+  scroll-margin-block-start: calc(
+    var(--ui-directory-head-height, 3rem) + 0.5rem
+  );
+  scroll-margin-block-end: 0.75rem;
+  scroll-margin-inline: 0.75rem;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+}
+html[data-ui-variant="modern"]
+  [data-ui-directory]
+  :is(
+    button,
+    input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+    select,
+    textarea
+  ) {
+  min-block-size: max(44px, 2.75rem);
+  white-space: normal;
+}
+html[data-ui-variant="modern"]
+  [data-ui-directory]
+  [data-ui-directory-pagination-controls] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-block: 0.5rem;
+}
+html[data-ui-variant="modern"]
+  [data-ui-directory]
+  [data-ui-directory-pagination-controls]
+  label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-inline-size: 0;
+}
+html[data-ui-variant="modern"] [data-ui-directory] .ui-directory-status,
+html[data-ui-variant="modern"] [data-ui-directory] .ui-directory-page-label {
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  html[data-ui-variant="modern"]
+    [data-ui-directory][data-ui-directory-sticky-identity="true"]
+    tbody
+    > tr
+    > :first-child {
+    position: static;
+  }
+}
+
+html[data-ui-variant="modern"]
+  [data-ui-directory][data-ui-directory-sticky-identity="true"]
+  [data-ui-directory-scroll] {
+  scroll-padding-inline-start: calc(
+    var(--ui-directory-identity-width, 0px) + 0.75rem
+  );
+}
+html[data-ui-variant="modern"]
+  [data-ui-directory][data-ui-directory-identity-fit="false"]
+  tbody
+  > tr
+  > :first-child {
+  position: static;
+}
+
+html[data-ui-variant="modern"]
+  [data-ui-directory]
+  label:has(> input[type="checkbox"]),
+html[data-ui-variant="modern"]
+  [data-ui-directory]
+  label:has(> input[type="radio"]) {
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
