@@ -73,6 +73,30 @@ const fixtures = [
   { id: "upgrades", path: "/upgrades/", search: "#progress-query" },
   { id: "armory", path: "/armory/", search: "[data-weapon-search]" },
 ];
+const filterContracts = {
+  keys: {
+    status: "#key-count",
+    pattern: "^0 of \\d+ keys · 0 matching use locations",
+    rows: "[data-key-row]:not([hidden])",
+    empty: "#key-empty",
+  },
+  inventory: {
+    status: "#inventory-count",
+    pattern: "^0 of \\d+ visible catalog items match\\.",
+    rows: "[data-inventory-item]",
+  },
+  upgrades: {
+    status: "#progress-count",
+    pattern: "^Showing 0–0 of 0 matching",
+    rows: "#progress-rows > article,#progress-rows > details",
+  },
+  armory: {
+    status: "[data-weapon-count]",
+    pattern: "^0 of \\d+ weapons$",
+    rows: "[data-weapon-row]:not([hidden])",
+    empty: "[data-gs-empty]",
+  },
+};
 const viewports = [
   { id: "desktop", width: 1440, height: 900, text: 1 },
   { id: "compact", width: 320, height: 568, text: 1 },
@@ -258,7 +282,31 @@ try {
             (e) => document.activeElement === e,
           );
           assert.equal(focus, true);
-          input = await search.evaluate(async (e) => {
+          const contract = filterContracts[fixture.id] || null;
+          const initialFilter = contract
+            ? await page.evaluate((contract) => {
+                const status = document.querySelector(
+                  contract.status,
+                ).textContent;
+                const numbers = status.match(/\d+/g).map(Number);
+                return {
+                  status,
+                  rows: document.querySelectorAll(contract.rows).length,
+                  total: numbers[contract.status === "#progress-count" ? 2 : 1],
+                };
+              }, contract)
+            : null;
+          if (contract) {
+            assert.ok(
+              initialFilter.total > 0,
+              "Initial owner full-model count must be positive",
+            );
+            assert.ok(
+              initialFilter.rows > 0,
+              "Initial owner result window must contain records",
+            );
+          }
+          input = await search.evaluate(async (e, contract) => {
             const started = performance.now();
             let changes = 0;
             const observer = new MutationObserver(
@@ -273,24 +321,69 @@ try {
             e.value = "zz-synthetic-no-match-071";
             e.dispatchEvent(new Event("input", { bubbles: true }));
             const dispatchMs = performance.now() - started;
+            let completedFilterMs = null;
+            let completedStatus = null;
+            const completion = (async () => {
+              if (contract) {
+                const completed = () => {
+                  const status = document.querySelector(contract.status);
+                  const empty = contract.empty
+                    ? document.querySelector(contract.empty)
+                    : null;
+                  return (
+                    status &&
+                    new RegExp(contract.pattern).test(status.textContent) &&
+                    document.querySelectorAll(contract.rows).length === 0 &&
+                    (!contract.empty || (empty && !empty.hidden))
+                  );
+                };
+                while (!completed()) {
+                  if (performance.now() - started > 5000)
+                    throw Error(
+                      "Owner filter did not reach exact zero-result status and rows",
+                    );
+                  await new Promise(requestAnimationFrame);
+                }
+                completedFilterMs = performance.now() - started;
+                completedStatus = document.querySelector(
+                  contract.status,
+                ).textContent;
+              }
+            })();
             await new Promise((r) =>
               requestAnimationFrame(() => requestAnimationFrame(r)),
             );
             const twoFrameMs = performance.now() - started;
+            await completion;
             await new Promise((r) => setTimeout(r, 400));
             observer.disconnect();
             return {
-              query: e.value,
               dispatchMs,
               twoFrameMs,
+              completedFilterMs,
+              completedStatus,
+              completionScope: contract
+                ? "Exact owner zero-result status and zero rendered record rows; browser-clock input-to-observed-completion"
+                : "N/A: Home submits to a separate search page; no inline filter",
               observedMainMutations: changes,
               measurement:
                 "input dispatch and two-frame scheduling; not a domain completion latency",
               focus: document.activeElement === e,
             };
-          });
+          }, contract);
+          input.initialFilter = initialFilter;
           assert.equal(input.focus, true);
           await search.fill("");
+          if (contract)
+            await page.waitForFunction(
+              ({ contract, initial }) =>
+                document.querySelector(contract.status)?.textContent ===
+                  initial.status &&
+                document.querySelectorAll(contract.rows).length ===
+                  initial.rows,
+              { contract, initial: initialFilter },
+              { timeout: 5000 },
+            );
         }
         if (run === 0) {
           await page.evaluate(() => scrollTo(0, 0));
