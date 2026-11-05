@@ -475,3 +475,8 @@ html[data-ui-variant=modern] .safe-layout:not([data-ui-safe-view=docked]){grid-t
 html[data-ui-variant=modern] .safe-layout [hidden]{display:none!important}
 
 html[data-ui-variant=modern] .safe-layout{display:grid;grid-template-rows:minmax(0,1fr)}
+
+/* Safe Run owns its full-width map canvas, not the Guide reading-column cap. */
+html[data-ui-variant=modern] body.safe-run-page main.safe-layout{width:100%;max-width:none;margin:0;padding:0}
+html[data-ui-variant=modern] .safe-header{flex-wrap:wrap;gap:.5rem;background:var(--ws-surface)}
+html[data-ui-variant=modern] .safe-main-map-link{display:inline-flex;align-items:center;min-height:44px;padding:.4rem .65rem;border:1px solid var(--ws-control-line,var(--ws-line));border-radius:.4rem;text-decoration:none}

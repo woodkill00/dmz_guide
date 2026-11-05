@@ -96,10 +96,11 @@ function renderModernDashboard() {
     "upgrades",
     "missions",
     "keys",
+    "safe-runs",
   ]
     .map((id) => {
       const f = features.find((f) => f.id === id);
-      return `<span><a href="${e(featureURL(f))}" data-feature-id="${id}">${e(f.label)}</a><button type="button" data-pin-feature="${id}" aria-label="Pin ${e(f.label)}" aria-pressed="false" hidden>☆</button></span>`;
+      return `<span><a href="${e(featureURL(f))}" data-feature-id="${id}"${f.kind !== "guide" ? ' target="_blank" rel="noopener noreferrer"' : ""}>${e(id === "safe-runs" ? "Safe Run map" : f.label)}</a><button type="button" data-pin-feature="${id}" aria-label="Pin ${e(f.label)}" aria-pressed="false" hidden>☆</button></span>`;
     })
     .join(
       "",

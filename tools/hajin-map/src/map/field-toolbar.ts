@@ -36,6 +36,14 @@ export function mountFieldToolbar(
     button("Routes", () => run("routes")),
     button("Trackers", () => run("boss-checklist")),
   );
+  const safeRun = document.createElement("a");
+  safeRun.className = "field-tool-link";
+  safeRun.href = "/safes.html";
+  safeRun.target = "_blank";
+  safeRun.rel = "noopener noreferrer";
+  safeRun.textContent = "Safe Run map";
+  safeRun.setAttribute("aria-label", "Safe Run map (opens in a new tab)");
+  toolbar.append(safeRun);
   const advanced = document.createElement("details"),
     summary = document.createElement("summary");
   summary.textContent = "Advanced";
@@ -182,7 +190,7 @@ export function mountFieldToolbar(
     body.textContent = "";
   }
   function opened(event: L.PopupEvent) {
-    if(document.documentElement.dataset.uiVariant==='modern')return;
+    if (document.documentElement.dataset.uiVariant === "modern") return;
     clear();
     active = event.popup;
     const el = event.popup.getElement();

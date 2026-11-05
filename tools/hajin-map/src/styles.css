@@ -306,3 +306,6 @@ html[data-ui-variant=modern] #key-availability-warning{margin:.25rem 0;font-size
 html[data-ui-variant=modern] #key-controls .layer-bulk button{flex:0 0 auto;letter-spacing:normal;line-height:1.3;white-space:nowrap}
 html[data-ui-variant=modern] .key-updates-menu>summary::after{content:"";width:.35em;height:.35em;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg);margin-left:.6rem}
 html[data-ui-variant=modern] .key-updates-menu[open]>summary::after{transform:rotate(225deg)}
+
+.field-toolbar .field-tool-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.4rem .65rem;color:#edf4df;background:#293822;border:1px solid #aabb7d;border-radius:4px;text-decoration:none;font:inherit}
+html[data-ui-variant=modern] .field-toolbar .field-tool-link{color:var(--ws-text);background:var(--ws-raised);border-color:var(--ws-control-line,var(--ws-line));border-radius:.4rem}

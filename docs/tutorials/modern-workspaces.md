@@ -46,3 +46,6 @@ When the map and left menu fit side by side, drag the grip on the menu’s right
 
 
 The map key starts with compact Grid and Show all / Hide all controls. Its short source-marker count has an info button for full coverage, duplicate, alignment and custom/reviewed counts. Updates opens Check sources / Review staged; opening that menu does not run a check. Busy, unavailable, error and recovery feedback remains visible. Escape closes the info or update disclosure first; details expand in the menu rather than covering the map.
+
+
+**Safe Run map** is a separate page at http://127.0.0.1:5175/safes.html. Open it from the main map toolbar, Home quick tools or the map startup page. The toolbar link opens a new tab so the main-map draft stays in place. Choose a reported spawn or manual start, include/exclude safes, then optimize or manually reorder stops. Safe Run keeps its own saved plan and road worker; road mode uses only its available local road file, with gaps labelled. The Main map link returns to the normal viewer. At narrow widths, use Map view / Plan safe run to switch between its terrain and controls.
