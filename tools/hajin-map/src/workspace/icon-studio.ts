@@ -15,6 +15,8 @@ export function createIconStudio(h:Pick<UIServices,'process'|'error'|'notice'> &
   dirty:()=>void;
   save:(design:IconDesign,description:string)=>Promise<void>;
 }){
+  let disposed=false,saving=false,savePending:Promise<boolean>|undefined;
+  const listeners=new AbortController();
   const root=el('section',undefined,'icon-studio');root.id='icon-studio';root.setAttribute('aria-labelledby','icon-studio-title');
   const title=el('h3','Create SVG icon');title.id='icon-studio-title';
   const intro=note('Choose a starter, then customize it. Save to use on your map, or download SVG / PNG. A short label replaces the symbol.');
@@ -42,12 +44,39 @@ export function createIconStudio(h:Pick<UIServices,'process'|'error'|'notice'> &
     const design=validateIconDesign({version:1,frame:frame.value,symbol:symbol.value,background:background.value,foreground:foreground.value,border:border.value,borderWidth:borderWidth.valueAsNumber,symbolSize:size.valueAsNumber,rotation:rotation.valueAsNumber,label:label.value});
     iconSVG(design,description.value);return {design,description:description.value.trim()};
   };
-  const save=button('Save icon to library',async()=>{try{const v=read();await h.save(v.design,v.description);}catch(error){h.error(error);}},'save-designed-icon');
-  const svg=button('Download SVG',()=>{const v=read();downloadIconSVG(v.design,v.description);h.notice('SVG download started.');},'download-designed-svg');
-  const png=button('Download PNG',async()=>{try{const v=read();const icon=await h.process(signal=>stageDesignedIcon(v.design,v.description,signal));downloadIconPNG(icon);h.notice('PNG download started.');}catch(error){h.error(error);}},'download-designed-png');
+  const report=(error:unknown)=>{if(!disposed&&root.isConnected){try{h.error(error);}catch{/* Feedback cannot turn a failed save into success. */}}};
+  function saveDraft():Promise<boolean>{
+    if(disposed||!root.isConnected)return Promise.resolve(false);
+    if(savePending)return savePending;
+    let value:ReturnType<typeof read>;
+    try{value=read();}catch(error){report(error);return Promise.resolve(false);}
+    const disabled=Array.from(root.querySelectorAll<HTMLInputElement|HTMLSelectElement|HTMLButtonElement>('input,select,button')).map(control=>({control,disabled:control.disabled}));
+    saving=true;for(const {control}of disabled)control.disabled=true;
+    root.setAttribute('aria-busy','true');status.textContent='Saving icon with the workspace controller…';
+    const task=(async()=>{
+      let failure:unknown;
+      // A real confirmed save may itself remount this owner. Disposal cannot undo that receipt.
+      try{await h.save(structuredClone(value.design),value.description);return true;}
+      catch(error){failure=error;report(error);return false;}
+      finally{
+        saving=false;
+        if(!disposed&&root.isConnected){
+          for(const entry of disabled)entry.control.disabled=entry.disabled;
+          root.setAttribute('aria-busy','false');preview();
+          status.textContent=failure?errorText(failure):'Icon save confirmed by the workspace.';
+        }
+      }
+    })();
+    savePending=task;void task.then(()=>{if(savePending===task)savePending=undefined;});
+    return task;
+  }
+  const save=button('Save icon to library',async()=>{await saveDraft();},'save-designed-icon');
+  const svg=button('Download SVG',()=>{if(disposed||saving)return;const v=read();downloadIconSVG(v.design,v.description);h.notice('SVG download started.');},'download-designed-svg');
+  const png=button('Download PNG',async()=>{if(disposed||saving)return;try{const v=read();const icon=await h.process(signal=>stageDesignedIcon(v.design,v.description,signal));if(disposed||!root.isConnected)return;downloadIconPNG(icon);h.notice('PNG download started.');}catch(error){report(error);}},'download-designed-png');
   actions.append(save,svg,png);
   const preview=()=>{
-    try{const v=read(),url=iconSVGURL(v.design,v.description);for(const image of images){image.src=url;image.alt=v.description;}status.textContent='Preview ready · transparent outside the frame';for(const b of [save,svg,png])b.disabled=false;}
+    if(disposed)return;
+    try{const v=read(),url=iconSVGURL(v.design,v.description);for(const image of images){image.src=url;image.alt=v.description;}status.textContent='Preview ready · transparent outside the frame';for(const b of [save,svg,png])b.disabled=saving;}
     catch(error){status.textContent=errorText(error);for(const image of images){image.removeAttribute('src');image.alt='Invalid design: preview unavailable';}for(const b of [save,svg,png])b.disabled=true;}
   };
   const historyControls=[description,frame,symbol,label,background,foreground,border,borderWidth,size,rotation];
@@ -55,17 +84,19 @@ export function createIconStudio(h:Pick<UIServices,'process'|'error'|'notice'> &
   let history:string[][]=[snapshot()],cursor=0;
   const undo=button('Undo design change',()=>restore(cursor-1),'undo-icon-design'),redo=button('Redo design change',()=>restore(cursor+1),'redo-icon-design');
   const historyState=()=>{undo.disabled=cursor<=0;redo.disabled=cursor>=history.length-1;};
-  function restore(next:number){if(next<0||next>=history.length)return;cursor=next;historyControls.forEach((n,i)=>n.value=history[cursor][i]);preview();h.dirty();historyState();}
+  function restore(next:number){if(disposed||saving||next<0||next>=history.length)return;cursor=next;historyControls.forEach((n,i)=>n.value=history[cursor][i]);preview();h.dirty();historyState();}
   const remember=()=>{const next=snapshot();if(JSON.stringify(next)!==JSON.stringify(history[cursor])){history=history.slice(0,cursor+1);history.push(next);if(history.length>50)history.shift();cursor=history.length-1;}historyState();};
   const load=(value:IconDesign,name:string,record=false)=>{
+    if(disposed)return;
+    if(saving)throw new Error('Wait for the current icon save before replacing its design.');
     const d=validateIconDesign(value);description.value=name;frame.value=d.frame;symbol.value=d.symbol;label.value=d.label;background.value=d.background;foreground.value=d.foreground;border.value=d.border;borderWidth.value=String(d.borderWidth);size.value=String(d.symbolSize);rotation.value=String(d.rotation);preview();if(record)remember();else{history=[snapshot()];cursor=0;historyState();}
   };
-  for(const template of iconTemplates){const b=button(template.name,()=>{load(template.design,template.name+' marker',true);h.dirty();});b.dataset.iconTemplate=template.id;const img=el('img');img.src=iconSVGURL(template.design,template.name);img.alt='';img.width=img.height=32;b.prepend(img);starters.append(b);}
-  controls.addEventListener('input',()=>{h.dirty();preview();remember();});controls.addEventListener('change',()=>{h.dirty();preview();remember();});
+  for(const template of iconTemplates){const b=button(template.name,()=>{if(disposed||saving)return;load(template.design,template.name+' marker',true);h.dirty();});b.dataset.iconTemplate=template.id;const img=el('img');img.src=iconSVGURL(template.design,template.name);img.alt='';img.width=img.height=32;b.prepend(img);starters.append(b);}
+  controls.addEventListener('input',()=>{if(disposed||saving)return;h.dirty();preview();remember();},{signal:listeners.signal});controls.addEventListener('change',()=>{if(disposed||saving)return;h.dirty();preview();remember();},{signal:listeners.signal});
   const savedStarters=el('details');savedStarters.append(el('summary','My saved design starters'));
-  for(const starter of h.starters??[])savedStarters.append(button(starter.description,()=>{load(starter.design,starter.description,true);h.dirty();}));
+  for(const starter of h.starters??[])savedStarters.append(button(starter.description,()=>{if(disposed||saving)return;load(starter.design,starter.description,true);h.dirty();}));
   actions.append(undo,redo);historyState();
   root.append(title,intro,starters,savedStarters,note('Choosing a starter replaces the current design settings.'),previews,status,controls,actions);
   preview();
-  return {root,load};
+  return {root,load,saveDraft,destroy(){if(disposed)return;disposed=true;listeners.abort();}};
 }
