@@ -11,13 +11,17 @@ Implemented slices include the validated shared shell, bounded presentation cach
 - Shell, native/key/upgrade journeys, weapons/update fixtures, authoring/recovery fixtures and reference/mindmap checks pass in Chromium, Firefox and WebKit at their recorded slice revisions.
 - Map geometry: 21 cases including short landscape, 320×400, root-text enlargement, actual focus/hit tests and exact camera preservation.
 - Real map persistence: held durable acknowledgements, denied-write retry, malformed receipt refusal, exact-payload reconciliation, and guarded SVG save/watchdog are tested without replay.
-- Historical baseline measurements remain unchanged. Modern measurements include 45 cold samples and 15 screenshot receipts; these do not establish the required matched 20-run performance comparison.
+- Real reload rollback of all five surfaces passes in Chromium, Firefox and WebKit, preserving exact saved state, preferences and managed file hashes.
+- Peek/Half/Full/Closed controls preserve original forms and exact map camera; the existing21 geometry cases and focused three-engine mode tests pass.
+- Studio original full browser suite passes all three engines, including native skip-link keyboard navigation.
+- Modern mobile navigation passes48 real rectangle/hit/focus cases, and independent Guide/authoring visual journeys pass24 cases.
+- Historical baseline measurements remain unchanged. Final matching20-run measurements cover five Guide fixtures × three layouts ×20samples ×two variants. Four populated filter owners verify actual completion and clear restoration. This does not measure Map/Studio/Manager latency or establish a performance improvement.
 
 Local receipts are under `.local/` and `tools/hajin-map/.local/`. They contain synthetic fixtures, not exported player workspaces. A receipt belongs to its recorded source/build; it does not automatically approve subsequent changes.
 
 ## Open gates
 
-Full integrated regression, final source/visual review, matched performance measurements, and remaining acceptance documentation are in progress. Actual browser zoom, physical virtual keyboard/touch and screen-reader checks are pending. Root-font scaling and axe results do not replace those checks. Pending checks are not passes and do not authorize default promotion.
+The integrated modern Map runner passed all its owning suites; Guide suites passed individually, including the repaired recovery fixture. Independent scoped source and visual reviews are recorded in checklists/implementation-review.md and review-guide-authoring.md. Matched performance measurements are complete:600 samples have zero geometry/health failures, but timing investigation remains open; balanced120-read follow-up did not reproduce the large sequential gap. See analysis/performance-review.md. Final Map, Home and site-topology runs pass all three engines and are recorded in verification.md. The remaining open task checkboxes, timing acceptance and manual/device gates are explicit; this is a reviewable core preview, not a claim that all70 tasks or default promotion are complete. Actual browser zoom, physical virtual keyboard/touch and screen-reader checks are pending. Root-font scaling and axe results do not replace those checks. Pending checks are not passes and do not authorize default promotion.
 
 The implementation task list remains authoritative; partially completed tasks stay unchecked. No claim is made that all seventy tasks or every manual/device gate has passed.
 
@@ -33,3 +37,10 @@ The implementation task list remains authoritative; partially completed tasks st
 - Native source disclosure setup was missing from several older fixtures after feature067. Repairs use real summary controls and retain domain assertions.
 - A WebKit readiness predicate is now synchronous and verifies durable inventory before reload.
 - Safe-run test setup uses a decode-valid synthetic image and accepted native drag-over sequence; no forced clicks replace user actions.
+
+
+## Retained owner implementations
+
+Several presentation tasks deliberately retain existing stronger owners instead of replacing them: public search already validates a bounded public-only index and rejects stale lifecycle fetches; Map location and private workspace search remain distinct existing controllers with generation/connection guards and disabled no-position actions. Native mission/story page/chapter/spoiler/progress calculation remains controller-owned; the modern directory/host and scoped feature labels adapt its presentation. Map route/source/find/review errors now enter distinct owner/cause summaries. These are preservation/adaptation decisions, not new indexing, mission data or calculation APIs.
+
+Open task checkboxes include broad acceptance matrices and any adapter requirement not fully evidenced. This document does not equate an isolated passing fixture with all feature071 requirements being accepted.

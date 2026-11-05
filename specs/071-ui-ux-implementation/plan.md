@@ -1,5 +1,7 @@
 # Implementation plan: fluid UI/UX
 
+> Planning-time design record. Implementation was subsequently authorized; current preview commands, executed evidence and open acceptance gates are in [implementation-status.md](implementation-status.md) and [modern workspace instructions](../../docs/tutorials/modern-workspaces.md). Historical statements about this planning turn are not current runtime results.
+
 Branch `plan/071-ui-ux-implementation`,2026-11-05. Input:spec.md; design direction070. Planning only: no runtime/prototype code is changed by this feature-plan turn.
 
 ## Summary / technical context

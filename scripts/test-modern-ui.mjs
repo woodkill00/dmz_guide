@@ -15,6 +15,7 @@ if (!mapOnly) {
 }
 const guide = [
   "ui-shell",
+  "ui-navigation-bounds",
   "ui-feature-coverage",
   "ui-directory",
   "ui-catalog-pagination",
@@ -24,9 +25,11 @@ const guide = [
   "ui-weapon-updates",
   "ui-authoring",
   "ui-recovery",
+  "ui-surface-rollback",
 ];
 const map = [
   "ui-layout-browser",
+  "ui-pane-modes-browser",
   "ui-state-browser",
   "ui-rollback-browser",
   "ui-bfcache-write-browser",

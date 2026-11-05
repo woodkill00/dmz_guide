@@ -28,3 +28,8 @@ The illustrative desktop images communicate distinct states: Peek retains a name
 After the quiet measurement window, target a viewport where Half fails but the collapsed-header Full budget only just fits; include wrapped feedback and an enlarged/long task heading. Measure the final visible header, scroll padding and task body, then scroll/focus the first and final editor actions and verify actual hit tests. If the header stays sticky, include the visible feedback in its measured budget; otherwise put the whole header in flow. The current tests check Half minimums and the 320×400 flow fallback, but the inspected assertions do not settle this specific borderline header/last-action case.
 
 This concern is recorded for bounded verification, not as an assertion that data, focus or camera behavior failed. No production changes or acceptance checklist approvals were made in this review.
+
+
+## Subsequent owning repair and verification
+
+The implementation owner subsequently reproduced REV-PANE-01 against the previous code: visible94px header, stale69px padding. The fix measures final feedback/control visibility before deriving padding and flow (root commit b813c59). Existing21 geometry checks and focused boundary/guard checks pass in Chromium, Firefox and WebKit, including native last-field focus/hit and retained original form/camera/domain state. This addendum records the owning executed evidence; it does not retroactively turn the original read-only inspection into a browser run by its reviewer.

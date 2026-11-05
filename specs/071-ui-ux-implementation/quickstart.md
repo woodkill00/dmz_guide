@@ -1,5 +1,7 @@
 # Validation quickstart (planned implementation checks)
 
+> Planning-time design record. Implementation was subsequently authorized; current preview commands, executed evidence and open acceptance gates are in [implementation-status.md](implementation-status.md) and [modern workspace instructions](../../docs/tutorials/modern-workspaces.md). Historical statements about this planning turn are not current runtime results.
+
 This turn executes planning analysis and repository/document checks only. Commands below are existing future regression entry points, not tests claimed passing for unimplemented UI.
 
 From canonical MW4 on supported Node22/24 and Python3:

@@ -17,6 +17,8 @@ $env:DMZ_UI_VARIANT = 'modern'
 npm run map:dev
 ```
 
+Restart any already-running local service with the modern setting to preview that surface. Rebuilding the Guide alone does not switch a running Map, Studio or Manager. Keep any unsaved work in its current tab until it is saved or deliberately cancelled.
+
 Studio and the weapon manager also accept the same setting. They keep their original ports, repository operations and data ownership. Starting the Guide does not start the other services.
 
 Home, Map, DMZ Guide, DMZ FOB and DMZ Weapons are the primary sections. Search covers public reference material; map locations and private workspace search are separate scopes. Tools / All features retains the full directory. Menus and links also have a native no-JavaScript path where their feature supports it.

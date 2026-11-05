@@ -1,5 +1,7 @@
 # UI/UX redesign: a calmer DMZ workspace
 
+> Feature071 now implements the modern presentation as a local opt-in preview. See [preview instructions](tutorials/modern-workspaces.md) and [current implementation evidence/open gates](../specs/071-ui-ux-implementation/implementation-status.md). Repository defaults remain legacy pending acceptance. The proposal and observations below are the historical design basis, not a claim that saved data or a deployed site changed.
+
 **Proposal, 5 November 2026.** This is a research-backed plan and isolated interactive concept, not a deployed redesign. The current app and its saved data remain unchanged. [Open the concept locally](http://127.0.0.1:5180/) or read its [source](../specs/070-fluid-ui-redesign/prototype/index.html). The [roundtable](../specs/070-fluid-ui-redesign/roundtable.md), [research](../specs/070-fluid-ui-redesign/research.md) and [implementation backlog](../specs/070-fluid-ui-redesign/tasks.md) contain the detailed record.
 
 The recommendation is a consistent, compact application shell with **one obvious task at a time**. Most improvements should come from removing competing navigation, duplicated controls and stacked panels. A new color palette alone will not solve the recurring obstruction problems.
