@@ -338,6 +338,12 @@ try {
       await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
       await page.waitForFunction(()=>document.querySelector('#icon-studio')!==window.__savedStudio);
       assert.deepEqual(await page.evaluate(()=>({attempts:window.__saveAttempts,writes:window.__realWrites})),{attempts:beforeSuspendedIcon.attempts+1,writes:beforeSuspendedIcon.writes+1},'Returning reconciles the confirmed SVG once without replay');
+      // The aggregate stays compact while deliberate details retain the complete error.
+      const longIssue='Synthetic readable issue '+ 'detail '.repeat(800);
+      await page.evaluate(message=>document.dispatchEvent(new CustomEvent('workspace-error',{detail:message})),longIssue);
+      assert.ok((await page.locator('#workspace-message').textContent()).length<=220);
+      await page.locator('#workspace-issue-details > summary').click();
+      assert.ok((await page.locator('#workspace-issue-details').textContent()).includes(longIssue));
       assert.deepEqual(errors, []);
       assert.deepEqual(external, []);
       await context.close();
