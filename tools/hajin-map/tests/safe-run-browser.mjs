@@ -12,10 +12,6 @@ await server.listen();
 await mkdir(".local", { recursive: true });
 const origin = "http://127.0.0.1:5279",
   key = "hajin-safe-run-v1";
-const png = Buffer.from(
-  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=",
-  "base64",
-);
 const marker = (id, name, category, x, y) => ({
   id,
   name,
@@ -92,6 +88,18 @@ try {
         page = await context.newPage(),
         errors = [],
         remote = [];
+      // Generate a real PNG in the engine under test; the old 1px literal fails WebKit decode().
+      const png = Buffer.from(
+        await page.evaluate(() => {
+          const canvas = document.createElement("canvas");
+          canvas.width = canvas.height = 2;
+          const context = canvas.getContext("2d");
+          context.fillStyle = "white";
+          context.fillRect(0, 0, 2, 2);
+          return canvas.toDataURL("image/png").split(",")[1];
+        }),
+        "base64",
+      );
       let fail = false,
         missingRoads = false;
       let currentFixture = structuredClone(fixture),
@@ -458,6 +466,11 @@ try {
       await page.mouse.move(drop.x + drop.width / 2, drop.y + drop.height / 2, {
         steps: 4,
       });
+      // Enter then move within the same native target so WebKit dispatches dragover before drop.
+      await page.mouse.move(
+        drop.x + drop.width / 2 + 1,
+        drop.y + drop.height / 2,
+      );
       await page.mouse.up();
       await solved();
       assert.equal((await order())[0], "official:d");
