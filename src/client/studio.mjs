@@ -949,4 +949,4 @@ async function start() {
   }
   await changes();
 }
-start().catch(fail);
+start().then(()=>{if(document.documentElement.dataset.uiVariant==='modern'){document.documentElement.dataset.uiMounted='071-v1';document.documentElement.dataset.uiAdapter='studio-author';document.body.dataset.uiFeatureId='studio';}}).catch(fail);

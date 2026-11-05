@@ -767,7 +767,7 @@ export function mountWorkspace(
     search:query=>{usabilityUI.find(query);},popup:r=>usabilityUI.popup(r),
     available:()=>{const out:Record<string,string[]>={};for(const source of legacy){const snapshot=source.getSnapshot();if(snapshot)out[source.id]=snapshot.categories.map(c=>c.id);}for(const entry of state.snapshots)out[entry.snapshot.sourceId]=entry.snapshot.categories.map(c=>c.id);for(const [source,key] of selectedSnapshots){const entry=state.snapshots.find(e=>e.key===key);if(entry)out[source]=entry.snapshot.categories.map(c=>c.id);}return out;},
     view:visibility,applyView:v=>changeVisibility('Public planner view applied',value=>Object.assign(value,structuredClone(v))),
-    pick:callback=>{plannerPick=callback;dialog.close();notice('Choose a location on the map.');},
+    pick:callback=>{plannerPick=callback;dialog.close();if(modern)document.querySelector<HTMLButtonElement>('#ui-map-view')?.click();notice('Choose a location on the map.');},
     hideBaseMarkers:hidden=>{for(const source of legacy)source.setPresentationHidden(hidden);if(hidden){for(const layer of [customLayer,sourceLayer,reviewedLayer])layer.eachLayer(item=>{if(item instanceof L.Marker||item instanceof L.CircleMarker)layer.removeLayer(item);});}},
   });
   const plannerRecord=(event:Event)=>{const d=(event as CustomEvent).detail;if(!d||!['waypoint','tracking'].includes(d.action))return;const r=getExplorerRecords().find(r=>r.sourceId===d.sourceId&&r.id===d.recordId);if(!r){error('Location no longer available.');return;}void (d.action==='waypoint'?plannerUI!.addRecord(r):plannerUI!.observe(r)).catch(error);};
@@ -892,6 +892,7 @@ export function mountWorkspace(
   body.addEventListener("change", (event) => {
     const target = event.target as HTMLElement;
     if (
+      !["points-search","review-search"].includes(target.id) &&
       !target.closest("#review-records") &&
       !target.hasAttribute("data-workspace-search")
     )
@@ -948,6 +949,7 @@ export function mountWorkspace(
       () => {
         picking = true;
         dialog.close();
+        if(modern)document.querySelector<HTMLButtonElement>('#ui-map-view')?.click();
         notice(
           "Click a position on the map. Your other draft fields will be kept.",
         );

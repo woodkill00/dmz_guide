@@ -169,6 +169,7 @@ try {
     ? "Local dashboard ready. DMZ monitoring runs on startup and every six hours; applying data remains explicit."
     : "Local dashboard ready. Background monitoring is disabled in this service.";
   document.querySelector("main").dataset.managerReady = "true";
+  if(document.documentElement.dataset.uiVariant==='modern'){document.documentElement.dataset.uiMounted='071-v1';document.documentElement.dataset.uiAdapter='manager-updates';}
 } catch (reason) {
   error(reason);
 }

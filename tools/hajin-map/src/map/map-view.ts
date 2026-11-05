@@ -115,7 +115,7 @@ export function createMapView(
     map.setMinZoom(Math.min(minimum, 4));
     if (keepOverview) fit();
     else
-      map.setView(center, Math.max(map.getZoom(), minimum), { animate: false });
+      map.setView(center, Math.max(map.getZoom(), minimum), { animate: false, reset: true });
     map.eachLayer((layer) => {
       if (
         layer instanceof L.Popup &&

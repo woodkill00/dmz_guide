@@ -233,3 +233,14 @@ body.map-page{height:100dvh;display:flex;flex-direction:column}body.map-page>#ap
 #map-key-content .category-sublist>summary{font-size:11px;padding:8px;min-height:36px}
 #map-key-content .category-sublist>.workspace-field{margin:0;padding:6px 8px;font-size:11px}
 #map-key-content .category-sublist>fieldset{margin:0;padding:0 8px 8px;border:0}
+
+/* If chrome cannot leave a readable task, allow ordinary document scrolling. */
+html[data-ui-variant=modern][data-map-space=scroll] body.map-page{height:auto;min-height:100dvh;overflow:auto}
+html[data-ui-variant=modern][data-map-space=scroll] #app{height:auto;min-height:100dvh;overflow:visible}
+html[data-ui-variant=modern][data-map-space=scroll] .workspace{height:auto;min-height:14rem;flex:none;overflow:visible}
+html[data-ui-variant=modern][data-map-space=scroll] #ui-map-task{overflow:visible;min-height:14rem}
+html[data-ui-variant=modern][data-map-space=scroll] .map-workspace{height:12rem;min-height:12rem}
+
+html[data-ui-variant=modern] #workspace-dialog:not(:modal) nav{flex-wrap:wrap;min-width:0;max-width:100%;overflow:visible}
+html[data-ui-variant=modern] #workspace-dialog:not(:modal) nav button{white-space:normal;overflow-wrap:anywhere;max-width:100%}
+html[data-ui-variant=modern] #workspace-dialog .planner-tabs{flex-wrap:wrap;min-width:0;max-width:100%}
