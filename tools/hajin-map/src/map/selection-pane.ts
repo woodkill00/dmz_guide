@@ -29,6 +29,7 @@ export interface SelectionPaneOptions {
 interface Frame {
   popup: Popup;
   raw: ReturnType<Popup["getContent"]>;
+  identityMatches: () => boolean;
   node: HTMLElement;
   parent: Node;
   next: ChildNode | null;
@@ -65,7 +66,8 @@ function renderedContent(
     : null;
 }
 function retainsSource(frame: Frame) {
-  if (frame.popup.getContent() !== frame.raw) return false;
+  if (!frame.identityMatches() || frame.popup.getContent() !== frame.raw)
+    return false;
   if (typeof frame.raw !== "function") return frame.raw === frame.node;
   const parent = frame.popup
     .getElement()
@@ -87,7 +89,6 @@ export function mountSelectionPane(
   let active: Frame | null = null,
     disposed = false,
     identity = 0;
-  const identities = new WeakMap<Popup, string>();
   const pending = new WeakMap<Popup, PendingPopup>();
   const clearPending = (entry: PendingPopup, close = false) => {
     if (pending.get(entry.popup) !== entry) return;
@@ -157,6 +158,7 @@ export function mountSelectionPane(
     )
       return;
     if (active?.popup === popup && active.node === node) return;
+    if (pending.has(popup)) return; // The first live attempt owns cancellation/revalidation.
     const parent = node.parentNode,
       next = node.nextSibling;
     const focused = doc.activeElement;
@@ -167,20 +169,21 @@ export function mountSelectionPane(
       focused.isConnected
         ? focused
         : null);
-    let id = identities.get(popup);
-    if (!id) {
-      id = `map-selection-${++identity}`;
-      identities.set(popup, id);
-    }
+    const id = `map-selection-${++identity}`;
     const supplied = options.selectionIdentity?.(popup);
-    if (
-      typeof supplied === "string" &&
-      supplied.length > 0 &&
-      supplied.length <= 112
-    )
-      id = "selection:" + supplied;
-    const previousPending = pending.get(popup);
-    if (previousPending) clearPending(previousPending);
+    const identityMatches = () => {
+      if (!options.selectionIdentity) return true;
+      try {
+        return (
+          typeof supplied === "string" &&
+          supplied.length <= 65536 &&
+          options.selectionIdentity(popup) === supplied
+        );
+      } catch (error) {
+        report(error);
+        return false;
+      }
+    };
     const pendingEntry: PendingPopup = {
       popup,
       chrome,
@@ -192,6 +195,7 @@ export function mountSelectionPane(
       !disposed &&
       pending.get(popup) === pendingEntry &&
       map.hasLayer(popup) &&
+      identityMatches() &&
       popup.getContent() === raw &&
       renderedContent(popup, raw) === node &&
       node.parentNode === parent &&
@@ -203,6 +207,7 @@ export function mountSelectionPane(
       const frame: Frame = {
         popup,
         raw,
+        identityMatches,
         node,
         parent,
         next,
@@ -218,11 +223,11 @@ export function mountSelectionPane(
         },
         contentChanged: () => {
           if (active !== frame) return;
-          if (!retainsSource(frame)) {
-            if (allowed()) finish(frame, "source-update");
-            return; // A source refresh cannot remove a protected editor/draft.
-          }
-          if (node.parentNode === parent && frame.paneParent?.isConnected) {
+          if (
+            node.parentNode === parent &&
+            frame.paneParent?.isConnected &&
+            renderedContent(popup) === node
+          ) {
             frame.paneParent.insertBefore(
               node,
               frame.paneNext?.parentNode === frame.paneParent
@@ -234,6 +239,10 @@ export function mountSelectionPane(
               frame.lastFocus?.isConnected
             )
               frame.lastFocus.focus({ preventScroll: true });
+          }
+          if (!retainsSource(frame)) {
+            if (allowed()) finish(frame, "source-update");
+            // A source refresh cannot remove a protected editor/draft.
           }
         },
       };

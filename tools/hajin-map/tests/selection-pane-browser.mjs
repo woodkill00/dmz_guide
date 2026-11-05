@@ -42,6 +42,8 @@ try {
           pane = document.querySelector("#pane"),
           state = {
             allowed: true,
+            sourceIdentity: "Synthetic identity v1",
+            attempts: [],
             held: false,
             pending: null,
             hits: 0,
@@ -82,7 +84,9 @@ try {
           .setLatLng([1, 1])
           .setContent(nextNode);
         const cleanup = mountSelectionPane(map, {
+          selectionIdentity: () => state.sourceIdentity,
           request(intent) {
+            state.attempts.push(intent.id);
             if (state.held) {
               if (!state.pending) state.pending = intent;
               return false;
@@ -152,6 +156,7 @@ try {
             const pending = state.pending;
             state.pending = null;
             if (pending?.revalidate()) pending.run();
+            else pending?.cancel?.();
           },
           camera: () => ({ center: map.getCenter(), zoom: map.getZoom() }),
         };
@@ -253,6 +258,44 @@ try {
         "Stay cancellation closes only the owned pending popup",
       );
       assert.equal(await page.locator(".ui-map-selection-pending").count(), 0);
+      await page.evaluate(() => {
+        selectionFixture.open();
+        selectionFixture.state.sourceIdentity = "Changed identity";
+        selectionFixture.flush();
+      });
+      assert.equal(
+        await page.locator("#pane #original-content").count(),
+        0,
+        "changed opaque source identity rejects a late destination",
+      );
+      assert.equal(await page.locator(".ui-map-selection-pending").count(), 0);
+      await page.evaluate(() => {
+        selectionFixture.state.sourceIdentity = "Synthetic identity v1";
+        selectionFixture.open();
+        selectionFixture.map.fire("popupopen", {
+          popup: selectionFixture.popup,
+        });
+        selectionFixture.map.closePopup(selectionFixture.popup);
+        selectionFixture.open();
+      });
+      const attempts = await page.evaluate(() =>
+        selectionFixture.state.attempts.slice(-2),
+      );
+      assert.notEqual(
+        attempts[0],
+        attempts[1],
+        "closed/reopened popup gets an exact new attempt ID",
+      );
+      assert.ok(
+        attempts.every(
+          (id) => id.startsWith("map-selection-") && !id.includes("Synthetic"),
+        ),
+        "opaque source identity never enters the destination ID",
+      );
+      await page.evaluate(() => {
+        selectionFixture.map.closePopup(selectionFixture.popup);
+        selectionFixture.state.pending = null;
+      });
       // The owner freezes the first request; a rejected second popup must not
       // invalidate that still-live first source or redirect it to the newer node.
       await page.evaluate(() => {
