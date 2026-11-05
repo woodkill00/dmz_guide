@@ -422,7 +422,18 @@ async function fixedJourneys({ browser, base, captureScreenshots }) {
       window.failRecoverySave = true;
     });
     await page.click('#goal-form button[type="submit"]');
-    await page.locator("#error:not([hidden])").waitFor();
+    // Earlier invalid-content probes intentionally leave a visible warning.
+    // Wait for this injected operation's actual failure before clearing its
+    // quota fault; a generic visible-alert wait can release the fault too early.
+    await page.waitForFunction(() => {
+      const alert = document.querySelector("#error");
+      return (
+        alert &&
+        !alert.hidden &&
+        /Injected recovery quota/.test(alert.textContent) &&
+        !document.querySelector('#goal-form button[type="submit"]').disabled
+      );
+    });
     assert.equal(await page.locator("[data-remove]").count(), 0);
     assert.deepEqual(
       await page.evaluate(
@@ -454,7 +465,15 @@ async function fixedJourneys({ browser, base, captureScreenshots }) {
       `[data-remove="${goals[0]}"]`,
     ]) {
       await page.click(selector);
-      await page.locator("#error:not([hidden])").waitFor();
+      await page.waitForFunction(() => {
+        const alert = document.querySelector("#error");
+        return (
+          alert &&
+          !alert.hidden &&
+          /Injected recovery quota/.test(alert.textContent) &&
+          !document.querySelector('#goal-form button[type="submit"]').disabled
+        );
+      });
       assert.deepEqual(
         await page.evaluate(
           async () =>
@@ -479,17 +498,19 @@ async function fixedJourneys({ browser, base, captureScreenshots }) {
       window.failRecoverySave = false;
     });
     const quantity = page.locator(`[data-goal-quantity="${goals[0]}"]`);
+    const goalState = await page.evaluateHandle(
+      async () => (await import("/assets/src/client/common.mjs")).state,
+    );
     const savedQuantity = async (value) =>
       page.waitForFunction(
-        async ({ id, value }) => {
-          const { state } = await import("/assets/src/client/common.mjs");
+        ({ state, id, value }) => {
           return (
             !state.saving &&
             state.profile.goals.find((goal) => goal.id === id)?.quantity ===
               value
           );
         },
-        { id: goals[0], value },
+        { state: goalState, id: goals[0], value },
       );
     await quantity.fill("2");
     await quantity.press("Tab");
