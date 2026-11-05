@@ -17,14 +17,15 @@ const fixture = ({
   editable = false,
   optIn = true,
   ownSearch = true,
+  startup = false,
 } = {}) => `<!doctype html>
 <html lang="en" data-ui-variant="${variant}" data-ui-mounted="071-v1"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Synthetic directory fixture</title>
 <link rel="stylesheet" href="/directory-view.css"><style>
 *{box-sizing:border-box}body{margin:0;padding:12px;font:16px/1.45 system-ui;background:#18201d;color:#eef3ea}button,input,select{font:inherit;min-height:44px;max-width:100%}button{padding:8px 12px}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffe88a;outline-offset:2px}a{color:#d6e9ac}.fixture-scroll{max-width:100%;max-height:420px;overflow:auto}table{border-collapse:collapse;width:100%}th,td{padding:8px;text-align:left;vertical-align:top;border-bottom:1px solid #54675b}caption{text-align:left}.bulk{display:flex;flex-wrap:wrap;gap:8px}.owner-filter{display:block;margin:8px 0}
-</style></head><body><main><h1>Synthetic directory</h1><section id="records" ${optIn ? "data-ui-directory" : ""} data-ui-directory-pagination="${pagination}" aria-label="Synthetic reference directory">
+</style></head><body><main><h1>Synthetic directory</h1><section id="records" ${optIn ? "data-ui-directory" : ""} data-ui-directory-pagination="${pagination}" data-ui-directory-sticky-identity="true" aria-label="Synthetic reference directory">
 <label class="owner-filter">Search synthetic public labels<input id="search" ${ownSearch ? "data-ui-directory-search" : ""} type="search" maxlength="200"></label>
 <div class="bulk"><button id="all-matching" data-ui-directory-bulk-scope="all-matching">Select all matching references</button><button id="this-page" data-ui-directory-bulk-scope="this-page">Select this page</button></div>
-<div class="fixture-scroll" data-ui-directory-scroll role="region" aria-label="Synthetic reference table" tabindex="0"><table><caption>125 synthetic references; unknown values remain unknown</caption><thead><tr><th scope="col">Reference</th><th scope="col">Known quantity</th><th scope="col">Evidence / requirements</th><th scope="col">Action</th></tr></thead><tbody data-ui-directory-rows>${Array.from({ length: 125 }, (_, i) => `<tr id="row-${i}" data-ui-directory-row data-ui-directory-search-text="Visible reference ${i}"><th scope="row"><a href="#detail-${i}">Visible reference ${i}${i === 2 ? escape(" — Synthetic unusually long location and prerequisite name ".repeat(12)) : ""}</a></th><td>${i === 0 ? "Unknown" : i === 1 ? "0" : String(i)}</td><td>${i === 0 ? "*WZ · untested DMZ; missing evidence is not zero" : "Synthetic source report"}${i === 45 ? "<span hidden data-private-field>private-sentinel-never-index</span>" : ""}${editable && i === 124 ? '<label>Owned synthetic quantity<input id="owned-count" type="number" value="7"></label>' : ""}</td><td><button type="button" data-inspect="${i}">Inspect reference ${i}</button></td></tr>`).join("")}</tbody></table></div></section></main>
+<div class="fixture-scroll" data-ui-directory-scroll role="region" aria-label="Synthetic reference table" tabindex="0"><table><caption>125 synthetic references; unknown values remain unknown</caption><thead><tr><th scope="col">Reference</th><th scope="col">Known quantity</th><th scope="col">Evidence / requirements</th><th scope="col">Action</th></tr></thead><tbody data-ui-directory-rows>${Array.from({ length: 125 }, (_, i) => `<tr id="row-${i}" data-ui-directory-row data-ui-directory-search-text="Visible reference ${i}"><th scope="row"><a href="#detail-${i}">Visible reference ${i}${i === 2 ? escape(" — Synthetic unusually long location and prerequisite name ".repeat(12)) : ""}</a></th><td>${i === 0 ? "Unknown" : i === 1 ? "0" : String(i)}</td><td>${i === 0 ? "*WZ · untested DMZ; missing evidence is not zero" : "Synthetic source report"}${i === 45 ? "<span hidden data-private-field>private-sentinel-never-index</span>" : ""}${editable && i === 124 ? `<label>Owned synthetic quantity<input id="owned-count" type="number" value="7" ${startup ? "disabled" : ""}></label>` : ""}</td><td><button type="button" data-inspect="${i}">Inspect reference ${i}</button></td></tr>`).join("")}</tbody></table></div></section></main>
 <script type="module">
 import {mountDirectories} from '/directory-view.mjs';
 globalThis.originalRows=[...document.querySelectorAll('[data-ui-directory-row]')];globalThis.originalInput=document.querySelector('#owned-count');globalThis.bulkEvents=[];globalThis.inspections=0;
@@ -58,6 +59,7 @@ const server = createServer(async (request, response) => {
           editable: url.searchParams.get("editable") === "true",
           optIn: url.searchParams.get("optIn") !== "false",
           ownSearch: url.searchParams.get("ownSearch") !== "false",
+          startup: url.searchParams.get("startup") === "true",
         }),
       );
       return;
@@ -119,17 +121,34 @@ try {
         page.locator("[data-ui-directory-rows] > [data-ui-directory-row]");
       const status = () => page.locator("[data-ui-directory-status]");
       const settledRows = async (count, first = null) =>
-        page.waitForFunction(
-          ({ count, first }) => {
-            const rows = document.querySelectorAll(
-              "[data-ui-directory-rows] > [data-ui-directory-row]",
+        page
+          .waitForFunction(
+            ({ count, first }) => {
+              const rows = document.querySelectorAll(
+                "[data-ui-directory-rows] > [data-ui-directory-row]",
+              );
+              return (
+                rows.length === count &&
+                (first === null || rows[0]?.id === first)
+              );
+            },
+            { count, first },
+          )
+          .catch(async (error) => {
+            console.log(
+              await page.evaluate(() => ({
+                rows: [
+                  ...document.querySelectorAll(
+                    "[data-ui-directory-rows] > [data-ui-directory-row]",
+                  ),
+                ].map((row) => row.id),
+                status: document.querySelector("[data-ui-directory-status]")
+                  ?.textContent,
+                query: document.querySelector("#search")?.value,
+              })),
             );
-            return (
-              rows.length === count && (first === null || rows[0]?.id === first)
-            );
-          },
-          { count, first },
-        );
+            throw error;
+          });
       await ready();
       assert.equal(await rows().count(), 50);
       assert.equal(
@@ -292,8 +311,8 @@ try {
               input === document.activeElement,
           ),
       );
-      await page.locator("#search").fill("Visible reference 0");
-      await settledRows(2, "row-0");
+      await page.locator("#search").fill("Visible reference 123");
+      await settledRows(2, "row-123");
       assert(
         await page.locator("#owned-count").isVisible(),
         "Filtering does not evict a dirty editable row",
@@ -307,6 +326,27 @@ try {
       );
       assert.equal(await page.locator("#owned-count").inputValue(), "9");
 
+      await ready("?editable=true&startup=true");
+      assert.equal(
+        await page.locator("#owned-count").count(),
+        1,
+        "Disabled startup form rows are not detached before their owner binds them",
+      );
+      assert(await page.locator("#owned-count").isDisabled());
+      await page.evaluate(() => {
+        const input = document.querySelector("#owned-count");
+        input.addEventListener("input", () => {
+          window.ownerInputEvents = (window.ownerInputEvents ?? 0) + 1;
+        });
+        input.disabled = false;
+      });
+      await page.locator("#owned-count").fill("12");
+      assert.equal(await page.evaluate(() => window.ownerInputEvents), 1);
+      assert(
+        await page
+          .locator("#owned-count")
+          .evaluate((input) => input === window.originalInput),
+      );
       for (const width of [1440, 320])
         for (const textSize of [100, 200]) {
           await page.setViewportSize({ width, height: 844 });
@@ -314,6 +354,18 @@ try {
           await page.evaluate((scale) => {
             document.documentElement.style.fontSize = `${scale}%`;
           }, textSize);
+          // Wider owner columns exercise both sticky axes; narrow mode releases the identity column.
+          await page.evaluate(() =>
+            document
+              .querySelector("table")
+              .style.setProperty("--ui-directory-columns", "12"),
+          );
+          assert.equal(
+            await page
+              .locator('#row-2 th[scope="row"]')
+              .evaluate((cell) => getComputedStyle(cell).position),
+            width <= 700 ? "static" : "sticky",
+          );
           const action = page.locator("#row-2 [data-inspect]");
           await action.focus();
           await action.scrollIntoViewIfNeeded();
