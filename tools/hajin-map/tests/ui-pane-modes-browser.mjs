@@ -83,12 +83,30 @@ try {
       await p
         .locator("#point-title")
         .evaluate((e) => (window.__originalPaneField = e));
+      await p.waitForFunction(() => {
+        const image = document.querySelector("#map .leaflet-image-layer");
+        return image?.complete && image.naturalWidth > 0;
+      });
       await p.evaluate(async () => {
         const { viewer } = await import("/src/main.ts");
         viewer.map.setView([2048, 2048], 1, { animate: false });
       });
       const before = await camera(p),
         record = await stored(p);
+      const centered = () =>
+        p.waitForFunction(async (center) => {
+          const { viewer } = await import("/src/main.ts");
+          const map = viewer.map,
+            box = map.getContainer();
+          const point = map.latLngToContainerPoint([center.lat, center.lng]);
+          return (
+            box.clientWidth > 0 &&
+            box.clientHeight > 0 &&
+            Math.abs(point.x - box.clientWidth / 2) <= 1 &&
+            Math.abs(point.y - box.clientHeight / 2) <= 1
+          );
+        }, before);
+      await centered();
       const original = async () => {
         assert.equal(
           await p.locator("#point-title").inputValue(),
@@ -106,6 +124,7 @@ try {
         .getByRole("button", { name: "Minimize task", exact: true })
         .click();
       await mode(p, "peek");
+      await centered();
       assert.equal(
         await p.locator("#ui-map-task-title").textContent(),
         "New private point",
@@ -145,6 +164,7 @@ try {
       await original();
       await p.getByRole("button", { name: "Half view", exact: true }).click();
       await mode(p, "half");
+      await centered();
       const half = await p.evaluate(() => {
         const task = document
             .querySelector("#ui-map-task")
@@ -184,6 +204,7 @@ try {
       await original();
       await p.getByRole("button", { name: "Close task", exact: true }).click();
       await mode(p, "closed");
+      await centered();
       assert.equal(await p.locator("#ui-map-task").isVisible(), false);
       assert.equal(
         await p
