@@ -44,6 +44,7 @@ interface Frame {
   release?: () => void;
   contentChanged: () => void;
   focusChanged: (event: FocusEvent) => void;
+  keyChanged: (event: KeyboardEvent) => void;
 }
 const sourceClass = "ui-map-selection-source";
 const pendingClass = "ui-map-selection-pending";
@@ -126,6 +127,7 @@ export function mountSelectionPane(
     active = null;
     frame.popup.off("contentupdate", frame.contentChanged);
     frame.node.removeEventListener("focusin", frame.focusChanged);
+    frame.node.removeEventListener("keydown", frame.keyChanged, true);
     if (!fromOwner) {
       try {
         frame.release?.();
@@ -227,6 +229,13 @@ export function mountSelectionPane(
         paneParent: null,
         paneNext: null,
         lastFocus: null,
+        keyChanged: (event) => {
+          if (event.key === "Escape" && active === frame && allowed()) {
+            event.preventDefault();
+            event.stopPropagation();
+            finish(frame, "back");
+          }
+        },
         focusChanged: (event) => {
           if (event.target instanceof HTMLElement)
             frame.lastFocus = event.target;
@@ -259,6 +268,7 @@ export function mountSelectionPane(
       active = frame;
       popup.on("contentupdate", frame.contentChanged);
       node.addEventListener("focusin", frame.focusChanged);
+      node.addEventListener("keydown", frame.keyChanged, true);
       try {
         const release = options.showDetail(node, () =>
           finish(frame, "back", true),

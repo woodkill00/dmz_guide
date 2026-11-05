@@ -37,6 +37,9 @@ export function markerPopup(title: string) {
     }
   });
   details.addEventListener("keydown", (event) => {
+    // In the task pane the owning body scrolls; do not trap native page keys
+    // in the now-unbounded original notes element.
+    if(root.closest("#ui-selection-detail"))return;
     if (
       [
         "ArrowUp",

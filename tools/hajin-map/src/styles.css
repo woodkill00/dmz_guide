@@ -265,9 +265,9 @@ html[data-ui-variant=modern] #workspace-dialog:not(:modal) nav button{white-spac
 html[data-ui-variant=modern] #workspace-dialog .planner-tabs{flex-wrap:wrap;min-width:0;max-width:100%}
 
 html[data-ui-variant=modern] .ui-map-selection-source{visibility:hidden;pointer-events:none}
-html[data-ui-variant=modern] #ui-selection-detail :is(.marker-popup,.marker-popup-details,.marker-popup-body,.readable-marker-popup){max-height:none;max-width:100%;width:auto;overflow:visible}
+html[data-ui-variant=modern] #ui-selection-detail :is(.map-marker-popup,.marker-popup,.marker-popup-details,.marker-popup-body,.readable-marker-popup){max-height:none;max-width:100%;width:auto;overflow:visible}
 html[data-ui-variant=modern] #ui-selection-detail{min-width:0;overflow-wrap:anywhere}
-html[data-ui-variant=modern] #ui-selection-back{position:sticky;top:0;z-index:3;background:var(--ws-surface)}
+html[data-ui-variant=modern] #ui-selection-back{position:sticky;top:var(--ui-task-header-height,0px);z-index:3;background:var(--ws-surface)}
 
 html[data-ui-variant=modern] .ui-map-selection-pending{visibility:hidden;pointer-events:none}
 
@@ -309,3 +309,13 @@ html[data-ui-variant=modern] .key-updates-menu[open]>summary::after{transform:ro
 
 .field-toolbar .field-tool-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.4rem .65rem;color:#edf4df;background:#293822;border:1px solid #aabb7d;border-radius:4px;text-decoration:none;font:inherit}
 html[data-ui-variant=modern] .field-toolbar .field-tool-link{color:var(--ws-text);background:var(--ws-raised);border-color:var(--ws-control-line,var(--ws-line));border-radius:.4rem}
+
+/* Readonly marker inspection has its own compact chrome, not the point editor. */
+html[data-ui-variant=modern] #workspace-dialog[data-ui-detail=selection]>.dialog-top,
+html[data-ui-variant=modern] #workspace-dialog[data-ui-detail=selection]>nav,
+html[data-ui-variant=modern] #workspace-dialog[data-ui-detail=selection]>#workspace-message[role=status]{display:none}
+html[data-ui-variant=modern] #ui-selection-detail .map-marker-popup{font:inherit}
+html[data-ui-variant=modern] #ui-selection-detail .marker-popup-details{flex:none}
+html[data-ui-variant=modern] #ui-selection-detail .marker-popup-actions :is(button,a){font:inherit;font-size:.875rem}
+html[data-ui-variant=modern] .map-workspace:has(.ui-map-selection-source) .map-controls{visibility:visible}
+html[data-ui-variant=modern] #ui-selection-detail .marker-popup-title{font-size:1rem;color:var(--ws-text)}

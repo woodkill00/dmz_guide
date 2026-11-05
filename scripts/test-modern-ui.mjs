@@ -39,6 +39,7 @@ const map = [
   "ui-bfcache-write-browser",
   "ui-lifecycle-browser",
   "ui-selection-integration-browser",
+  "ui-marker-visual-browser",
   "ui-feature-coverage-browser",
   "ui-bosses-browser",
   "ui-theme-browser",

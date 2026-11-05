@@ -64,6 +64,9 @@ export function mountMapWorkspaceLayout() {
       content.querySelector<HTMLDialogElement>("#workspace-dialog");
     const ownerHeading =
       content.querySelector<HTMLElement>(
+        "#ui-selection-detail .marker-popup-title",
+      ) ??
+      content.querySelector<HTMLElement>(
         "#workspace-content form h2, #workspace-content form h3",
       ) ??
       content.querySelector<HTMLElement>(
@@ -72,7 +75,8 @@ export function mountMapWorkspaceLayout() {
     const taskTitle = dialog?.open
       ? ownerHeading?.textContent?.trim() || "Map task"
       : "Map layers";
-    title.textContent = taskTitle.slice(0, 120);
+    if (title.textContent !== taskTitle.slice(0, 120))
+      title.textContent = taskTitle.slice(0, 120);
     title.title = taskTitle;
     const peekRequested = requested === "peek";
     minimize.hidden = half.hidden = peekRequested;
@@ -215,6 +219,15 @@ export function mountMapWorkspaceLayout() {
       if (node && node.parentElement !== controls) controls.append(node);
     }
   };
+  // Watch task content, not continuously changing map coordinates. The header is
+  // outside this observer, so painting its own title cannot schedule a loop.
+  const taskObserver = new MutationObserver(schedule);
+  taskObserver.observe(content, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["open", "data-ui-detail"],
+  });
   const childObserver = new MutationObserver(relocate);
   childObserver.observe(root, { childList: true, subtree: true });
   relocate();
@@ -232,6 +245,7 @@ export function mountMapWorkspaceLayout() {
       observer.disconnect();
       mutations.disconnect();
       childObserver.disconnect();
+      taskObserver.disconnect();
       window.visualViewport?.removeEventListener("resize", schedule);
       window.removeEventListener("resize", schedule);
       map.removeEventListener("click", showMap);
