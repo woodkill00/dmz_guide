@@ -1,3 +1,4 @@
+import {openLegacyMapSection} from "./legacy-menu-setup.ts";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { hajin } from "../src/map/hajin.ts";
@@ -117,6 +118,8 @@ export async function runProviderBrowser(parent) {
     );
     assert.equal(await page.locator('[data-workspace-provider]:not([data-workspace-provider="mapgenie"])').count(), 0);
     assert.equal(await page.locator('[data-workspace-provider="mapgenie"]').count(),2);
+    //067 source groups are native disclosures. Open this owner before using its control.
+    await openLegacyMapSection(page,"source-codcentral");
     await page.locator("#key-loaded-source-master-codcentral").uncheck();
     assert.equal(await count("codcentral"), 0);
     assert.equal(await count("wzstats"), 2);
@@ -135,6 +138,7 @@ export async function runProviderBrowser(parent) {
     );
     assert.equal(await count("codmunity"), 0);
     await page.locator("#toggle-key").click();
+    await openLegacyMapSection(page,"source-wzstats");
     await page
       .locator('[data-key-source="wzstats"] [data-key-category="a"]')
       .uncheck();
@@ -179,6 +183,7 @@ export async function runProviderBrowser(parent) {
         .count(),
       2,
     );
+    await openLegacyMapSection(page,"source-codcentral");
     await page
       .locator('[data-key-source="codcentral"] .duplicate-details-button')
       .first()
@@ -187,11 +192,13 @@ export async function runProviderBrowser(parent) {
       (await page.locator("#explore-panel").textContent()).includes("distance"),
     );
     await page.locator("#close-workspace").click();
+    await openLegacyMapSection(page,"comparison");
     await page.locator("#show-duplicate-markers").check();
     await page.waitForFunction(
       () => document.querySelectorAll("[data-source-marker-id]").length === 8,
     );
     await page.locator("#show-duplicate-markers").uncheck();
+    await openLegacyMapSection(page,"source-official");
     await page.locator("#key-loaded-source-master-official").uncheck();
     assert.equal(await count("official"), 0);
     assert.equal(await count("codcentral"), 2);

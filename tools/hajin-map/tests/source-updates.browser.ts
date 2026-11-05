@@ -1,3 +1,4 @@
+import {openLegacyMapSection} from "./legacy-menu-setup.ts";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { sourcePolicies } from "../src/workspace/policy.ts";
@@ -185,6 +186,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
     await page.goto(base);
     await page.locator("#workspace-open:enabled").waitFor();
     await page.locator("#toggle-key").click();
+    await openLegacyMapSection(page,"source-codcentral");
     await page.locator("#key-loaded-source-master-codcentral").waitFor();
     await page.locator("#update-map-sources:enabled").waitFor();
   };
@@ -203,6 +205,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
     await open();
     assert.equal(calls.filter((c) => c.endsWith("/prepare")).length, 0);
     for (const id of ids) {
+      await openLegacyMapSection(page,"source-"+id);
       const link = page.locator("#key-source-link-" + id);
       assert.equal(await link.getAttribute("href"), sourcePolicies[id].page);
       assert.equal(await link.getAttribute("target"), "_blank");
@@ -218,6 +221,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
     const mapgenieCount = () =>
       page.locator('[data-source-id="mapgenie"]').count();
     assert.equal(await mapgenieCount(), 2);
+    await openLegacyMapSection(page,"source-mapgenie");
     await page.locator("#key-loaded-source-master-mapgenie").uncheck();
     assert.equal(await mapgenieCount(), 0);
     assert.equal(await page.locator('[data-source-id="official"]').count(), 2);
@@ -255,6 +259,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
         .locator('[data-key-source="mapgenie"] .duplicate-details-button')
         .count()) > 0,
     );
+    await openLegacyMapSection(page,"source-official");
     await page.locator("#key-loaded-source-master-official").uncheck();
     assert.equal(await mapgenieCount(), 2);
     await page.locator("#key-loaded-source-master-official").check();
@@ -444,6 +449,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
     await page.waitForFunction(
       () => !document.querySelector("#workspace-dialog").open,
     );
+    await openLegacyMapSection(page,"source-codmunity");
     await page.locator("#key-loaded-source-master-codmunity").waitFor();
     assert.equal(await page.locator("[data-workspace-provider]").count(), 0);
     assert.equal((await read()).snapshots.length, 5);
@@ -526,6 +532,7 @@ export async function runSourceUpdatesBrowser(parent, fixture) {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto(base);
     await page.locator("#workspace-open:enabled").waitFor({ timeout: 60000 });
+    await openLegacyMapSection(page,"source-mapgenie");
     await page
       .locator('[data-key-source="mapgenie"] [data-source-capacity]')
       .waitFor({ timeout: 60000 });

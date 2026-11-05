@@ -1,3 +1,4 @@
+import {openLegacyMapSection} from "./legacy-menu-setup.ts";
 import assert from "node:assert/strict";
 export async function runUsabilityBrowser(parent, base, fixture) {
   const context = await parent
@@ -126,6 +127,7 @@ export async function runUsabilityBrowser(parent, base, fixture) {
     assert.equal(await page.locator("[data-search-highlight]").count(), 0);
     await page.locator("#cancel-point").click();
     await page.locator("#close-workspace").click();
+    await openLegacyMapSection(page,"source-official");
     await page.locator("#key-loaded-source-master-official").uncheck();
     await page.waitForFunction(
       () =>
@@ -171,8 +173,9 @@ export async function runUsabilityBrowser(parent, base, fixture) {
     checks.push(
       "Explore searches all locations, jumps/highlights hidden results without changing masks, and edits own points",
     );
+    await openLegacyMapSection(page,"source-codcentral");
     await page
-      .locator("#workspace-key-layers")
+      .locator('#map-key details[data-menu-section="source-codcentral"]')
       .getByRole("button", { name: "* 1 matching", exact: true })
       .click();
     assert.ok(
@@ -212,6 +215,7 @@ export async function runUsabilityBrowser(parent, base, fixture) {
     );
     const editCount = (await read()).usability.edits;
     await page.locator("#close-workspace").click();
+    await openLegacyMapSection(page,"source-codcentral");
     await page.locator("#key-source-show-codcentral").click();
     await page.waitForFunction(
       () =>
