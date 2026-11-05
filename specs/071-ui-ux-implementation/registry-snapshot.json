@@ -1,0 +1,546 @@
+{
+  "source": "src/ui/feature-registry.mjs",
+  "date": "2026-11-05",
+  "count": 77,
+  "features": [
+    {
+      "id": "dmz-guide",
+      "label": "DMZ Guide",
+      "kind": "guide",
+      "path": "/dmz-guide/",
+      "group": "Reference"
+    },
+    {
+      "id": "dmz-fob",
+      "label": "DMZ FOB",
+      "kind": "guide",
+      "path": "/dmz-fob/",
+      "group": "Prepare"
+    },
+    {
+      "id": "dmz-weapons",
+      "label": "DMZ Weapons",
+      "kind": "guide",
+      "path": "/dmz-weapons/",
+      "group": "Reference"
+    },
+    {
+      "id": "home",
+      "label": "Home",
+      "kind": "guide",
+      "path": "/",
+      "group": "Prepare"
+    },
+    {
+      "id": "hajin-map",
+      "label": "Interactive map",
+      "kind": "map",
+      "path": "/",
+      "group": "Map"
+    },
+    {
+      "id": "safe-runs",
+      "label": "Safe runs",
+      "kind": "map",
+      "path": "/safes.html",
+      "group": "Map"
+    },
+    {
+      "id": "maps",
+      "label": "Maps",
+      "kind": "guide",
+      "path": "/maps/",
+      "group": "Map"
+    },
+    {
+      "id": "map-workspace",
+      "label": "Local map workspace",
+      "kind": "guide",
+      "path": "/map-workspace/",
+      "group": "Map"
+    },
+    {
+      "id": "planner",
+      "label": "Planner",
+      "kind": "guide",
+      "path": "/planner/",
+      "group": "Prepare"
+    },
+    {
+      "id": "inventory",
+      "label": "Inventory",
+      "kind": "guide",
+      "path": "/inventory/",
+      "group": "Prepare"
+    },
+    {
+      "id": "collection",
+      "label": "Collect",
+      "kind": "guide",
+      "path": "/collection/",
+      "group": "Prepare"
+    },
+    {
+      "id": "upgrades",
+      "label": "Upgrades",
+      "kind": "guide",
+      "path": "/upgrades/",
+      "group": "Prepare"
+    },
+    {
+      "id": "recipes",
+      "label": "Recipes",
+      "kind": "guide",
+      "path": "/recipes/",
+      "group": "Prepare"
+    },
+    {
+      "id": "keys",
+      "label": "Keys",
+      "kind": "guide",
+      "path": "/keys/",
+      "group": "Prepare"
+    },
+    {
+      "id": "missions",
+      "label": "Missions",
+      "kind": "guide",
+      "path": "/missions/",
+      "group": "Track"
+    },
+    {
+      "id": "progression",
+      "label": "Progress",
+      "kind": "guide",
+      "path": "/progression/",
+      "group": "Track"
+    },
+    {
+      "id": "catalog",
+      "label": "Catalog",
+      "kind": "guide",
+      "path": "/catalog/",
+      "group": "Reference"
+    },
+    {
+      "id": "items",
+      "label": "Items",
+      "kind": "guide",
+      "path": "/items/",
+      "group": "Reference"
+    },
+    {
+      "id": "weapons",
+      "label": "Weapons",
+      "kind": "guide",
+      "path": "/weapons/",
+      "group": "Reference"
+    },
+    {
+      "id": "armory",
+      "label": "Weapon database",
+      "kind": "guide",
+      "path": "/armory/",
+      "group": "Reference"
+    },
+    {
+      "id": "armory-workbench",
+      "label": "Armory workbench",
+      "kind": "guide",
+      "path": "/armory/workbench/",
+      "group": "Prepare"
+    },
+    {
+      "id": "guides",
+      "label": "Guides",
+      "kind": "guide",
+      "path": "/guides/",
+      "group": "Reference"
+    },
+    {
+      "id": "weapon-updates",
+      "label": "Weapon updates",
+      "kind": "guide",
+      "path": "/armory/updates/",
+      "group": "Manage"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "guide",
+      "path": "/settings/",
+      "group": "Manage"
+    },
+    {
+      "id": "editor",
+      "label": "Editor",
+      "kind": "guide",
+      "path": "/editor/",
+      "group": "Manage"
+    },
+    {
+      "id": "local",
+      "label": "Private reader",
+      "kind": "guide",
+      "path": "/local/",
+      "group": "Reference"
+    },
+    {
+      "id": "community",
+      "label": "Community",
+      "kind": "guide",
+      "path": "/community/",
+      "group": "Manage"
+    },
+    {
+      "id": "sitemap",
+      "label": "Site map",
+      "kind": "guide",
+      "path": "/sitemap/",
+      "group": "Manage"
+    },
+    {
+      "id": "map-help",
+      "label": "Map help",
+      "kind": "map",
+      "path": "/help.html",
+      "group": "Reference"
+    },
+    {
+      "id": "studio",
+      "label": "Content Studio",
+      "kind": "studio",
+      "path": "/",
+      "group": "Manage"
+    },
+    {
+      "id": "search",
+      "label": "Search everything",
+      "kind": "guide",
+      "path": "/search/",
+      "group": "Reference"
+    },
+    {
+      "id": "features",
+      "label": "All features",
+      "kind": "guide",
+      "path": "/features/",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-planner",
+      "label": "Map planner",
+      "kind": "map",
+      "path": "/?tool=planner",
+      "group": "Map"
+    },
+    {
+      "id": "tool-health",
+      "label": "Workspace health",
+      "kind": "map",
+      "path": "/?tool=health",
+      "group": "Map"
+    },
+    {
+      "id": "tool-map",
+      "label": "Map canvas",
+      "kind": "map",
+      "path": "/?tool=map",
+      "group": "Map"
+    },
+    {
+      "id": "tool-key",
+      "label": "Map key",
+      "kind": "map",
+      "path": "/?tool=key",
+      "group": "Map"
+    },
+    {
+      "id": "tool-layers",
+      "label": "Source layers",
+      "kind": "map",
+      "path": "/?tool=layers",
+      "group": "Map"
+    },
+    {
+      "id": "tool-grid",
+      "label": "Coordinate grid",
+      "kind": "map",
+      "path": "/?tool=grid",
+      "group": "Map"
+    },
+    {
+      "id": "tool-updates",
+      "label": "Source updates",
+      "kind": "map",
+      "path": "/?tool=updates",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-points",
+      "label": "Custom POIs",
+      "kind": "map",
+      "path": "/?tool=points",
+      "group": "Map"
+    },
+    {
+      "id": "tool-icons",
+      "label": "Icon studio",
+      "kind": "map",
+      "path": "/?tool=icons",
+      "group": "Map"
+    },
+    {
+      "id": "tool-sources",
+      "label": "Source data",
+      "kind": "map",
+      "path": "/?tool=sources",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-review",
+      "label": "Source review",
+      "kind": "map",
+      "path": "/?tool=review",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-backups",
+      "label": "Map backups",
+      "kind": "map",
+      "path": "/?tool=backups",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-explore",
+      "label": "Explore & search",
+      "kind": "map",
+      "path": "/?tool=explore",
+      "group": "Map"
+    },
+    {
+      "id": "tool-duplicates",
+      "label": "Duplicate review",
+      "kind": "map",
+      "path": "/?tool=duplicates",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-saved-views",
+      "label": "Saved views",
+      "kind": "map",
+      "path": "/?tool=saved-views",
+      "group": "Map"
+    },
+    {
+      "id": "tool-completeness",
+      "label": "Coverage",
+      "kind": "map",
+      "path": "/?tool=completeness",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-discrepancies",
+      "label": "Discrepancy flags",
+      "kind": "map",
+      "path": "/?tool=discrepancies",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-backgrounds",
+      "label": "Map backgrounds",
+      "kind": "map",
+      "path": "/?tool=backgrounds",
+      "group": "Map"
+    },
+    {
+      "id": "boss-checklist",
+      "label": "Boss checklist",
+      "kind": "map",
+      "path": "/?tool=boss-checklist",
+      "group": "Track"
+    },
+    {
+      "id": "tool-routes",
+      "label": "Routes",
+      "kind": "map",
+      "path": "/?tool=routes",
+      "group": "Map"
+    },
+    {
+      "id": "tool-observations",
+      "label": "Tracking / confidence",
+      "kind": "map",
+      "path": "/?tool=observations",
+      "group": "Map"
+    },
+    {
+      "id": "tool-comparisons",
+      "label": "Duplicate queue",
+      "kind": "map",
+      "path": "/?tool=comparisons",
+      "group": "Map"
+    },
+    {
+      "id": "tool-roads",
+      "label": "Road network",
+      "kind": "map",
+      "path": "/?tool=roads",
+      "group": "Map"
+    },
+    {
+      "id": "tool-gameplay",
+      "label": "Gameplay",
+      "kind": "map",
+      "path": "/?tool=gameplay",
+      "group": "Map"
+    },
+    {
+      "id": "tool-sharing",
+      "label": "Share view",
+      "kind": "map",
+      "path": "/?tool=sharing",
+      "group": "Map"
+    },
+    {
+      "id": "tool-missions",
+      "label": "Missions",
+      "kind": "map",
+      "path": "/?tool=missions",
+      "group": "Track"
+    },
+    {
+      "id": "tool-collections",
+      "label": "Collections",
+      "kind": "map",
+      "path": "/?tool=collections",
+      "group": "Map"
+    },
+    {
+      "id": "tool-tools",
+      "label": "Field tools",
+      "kind": "map",
+      "path": "/?tool=tools",
+      "group": "Map"
+    },
+    {
+      "id": "tool-recovery",
+      "label": "Recovery",
+      "kind": "map",
+      "path": "/?tool=recovery",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-packs",
+      "label": "Packs",
+      "kind": "map",
+      "path": "/?tool=packs",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-settings",
+      "label": "Settings",
+      "kind": "map",
+      "path": "/?tool=settings",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-source-check",
+      "label": "Source comparison",
+      "kind": "map",
+      "path": "/?tool=source-check",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-journal",
+      "label": "Match journal",
+      "kind": "map",
+      "path": "/?tool=journal",
+      "group": "Track"
+    },
+    {
+      "id": "tool-road-verification",
+      "label": "Road verification",
+      "kind": "map",
+      "path": "/?tool=road-verification",
+      "group": "Map"
+    },
+    {
+      "id": "tool-workspace-search",
+      "label": "Workspace search",
+      "kind": "map",
+      "path": "/?tool=workspace-search",
+      "group": "Map"
+    },
+    {
+      "id": "tool-update-impacts",
+      "label": "Update impacts",
+      "kind": "map",
+      "path": "/?tool=update-impacts",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-route-alternatives",
+      "label": "Route alternatives",
+      "kind": "map",
+      "path": "/?tool=route-alternatives",
+      "group": "Map"
+    },
+    {
+      "id": "tool-backup-guide",
+      "label": "Backup guide",
+      "kind": "map",
+      "path": "/?tool=backup-guide",
+      "group": "Manage"
+    },
+    {
+      "id": "tool-match-mode",
+      "label": "Match mode",
+      "kind": "map",
+      "path": "/?tool=match-mode",
+      "group": "Track"
+    },
+    {
+      "id": "tool-accuracy",
+      "label": "Accuracy dashboard",
+      "kind": "map",
+      "path": "/?tool=accuracy",
+      "group": "Map"
+    },
+    {
+      "id": "tool-map-presets",
+      "label": "Map presets",
+      "kind": "map",
+      "path": "/?tool=map-presets",
+      "group": "Map"
+    },
+    {
+      "id": "tool-relationships",
+      "label": "Relationships",
+      "kind": "map",
+      "path": "/?tool=relationships",
+      "group": "Map"
+    },
+    {
+      "id": "tool-session-playback",
+      "label": "Session playback",
+      "kind": "map",
+      "path": "/?tool=session-playback",
+      "group": "Track"
+    },
+    {
+      "id": "tool-route-suggestions",
+      "label": "Route suggestions",
+      "kind": "map",
+      "path": "/?tool=route-suggestions",
+      "group": "Map"
+    },
+    {
+      "id": "tool-reference-library",
+      "label": "Reference library",
+      "kind": "map",
+      "path": "/?tool=reference-library",
+      "group": "Map"
+    }
+  ]
+}
