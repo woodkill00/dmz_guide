@@ -1,0 +1,229 @@
+/* Semantic chrome only. Provider icons, marker fills and terrain retain their colors. */
+html[data-ui-variant="modern"] {
+  --accent: var(--ws-accent);
+  --muted: var(--ws-muted);
+  --line: var(--ws-line);
+  --safe-line: var(--ws-line);
+  --safe-accent: var(--ws-accent);
+  --ws-control-line: #718b84;
+  --ws-warning-text: #f5d993;
+  --ws-warning-surface: #342c1b;
+  --ws-danger-text: #ffc2ca;
+  --ws-danger-surface: #3c1d25;
+}
+html[data-ui-variant="modern"][data-theme="light"] {
+  --ws-control-line: #657e70;
+  --ws-warning-text: #6c4b09;
+  --ws-warning-surface: #fff6da;
+  --ws-danger-text: #862535;
+  --ws-danger-surface: #fff0f2;
+}
+html[data-ui-variant="modern"]
+  :is(
+    #ui-map-task,
+    #workspace-dialog,
+    #ui-map-route,
+    #map-key,
+    #safe-controls,
+    .safe-header,
+    .help-header,
+    .help-layout,
+    .contents
+  ) {
+  color: var(--ws-text);
+  background-color: var(--ws-surface);
+  border-color: var(--ws-line);
+}
+html[data-ui-variant="modern"]
+  :is(
+    #workspace-dialog .dialog-top,
+    #workspace-dialog nav,
+    .key-toolbar,
+    .sidebar-heading,
+    .sidebar-content,
+    .sidebar-footer,
+    .source-layer,
+    .source-layer-body,
+    .category-sublist,
+    .workspace-card,
+    .workspace-preview,
+    .route-plan-summary,
+    .tracker-waypoint-list,
+    .safe-choice,
+    #visit-order li,
+    .help-layout .callout
+  ) {
+  color: var(--ws-text);
+  background-color: var(--ws-raised);
+  border-color: var(--ws-line);
+}
+html[data-ui-variant="modern"]
+  :is(
+    #ui-map-task,
+    #workspace-dialog,
+    #ui-map-route,
+    #safe-controls,
+    .safe-header,
+    .help-header,
+    .help-layout,
+    .contents
+  )
+  :is(
+    p,
+    small,
+    label,
+    legend,
+    summary,
+    h1,
+    h2,
+    h3,
+    h4,
+    dt,
+    dd,
+    li,
+    .source-name,
+    .source-domain,
+    .category-count,
+    .source-selection,
+    .source-category-heading
+  ) {
+  color: var(--ws-text);
+}
+html[data-ui-variant="modern"]
+  :is(
+    #ui-map-task,
+    #workspace-dialog,
+    #ui-map-route,
+    #safe-controls,
+    .safe-header,
+    .help-header,
+    .help-layout,
+    .contents
+  )
+  :is(p, small, label, legend, summary, dt, dd, li) {
+  font-size: max(14px, 0.875rem);
+}
+html[data-ui-variant="modern"]
+  :is(
+    #ui-map-task,
+    #workspace-dialog,
+    #ui-map-route,
+    #safe-controls,
+    .safe-header,
+    .help-header,
+    .help-layout,
+    .contents
+  )
+  a {
+  color: var(--ws-accent);
+}
+html[data-ui-variant="modern"]
+  :is(
+    #ui-map-task,
+    #workspace-dialog,
+    #ui-map-route,
+    #safe-controls,
+    .safe-map-tools,
+    .ui-safe-views
+  )
+  :is(
+    button,
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea
+  ) {
+  color: var(--ws-text);
+  background-color: var(--ws-raised);
+  border-color: var(--ws-control-line);
+  font-size: max(14px, 0.875rem);
+  min-block-size: 44px;
+}
+html[data-ui-variant="modern"]
+  :is(#ui-map-task, #workspace-dialog, #ui-map-route, #safe-controls)
+  :is(button, input, select, textarea):disabled {
+  opacity: 1;
+  color: var(--ws-muted);
+  border-style: dashed;
+}
+html[data-ui-variant="modern"]
+  :is(#ui-map-task, #workspace-dialog, #ui-map-route, #safe-controls)
+  :is(input, textarea)::placeholder {
+  color: var(--ws-muted);
+  opacity: 1;
+}
+html[data-ui-variant="modern"]
+  :is(#ui-map-task, #workspace-dialog, #ui-map-route, #safe-controls)
+  input:is([type="checkbox"], [type="radio"]) {
+  accent-color: var(--ws-accent);
+}
+html[data-ui-variant="modern"]
+  :is(#ui-map-task, #workspace-dialog, #ui-map-route, #safe-controls)
+  button:is([aria-current="true"], [aria-pressed="true"]) {
+  color: var(--ws-accent-ink);
+  background-color: var(--ws-accent);
+}
+html[data-ui-variant="modern"]
+  :is(
+    .header-center,
+    .brand-sub,
+    .local-badge,
+    .help-header .brand span,
+    .contents > strong,
+    .help-layout footer
+  ) {
+  color: var(--ws-muted);
+}
+html[data-ui-variant="modern"] :is(.app-header, .safe-header, .help-header) {
+  background-color: var(--ws-surface);
+  color: var(--ws-text);
+}
+html[data-ui-variant="modern"]
+  :is(
+    .nav-more > summary,
+    .nav-more > div,
+    .ui-nav-tools > summary,
+    .ui-nav-tools > div
+  ) {
+  background-color: var(--ws-raised);
+  color: var(--ws-text);
+}
+html[data-ui-variant="modern"]
+  :is(
+    #workspace-message,
+    .workspace-status,
+    #safe-intelligence,
+    .safe-access-legend,
+    .workspace-warning
+  ) {
+  color: var(--ws-warning-text);
+  background-color: var(--ws-warning-surface);
+}
+html[data-ui-variant="modern"] #boss-checklist .boss-group h4 {
+  background-color: var(--ws-raised);
+  color: var(--ws-text);
+}
+html[data-ui-variant="modern"] #boss-checklist tr.boss-tags-complete {
+  background-color: var(--ws-danger-surface);
+}
+html[data-ui-variant="modern"]
+  #boss-checklist
+  .boss-tags-complete
+  :is(a, small, td, th) {
+  color: var(--ws-danger-text);
+}
+html[data-ui-variant="modern"] :is(.help-layout .action, .help-header .action) {
+  background-color: var(--ws-accent);
+  color: var(--ws-accent-ink);
+  border-color: var(--ws-control-line);
+}
+html[data-ui-variant="modern"]
+  :is(
+    #ui-map-task,
+    #workspace-dialog,
+    #ui-map-route,
+    #safe-controls,
+    .help-layout
+  )
+  :focus-visible {
+  outline-color: var(--ws-accent);
+}
