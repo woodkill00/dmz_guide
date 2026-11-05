@@ -1,3 +1,5 @@
+import {resolvePresentation} from "./presentation-config.mjs";
+import {primaryHubs,featureHub,featureLabel} from "./workspace-shell.mjs";
 import {
   features,
   featureGroups,
@@ -55,6 +57,14 @@ export function renderMainNavigation({
       path: p.path,
       kind: "guide",
     }));
+  const rolloutSurface=page==='safe-runs'?'safe-runs':surface==='help'?'map':surface;
+  if(resolvePresentation(rolloutSurface).variant==='modern'){
+    const activeHub=featureHub(current),modernLink=(f,label=featureLabel(f))=>{
+      let markup=link(f,label);if(primaryHubs.includes(f.id)&&activeHub===featureHub(f)&&page!==f.id)markup=markup.replace('<a ','<a data-active-group="true" ');return markup;
+    };
+    const primaryMarkup=primaryHubs.map(id=>modernLink(features.find(f=>f.id===id))).join('');
+    return `<nav class="site-nav${surface!=='guide'?' companion-nav':''}" aria-label="Main navigation" data-navigation-surface="${e(surface)}" data-ui-navigation="modern"><div class="ui-primary-links">${primaryMarkup}</div><details class="ui-mobile-sections"><summary>${e(activeHub==='Tools'?'Sections':activeHub)} · Sections</summary><div>${primaryMarkup}</div></details>${modernLink(features.find(f=>f.id==='search'),'Search')}<details class="nav-more"><summary>Tools · All features</summary><div><input data-navigation-filter hidden type="search" maxlength="100" aria-label="Find a link in this menu" placeholder="Find a workspace…"><button type="button" data-ui-density aria-pressed="false">Compact spacing</button>${['Map','DMZ Guide','DMZ FOB','DMZ Weapons','Tools'].map(group=>`<section class="nav-menu-group" aria-label="${group}"><p class="nav-group-label">${group}</p>${[...features,...additional].filter(f=>featureHub(f)===group&&!primaryHubs.includes(f.id)&&f.id!=='search').map(f=>modernLink(f)).join('')}</section>`).join('')}</div></details></nav>`;
+  }
   return `<nav class="site-nav${surface !== "guide" ? " companion-nav" : ""}" aria-label="Main navigation" data-navigation-surface="${e(surface)}">${primary
     .map((id) =>
       link(

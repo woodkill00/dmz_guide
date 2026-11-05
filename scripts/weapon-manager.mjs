@@ -12,6 +12,9 @@ import codmunityMetrics from "../src/domain/codmunity-metrics.json" with { type:
 const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const statusPath = ".local/weapon-updates/manager-status.json";
 const assets = new Set([
+  "src/ui/workspace-shell.css",
+  "src/ui/workspace-shell.mjs",
+  "src/client/workspace-shell.mjs",
   "src/styles.css",
   "src/ui/layout-tokens.css",
   "src/ui/compact-navigation.css",

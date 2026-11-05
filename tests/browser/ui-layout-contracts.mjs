@@ -1,0 +1,8 @@
+import {chromium} from 'playwright';import {mkdir,writeFile} from 'node:fs/promises';import {execFileSync} from 'node:child_process';
+const browser=await chromium.launch(),rows=[];const base=process.env.UI_BASE||'http://127.0.0.1:4173';
+try{for(const width of [1440,390,320]){const context=await browser.newContext({viewport:{width,height:width===320?568:900}}),page=await context.newPage();
+ for(const path of ['/','/keys/','/upgrades/','/inventory/','/missions/','/armory/']){const errors=[];page.on('pageerror',e=>errors.push(e.message));const start=performance.now();await page.goto(base+path);await page.waitForLoadState('domcontentloaded');
+ const metrics=await page.evaluate(()=>({dom:document.getElementsByTagName('*').length,bodyWidth:document.documentElement.scrollWidth,layoutWidth:document.documentElement.clientWidth,header:document.querySelector('.site-header')?.getBoundingClientRect().height,nav:document.querySelector('.site-nav')?.getBoundingClientRect().height,variant:document.documentElement.dataset.uiVariant||'legacy',mounted:document.documentElement.dataset.uiMounted||null,source:document.querySelector('meta[name="build-id"]')?.content||null}));rows.push({path,width,loadMs:performance.now()-start,...metrics,errors});
+ }await context.close();}
+ await mkdir('.local',{recursive:true});const head=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();const report={head,node:process.version,platform:process.platform,base,mode:process.env.DMZ_UI_VARIANT||'legacy',rows};await writeFile('.local/ui-layout-baseline.json',JSON.stringify(report,null,2));console.log(JSON.stringify({head,cases:rows.length,errors:rows.reduce((n,r)=>n+r.errors.length,0)}));
+}finally{await browser.close();}

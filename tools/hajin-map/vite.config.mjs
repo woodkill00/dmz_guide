@@ -1,3 +1,4 @@
+import {resolvePresentation,presentationAttributes} from "../../src/ui/presentation-config.mjs";
 import {referencePlugin} from './server/reference-plugin.mjs';
 import { renderMainNavigation } from "../../src/ui/site-navigation.mjs";
 import { defineConfig, loadEnv } from "vite";
@@ -7,7 +8,7 @@ const root = fileURLToPath(new URL(".", import.meta.url));
 export default defineConfig(({ mode }) => ({
   plugins: [
     referencePlugin(),
-    {name:"shared-page-navigation",transformIndexHtml(html,context){const help=context.filename.endsWith("help.html"),safe=context.filename.endsWith("safes.html");return html.replace("<!-- MAIN_NAVIGATION -->",renderMainNavigation({surface:help?"help":"map",page:help?"map-help":safe?"safe-runs":"hajin-map"}));}},
+    {name:"shared-page-navigation",transformIndexHtml(html,context){const help=context.filename.endsWith("help.html"),safe=context.filename.endsWith("safes.html");const surface=safe?'safe-runs':'map',ui=resolvePresentation(surface);html=html.replace('<html lang="en">',`<html lang="en" ${presentationAttributes(surface)}>`);if(ui.variant==='modern')html=html.replace('</head>','<link rel="stylesheet" href="/@fs/'+fileURLToPath(new URL('../../src/ui/workspace-shell.css',import.meta.url)).replaceAll('\\','/')+'"></head>');return html.replace("<!-- MAIN_NAVIGATION -->",renderMainNavigation({surface:help?"help":"map",page:help?"map-help":safe?"safe-runs":"hajin-map"}));}},
     sourceUpdatePlugin({
       root,
       enabled: loadEnv(mode, root, "DMZ_").DMZ_ENABLE_SOURCE_UPDATES === "1",
