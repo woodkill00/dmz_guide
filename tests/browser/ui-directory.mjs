@@ -16,12 +16,13 @@ const fixture = ({
   pagination = true,
   editable = false,
   optIn = true,
+  ownSearch = true,
 } = {}) => `<!doctype html>
 <html lang="en" data-ui-variant="${variant}" data-ui-mounted="071-v1"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Synthetic directory fixture</title>
 <link rel="stylesheet" href="/directory-view.css"><style>
 *{box-sizing:border-box}body{margin:0;padding:12px;font:16px/1.45 system-ui;background:#18201d;color:#eef3ea}button,input,select{font:inherit;min-height:44px;max-width:100%}button{padding:8px 12px}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffe88a;outline-offset:2px}a{color:#d6e9ac}.fixture-scroll{max-width:100%;max-height:420px;overflow:auto}table{border-collapse:collapse;width:100%}th,td{padding:8px;text-align:left;vertical-align:top;border-bottom:1px solid #54675b}caption{text-align:left}.bulk{display:flex;flex-wrap:wrap;gap:8px}.owner-filter{display:block;margin:8px 0}
 </style></head><body><main><h1>Synthetic directory</h1><section id="records" ${optIn ? "data-ui-directory" : ""} data-ui-directory-pagination="${pagination}" aria-label="Synthetic reference directory">
-<label class="owner-filter">Search synthetic public labels<input id="search" data-ui-directory-search type="search" maxlength="200"></label>
+<label class="owner-filter">Search synthetic public labels<input id="search" ${ownSearch ? "data-ui-directory-search" : ""} type="search" maxlength="200"></label>
 <div class="bulk"><button id="all-matching" data-ui-directory-bulk-scope="all-matching">Select all matching references</button><button id="this-page" data-ui-directory-bulk-scope="this-page">Select this page</button></div>
 <div class="fixture-scroll" data-ui-directory-scroll role="region" aria-label="Synthetic reference table" tabindex="0"><table><caption>125 synthetic references; unknown values remain unknown</caption><thead><tr><th scope="col">Reference</th><th scope="col">Known quantity</th><th scope="col">Evidence / requirements</th><th scope="col">Action</th></tr></thead><tbody data-ui-directory-rows>${Array.from({ length: 125 }, (_, i) => `<tr id="row-${i}" data-ui-directory-row data-ui-directory-search-text="Visible reference ${i}"><th scope="row"><a href="#detail-${i}">Visible reference ${i}${i === 2 ? escape(" — Synthetic unusually long location and prerequisite name ".repeat(12)) : ""}</a></th><td>${i === 0 ? "Unknown" : i === 1 ? "0" : String(i)}</td><td>${i === 0 ? "*WZ · untested DMZ; missing evidence is not zero" : "Synthetic source report"}${i === 45 ? "<span hidden data-private-field>private-sentinel-never-index</span>" : ""}${editable && i === 124 ? '<label>Owned synthetic quantity<input id="owned-count" type="number" value="7"></label>' : ""}</td><td><button type="button" data-inspect="${i}">Inspect reference ${i}</button></td></tr>`).join("")}</tbody></table></div></section></main>
 <script type="module">
@@ -56,6 +57,7 @@ const server = createServer(async (request, response) => {
           pagination: url.searchParams.get("pagination") !== "false",
           editable: url.searchParams.get("editable") === "true",
           optIn: url.searchParams.get("optIn") !== "false",
+          ownSearch: url.searchParams.get("ownSearch") !== "false",
         }),
       );
       return;
@@ -116,6 +118,18 @@ try {
       const rows = () =>
         page.locator("[data-ui-directory-rows] > [data-ui-directory-row]");
       const status = () => page.locator("[data-ui-directory-status]");
+      const settledRows = async (count, first = null) =>
+        page.waitForFunction(
+          ({ count, first }) => {
+            const rows = document.querySelectorAll(
+              "[data-ui-directory-rows] > [data-ui-directory-row]",
+            );
+            return (
+              rows.length === count && (first === null || rows[0]?.id === first)
+            );
+          },
+          { count, first },
+        );
       await ready();
       assert.equal(await rows().count(), 50);
       assert.equal(
@@ -202,6 +216,7 @@ try {
       );
 
       await page.locator("#search").fill("Visible reference 124");
+      await settledRows(1, "row-124");
       assert.equal(await rows().count(), 1);
       assert.equal(await rows().first().getAttribute("id"), "row-124");
       assert(
@@ -210,12 +225,14 @@ try {
           .evaluate((row) => row === window.originalRows[124]),
       );
       await page.locator("#search").fill("private-sentinel-never-index");
+      await settledRows(0);
       assert.equal(
         await rows().count(),
         0,
         "Hidden/private body text is not an implicit generic search index",
       );
       await page.locator("#search").fill("");
+      await settledRows(50, "row-0");
       assert.equal(await rows().count(), 50);
       await page.evaluate(() => {
         const row = document.createElement("tr");
@@ -230,6 +247,7 @@ try {
           .dispatchEvent(new CustomEvent("ui-directory-refresh"));
       });
       await page.locator("#search").fill("New synthetic reference");
+      await settledRows(1, "row-new");
       assert.equal(await rows().count(), 1);
       assert.equal(await rows().first().getAttribute("id"), "row-new");
       await page.locator("#search").fill("");
@@ -275,6 +293,7 @@ try {
           ),
       );
       await page.locator("#search").fill("Visible reference 0");
+      await settledRows(2, "row-0");
       assert(
         await page.locator("#owned-count").isVisible(),
         "Filtering does not evict a dirty editable row",
@@ -351,6 +370,13 @@ try {
             0,
           );
       }
+      await ready("?ownSearch=false");
+      await page.locator("#search").fill("Visible reference 124");
+      assert.equal(
+        await rows().count(),
+        50,
+        "No marker means generic helper does not take over an existing search",
+      );
       const noJS = await browser.newContext({
           javaScriptEnabled: false,
           viewport: { width: 390, height: 844 },
