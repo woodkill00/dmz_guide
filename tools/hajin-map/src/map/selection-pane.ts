@@ -5,6 +5,7 @@ export interface SelectionPaneIntent {
   label: string;
   run: () => void;
   revalidate: () => boolean;
+  cancel?: () => void;
 }
 export type SelectionCloseReason =
   | "back"
@@ -42,6 +43,13 @@ interface Frame {
   focusChanged: (event: FocusEvent) => void;
 }
 const sourceClass = "ui-map-selection-source";
+const pendingClass = "ui-map-selection-pending";
+interface PendingPopup {
+  popup: Popup;
+  chrome: HTMLElement;
+  marked: boolean;
+}
+
 // Leaflet already evaluated a function on open. Read that exact DOM result;
 // evaluating the factory here would duplicate actions and lose its identity.
 function renderedContent(
@@ -80,6 +88,14 @@ export function mountSelectionPane(
     disposed = false,
     identity = 0;
   const identities = new WeakMap<Popup, string>();
+  const pending = new WeakMap<Popup, PendingPopup>();
+  const clearPending = (entry: PendingPopup, close = false) => {
+    if (pending.get(entry.popup) !== entry) return;
+    pending.delete(entry.popup);
+    if (!entry.marked) entry.chrome.classList.remove(pendingClass);
+    if (close && map.hasLayer(entry.popup)) map.closePopup(entry.popup);
+  };
+
   const report = (error: unknown) => options.onError?.(error);
   const allowed = () => {
     try {
@@ -163,8 +179,18 @@ export function mountSelectionPane(
       supplied.length <= 112
     )
       id = "selection:" + supplied;
+    const previousPending = pending.get(popup);
+    if (previousPending) clearPending(previousPending);
+    const pendingEntry: PendingPopup = {
+      popup,
+      chrome,
+      marked: chrome.classList.contains(pendingClass),
+    };
+    pending.set(popup, pendingEntry);
+    chrome.classList.add(pendingClass);
     const valid = () =>
       !disposed &&
+      pending.get(popup) === pendingEntry &&
       map.hasLayer(popup) &&
       popup.getContent() === raw &&
       renderedContent(popup, raw) === node &&
@@ -172,6 +198,7 @@ export function mountSelectionPane(
       allowed();
     const run = () => {
       if (!valid()) return;
+      clearPending(pendingEntry);
       if (active) finish(active, "replace");
       const frame: Frame = {
         popup,
@@ -238,12 +265,16 @@ export function mountSelectionPane(
         label: "Inspect map location",
         run,
         revalidate: valid,
+        cancel: () => clearPending(pendingEntry, true),
       });
     } catch (error) {
+      clearPending(pendingEntry, true);
       report(error);
     }
   };
   const close = (event: PopupEvent) => {
+    const entry = pending.get(event.popup);
+    if (entry) clearPending(entry);
     if (active?.popup === event.popup && allowed())
       finish(active, "popup-close");
   };
@@ -254,6 +285,12 @@ export function mountSelectionPane(
     disposed = true;
     map.off("popupopen", open);
     map.off("popupclose", close);
+    const abandoned: PendingPopup[] = [];
+    map.eachLayer((layer) => {
+      const entry = pending.get(layer as Popup);
+      if (entry) abandoned.push(entry);
+    });
+    for (const entry of abandoned) clearPending(entry, true);
     if (active) finish(active, "dispose");
   };
 }

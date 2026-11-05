@@ -16,7 +16,7 @@ const server = await createServer({
         vite.middlewares.use("/__selection", (_req, res) => {
           res.setHeader("content-type", "text/html");
           res.end(
-            `<!doctype html><html lang="en" data-ui-variant="modern"><head><title>Synthetic selection</title><link rel="stylesheet" href="/node_modules/leaflet/dist/leaflet.css"><style>body{display:flex;gap:12px}#map{width:600px;height:500px}#pane{width:300px;max-height:400px;overflow:auto}#pane button{min-height:44px}.ui-map-selection-source{visibility:hidden;pointer-events:none}</style></head><body><div><button id="origin">Exact marker origin</button><button id="other">Other connected control</button><div id="map" tabindex="0"></div></div><aside id="pane"><p id="previous">Previous task</p></aside></body></html>`,
+            `<!doctype html><html lang="en" data-ui-variant="modern"><head><title>Synthetic selection</title><link rel="stylesheet" href="/node_modules/leaflet/dist/leaflet.css"><style>body{display:flex;gap:12px}#map{width:600px;height:500px}#pane{width:300px;max-height:400px;overflow:auto}#pane button{min-height:44px}.ui-map-selection-source,.ui-map-selection-pending{visibility:hidden;pointer-events:none}</style></head><body><div><button id="origin">Exact marker origin</button><button id="other">Other connected control</button><div id="map" tabindex="0"></div></div><aside id="pane"><p id="previous">Previous task</p></aside></body></html>`,
           );
         });
       },
@@ -223,6 +223,36 @@ try {
         ),
         true,
       );
+      await page.evaluate(() => {
+        selectionFixture.state.held = true;
+        selectionFixture.open();
+      });
+      assert.equal(await page.locator(".ui-map-selection-pending").count(), 1);
+      assert.equal(
+        await page.locator("#original-content").isVisible(),
+        false,
+        "unaccepted original content stays in its hidden Leaflet owner",
+      );
+      assert.equal(
+        await page.evaluate(() =>
+          selectionFixture.node.parentElement.classList.contains(
+            "leaflet-popup-content",
+          ),
+        ),
+        true,
+      );
+      await page.evaluate(() => {
+        selectionFixture.state.pending.cancel();
+        selectionFixture.state.pending = null;
+      });
+      assert.equal(
+        await page.evaluate(() =>
+          selectionFixture.map.hasLayer(selectionFixture.popup),
+        ),
+        false,
+        "Stay cancellation closes only the owned pending popup",
+      );
+      assert.equal(await page.locator(".ui-map-selection-pending").count(), 0);
       // The owner freezes the first request; a rejected second popup must not
       // invalidate that still-live first source or redirect it to the newer node.
       await page.evaluate(() => {
