@@ -402,3 +402,60 @@ footer {
 #studio-recovery {
   scroll-margin-top: 1rem;
 }
+
+/* 071 repository adapter: original forms and save/recovery owners remain intact. */
+html[data-ui-variant="modern"] {
+  --bg: var(--ws-bg);
+  --panel: var(--ws-surface);
+  --field: var(--ws-bg);
+  --text: var(--ws-text);
+  --muted: var(--ws-muted);
+  --line: var(--ws-line);
+  --control-line: var(--ws-line);
+  --accent: var(--ws-accent);
+}
+html[data-ui-variant="modern"] :is(header, main) {
+  min-width: 0;
+}
+html[data-ui-variant="modern"] #workspace {
+  width: min(100%, 90rem);
+  padding: var(--ui-pad);
+}
+html[data-ui-variant="modern"] :is(.panel, fieldset) {
+  min-width: 0;
+  border-radius: var(--ws-radius);
+  background: var(--ws-surface);
+}
+html[data-ui-variant="modern"] :is(input, textarea, select, button) {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+html[data-ui-variant="modern"]
+  :is(input:not([type="checkbox"]), select, button) {
+  min-height: 44px;
+}
+html[data-ui-variant="modern"] :is(label, p, li, summary) {
+  overflow-wrap: anywhere;
+}
+html[data-ui-variant="modern"] .studio-nav {
+  gap: 0.4rem;
+  padding-block: 0.5rem;
+}
+html[data-ui-variant="modern"] .studio-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--ws-line);
+  border-radius: 0.4rem;
+}
+html[data-ui-variant="modern"]
+  :is(#save-status, #workflow-summary, #error, #recovery-help) {
+  max-width: 100%;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+html[data-ui-variant="modern"] #error:focus {
+  outline: 3px solid var(--ws-accent);
+  outline-offset: 3px;
+}
