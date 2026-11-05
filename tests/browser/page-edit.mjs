@@ -61,7 +61,19 @@ export async function openStudioForEvidence(page, action) {
   );
 }
 
+async function waitForModernEvidenceShell(page) {
+  if ((await page.locator("html").getAttribute("data-ui-variant")) !== "modern")
+    return;
+  await page.waitForFunction(
+    () =>
+      document.documentElement.dataset.uiShellMounted === "071-v1" &&
+      document.documentElement.dataset.uiNavigationLayout ===
+        (matchMedia("(max-width:700px)").matches ? "mobile" : "desktop"),
+  );
+}
+
 export async function captureDocumentEvidence(page, path) {
+  await waitForModernEvidenceShell(page);
   await page.evaluate(() => document.fonts.ready);
   const measure = () =>
     page.evaluate(() => ({
@@ -82,6 +94,25 @@ export async function captureDocumentEvidence(page, path) {
         document.documentElement.clientHeight,
       ),
     }));
+  const snapshot = () =>
+    page.evaluate(() => ({
+      width: innerWidth,
+      theme: document.documentElement.dataset.theme,
+      rootFont: getComputedStyle(document.documentElement).fontSize,
+      variant: document.documentElement.dataset.uiVariant,
+      mounted: document.documentElement.dataset.uiShellMounted,
+      navigationLayout: document.documentElement.dataset.uiNavigationLayout,
+      elements: [...document.querySelectorAll("body *")]
+        .slice(0, 10000)
+        .map((node, index) => ({
+          index,
+          tag: node.tagName,
+          id: node.id,
+          className: node.getAttribute("class"),
+          rect: node.getBoundingClientRect().toJSON(),
+        })),
+    }));
+  const beforeLayout = await snapshot();
   const dimensions = await measure();
   assert(dimensions.width > 0 && dimensions.height > 0);
   const tiled = dimensions.width > 32000 || dimensions.height > 32000;
@@ -126,11 +157,46 @@ export async function captureDocumentEvidence(page, path) {
       slices.push({ file, clip });
     }
   }
-  assert.deepEqual(
-    await measure(),
-    dimensions,
-    "Document geometry stays stable across evidence tiles",
-  );
+  try {
+    assert.deepEqual(
+      await measure(),
+      dimensions,
+      "Document geometry stays stable across evidence tiles",
+    );
+  } catch (error) {
+    const afterLayout = await snapshot();
+    const changes = afterLayout.elements
+      .flatMap((after) => {
+        const before = beforeLayout.elements[after.index];
+        if (!before || before.tag !== after.tag || before.id !== after.id)
+          return [];
+        const delta = Object.fromEntries(
+          ["x", "y", "width", "height"].map((key) => [
+            key,
+            after.rect[key] - before.rect[key],
+          ]),
+        );
+        const magnitude = Math.max(...Object.values(delta).map(Math.abs));
+        return magnitude > 0 ? [{ before, after, delta, magnitude }] : [];
+      })
+      .sort((a, b) => b.magnitude - a.magnitude)
+      .slice(0, 20);
+    await writeFile(
+      path.replace(/\.png$/, "-layout-failure.json"),
+      JSON.stringify(
+        {
+          url: page.url(),
+          dimensions,
+          before: { ...beforeLayout, elements: undefined },
+          after: { ...afterLayout, elements: undefined },
+          changedElements: changes,
+        },
+        null,
+        2,
+      ),
+    );
+    throw error;
+  }
   const coveredPixels = slices.reduce(
     (sum, { clip }) => sum + clip.width * clip.height,
     0,
@@ -232,6 +298,7 @@ async function layoutEvidence(page, { prefix, label, captureScreenshots }) {
       }
       for (const width of [1280, 390, 320]) {
         await page.setViewportSize({ width, height: 900 });
+        await waitForModernEvidenceShell(page);
         const overflow = await page.evaluate(() => {
           const outside = (rect) =>
             rect.width > 0 && (rect.left < -1 || rect.right > innerWidth + 1);

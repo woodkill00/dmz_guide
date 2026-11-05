@@ -31,6 +31,7 @@ import { runPageEditTests, captureDocumentEvidence } from "./page-edit.mjs";
 const run = promisify(execFile);
 const project = fileURLToPath(new URL("../../", import.meta.url));
 const excluded = new Set([
+  ".local", // Machine-local captures/worktrees are not synthetic Studio fixtures.
   ".git",
   "node_modules",
   "dist",
@@ -134,7 +135,7 @@ async function prepareMediaScreenshot(page) {
   await page.evaluate(() => window.scrollTo(0, 0));
 }
 
-async function checkStudioThemes(page, { prefix, captureScreenshots }) {
+export async function checkStudioThemes(page, { prefix, captureScreenshots }) {
   const assertTheme = async (theme) => {
     await page.waitForFunction(
       (expected) => document.documentElement.dataset.theme === expected,
@@ -142,7 +143,7 @@ async function checkStudioThemes(page, { prefix, captureScreenshots }) {
     );
     assert.equal(
       await page.locator("#theme-toggle").getAttribute("aria-label"),
-      `Switch to ${theme === "dark" ? "light" : "dark"} theme`,
+      `${theme === "dark" ? "Light" : "Dark"} mode \u2014 switch theme`,
     );
     const contrast = await page.locator("#pack-select").evaluate((element) => {
       const style = getComputedStyle(element);
