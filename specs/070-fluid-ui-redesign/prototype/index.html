@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>DMZ Guide — interface concept</title>
+    <link rel="stylesheet" href="concept.css" />
+  </head>
+  <body>
+    <a class="skip" href="#content">Skip to workspace</a>
+    <div class="concept-note" role="region" aria-label="Design concept notice">
+      DESIGN CONCEPT · All map geometry, records and quantities below are
+      synthetic. Nothing is saved or connected to your profile.
+    </div>
+    <header class="shell">
+      <a class="brand" href="#home"
+        ><span class="brand-mark" aria-hidden="true">D</span
+        ><span>DMZ<span class="brand-sub">FIELD GUIDE</span></span></a
+      ><button id="mobile-nav" aria-controls="global-nav" aria-expanded="false">
+        Sections
+      </button>
+      <nav id="global-nav" aria-label="Main sections">
+        <a href="#home">Home</a><a href="#map">Map</a
+        ><a href="#guide">DMZ Guide</a><a href="#fob">DMZ FOB</a
+        ><a href="#weapons">DMZ Weapons</a>
+      </nav>
+      <div class="utilities">
+        <button id="global-search">Search</button>
+        <details id="utility-menu" class="utility-menu">
+          <summary>Tools</summary>
+          <div class="utility-body">
+            <button id="density" aria-pressed="false">Compact</button
+            ><button id="theme" aria-pressed="false">Light</button
+            ><a
+              href="http://127.0.0.1:4173/sitemap/"
+              target="_blank"
+              rel="noopener"
+              >Current site map ↗</a
+            >
+          </div>
+        </details>
+      </div>
+    </header>
+    <main id="content" tabindex="-1">
+      <section id="home-view" class="view home">
+        <div class="page-title">
+          <div>
+            <p class="eyebrow">YOUR FIELD DESK</p>
+            <h1>A clear path to your next run.</h1>
+            <p class="muted">One place to prepare. More room to focus.</p>
+          </div>
+          <a class="primary action" href="#map"
+            >Open map <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="hub-grid">
+          <a class="hub" href="#map"
+            ><span class="number">01 / EXPLORE</span>
+            <h2>Map</h2>
+            <p>Find locations, choose layers and plan a route.</p>
+            <span>Explore workspace →</span></a
+          ><a class="hub" href="#guide"
+            ><span class="number">02 / DISCOVER</span>
+            <h2>DMZ Guide</h2>
+            <p>Missions, keys and connected field reference.</p>
+            <span>Browse guide →</span></a
+          ><a class="hub" href="#fob"
+            ><span class="number">03 / PREPARE</span>
+            <h2>DMZ FOB</h2>
+            <p>Upgrades, inventory and your next collection needs.</p>
+            <span>Prepare workspace →</span></a
+          ><a class="hub" href="#weapons"
+            ><span class="number">04 / BUILD</span>
+            <h2>DMZ Weapons</h2>
+            <p>A focused roster with details and evidence in context.</p>
+            <span>Open armory →</span></a
+          >
+        </div>
+        <div class="home-secondary">
+          <article class="surface">
+            <p class="eyebrow">CONTINUE</p>
+            <h2>Your last task, one step away.</h2>
+            <p class="muted">
+              Recent work and pins would appear here. This concept does not read
+              your saved activity.
+            </p>
+            <a href="#fob">Try the compact list concept →</a>
+          </article>
+          <article class="surface">
+            <p class="eyebrow">THE CHANGE</p>
+            <h2>Less interface. More workspace.</h2>
+            <p class="muted">
+              One task pane. Quiet feedback. Stable selections. Readable lists.
+            </p>
+            <a href="http://127.0.0.1:4173/" target="_blank" rel="noopener"
+              >Open the current guide in a new tab ↗</a
+            >
+          </article>
+        </div>
+      </section>
+      <section
+        id="map-view"
+        class="view map-view"
+        hidden
+        aria-labelledby="map-title"
+      >
+        <div class="contextbar">
+          <div>
+            <span class="crumb">Map /</span>
+            <h1 id="map-title">Field workspace</h1>
+          </div>
+          <nav aria-label="Map tasks">
+            <button data-task="layers" aria-pressed="true">Layers</button
+            ><button data-task="search" aria-pressed="false">Find</button
+            ><button data-task="route" aria-pressed="false">Route</button>
+          </nav>
+          <button id="focus-map" aria-pressed="false">Focus map</button>
+        </div>
+        <div class="map-layout">
+          <aside id="task-pane" class="task-pane" aria-label="Map task">
+            <header class="pane-heading">
+              <h2 id="task-title">Layers</h2>
+              <button id="sheet-size" aria-expanded="true">
+                Minimize panel
+              </button>
+            </header>
+            <div id="task-body" class="pane-body"></div>
+            <div class="pane-status" id="task-status" role="status">
+              Illustrative controls · session only
+            </div>
+          </aside>
+          <div class="map-stage">
+            <div
+              class="canvas"
+              tabindex="0"
+              role="region"
+              aria-label="Illustrative map, not Hajin"
+            >
+              <svg
+                class="terrain"
+                viewBox="0 0 1000 700"
+                preserveAspectRatio="xMidYMid slice"
+                role="img"
+                aria-label="Synthetic street grid showing the proposed map space"
+              >
+                <defs>
+                  <pattern
+                    id="blocks"
+                    width="95"
+                    height="80"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <rect
+                      x="10"
+                      y="10"
+                      width="64"
+                      height="49"
+                      rx="5"
+                      fill="#263b37"
+                    />
+                    <path
+                      d="M0 70H95M84 0V80"
+                      stroke="#4b625a"
+                      stroke-width="3"
+                    />
+                  </pattern>
+                  <pattern
+                    id="grid"
+                    width="100"
+                    height="100"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <path
+                      d="M100 0H0V100"
+                      fill="none"
+                      stroke="#c2d2b8"
+                      stroke-opacity=".12"
+                    />
+                  </pattern>
+                </defs>
+                <rect width="1000" height="700" fill="#162a27" />
+                <rect
+                  x="70"
+                  y="70"
+                  width="800"
+                  height="550"
+                  fill="url(#blocks)"
+                />
+                <path
+                  d="M-50 590Q300 290 460 440T1050 100"
+                  fill="none"
+                  stroke="#2c5056"
+                  stroke-width="58"
+                />
+                <path
+                  d="M100 0 350 300 760 430 1000 700"
+                  fill="none"
+                  stroke="#a8ae8b"
+                  stroke-opacity=".55"
+                  stroke-width="10"
+                />
+                <path
+                  d="M150 600 320 400 600 260 820 180"
+                  fill="none"
+                  stroke="#9ac8b5"
+                  stroke-width="4"
+                  stroke-dasharray="9 8"
+                />
+                <rect width="1000" height="700" fill="url(#grid)" /></svg
+              ><span class="map-label">ILLUSTRATIVE GRID · NOT GAME DATA</span
+              ><button
+                id="marker-a"
+                class="map-pin pin-a"
+                data-record="Reference A"
+                aria-label="Inspect synthetic Reference A"
+              >
+                A</button
+              ><button
+                id="marker-b"
+                class="map-pin pin-b"
+                data-record="Reference B"
+                aria-label="Inspect synthetic Reference B"
+              >
+                B
+              </button>
+              <div
+                class="camera"
+                role="group"
+                aria-label="Concept camera controls"
+              >
+                <button id="zoom-in" aria-label="Enlarge illustrative grid">
+                  +</button
+                ><button id="zoom-out" aria-label="Reduce illustrative grid">
+                  −
+                </button>
+              </div>
+              <span class="attribution"
+                >Synthetic geometry · production keeps source attribution</span
+              >
+            </div>
+            <div class="route-slot" aria-label="Synthetic route progress">
+              <div>
+                <span class="eyebrow">MANUAL ROUTE · DEMO</span
+                ><strong id="next-stop">Next: Reference A</strong
+                ><small id="route-progress">0 / 3 · manual</small>
+              </div>
+              <div class="route-actions">
+                <button id="open-route" aria-label="Open route">
+                  <span class="wide-label">Open route</span
+                  ><span class="narrow-label">Route</span></button
+                ><button
+                  id="mark-reached"
+                  class="primary"
+                  aria-label="Mark reached"
+                >
+                  <span class="wide-label">Mark reached</span
+                  ><span class="narrow-label">Reached</span></button
+                ><button
+                  id="route-minimize"
+                  aria-expanded="true"
+                  aria-label="Minimize route"
+                >
+                  <span class="wide-label">Minimize route</span
+                  ><span class="narrow-label">Minimize</span>
+                </button>
+              </div>
+              <button id="route-restore" hidden>Restore route</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="directory-view" class="view directory" hidden>
+        <div class="page-title">
+          <div>
+            <p class="eyebrow" id="directory-context">DMZ FOB / UPGRADES</p>
+            <h1 id="directory-title">Your next progression.</h1>
+            <p class="muted">
+              Compact rows. Requirements when needed. Clearly labeled evidence.
+            </p>
+          </div>
+          <span class="badge">Synthetic examples</span>
+        </div>
+        <div class="surface">
+          <div class="directory-tools">
+            <label
+              >Find a record<input
+                id="record-search"
+                type="search"
+                placeholder="Search synthetic records" /></label
+            ><label
+              >Show<select id="record-filter">
+                <option value="all">All examples</option>
+                <option value="needed">Still needed</option>
+              </select></label
+            ><span id="result-count" role="status">3 example rows</span>
+          </div>
+          <div
+            class="table-wrap"
+            role="region"
+            aria-label="Synthetic records"
+            tabindex="0"
+          >
+            <table>
+              <caption id="table-caption">
+                Illustrative upgrade families, not game requirements
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Record / current stage</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Needed next</th>
+                  <th scope="col">Details</th>
+                </tr>
+              </thead>
+              <tbody id="records"></tbody>
+            </table>
+          </div>
+          <p id="empty-results" hidden>
+            No matching examples. Clear the search or change the filter.
+          </p>
+          <div id="record-feedback" class="inline-status" role="status">
+            Changes here are presentation examples and are not saved.
+          </div>
+        </div>
+        <div class="principle-strip">
+          <span>Sticky headings</span><span>Inline progress</span
+          ><span>Native disclosures</span
+          ><span>Real detail URLs in production</span>
+        </div>
+      </section>
+    </main>
+    <footer class="concept-footer">
+      <span>Proposal 070 · calm, compact, consistent</span
+      ><span>Not the production app · no data writes</span>
+    </footer>
+    <noscript
+      ><p>
+        This isolated interaction concept needs JavaScript. The production
+        redesign plan retains no-JavaScript reference browsing.
+      </p></noscript
+    >
+    <script src="concept.js"></script>
+  </body>
+</html>

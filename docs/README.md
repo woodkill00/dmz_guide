@@ -33,6 +33,7 @@
 - [Roundtable delivery ledger](roundtable-delivery.md): accepted workpackages, exact test and merge receipts, conditional decisions and documented limits.
 
 ## Product planning, not implementation claims
+- [Fluid UI/UX redesign proposal](ui-ux-redesign.md): current audit, researched design direction, multi-agent roundtable, interactive synthetic concept and phased implementation gates.
 - [Roadmap](roadmap.md), [decision summary](../decision-summary.md), [overview](../EXECUTIVE-OVERVIEW.md).
 - [Foundation specification](../specs/001-guide-foundation/spec.md), [plan](../specs/001-guide-foundation/plan.md), [acceptance](../specs/001-guide-foundation/acceptance.md).
 - [Architecture decisions](adr/decisions.md), [page inventory](page-inventory.md), [evidence/coverage](evidence-and-content-coverage.md).
