@@ -1,3 +1,6 @@
+import { createHash } from "node:crypto";
+import { hajin } from "../src/map/hajin.ts";
+import { sourcePolicies } from "../src/workspace/policy.ts";
 import AxeBuilder from "@axe-core/playwright";
 import { mkdir } from "node:fs/promises";
 // Synthetic map/markers only, no provider requests or owner-local assets.
@@ -5,7 +8,7 @@ import { createServer } from "vite";
 import { chromium, firefox, webkit } from "playwright";
 import assert from "node:assert/strict";
 const server = await createServer({
-  define: { "import.meta.env.VITE_LOCAL_PROVIDER_SNAPSHOTS": '"0"' },
+  define: { "import.meta.env.VITE_LOCAL_PROVIDER_SNAPSHOTS": '"1"' },
   server: { host: "127.0.0.1", port: 5282, strictPort: true, hmr: false },
 });
 await server.listen();
@@ -82,6 +85,68 @@ try {
         }),
       );
 
+      const providerSnapshot = JSON.stringify({
+        schemaVersion: 1,
+        sourcePage: sourcePolicies.codmunity.page,
+        capturedAt: "2026-10-26T00:00:00Z",
+        synthetic: true,
+        categories: [
+          {
+            id: "provider-stations",
+            name: "Synthetic stations",
+            group: "Facilities",
+            icon: "/maps/hajin/providers/codmunity/icons/synthetic.png",
+          },
+        ],
+        records: [
+          {
+            id: "provider-one",
+            name: "Synthetic provider location",
+            category: "provider-stations",
+            mapId: "hajin",
+            coordinateSpaceVersion: hajin.coordinateSpaceVersion,
+            x: 0.9,
+            y: 0.9,
+          },
+        ],
+      });
+      const digest = (text) => createHash("sha256").update(text).digest("hex");
+      const evidence = JSON.stringify({
+        snapshotDigest: digest(providerSnapshot),
+        registrationVersion: "reviewed-affine-v1",
+        registration: { canonicalDigest: hajin.provenance.sha256 },
+      });
+      await context.route("**/providers.local.json", (r) =>
+        r.fulfill({
+          json: {
+            version: 1,
+            sources: [
+              {
+                id: "codmunity",
+                authorization: "Synthetic authorized fixture",
+                canonicalDigest: hajin.provenance.sha256,
+                rms: 1,
+                maxError: 2,
+                heldOut: 3,
+                snapshotDigest: digest(providerSnapshot),
+                registrationDigest: digest(evidence),
+              },
+            ],
+          },
+        }),
+      );
+      await context.route("**/current-captures.local.json", (r) =>
+        r.fulfill({ status: 404, body: "Synthetic no current captures" }),
+      );
+      await context.route("**/providers/codmunity/markers.json", (r) =>
+        r.fulfill({ contentType: "application/json", body: providerSnapshot }),
+      );
+      await context.route("**/providers/codmunity/provenance.local.json", (r) =>
+        r.fulfill({ contentType: "application/json", body: evidence }),
+      );
+      await context.route("**/providers/codmunity/icons/*", (r) =>
+        r.fulfill({ contentType: "image/png", body: image }),
+      );
       await page.goto("http://127.0.0.1:5282/");
       await page.locator("#workspace-open:enabled").waitFor();
       await page.locator('[data-official-id="synthetic-one"]').waitFor();
@@ -94,6 +159,59 @@ try {
       );
       assert.equal(await source.evaluate((n) => n.open), false);
       await source.locator(":scope > summary").click();
+      const otherSource = page.locator(
+        'details[data-menu-section="source-codmunity"]',
+      );
+      await otherSource.locator(":scope > summary").click();
+      await page.locator('[data-source-id="codmunity"]').waitFor();
+      assert((await source.locator(".category-sublist").count()) > 0);
+      assert((await combined.locator(".category-sublist").count()) > 0);
+      const otherCategory = otherSource.locator(
+        '[data-key-category="provider-stations"]',
+      );
+      await source.locator("#key-section-official-hide").focus();
+      await page.keyboard.press("Space");
+      await page.waitForFunction(
+        () => !document.querySelector('[data-official-id="synthetic-one"]'),
+      );
+      assert(
+        await otherCategory.isChecked(),
+        "site bulk leaves other source unchanged",
+      );
+      assert((await page.locator('[data-source-id="codmunity"]').count()) > 0);
+      assert.equal(
+        await source
+          .locator("#key-section-official-hide")
+          .evaluate((n) => n === document.activeElement),
+        true,
+      );
+      await source.locator("#key-section-official-show").click();
+      await page.locator('[data-official-id="synthetic-one"]').waitFor();
+      await otherSource.locator("#key-section-codmunity-hide").click();
+      assert(
+        (await page.locator('[data-official-id="synthetic-one"]').count()) > 0,
+      );
+      await otherSource.locator("#key-section-codmunity-show").click();
+      await combined.locator("#key-section-combined-hide").click();
+      await page.waitForFunction(
+        () =>
+          !document.querySelector('[data-official-id="synthetic-one"]') &&
+          !document.querySelector('[data-source-id="codmunity"]'),
+      );
+      await combined.locator("#key-section-combined-show").click();
+      await page.locator('[data-official-id="synthetic-one"]').waitFor();
+      await page.locator('[data-source-id="codmunity"]').waitFor();
+      assert(await page.locator("#key-section-codcentral-show").isDisabled());
+      const facilities = source.locator(".category-sublist");
+      await facilities.locator(":scope > summary").click();
+      await source.locator("#key-section-official-hide").click();
+      assert.equal(
+        await facilities.evaluate((n) => n.open),
+        false,
+        "sublist stays collapsed after bulk",
+      );
+      await source.locator("#key-section-official-show").click();
+      await facilities.locator(":scope > summary").click();
       const category = source.locator('[data-key-category="dmz_gasStation"]');
       assert(await category.isChecked());
       await combined.locator("input").first().focus();
@@ -354,6 +472,138 @@ try {
           }
         }
       }
+      // Retained snapshot categories stay in their website, with the same bulk semantics.
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      await page.evaluate(() => {
+        document.documentElement.style.fontSize = "100%";
+      });
+      await page.locator("#workspace-open").click();
+      await page.locator("#workspace-tab-sources").click();
+      await page.locator("#preview-loaded-official").click();
+      await page
+        .getByLabel(
+          "I reviewed the exact official frame identity and want to accept that registration.",
+        )
+        .check();
+      await page.locator("#commit-snapshot").click();
+      await page.waitForFunction(
+        () =>
+          document.querySelector("#workspace-message")?.textContent ===
+          "Snapshot imported",
+      );
+      await page.locator("#close-workspace").click();
+      await page.locator("#toggle-key").click();
+      if (!(await source.evaluate((n) => n.open)))
+        await source.locator(":scope > summary").click();
+      assert.equal(await source.locator(".snapshot-category-list").count(), 1);
+      assert.equal(
+        await page
+          .locator(
+            '#workspace-key-layers fieldset[data-snapshot-source="official"]',
+          )
+          .count(),
+        0,
+      );
+      await source.locator("#key-section-official-hide").click();
+      await page.waitForFunction(
+        () =>
+          document.querySelector("#key-source-category-official-dmz_gasStation")
+            ?.checked === false,
+      );
+      assert(await otherCategory.isChecked());
+      await page.waitForFunction(() =>
+        document
+          .querySelector("#workspace-toast")
+          ?.textContent?.endsWith("categories hidden"),
+      );
+      await page.reload();
+      await page.locator("#workspace-open:enabled").waitFor();
+      await page
+        .locator("#key-source-category-official-dmz_gasStation")
+        .waitFor({ state: "attached" });
+      assert.equal(
+        await source
+          .locator("#key-source-category-official-dmz_gasStation")
+          .isChecked(),
+        false,
+      );
+      assert(await otherCategory.isChecked());
+      await source.locator(":scope > summary").click();
+      await source.locator("#key-section-official-show").click();
+      await page.waitForFunction(
+        () =>
+          document.querySelector("#key-source-category-official-dmz_gasStation")
+            ?.checked === true,
+      );
+      // Bulk on a subset snapshot must preserve a hidden category unique to the older snapshot.
+      const olderSnapshot = await source
+        .locator("#key-source-snapshot-official")
+        .inputValue();
+      await source
+        .locator("#key-source-category-official-synthetic-other")
+        .uncheck();
+      const subset = await page.evaluate(async () => {
+        const { openWorkspace } = await import("/src/workspace/store.ts");
+        const store = await openWorkspace();
+        try {
+          const state = (await store.read()).current.data;
+          const snapshot = structuredClone(
+            state.snapshots
+              .filter((e) => e.snapshot.sourceId === "official")
+              .at(-1).snapshot,
+          );
+          snapshot.snapshotId = "synthetic-069-subset";
+          snapshot.categories = snapshot.categories.filter(
+            (c) => c.id === "dmz_gasStation",
+          );
+          snapshot.records = snapshot.records.filter(
+            (r) => r.categoryId === "dmz_gasStation",
+          );
+          return snapshot;
+        } finally {
+          store.close();
+        }
+      });
+      await page.locator("#workspace-open").click();
+      await page.locator("#workspace-tab-sources").click();
+      await page
+        .locator("#snapshot-file")
+        .setInputFiles({
+          name: "synthetic-subset.json",
+          mimeType: "application/json",
+          buffer: Buffer.from(JSON.stringify(subset)),
+        });
+      await page.locator("#preview-snapshot").click();
+      await page
+        .getByLabel(
+          "I reviewed the exact official frame identity and want to accept that registration.",
+        )
+        .check();
+      await page.locator("#commit-snapshot").click();
+      await page.waitForFunction(
+        () =>
+          document.querySelector("#workspace-message")?.textContent ===
+          "Snapshot imported",
+      );
+      await page.locator("#close-workspace").click();
+      await source.locator("#key-section-official-hide").click();
+      await source.locator("#key-section-official-show").click();
+      await source
+        .locator("#key-source-snapshot-official")
+        .selectOption(olderSnapshot);
+      await page.waitForFunction(
+        () =>
+          document.querySelector(
+            "#key-source-category-official-synthetic-other",
+          )?.checked === false,
+      );
+      assert.equal(
+        await source
+          .locator("#key-source-category-official-synthetic-other")
+          .isChecked(),
+        false,
+      );
+      assert(await otherCategory.isChecked());
       assert.deepEqual(errors, []);
       console.log(
         name +

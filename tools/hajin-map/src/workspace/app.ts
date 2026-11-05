@@ -2046,6 +2046,7 @@ export function mountWorkspace(
           entry = entries.find((e) => e.key === selected) ?? entries.at(-1)!;
         if (entry.legacy) continue;
         const group = el("fieldset");
+        group.dataset.snapshotSource = policy.id;
         const legend = el("legend");
         const sourceLink = el("a", policy.name);
         sourceLink.href = policy.page;
@@ -2283,12 +2284,35 @@ export function mountWorkspace(
       if(!entry.members.some(m=>m.sourceId===sourceId&&m.categoryId===categoryId)) entry.members.push({sourceId,categoryId});
       categories.set(key,entry);
     };
-    for(const source of legacy) for(const c of source.getSnapshot()?.categories ?? []) addCategory(source.id,c.id,c.name);
+    for(const source of legacy){
+      const entries=state.snapshots.filter(e=>e.snapshot.sourceId===source.id);
+      const selected=entries.find(e=>e.key===selectedSnapshots.get(source.id))??entries.at(-1);
+      if(selected&&!selected.legacy)continue;
+      for(const c of source.getSnapshot()?.categories??[])addCategory(source.id,c.id,c.name);
+    }
     for(const policy of Object.values(sourcePolicies)) {
       const entries=state.snapshots.filter(e=>e.snapshot.sourceId===policy.id);
       const entry=entries.find(e=>e.key===selectedSnapshots.get(policy.id)) ?? entries.at(-1);
       if(entry&&!entry.legacy) for(const c of entry.snapshot.categories) addCategory(policy.id,c.id,c.path.join(" / "));
     }
+    const sectionBulk = (id:string, label:string, members:{sourceId:string;categoryId:string}[]) => {
+      const bulk=el('div',undefined,'layer-bulk section-layer-bulk');
+      for(const [text,show] of [['Show all',true],['Hide all',false]] as const){
+        const action=button(text,()=>changeVisibility(`${label} categories ${show?'shown':'hidden'}`,value=>{
+          const sources=new Map<string,string[]>();
+          for(const member of members){const ids=sources.get(member.sourceId)??[];ids.push(member.categoryId);sources.set(member.sourceId,ids);}
+          for(const [sourceId,ids] of sources){
+            value.categoryMask[sourceId]={...value.categoryMask[sourceId],...Object.fromEntries(ids.map(id=>[id,show]))};
+            if(show)value.sourceEnabled[sourceId]=true;
+          }
+        }),`key-section-${id}-${show?'show':'hide'}`);
+        action.setAttribute('aria-label',`${text} ${label} categories`);
+        action.disabled=members.length===0;bulk.append(action);
+      }
+      return bulk;
+    };
+    combined.append(sectionBulk('combined','combined',[...categories.values()].flatMap(c=>c.members)));
+    const combinedList=el('details');combinedList.dataset.menuSection='combined-list';combinedList.className='category-sublist';combinedList.append(el('summary',`Categories (${categories.size})`));combined.append(combinedList);
     for(const [key, category] of [...categories].sort((a,b)=>a[1].name.localeCompare(b[1].name))) {
       const check=input("","checkbox");
       check.dataset.combinedCategory=key;
@@ -2299,7 +2323,7 @@ export function mountWorkspace(
       check.addEventListener("change",()=>{const show=check.checked;void changeVisibility("Combined categories saved",value=>{
         for(const m of category.members){value.categoryMask[m.sourceId]??={};value.categoryMask[m.sourceId][m.categoryId]=show;if(show)value.sourceEnabled[m.sourceId]=true;}
       }).catch(error);});
-      combined.append(field(`${category.name} · ${category.members.length} source categories`,check));
+      combinedList.append(field(`${category.name} · ${category.members.length} source categories`,check));
     }
     if(!categories.size) combined.append(note("No captured categories available."));
     keyPane.prepend(combined);
@@ -2320,11 +2344,27 @@ export function mountWorkspace(
     let review=keyPane.querySelector<HTMLDetailsElement>('details[data-menu-section="comparison"]');
     if(!review){review=el('details');review.dataset.menuSection='comparison';review.append(el('summary','Duplicate comparison'));}
     review.append(sourceOverview);combined.after(review);
-    for(const group of extras.querySelectorAll<HTMLElement>(":scope > fieldset")) {
-      const title=group.querySelector("legend")?.textContent ?? "Source categories";
-      const wrapper=el("details");wrapper.dataset.menuSection=`snapshot-${title}`;wrapper.append(el("summary",title));group.before(wrapper);wrapper.append(group);
+    keyPane.querySelectorAll(':scope > details[data-menu-section^="source-"] > .snapshot-category-list').forEach(node=>node.remove());
+    keyPane.querySelectorAll<HTMLElement>(':scope > details[data-menu-section^="source-"] > .workspace-provider-card').forEach(node=>{node.hidden=false;});
+    for(const group of extras.querySelectorAll<HTMLElement>(":scope > fieldset[data-snapshot-source]")) {
+      const id=group.dataset.snapshotSource!;
+      let wrapper=keyPane.querySelector<HTMLDetailsElement>(`details[data-menu-section="source-${id}"]`);
+      if(!wrapper){wrapper=el('details');wrapper.dataset.menuSection=`source-${id}`;wrapper.append(el('summary',sourcePolicies[id]?.name??id));keyPane.append(wrapper);}
+      wrapper.querySelector(':scope > .snapshot-category-list')?.remove();
+      const list=el('details');list.dataset.menuSection=`snapshot-categories-${id}`;list.className='category-sublist snapshot-category-list';list.append(el('summary','Snapshot categories'),group);wrapper.append(list);
+      const placeholder=wrapper.querySelector<HTMLElement>(':scope > .workspace-provider-card');if(placeholder)placeholder.hidden=true;
     }
-    for(const node of keyPane.querySelectorAll<HTMLDetailsElement>("details[data-menu-section]")) node.open=disclosureState.get(node.dataset.menuSection!) ?? false;
+    for(const wrapper of keyPane.querySelectorAll<HTMLDetailsElement>('details[data-menu-section^="source-"]')) {
+      const id=wrapper.dataset.menuSection!.slice('source-'.length);
+      wrapper.querySelector(':scope > .section-layer-bulk')?.remove();
+      const members=[...categories.values()].flatMap(c=>c.members).filter(m=>m.sourceId===id);
+      wrapper.querySelector('summary')!.after(sectionBulk(id,sourcePolicies[id]?.name??id,members));
+      for(const group of wrapper.querySelectorAll<HTMLElement>('.key-source > fieldset')) {
+        const name=group.querySelector('legend')?.textContent??'Categories';
+        const list=el('details');list.className='category-sublist';list.dataset.menuSection=`categories-${id}-${name}`;list.append(el('summary',name));group.before(list);list.append(group);
+      }
+    }
+    for(const node of keyPane.querySelectorAll<HTMLDetailsElement>("details[data-menu-section]")) node.open=disclosureState.get(node.dataset.menuSection!) ?? node.classList.contains('category-sublist');
     keyPane.scrollTop=keyScroll;
     if (focused) {
       const next = document.getElementById(focused.id);

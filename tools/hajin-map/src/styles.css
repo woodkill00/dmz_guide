@@ -193,3 +193,11 @@ body.map-page{height:100dvh;display:flex;flex-direction:column}body.map-page>#ap
 @media(max-width:760px){.map-selection-inspector{left:auto;right:8px;inline-size:min(280px,calc(100% - 16px));max-block-size:30dvh}}
 
 .map-marker-popup{max-height:min(340px,calc(100dvh - 180px),var(--popup-available-height,340px))}
+
+/* Section-scoped layer actions and category sublists (069). */
+#map-key-content .section-layer-bulk{display:flex;gap:6px;padding:4px 8px 8px;margin:0}
+#map-key-content .section-layer-bulk button{flex:1;min-height:36px;min-width:0;font-size:11px}
+#map-key-content .category-sublist{margin:4px 8px 8px;border-color:#6c7c5544}
+#map-key-content .category-sublist>summary{font-size:11px;padding:8px;min-height:36px}
+#map-key-content .category-sublist>.workspace-field{margin:0;padding:6px 8px;font-size:11px}
+#map-key-content .category-sublist>fieldset{margin:0;padding:0 8px 8px;border:0}
