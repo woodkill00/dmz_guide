@@ -117,8 +117,15 @@ try {
           },
           onClose: (reason) => state.closes.push(reason),
         });
+        const functional=L.popup({autoPan:false,autoClose:false,closeOnClick:false}).setLatLng([2,2]).setContent(()=>{
+          state.factoryCalls=(state.factoryCalls??0)+1;
+          const content=document.createElement('section');content.id='function-content';
+          const action=document.createElement('button');action.id='function-action';action.textContent='Functional source action';action.onclick=()=>state.functionHits=(state.functionHits??0)+1;
+          content.append(action);return content;
+        });
         window.selectionFixture = {
           map,
+          functional,
           state,
           popup,
           next,
@@ -297,6 +304,16 @@ try {
         selectionFixture.map.closePopup(selectionFixture.next),
       );
       assert.equal(await page.locator("#pane #next-content").count(), 0);
+      await page.evaluate(()=>selectionFixture.functional.openOn(selectionFixture.map));
+      assert.equal(await page.locator('#pane #function-content').count(),1);
+      assert.equal(await page.evaluate(()=>selectionFixture.state.factoryCalls),1,"adapter never invokes the source factory again");
+      await page.locator('#function-action').click();
+      assert.equal(await page.evaluate(()=>selectionFixture.state.functionHits),1);
+      await page.locator('#function-content').evaluate(node=>window.__functionIdentity=node);
+      await page.evaluate(()=>{document.querySelector('#map').style.height='450px';selectionFixture.map.invalidateSize({pan:false,animate:false});document.querySelector('#map').style.height='500px';selectionFixture.map.invalidateSize({pan:false,animate:false});});
+      assert.equal(await page.evaluate(()=>document.querySelector('#pane #function-content')===window.__functionIdentity),true);
+      assert.equal(await page.evaluate(()=>selectionFixture.state.factoryCalls),1);
+      await page.locator('#selection-back').click();
       await page.evaluate(() => {
         selectionFixture.open();
         selectionFixture.cleanup();
