@@ -127,3 +127,25 @@ html[data-ui-variant="modern"]
   align-items: center;
   gap: 0.5rem;
 }
+
+/* Live workspaces retain their domain-owned rows, paging and density controls. */
+html[data-ui-variant="modern"] [data-ui-directory-layout="live"] {
+  --ui-directory-columns: 4;
+}
+html[data-ui-variant="modern"]
+  [data-ui-directory-layout="live"]
+  :is(.inventory-name, .upgrade-summary > div, .collection-card) {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+html[data-ui-variant="modern"]
+  [data-ui-directory-layout="live"]:not(.comfortable)
+  .inventory-group {
+  margin-block: 0.5rem;
+}
+html[data-ui-variant="modern"]
+  .upgrade-list-shell[data-density="compact"]
+  [data-ui-directory-layout="live"]
+  .compact-progress {
+  padding: clamp(0.5rem, calc(0.35rem + 0.3vw), 0.75rem);
+}

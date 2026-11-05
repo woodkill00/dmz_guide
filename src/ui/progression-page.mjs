@@ -92,5 +92,11 @@ export function featurePages(packs) {
         "DMZ Orders and story missions are shown here. Upgrades and campaign remain separate.",
       ),
   };
-  return [...pages, focused, missions];
+  return [...pages, focused, missions].map((page) => ({
+    ...page,
+    body: page.body.replace(
+      '<div id="progress-rows"></div>',
+      '<div id="progress-rows" data-ui-directory data-ui-directory-layout="live" data-ui-directory-pagination="false"></div>',
+    ),
+  }));
 }

@@ -90,7 +90,7 @@ export function renderKeyDirectory() {
       const uses = keyAccess.uses
         .filter((u) => u.groupId === g.id)
         .sort((a, b) => byKey(a.keyId).name.localeCompare(byKey(b.keyId).name));
-      return `<details class="key-location-group" data-key-group="${g.id}" open><summary>${e(g.name)} <span data-group-count>(${new Set(uses.map((u) => u.keyId)).size} ${new Set(uses.map((u) => u.keyId)).size === 1 ? "key" : "keys"})</span></summary><div class="armory-table-wrap" role="region" aria-label="${e(g.name)} keys" tabindex="0"><table class="armory-table key-directory"><thead><tr><th scope="col">Key</th><th scope="col">Where to use / grid</th><th scope="col">Access keys needed first</th><th scope="col">How to get</th></tr></thead><tbody>${uses
+      return `<details class="key-location-group" data-ui-directory data-ui-directory-layout="live" data-ui-directory-pagination="false" data-key-group="${g.id}" open><summary>${e(g.name)} <span data-group-count>(${new Set(uses.map((u) => u.keyId)).size} ${new Set(uses.map((u) => u.keyId)).size === 1 ? "key" : "keys"})</span></summary><div class="armory-table-wrap" data-ui-directory-scroll role="region" aria-label="${e(g.name)} keys" tabindex="0"><table class="armory-table key-directory"><thead><tr><th scope="col">Key</th><th scope="col">Where to use / grid</th><th scope="col">Access keys needed first</th><th scope="col">How to get</th></tr></thead><tbody>${uses
         .map((u) => {
           const k = byKey(u.keyId),
             search = [
