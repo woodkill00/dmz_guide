@@ -453,6 +453,21 @@ const summaries = fixtures.flatMap((f) =>
       inputTwoFrameMs: group
         .filter((r) => r.input)
         .map((r) => r.input.twoFrameMs),
+      ownerFullCounts: group.map((r) => r.input?.initialFilter?.total ?? null),
+      completedFilterMedianMs:
+        group[0]?.input?.completedFilterMs === null
+          ? null
+          : quantile(
+              group.map((r) => r.input.completedFilterMs),
+              0.5,
+            ),
+      completedFilterP95Ms:
+        group[0]?.input?.completedFilterMs === null
+          ? null
+          : quantile(
+              group.map((r) => r.input.completedFilterMs),
+              0.95,
+            ),
     };
   }),
 );
@@ -501,7 +516,9 @@ try {
         (p) =>
           p.fixture === group.fixture &&
           p.viewport === group.viewport &&
-          p.samples === 20,
+          p.samples === 20 &&
+          JSON.stringify(p.ownerFullCounts) ===
+            JSON.stringify(group.ownerFullCounts),
       ),
     );
   if (matching) {
@@ -516,6 +533,19 @@ try {
         viewport: current.viewport,
         medianRatio: current.readyMedianMs / old.readyMedianMs,
         p95Ratio: current.readyP95Ms / old.readyP95Ms,
+        completedFilterMedianRatio:
+          old.completedFilterMedianMs === null
+            ? null
+            : current.completedFilterMedianMs / old.completedFilterMedianMs,
+        completedFilterP95Ratio:
+          old.completedFilterP95Ms === null
+            ? null
+            : current.completedFilterP95Ms / old.completedFilterP95Ms,
+        completedFilterRequiresInvestigation:
+          old.completedFilterMedianMs !== null &&
+          (current.completedFilterMedianMs >
+            old.completedFilterMedianMs * 1.1 ||
+            current.completedFilterP95Ms > old.completedFilterP95Ms * 1.1),
         baselineDom: old.initialDom,
         modernDom: current.initialDom,
         requiresInvestigation:
