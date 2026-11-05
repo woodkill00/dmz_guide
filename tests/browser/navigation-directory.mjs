@@ -24,7 +24,16 @@ export async function runNavigationDirectoryTests({
       await page.locator(".item-row:visible").count(),
       await page.locator(".item-row").count(),
     );
-    const directoryGroups = await page
+    const modern =
+      (await page.locator("html").getAttribute("data-ui-variant")) === "modern";
+    const fullModel = modern ? await context.newPage() : page;
+    if (modern) {
+      await fullModel.route("**/assets/src/client/catalog.mjs", (route) =>
+        route.fulfill({ contentType: "text/javascript", body: "" }),
+      );
+      await fullModel.goto(base + "/items/");
+    }
+    const directoryGroups = await fullModel
       .locator(".item-directory")
       .evaluateAll((groups) =>
         groups.map((group) =>
@@ -37,6 +46,7 @@ export async function runNavigationDirectoryTests({
           })),
         ),
       );
+    if (modern) await fullModel.close();
     assert(
       directoryGroups.some((rows) =>
         rows.some((row) => row.pack === "demo:training-pack"),
@@ -44,36 +54,86 @@ export async function runNavigationDirectoryTests({
       "Synthetic fixture remains available for sorting checks",
     );
     // Start with type/status so the final name check must restore name order.
-    for (const sortKey of ["type", "status", "name"]) {
-      await page.selectOption("#catalog-sort", sortKey);
-      const displayedGroups = await page
-        .locator(".item-directory")
-        .evaluateAll((groups) =>
-          groups.map((group) =>
-            [...group.querySelectorAll(".item-row:not([hidden]) h3 a")].map(
-              (link) => link.getAttribute("href"),
+    for (const size of modern ? [50, 25, 100] : [null]) {
+      if (modern)
+        await page.getByLabel("Rows per page").selectOption(String(size));
+      for (const sortKey of ["type", "status", "name"]) {
+        await page.selectOption("#catalog-sort", sortKey);
+        if (modern) {
+          const sortedGroups = directoryGroups.map((rows) =>
+            [...rows]
+              .sort(
+                (a, b) =>
+                  a[sortKey].localeCompare(b[sortKey]) ||
+                  a.name.localeCompare(b.name),
+              )
+              .map((row) => row.href),
+          );
+          const total = sortedGroups.flat().length;
+          for (let index = 0; index < Math.ceil(total / size); index++) {
+            let offset = 0;
+            const expectedGroups = sortedGroups.map((rows) => {
+              const expected = rows.filter(
+                (_, i) =>
+                  offset + i >= index * size && offset + i < (index + 1) * size,
+              );
+              offset += rows.length;
+              return expected;
+            });
+            const displayedGroups = await page
+              .locator(".item-directory")
+              .evaluateAll((groups) =>
+                groups.map((group) =>
+                  [
+                    ...group.querySelectorAll(".item-row:not([hidden]) h3 a"),
+                  ].map((link) => link.getAttribute("href")),
+                ),
+              );
+            assert.deepEqual(
+              displayedGroups,
+              expectedGroups,
+              `${sortKey} exact full-model page ${index + 1} at size ${size}`,
+            );
+            assert.equal(
+              await page.locator(".item-row:visible").count(),
+              Math.min(size, total - index * size),
+            );
+            if ((index + 1) * size < total)
+              await page
+                .getByRole("button", { name: "Next page", exact: true })
+                .click();
+          }
+          continue;
+        }
+        const displayedGroups = await page
+          .locator(".item-directory")
+          .evaluateAll((groups) =>
+            groups.map((group) =>
+              [...group.querySelectorAll(".item-row:not([hidden]) h3 a")].map(
+                (link) => link.getAttribute("href"),
+              ),
             ),
-          ),
+          );
+        const expectedGroups = directoryGroups.map((rows) =>
+          [...rows]
+            .sort(
+              (a, b) =>
+                a[sortKey].localeCompare(b[sortKey]) ||
+                a.name.localeCompare(b.name),
+            )
+            .map((row) => row.href),
         );
-      const expectedGroups = directoryGroups.map((rows) =>
-        [...rows]
-          .sort(
-            (a, b) =>
-              a[sortKey].localeCompare(b[sortKey]) ||
-              a.name.localeCompare(b.name),
-          )
-          .map((row) => row.href),
-      );
-      assert.deepEqual(
-        displayedGroups,
-        expectedGroups,
-        `${sortKey} sorting must produce the exact displayed item sequence within every catalog`,
-      );
-      assert.equal(
-        await page.locator(".item-row:visible").count(),
-        directoryGroups.flat().length,
-        "Sorting cannot remove, duplicate or mix catalog rows",
-      );
+        assert.deepEqual(
+          displayedGroups,
+          expectedGroups,
+          `${sortKey} sorting must produce the exact displayed item sequence within every catalog`,
+        );
+        assert.equal(
+          await page.locator(".item-row:visible").count(),
+          directoryGroups.flat().length,
+          "Sorting cannot remove, duplicate or mix catalog rows",
+        );
+      }
     }
     await page.selectOption("#catalog-pack", "demo:training-pack");
     await page.fill("#catalog-search", "wire");

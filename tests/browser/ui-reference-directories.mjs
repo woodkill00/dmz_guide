@@ -61,11 +61,11 @@ try {
         assert.equal(
           await directories.locator("[data-ui-directory-rows]").count(),
           0,
-          "catalog controller retains all searchable nodes",
+          "generic helper does not detach controller-owned cards",
         );
+        await page.locator("#catalog-pack").selectOption("");
         const count = await page.locator("[data-record-card]").count();
         assert.ok(count > 0);
-        await page.locator("#catalog-pack").selectOption("");
         const first = page.locator("[data-record-card]:visible").first();
         const identity = await first.locator("h3 a").getAttribute("href");
         await first.evaluate((node) => {
