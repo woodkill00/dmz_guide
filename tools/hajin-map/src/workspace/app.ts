@@ -1159,16 +1159,21 @@ export function mountWorkspace(
       draftNote.textContent='Editing one icon form. Save or cancel this draft before using another icon form.';
     };
     const studio=createIconStudio({starters:state.icons.filter(i=>i.design).map(i=>({description:i.description,design:i.design!})),process:services.process,error,notice,dirty:()=>ownIconDraft(studio.root),save:async(design,description)=>{
-      const expected=revision;
+      const expected=revision,ownerView=viewGeneration,ownerSerial=draftSerial,ownerNode=studio.root;
+      const finish=(message?:string)=>{
+        const reconcile=()=>{if(disposed||suspended||!ownerNode.isConnected||!body.contains(ownerNode)||draftSerial!==ownerSerial)return;resetEditor();if(message)notice(message);};
+        if(suspended||ownerView!==viewGeneration){if(suspended)reconcileConfirmedEditor=reconcile;else reconcile();return;}
+        reconcile();
+      };
       const icon=await services.process(signal=>stageDesignedIcon(design,description,signal));
       const existing=state.icons.find(i=>i.id===icon.id);
       if(existing){
-        if(!existing.design){await commit('Editable design attached to existing icon',draft=>commitIcon(draft,icon),[],expected);resetEditor();notice(`Editable design added to ${existing.description}; image and references reused.`);}
-        else{resetEditor();notice(`Already saved as ${existing.description}; existing icon and references reused.`);}
+        if(!existing.design){await commit('Editable design attached to existing icon',draft=>commitIcon(draft,icon),[],expected);finish(`Editable design added to ${existing.description}; image and references reused.`);}
+        else{finish(`Already saved as ${existing.description}; existing icon and references reused.`);}
         return;
       }
       await commit('Created icon saved',draft=>commitIcon(draft,icon),[],expected);
-      resetEditor();
+      finish();
     }});
     disposeActiveEditor=studio.destroy;
     forms.push(studio.root);

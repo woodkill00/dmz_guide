@@ -323,6 +323,21 @@ try {
       assert.deepEqual(await page.evaluate(()=>({attempts:window.__saveAttempts,writes:window.__realWrites})),{attempts:afterReadFailure.attempts,writes:afterReadFailure.writes});
       await page.locator('#workspace-tab-icons').click();
       await page.locator('#workspace-tab-icons[aria-current=true]').waitFor();
+      // A durable SVG acknowledgement while suspended must not remount hidden UI.
+      await page.locator('#icon-design-description').fill('Synthetic suspended icon');
+      await page.locator('#icon-design-label').fill('BF');
+      await page.evaluate(()=>{window.__holdSave=true;window.__releaseSave=undefined;window.__savedStudio=document.querySelector('#icon-studio');});
+      const beforeSuspendedIcon=await page.evaluate(()=>({attempts:window.__saveAttempts,writes:window.__realWrites}));
+      await page.locator('#save-designed-icon').click();
+      await page.waitForFunction(()=>typeof window.__releaseSave==='function');
+      await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));
+      await page.evaluate(()=>{window.__holdSave=false;window.__releaseSave();});
+      await page.waitForFunction(()=>document.querySelector('#workspace-content').getAttribute('aria-busy')==='false');
+      assert.equal(await page.evaluate(()=>document.querySelector('#icon-studio')===window.__savedStudio),true,'Suspended confirmation keeps original SVG editor node');
+      assert.equal(await page.locator('#icon-design-description').inputValue(),'Synthetic suspended icon');
+      await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
+      await page.waitForFunction(()=>document.querySelector('#icon-studio')!==window.__savedStudio);
+      assert.deepEqual(await page.evaluate(()=>({attempts:window.__saveAttempts,writes:window.__realWrites})),{attempts:beforeSuspendedIcon.attempts+1,writes:beforeSuspendedIcon.writes+1},'Returning reconciles the confirmed SVG once without replay');
       assert.deepEqual(errors, []);
       assert.deepEqual(external, []);
       await context.close();
