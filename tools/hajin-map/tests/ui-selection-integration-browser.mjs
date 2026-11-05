@@ -238,7 +238,10 @@ try {
           route.data.fieldGuide.routes[0].waypoints[0].kind,
           "record",
         );
-        await page.locator("#ui-selection-back").click();
+        // A confirmed mutation may return to the owning task; otherwise leave
+        // the still-valid readonly source through its real Back action.
+        if (await page.locator("#ui-selection-back").count())
+          await page.locator("#ui-selection-back").click();
         // Its new route stop intentionally owns pointer hit testing at this
         // coordinate; native keyboard activation still reaches the source marker.
         await page.locator('[data-official-id="selection-0"]').focus();
@@ -258,6 +261,32 @@ try {
         if (!(await stop.isVisible()))
           await page.locator("#ui-map-view").click();
         await stop.focus();
+        const geometry = await page.evaluate(async () => {
+          const rows = [];
+          for (let i = 0; i < 12; i++) {
+            await new Promise(requestAnimationFrame);
+            const marker = document
+                .querySelector('[data-route-waypoint="0"]')
+                ?.getBoundingClientRect(),
+              route = document
+                .querySelector("#ui-map-route")
+                ?.getBoundingClientRect();
+            rows.push({
+              mode: document.documentElement.dataset.mapLayout,
+              y: marker?.y,
+              route: route?.height,
+            });
+          }
+          return rows.slice(-8);
+        });
+        const ys = geometry.map((row) => row.y),
+          heights = geometry.map((row) => row.route);
+        assert.ok(
+          Math.max(...ys) - Math.min(...ys) <= 1 &&
+            Math.max(...heights) - Math.min(...heights) <= 1,
+          "settled route slot/marker must not oscillate: " +
+            JSON.stringify({ engine: name, geometry }),
+        );
         await stop.click();
         await page.locator("#ui-selection-detail").waitFor();
         assert.match(
@@ -287,11 +316,11 @@ try {
           .locator("#ui-selection-detail")
           .count())
           ? await page.locator("#ui-selection-detail").textContent()
-          : "";
-        assert.equal(
-          settledSelection.includes("Pending on this route"),
-          false,
-          "confirmed reached action cannot leave a stale Pending selection",
+          : null;
+        assert.ok(
+          settledSelection === null ||
+            settledSelection.includes("Reached on this route"),
+          "confirmed reached action closes its old frame or shows updated reached facts",
         );
         t.verify();
       } finally {
