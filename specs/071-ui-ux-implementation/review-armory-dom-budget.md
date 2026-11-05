@@ -42,3 +42,36 @@ Removing the native disclosure/summary or spacing action would remove approved b
 Asset bundling or integrating modern startup into an existing module could reduce head nodes and possibly requests. That is a legitimate future optimization, but it needs separate cascade, static/no-JS, adapter-readiness and timing validation. The recently reproduced Manager cascade defect demonstrates why moving stylesheet order simply to satisfy a count is not automatically safe. Shifting CSS into imports while increasing the legacy loading cost would not be an acceptable cosmetic node offset.
 
 The written exception is therefore more transparent than an unverified late packaging change. It is deliberately limited to the deterministic initial-DOM gate; matched performance, real-device/manual acceptance and default promotion retain their own decisions.
+
+## Additional independent assessments: Inventory and Upgrades
+
+The Armory recommendation above was **not** applied automatically to these pages. The same receipt-matched source/fixture was independently checked for each additional measured increase; no new browser or build measurement was run.
+
+| Matched fixture | Legacy initial elements | Modern initial elements | Delta | Initial native content in every sample             |
+| --------------- | ----------------------: | ----------------------: | ----: | -------------------------------------------------- |
+| Inventory       |                   4,921 |                   4,928 |    +7 | 48 of 48 visible catalog items; 48 rendered rows.  |
+| Upgrades        |                     961 |                     968 |    +7 | 9 of 9 matching upgrade groups; 9 rendered groups. |
+
+Each count and positive content signature is constant across all 20 observations at all three declared viewports in both receipts. These are the owners' exact matching totals, not a completeness claim for the game or a count of verified upgrade tiers.
+
+### Content and node accounting
+
+I evaluated the actual `private-pages.mjs` and `progression-page.mjs` SSR body factories against the four pack descriptors from the measured catalog manifest, using each descriptor's real `pack.id` and `pack.title`, under both process variants. The complete returned body strings were byte-identical:
+
+| Body factory | Opening elements in static body | UTF-8 bytes | SHA-256, identical legacy/modern                                   |
+| ------------ | ------------------------------: | ----------: | ------------------------------------------------------------------ |
+| Inventory    |                              70 |       4,970 | `04816442e62f7d7a31fdea7e70a1cde82b4604e193ceaef04ad1e07daa1b3945` |
+| Upgrades     |                             127 |       7,346 | `d60682ce27f5e4f1a6536fc5d2d82988fd669a555e12065d08c19b2b737c573a` |
+
+These SSR body counts deliberately exclude the later native client-generated item/group rows; they are not substituted for the measured ready DOM counts. `profile.mjs` and `progression.mjs` do not branch on modern/legacy presentation. Their renderer and calculator inputs are identical in the matched fixture. The generic modern directory module requires an owned descendant `[data-ui-directory-rows]`; these native live owner hosts do not supply that alternate row body, so it returns before creating its optional status/pagination elements. It does not duplicate or replace these native rows.
+
+I also separately rendered the Inventory and Upgrades navigation variants: **each** has 92→96 navigation elements including the root nav, and the same equal set of 77 feature identities. Each page receives the same two modern stylesheet links and one shell module from `renderLayout()`. Thus each measured +7 is fully accounted for by its own +4 navigation/+3 head structure, not merely inferred from the Armory result.
+
+This is source-level byte equality for the SSR bodies, shared-code inspection for hydration, and exact ready-DOM/content-count receipt evidence. A raw hydrated `main.innerHTML` byte comparison was not stored and is not claimed. The inspected sources and complete seven-node accounting provide no evidence of different native data rows or an offsetting content deletion.
+
+### Separate bounded recommendations
+
+- **Inventory:** accept at most **+7** initial elements versus the matched legacy Inventory fixture, solely for those four navigation and three head elements, with all 48 native items and owner controls retained.
+- **Upgrades:** accept at most **+7** initial elements versus the matched legacy Upgrades fixture, solely for those four navigation and three head elements, with all nine matching native groups and their original tier/progress behavior retained.
+
+These are two explicit additional recommendations, with the same restrictions as Armory: no generic fixed-count allowance, per-record growth, hidden-row discount, relaxed completeness/storage/import limit, unrelated node offset, changed measurement boundary or timing waiver. Changed catalog inputs require fresh matching evidence; extra modern structural elements require further review. Original sequential timing results remain `investigate` pending the owning performance assessment; the independent DOM recommendations do not alter that status.
