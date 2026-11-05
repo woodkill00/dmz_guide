@@ -92,7 +92,7 @@ const filterContracts = {
   upgrades: {
     status: "#progress-count",
     pattern: "^Showing 0–0 of 0 matching",
-    rows: "#progress-rows > article,#progress-rows > details",
+    rows: "#progress-rows > article,#progress-rows > .upgrade-family",
   },
   armory: {
     status: "[data-weapon-count]",
