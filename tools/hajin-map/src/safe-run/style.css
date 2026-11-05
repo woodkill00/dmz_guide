@@ -458,3 +458,18 @@ summary {
     scroll-behavior: auto !important;
   }
 }
+
+/* Modern separate Safe-run allocation. The original live controls remain attached. */
+html[data-ui-variant=modern] body.safe-run-page{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+html[data-ui-variant=modern] .safe-run-page #app{flex:1;min-height:0;display:flex;flex-direction:column}
+html[data-ui-variant=modern] .safe-header{flex:none;padding:.5rem 1rem;height:auto}
+html[data-ui-variant=modern] .safe-header h1{font-size:1.4rem;margin:0}
+html[data-ui-variant=modern] .ui-safe-views{display:flex;gap:.5rem;padding:.4rem .75rem;flex:none}
+html[data-ui-variant=modern] .safe-layout{flex:1;min-height:0;height:auto;grid-template-columns:minmax(18rem,24rem) minmax(0,1fr)}
+html[data-ui-variant=modern] #safe-controls{overflow:auto;height:auto;padding:.75rem;display:block}
+html[data-ui-variant=modern] #safe-intelligence{max-block-size:none;overflow:visible}
+html[data-ui-variant=modern] :is(#safe-start-pane,#safe-candidates-pane,#safe-route-pane){height:auto;max-height:none;overflow:visible}
+html[data-ui-variant=modern] :is(#safe-start-divider,#safe-route-divider){display:none}
+html[data-ui-variant=modern] .safe-terrain{min-height:0;height:auto;position:relative}
+html[data-ui-variant=modern] .safe-layout:not([data-ui-safe-view=docked]){grid-template-columns:minmax(0,1fr)}
+html[data-ui-variant=modern] .safe-layout [hidden]{display:none!important}

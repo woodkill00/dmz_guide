@@ -1,3 +1,7 @@
+import {createPaneViewState} from './pane-view-state.ts';
+import {createOperationOwnership,type OperationTicket} from '../../../../src/ui/operation-ownership.mjs';
+import {createIssueSummary} from '../../../../src/ui/issue-summary.mjs';
+import {mountPaneHost} from './pane-host.ts';
 import {backupComparisonPanel} from './operations-ui.ts';
 import {createFieldGuideUI} from './field-guide-ui.ts';
 import {plannedDuplicates,decorateRecord} from './field-guide.ts';
@@ -37,7 +41,7 @@ import {
 } from "./dom.ts";
 import { sourcePolicies } from "./policy.ts";
 import { saveAnnotation, removeAnnotation } from "./annotations.ts";
-import { annotationEditor } from "./annotation-editor.ts";
+import { annotationEditor,saveAnnotationEditor } from "./annotation-editor.ts";
 import { stageIcon, commitIcon, deleteIcon, annotationIcon } from "./icons.ts";
 import { createIconStudio, downloadIconSVG, downloadIconPNG } from './icon-studio.ts';
 import { stageDesignedIcon } from './icons.ts';
@@ -83,6 +87,7 @@ export function mountWorkspace(
     revision = 0,
     store: Awaited<ReturnType<typeof openWorkspace>> | undefined,
     disposed = false,
+    suspended = false,
     queue = Promise.resolve(),
     applyingFilters = false,
     dirty = false,
@@ -90,6 +95,7 @@ export function mountWorkspace(
     usabilityDetail = false,
     detailCleanup: (() => void) | undefined,
     active: Tab = "points",
+    currentTool:ToolTarget|undefined,
     editing: Annotation | undefined,
     picking = false,
     draftPosition: { x: number; y: number } | undefined,
@@ -98,6 +104,11 @@ export function mountWorkspace(
   let legacyMigrationCommitted = false;
   let retainedFailure = false;
   const preparer = createWorkspacePreparer();
+  const modern=document.documentElement.dataset.uiVariant==='modern';
+  let viewGeneration=0,writing=0,unconfirmedWrite=false,unconfirmedRevision:number|undefined;
+  let unconfirmedTicket:OperationTicket|undefined;
+  const operationOwner=createOperationOwnership({ownerId:'map-workspace',context:{workspace:'hajin',pack:null,profile:null,revision:0}});
+  const issues=createIssueSummary();
   let hydrated = false,
     pendingVisibility: VisibilityState | undefined,
     visibilityEpoch = 0;
@@ -212,7 +223,7 @@ export function mountWorkspace(
   const openButton = button(
     "My workspace",
     () => {
-      if (!dialog.open) dialog.showModal();
+      if (!dialog.open) openWorkspacePane();
       if (!dirty && !detailActive) renderPanel();
     },
     "workspace-open",
@@ -231,6 +242,7 @@ export function mountWorkspace(
     button(
       "Close workspace",
       () => {
+        if(paneHost){paneHost.request({id:"close-workspace",label:"Close workspace",run:()=>dialog.close(),revalidate:()=>!disposed});return;}
         if (interactionLocks && !processing) {
           notice("Wait for the source update to finish.");
           return;
@@ -250,6 +262,7 @@ export function mountWorkspace(
   const body = el("div");
   body.id = "workspace-content";
   let interactionLocks = 0;
+  let saveActiveDraft:(()=>Promise<boolean>)|undefined;
   function lockInteraction() {
     const steadyBossList = !!body.querySelector('.boss-directory');
     const previous =
@@ -285,10 +298,18 @@ export function mountWorkspace(
   }
   dialog.append(top, status, nav, body);
   document.body.append(dialog);
+  const viewCache=createPaneViewState(body,()=>({workspace:'hajin',pack:null,profile:null,revision,capture:String(backgroundRequest)}));
+  const viewTask=()=>currentTool??active;
+  const captureCleanView=()=>{if(modern&&!dirty&&!detailActive&&!processing&&!unsaved)viewCache.capture(viewTask());};
+  const paneHost=mountPaneHost(dialog,{getState:()=>({dirty:dirty||detailActive||!!unsaved,committing:writing>0||unconfirmedWrite||(!!pendingVisibility&&!retainedFailure),processing:!!processing||interactionLocks>0}),save:async()=>saveActiveDraft?saveActiveDraft():false,discard:()=>{if(writing||unsaved||unconfirmedWrite||processing||interactionLocks)throw new Error('Wait for the existing operation to finish.');detailCleanup?.();detailCleanup=undefined;detailActive=false;dirty=false;editing=undefined;draftPosition=undefined;plannerPick=undefined;plannerUI?.reset();renderPanel();},revealTask:()=>document.querySelector<HTMLButtonElement>('#ui-task-view')?.click(),onClose:()=>document.querySelector<HTMLButtonElement>('#ui-map-view')?.click(),onBlocked:message=>error(message)});
+  function openWorkspacePane(){if(paneHost)paneHost.open();else dialog.showModal();}
   const backupReminder = el("section", undefined, "workspace-backup-reminder");
   backupReminder.id = "backup-reminder";
   backupReminder.hidden = true;
   status.after(backupReminder);
+  const checkSave=button('Check save status',async()=>{if(writing||!store){error('The current save is still pending. Keep this page open.');return;}try{const result=(await store.read()).current;if(unconfirmedWrite&&unsaved&&result&&result.revision===unconfirmedRevision&&JSON.stringify(result.data)===JSON.stringify(asJson(unsaved))){validateWorkspace(result.data);if(!unconfirmedTicket||!operationOwner.settle(unconfirmedTicket,{outcome:'confirmed',receipt:result},{verifyReceipt:r=>r===result}).accepted)throw new Error('The retained save owner could not confirm this receipt. Keep your recovery state.');state=unsaved;revision=result.revision;unsaved=undefined;failedLabel=undefined;retainedFailure=false;unconfirmedWrite=false;unconfirmedRevision=undefined;unconfirmedTicket=undefined;dirty=false;issues.clear('map-workspace','write');issues.clear('map-workspace','workspace');issues.clear('map-workspace','write-pending');renderPanel();notice('The saved revision is confirmed. Review your destination, then continue.');paneHost?.refresh();}else notice('No matching saved revision was confirmed. Your draft and existing recovery state are kept.');}catch(cause){error(cause);}},'workspace-check-save');
+  checkSave.hidden=true;
+  if(modern)top.append(checkSave);
   const searchHighlight = L.layerGroup().addTo(viewer.map);
   let highlightRecord: { key: string; signature: string } | undefined;
   const highlightSignature = (r: ReturnType<typeof explorerRecords>[number]) =>
@@ -395,14 +416,18 @@ export function mountWorkspace(
   toast.setAttribute("role", "status");
   document.querySelector(".map-workspace")!.append(toast);
   let toastTimer: ReturnType<typeof setTimeout> | undefined;
+  const issueDetails=el('details'),issueHeading=el('summary','Issue details'),issueList=el('ul');issueDetails.id='workspace-issue-details';issueDetails.hidden=true;issueDetails.append(issueHeading,issueList);if(modern)status.after(issueDetails);
+  const paintIssues=()=>{if(!modern||disposed||suspended)return;checkSave.hidden=!unsaved&&!unconfirmedWrite;const value=issues.snapshot();status.dataset.uiIssueSummary='map-workspace';status.textContent=value.count?`${value.label}: ${value.issues[0].message}`:value.status;status.setAttribute('role',value.count?'alert':'status');issueDetails.hidden=!value.count;issueHeading.textContent=`Issue details (${value.count})`;issueList.replaceChildren(...value.issues.map(issue=>{const row=el('li');row.append(el('p',issue.message));if(issue.target?.startsWith('#')){const link=el('a','Open affected workspace');link.href=issue.target;row.append(link);}return row;}));};
   const notice = (message: string) => {
+    if(disposed||suspended)return;
+    if(modern){issues.status(message.slice(0,2000));paintIssues();return;}
     status.textContent = message;
     toast.textContent = message;
     toast.hidden = false;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => (toast.hidden = true), 7000);
   };
-  const error = (error: unknown) => notice(errorText(error));
+  const error = (error: unknown) => {if(disposed||suspended)return;if(modern){issues.report({owner:'map-workspace',cause:failedLabel?'write':'workspace',message:errorText(error).slice(0,8000),blocking:!!unsaved,target:'#workspace-content'});paintIssues();}else notice(errorText(error));};
   const errorListener = (event: Event) => error((event as CustomEvent).detail);
   document.addEventListener("workspace-error", errorListener);
   const refresh = () => {
@@ -419,6 +444,7 @@ export function mountWorkspace(
     resources: { id: string; blob: Blob }[] = [],
     expectedRevision?: number,
   ) {
+    const requestedView=viewGeneration;
     const unlock = /visibility|Source masks|categories|All layers|Search/.test(
       label,
     )
@@ -428,6 +454,7 @@ export function mountWorkspace(
       .catch(() => {})
       .then(async () => {
         if (disposed) throw new Error("Workspace closed.");
+        if(unconfirmedWrite)throw new Error("The previous save is unconfirmed. Check save status before retrying.");
         if (unsaved && failedLabel && label !== failedLabel)
           throw new Error(
             "An unsaved draft is retained. Export/reload it before another save.",
@@ -448,10 +475,20 @@ export function mountWorkspace(
           throw new Error(
             "Local storage unavailable. Your draft is retained; export it from Backups.",
           );
-        const saved = await store.commit(asJson(draft), revision, resources);
+        operationOwner.setContext({workspace:'hajin',pack:null,profile:null,revision});
+        const ticket=operationOwner.begin({kind:label,phase:'preparing'});
+        if(!operationOwner.commit(ticket))throw new Error('This save no longer belongs to the active workspace.');
+        const expected=revision;writing++;
+        const slow=setTimeout(()=>{if(modern&&!disposed&&!suspended&&requestedView===viewGeneration){issues.report({owner:'map-workspace',cause:'write-pending',message:'Still waiting for local storage confirmation. Do not repeat this save. The draft remains retained.',severity:'warning',blocking:true,target:'#workspace-content'});paintIssues();}},10000);
+        let saved;
+        try{saved=await store.commit(asJson(draft),revision,resources);const settled=operationOwner.settle(ticket,{outcome:'confirmed',receipt:saved},{verifyReceipt:r=>!!r&&typeof r==='object'&&'revision' in r&&r.revision===expected+1&&'schemaVersion' in r&&r.schemaVersion===1&&'savedAt' in r&&typeof r.savedAt==='string'&&Number.isFinite(Date.parse(r.savedAt))&&'data' in r&&JSON.stringify(r.data)===JSON.stringify(asJson(draft))});if(!settled.accepted){unconfirmedWrite=true;unconfirmedRevision=expected+1;unconfirmedTicket=ticket;throw new Error('The local save outcome is unconfirmed. Keep this draft and check save status before trying again.');}}
+        catch(cause){operationOwner.settle(ticket,{outcome:unconfirmedWrite?'unconfirmed':'failed'});throw cause;}
+        finally{writing--;clearTimeout(slow);}
+        const publish=!disposed&&!suspended&&requestedView===viewGeneration;
+        issues.clear('map-workspace','write-pending');issues.clear('map-workspace','write');
         backgroundRequest++;
         state = draft;
-        if (isMeaningfulMutation(label)) viewer.map.closePopup();
+        if (publish && isMeaningfulMutation(label)) viewer.map.closePopup();
         if (
           label.startsWith("Backup restored") ||
           label === "New empty workspace created"
@@ -469,19 +506,17 @@ export function mountWorkspace(
           pendingVisibility = undefined;
         }
         revision = saved.revision;
-        dialog.dataset.revision = String(revision);
+        if(publish)dialog.dataset.revision = String(revision);
         unsaved = undefined;
         failedLabel = undefined;
         retainedFailure = false;
-        notice(label);
-        applyLegacyFilters();
-        refresh();
+        if(publish){notice(label);applyLegacyFilters();refresh();}
       })
       .catch((error) => {
         if (unsaved && failedLabel === label) retainedFailure = true;
         throw error;
       })
-      .finally(unlock);
+      .finally(()=>{unlock();paneHost?.refresh();});
     queue = operation;
     return operation;
   }
@@ -490,6 +525,7 @@ export function mountWorkspace(
       draft.visibility = structuredClone(value);
     }).then(() => {
       if (pendingVisibility === value) pendingVisibility = undefined;
+      paneHost?.refresh();
     });
   }
   function changeVisibility(
@@ -523,6 +559,7 @@ export function mountWorkspace(
     usabilityDetail = false;
     dirty = false;
     renderPanel();
+    if(modern){if(dialog.matches(":modal"))dialog.close();openWorkspacePane();viewCache.restore(viewTask(),{focus:true});}
     if (dialog.open)
       nav.querySelector<HTMLButtonElement>(`[data-tab="${active}"]`)?.focus();
   };
@@ -537,6 +574,7 @@ export function mountWorkspace(
     if (interactionLocks && !processing) event.preventDefault();
     else processing?.abort();
   });
+  function showOwnedDetail(node:HTMLElement,cleanup:(()=>void)|undefined,modal:boolean){if(modern&&!modal)captureCleanView();usabilityDetail=!modal;detailCleanup?.();detailCleanup=cleanup;detailActive=true;body.replaceChildren(node);if(paneHost){if(modal)paneHost.modal();else paneHost.open();}else if(!dialog.open)dialog.showModal();node.querySelector<HTMLElement>('input,button,textarea,select')?.focus();}
   const services: UIServices = {
     process: async (work) => {
       if (processing)
@@ -548,7 +586,7 @@ export function mountWorkspace(
       notice("Processing local input…");
       try {
         const result = await work(current.signal);
-        if (current.signal.aborted) throw new Error("Import cancelled.");
+        if (current.signal.aborted||disposed||suspended) throw new Error("Import cancelled; no new input will be applied by this view.");
         return result;
       } finally {
         unlock();
@@ -564,15 +602,7 @@ export function mountWorkspace(
     error,
     notice,
     refresh,
-    detail: (node, cleanup) => {
-      usabilityDetail = false;
-      detailCleanup?.();
-      detailCleanup = cleanup;
-      detailActive = true;
-      body.replaceChildren(node);
-      if (!dialog.open) dialog.showModal();
-      node.querySelector<HTMLElement>("input,button,textarea,select")?.focus();
-    },
+    detail: (node, cleanup) => showOwnedDetail(node,cleanup,true),
     closeDetail,
     readResource: async (id) => store?.readResource(id),
     previousState: async () => {
@@ -674,7 +704,7 @@ export function mountWorkspace(
         Object.assign(value, structuredClone(v)),
       ),
     detail: (node, cleanup) => {
-      services.detail(node, cleanup);
+      showOwnedDetail(node,cleanup,!modern);
       usabilityDetail = true;
     },
     editPoint: (id) => {
@@ -689,7 +719,7 @@ export function mountWorkspace(
       editing = structuredClone(point);
       draftPosition = undefined;
       renderPanel();
-      if (!dialog.open) dialog.showModal();
+      if (!dialog.open) openWorkspacePane();
       body.querySelector<HTMLInputElement>("#point-title")?.focus();
     },
     jump: (record, popup) => {
@@ -733,7 +763,7 @@ export function mountWorkspace(
     allowed:()=>canInspect()&&!unsaved&&!pendingVisibility,
     draftAllowed:()=>!processing&&!interactionLocks&&(!unsaved||(!!plannerUI?.ownsDraft()&&['Map planner saved','Map toolkit saved'].includes(failedLabel??'')))&&!pendingVisibility&&(!dirty||!!plannerUI?.ownsDraft())&&!detailActive,
     setDirty:value=>{dirty=value;if(!value)plannerPick=undefined;},
-    openPlanner:preserve=>{if(!preserve){active='planner';renderPanel();}if(!dialog.open)dialog.showModal();},closePlanner:()=>dialog.close(),
+    openPlanner:preserve=>{if(!preserve){active='planner';renderPanel();}if(!dialog.open)openWorkspacePane();},closePlanner:()=>dialog.close(),
     search:query=>{usabilityUI.find(query);},popup:r=>usabilityUI.popup(r),
     available:()=>{const out:Record<string,string[]>={};for(const source of legacy){const snapshot=source.getSnapshot();if(snapshot)out[source.id]=snapshot.categories.map(c=>c.id);}for(const entry of state.snapshots)out[entry.snapshot.sourceId]=entry.snapshot.categories.map(c=>c.id);for(const [source,key] of selectedSnapshots){const entry=state.snapshots.find(e=>e.key===key);if(entry)out[source]=entry.snapshot.categories.map(c=>c.id);}return out;},
     view:visibility,applyView:v=>changeVisibility('Public planner view applied',value=>Object.assign(value,structuredClone(v))),
@@ -757,7 +787,7 @@ export function mountWorkspace(
     active = "explore";
     usabilityUI.openSection(section, filter);
     renderPanel();
-    if (!dialog.open) dialog.showModal();
+    if (!dialog.open) openWorkspacePane();
     body.querySelector<HTMLElement>("#explorer-search,input,button")?.focus();
   }
   const findButton = button(
@@ -804,6 +834,7 @@ export function mountWorkspace(
     const b = button(
       label,
       () => {
+        if(paneHost){if(active===tab){openWorkspacePane();return;}paneHost.request({id:`tab:${tab}`,label:`Open ${label}`,revalidate:()=>!disposed&&hydrated,run:()=>{captureCleanView();detailCleanup?.();detailCleanup=undefined;detailActive=false;picking=false;plannerPick=undefined;plannerUI?.reset();active=tab;currentTool=undefined;renderPanel();viewCache.restore(viewTask(),{focus:true});openWorkspacePane();}});return;}
         if (processing) {
           error("Cancel file processing before switching sections.");
           return;
@@ -839,6 +870,7 @@ export function mountWorkspace(
       "Cancel draft / preview",
       () => {
         processing?.abort();
+        if(!unsaved){issues.clear('map-workspace','workspace');paintIssues();}
         plannerPick=undefined;plannerUI?.reset();
         picking = false;
         dirty = false;
@@ -867,6 +899,8 @@ export function mountWorkspace(
   });
 
   function renderPanel(preservePosition = false) {
+    viewGeneration++;
+    saveActiveDraft=undefined;
     const scrollTop=dialog.scrollTop,scrollLeft=dialog.scrollLeft,tabsLeft=body.querySelector('.planner-tabs')?.scrollLeft??0;
     if(!preservePosition)dialog.scrollTop = 0;
     nav
@@ -882,7 +916,7 @@ export function mountWorkspace(
     if (active === "backup") renderBackup();
     if(active==='planner')body.append(plannerUI!.panel());
     if(active==='health')body.append(healthPanel({...services,captures:()=>legacy.map(source=>({id:source.id,capturedAt:source.getSnapshot()?.capturedAt??null,records:source.getSnapshot()?.records.length??0,files:source.getSnapshotLocation()})),navigate:target=>{if(!canInspect())return;if(target==='updates'){dialog.close();document.querySelector<HTMLButtonElement>('#toggle-key')?.click();const controls=document.querySelector<HTMLElement>('#map-source-updates');if(controls){controls.tabIndex=-1;controls.focus();controls.scrollIntoView({block:'center'});}}else{active=target;renderPanel();}}}));
-    if (active === "explore") body.append(usabilityUI.panel());
+    if (active === "explore") {if(modern){const scopes=el('div',undefined,'ui-find-scopes');scopes.setAttribute('role','group');scopes.setAttribute('aria-label','Find scope');scopes.append(button('Map locations',()=>{openTool('explore');},'ui-find-map'),button('My workspace',()=>{openTool('workspace-search');},'ui-find-workspace'),note('Map locations searches imported sites and your placed points. My workspace searches private workspace records.'));body.append(scopes);}body.append(usabilityUI.panel());}
     if(preservePosition){dialog.scrollTop=scrollTop;dialog.scrollLeft=scrollLeft;const tabs=body.querySelector('.planner-tabs');if(tabs)tabs.scrollLeft=tabsLeft;}
   }
   function renderPoints() {
@@ -897,12 +931,15 @@ export function mountWorkspace(
       editing,
       draftPosition,
       async (annotation) => {
+        const ownerView=viewGeneration,ownerFocus=document.activeElement;
         await commit(
           editing ? "Point updated" : "Private point saved",
           (draft) => saveAnnotation(draft, annotation),
         );
+        if(disposed||suspended||ownerView!==viewGeneration)return;
+        const returnFocus=document.activeElement===ownerFocus||document.activeElement===document.body;
         resetEditor();
-        body.querySelector<HTMLInputElement>("#point-title")?.focus();
+        if(returnFocus)body.querySelector<HTMLInputElement>("#point-title")?.focus();
       },
       resetEditor,
       () => {
@@ -918,6 +955,7 @@ export function mountWorkspace(
       error,
       services.process,
     );
+    saveActiveDraft=()=>saveAnnotationEditor(editor);
     body.append(editor);
     body.append(
       button(
@@ -1048,7 +1086,7 @@ export function mountWorkspace(
     showList();
   }
   const mapPick = (event: L.LeafletMouseEvent) => {
-    if(plannerPick){const point:XY=[event.latlng.lng,event.latlng.lat];if(!point.every(n=>n>=0&&n<=4096)){error('Choose a location inside the terrain.');return;}const callback=plannerPick;plannerPick=undefined;try{callback(point);}catch(e){error(e);}finally{if(!dialog.open)dialog.showModal();}return;}
+    if(plannerPick){const point:XY=[event.latlng.lng,event.latlng.lat];if(!point.every(n=>n>=0&&n<=4096)){error('Choose a location inside the terrain.');return;}const callback=plannerPick;plannerPick=undefined;try{callback(point);}catch(e){error(e);}finally{if(!dialog.open)openWorkspacePane();}return;}
     if (!picking) return;
     const x = Math.round(event.latlng.lng * 100) / 100,
       y = Math.round(event.latlng.lat * 100) / 100;
@@ -1065,11 +1103,11 @@ export function mountWorkspace(
       xInput.dispatchEvent(new Event("input", { bubbles: true }));
     }
     dirty = true;
-    if (!dialog.open) dialog.showModal();
+    if (!dialog.open) openWorkspacePane();
   };
   viewer.map.on("click", mapPick);
-  function openPointEditing(id:string){if(!canInspect())throw new Error('Save or cancel your draft first.');const point=state.annotations.find(a=>a.id===id);if(!point)throw new Error('Point unavailable.');editing=structuredClone(point);draftPosition=undefined;active='points';renderPanel();if(!dialog.open)dialog.showModal();body.querySelector<HTMLInputElement>('#point-title')?.focus();}
-  function openPointAt(point:XY){if(!canInspect())throw new Error('Save or cancel your current draft first.');active='points';editing=undefined;draftPosition={x:point[0],y:point[1]};renderPanel();dirty=true;if(!dialog.open)dialog.showModal();body.querySelector<HTMLInputElement>('#point-title')?.focus();}
+  function openPointEditing(id:string){if(!canInspect())throw new Error('Save or cancel your draft first.');const point=state.annotations.find(a=>a.id===id);if(!point)throw new Error('Point unavailable.');editing=structuredClone(point);draftPosition=undefined;active='points';renderPanel();if(!dialog.open)openWorkspacePane();body.querySelector<HTMLInputElement>('#point-title')?.focus();}
+  function openPointAt(point:XY){if(!canInspect())throw new Error('Save or cancel your current draft first.');active='points';editing=undefined;draftPosition={x:point[0],y:point[1]};renderPanel();dirty=true;if(!dialog.open)openWorkspacePane();body.querySelector<HTMLInputElement>('#point-title')?.focus();}
   const rightClickPoint = (event: L.LeafletMouseEvent) => {
     if (!hydrated || disposed || interactionLocks || processing) return;
     L.DomEvent.preventDefault(event.originalEvent);
@@ -1078,7 +1116,7 @@ export function mountWorkspace(
       return;
     }
     if (dirty || detailActive || unsaved) {
-      if (!dialog.open) dialog.showModal();
+      if (!dialog.open) openWorkspacePane();
       error(
         "Save or cancel your current draft/preview before adding another point.",
       );
@@ -1097,7 +1135,7 @@ export function mountWorkspace(
   const press=(event:PointerEvent)=>{if(!event.isPrimary){cancelPress();return;}if(event.pointerType==='mouse'||event.target instanceof HTMLElement&&event.target.closest('button,input,select,textarea,.movable-map-menu,.leaflet-popup'))return;cancelPress();pressStart={x:event.clientX,y:event.clientY,pointer:event.pointerId};pressTimer=setTimeout(()=>{if(!pressStart||!canInspect())return;const latlng=viewer.map.containerPointToLatLng(L.point(pressStart.x-viewer.map.getContainer().getBoundingClientRect().left,pressStart.y-viewer.map.getContainer().getBoundingClientRect().top));cancelPress();try{plannerUI!.quickActions([latlng.lng,latlng.lat]);}catch(e){error(e);}},650);};
   const movePress=(event:PointerEvent)=>{if(pressStart&&(event.pointerId!==pressStart.pointer||Math.hypot(event.clientX-pressStart.x,event.clientY-pressStart.y)>8))cancelPress();};
   viewer.map.getContainer().addEventListener('pointerdown',press);viewer.map.getContainer().addEventListener('pointermove',movePress);viewer.map.getContainer().addEventListener('pointerup',cancelPress);viewer.map.getContainer().addEventListener('pointercancel',cancelPress);
-  const cancelMapTool=(event:KeyboardEvent)=>{if(event.key!=='Escape')return;cancelPress();if(!plannerPick&&!picking)return;event.preventDefault();plannerPick=undefined;picking=false;viewer.map.closePopup();if(!dialog.open)dialog.showModal();notice('Map picking cancelled. Your draft is kept.');};document.addEventListener('keydown',cancelMapTool);
+  const cancelMapTool=(event:KeyboardEvent)=>{if(event.key!=='Escape')return;cancelPress();if(!plannerPick&&!picking)return;event.preventDefault();event.stopPropagation();plannerPick=undefined;picking=false;viewer.map.closePopup();if(!dialog.open)openWorkspacePane();notice('Map picking cancelled. Your draft is kept.');};document.addEventListener('keydown',cancelMapTool,true);
   viewer.map.on("contextmenu", rightClickPoint);
   function renderIcons() {
     const forms:HTMLElement[]=[];
@@ -2545,6 +2583,11 @@ export function mountWorkspace(
     }
   };
   window.addEventListener("beforeunload", beforeUnload);
+  const suspendView=()=>{if(disposed)return;captureCleanView();suspended=true;viewGeneration++;operationOwner.invalidate();processing?.abort();};
+  const resumeView=async(event:PageTransitionEvent)=>{if(!event.persisted||disposed)return;suspended=false;viewGeneration++;if(writing||unconfirmedWrite){notice('A save is still pending confirmation. Keep the retained draft; do not submit it again.');paneHost?.refresh();return;}try{const saved=(await store?.read())?.current;if(disposed||suspended)return;if(saved&&saved.revision!==revision){validateWorkspace(saved.data);if(dirty||unsaved){error('The saved workspace changed while this page was away. Your draft is kept; review backups or reload before another save.');return;}state=saved.data;revision=saved.revision;viewCache.clear();dialog.dataset.revision=String(revision);}applyLegacyFilters();refresh();paneHost?.refresh();}catch(cause){error(cause);}};
+  window.addEventListener('pagehide',suspendView);window.addEventListener('pageshow',resumeView);
+  const guardedLink=(event:MouseEvent)=>{if(!paneHost||!dialog.open||event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const anchor=(event.target as Element)?.closest<HTMLAnchorElement>('a[href]');if(!anchor||anchor.target&&anchor.target!=='_self'||anchor.hasAttribute('download'))return;const url=new URL(anchor.href,location.href);if(!['http:','https:'].includes(url.protocol))return;if(!dirty&&!detailActive&&!processing&&!interactionLocks&&!unsaved&&!pendingVisibility)return;event.preventDefault();event.stopImmediatePropagation();const href=url.href;paneHost.request({id:'native-link',label:'Open the selected page',run:()=>location.assign(href),revalidate:()=>!disposed&&anchor.isConnected&&anchor.href===href});};
+  document.addEventListener('click',guardedLink,true);
   const initialized = (async () => {
     try {
       store = await openWorkspace({ prepare: preparer.prepare });
@@ -2561,6 +2604,7 @@ export function mountWorkspace(
       hydrated = true;
       dialog.dataset.ready = "true";
       openButton.disabled = false;
+      if(paneHost){document.documentElement.dataset.uiMounted='071-v1';document.documentElement.dataset.uiAdapter='map-pane';}
       findButton.disabled = false;
       notice("Private workspace ready.");
       refresh();
@@ -2568,28 +2612,35 @@ export function mountWorkspace(
       void plannerUI?.loadLocalGraph();plannerUI?.initialShare();
     } catch (e) {
       openButton.disabled = false;
+      if(paneHost){document.documentElement.dataset.uiMounted='071-v1';document.documentElement.dataset.uiAdapter='map-pane';}
       findButton.disabled = false;
       error(e);
       refresh();
     }
   })();
-  return {
-    ready: initialized,
-    openTool(target:ToolTarget){
+  function openTool(target:ToolTarget):boolean{
       const destination=workspaceDestination(target);
       if(!destination)return false;
-      if(disposed||!hydrated)throw new Error('Workspace tools could not open. Check local storage and the workspace status, then try My workspace again.');
+      if(disposed||suspended||!hydrated)throw new Error('Workspace tools could not open. Check local storage and the workspace status, then try My workspace again.');
+      if(paneHost){if(currentTool===target){openWorkspacePane();return true;}if(dirty||detailActive||processing||interactionLocks||unsaved||pendingVisibility){paneHost.request({id:`tool:${target}`,label:`Open ${target.replaceAll('-',' ')}`,run:()=>{openTool(target);},revalidate:()=>!disposed&&hydrated});return true;}}
       if(dirty||detailActive||processing||interactionLocks||unsaved||pendingVisibility)throw new Error('Save or cancel your current draft before opening another tool.');
+      captureCleanView();
+      currentTool=target;dialog.dataset.uiToolTarget=target;
       if(destination.plannerSection){plannerUI!.open(destination.plannerSection);const heading=body.querySelector<HTMLElement>('h3');if(heading){heading.tabIndex=-1;heading.focus();}return true;}
       active=destination.tab;
       if(destination.section)usabilityUI.openSection(destination.section);
       renderPanel();
-      if(!dialog.open)dialog.showModal();
+      if(modern)viewCache.restore(viewTask());
+      if(!dialog.open)openWorkspacePane();
       const focus=destination.focus?body.querySelector<HTMLElement>('#'+destination.focus):nav.querySelector<HTMLElement>(`[data-tab="${active}"]`);
       focus?.focus();
       if(destination.focus)focus?.scrollIntoView({block:'center'});
       return true;
-    },
+    }
+  return {
+    ready: initialized,
+    showLayers(target:"key"|"layers"|"grid"|"updates"="layers"){paneHost?.layers(target);},
+    openTool,
     services,
     destroy() {
       plannerUI?.destroy();plannerPick=undefined;document.removeEventListener('map-planner-record',plannerRecord);
@@ -2597,6 +2648,11 @@ export function mountWorkspace(
       updatesUI.destroy();
       backgroundRequest++;
       disposed = true;
+      operationOwner.dispose();
+      paneHost?.destroy();
+      viewCache.clear();
+      document.removeEventListener('click',guardedLink,true);
+      window.removeEventListener('pagehide',suspendView);window.removeEventListener('pageshow',resumeView);
       findButton.remove();
       searchHighlight.remove();
       document.removeEventListener("map-duplicate-details", duplicateDetails);
@@ -2611,7 +2667,7 @@ export function mountWorkspace(
       preparer.destroy();
       store?.close();
       viewer.map.off("click", mapPick);
-      document.removeEventListener('keydown',cancelMapTool);cancelPress();viewer.map.getContainer().removeEventListener('pointerdown',press);viewer.map.getContainer().removeEventListener('pointermove',movePress);viewer.map.getContainer().removeEventListener('pointerup',cancelPress);viewer.map.getContainer().removeEventListener('pointercancel',cancelPress);
+      document.removeEventListener('keydown',cancelMapTool,true);cancelPress();viewer.map.getContainer().removeEventListener('pointerdown',press);viewer.map.getContainer().removeEventListener('pointermove',movePress);viewer.map.getContainer().removeEventListener('pointerup',cancelPress);viewer.map.getContainer().removeEventListener('pointercancel',cancelPress);
       viewer.map.off("contextmenu", rightClickPoint);
       viewer.map.off("zoomend moveend", zoom);
       viewer.map.off("popupopen", popupOpened);

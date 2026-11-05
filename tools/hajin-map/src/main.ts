@@ -1,3 +1,4 @@
+import {mountMapWorkspaceLayout} from './map/workspace-layout.ts';
 import {mountSidebarSections} from './map/sidebar-sections.ts';
 import {mountFieldToolbar} from './map/field-toolbar.ts';
 import {keyGridFocus} from './map/key-grid-control.ts';
@@ -93,7 +94,7 @@ const keyControls = document.querySelector<HTMLElement>('#key-controls')!;
 const keyDivider = document.querySelector<HTMLElement>('#map-key-resizer')!;
 const keyHeading = document.querySelector<HTMLElement>('.sidebar-heading')!;
 const keySummary = document.querySelector<HTMLElement>('.overlay-summary')!;
-const keySplit=mountSidebarSections({root:keyPanel,panes:[keyControls,document.querySelector<HTMLElement>('#map-key-content')!],dividers:[keyDivider],fixed:[keyHeading,keySummary],shares:[.42,.58],minimum:120});
+const keySplit=document.documentElement.dataset.uiVariant==='modern'?{refresh:()=>{}}:mountSidebarSections({root:keyPanel,panes:[keyControls,document.querySelector<HTMLElement>('#map-key-content')!],dividers:[keyDivider],fixed:[keyHeading,keySummary],shares:[.42,.58],minimum:120});
 const scheduleKeySplitSync=keySplit.refresh;
 let keyOpen = !keyBreakpoint.matches;
 function setKeyOpen(open: boolean, returnFocus = false) {
@@ -107,11 +108,12 @@ function setKeyOpen(open: boolean, returnFocus = false) {
 setKeyOpen(keyOpen);
 keyToggle.addEventListener('click', () => {
   // This button is an explicit opener. Clicking it must never hide an already open key.
+  if(modernLayout){document.dispatchEvent(new Event("ui-map-layers"));return;}
   setKeyOpen(true);
 
   document.querySelector<HTMLButtonElement>('#key-show-all')!.focus();
 });
-document.querySelector('#close-key')!.addEventListener('click', () => setKeyOpen(false, true));
+document.querySelector('#close-key')!.addEventListener('click', () => {if(modernLayout){modernLayout.showMap();document.querySelector<HTMLElement>('#ui-map-view')?.focus();}else setKeyOpen(false,true);});
 keyPanel.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); setKeyOpen(false, true); } });
 keyBreakpoint.addEventListener('change', event => setKeyOpen(!event.matches));
 
@@ -120,7 +122,7 @@ let state: MapState = 'loading';
 let focusRequestedKeyGrid=()=>{};
 function updateState(next: MapState) {
   state = next;
-  if(next==='ready') focusRequestedKeyGrid();
+  if(next==='ready'){document.querySelector<HTMLElement>('#map')!.dataset.uiToolTarget='map';focusRequestedKeyGrid();}
   document.querySelector('#map')!.setAttribute('aria-busy', String(next === 'loading'));
   document.querySelectorAll<HTMLButtonElement>('[data-map-control]').forEach(button => { button.disabled = next !== 'ready'; });
   status.hidden = next === 'ready';
@@ -137,6 +139,7 @@ export const viewer = createMapView(document.querySelector<HTMLElement>('#map')!
   document.querySelector('#position')!.textContent = x === null ? 'X —   Y —' : `X ${String(x).padStart(4, '0')}   Y ${String(y).padStart(4, '0')}`;
 }, zoom => { document.querySelector('#zoom-level')!.textContent = `ZOOM ${Math.round(100 * 2 ** (zoom - 4))}%`; });
 focusRequestedKeyGrid=keyGridFocus(viewer.map,viewer.coordinateGrid.supported,location.search);
+const modernLayout=mountMapWorkspaceLayout();
 const gridToggle=document.querySelector<HTMLInputElement>('#show-coordinate-grid')!;
 gridToggle.checked=viewer.coordinateGrid.isVisible();gridToggle.disabled=!viewer.coordinateGrid.supported;
 gridToggle.addEventListener('change',()=>viewer.coordinateGrid.setVisible(gridToggle.checked));
@@ -182,7 +185,7 @@ const sources=markerSources.map(createSource);
 document.querySelector('#key-show-all')!.addEventListener('click', () => sources.forEach(source => source.setAll(true)));
 document.querySelector('#key-hide-all')!.addEventListener('click', () => sources.forEach(source => source.setAll(false)));
 const layersDialog = document.querySelector<HTMLDialogElement>('#layers-dialog')!;
-document.querySelector('#layers')!.addEventListener('click', () => layersDialog.showModal());
+document.querySelector('#layers')!.addEventListener('click', () => {if(modernLayout){authorWorkspace.showLayers();}else layersDialog.showModal();});
 document.querySelector('#close-layers')!.addEventListener('click', () => layersDialog.close());
 
 document.querySelector('#zoom-in')!.addEventListener('click', () => viewer.zoomIn());
@@ -203,20 +206,21 @@ document.querySelector('#map')!.addEventListener('keydown', event => {
   if ((event as KeyboardEvent).key.toLowerCase() === 'r' && state === 'ready') { event.preventDefault(); viewer.reset(); }
 });
 const authorWorkspace = mountWorkspace(viewer, sources,source=>{const controller=createSource(source);sources.push(controller);return controller;});
+document.addEventListener("ui-map-layers",()=>authorWorkspace.showLayers());
 let workflowDisposed=false;window.addEventListener('pagehide',()=>workflowDisposed=true);window.addEventListener('pageshow',()=>workflowDisposed=false);
-const openWorkflow=async(target:import('./tool-links.ts').ToolTarget)=>{await authorWorkspace.ready;if(workflowDisposed)return;if(target==='layers'){document.querySelector<HTMLButtonElement>('#layers')?.click();return;}if(['key','grid','updates'].includes(target)){setKeyOpen(true);document.querySelector<HTMLElement>(target==='grid'?'#show-coordinate-grid':target==='updates'?'#map-source-updates':'#key-show-all')?.focus();return;}if(target==='map'){document.querySelector<HTMLElement>('#map')?.focus();return;}if(!authorWorkspace.openTool(target))throw Error('This tool is not available yet.');};
+const openWorkflow=async(target:import('./tool-links.ts').ToolTarget)=>{await authorWorkspace.ready;if(workflowDisposed)return;if(target==='layers'){document.querySelector<HTMLButtonElement>('#layers')?.click();return;}if(target==='key'||target==='grid'||target==='updates'){if(modernLayout)authorWorkspace.showLayers(target);else setKeyOpen(true);document.querySelector<HTMLElement>(target==='grid'?'#show-coordinate-grid':target==='updates'?'#map-source-updates':'#key-show-all')?.focus();return;}if(target==='map'){modernLayout?.showMap();document.querySelector<HTMLElement>('#map')?.focus();return;}if(!authorWorkspace.openTool(target))throw Error('This tool is not available yet.');};
 const disposeFieldToolbar=mountFieldToolbar(viewer.map,openWorkflow);
 sharedNavigation?.addEventListener('click',event=>{if(event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const a=(event.target as Element).closest<HTMLAnchorElement>('a[href]');if(!a)return;const url=new URL(a.href,location.href);if(url.origin!==location.origin)return;const target=parseToolTarget(url.search);if(!target)return;event.preventDefault();void openWorkflow(target).then(()=>{if(workflowDisposed)return;sharedNavigation.querySelectorAll('[aria-current]').forEach(n=>n.removeAttribute('aria-current'));a.setAttribute('aria-current','page');}).catch(error=>{if(workflowDisposed)return;let p=document.querySelector<HTMLElement>('#workflow-navigation-status');if(!p){p=document.createElement('p');p.id='workflow-navigation-status';p.setAttribute('role','alert');sharedNavigation.after(p);}p.textContent=error instanceof Error?error.message:'Tool unavailable';});});
-const disposeMenuLayout = mountMapMenuLayout(document.querySelector<HTMLElement>('.map-workspace')!);
+const disposeMenuLayout = modernLayout?()=>{}:mountMapMenuLayout(document.querySelector<HTMLElement>('.map-workspace')!);
 
 const requestedTool=parseToolTarget(location.search);
 function markToolNavigation(){const bosses=new URLSearchParams(location.search).getAll('boss'),target=requestedTool==='planner'&&bosses.length===1&&bosses[0].length>0&&bosses[0].length<=128?'boss-checklist':requestedTool,nav=document.querySelector('nav[aria-label="Main navigation"]');const match=Array.from(nav?.querySelectorAll<HTMLAnchorElement>('a[href]')??[]).find(a=>{const url=new URL(a.href,location.href);return url.origin===location.origin&&url.searchParams.get('tool')===target;});if(match){nav?.querySelectorAll('[aria-current="page"]').forEach(n=>n.removeAttribute('aria-current'));match.setAttribute('aria-current','page');const summary=nav?.querySelector('summary');if(summary)summary.textContent='More'+(match.closest('.nav-more')?' · '+match.textContent:'');}}
 
 if(requestedTool)void authorWorkspace.ready.then(()=>{
   if(authorWorkspace.openTool(requestedTool)){markToolNavigation();return;}
-  if(requestedTool==='layers'){layersDialog.showModal();document.querySelector<HTMLElement>('#close-layers')?.focus();}
+  if(requestedTool==='layers'){if(modernLayout)authorWorkspace.showLayers();else layersDialog.showModal();document.querySelector<HTMLElement>('#close-layers')?.focus();}
   else if(requestedTool==='key'||requestedTool==='grid'||requestedTool==='updates'){
-    setKeyOpen(true);
+    if(modernLayout)authorWorkspace.showLayers(requestedTool);else setKeyOpen(true);
     const target=document.querySelector<HTMLElement>(requestedTool==='grid'?'#show-coordinate-grid':requestedTool==='updates'?'#map-source-updates':'#key-show-all');
     if(target){if(requestedTool==='updates')target.tabIndex=-1;target.focus();target.scrollIntoView({block:'center'});}
   }else document.querySelector<HTMLElement>('#map')?.focus();
@@ -227,6 +231,6 @@ if(requestedTool)void authorWorkspace.ready.then(()=>{
   document.querySelector('.map-workspace')?.append(message);message.focus();
 });
 
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeFieldToolbar(); disposeMenuLayout(); authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { modernLayout?.destroy(); disposeFieldToolbar(); disposeMenuLayout(); authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
 }
 void startSources();

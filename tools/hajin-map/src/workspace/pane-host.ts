@@ -346,7 +346,7 @@ export function mountPaneHost(
     dialog.showModal();
     return true;
   };
-  const layers = () =>
+  const layers = (target:"key"|"layers"|"grid"|"updates"="layers") =>
     request({
       id: "layers",
       label: "Show Layers",
@@ -354,6 +354,7 @@ export function mountPaneHost(
         mode = "layers";
         if (dialog.open) dialog.close();
         key.hidden = false;
+        key.dataset.uiToolTarget=target;
         options.revealTask?.();
         focusFirst(key);
       },

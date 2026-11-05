@@ -1,5 +1,37 @@
 :root{font-family:Arial,Helvetica,sans-serif;color:#e8e9df;background:#131815;font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;--muted:#969f92;--line:#ffffff16;--accent:#d0db92}
 
+/* 071 allocation: one task owner, one terrain region, one route slot. */
+html[data-ui-variant=modern] #app{height:100dvh;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+html[data-ui-variant=modern] .app-header{height:auto;min-height:48px;flex:none;padding:.5rem 1rem;background:var(--ws-surface)}
+html[data-ui-variant=modern] .companion-nav{flex:none}
+html[data-ui-variant=modern] .workspace{height:auto;min-height:0;flex:1;display:grid;grid-template-columns:minmax(18rem,24rem) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;overflow:hidden}
+html[data-ui-variant=modern] .ui-map-view-controls{display:flex;gap:.5rem;padding:.25rem .75rem;flex:none;background:var(--ws-surface)}
+html[data-ui-variant=modern] .ui-map-view-controls button{padding:.4rem .8rem;background:var(--ws-raised);color:var(--ws-text);border:1px solid var(--ws-line)}
+html[data-ui-variant=modern] #ui-map-task{grid-column:1;grid-row:1/-1;min-width:0;min-height:0;overflow:auto;border-right:1px solid var(--ws-line);background:var(--ws-surface)}
+html[data-ui-variant=modern] #map-key{position:static;display:block;height:auto;max-height:none;border:0;box-shadow:none;overflow:visible;width:auto;margin:0;padding:0}
+html[data-ui-variant=modern] #map-key[hidden],html[data-ui-variant=modern] [hidden]{display:none!important}
+html[data-ui-variant=modern] :is(#key-controls,#map-key-content){height:auto!important;max-height:none;min-height:0;overflow:visible;flex:none;padding:1rem}
+html[data-ui-variant=modern] #map-key-resizer{display:none}
+html[data-ui-variant=modern] .map-workspace{grid-column:2;grid-row:1;min-width:0;min-height:0}
+html[data-ui-variant=modern] #ui-map-route{grid-column:2;grid-row:2;min-width:0;max-height:30dvh;overflow:auto;background:var(--ws-surface)}
+html[data-ui-variant=modern] #workspace-dialog:not(:modal){position:static;margin:0;width:100%;max-width:none;max-height:none;height:auto;border:0;border-radius:0;overflow:visible;background:var(--ws-surface)}
+html[data-ui-variant=modern] #workspace-dialog:not(:modal) .dialog-top{position:static;padding:.6rem;flex-wrap:wrap}
+html[data-ui-variant=modern] #workspace-dialog:not(:modal) nav{padding:.5rem;gap:.2rem;overflow:visible}
+html[data-ui-variant=modern] #workspace-dialog:not(:modal) #workspace-content{padding:.75rem}
+html[data-ui-variant=modern] .map-heading{display:none}
+html[data-ui-variant=modern] #ui-map-task .annotation-form{display:block}
+html[data-ui-variant=modern] .workspace-toast{display:none}
+html[data-ui-variant=modern][data-map-layout=map] .workspace,html[data-ui-variant=modern][data-map-layout=task] .workspace{grid-template-columns:minmax(0,1fr)}
+html[data-ui-variant=modern][data-map-layout=task] #ui-map-task{grid-column:1}
+html[data-ui-variant=modern][data-map-layout=map] .map-workspace,html[data-ui-variant=modern][data-map-layout=map] #ui-map-route{grid-column:1}
+html[data-ui-variant=modern][data-map-layout=task] #ui-map-route{display:none}
+html[data-ui-variant=modern] .ui-map-view-controls{flex-wrap:wrap;align-items:center;max-height:40dvh;overflow:auto}
+html[data-ui-variant=modern] .ui-map-view-controls :is(#workspace-open,.field-toolbar){position:static;margin:0;max-width:100%;width:auto;transform:none}
+html[data-ui-variant=modern] .ui-map-view-controls .field-toolbar{display:flex;flex-wrap:wrap;gap:.25rem;padding:0;border:0;box-shadow:none}
+html[data-ui-variant=modern] .ui-map-view-controls .field-toolbar-status:empty{display:none}
+html[data-ui-variant=modern] #ui-map-route .route-plan-summary{position:static;max-width:none;width:auto;margin:0;border-radius:0;max-height:none;--tracker-available-height:none}
+html[data-ui-variant=modern] :is(.waypoint-routes-open,.find-locations){display:none}
+
 #workspace-open{position:absolute;left:20px;right:auto;bottom:62px;z-index:450;padding:12px 18px;min-height:44px;background:#293822;color:#edf4df;border:1px solid #aabb7d;border-radius:4px;font-size:12px;font-weight:bold}
 #workspace-dialog{width:min(980px,calc(100vw - 24px));max-width:980px;max-height:calc(100dvh - 32px);padding:0;color:#e8e9df;background:#19211c;border:1px solid #667252;border-radius:8px;overflow:auto;overscroll-behavior:contain}
 #workspace-dialog .dialog-top{position:sticky;top:0;background:#19211c;z-index:2;padding:16px;border-bottom:1px solid #ffffff20;display:flex;justify-content:space-between;align-items:center;gap:12px}

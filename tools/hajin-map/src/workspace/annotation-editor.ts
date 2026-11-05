@@ -3,6 +3,8 @@ import type {UIServices} from './ui-context.ts';
 import type { Annotation, Workspace } from "./model.ts";
 import { makeAnnotation } from "./annotations.ts";
 import { el, button, field, input, select, note } from "./dom.ts";
+const draftSaves=new WeakMap<HTMLFormElement,()=>Promise<boolean>>();
+export function saveAnnotationEditor(form:HTMLFormElement){return draftSaves.get(form)?.()??Promise.resolve(false);}
 export function annotationEditor(
   state: Workspace,
   initial: Annotation | undefined,
@@ -128,9 +130,8 @@ export function annotationEditor(
   submit.type = "submit";
   submit.id = "save-point";
   form.append(submit, button("Cancel editing", cancel, "cancel-point"));
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
+  const saveDraft=async()=>{
+    if(submit.disabled||!form.reportValidity())return false;
     submit.disabled = true;
     try {
       if(evidenceFile.files?.length||caption.value.trim())throw new Error('Attach or clear the selected screenshot before saving the point.');
@@ -157,13 +158,17 @@ export function annotationEditor(
           ? { ...value, id: initial.id, createdAt: initial.createdAt }
           : value,
       );
+      return true;
     } catch (error) {
       onError(error);
+      return false;
     } finally {
       submit.disabled = false;
       if (submit.isConnected) submit.focus();
     }
-  });
+  };
+  draftSaves.set(form,saveDraft);
+  form.addEventListener("submit",event=>{event.preventDefault();void saveDraft();});
   update();
   return form;
 }

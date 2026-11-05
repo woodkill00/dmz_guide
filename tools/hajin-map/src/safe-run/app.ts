@@ -1,3 +1,4 @@
+import {mountSafeRunLayout} from './layout.ts';
 import { mountSidebarSections } from "../map/sidebar-sections.ts";
 import L from "leaflet";
 import SafeRunWorker from "./worker.ts?worker&inline";
@@ -38,7 +39,8 @@ document.querySelector("#app")!.innerHTML = `
 </div></aside><section class="safe-terrain" aria-label="Safe-run map"><div id="safe-map" tabindex="0" role="region" aria-label="Hajin safe-run map. Arrow keys pan; plus and minus zoom."></div><div class="safe-map-tools" role="group" aria-label="Map controls"><button id="safe-zoom-in" type="button" aria-label="Zoom in">+</button><button id="safe-zoom-out" type="button" aria-label="Zoom out">−</button><button id="safe-reset" type="button">Full map</button><label><input id="safe-grid" type="checkbox" checked> Grid</label></div><p id="terrain-status" role="status"></p><p class="safe-map-credit">Source-reported safe locations · © Activision · manual planning</p></section></main>`;
 const $ = <T extends HTMLElement>(id: string) =>
   document.getElementById(id) as T;
-mountSidebarSections({
+const disposeModernLayout=mountSafeRunLayout();
+if(document.documentElement.dataset.uiVariant!=='modern')mountSidebarSections({
   root: $("safe-controls"),
   panes: [
     $("safe-start-pane"),
@@ -735,3 +737,5 @@ window.addEventListener("pageshow", (event) => {
   }
 });
 void load();
+
+if(import.meta.hot)import.meta.hot.dispose(disposeModernLayout);
