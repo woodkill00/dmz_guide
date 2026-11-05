@@ -48,6 +48,7 @@ const sourceInfo = `
   <p class="small-note">Keyboard: focus the map, use arrow keys to pan and + / − to zoom. Tab moves to the next control.</p>
   <p class="independent">An independent fan project. Not affiliated with Activision or Infinity Ward.</p>`;
 
+const modernKey = document.documentElement.dataset.uiVariant === 'modern';
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <a class="skip-link" href="#map">Skip to map</a>
   <header class="app-header">
@@ -58,7 +59,11 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <main class="workspace">
     <aside id="map-key" class="sidebar" aria-label="Map key">
       <div class="sidebar-heading"><span class="section-number">MAP KEY</span><button id="close-key" class="key-close" aria-label="Hide map key" title="Retract menu and expand map">‹</button></div>
-      <div id="key-controls" data-section-name="controls" class="key-toolbar"><p>Choose the symbols shown on your map.</p><label class="grid-toggle"><input id="show-coordinate-grid" type="checkbox" checked aria-describedby="coordinate-grid-help"> Coordinate grid (A–J / 1–9)</label><p id="coordinate-grid-help" class="small-note">Source-aligned tactical grid. Unlabelled margins show —.</p><div class="layer-bulk"><button id="key-show-all" disabled>Show all</button><button id="key-hide-all" disabled>Hide all</button></div><p id="key-summary" role="status">Loading icons…</p></div>
+      ${modernKey ? `<div id="key-controls" data-section-name="controls" class="key-toolbar">
+        <div class="key-quick-controls"><label class="grid-toggle"><input id="show-coordinate-grid" type="checkbox" checked aria-label="Coordinate grid (A–J / 1–9)" aria-describedby="coordinate-grid-help">Grid</label><div class="layer-bulk"><button id="key-show-all" disabled>Show all</button><button id="key-hide-all" disabled>Hide all</button></div></div>
+        <div class="key-status-toolbar"><div class="key-stats-line"><div class="key-count"><span>Source markers</span><p id="key-summary" role="status">Loading…</p></div><details id="key-map-info"><summary aria-label="Map display details" title="Map display details">${icon('info')}</summary><div class="key-info-body"><p id="coordinate-grid-help">Grid A–J / 1–9 follows the source map. Unlabelled margins show —.</p><p id="key-summary-details">Loading source details…</p></div></details></div><div id="key-update-slot"></div></div>
+        <p id="key-availability-warning" role="status" hidden></p>
+      </div>` : `<div id="key-controls" data-section-name="controls" class="key-toolbar"><p>Choose the symbols shown on your map.</p><label class="grid-toggle"><input id="show-coordinate-grid" type="checkbox" checked aria-describedby="coordinate-grid-help"> Coordinate grid (A–J / 1–9)</label><p id="coordinate-grid-help" class="small-note">Source-aligned tactical grid. Unlabelled margins show —.</p><div class="layer-bulk"><button id="key-show-all" disabled>Show all</button><button id="key-hide-all" disabled>Hide all</button></div><p id="key-summary" role="status">Loading icons…</p></div>`}
       <div id="map-key-resizer" class="key-resizer" role="separator" aria-label="Resize map key sections" aria-orientation="horizontal" aria-controls="key-controls map-key-content" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" tabindex="0" title="Drag or use Up and Down to resize map key sections"></div>
       <div id="map-key-content" data-section-name="layers" class="key-content"></div>
       <div class="overlay-summary">${icon('map')}<div><strong id="official-summary">Loading official locations…</strong><span>No authored markers yet</span></div><span id="official-summary-count" class="marker-count">—</span></div>
@@ -89,6 +94,10 @@ const keyBreakpoint = window.matchMedia('(max-width: 760px)');
 const sharedNavigation=document.querySelector<HTMLElement>('.companion-nav');
 if(sharedNavigation)document.querySelector('.app-header')!.after(sharedNavigation);
 const keyPanel = document.querySelector<HTMLElement>('#map-key')!;
+const keyInfo=document.querySelector<HTMLDetailsElement>('#key-map-info');
+keyInfo?.addEventListener('keydown',event=>{if(event.key==='Escape'&&keyInfo.open){event.preventDefault();event.stopPropagation();keyInfo.open=false;keyInfo.querySelector<HTMLElement>('summary')?.focus({preventScroll:true});}});
+keyInfo?.addEventListener('toggle',()=>{if(keyInfo.open){const updates=document.querySelector<HTMLDetailsElement>('.key-updates-menu');if(updates)updates.open=false;}});
+
 const keyToggle = document.querySelector<HTMLButtonElement>('#toggle-key')!;
 const keyControls = document.querySelector<HTMLElement>('#key-controls')!;
 const keyDivider = document.querySelector<HTMLElement>('#map-key-resizer')!;

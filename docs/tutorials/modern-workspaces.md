@@ -43,3 +43,6 @@ When the map and left menu fit side by side, drag the grip on the menu’s right
 
 
 **All map categories** groups imported markers by type, such as Keys, Locations, Safes and Fortresses. A type checkbox controls its represented source categories; a mixed checkbox means some are enabled. Named sites and original provider labels remain in the website sections for detailed checks. Unmapped types are grouped under Other. Show all / Hide all still applies to the whole relevant section.
+
+
+The map key starts with compact Grid and Show all / Hide all controls. Its short source-marker count has an info button for full coverage, duplicate, alignment and custom/reviewed counts. Updates opens Check sources / Review staged; opening that menu does not run a check. Busy, unavailable, error and recovery feedback remains visible. Escape closes the info or update disclosure first; details expand in the menu rather than covering the map.

@@ -1,5 +1,5 @@
-import {sourceImpacts} from './operations.ts';
-import {sourceChanges} from './field-guide.ts';
+import { sourceImpacts } from "./operations.ts";
+import { sourceChanges } from "./field-guide.ts";
 import { el, button, note } from "./dom.ts";
 import type { UIServices } from "./ui-context.ts";
 import type { Workspace } from "./model.ts";
@@ -106,13 +106,17 @@ export function createSourceUpdates(
     allowed: () => boolean;
     transition: <T>(work: () => Promise<T>) => Promise<T>;
     finish: () => void;
+    returnToMenu?: () => void;
     replace: (d: CaptureDescriptor[]) => Promise<void>;
     select: (entries: { key: string; digest: string }[]) => void;
   },
 ) {
+  const modern = document.documentElement.dataset.uiVariant === "modern";
   const root = el("section", undefined, "source-update-controls");
   root.id = "map-source-updates";
-  const status = note("Checking local update service…");
+  const status = note(
+    modern ? "Checking updates…" : "Checking local update service…",
+  );
   status.setAttribute("role", "status");
   status.setAttribute("aria-live", "polite");
   let token = "",
@@ -121,6 +125,10 @@ export function createSourceUpdates(
     activeJob: string | undefined,
     controller: AbortController | undefined;
   const start = button("Update map sources", run, "update-map-sources");
+  if (modern) {
+    start.textContent = "Check sources";
+    start.setAttribute("aria-label", "Update map sources");
+  }
   start.disabled = true;
   const cancel = button(
     "Cancel update",
@@ -162,7 +170,12 @@ export function createSourceUpdates(
             ),
           );
         if (!data.jobs.length) node.append(note("No staged updates."));
-        node.append(button("Close", h.closeDetail));
+        node.append(
+          button("Close", () => {
+            h.closeDetail();
+            if (modern) h.returnToMenu?.();
+          }),
+        );
         h.detail(node);
       } catch (e) {
         h.error(e);
@@ -171,7 +184,46 @@ export function createSourceUpdates(
     "manage-map-updates",
   );
   manage.hidden = true;
-  root.append(start, cancel, recover, manage, status);
+  let quietStatus = "";
+  const statusObserver = modern
+    ? new MutationObserver(() => {
+        if (status.textContent !== quietStatus) status.hidden = false;
+      })
+    : undefined;
+  statusObserver?.observe(status, {
+    childList: true,
+    characterData: true,
+    subtree: true,
+  });
+  if (modern) {
+    root.tabIndex = -1;
+    const menu = el("details", undefined, "key-updates-menu");
+    menu.append(el("summary", "Updates"), start, manage);
+    menu.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menu.open) {
+        event.preventDefault();
+        event.stopPropagation();
+        menu.open = false;
+        menu
+          .querySelector<HTMLElement>("summary")
+          ?.focus({ preventScroll: true });
+      }
+    });
+    menu.addEventListener("toggle", () => {
+      if (menu.open) {
+        const info =
+          document.querySelector<HTMLDetailsElement>("#key-map-info");
+        if (info) info.open = false;
+      }
+    });
+
+    manage.textContent = "Review staged";
+    manage.setAttribute("aria-label", "Manage staged updates");
+    root.append(menu, cancel, recover, status);
+    root.addEventListener("focus", () => {
+      menu.open = true;
+    });
+  } else root.append(start, cancel, recover, manage, status);
   let invalidReceipt = false;
   const discardReceipt = button(
     "Discard damaged recovery metadata",
@@ -268,9 +320,16 @@ export function createSourceUpdates(
       start.disabled = false;
       manage.hidden = false;
       recover.hidden = !pending();
-      if (!invalidReceipt)
-        status.textContent =
-          "Check configured websites. Review changes before adding them; unconfigured sources keep their previous data.";
+      if (!invalidReceipt) {
+        quietStatus = modern
+          ? "Review changes before applying."
+          : "Check configured websites. Review changes before adding them; unconfigured sources keep their previous data.";
+        status.textContent = quietStatus;
+        status.hidden = modern && recover.hidden;
+        if (modern && !recover.hidden)
+          status.textContent =
+            "Pending update. Resume or review staged changes.";
+      }
     } catch (e) {
       status.textContent =
         e instanceof SyntaxError
@@ -327,6 +386,7 @@ export function createSourceUpdates(
     h.notice("Map source update applied.");
   }
   async function resume() {
+    status.hidden = false;
     if (!h.allowed()) {
       h.error("Save or cancel your current draft before resuming an update.");
       return;
@@ -420,6 +480,8 @@ export function createSourceUpdates(
       return;
     }
     busy = true;
+    status.hidden = false;
+    if (modern) status.textContent = "Checking sources…";
     start.disabled = true;
     cancel.hidden = false;
     controller = new AbortController();
@@ -490,11 +552,104 @@ export function createSourceUpdates(
         const incoming = prepared.find((p) => p.snapshot.sourceId === o.id);
         if (incoming) {
           const d = refreshPreview(h.state(), incoming.snapshot);
-          const old=h.state().snapshots.filter(e=>e.snapshot.sourceId===o.id).at(-1)?.snapshot??(()=>{try{const raw=h.legacySnapshot(o.id);return raw?adaptOfficial(raw,o.id):undefined;}catch{return undefined;}})();
-          const impacts=sourceImpacts(h.state().fieldGuide,old,incoming.snapshot),impactBox=el('details');impactBox.dataset.sourceImpact=o.id;impactBox.append(el('summary',`${impacts.length} saved plan/tracking/history references affected`));for(const impact of impacts.slice(0,100))impactBox.append(note(`${impact.kind}: ${impact.label} · ${impact.change}${impact.kind==='history'?' · historical capture remains frozen':''}`));if(impacts.length>100)impactBox.append(note('More impacts are available in Planner → Update impacts after applying.'));impactBox.append(note('Source captures can refresh unchanged locations too. Explicitly repair current references in Planner → Update impacts; historical references are never retargeted.'));node.append(impactBox);
-          const rows=sourceChanges(old,incoming.snapshot),changes=el('details');changes.dataset.sourceChanges=o.id;
-          changes.append(el('summary',`${rows.length} changed locations · names, positions and removals`));let page=0;const list=el('div');
-          const show=()=>{list.replaceChildren(note(`Page ${page+1}/${Math.max(1,Math.ceil(rows.length/50))} · up to200 per-source entries shown`));for(const row of rows.slice(page*50,Math.min((page+1)*50,200))){const item=el('article',undefined,'workspace-card');item.append(el('strong',row.types.join(' + ')),note(`Before: ${row.before?.title??'not present'}${row.before?` · X ${row.before.x??'unplaced'}, Y ${row.before.y??'unplaced'}`:''}`),note(`After: ${row.after?.title??'missing from new capture'}${row.after?` · X ${row.after.x??'unplaced'}, Y ${row.after.y??'unplaced'}`:''}`));list.append(item);}const prev=button('Previous changes',()=>{page--;show();}),next=button('Next changes',()=>{page++;show();});prev.disabled=page===0;next.disabled=(page+1)*50>=Math.min(rows.length,200);list.append(prev,next);};show();changes.append(list);if(rows.length>200)changes.append(note('Additional changes remain in the captures; this preview is capped at200 entries.'));node.append(changes);
+          const old =
+            h
+              .state()
+              .snapshots.filter((e) => e.snapshot.sourceId === o.id)
+              .at(-1)?.snapshot ??
+            (() => {
+              try {
+                const raw = h.legacySnapshot(o.id);
+                return raw ? adaptOfficial(raw, o.id) : undefined;
+              } catch {
+                return undefined;
+              }
+            })();
+          const impacts = sourceImpacts(
+              h.state().fieldGuide,
+              old,
+              incoming.snapshot,
+            ),
+            impactBox = el("details");
+          impactBox.dataset.sourceImpact = o.id;
+          impactBox.append(
+            el(
+              "summary",
+              `${impacts.length} saved plan/tracking/history references affected`,
+            ),
+          );
+          for (const impact of impacts.slice(0, 100))
+            impactBox.append(
+              note(
+                `${impact.kind}: ${impact.label} · ${impact.change}${impact.kind === "history" ? " · historical capture remains frozen" : ""}`,
+              ),
+            );
+          if (impacts.length > 100)
+            impactBox.append(
+              note(
+                "More impacts are available in Planner → Update impacts after applying.",
+              ),
+            );
+          impactBox.append(
+            note(
+              "Source captures can refresh unchanged locations too. Explicitly repair current references in Planner → Update impacts; historical references are never retargeted.",
+            ),
+          );
+          node.append(impactBox);
+          const rows = sourceChanges(old, incoming.snapshot),
+            changes = el("details");
+          changes.dataset.sourceChanges = o.id;
+          changes.append(
+            el(
+              "summary",
+              `${rows.length} changed locations · names, positions and removals`,
+            ),
+          );
+          let page = 0;
+          const list = el("div");
+          const show = () => {
+            list.replaceChildren(
+              note(
+                `Page ${page + 1}/${Math.max(1, Math.ceil(rows.length / 50))} · up to200 per-source entries shown`,
+              ),
+            );
+            for (const row of rows.slice(
+              page * 50,
+              Math.min((page + 1) * 50, 200),
+            )) {
+              const item = el("article", undefined, "workspace-card");
+              item.append(
+                el("strong", row.types.join(" + ")),
+                note(
+                  `Before: ${row.before?.title ?? "not present"}${row.before ? ` · X ${row.before.x ?? "unplaced"}, Y ${row.before.y ?? "unplaced"}` : ""}`,
+                ),
+                note(
+                  `After: ${row.after?.title ?? "missing from new capture"}${row.after ? ` · X ${row.after.x ?? "unplaced"}, Y ${row.after.y ?? "unplaced"}` : ""}`,
+                ),
+              );
+              list.append(item);
+            }
+            const prev = button("Previous changes", () => {
+                page--;
+                show();
+              }),
+              next = button("Next changes", () => {
+                page++;
+                show();
+              });
+            prev.disabled = page === 0;
+            next.disabled = (page + 1) * 50 >= Math.min(rows.length, 200);
+            list.append(prev, next);
+          };
+          show();
+          changes.append(list);
+          if (rows.length > 200)
+            changes.append(
+              note(
+                "Additional changes remain in the captures; this preview is capped at200 entries.",
+              ),
+            );
+          node.append(changes);
           node.append(
             note(
               `${d.affectedEntities.length} reviewed decisions will need checking. ${h.state().snapshots.some((s) => s.digest === incoming.digest) ? "Already in this workspace; capture will be reused." : ""}`,
@@ -601,6 +756,7 @@ export function createSourceUpdates(
     root,
     destroy() {
       disposed = true;
+      statusObserver?.disconnect();
       controller?.abort();
       root.remove();
     },

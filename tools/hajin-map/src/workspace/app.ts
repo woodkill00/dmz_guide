@@ -650,6 +650,7 @@ export function mountWorkspace(
     (!detailActive || usabilityDetail);
   const updatesUI = createSourceUpdates({
     ...services,error:scopeError('sources'),
+    returnToMenu:()=>{paneHost?.layers("updates");document.querySelector<HTMLElement>("#map-source-updates")?.focus();},
     allowed: () => canInspect() && !unsaved && !pendingVisibility,
     transition: async (work) => {
       const unlock = lockInteraction();
@@ -683,7 +684,7 @@ export function mountWorkspace(
       }
     },
   });
-  document.querySelector(".key-toolbar")!.append(updatesUI.root);
+  (document.querySelector("#key-update-slot") ?? document.querySelector(".key-toolbar"))!.append(updatesUI.root);
   const usabilityUI = createUsabilityUI({
     ...services,error:scopeError('find'),
     records: getExplorerRecords,
@@ -1859,8 +1860,14 @@ export function mountWorkspace(
       )
       .reduce((n, e) => n + e.snapshot.records.length, 0);
     const keySummary = document.querySelector("#key-summary");
-    if (keySummary)
-      keySummary.textContent = `${shownRaw} / ${totalRaw} raw source locations · ${duplicatePlan.suppressed.size} likely duplicate copies hidden · ${unregistered} awaiting registration${capacityExcluded.size ? ` · ${capacityExcluded.size} source(s) unavailable at the20,000-record view limit` : ""} · ${state.annotations.length} custom points · ${state.entities.filter((e) => e.acceptance === "accepted").length} reviewed`;
+    const sourceDetails = `${shownRaw} / ${totalRaw} raw source locations · ${duplicatePlan.suppressed.size} likely duplicate copies hidden · ${unregistered} awaiting registration${capacityExcluded.size ? ` · ${capacityExcluded.size} source(s) unavailable at the20,000-record view limit` : ""} · ${state.annotations.length} custom points · ${state.entities.filter((e) => e.acceptance === "accepted").length} reviewed`;
+    if (keySummary) {
+      keySummary.textContent = modern ? `${shownRaw} / ${totalRaw}` : sourceDetails;
+      if(modern)keySummary.setAttribute('aria-label',`${shownRaw} of ${totalRaw} source markers shown`);
+    }
+    const keyDetails=document.querySelector('#key-summary-details');if(keyDetails)keyDetails.textContent=sourceDetails;
+    const keyWarning=document.querySelector<HTMLElement>('#key-availability-warning');
+    if(keyWarning){const warnings=[...(unregistered?[`${unregistered} need alignment`]:[]),...(capacityExcluded.size?[`${capacityExcluded.size} source(s) over the view limit`]:[])];keyWarning.textContent=warnings.join(' · ');keyWarning.hidden=!warnings.length;}
     const summary = document.querySelector("#official-summary");
     if (summary)
       summary.textContent = `${shownRaw} / ${totalRaw} raw source locations`;

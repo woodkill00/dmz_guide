@@ -32,6 +32,7 @@ const map = [
   "ui-pane-modes-browser",
   "ui-task-resize-browser",
   "ui-category-types-browser",
+  "ui-key-toolbar-browser",
   "ui-state-browser",
   "ui-rollback-browser",
   "ui-bfcache-write-browser",
