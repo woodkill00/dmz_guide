@@ -221,6 +221,40 @@ try {
           JSON.stringify({ viewport: width, ...bounds }),
         );
       }
+      // The supported9999 bound needs a four-digit slot, including999→1000.
+      await page.locator("#boss-open-ltA").click();
+      await page
+        .getByText("Target settings and history", { exact: true })
+        .click();
+      await page
+        .getByLabel("Starting kills (before this log)", { exact: true })
+        .fill("999");
+      await page
+        .getByRole("button", { name: "Save target settings", exact: true })
+        .click();
+      await page.waitForFunction(() =>
+        document
+          .querySelector(".boss-detail-counts dd")
+          ?.textContent.startsWith("999 /"),
+      );
+      await page
+        .getByRole("link", { name: "Back to boss list", exact: true })
+        .click();
+      const fourDigit = page.locator("#boss-quick-kills-plus-ltA");
+      await fourDigit.scrollIntoViewIfNeeded();
+      const beforeFour = await fourDigit.boundingBox();
+      await fourDigit.click();
+      await page.waitForFunction(
+        () =>
+          document.querySelector("[data-boss-id=ltA] td:nth-child(2) strong")
+            ?.textContent === "1000",
+      );
+      const afterFour = await fourDigit.boundingBox();
+      assert.ok(
+        Math.abs(beforeFour.x - afterFour.x) <= 1 &&
+          Math.abs(beforeFour.y - afterFour.y) <= 1,
+        "999→1000 preserves counter coordinates",
+      );
       await page.locator("#boss-order-ltA").focus();
       await page.keyboard.press("Home");
       await page.waitForFunction(

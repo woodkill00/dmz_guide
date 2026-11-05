@@ -26,7 +26,7 @@ html[data-ui-variant="modern"] #boss-checklist .boss-counter-actions {
   gap: 0.125rem;
 }
 html[data-ui-variant="modern"] #boss-checklist .boss-counter-actions strong {
-  min-inline-size: 3ch;
+  min-inline-size: 4ch;
   font-variant-numeric: tabular-nums;
 }
 html[data-ui-variant="modern"]
