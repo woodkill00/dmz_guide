@@ -1,3 +1,4 @@
+import {mountSelectionDiagnostics} from './map/selection-diagnostics.ts';
 import {mountMapWorkspaceLayout} from './map/workspace-layout.ts';
 import {mountSidebarSections} from './map/sidebar-sections.ts';
 import {mountFieldToolbar} from './map/field-toolbar.ts';
@@ -214,6 +215,7 @@ document.addEventListener('fullscreenchange', () => fullscreen.setAttribute('ari
 document.querySelector('#map')!.addEventListener('keydown', event => {
   if ((event as KeyboardEvent).key.toLowerCase() === 'r' && state === 'ready') { event.preventDefault(); viewer.reset(); }
 });
+const disposeSelectionDiagnostics=mountSelectionDiagnostics(viewer.map);
 const authorWorkspace = mountWorkspace(viewer, sources,source=>{const controller=createSource(source);sources.push(controller);return controller;});
 document.addEventListener("ui-map-layers",()=>authorWorkspace.showLayers());
 let workflowDisposed=false;window.addEventListener('pagehide',()=>workflowDisposed=true);window.addEventListener('pageshow',()=>workflowDisposed=false);
@@ -240,6 +242,6 @@ if(requestedTool)void authorWorkspace.ready.then(()=>{
   document.querySelector('.map-workspace')?.append(message);message.focus();
 });
 
-if (import.meta.hot) import.meta.hot.dispose(() => { modernLayout?.destroy(); disposeFieldToolbar(); disposeMenuLayout(); authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeSelectionDiagnostics(); modernLayout?.destroy(); disposeFieldToolbar(); disposeMenuLayout(); authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
 }
 void startSources();
