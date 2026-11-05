@@ -2493,7 +2493,7 @@ export function mountWorkspace(
     if (applyingFilters || !hydrated) return;
     syncUnmigratedLegacy();
     applyLegacyFilters();
-    renderMarkers();
+    if(modern&&selectionOpen)deferredMapRedraw=true;else renderMarkers();
     renderKey();
     refreshHighlight();
     if (dialog.open && active === "explore" && !dirty && !detailActive)

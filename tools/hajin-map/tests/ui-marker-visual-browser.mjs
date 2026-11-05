@@ -59,7 +59,10 @@ try {
   })) {
     const b = await engine.launch();
     try {
-      const c = await b.newContext({ reducedMotion: "reduce" }),
+      const c = await b.newContext({
+          reducedMotion: "reduce",
+          recordVideo: { dir: ".local/marker-visual/video" },
+        }),
         p = await c.newPage(),
         errors = [],
         external = [];
@@ -129,7 +132,7 @@ try {
             ],
             records: [
               ["a", "SYNTHETIC Alpha", "dmz_gasStation", 0.5, 0.5],
-              ["b", "SYNTHETIC Bravo", "dmz_gasStation", 0.7, 0.5],
+              ["b", "SYNTHETIC Bravo", "safe", 0.7, 0.5],
               ["safe", "SYNTHETIC Safe", "safe", 0.5, 0.5],
             ].map(([id, name, category, x, y]) => ({
               id,
@@ -186,10 +189,25 @@ try {
         assert.ok(heldRoad, "Local road check started before marker selection");
         await p.evaluate(() => {
           window.__selectionLost = false;
+          window.__selectionHidden = false;
+          window.__selectionWatching = true;
           const n = document.querySelector("#ui-selection-detail");
           window.__selectionWatch = new MutationObserver(() => {
             if (!n.isConnected) window.__selectionLost = true;
           });
+          const sample = () => {
+            const title = n.querySelector(".marker-popup-title");
+            const r = title?.getBoundingClientRect();
+            if (
+              !n.isConnected ||
+              !r?.width ||
+              !r?.height ||
+              getComputedStyle(title).visibility !== "visible"
+            )
+              window.__selectionHidden = true;
+            if (window.__selectionWatching) requestAnimationFrame(sample);
+          };
+          requestAnimationFrame(sample);
           window.__selectionWatch.observe(document.body, {
             subtree: true,
             childList: true,
@@ -213,19 +231,30 @@ try {
               }
             : { status: 404, body: "Synthetic absent roads" },
         );
-        await p.waitForTimeout(800);
+        await p.evaluate(() =>
+          document.dispatchEvent(new CustomEvent("map-source-status")),
+        );
+        await p.waitForTimeout(1000);
+        await p.screenshot({
+          path: `.local/marker-visual/${engineName}-${label}-held-1s.png`,
+        });
+        await p.waitForTimeout(4000);
+        await p.screenshot({
+          path: `.local/marker-visual/${engineName}-${label}-held-5s.png`,
+        });
         assert.equal(
           await selectedNode.evaluate((n) => n.isConnected),
           true,
-          "Original selection must survive late road readiness",
+          "Original selection must survive roads and source-status refreshes for five seconds",
         );
         assert.equal(
           await p.evaluate(() => {
+            window.__selectionWatching = false;
             window.__selectionWatch.disconnect();
-            return window.__selectionLost;
+            return window.__selectionLost || window.__selectionHidden;
           }),
           false,
-          "Selection must never disappear during background refresh",
+          "Selection must remain connected and visibly rendered on every sampled frame for five seconds",
         );
         const geometry = await p.evaluate(() => {
           const title = document
@@ -329,6 +358,7 @@ try {
           label,
           geometry,
           originalActions: true,
+          visibleForFiveSecondsAfterSourceStatus: true,
           cameraAndDataPreserved: true,
         });
       }
@@ -338,9 +368,48 @@ try {
         await p.locator("#safe-settings:not([disabled])").waitFor();
         await p.locator("#terrain-status").waitFor({ state: "hidden" });
         await p.locator("#safe-map-view").click();
-        await p.locator(".safe-number-marker").click();
+        await p
+          .locator('.safe-number-marker[title*="SYNTHETIC Bravo"]')
+          .click();
         const popup = p.locator(".readable-marker-popup");
         await popup.waitFor();
+        const popupNode = await popup.elementHandle();
+        await p.evaluate(() => {
+          const n = document.querySelector(".readable-marker-popup");
+          window.__safePopupMissing = false;
+          window.__watchSafe = true;
+          const sample = () => {
+            if (
+              !n.isConnected ||
+              !n.getBoundingClientRect().width ||
+              getComputedStyle(n).visibility !== "visible"
+            )
+              window.__safePopupMissing = true;
+            if (window.__watchSafe) requestAnimationFrame(sample);
+          };
+          requestAnimationFrame(sample);
+        });
+        await p.waitForTimeout(1000);
+        await p.screenshot({
+          path: `.local/marker-visual/${engineName}-safe-${width}-held-1s.png`,
+        });
+        await p.waitForTimeout(4000);
+        await p.screenshot({
+          path: `.local/marker-visual/${engineName}-safe-${width}-held-5s.png`,
+        });
+        assert.equal(
+          await popupNode.evaluate((n) => n.isConnected),
+          true,
+          "Safe popup stays open for five seconds",
+        );
+        assert.equal(
+          await p.evaluate(() => {
+            window.__watchSafe = false;
+            return window.__safePopupMissing;
+          }),
+          false,
+          "Safe popup remains visibly rendered on every sampled frame",
+        );
         const box = await popup.boundingBox(),
           map = await p.locator("#safe-map").boundingBox();
         assert.ok(

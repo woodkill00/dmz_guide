@@ -37,12 +37,20 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   function update(persistLegacy = true) {
     if (!snapshot) return;
     if(capacityBlocked){root.clearLayers();onUpdate(0,snapshot.records.length,'failed');capacityMessage();return;}
-    root.clearLayers();
+    // Reconcile membership without detaching unchanged selected markers/popups.
     if (markerPool.length) {
-      groups.forEach(group => group.clearLayers());
-      for (const {record, marker} of markerPool) if (!suppressed.has(record.id) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())) groups.get(record.category)?.addLayer(marker);
+      const wanted = new Map<L.LayerGroup, Set<L.Layer>>();
+      groups.forEach(group => wanted.set(group, new Set()));
+      for (const {record, marker} of markerPool) if (!suppressed.has(record.id) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())) wanted.get(groups.get(record.category)!)?.add(marker);
+      for (const [group, members] of wanted) {
+        group.eachLayer(layer => { if (!members.has(layer)) group.removeLayer(layer); });
+        for (const layer of members) if (!group.hasLayer(layer)) group.addLayer(layer);
+      }
     }
-    if (master) for (const [id, group] of groups) if (enabled.has(id)) root.addLayer(group);
+    for (const [id, group] of groups) {
+      if (master && enabled.has(id)) { if (!root.hasLayer(group)) root.addLayer(group); }
+      else if (root.hasLayer(group)) root.removeLayer(group);
+    }
     const visible = master ? snapshot.records.filter(record => record.placement!=='reference' && !suppressed.has(record.id) && enabled.has(record.category) && `${record.name} ${record.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())).length : 0;
     onUpdate(visible, snapshot.records.length, 'ready');
     const count = container.querySelector(`#${source.id}-count`);
