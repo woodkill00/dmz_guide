@@ -1,15 +1,17 @@
 // Synthetic workspace only; exercises the real modern map pane and original boss domains.
 import assert from "node:assert/strict";
+import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 import { chromium, firefox, webkit } from "playwright";
 process.env.DMZ_UI_VARIANT = "modern";
 const server = await createServer({
+  root: fileURLToPath(new URL("../", import.meta.url)),
   cacheDir: ".local/ui-bosses-vite",
-  server: { host: "127.0.0.1", port: 5292, strictPort: true, hmr: false },
+  server: { host: "127.0.0.1", port: 0, strictPort: true, hmr: false },
   define: { "import.meta.env.VITE_LOCAL_PROVIDER_SNAPSHOTS": '"0"' },
 });
 await server.listen();
-const base = "http://127.0.0.1:5292";
+const base = `http://127.0.0.1:${server.httpServer.address().port}`;
 try {
   for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     const browser = await engine.launch();
@@ -141,15 +143,24 @@ try {
         "block",
         "desktop narrow task pane uses its own container width",
       );
-      for (const width of [1440, 320]) {
-        await page.setViewportSize({ width, height: 900 });
+      for (const [width, height] of [
+        [1440, 900],
+        [320, 900],
+        [844, 390],
+      ]) {
+        await page.setViewportSize({ width, height });
         const plus = page.locator("#boss-quick-tags-plus-ltB"),
           minus = page.locator("#boss-quick-tags-minus-ltB");
         await plus.scrollIntoViewIfNeeded();
         const p = await plus.boundingBox(),
           m = await minus.boundingBox();
         assert.ok(
-          p.width >= 44 && p.height >= 44 && m.width >= 44 && m.height >= 44,
+          // Firefox DOMRect subtraction may report 43.999984 for a44px box.
+          p.width >= 43.99 &&
+            p.height >= 43.99 &&
+            m.width >= 43.99 &&
+            m.height >= 43.99,
+          JSON.stringify({ width, height, p, m }),
         );
         for (const [target, expected] of [
           [p, 5],
@@ -187,11 +198,27 @@ try {
             "counter remains at its clicked coordinates",
           );
         }
-        assert.equal(
-          await page
-            .locator("#ui-map-task")
-            .evaluate((node) => node.scrollWidth > node.clientWidth + 1),
-          false,
+        const bounds = await page.locator("#ui-map-task").evaluate((node) => {
+          const rect = node.getBoundingClientRect();
+          return {
+            width: node.clientWidth,
+            scroll: node.scrollWidth,
+            offenders: [...node.querySelectorAll("*")]
+              .filter(
+                (child) => child.getBoundingClientRect().right > rect.right + 1,
+              )
+              .slice(0, 8)
+              .map((child) => ({
+                tag: child.tagName,
+                id: child.id,
+                class: child.className,
+                width: child.getBoundingClientRect().width,
+              })),
+          };
+        });
+        assert.ok(
+          bounds.scroll <= bounds.width + 1,
+          JSON.stringify({ viewport: width, ...bounds }),
         );
       }
       await page.locator("#boss-order-ltA").focus();
@@ -242,6 +269,7 @@ try {
           body: ":root{font-size:200%}",
         }),
       );
+      await page.setViewportSize({ width: 320, height: 400 });
       await page.addStyleTag({ url: base + "/__boss-text.css" });
       await page.locator("#boss-open-ltB").evaluate((node) => {
         node.textContent = "SyntheticLongUnbrokenLieutenantName".repeat(5);
@@ -252,6 +280,10 @@ try {
           .evaluate((node) => node.scrollWidth > node.clientWidth + 1),
         false,
         "long labels and200%text stay within task pane",
+      );
+      assert.equal(
+        new URL(page.url()).searchParams.get("tool"),
+        "boss-checklist",
       );
       await page.reload();
       await page.locator("#boss-list-heading").waitFor();
