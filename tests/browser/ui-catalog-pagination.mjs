@@ -94,6 +94,14 @@ try {
       assert.equal(await page.locator("[data-record-card]").count(), 60);
       await page.locator("[name=pack]").selectOption("");
       await page.locator("#catalog-sort").selectOption("status");
+      assert.equal(
+        await page
+          .locator("[data-record-card] h3 a")
+          .first()
+          .getAttribute("href"),
+        "/__record/1/",
+        "sort applies across the entire model within each catalog",
+      );
       assert.equal(await page.locator("[data-record-card]").count(), 100);
       await page.locator("#catalog-sort").selectOption("name");
       await page
@@ -122,8 +130,135 @@ try {
       await page.locator("#clear-filters").click();
       await page.locator("#catalog-pagination").waitFor();
       assert.equal(await page.locator("[data-record-card]").count(), 50);
+      await page.locator("#catalog-search").fill("Unknown is not zero");
+      assert.equal(
+        await page.locator("[data-record-card]").count(),
+        0,
+        "body text is never an approved search index",
+      );
+      await page.locator("#catalog-search").fill("");
+      await page
+        .locator("[data-record-card]")
+        .first()
+        .evaluate((node) => {
+          const field = document.createElement("input");
+          field.id = "synthetic-edit";
+          field.value = "SYNTHETIC private draft";
+          node.append(field);
+          window.__editableIdentity = field;
+        });
+      await page
+        .getByRole("button", { name: "Next page", exact: true })
+        .click();
+      assert.equal(await page.locator("[data-record-card]").count(), 51);
+      assert.equal(
+        await page.evaluate(
+          () =>
+            document.querySelector("#synthetic-edit") ===
+            window.__editableIdentity,
+        ),
+        true,
+      );
+      assert.equal(
+        await page.locator("#synthetic-edit").inputValue(),
+        "SYNTHETIC private draft",
+      );
+      assert.match(
+        await page.locator("#catalog-count").textContent(),
+        /editable rows retained/,
+      );
+      assert.equal(
+        await page.evaluate(() =>
+          JSON.stringify(history.state).includes("SYNTHETIC private draft"),
+        ),
+        false,
+      );
       assert.deepEqual(errors, []);
       await context.close();
+      for (const seed of [
+        {
+          foreign: { exact: "kept" },
+          dmzCatalog071: { version: 99, raw: "Unknown original" },
+        },
+        {
+          foreign: { exact: "kept" },
+          dmzCatalog071: { version: 1, query: "x".repeat(17000) },
+        },
+        {
+          foreign: { exact: "kept" },
+          dmzCatalog071: {
+            version: 1,
+            path: "/__catalog-pagination",
+            query: "",
+            pack: "",
+            type: "",
+            sort: "name",
+            size: 50,
+            page: 0,
+            returnHref: "https://external.invalid/source",
+          },
+        },
+        { foreign: { exact: "kept" } },
+      ]) {
+        const guarded = await browser.newContext();
+        await guarded.route("**/__catalog-pagination*", (r) =>
+          r.fulfill({
+            contentType: "text/html",
+            body: fixture("modern").replace(
+              '<script type="module"',
+              `<script>history.replaceState(${JSON.stringify(seed)},"",location.href);${!seed.dmzCatalog071 ? 'history.replaceState=()=>{throw new DOMException("Synthetic blocked history","SecurityError")};' : ""}</script><script type="module"`,
+            ),
+          }),
+        );
+        if (process.env.DMZ_TEST_CATALOG_SOURCE)
+          await guarded.route("**/assets/src/client/catalog.mjs", async (r) =>
+            r.fulfill({
+              contentType: "text/javascript",
+              body: await readFile(process.env.DMZ_TEST_CATALOG_SOURCE, "utf8"),
+            }),
+          );
+        const safety = await guarded.newPage(),
+          faults = [];
+        safety.on("pageerror", (error) => faults.push(error.message));
+        await safety.goto(server.base + "/__catalog-pagination");
+        await safety.locator("#catalog-pagination").waitFor();
+        await safety
+          .getByRole("button", { name: "Next page", exact: true })
+          .click();
+        assert.equal(await safety.locator("[data-record-card]").count(), 50);
+        assert.deepEqual(
+          await safety.evaluate(() => history.state),
+          seed,
+          "unknown/oversized/invalid existing payload is never overwritten",
+        );
+        assert.match(
+          await safety.locator("#catalog-count").textContent(),
+          /session-only/,
+        );
+        assert.deepEqual(faults, []);
+        await guarded.close();
+      }
+      const legacy = await browser.newContext();
+      await legacy.route("**/__catalog-pagination*", (r) =>
+        r.fulfill({ contentType: "text/html", body: fixture("legacy") }),
+      );
+      if (process.env.DMZ_TEST_CATALOG_SOURCE)
+        await legacy.route("**/assets/src/client/catalog.mjs", async (r) =>
+          r.fulfill({
+            contentType: "text/javascript",
+            body: await readFile(process.env.DMZ_TEST_CATALOG_SOURCE, "utf8"),
+          }),
+        );
+      const old = await legacy.newPage();
+      await old.goto(server.base + "/__catalog-pagination");
+      await old.waitForFunction(() =>
+        document
+          .querySelector("#catalog-count")
+          .textContent.includes("matching"),
+      );
+      assert.equal(await old.locator("[data-record-card]").count(), 125);
+      assert.equal(await old.locator("#catalog-pagination").count(), 0);
+      await legacy.close();
       const nojs = await browser.newContext({ javaScriptEnabled: false });
       await nojs.route("**/__catalog-pagination*", (r) =>
         r.fulfill({ contentType: "text/html", body: fixture("modern") }),
@@ -172,6 +307,29 @@ try {
         [...urls].sort(),
         [...new Set(expected)].sort(),
         "every original public detail URL remains reachable across pages",
+      );
+      const originalPage = await p
+        .locator("#catalog-page-status")
+        .textContent();
+      const lastLink = p.locator("[data-record-card] h3 a").last(),
+        destination = await lastLink.getAttribute("href");
+      await p.locator("#catalog-search").focus();
+      await lastLink.click();
+      await p.waitForURL(
+        (url) => url.pathname === new URL(destination, server.base).pathname,
+      );
+      await p.goBack();
+      await p.locator("#catalog-pagination").waitFor();
+      assert.equal(
+        await p.locator("#catalog-page-status").textContent(),
+        originalPage,
+        "built detail native Back restores owner page despite shared return-context module",
+      );
+      assert.equal(
+        await p
+          .locator(`[data-record-card] h3 a[href="${destination}"]`)
+          .count(),
+        1,
       );
       await actual.close();
       console.log(
