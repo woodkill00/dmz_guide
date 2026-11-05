@@ -30,6 +30,7 @@ const guide = [
 const map = [
   "ui-layout-browser",
   "ui-pane-modes-browser",
+  "ui-task-resize-browser",
   "ui-state-browser",
   "ui-rollback-browser",
   "ui-bfcache-write-browser",

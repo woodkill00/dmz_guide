@@ -37,3 +37,6 @@ npm run build
 ```
 
 Run the scoped automated suites against an already-built modern reader with `npm run test:ui:modern`, or the map-only suites with `npm run test:ui:map`. The runner uses disposable browser profiles and synthetic fixtures, runs owning services serially, and does not rebuild a reader while tests are using it. These suites do not replace the separately documented manual and performance gates.
+
+
+When the map and left menu fit side by side, drag the grip on the menu’s right edge to resize it. Focus the divider and use Left/Right arrows for16px steps, Shift+arrows for64px, or Home/End for the allowed limits. The map keeps usable terrain space and remembers your width in this browser. Temporary viewport constraints clamp the displayed width without replacing that preference. Full task, Half, Peek and narrow layouts hide the horizontal divider.

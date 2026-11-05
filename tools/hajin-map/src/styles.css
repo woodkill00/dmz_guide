@@ -4,7 +4,7 @@
 html[data-ui-variant=modern] #app{height:100dvh;display:flex;flex-direction:column;min-height:0;overflow:hidden}
 html[data-ui-variant=modern] .app-header{height:auto;min-height:48px;flex:none;padding:.5rem 1rem;background:var(--ws-surface)}
 html[data-ui-variant=modern] .companion-nav{flex:none}
-html[data-ui-variant=modern] .workspace{height:auto;min-height:0;flex:1;display:grid;grid-template-columns:minmax(18rem,24rem) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;overflow:hidden}
+html[data-ui-variant=modern] .workspace{height:auto;min-height:0;flex:1;display:grid;grid-template-columns:var(--ui-map-task-width,24rem) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;overflow:hidden}
 html[data-ui-variant=modern] .ui-map-view-controls{display:flex;gap:.5rem;padding:.25rem .75rem;flex:none;background:var(--ws-surface)}
 html[data-ui-variant=modern] .ui-map-view-controls button{padding:.4rem .8rem;background:var(--ws-raised);color:var(--ws-text);border:1px solid var(--ws-line)}
 html[data-ui-variant=modern] #ui-map-task{grid-column:1;grid-row:1/-1;min-width:0;min-height:0;overflow:auto;border-right:1px solid var(--ws-line);background:var(--ws-surface)}
@@ -270,3 +270,9 @@ html[data-ui-variant=modern] #ui-selection-detail{min-width:0;overflow-wrap:anyw
 html[data-ui-variant=modern] #ui-selection-back{position:sticky;top:0;z-index:3;background:var(--ws-surface)}
 
 html[data-ui-variant=modern] .ui-map-selection-pending{visibility:hidden;pointer-events:none}
+
+/* Docked side menu resize target; hidden in single-view and inspection modes. */
+html[data-ui-variant=modern] .workspace{position:relative}
+html[data-ui-variant=modern] #ui-map-task-resizer{position:absolute;left:calc(var(--ui-map-task-width,24rem) - 12px);top:0;bottom:0;width:24px;z-index:8;cursor:col-resize;touch-action:none;user-select:none;outline-offset:-4px}
+html[data-ui-variant=modern] #ui-map-task-resizer::after{content:"";position:absolute;top:calc(50% - 24px);left:10px;width:4px;height:48px;border-radius:4px;background:var(--ws-control-line,var(--ws-line))}
+html[data-ui-variant=modern] #ui-map-task-resizer:is(:hover,:focus-visible,[data-dragging=true])::after{background:var(--ws-accent)}

@@ -1,3 +1,4 @@
+import { mountTaskResize } from "./task-resize.ts";
 /** Allocation only. Moves original nodes; never copies a form or changes map camera. */
 export function mountMapWorkspaceLayout() {
   if (document.documentElement.dataset.uiVariant !== "modern") return undefined;
@@ -46,6 +47,7 @@ export function mountMapWorkspaceLayout() {
   route.id = "ui-map-route";
   route.setAttribute("aria-label", "Route tracking");
   terrain.after(route);
+  const taskResize = mountTaskResize(root);
   type Expanded = "auto" | "half" | "full";
   let requested: Expanded | "map" | "peek" = "auto",
     lastExpanded: Expanded = "auto",
@@ -114,6 +116,7 @@ export function mountMapWorkspaceLayout() {
     const paneMode =
       mode === "task" ? "full" : mode === "map" ? "closed" : mode;
     document.documentElement.dataset.mapLayout = mode;
+    taskResize.refresh(mode === "docked");
     document.documentElement.dataset.mapPaneMode = paneMode;
     document.documentElement.dataset.mapView = chosen;
     // Revealing the destination first makes focus possible before hiding the old view.
@@ -224,6 +227,7 @@ export function mountMapWorkspaceLayout() {
     refresh: schedule,
     destroy() {
       disposed = true;
+      taskResize.destroy();
       cancelAnimationFrame(frame);
       observer.disconnect();
       mutations.disconnect();
