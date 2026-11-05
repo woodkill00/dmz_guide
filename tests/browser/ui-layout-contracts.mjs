@@ -270,6 +270,15 @@ try {
             });
         }
         const search = page.locator(fixture.search).first();
+        if (await search.count())
+          await search.evaluate((e) => {
+            for (
+              let parent = e.parentElement;
+              parent;
+              parent = parent.parentElement
+            )
+              if (parent.tagName === "DETAILS") parent.open = true;
+          });
         let input = null;
         if (
           (await search.count()) &&
@@ -455,14 +464,14 @@ const summaries = fixtures.flatMap((f) =>
         .map((r) => r.input.twoFrameMs),
       ownerFullCounts: group.map((r) => r.input?.initialFilter?.total ?? null),
       completedFilterMedianMs:
-        group[0]?.input?.completedFilterMs === null
+        group[0]?.input?.completedFilterMs == null
           ? null
           : quantile(
               group.map((r) => r.input.completedFilterMs),
               0.5,
             ),
       completedFilterP95Ms:
-        group[0]?.input?.completedFilterMs === null
+        group[0]?.input?.completedFilterMs == null
           ? null
           : quantile(
               group.map((r) => r.input.completedFilterMs),
