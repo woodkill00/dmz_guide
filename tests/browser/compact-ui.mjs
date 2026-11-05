@@ -178,7 +178,15 @@ export async function runCompactUITests({ browser, base }) {
     const page = await fallback.newPage();
     await page.goto(`${base}/items/`);
     await page.locator(".nav-more > summary").click();
-    await page.locator('.site-nav > a[data-feature-id="settings"]').click();
+    const modern =
+      (await page.locator("html").getAttribute("data-ui-variant")) === "modern";
+    await page
+      .locator(
+        modern
+          ? '.nav-more a[data-feature-id="settings"]'
+          : '.site-nav > a[data-feature-id="settings"]',
+      )
+      .click();
     assert.equal(
       new URL(page.url()).pathname,
       "/settings/",

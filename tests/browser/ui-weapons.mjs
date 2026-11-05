@@ -35,6 +35,11 @@ export async function runUIWeaponsTests({ browser, base }) {
       /multiplayer/,
     );
     assert(await page.locator('[data-codmunity-mode="mw4"]').isVisible());
+    await page
+      .locator(
+        '#codmunity-data details:has([data-codmunity-mode="dmz"]) > summary',
+      )
+      .click();
     assert(await page.locator('[data-codmunity-mode="dmz"]').isVisible());
     const detailURL = page.url();
     for (const width of [1440, 768, 390, 320]) {
@@ -61,9 +66,16 @@ export async function runUIWeaponsTests({ browser, base }) {
           for (const link of await nav.getByRole("link").all()) {
             await link.scrollIntoViewIfNeeded();
             const box = await link.boundingBox();
+            // Firefox can serialize a 44px layout box as43.999969px after scrolling.
+            // Compare at the engine layout grid precision, keeping the44px target.
             assert(
-              box && box.height >= 44,
-              "Weapon tools retain operational targets",
+              (await link.evaluate((e) =>
+                parseFloat(getComputedStyle(e).minHeight),
+              )) >= 44,
+            );
+            assert(
+              box && Math.round(box.height * 64) / 64 >= 44,
+              `Weapon tools retain operational targets: ${width}/${theme}/${text} ${await link.innerText()} ${JSON.stringify(box)}`,
             );
           }
           assert.match(

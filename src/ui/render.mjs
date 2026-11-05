@@ -109,7 +109,7 @@ export function renderLayout({
   packId = "",
 }) {
   const ui=resolvePresentation("guide");
-  if(ui.variant==="modern"){styles=[...styles,"/assets/src/ui/workspace-shell.css"];scripts=[...scripts,"/assets/src/client/workspace-shell.mjs"];}
+  if(ui.variant==="modern"){styles=[...styles,"/assets/src/ui/workspace-shell.css","/assets/src/ui/directory-view.css"];scripts=[...scripts,"/assets/src/client/workspace-shell.mjs"];}
   if (page === "home") scripts = [...scripts, "/assets/src/client/catalog.mjs"];
   const navigation = renderMainNavigation({
     page,

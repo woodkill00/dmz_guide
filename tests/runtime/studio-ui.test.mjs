@@ -121,7 +121,11 @@ test("Studio thumbnail parents are visible in where-used and deletion previews",
 
 test("Studio defaults dark and offers the standalone persisted theme toggle", async () => {
   const html = renderStudioPage();
-  assert.match(html, /<html lang="en" data-theme="dark">/);
+  // 071 adds trusted variant identity without changing the standalone dark default.
+  assert.match(
+    html,
+    /<html lang="en" data-theme="dark" data-ui-surface="studio" data-ui-variant="legacy" data-ui-contract="071-v1">/,
+  );
   assert.match(
     html,
     /id="theme-toggle"[^>]+aria-label="Light mode — switch theme"/,

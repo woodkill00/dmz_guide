@@ -20,7 +20,7 @@ html[data-ui-variant=modern] .site-nav :is(summary,button){font-size:.875rem;min
 html[data-ui-variant=modern] .nav-more>div{max-width:min(740px,calc(100vw - 24px));max-height:min(70dvh,600px);overflow:auto;background:var(--ws-surface);border-color:var(--ws-line);color:var(--ws-text)}
 html[data-ui-variant=modern] .nav-menu-group{break-inside:avoid}
 html[data-ui-variant=modern] .nav-group-label{font-size:.8rem;color:var(--ws-muted);letter-spacing:.03em}
-.ui-mobile-sections{display:none}
+.ui-mobile-sections{display:block;flex:1}.ui-mobile-sections>summary{display:none}.ui-mobile-sections>.ui-primary-links{display:flex}
 html[data-ui-variant=modern] main:not(.workspace){width:min(100%,90rem);padding:clamp(.8rem,2vw,2rem);margin-inline:auto;min-width:0}
 html[data-ui-variant=modern] :is(h1,h2,h3,h4){font-family:inherit;letter-spacing:-.025em;color:var(--ws-text);overflow-wrap:anywhere}
 html[data-ui-variant=modern] h1{font-size:clamp(1.65rem,calc(1.2rem + 1.3vw),2.5rem);line-height:1.2}
@@ -40,8 +40,13 @@ html[data-ui-variant=modern] :is(.notice,.workspace-status){font-size:.85rem;ove
 .ui-service-scope{font-size:.75rem;color:var(--ws-muted)}
 .ui-home-quick{display:flex;flex-wrap:wrap;gap:.6rem;margin-block:1rem}.ui-home-quick>span{display:flex;align-items:center;gap:.35rem}.ui-home-quick a{padding:.5rem}.ui-home-quick button{min-width:44px;background:var(--ws-surface);color:var(--ws-accent)}
 @media(max-width:900px){.ui-home-hubs{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:700px){html[data-ui-variant=modern] .site-header{min-height:56px;padding:.4rem .75rem}html[data-ui-variant=modern] .site-header .brand-sub{display:none}.ui-primary-links{display:none}.ui-mobile-sections{display:block;flex:1;position:relative}.ui-mobile-sections>summary{padding:.5rem;cursor:pointer}.ui-mobile-sections>div{position:absolute;left:0;top:100%;width:min(300px,calc(100vw - 24px));padding:.5rem;display:grid;background:var(--ws-surface);border:1px solid var(--ws-line);border-radius:.6rem;z-index:2}html[data-ui-variant=modern] .site-nav{gap:4px;padding:.3rem .65rem}html[data-ui-variant=modern] .site-nav>.nav-more{position:static}html[data-ui-variant=modern] .nav-more>div{left:10px;right:10px;max-width:calc(100vw - 20px)}html[data-ui-variant=modern] main:not(.workspace){padding:.8rem}.ui-home-hub{padding:1rem}html[data-ui-variant=modern] .site-footer{padding:1rem}}
+@media(max-width:700px){html[data-ui-variant=modern] .site-header{min-height:56px;padding:.4rem .75rem}html[data-ui-variant=modern] .site-header .brand-sub{display:none}.ui-primary-links{display:none}.ui-mobile-sections{display:block;flex:1;position:relative}.ui-mobile-sections>summary{display:block;padding:.5rem;cursor:pointer}.ui-mobile-sections>.ui-primary-links{position:absolute;left:0;top:100%;width:min(300px,calc(100vw - 24px));padding:.5rem;display:grid;background:var(--ws-surface);border:1px solid var(--ws-line);border-radius:.6rem;z-index:2}html[data-ui-variant=modern] .site-nav{gap:4px;padding:.3rem .65rem}html[data-ui-variant=modern] .site-nav>.nav-more{position:static}html[data-ui-variant=modern] .nav-more>div{left:10px;right:10px;max-width:calc(100vw - 20px)}html[data-ui-variant=modern] main:not(.workspace){padding:.8rem}.ui-home-hub{padding:1rem}html[data-ui-variant=modern] .site-footer{padding:1rem}}
 @media(max-width:360px){.ui-home-hubs{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){html[data-ui-variant=modern] *,html[data-ui-variant=modern] *::before,html[data-ui-variant=modern] *::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 html[data-ui-variant=modern]{--bg:var(--ws-bg);--surface:var(--ws-surface);--raised:var(--ws-raised);--text:var(--ws-text);--muted:var(--ws-muted);--line:var(--ws-line);--accent:var(--ws-accent);--ink:var(--ws-accent-ink);--focus:var(--ws-accent)}
+html[data-ui-variant=modern] #ui-pane-departure-guard{width:min(30rem,calc(100vw - 2rem));max-height:calc(100dvh - 2rem);overflow:auto;padding:1.2rem;background:var(--ws-surface);color:var(--ws-text);border:1px solid var(--ws-line);border-radius:var(--ws-radius)}
+html[data-ui-variant=modern] #ui-pane-departure-guard::backdrop{background:#0009}
+html[data-ui-variant=modern] .ui-pane-departure-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+
+html[data-ui-variant=modern]:not([data-ui-shell-mounted]) .ui-mobile-sections>summary{display:block;min-height:44px;padding:.5rem;cursor:pointer}

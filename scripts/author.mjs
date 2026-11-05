@@ -20,6 +20,8 @@ import { renderStudioPage } from "../src/ui/studio-page.mjs";
 const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const staticFiles = new Set([
   "src/ui/workspace-shell.css",
+  "src/ui/directory-view.css",
+  "src/ui/directory-view.mjs",
   "src/ui/workspace-shell.mjs",
   "src/client/workspace-shell.mjs",
   "src/client/studio.mjs",
