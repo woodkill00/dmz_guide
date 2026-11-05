@@ -30,7 +30,7 @@ Navigation-to-owner-ready median/p95 milliseconds (D1440px, C320px, T320px/text2
 | Armory | C |227.8/240.2|388.2/413.8|
 | Armory | T |231.1/238.3|400.4/448.5|
 
-The original comparison remains **investigate**;14of15 groups cross the10% navigation threshold. Exact rendered-filter completion medians were approximately0.5–3.2ms legacy and1.0–3.1ms modern. Seven groups cross a10% completion median/p95 threshold; these include submillisecond absolute differences and remain disclosed, not waived.
+The original comparison remains **investigate**;14of15 groups cross the10% navigation threshold. Exact rendered-filter completion medians were approximately0.5–3.2ms legacy and1.0–3.1ms modern. Six groups cross a10% completion median/p95 threshold; these include submillisecond absolute differences and remain disclosed, not waived.
 
 ## Bounded investigation
 
@@ -53,3 +53,4 @@ Initial DOM: Home345→210; Keys4292→4249; Inventory4921→4928; Upgrades961�
 `view_image` review covered actual Home desktop and viewport screenshots for Keys, Inventory, Upgrades and Armory at320px/text200, under `ui-layout-modern-screens/`. Home has clear workspace hierarchy. Narrow layouts retain controls and wrap without page overflow. Follow-ups: Inventory splits “Unknown” across a narrow value column; Keys requires deliberate horizontal row scrolling beside its sticky filter; Upgrades remain tall; Armory header uses most of a568px-high viewport. These are density/readability observations, not physical-device or complete visual approval. The Inventory full-page screenshot is67837px tall, so viewport evidence was inspected instead of treating its tiny scaled preview as review.
 
 No default promotion or completed T065 acceptance is claimed by this report. The timing and DOM findings above remain available for owner and independent-review disposition.
+
