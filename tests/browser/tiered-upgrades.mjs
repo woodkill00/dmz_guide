@@ -152,10 +152,34 @@ export async function runTieredUpgradeTests({ browser, base }) {
         (await import("/assets/src/client/common.mjs")).state.revision,
     );
     await page.locator('#inventory-form button[type="submit"]').click();
-    await page.waitForFunction(async (previous) => {
+    // waitForFunction polls a synchronous predicate. An async predicate returns a
+    // truthy Promise immediately, which can reload before IndexedDB commits.
+    const savingState = await page.evaluateHandle(
+      async () => (await import("/assets/src/client/common.mjs")).state,
+    );
+    try {
+      await page.waitForFunction(
+        ({ live, previous }) => !live.saving && live.revision === previous + 1,
+        { live: savingState, previous: savedRevision },
+      );
+    } finally {
+      await savingState.dispose();
+    }
+    const committed = await page.evaluate(async () => {
       const { state } = await import("/assets/src/client/common.mjs");
-      return !state.saving && state.revision === previous + 1;
-    }, savedRevision);
+      const { loadProfile } = await import("/assets/src/storage/store.mjs");
+      return (await loadProfile(state.pack.id)).value;
+    });
+    assert.equal(
+      committed.revision,
+      savedRevision + 1,
+      "save readiness includes the committed IndexedDB revision",
+    );
+    assert.equal(
+      committed.inventory[item],
+      100,
+      "saved stock is durable before reloading the document",
+    );
     await page.reload();
     await ready();
     await page.locator("#inventory-view").selectOption("needed");
