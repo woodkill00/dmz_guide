@@ -1,4 +1,7 @@
 /* Game-inspired presentation; facts and private actions retain the guide's semantics. */
+.gs-tool-label {
+  display: none;
+}
 .gs-heading {
   display: flex;
   align-items: center;
@@ -823,4 +826,113 @@
 }
 .gs-slot small {
   font-size: 0.7rem;
+}
+
+/* 071 adapter: same records/actions, calm context navigation and readable evidence. */
+html[data-ui-variant="modern"] .gs-surface {
+  --gs-foreground: var(--ws-text);
+  --gs-muted: var(--ws-muted);
+  --gs-border: var(--ws-line);
+  --gs-gold: var(--ws-accent);
+  grid-template-columns: minmax(0, 1fr);
+  background: var(--ws-surface);
+  border-radius: var(--ws-radius);
+}
+html[data-ui-variant="modern"] .gs-surface::before {
+  display: none;
+}
+html[data-ui-variant="modern"] .gs-rail {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  padding: 0.65rem;
+  background: var(--ws-surface);
+  border: 0;
+  border-bottom: 1px solid var(--ws-line);
+}
+html[data-ui-variant="modern"] .gs-rail a {
+  display: inline-flex;
+  gap: 0.4rem;
+  width: auto;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--ws-line);
+  border-radius: 0.4rem;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+html[data-ui-variant="modern"] .gs-tool-label {
+  display: inline;
+}
+html[data-ui-variant="modern"] .gs-heading h1,
+html[data-ui-variant="modern"] .gs-preview-intel h2 {
+  font-family: inherit;
+  letter-spacing: normal;
+}
+html[data-ui-variant="modern"] .gs-heading {
+  margin-block: 0.5rem 1rem;
+}
+html[data-ui-variant="modern"] .gs-content {
+  padding: var(--ui-pad);
+}
+html[data-ui-variant="modern"] .gs-weapon-row button,
+html[data-ui-variant="modern"] .gs-row-link {
+  min-height: 44px;
+}
+html[data-ui-variant="modern"]
+  :is(.gs-caption, .gs-figure-credit, .gs-slot small, .gs-row-meta) {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ws-muted);
+}
+html[data-ui-variant="modern"] .cod-mode-heading {
+  font-size: 1rem;
+  padding-block-start: 1rem;
+  border-top: 1px solid var(--ws-line);
+}
+html[data-ui-variant="modern"] .armory-table-wrap {
+  max-width: 100%;
+  scrollbar-gutter: stable;
+  scroll-padding: 0.5rem;
+}
+html[data-ui-variant="modern"] .armory-table :is(th, td) {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+html[data-ui-variant="modern"] .ui-weapon-context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  position: static;
+  padding-block: 0.5rem;
+}
+html[data-ui-variant="modern"] .ui-weapon-context a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+html[data-ui-variant="modern"] [data-workbench-panel] {
+  min-width: 0;
+  padding: var(--ui-pad);
+  background: var(--ws-surface);
+  border: 1px solid var(--ws-line);
+  border-radius: var(--ws-radius);
+  scroll-margin-block-start: 1rem;
+}
+html[data-ui-variant="modern"] [data-workbench-panel][hidden] {
+  display: none;
+}
+@media (max-width: 700px) {
+  html[data-ui-variant="modern"] .gs-rail {
+    display: flex;
+  }
+  html[data-ui-variant="modern"] .gs-directory {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

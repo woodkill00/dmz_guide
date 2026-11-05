@@ -10,7 +10,18 @@ import {
 import { e } from "./render.mjs";
 import figures from "./weapon-figures.json" with { type: "json" };
 function rail() {
-  return `<nav class="gs-rail" aria-label="Weapon tools"><a href="/armory/" aria-label="Weapon roster" title="Weapon roster">≡</a><a href="/armory/workbench/#builder" aria-label="Loadout builder" title="Loadout builder">⌘</a><a href="/armory/workbench/#compare" aria-label="Compare weapons" title="Compare weapons">⇄</a><a href="/armory/workbench/#acquisition" aria-label="Acquisition tracker" title="Acquisition tracker">✓</a><a href="/armory/updates/" aria-label="Weapon updates" title="Weapon updates">↻</a></nav>`;
+  return `<nav class="gs-rail" aria-label="Weapon tools">${[
+    ["/armory/", "Weapon roster", "≡"],
+    ["/armory/workbench/#builder", "Loadout builder", "⌘"],
+    ["/armory/workbench/#compare", "Compare weapons", "⇄"],
+    ["/armory/workbench/#acquisition", "Acquisition tracker", "✓"],
+    ["/armory/updates/", "Weapon updates", "↻"],
+  ]
+    .map(
+      ([url, label, icon]) =>
+        `<a href="${url}" aria-label="${label}" title="${label}"><span aria-hidden="true">${icon}</span><span class="gs-tool-label">${label}</span></a>`,
+    )
+    .join("")}</nav>`;
 }
 export function gunsmithHeader(weapon) {
   return `<header class="gs-heading"><div><p class="eyebrow">GUNSMITH / ${weapon ? '<a href="/armory/">WEAPON ARMORY</a>' : "FIELD GUIDE"}</p><h1>${e(weapon?.name || "Weapon armory")}</h1><p class="gs-subtitle">${weapon ? e(className(weapon.category)) : "Browse weapons. Inspect attachments. Build your loadout."}</p></div><a class="gs-workspace-link" href="/armory/workbench/">Open my workbench <span aria-hidden="true">↗</span></a></header>`;

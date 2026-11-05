@@ -20,7 +20,7 @@ export function renderCodmunity(db, data, weapon = null) {
       const s = snapshots[mode],
         coverage = codCoverage(s, db),
         row = weapon && s?.weapons[weapon.id];
-      const summary = `<p>${mode === "mw4" ? "MW4 Multiplayer baseline *WZ" : "Separate DMZ source reports — not independently verified"}: ${coverage.weapons}/${coverage.total} weapons with stats; ${coverage.damage}/${coverage.total} with damage profiles. ${e(coverage.status)}.${s?.unknownCount ? " Unmapped source records: " + e(s.unknownCount) + "." : ""}${s ? ` Source date ${e(s.sourceDate || "not provided")} · imported ${e(s.fetchedAt)}. ${e(s.warning)}` : " Not imported yet."}</p>`;
+      const summary = `<h3 class="cod-mode-heading" data-codmunity-mode="${mode}">${mode === "mw4" ? "MW4 Multiplayer baseline *WZ" : "Separate DMZ source reports — not independently verified"}</h3><p>${coverage.weapons}/${coverage.total} weapons with stats; ${coverage.damage}/${coverage.total} with damage profiles. ${e(coverage.status)}.${s?.unknownCount ? " Unmapped source records: " + e(s.unknownCount) + "." : ""}${s ? ` Source date ${e(s.sourceDate || "not provided")} · imported ${e(s.fetchedAt)}. ${e(s.warning)}` : " Not imported yet."}</p>`;
       if (!weapon) return summary;
       if (!row)
         return (
