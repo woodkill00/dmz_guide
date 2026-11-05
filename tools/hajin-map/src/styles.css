@@ -244,3 +244,10 @@ html[data-ui-variant=modern][data-map-space=scroll] .map-workspace{height:12rem;
 html[data-ui-variant=modern] #workspace-dialog:not(:modal) nav{flex-wrap:wrap;min-width:0;max-width:100%;overflow:visible}
 html[data-ui-variant=modern] #workspace-dialog:not(:modal) nav button{white-space:normal;overflow-wrap:anywhere;max-width:100%}
 html[data-ui-variant=modern] #workspace-dialog .planner-tabs{flex-wrap:wrap;min-width:0;max-width:100%}
+
+html[data-ui-variant=modern] .ui-map-selection-source{visibility:hidden;pointer-events:none}
+html[data-ui-variant=modern] #ui-selection-detail :is(.marker-popup,.marker-popup-details,.marker-popup-body,.readable-marker-popup){max-height:none;max-width:100%;width:auto;overflow:visible}
+html[data-ui-variant=modern] #ui-selection-detail{min-width:0;overflow-wrap:anywhere}
+html[data-ui-variant=modern] #ui-selection-back{position:sticky;top:0;z-index:3;background:var(--ws-surface)}
+
+html[data-ui-variant=modern] .ui-map-selection-pending{visibility:hidden;pointer-events:none}

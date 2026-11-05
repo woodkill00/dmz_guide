@@ -182,6 +182,7 @@ export function mountFieldToolbar(
     body.textContent = "";
   }
   function opened(event: L.PopupEvent) {
+    if(document.documentElement.dataset.uiVariant==='modern')return;
     clear();
     active = event.popup;
     const el = event.popup.getElement();

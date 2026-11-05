@@ -8,7 +8,7 @@ const root = fileURLToPath(new URL(".", import.meta.url));
 export default defineConfig(({ mode }) => ({
   plugins: [
     referencePlugin(),
-    {name:"shared-page-navigation",transformIndexHtml:{order:"pre",handler(html,context){const help=context.filename.endsWith("help.html"),safe=context.filename.endsWith("safes.html");const surface=safe?'safe-runs':'map',ui=resolvePresentation(surface);html=html.replace('<html lang="en">',`<html lang="en" ${presentationAttributes(surface)}>`);if(ui.variant==='modern')html=html.replace('</head>','<link rel="stylesheet" href="/@fs/'+fileURLToPath(new URL('../../src/ui/workspace-shell.css',import.meta.url)).replaceAll('\\','/')+'"></head>');return html.replace("<!-- MAIN_NAVIGATION -->",renderMainNavigation({surface:help?"help":"map",page:help?"map-help":safe?"safe-runs":"hajin-map"}));}}},
+    {name:"shared-page-navigation",transformIndexHtml:{order:"pre",handler(html,context){const help=context.filename.endsWith("help.html"),safe=context.filename.endsWith("safes.html");const surface=safe?'safe-runs':'map',ui=resolvePresentation(surface);html=html.replace('<html lang="en">',`<html lang="en" ${presentationAttributes(surface)}>`);if(ui.variant==='modern')html=html.replace('</head>','<link rel="stylesheet" href="/@fs/'+fileURLToPath(new URL('../../src/ui/workspace-shell.css',import.meta.url)).replaceAll('\\','/')+'"><link rel="stylesheet" href="/src/map/modern-theme.css"></head>');return html.replace("<!-- MAIN_NAVIGATION -->",renderMainNavigation({surface:help?"help":"map",page:help?"map-help":safe?"safe-runs":"hajin-map"}));}}},
     sourceUpdatePlugin({
       root,
       enabled: loadEnv(mode, root, "DMZ_").DMZ_ENABLE_SOURCE_UPDATES === "1",

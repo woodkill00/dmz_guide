@@ -1,3 +1,5 @@
+import { resolvePresentation } from "../ui/presentation-config.mjs";
+import { featureLabel } from "../ui/workspace-shell.mjs";
 import { features, featureURL } from "../ui/feature-registry.mjs";
 import { allKeys, keyAccess } from "./key-access.mjs";
 import { keyRoomDetails } from "./key-room-details.mjs";
@@ -19,7 +21,15 @@ const row = (id, type, title, summary, url, extra = {}) => ({
 });
 export async function buildUnifiedIndex(packs) {
   const essential = features.map((f) =>
-    row("feature:" + f.id, "feature", f.label, f.description, featureURL(f)),
+    row(
+      "feature:" + f.id,
+      "feature",
+      resolvePresentation("guide").variant === "modern"
+        ? featureLabel(f)
+        : f.label,
+      f.description,
+      featureURL(f),
+    ),
   );
   const other = [];
   for (const k of allKeys) {

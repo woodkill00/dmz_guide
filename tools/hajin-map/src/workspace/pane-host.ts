@@ -2,12 +2,15 @@ export interface PaneState {
   dirty: boolean;
   committing: boolean;
   processing: boolean;
+  saveAvailable?: boolean;
+  waiting?: boolean;
 }
 export interface PaneIntent {
   id: string;
   label: string;
   run: () => void;
   revalidate: () => boolean;
+  cancel?: () => void;
 }
 export interface PaneHostOptions {
   getState: () => PaneState;
@@ -116,10 +119,13 @@ export function mountPaneHost(
     description.textContent = pending
       ? `${pending.label}. Save your current work, discard it, or stay in this workspace.`
       : "Your current workspace is kept.";
-    save.hidden = discard.hidden = !pending || !state.dirty;
+    discard.hidden = !pending || !state.dirty;
+    save.hidden = discard.hidden || state.saveAvailable===false;
+    if(state.dirty&&state.saveAvailable===false)description.append(" This draft requires its current preview workflow. Stay to finish that review, or discard the draft.");
     save.disabled = discard.disabled = busy;
     proceed.hidden = !pending || state.dirty;
     proceed.disabled = busy;
+    if(pending&&state.waiting&&busy)status.textContent="Still waiting for storage confirmation. Do not repeat this save. Your draft and destination are retained.";
   };
   const valid = (intent: PaneIntent) => {
     try {
@@ -130,6 +136,7 @@ export function mountPaneHost(
   };
   const execute = (intent: Readonly<PaneIntent>) => {
     if (!valid(intent)) {
+      try{intent.cancel?.();}catch{}
       pending = null;
       generation++;
       report(
@@ -189,7 +196,9 @@ export function mountPaneHost(
   };
   const keep = () => {
     if (disposed) return;
+    const abandoned=pending;
     pending = null;
+    try{abandoned?.cancel?.();}catch{}
     generation++;
     if (guard.open) guard.close();
     status.textContent = "";
@@ -366,6 +375,7 @@ export function mountPaneHost(
     layers,
     request,
     refresh: paint,
+    suspend(){if(disposed)return;const abandoned=pending;pending=null;generation++;try{abandoned?.cancel?.();}catch{}if(guard.open)guard.close();status.textContent='';},
     snapshot: () => ({
       pending: pending ? { id: pending.id, label: pending.label } : null,
       saving,
@@ -375,7 +385,8 @@ export function mountPaneHost(
     destroy() {
       if (disposed) return;
       disposed = true;
-      pending = null;
+      const abandoned=pending;pending = null;
+      try{abandoned?.cancel?.();}catch{}
       generation++;
       listeners.abort();
       if (guard.open) guard.close();

@@ -1,3 +1,4 @@
+import {mountSelectionPane} from '../map/selection-pane.ts';
 import {createPaneViewState} from './pane-view-state.ts';
 import {createOperationOwnership,type OperationTicket} from '../../../../src/ui/operation-ownership.mjs';
 import {createIssueSummary} from '../../../../src/ui/issue-summary.mjs';
@@ -101,11 +102,11 @@ export function mountWorkspace(
     draftPosition: { x: number; y: number } | undefined,
     filterTimer: ReturnType<typeof setTimeout> | undefined;
   legacy.forEach((source) => source.setLegacyPersistence(false));
-  let legacyMigrationCommitted = false;
+  let legacyMigrationCommitted = false,deferredLegacyFilters=false;
   let retainedFailure = false;
   const preparer = createWorkspacePreparer();
   const modern=document.documentElement.dataset.uiVariant==='modern';
-  let viewGeneration=0,writing=0,unconfirmedWrite=false,unconfirmedRevision:number|undefined;
+  let viewGeneration=0,draftSerial=0,writing=0,writeSlow=false,unconfirmedWrite=false,unconfirmedRevision:number|undefined;
   let unconfirmedTicket:OperationTicket|undefined;
   const operationOwner=createOperationOwnership({ownerId:'map-workspace',context:{workspace:'hajin',pack:null,profile:null,revision:0}});
   const issues=createIssueSummary();
@@ -263,6 +264,8 @@ export function mountWorkspace(
   body.id = "workspace-content";
   let interactionLocks = 0;
   let saveActiveDraft:(()=>Promise<boolean>)|undefined;
+  let disposeActiveEditor:(()=>void)|undefined;
+  let reconcileConfirmedEditor:(()=>void)|undefined;
   function lockInteraction() {
     const steadyBossList = !!body.querySelector('.boss-directory');
     const previous =
@@ -283,8 +286,8 @@ export function mountWorkspace(
       body.setAttribute("aria-busy", String(interactionLocks > 0));
       if (cancel) cancel.disabled = interactionLocks > 0;
       const activeFocus=document.activeElement;
-      const restoreBossFocus=!steadyBossList||!activeFocus||activeFocus===document.body||activeFocus===dialog||activeFocus===previous;
-      if (!interactionLocks && dialog.open && restoreBossFocus) {
+      const restoreBossFocus=(!modern&&!steadyBossList)||!activeFocus||activeFocus===document.body||activeFocus===dialog||activeFocus===previous;
+      if (!interactionLocks && dialog.open && restoreBossFocus && (!modern||!suspended)) {
         const replacement = steadyBossList && previous?.id ? document.getElementById(previous.id) : null;
         if (replacement instanceof HTMLElement && !('disabled' in replacement && replacement.disabled)) replacement.focus({preventScroll:true});
         else if (previous?.isConnected) previous.focus({preventScroll:steadyBossList});
@@ -301,7 +304,7 @@ export function mountWorkspace(
   const viewCache=createPaneViewState(body,()=>({workspace:'hajin',pack:null,profile:null,revision,capture:String(backgroundRequest)}));
   const viewTask=()=>currentTool??active;
   const captureCleanView=()=>{if(modern&&!dirty&&!detailActive&&!processing&&!unsaved)viewCache.capture(viewTask());};
-  const paneHost=mountPaneHost(dialog,{getState:()=>({dirty:dirty||(detailActive&&!usabilityDetail)||!!unsaved,committing:writing>0||unconfirmedWrite||(!!pendingVisibility&&!retainedFailure),processing:!!processing||interactionLocks>0}),save:async()=>saveActiveDraft?saveActiveDraft():false,discard:()=>{if(writing||unsaved||unconfirmedWrite||processing||interactionLocks)throw new Error('Wait for the existing operation to finish.');detailCleanup?.();detailCleanup=undefined;detailActive=false;dirty=false;editing=undefined;draftPosition=undefined;plannerPick=undefined;plannerUI?.reset();renderPanel();},revealTask:()=>document.querySelector<HTMLButtonElement>('#ui-task-view')?.click(),onClose:()=>document.querySelector<HTMLButtonElement>('#ui-map-view')?.click(),onBlocked:message=>error(message)});
+  const paneHost=mountPaneHost(dialog,{getState:()=>({dirty:dirty||(detailActive&&!usabilityDetail)||!!unsaved,saveAvailable:!!saveActiveDraft,waiting:writeSlow,committing:writing>0||unconfirmedWrite||(!!pendingVisibility&&!retainedFailure),processing:!!processing||interactionLocks>0}),save:async()=>saveActiveDraft?saveActiveDraft():false,discard:()=>{if(writing||unsaved||unconfirmedWrite||processing||interactionLocks)throw new Error('Wait for the existing operation to finish.');detailCleanup?.();detailCleanup=undefined;detailActive=false;dirty=false;editing=undefined;draftPosition=undefined;plannerPick=undefined;plannerUI?.reset();renderPanel();},revealTask:()=>document.querySelector<HTMLButtonElement>('#ui-task-view')?.click(),onClose:()=>document.querySelector<HTMLButtonElement>('#ui-map-view')?.click(),onBlocked:message=>notice(message)});
   function openWorkspacePane(){if(paneHost)paneHost.open();else dialog.showModal();}
   const backupReminder = el("section", undefined, "workspace-backup-reminder");
   backupReminder.id = "backup-reminder";
@@ -417,7 +420,7 @@ export function mountWorkspace(
   document.querySelector(".map-workspace")!.append(toast);
   let toastTimer: ReturnType<typeof setTimeout> | undefined;
   const issueDetails=el('details'),issueHeading=el('summary','Issue details'),issueList=el('ul');issueDetails.id='workspace-issue-details';issueDetails.hidden=true;issueDetails.append(issueHeading,issueList);if(modern)status.after(issueDetails);
-  const paintIssues=()=>{if(!modern||disposed||suspended)return;checkSave.hidden=!unsaved&&!unconfirmedWrite;const value=issues.snapshot();status.dataset.uiIssueSummary='map-workspace';status.textContent=value.count?`${value.label}: ${value.issues[0].message}`:value.status;status.setAttribute('role',value.count?'alert':'status');issueDetails.hidden=!value.count;issueHeading.textContent=`Issue details (${value.count})`;issueList.replaceChildren(...value.issues.map(issue=>{const row=el('li');row.append(el('p',issue.message));if(issue.target?.startsWith('#')){const link=el('a','Open affected workspace');link.href=issue.target;row.append(link);}return row;}));};
+  const paintIssues=()=>{if(!modern||disposed||suspended)return;checkSave.hidden=!unsaved&&!unconfirmedWrite;const value=issues.snapshot();status.dataset.uiIssueSummary='map-workspace';status.textContent=value.count?`${value.label}: ${value.issues[0].message}`:value.status;status.setAttribute('role',value.count?'alert':'status');issueDetails.hidden=!value.count;issueHeading.textContent=`Issue details (${value.count})`;issueList.replaceChildren(...value.issues.map(issue=>{const row=el('li');const related:{[key:string]:{label:string;target:ToolTarget}}={'map-routes':{label:'Routes',target:'routes'},'map-sources':{label:'Sources',target:'sources'},'map-find':{label:'Map locations',target:'explore'},'map-review':{label:'Source review',target:'review'}};const owner=related[issue.owner];if(owner)row.append(button(`Open ${owner.label}`,()=>{openTool(owner.target);}));row.append(el('p',issue.message));if(issue.target?.startsWith('#')){const link=el('a','Open affected workspace');link.href=issue.target;row.append(link);}if(!issue.blocking)row.append(button('Dismiss reviewed notice',()=>{issues.clear(issue.owner,issue.cause);paintIssues();}));return row;}));};
   const notice = (message: string) => {
     if(disposed||suspended)return;
     if(modern){issues.status(message.slice(0,2000));paintIssues();return;}
@@ -427,7 +430,8 @@ export function mountWorkspace(
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => (toast.hidden = true), 7000);
   };
-  const error = (error: unknown) => {if(disposed||suspended)return;if(modern){issues.report({owner:'map-workspace',cause:failedLabel?'write':'workspace',message:errorText(error).slice(0,8000),blocking:!!unsaved,target:'#workspace-content'});paintIssues();}else notice(errorText(error));};
+  const error = (error: unknown) => {if(disposed||suspended)return;if(modern){issues.report({owner:'map-workspace',cause:failedLabel?'write':'workspace',message:errorText(error).slice(0,8000),blocking:!!unsaved,target:unsaved?'#workspace-check-save':'#workspace-content'});paintIssues();}else notice(errorText(error));};
+  const scopeError=(owner:string)=>(cause:unknown)=>{if(!modern||unsaved){error(cause);return;}if(disposed||suspended)return;issues.report({owner:`map-${owner}`,cause:'operation',message:errorText(cause).slice(0,8000),target:'#workspace-content'});paintIssues();};
   const errorListener = (event: Event) => error((event as CustomEvent).detail);
   document.addEventListener("workspace-error", errorListener);
   const refresh = () => {
@@ -476,19 +480,20 @@ export function mountWorkspace(
             "Local storage unavailable. Your draft is retained; export it from Backups.",
           );
         operationOwner.setContext({workspace:'hajin',pack:null,profile:null,revision});
-        const ticket=operationOwner.begin({kind:label,phase:'preparing'});
+        const ticket=operationOwner.begin({kind:'workspace-write',phase:'preparing'});
         if(!operationOwner.commit(ticket))throw new Error('This save no longer belongs to the active workspace.');
-        const expected=revision;writing++;
-        const slow=setTimeout(()=>{if(modern&&!disposed&&!suspended&&requestedView===viewGeneration){issues.report({owner:'map-workspace',cause:'write-pending',message:'Still waiting for local storage confirmation. Do not repeat this save. The draft remains retained.',severity:'warning',blocking:true,target:'#workspace-content'});paintIssues();}},10000);
+        const expected=revision;writing++;writeSlow=false;
+        const slow=setTimeout(()=>{if(modern&&!disposed&&!suspended&&requestedView===viewGeneration){writeSlow=true;issues.report({owner:'map-workspace',cause:'write-pending',message:'Still waiting for local storage confirmation. Do not repeat this save. The draft remains retained.',severity:'warning',blocking:true,target:'#workspace-content'});paintIssues();paneHost?.refresh();}},10000);
         let saved;
-        try{saved=await store.commit(asJson(draft),revision,resources);const settled=operationOwner.settle(ticket,{outcome:'confirmed',receipt:saved},{verifyReceipt:r=>!!r&&typeof r==='object'&&'revision' in r&&r.revision===expected+1&&'schemaVersion' in r&&r.schemaVersion===1&&'savedAt' in r&&typeof r.savedAt==='string'&&Number.isFinite(Date.parse(r.savedAt))&&'data' in r&&JSON.stringify(r.data)===JSON.stringify(asJson(draft))});if(!settled.accepted){unconfirmedWrite=true;unconfirmedRevision=expected+1;unconfirmedTicket=ticket;throw new Error('The local save outcome is unconfirmed. Keep this draft and check save status before trying again.');}}
+        try{saved=await store.commit(asJson(draft),revision,resources);unconfirmedWrite=true;unconfirmedRevision=expected+1;unconfirmedTicket=ticket;const durable=(await store.read()).current;validateWorkspace(saved.data);const settled=operationOwner.settle(ticket,{outcome:'confirmed',receipt:saved},{verifyReceipt:r=>!!r&&typeof r==='object'&&'revision' in r&&r.revision===expected+1&&'schemaVersion' in r&&r.schemaVersion===1&&'savedAt' in r&&typeof r.savedAt==='string'&&Number.isFinite(Date.parse(r.savedAt))&&'data' in r&&!!durable&&durable.revision===expected+1&&JSON.stringify(r.data)===JSON.stringify(durable.data)});if(!settled.accepted){unconfirmedWrite=true;unconfirmedRevision=expected+1;unconfirmedTicket=ticket;throw new Error('The local save outcome is unconfirmed. Keep this draft and check save status before trying again.');}unconfirmedWrite=false;unconfirmedRevision=undefined;unconfirmedTicket=undefined;}
         catch(cause){operationOwner.settle(ticket,{outcome:unconfirmedWrite?'unconfirmed':'failed'});throw cause;}
-        finally{writing--;clearTimeout(slow);}
+        finally{writing--;writeSlow=false;clearTimeout(slow);}
         const publish=!disposed&&!suspended&&requestedView===viewGeneration;
         issues.clear('map-workspace','write-pending');issues.clear('map-workspace','write');
         backgroundRequest++;
-        state = draft;
-        if (publish && isMeaningfulMutation(label)) viewer.map.closePopup();
+        validateWorkspace(saved.data);
+        state = saved.data;
+
         if (
           label.startsWith("Backup restored") ||
           label === "New empty workspace created"
@@ -510,7 +515,8 @@ export function mountWorkspace(
         unsaved = undefined;
         failedLabel = undefined;
         retainedFailure = false;
-        if(publish){notice(label);applyLegacyFilters();refresh();}
+        if (publish && isMeaningfulMutation(label) && !(modern&&paneHost?.snapshot().pending?.id.startsWith('map-selection-'))) viewer.map.closePopup();
+        if(publish){notice(label);if(modern&&paneHost?.snapshot().pending?.id.startsWith('map-selection-'))deferredLegacyFilters=true;else applyLegacyFilters();refresh();}
       })
       .catch((error) => {
         if (unsaved && failedLabel === label) retainedFailure = true;
@@ -636,7 +642,7 @@ export function mountWorkspace(
     !interactionLocks &&
     (!detailActive || usabilityDetail);
   const updatesUI = createSourceUpdates({
-    ...services,
+    ...services,error:scopeError('sources'),
     allowed: () => canInspect() && !unsaved && !pendingVisibility,
     transition: async (work) => {
       const unlock = lockInteraction();
@@ -672,7 +678,7 @@ export function mountWorkspace(
   });
   document.querySelector(".key-toolbar")!.append(updatesUI.root);
   const usabilityUI = createUsabilityUI({
-    ...services,
+    ...services,error:scopeError('find'),
     records: getExplorerRecords,
     addWaypoint:r=>plannerUI!.addRecord(r),trackRecord:r=>plannerUI!.observe(r),
     mapCenter:()=>{const p=viewer.map.getCenter();if(![p.lng,p.lat].every(n=>n>=0&&n<=4096))throw new Error('Move the map center inside the terrain first.');return{x:p.lng,y:p.lat,label:'Map center'};},
@@ -759,9 +765,9 @@ export function mountWorkspace(
     downloadBackup: () => downloadPrivateBackup(),
   });
   plannerUI=createFieldGuideUI({
-    ...services,map:viewer.map,records:getExplorerRecords,editPoint:id=>openPointEditing(id),addPoint:point=>openPointAt(point),
+    ...services,error:scopeError('routes'),map:viewer.map,records:getExplorerRecords,editPoint:id=>openPointEditing(id),addPoint:point=>openPointAt(point),
     allowed:()=>canInspect()&&!unsaved&&!pendingVisibility,
-    draftAllowed:()=>!processing&&!interactionLocks&&(!unsaved||(!!plannerUI?.ownsDraft()&&['Map planner saved','Map toolkit saved'].includes(failedLabel??'')))&&!pendingVisibility&&(!dirty||!!plannerUI?.ownsDraft())&&!detailActive,
+    draftAllowed:()=>!processing&&!interactionLocks&&(!unsaved||(!!plannerUI?.ownsDraft()&&['Map planner saved','Map toolkit saved'].includes(failedLabel??'')))&&!pendingVisibility&&(!dirty||!!plannerUI?.ownsDraft())&&(!detailActive||usabilityDetail),
     setDirty:value=>{dirty=value;if(!value)plannerPick=undefined;},
     openPlanner:preserve=>{if(!preserve){active='planner';renderPanel();}if(!dialog.open)openWorkspacePane();},closePlanner:()=>dialog.close(),
     search:query=>{usabilityUI.find(query);},popup:r=>usabilityUI.popup(r),
@@ -886,8 +892,7 @@ export function mountWorkspace(
       !["points-search", "review-search"].includes(target.id) &&
       !target.hasAttribute("data-workspace-search") &&
       !target.closest("#review-records")
-    )
-      dirty = true;
+    ){dirty = true;draftSerial++;}
   });
   body.addEventListener("change", (event) => {
     const target = event.target as HTMLElement;
@@ -895,12 +900,12 @@ export function mountWorkspace(
       !["points-search","review-search"].includes(target.id) &&
       !target.closest("#review-records") &&
       !target.hasAttribute("data-workspace-search")
-    )
-      dirty = true;
+    ){dirty = true;draftSerial++;}
   });
 
   function renderPanel(preservePosition = false) {
     viewGeneration++;
+    disposeActiveEditor?.();disposeActiveEditor=undefined;
     saveActiveDraft=undefined;
     const scrollTop=dialog.scrollTop,scrollLeft=dialog.scrollLeft,tabsLeft=body.querySelector('.planner-tabs')?.scrollLeft??0;
     if(!preservePosition)dialog.scrollTop = 0;
@@ -911,8 +916,8 @@ export function mountWorkspace(
       );
     body.replaceChildren();
     if (active === "points") renderPoints();
-    if (active === "sources") body.append(sourcePanel(services));
-    if (active === "review") body.append(reviewPanel(services));
+    if (active === "sources") body.append(sourcePanel({...services,error:scopeError('sources')}));
+    if (active === "review") body.append(reviewPanel({...services,error:scopeError('review')}));
     if (active === "icons") renderIcons();
     if (active === "backup") renderBackup();
     if(active==='planner')body.append(plannerUI!.panel());
@@ -927,17 +932,19 @@ export function mountWorkspace(
         "Create POIs, locations and marks from your own gameplay. Edit coordinates to move a point, or pick on the map. Source evidence stays separate.",
       ),
     );
+    const editorView=viewGeneration;
     const editor = annotationEditor(
       state,
       editing,
       draftPosition,
       async (annotation) => {
-        const ownerView=viewGeneration,ownerFocus=document.activeElement;
+        const ownerView=viewGeneration,ownerFocus=document.activeElement,ownerNode=body.querySelector('#point-form'),ownerSerial=draftSerial;
         await commit(
           editing ? "Point updated" : "Private point saved",
           (draft) => saveAnnotation(draft, annotation),
         );
-        if(disposed||suspended||ownerView!==viewGeneration)return;
+        if(disposed)return;
+        if(suspended||ownerView!==viewGeneration){const reconcile=()=>{if(disposed||suspended||!ownerNode?.isConnected||!body.contains(ownerNode)||draftSerial!==ownerSerial)return;const restoreFocus=ownerNode.contains(document.activeElement);resetEditor();applyLegacyFilters();refresh();notice('The saved point is confirmed after returning. No save was repeated.');if(restoreFocus){const heading=body.querySelector<HTMLElement>('h3');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}}};if(suspended)reconcileConfirmedEditor=reconcile;else reconcile();return;}
         const returnFocus=document.activeElement===ownerFocus||document.activeElement===document.body;
         resetEditor();
         if(returnFocus)body.querySelector<HTMLInputElement>("#point-title")?.focus();
@@ -956,6 +963,7 @@ export function mountWorkspace(
       },
       error,
       services.process,
+      ()=>!modern||(!disposed&&!suspended&&editorView===viewGeneration),
     );
     saveActiveDraft=()=>saveAnnotationEditor(editor);
     body.append(editor);
@@ -1146,6 +1154,7 @@ export function mountWorkspace(
     const ownIconDraft=(owner:HTMLElement)=>{
       if(draftOwner&&draftOwner!==owner)return;
       draftOwner=owner;dirty=true;
+      saveActiveDraft=owner===studio.root?()=>studio.saveDraft():undefined;
       for(const form of forms){form.inert=form!==owner;form.classList.toggle('icon-form-inactive',form!==owner);}
       draftNote.textContent='Editing one icon form. Save or cancel this draft before using another icon form.';
     };
@@ -1161,6 +1170,7 @@ export function mountWorkspace(
       await commit('Created icon saved',draft=>commitIcon(draft,icon),[],expected);
       resetEditor();
     }});
+    disposeActiveEditor=studio.destroy;
     forms.push(studio.root);
     const upload=el('section');upload.id='icon-raster-upload';forms.push(upload);
     for(const event of ['input','change'])upload.addEventListener(event,()=>ownIconDraft(upload));
@@ -1597,6 +1607,7 @@ export function mountWorkspace(
   >();
   let selectionOpen = false, deferredMapRedraw = false, redrawQueued = false;
   function renderMarkers() {
+    if(modern&&selectionOpen&&paneHost?.snapshot().pending?.id.startsWith('map-selection-')){deferredMapRedraw=true;return;}
     deferredMapRedraw = false;
     // Explicit data/filter refresh invalidates any prior selection, including standalone search popups.
     viewer.map.closePopup();
@@ -2559,6 +2570,7 @@ export function mountWorkspace(
   const popupOpened = () => { selectionOpen = true; };
   const popupClosed = () => {
     selectionOpen=false;
+    if(deferredLegacyFilters&&!disposed){deferredLegacyFilters=false;applyLegacyFilters();}
     if(deferredMapRedraw&&!redrawQueued){redrawQueued=true;queueMicrotask(()=>{
       redrawQueued=false;
       if(!disposed&&!selectionOpen&&deferredMapRedraw)renderMarkers();
@@ -2566,6 +2578,8 @@ export function mountWorkspace(
   };
   viewer.map.on("popupopen", popupOpened);
   viewer.map.on("popupclose", popupClosed);
+  const disposeSelection=mountSelectionPane(viewer.map,{canReleaseClosed:()=>usabilityDetail&&!dirty&&!unsaved&&!disposed&&!suspended,selectionIdentity:popup=>{const source=(popup as L.Popup & {_source?:L.Layer & {getElement?:()=>HTMLElement}})._source,element=source?.getElement?.(),sourceId=element?.dataset.sourceId,recordId=element?.dataset.sourceMarkerId;if(sourceId&&recordId){const record=getExplorerRecords().find(r=>r.sourceId===sourceId&&r.id===recordId);return record?highlightSignature(record):'source-record-unavailable';}return JSON.stringify(['workspace-selection',revision,backgroundRequest]);},request:intent=>{const result=paneHost?.request(intent);if(result===false&&paneHost?.snapshot().pending?.id!==intent.id)intent.cancel?.();return result;},canInspect:()=>canInspect()&&!unsaved&&!pendingVisibility&&!disposed&&!suspended,showDetail:(node,cleanup)=>{const content=el('section');content.id='ui-selection-detail';content.append(button('Back to map task',closeDetail,'ui-selection-back'),node);showOwnedDetail(content,cleanup,false);return()=>{if(!disposed&&body.contains(node)&&usabilityDetail&&!dirty)closeDetail();};},onError:error});
+
   const zoom = () => { if(selectionOpen) deferredMapRedraw=true; else renderMarkers(); };
   viewer.map.on("zoomend moveend", zoom);
   const beforeUnload = (event: BeforeUnloadEvent) => {
@@ -2585,10 +2599,10 @@ export function mountWorkspace(
     }
   };
   window.addEventListener("beforeunload", beforeUnload);
-  const suspendView=()=>{if(disposed)return;captureCleanView();suspended=true;viewGeneration++;operationOwner.invalidate();processing?.abort();};
-  const resumeView=async(event:PageTransitionEvent)=>{if(!event.persisted||disposed)return;suspended=false;viewGeneration++;if(writing||unconfirmedWrite){notice('A save is still pending confirmation. Keep the retained draft; do not submit it again.');paneHost?.refresh();return;}try{const saved=(await store?.read())?.current;if(disposed||suspended)return;if(saved&&saved.revision!==revision){validateWorkspace(saved.data);if(dirty||unsaved){error('The saved workspace changed while this page was away. Your draft is kept; review backups or reload before another save.');return;}state=saved.data;revision=saved.revision;viewCache.clear();dialog.dataset.revision=String(revision);}applyLegacyFilters();refresh();paneHost?.refresh();}catch(cause){error(cause);}};
+  const suspendView=()=>{if(disposed)return;captureCleanView();suspended=true;viewGeneration++;operationOwner.invalidate();paneHost?.suspend();processing?.abort();};
+  const resumeView=async(event:PageTransitionEvent)=>{if(!event.persisted||disposed)return;suspended=false;viewGeneration++;if(writing||unconfirmedWrite){notice('A save is still pending confirmation. Keep the retained draft; do not submit it again.');paneHost?.refresh();return;}try{const saved=(await store?.read())?.current;if(disposed||suspended)return;if(saved&&saved.revision!==revision){validateWorkspace(saved.data);if(dirty||unsaved){error('The saved workspace changed while this page was away. Your draft is kept; review backups or reload before another save.');return;}state=saved.data;revision=saved.revision;viewCache.clear();dialog.dataset.revision=String(revision);}const reconcile=reconcileConfirmedEditor;reconcileConfirmedEditor=undefined;reconcile?.();applyLegacyFilters();refresh();paneHost?.refresh();}catch(cause){error(cause);}};
   window.addEventListener('pagehide',suspendView);window.addEventListener('pageshow',resumeView);
-  const guardedLink=(event:MouseEvent)=>{if(!paneHost||!dialog.open||event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const anchor=(event.target as Element)?.closest<HTMLAnchorElement>('a[href]');if(!anchor||anchor.target&&anchor.target!=='_self'||anchor.hasAttribute('download'))return;const url=new URL(anchor.href,location.href);if(!['http:','https:'].includes(url.protocol))return;if(!dirty&&!detailActive&&!processing&&!interactionLocks&&!unsaved&&!pendingVisibility)return;event.preventDefault();event.stopImmediatePropagation();const href=url.href;paneHost.request({id:'native-link',label:'Open the selected page',run:()=>location.assign(href),revalidate:()=>!disposed&&anchor.isConnected&&anchor.href===href});};
+  const guardedLink=(event:MouseEvent)=>{if(!paneHost||!dialog.open||event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const anchor=(event.target as Element)?.closest<HTMLAnchorElement>('a[href]');if(!anchor||anchor.target&&anchor.target!=='_self'||anchor.hasAttribute('download'))return;const url=new URL(anchor.href,location.href);if(!['http:','https:'].includes(url.protocol))return;if(url.origin===location.origin&&url.pathname===location.pathname&&url.search===location.search&&url.hash&&dialog.contains(document.getElementById(url.hash.slice(1))))return;if(!dirty&&!detailActive&&!processing&&!interactionLocks&&!unsaved&&!pendingVisibility)return;event.preventDefault();event.stopImmediatePropagation();const href=url.href;paneHost.request({id:'native-link',label:'Open the selected page',run:()=>location.assign(href),revalidate:()=>!disposed&&anchor.isConnected&&anchor.href===href});};
   document.addEventListener('click',guardedLink,true);
   const initialized = (async () => {
     try {
@@ -2641,10 +2655,15 @@ export function mountWorkspace(
     }
   return {
     ready: initialized,
+    showInformation(node:HTMLElement){if(!paneHost)return false;if(body.contains(node)&&usabilityDetail){openWorkspacePane();return true;}const parent=node.parentNode,next=node.nextSibling;return paneHost.request({id:'map-information',label:'Open map information',revalidate:()=>!disposed&&node.isConnected,run:()=>{const root=el('section');root.append(button('Back to map task',closeDetail,'ui-information-back'),node);showOwnedDetail(root,()=>{if(parent?.isConnected)parent.insertBefore(node,next?.parentNode===parent?next:null);},false);}});},
     showLayers(target:"key"|"layers"|"grid"|"updates"="layers"){paneHost?.layers(target);},
     openTool,
     services,
     destroy() {
+      disposed=true;
+      disposeSelection();
+      disposeActiveEditor?.();
+      reconcileConfirmedEditor=undefined;
       plannerUI?.destroy();plannerPick=undefined;document.removeEventListener('map-planner-record',plannerRecord);
       usabilityUI.destroy();
       updatesUI.destroy();

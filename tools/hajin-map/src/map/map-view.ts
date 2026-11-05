@@ -125,10 +125,14 @@ export function createMapView(
     map.eachLayer((layer) => {
       if (
         layer instanceof L.Popup &&
-        layer.options.className === "readable-marker-popup"
+        layer.options.className === "readable-marker-popup" &&
+        !layer.getElement()?.classList.contains("ui-map-selection-source")
       )
         layer.update();
     });
+    // Leaflet can reposition after earlier resize/move listeners without resizing.
+    // Clamp final popup geometry after its update, keeping the camera unchanged.
+    placePopup();
   };
   const observer = new ResizeObserver(() => {
     cancelAnimationFrame(resizeFrame);

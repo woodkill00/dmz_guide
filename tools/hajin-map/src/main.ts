@@ -96,7 +96,7 @@ const keyHeading = document.querySelector<HTMLElement>('.sidebar-heading')!;
 const keySummary = document.querySelector<HTMLElement>('.overlay-summary')!;
 const keySplit=document.documentElement.dataset.uiVariant==='modern'?{refresh:()=>{}}:mountSidebarSections({root:keyPanel,panes:[keyControls,document.querySelector<HTMLElement>('#map-key-content')!],dividers:[keyDivider],fixed:[keyHeading,keySummary],shares:[.42,.58],minimum:120});
 const scheduleKeySplitSync=keySplit.refresh;
-let keyOpen = !keyBreakpoint.matches;
+let keyOpen = document.documentElement.dataset.uiVariant==='modern'||!keyBreakpoint.matches;
 function setKeyOpen(open: boolean, returnFocus = false) {
   keyOpen = open;
   keyPanel.hidden = !open;
@@ -114,8 +114,8 @@ keyToggle.addEventListener('click', () => {
   document.querySelector<HTMLButtonElement>('#key-show-all')!.focus();
 });
 document.querySelector('#close-key')!.addEventListener('click', () => {if(modernLayout){modernLayout.showMap();document.querySelector<HTMLElement>('#ui-map-view')?.focus();}else setKeyOpen(false,true);});
-keyPanel.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); setKeyOpen(false, true); } });
-keyBreakpoint.addEventListener('change', event => setKeyOpen(!event.matches));
+keyPanel.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); if(modernLayout){modernLayout.showMap();document.querySelector<HTMLElement>('#ui-map-view')?.focus();}else setKeyOpen(false, true); } });
+keyBreakpoint.addEventListener('change', event => {if(!modernLayout)setKeyOpen(!event.matches);});
 
 const status = document.querySelector<HTMLDivElement>('#map-status')!;
 let state: MapState = 'loading';
@@ -192,7 +192,7 @@ document.querySelector('#zoom-in')!.addEventListener('click', () => viewer.zoomI
 document.querySelector('#zoom-out')!.addEventListener('click', () => viewer.zoomOut());
 document.querySelector('#reset')!.addEventListener('click', () => viewer.reset());
 const dialog = document.querySelector<HTMLDialogElement>('#info-dialog')!;
-document.querySelector('#info')!.addEventListener('click', () => dialog.showModal());
+document.querySelector('#info')!.addEventListener('click', () => {if(modernLayout)authorWorkspace.showInformation(dialog.querySelector<HTMLElement>('.dialog-content')!);else dialog.showModal();});
 document.querySelector('#close-info')!.addEventListener('click', () => dialog.close());
 dialog.addEventListener('click', event => { if (event.target === dialog) { const rect = dialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close(); } });
 const fullscreen = document.querySelector<HTMLButtonElement>('#fullscreen')!;
@@ -210,7 +210,7 @@ document.addEventListener("ui-map-layers",()=>authorWorkspace.showLayers());
 let workflowDisposed=false;window.addEventListener('pagehide',()=>workflowDisposed=true);window.addEventListener('pageshow',()=>workflowDisposed=false);
 const openWorkflow=async(target:import('./tool-links.ts').ToolTarget)=>{await authorWorkspace.ready;if(workflowDisposed)return;if(target==='layers'){document.querySelector<HTMLButtonElement>('#layers')?.click();return;}if(target==='key'||target==='grid'||target==='updates'){if(modernLayout)authorWorkspace.showLayers(target);else setKeyOpen(true);document.querySelector<HTMLElement>(target==='grid'?'#show-coordinate-grid':target==='updates'?'#map-source-updates':'#key-show-all')?.focus();return;}if(target==='map'){modernLayout?.showMap();document.querySelector<HTMLElement>('#map')?.focus();return;}if(!authorWorkspace.openTool(target))throw Error('This tool is not available yet.');};
 const disposeFieldToolbar=mountFieldToolbar(viewer.map,openWorkflow);
-sharedNavigation?.addEventListener('click',event=>{if(event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const a=(event.target as Element).closest<HTMLAnchorElement>('a[href]');if(!a)return;const url=new URL(a.href,location.href);if(url.origin!==location.origin)return;const target=parseToolTarget(url.search);if(!target)return;event.preventDefault();void openWorkflow(target).then(()=>{if(workflowDisposed)return;sharedNavigation.querySelectorAll('[aria-current]').forEach(n=>n.removeAttribute('aria-current'));a.setAttribute('aria-current','page');}).catch(error=>{if(workflowDisposed)return;let p=document.querySelector<HTMLElement>('#workflow-navigation-status');if(!p){p=document.createElement('p');p.id='workflow-navigation-status';p.setAttribute('role','alert');sharedNavigation.after(p);}p.textContent=error instanceof Error?error.message:'Tool unavailable';});});
+sharedNavigation?.addEventListener('click',event=>{if(event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const a=(event.target as Element).closest<HTMLAnchorElement>('a[href]');if(!a||a.target&&a.target!=='_self'||a.hasAttribute('download'))return;const url=new URL(a.href,location.href);if(url.origin!==location.origin)return;const target=parseToolTarget(url.search);if(!target)return;event.preventDefault();void openWorkflow(target).then(()=>{if(workflowDisposed)return;sharedNavigation.querySelectorAll('[aria-current]').forEach(n=>n.removeAttribute('aria-current'));a.setAttribute('aria-current','page');}).catch(error=>{if(workflowDisposed)return;let p=document.querySelector<HTMLElement>('#workflow-navigation-status');if(!p){p=document.createElement('p');p.id='workflow-navigation-status';p.setAttribute('role','alert');sharedNavigation.after(p);}p.textContent=error instanceof Error?error.message:'Tool unavailable';});});
 const disposeMenuLayout = modernLayout?()=>{}:mountMapMenuLayout(document.querySelector<HTMLElement>('.map-workspace')!);
 
 const requestedTool=parseToolTarget(location.search);

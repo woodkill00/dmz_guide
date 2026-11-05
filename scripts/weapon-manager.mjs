@@ -1,3 +1,4 @@
+import { resolvePresentation } from "../src/ui/presentation-config.mjs";
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
 import { randomBytes, timingSafeEqual } from "node:crypto";
@@ -180,6 +181,7 @@ export async function createWeaponManager({
   probe = monitorCodmunity,
   monitorMs = 6 * 60 * 60 * 1000,
 } = {}) {
+  resolvePresentation("manager");
   if (
     monitor &&
     (!Number.isFinite(monitorMs) || monitorMs < 10 || monitorMs > 86400000)

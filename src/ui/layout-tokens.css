@@ -6,9 +6,9 @@
   --ui-control: max(44px, 2.5rem);
   --ui-radius: 0.5rem;
   --ui-content: 90rem;
-  --ui-body: .9375rem;
-  --ui-metadata: .8125rem;
-  --ui-pane-inline: clamp(18rem,25vw,22rem);
+  --ui-body: 0.9375rem;
+  --ui-metadata: 0.8125rem;
+  --ui-pane-inline: clamp(18rem, 25vw, 22rem);
   --ui-terrain-min-block: 12rem;
   --ui-task-min-block: 14rem;
 }

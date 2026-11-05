@@ -15,6 +15,7 @@ export function annotationEditor(
   onPick: () => void,
   onError: (error: unknown) => void,
   process:UIServices["process"]=(work)=>work(new AbortController().signal),
+  canFocus:()=>boolean=()=>true,
 ) {
   const form = el("form");
   form.id = "point-form";
@@ -164,7 +165,8 @@ export function annotationEditor(
       return false;
     } finally {
       submit.disabled = false;
-      if (submit.isConnected) submit.focus();
+      const active=document.activeElement;
+      if (submit.isConnected&&canFocus()&&(!active||active===document.body||active===submit||form.contains(active))) submit.focus();
     }
   };
   draftSaves.set(form,saveDraft);

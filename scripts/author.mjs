@@ -1,3 +1,4 @@
+import { resolvePresentation } from "../src/ui/presentation-config.mjs";
 import {
   parseAuthorTarget,
   resolveAuthorTarget,
@@ -30,6 +31,10 @@ const staticFiles = new Set([
   "src/client/raster-editor.mjs",
   "src/client/theme.mjs",
   "src/client/navigation.mjs",
+  "src/client/navigation-state.mjs",
+  "src/domain/navigation-hub.mjs",
+  "src/ui/feature-registry.mjs",
+  "src/ui/map-destinations.json",
   "src/client/navigation-menu.mjs",
   "src/content/limits.mjs",
   "src/content/image-description.mjs",
@@ -141,6 +146,7 @@ export async function createAuthorServer({
   port = 4174,
   sessionMs = 12 * 60 * 60 * 1000,
 } = {}) {
+  resolvePresentation("studio");
   if (!Number.isInteger(port) || port < 0 || port > 65535)
     throw new Error("Port must be an integer from 0 to 65535");
   root = resolve(root);

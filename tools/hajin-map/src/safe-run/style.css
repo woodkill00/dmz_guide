@@ -473,3 +473,5 @@ html[data-ui-variant=modern] :is(#safe-start-divider,#safe-route-divider){displa
 html[data-ui-variant=modern] .safe-terrain{min-height:0;height:auto;position:relative}
 html[data-ui-variant=modern] .safe-layout:not([data-ui-safe-view=docked]){grid-template-columns:minmax(0,1fr)}
 html[data-ui-variant=modern] .safe-layout [hidden]{display:none!important}
+
+html[data-ui-variant=modern] .safe-layout{display:grid;grid-template-rows:minmax(0,1fr)}

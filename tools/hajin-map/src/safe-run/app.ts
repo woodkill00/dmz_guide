@@ -55,7 +55,7 @@ if(document.documentElement.dataset.uiVariant!=='modern')mountSidebarSections({
 const status = $("route-status"),
   savedStatus = $("saved-status"),
   dataStatus = $("data-status");
-const viewer = createMapView(
+export const viewer = createMapView(
   $("safe-map"),
   (state) => {
     const target = $("terrain-status");

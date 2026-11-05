@@ -39,7 +39,9 @@
     "test:home": "node tests/browser/home-run.mjs",
     "test:home:a11y": "node tests/browser/home-accessibility.mjs",
     "sitemap:audit": "node scripts/site-topology-audit.mjs",
-    "test:sitemap": "node tests/browser/site-topology-run.mjs"
+    "test:sitemap": "node tests/browser/site-topology-run.mjs",
+    "test:ui:modern": "node scripts/test-modern-ui.mjs",
+    "test:ui:map": "node scripts/test-modern-ui.mjs --map-only"
   },
   "devDependencies": {
     "playwright": "1.58.2",

@@ -411,7 +411,7 @@ html[data-ui-variant="modern"] {
   --text: var(--ws-text);
   --muted: var(--ws-muted);
   --line: var(--ws-line);
-  --control-line: var(--ws-line);
+  --control-line: var(--ws-control-line);
   --accent: var(--ws-accent);
 }
 html[data-ui-variant="modern"] :is(header, main) {
