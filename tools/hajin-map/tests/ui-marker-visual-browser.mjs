@@ -15,15 +15,18 @@ await server.listen();
 const base = `http://127.0.0.1:${server.httpServer.address().port}`,
   results = [];
 await mkdir(".local/marker-visual", { recursive: true });
-const cases = [
-  ["short", 1280, 600, "dark", 100],
-  ["desktop", 1440, 900, "dark", 100],
-  ["light", 1440, 900, "light", 100],
-  ["mobile", 390, 844, "dark", 100],
-  ["narrow", 320, 568, "light", 100],
-  ["text", 390, 844, "light", 200],
-  ["short-text", 320, 400, "dark", 200],
-];
+const cases = process.argv.includes("--safe-route-only")
+  ? []
+  : [
+      ["resized", 1280, 600, "dark", 100],
+      ["short", 1280, 600, "dark", 100],
+      ["desktop", 1440, 900, "dark", 100],
+      ["light", 1440, 900, "light", 100],
+      ["mobile", 390, 844, "dark", 100],
+      ["narrow", 320, 568, "light", 100],
+      ["text", 390, 844, "light", 200],
+      ["short-text", 320, 400, "dark", 200],
+    ];
 const stored = (p) =>
   p.evaluate(async () => {
     const { openWorkspace } = await import("/src/workspace/store.ts");
@@ -71,6 +74,19 @@ try {
         if (new URL(r.request().url()).origin === base) return r.continue();
         external.push(r.request().url());
         return r.abort();
+      });
+      await c.addInitScript(() => {
+        window.__heldRouteResults = [];
+        const NativeWorker = Worker;
+        window.Worker = class extends NativeWorker {
+          set onmessage(fn) {
+            super.onmessage = (e) => {
+              if (window.__holdRouteResult && e.data.result)
+                window.__heldRouteResults.push(() => fn.call(this, e));
+              else fn.call(this, e);
+            };
+          }
+        };
       });
       const png = await p.evaluate(() => {
         const c = document.createElement("canvas");
@@ -132,7 +148,13 @@ try {
             ],
             records: [
               ["a", "SYNTHETIC Alpha", "dmz_gasStation", 0.5, 0.5],
-              ["b", "SYNTHETIC Bravo", "safe", 0.7, 0.5],
+              [
+                "b",
+                "SYNTHETIC long location title for narrow side menu layout regression",
+                "safe",
+                0.7,
+                0.5,
+              ],
               ["safe", "SYNTHETIC Safe", "safe", 0.5, 0.5],
             ].map(([id, name, category, x, y]) => ({
               id,
@@ -147,8 +169,19 @@ try {
           },
         }),
       );
-      for (const [label, width, height, theme, text] of cases) {
+      for (const [label, width, height, theme, text] of cases.filter(
+        (c) =>
+          !process.argv.includes("--main-layout-only") || c[0] === "resized",
+      )) {
         await p.setViewportSize({ width, height });
+        await p.addInitScript((narrow) => {
+          if (narrow)
+            localStorage.setItem(
+              "dmz-ui-map-pane-v1",
+              JSON.stringify({ version: 1, width: 288 }),
+            );
+          else localStorage.removeItem("dmz-ui-map-pane-v1");
+        }, label === "resized");
         holdRoad = true;
         heldRoad = undefined;
         await p.goto(base + "/?tool=map");
@@ -189,6 +222,16 @@ try {
         assert.ok(heldRoad, "Local road check started before marker selection");
         await p.evaluate(() => {
           window.__selectionLost = false;
+          window.__layoutModes = [];
+          window.__modeWatch = new MutationObserver(() => {
+            const mode = document.documentElement.dataset.mapLayout;
+            if (window.__layoutModes.at(-1) !== mode)
+              window.__layoutModes.push(mode);
+          });
+          window.__modeWatch.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["data-map-layout"],
+          });
           window.__selectionHidden = false;
           window.__selectionWatching = true;
           const n = document.querySelector("#ui-selection-detail");
@@ -256,6 +299,14 @@ try {
           false,
           "Selection must remain connected and visibly rendered on every sampled frame for five seconds",
         );
+        const modes = await p.evaluate(() => {
+          window.__modeWatch.disconnect();
+          return window.__layoutModes;
+        });
+        assert.ok(
+          modes.length <= 3,
+          `Selection layout must settle, got ${modes.length} transitions: ${modes.slice(0, 12)}`,
+        );
         const geometry = await p.evaluate(() => {
           const title = document
               .querySelector("#ui-selection-detail .marker-popup-title")
@@ -287,7 +338,10 @@ try {
             Math.min(geometry.height, geometry.task.bottom) + 1,
           `${engineName}/${label}: initial details must be readable`,
         );
-        assert.equal(await title.textContent(), "SYNTHETIC Bravo");
+        assert.equal(
+          await title.textContent(),
+          "SYNTHETIC long location title for narrow side menu layout regression",
+        );
         const contrast = await title.evaluate((n) => {
           const lum = (color) => {
             const rgb = color
@@ -313,7 +367,7 @@ try {
         );
         assert.equal(
           await p.locator("#ui-map-task-title").textContent(),
-          "SYNTHETIC Bravo",
+          "SYNTHETIC long location title for narrow side menu layout regression",
         );
         assert.equal(
           await p.locator("#workspace-dialog > nav").isVisible(),
@@ -362,14 +416,24 @@ try {
           cameraAndDataPreserved: true,
         });
       }
-      for (const width of [1440, 390]) {
+      for (const width of process.argv.includes("--main-layout-only")
+        ? []
+        : [1440, 390]) {
         await p.setViewportSize({ width, height: 844 });
         await p.goto(base + "/safes.html");
         await p.locator("#safe-settings:not([disabled])").waitFor();
         await p.locator("#terrain-status").waitFor({ state: "hidden" });
+        await p.locator("#safe-task-view").click();
+        await p.evaluate(() => (window.__holdRouteResult = true));
+        await p.locator("#start-x").fill("2000");
+        await p.locator("#start-y").fill("2000");
+        await p.locator("#manual-start button").click();
+        await p.waitForFunction(() => window.__heldRouteResults.length > 0);
         await p.locator("#safe-map-view").click();
         await p
-          .locator('.safe-number-marker[title*="SYNTHETIC Bravo"]')
+          .locator(
+            '.safe-number-marker[title*="SYNTHETIC long location title for narrow side menu layout regression"]',
+          )
           .click();
         const popup = p.locator(".readable-marker-popup");
         await popup.waitFor();
@@ -389,6 +453,10 @@ try {
           };
           requestAnimationFrame(sample);
         });
+        await p.evaluate(() => {
+          window.__holdRouteResult = false;
+          window.__heldRouteResults.splice(0).forEach((fn) => fn());
+        });
         await p.waitForTimeout(1000);
         await p.screenshot({
           path: `.local/marker-visual/${engineName}-safe-${width}-held-1s.png`,
@@ -400,7 +468,7 @@ try {
         assert.equal(
           await popupNode.evaluate((n) => n.isConnected),
           true,
-          "Safe popup stays open for five seconds",
+          "Safe popup stays open for five seconds after real optimization completes",
         );
         assert.equal(
           await p.evaluate(() => {
@@ -409,6 +477,11 @@ try {
           }),
           false,
           "Safe popup remains visibly rendered on every sampled frame",
+        );
+        assert.match(
+          await p.locator("#route-status").textContent(),
+          /Direct lines, not roads/,
+          "The held real worker result was applied",
         );
         const box = await popup.boundingBox(),
           map = await p.locator("#safe-map").boundingBox();
@@ -435,7 +508,7 @@ try {
       assert.deepEqual(external, []);
       await c.close();
       console.log(
-        `${engineName} marker visual PASS: seven main-map viewports/text/themes and two Safe Run popups, original controls/Back/Escape, camera/data`,
+        `${engineName} marker visual PASS: ${results.filter((r) => r.engine === engineName && r.label).length} main-map cases and ${results.filter((r) => r.engine === engineName && r.safeWidth).length} Safe Run active-optimization five-second popup cases, original controls/Back/Escape, camera/data`,
       );
     } finally {
       await b.close();

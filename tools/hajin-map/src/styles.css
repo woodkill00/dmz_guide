@@ -319,3 +319,7 @@ html[data-ui-variant=modern] #ui-selection-detail .marker-popup-details{flex:non
 html[data-ui-variant=modern] #ui-selection-detail .marker-popup-actions :is(button,a){font:inherit;font-size:.875rem}
 html[data-ui-variant=modern] .map-workspace:has(.ui-map-selection-source) .map-controls{visibility:visible}
 html[data-ui-variant=modern] #ui-selection-detail .marker-popup-title{font-size:1rem;color:var(--ws-text)}
+
+/* A narrow persisted menu must not squeeze the title into a tall column.
+   Bound the header independently of docked/full allocation to avoid oscillation. */
+html[data-ui-variant=modern] .ui-map-task-header h2{flex:0 0 100%;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;line-height:1.35;max-height:2.7em}
