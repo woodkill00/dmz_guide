@@ -1,14 +1,19 @@
+import { createServer as netServer } from "node:net";
 // Actual Leaflet popup/node behavior; synthetic content, no tiles or private data.
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 import { chromium, firefox, webkit } from "playwright";
 const root = fileURLToPath(new URL("../", import.meta.url));
+const probe = netServer();
+await new Promise((resolve) => probe.listen(0, "127.0.0.1", resolve));
+const port = probe.address().port;
+await new Promise((resolve) => probe.close(resolve));
 const server = await createServer({
   root,
   configFile: false,
   cacheDir: root + ".local/selection-pane-vite",
-  server: { host: "127.0.0.1", port: 0, strictPort: true, hmr: false },
+  server: { host: "127.0.0.1", port, strictPort: true, hmr: false },
   plugins: [
     {
       name: "selection-fixture",

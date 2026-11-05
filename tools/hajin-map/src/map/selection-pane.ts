@@ -26,6 +26,7 @@ export interface SelectionPaneOptions {
   getOrigin?: (popup: Popup) => HTMLElement | null;
   selectionIdentity?: (popup: Popup) => string;
   onClose?: (reason: SelectionCloseReason) => void;
+  revealDetail?: () => void;
   onError?: (error: unknown) => void;
 }
 interface Frame {
@@ -144,7 +145,9 @@ export function mountSelectionPane(
       } else frame.node.remove(); // Never insert obsolete content beside a newer source node.
     }
     if (!frame.marked) frame.chrome.classList.remove(sourceClass);
-    if (map.hasLayer(frame.popup)) map.closePopup(frame.popup);
+    // popupclose fires during Leaflet onRemove, before hasLayer becomes false.
+    if (reason !== "popup-close" && map.hasLayer(frame.popup))
+      map.closePopup(frame.popup);
     options.onClose?.(reason);
     if (reason === "back") {
       queueMicrotask(() => {
@@ -307,11 +310,35 @@ export function mountSelectionPane(
     if (active?.popup === event.popup && (allowed() || releaseClosed()))
       finish(active, "popup-close");
   };
+  // A hidden Leaflet popup is the backing owner for visible pane content.
+  // Clicking its marker again must reveal that same content, not toggle it shut.
+  const repeatClick = (event: MouseEvent) => {
+    const frame = active;
+    if (!frame || event.button !== 0 || !allowed() || !retainsSource(frame))
+      return;
+    const source = (
+      frame.popup as Popup & {
+        _source?: { getElement?: () => Element | undefined };
+      }
+    )._source;
+    const element = source?.getElement?.();
+    if (
+      element &&
+      event.target instanceof Node &&
+      element.contains(event.target)
+    ) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      options.revealDetail?.();
+    }
+  };
+  doc.addEventListener("click", repeatClick, true);
   map.on("popupopen", open);
   map.on("popupclose", close);
   return () => {
     if (disposed) return;
     disposed = true;
+    doc.removeEventListener("click", repeatClick, true);
     map.off("popupopen", open);
     map.off("popupclose", close);
     const abandoned: PendingPopup[] = [];

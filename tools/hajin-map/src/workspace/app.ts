@@ -587,6 +587,16 @@ export function mountWorkspace(
     if (interactionLocks && !processing) event.preventDefault();
     else processing?.abort();
   });
+  function revealSelection(node:HTMLElement){
+    const align=()=>{
+      if(disposed||!dialog.open||!body.contains(node)||dialog.dataset.uiDetail!=='selection')return;
+      if(document.documentElement.dataset.mapSpace==='scroll'){node.scrollIntoView({block:'start'});return;}
+      const task=dialog.closest<HTMLElement>('#ui-map-task');
+      if(task){const inset=parseFloat(task.style.getPropertyValue('--ui-task-header-height'))||0;task.scrollTop+=node.getBoundingClientRect().top-task.getBoundingClientRect().top-inset;}
+    };
+    align();
+    requestAnimationFrame(()=>{align();requestAnimationFrame(align);});
+  }
   function showOwnedDetail(node:HTMLElement,cleanup:(()=>void)|undefined,modal:boolean){
     if(modern&&!modal)captureCleanView();
     usabilityDetail=!modal;detailCleanup?.();detailCleanup=cleanup;detailActive=true;
@@ -598,7 +608,7 @@ export function mountWorkspace(
     if(selection){
       const task=dialog.closest<HTMLElement>('#ui-map-task');if(task)task.scrollTop=0;
       target?.focus({preventScroll:true});
-      if(document.documentElement.dataset.mapSpace==='scroll')node.scrollIntoView({block:'start'});
+      revealSelection(node);
     }else target?.focus();
   }
   const services: UIServices = {
@@ -2608,7 +2618,7 @@ export function mountWorkspace(
   };
   viewer.map.on("popupopen", popupOpened);
   viewer.map.on("popupclose", popupClosed);
-  const disposeSelection=mountSelectionPane(viewer.map,{canReleaseClosed:()=>usabilityDetail&&!dirty&&!unsaved&&!disposed&&!suspended,selectionIdentity:popup=>{const source=(popup as L.Popup & {_source?:L.Layer & {getElement?:()=>HTMLElement}})._source,element=source?.getElement?.(),sourceId=element?.dataset.sourceId,recordId=element?.dataset.sourceMarkerId;if(sourceId&&recordId){const record=getExplorerRecords().find(r=>r.sourceId===sourceId&&r.id===recordId);return record?highlightSignature(record):'source-record-unavailable';}return JSON.stringify(['workspace-selection',revision,backgroundRequest]);},request:intent=>{const result=paneHost?.request(intent);if(result===false&&paneHost?.snapshot().pending?.id!==intent.id)intent.cancel?.();return result;},canInspect:()=>canInspect()&&!unsaved&&!pendingVisibility&&!disposed&&!suspended,showDetail:(node,cleanup)=>{const content=el('section');content.id='ui-selection-detail';content.setAttribute('role','region');content.setAttribute('aria-label','Selected map location');content.append(button('Back to map task',closeDetail,'ui-selection-back'),node);showOwnedDetail(content,cleanup,false);return()=>{if(!disposed&&body.contains(node)&&usabilityDetail&&!dirty)closeDetail();};},onError:error});
+  const disposeSelection=mountSelectionPane(viewer.map,{revealDetail:()=>{openWorkspacePane();const node=body.querySelector<HTMLElement>("#ui-selection-detail");if(node)revealSelection(node);},canReleaseClosed:()=>usabilityDetail&&!dirty&&!unsaved&&!disposed&&!suspended,selectionIdentity:popup=>{const source=(popup as L.Popup & {_source?:L.Layer & {getElement?:()=>HTMLElement}})._source,element=source?.getElement?.(),sourceId=element?.dataset.sourceId,recordId=element?.dataset.sourceMarkerId;if(sourceId&&recordId){const record=getExplorerRecords().find(r=>r.sourceId===sourceId&&r.id===recordId);return record?highlightSignature(record):'source-record-unavailable';}return JSON.stringify(['workspace-selection',revision,backgroundRequest]);},request:intent=>{const result=paneHost?.request(intent);if(result===false&&paneHost?.snapshot().pending?.id!==intent.id)intent.cancel?.();return result;},canInspect:()=>canInspect()&&!unsaved&&!pendingVisibility&&!disposed&&!suspended,showDetail:(node,cleanup)=>{const content=el('section');content.id='ui-selection-detail';content.setAttribute('role','region');content.setAttribute('aria-label','Selected map location');content.append(button('Back to map task',closeDetail,'ui-selection-back'),node);showOwnedDetail(content,cleanup,false);return()=>{if(!disposed&&body.contains(node)&&usabilityDetail&&!dirty)closeDetail();};},onError:error});
 
   const zoom = () => { if(selectionOpen) deferredMapRedraw=true; else renderMarkers(); };
   viewer.map.on("zoomend moveend", zoom);
