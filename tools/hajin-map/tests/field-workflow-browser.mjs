@@ -110,7 +110,10 @@ try {
       await page.waitForFunction(
         () => document.querySelector(".key-toolbar").scrollTop > 0,
       );
-      assert.equal(await keyContent.evaluate((element) => element.scrollTop), 0);
+      assert.equal(
+        await keyContent.evaluate((element) => element.scrollTop),
+        0,
+      );
       await page.mouse.wheel(0, -1200);
       await page.waitForFunction(
         () => document.querySelector(".key-toolbar").scrollTop === 0,
@@ -165,12 +168,15 @@ try {
       );
 
       const layerStateBeforeResize = await page.evaluate(() =>
-        [...document.querySelectorAll(
-          '#map-key-content input[type="checkbox"]',
-        )].map((input) => [input.id, input.checked]),
+        [
+          ...document.querySelectorAll(
+            '#map-key-content input[type="checkbox"]',
+          ),
+        ].map((input) => [input.id, input.checked]),
       );
-      const mapPositionBeforeResize =
-        await page.locator("#position").textContent();
+      const mapPositionBeforeResize = await page
+        .locator("#position")
+        .textContent();
       const dividerBounds = await keyDivider.boundingBox();
       assert(dividerBounds);
       const dividerValueBeforePointer = Number(
@@ -209,9 +215,11 @@ try {
       );
       assert.deepEqual(
         await page.evaluate(() =>
-          [...document.querySelectorAll(
-            '#map-key-content input[type="checkbox"]',
-          )].map((input) => [input.id, input.checked]),
+          [
+            ...document.querySelectorAll(
+              '#map-key-content input[type="checkbox"]',
+            ),
+          ].map((input) => [input.id, input.checked]),
         ),
         layerStateBeforeResize,
       );
@@ -245,9 +253,7 @@ try {
         ),
       );
       await page.setViewportSize({ width: 1440, height: 900 });
-      console.log(
-        `${name} map-key scroll/resize/state-preservation PASS`,
-      );
+      console.log(`${name} map-key scroll/resize/state-preservation PASS`);
       const tool = page.getByRole("group", { name: "Map workflow tools" });
       await tool.getByRole("button", { name: "Layers", exact: true }).click();
       assert(await page.locator("#layers-dialog").isVisible());
@@ -261,9 +267,13 @@ try {
       const inspector = page.getByRole("region", {
         name: "Selected location inspector",
       });
+      await tool.getByRole("button", {name:"Selected details",exact:true}).click();
       await inspector.waitFor();
       assert.match(await inspector.innerText(), /Synthetic station/);
       assert.equal(await page.locator(".map-marker-selected").count(), 1);
+      await inspector
+        .getByRole("button", { name: "Expand", exact: true })
+        .click();
       await inspector
         .getByRole("button", { name: "Minimize", exact: true })
         .click();

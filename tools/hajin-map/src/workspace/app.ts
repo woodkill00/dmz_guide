@@ -1555,7 +1555,11 @@ export function mountWorkspace(
     string,
     { circle: L.CircleMarker; signature: string }
   >();
+  let selectionOpen = false, deferredMapRedraw = false, redrawQueued = false;
   function renderMarkers() {
+    deferredMapRedraw = false;
+    // Explicit data/filter refresh invalidates any prior selection, including standalone search popups.
+    viewer.map.closePopup();
     const activeCache = new Set<string>(),
       iconCounts = new Map<L.LayerGroup, number>();
     customLayer.clearLayers();
@@ -1827,7 +1831,13 @@ export function mountWorkspace(
   const dialogExtras = el("section");
   dialogExtras.id = "workspace-dialog-layers";
   document.querySelector("#source-controls")!.append(dialogExtras);
+  const disclosureState = new Map<string, boolean>();
   function renderKey() {
+    const keyPane = document.querySelector<HTMLElement>("#map-key-content")!;
+    const keyScroll = keyPane.scrollTop;
+    for (const node of keyPane.querySelectorAll<HTMLDetailsElement>("details[data-menu-section]"))
+      disclosureState.set(node.dataset.menuSection!, node.open);
+
     for (const [key, slot] of keySlots)
       if (legacy.some((s) => s.id === slot.dataset.workspaceProvider)) {
         slot.remove();
@@ -1835,7 +1845,8 @@ export function mountWorkspace(
       }
     const focused =
       document.activeElement instanceof HTMLElement &&
-      (sourceOverview.contains(document.activeElement) ||
+      (keyPane.contains(document.activeElement) ||
+        sourceOverview.contains(document.activeElement) ||
         extras.contains(document.activeElement) ||
         dialogExtras.contains(document.activeElement))
         ? {
@@ -1850,6 +1861,7 @@ export function mountWorkspace(
                 : null,
           }
         : undefined;
+    keyPane.querySelector("#combined-map-categories")?.remove();
     sourceOverview.replaceChildren(el("legend", "Website layers"));
     const inspectDuplicates = input("", "checkbox");
     inspectDuplicates.id = "show-duplicate-markers";
@@ -2258,6 +2270,62 @@ export function mountWorkspace(
     }
     controls(extras, "");
     controls(dialogExtras, "layers-");
+    // One transaction for a category across sources; no duplicate records are created.
+    const combined = el("details");
+    combined.id = "combined-map-categories";
+    combined.dataset.menuSection = "combined";
+    combined.open = disclosureState.get("combined") ?? false;
+    combined.append(el("summary", "Combined map categories"));
+    const categories = new Map<string, {name:string; members:{sourceId:string;categoryId:string}[]}>();
+    const addCategory = (sourceId:string, categoryId:string, name:string) => {
+      const key=name.normalize("NFKC").trim().toLocaleLowerCase();
+      const entry=categories.get(key) ?? {name,members:[]};
+      if(!entry.members.some(m=>m.sourceId===sourceId&&m.categoryId===categoryId)) entry.members.push({sourceId,categoryId});
+      categories.set(key,entry);
+    };
+    for(const source of legacy) for(const c of source.getSnapshot()?.categories ?? []) addCategory(source.id,c.id,c.name);
+    for(const policy of Object.values(sourcePolicies)) {
+      const entries=state.snapshots.filter(e=>e.snapshot.sourceId===policy.id);
+      const entry=entries.find(e=>e.key===selectedSnapshots.get(policy.id)) ?? entries.at(-1);
+      if(entry&&!entry.legacy) for(const c of entry.snapshot.categories) addCategory(policy.id,c.id,c.path.join(" / "));
+    }
+    for(const [key, category] of [...categories].sort((a,b)=>a[1].name.localeCompare(b[1].name))) {
+      const check=input("","checkbox");
+      check.dataset.combinedCategory=key;
+      check.id=`combined-category-${encodeURIComponent(key)}`;
+      const selected=category.members.filter(m=>visibility().sourceEnabled[m.sourceId]!==false&&visibility().categoryMask[m.sourceId]?.[m.categoryId]!==false).length;
+      check.checked=selected===category.members.length;
+      check.indeterminate=selected>0&&selected<category.members.length;
+      check.addEventListener("change",()=>{const show=check.checked;void changeVisibility("Combined categories saved",value=>{
+        for(const m of category.members){value.categoryMask[m.sourceId]??={};value.categoryMask[m.sourceId][m.categoryId]=show;if(show)value.sourceEnabled[m.sourceId]=true;}
+      }).catch(error);});
+      combined.append(field(`${category.name} · ${category.members.length} source categories`,check));
+    }
+    if(!categories.size) combined.append(note("No captured categories available."));
+    keyPane.prepend(combined);
+    // Stable wrappers survive rerenders; native disclosures provide keyboard access.
+    for(const node of keyPane.querySelectorAll<HTMLElement>(":scope > .key-source, :scope > .workspace-provider-card")) {
+      const id=node.dataset.keySource ?? node.dataset.workspaceProvider!;
+      let wrapper=keyPane.querySelector<HTMLDetailsElement>(`details[data-menu-section="source-${id}"]`);
+      if(!wrapper){wrapper=el("details");wrapper.dataset.menuSection=`source-${id}`;wrapper.append(el("summary",sourcePolicies[id]?.name ?? id));node.before(wrapper);}
+      wrapper.append(node);
+    }
+    // Source visibility belongs with that source's categories, not a second flat list.
+    for(const row of sourceOverview.querySelectorAll<HTMLElement>('.website-layer-row')) {
+      const link=row.querySelector<HTMLAnchorElement>('a[id^="key-source-link-"]');
+      const id=link?.id.slice('key-source-link-'.length);if(!id)continue;
+      const wrapper=keyPane.querySelector<HTMLDetailsElement>(`details[data-menu-section="source-${id}"]`);
+      if(wrapper){wrapper.querySelector(':scope > .website-layer-row')?.remove();wrapper.querySelector('summary')!.after(row);}
+    }
+    let review=keyPane.querySelector<HTMLDetailsElement>('details[data-menu-section="comparison"]');
+    if(!review){review=el('details');review.dataset.menuSection='comparison';review.append(el('summary','Duplicate comparison'));}
+    review.append(sourceOverview);combined.after(review);
+    for(const group of extras.querySelectorAll<HTMLElement>(":scope > fieldset")) {
+      const title=group.querySelector("legend")?.textContent ?? "Source categories";
+      const wrapper=el("details");wrapper.dataset.menuSection=`snapshot-${title}`;wrapper.append(el("summary",title));group.before(wrapper);wrapper.append(group);
+    }
+    for(const node of keyPane.querySelectorAll<HTMLDetailsElement>("details[data-menu-section]")) node.open=disclosureState.get(node.dataset.menuSection!) ?? false;
+    keyPane.scrollTop=keyScroll;
     if (focused) {
       const next = document.getElementById(focused.id);
       next?.focus();
@@ -2408,7 +2476,17 @@ export function mountWorkspace(
     hide = () => bulk(false);
   document.querySelector("#key-show-all")!.addEventListener("click", show);
   document.querySelector("#key-hide-all")!.addEventListener("click", hide);
-  const zoom = () => renderMarkers();
+  const popupOpened = () => { selectionOpen = true; };
+  const popupClosed = () => {
+    selectionOpen=false;
+    if(deferredMapRedraw&&!redrawQueued){redrawQueued=true;queueMicrotask(()=>{
+      redrawQueued=false;
+      if(!disposed&&!selectionOpen&&deferredMapRedraw)renderMarkers();
+    });}
+  };
+  viewer.map.on("popupopen", popupOpened);
+  viewer.map.on("popupclose", popupClosed);
+  const zoom = () => { if(selectionOpen) deferredMapRedraw=true; else renderMarkers(); };
   viewer.map.on("zoomend moveend", zoom);
   const beforeUnload = (event: BeforeUnloadEvent) => {
     const preferenceSave =
@@ -2496,6 +2574,8 @@ export function mountWorkspace(
       document.removeEventListener('keydown',cancelMapTool);cancelPress();viewer.map.getContainer().removeEventListener('pointerdown',press);viewer.map.getContainer().removeEventListener('pointermove',movePress);viewer.map.getContainer().removeEventListener('pointerup',cancelPress);viewer.map.getContainer().removeEventListener('pointercancel',cancelPress);
       viewer.map.off("contextmenu", rightClickPoint);
       viewer.map.off("zoomend moveend", zoom);
+      viewer.map.off("popupopen", popupOpened);
+      viewer.map.off("popupclose", popupClosed);
       document.removeEventListener("workspace-error", errorListener);
       document.removeEventListener("map-source-filters", sourceEvent);
       document.removeEventListener("map-source-status", statusEvent);

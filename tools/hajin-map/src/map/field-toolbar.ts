@@ -55,7 +55,12 @@ export function mountFieldToolbar(
         "Display layout reset. Map records and progress unchanged.";
     }),
   );
-  toolbar.append(advanced, status);
+  const selectionButton = button("Selected details", () => {
+    setPanelOpen(panel.hidden);
+  });
+  selectionButton.hidden = true;
+  selectionButton.setAttribute("aria-expanded", "false");
+  toolbar.append(advanced, selectionButton, status);
   advanced.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       event.preventDefault();
@@ -65,7 +70,7 @@ export function mountFieldToolbar(
     }
   });
   host.append(toolbar);
-  let collapsed = false,
+  let collapsed = true,
     width = 380,
     height = 300,
     selected: Element | undefined,
@@ -92,7 +97,7 @@ export function mountFieldToolbar(
   } catch {}
   const panel = document.createElement("section");
   panel.className = "map-selection-inspector";
-  panel.hidden = true;
+  setPanelOpen(false);
   panel.setAttribute("aria-label", "Selected location inspector");
   const heading = document.createElement("h2"),
     body = document.createElement("p"),
@@ -106,7 +111,7 @@ export function mountFieldToolbar(
       paint();
     }),
     close = button("Close summary", () => {
-      panel.hidden = true;
+      setPanelOpen(false);
       document.querySelector<HTMLElement>("#map")?.focus();
     }),
     actions = button("Go to marker actions", () => {
@@ -141,6 +146,10 @@ export function mountFieldToolbar(
   }
   panel.append(heading, collapse, close, body, note, actions, size);
   host.append(panel);
+  function setPanelOpen(open: boolean) {
+    panel.hidden = !open;
+    selectionButton.setAttribute("aria-expanded", String(open));
+  }
   function persist() {
     try {
       localStorage.setItem(
@@ -167,7 +176,9 @@ export function mountFieldToolbar(
     selected?.classList.remove("map-marker-selected");
     selected = undefined;
     active = undefined;
-    panel.hidden = true;
+    setPanelOpen(false);
+    selectionButton.hidden = true;
+    selectionButton.setAttribute("aria-expanded", "false");
     body.textContent = "";
   }
   function opened(event: L.PopupEvent) {
@@ -198,7 +209,8 @@ export function mountFieldToolbar(
     )._source;
     selected = source?.getElement?.();
     selected?.classList.add("map-marker-selected");
-    panel.hidden = false;
+    selectionButton.hidden = false;
+    setPanelOpen(false);
     paint();
   }
   const closed = (event: L.PopupEvent) => {
@@ -210,7 +222,7 @@ export function mountFieldToolbar(
     if (e.key === "Escape") {
       e.preventDefault();
       e.stopPropagation();
-      panel.hidden = true;
+      setPanelOpen(false);
       document.querySelector<HTMLElement>("#map")?.focus();
     }
   });

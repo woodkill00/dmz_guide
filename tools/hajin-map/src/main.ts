@@ -56,7 +56,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   </header>
   <main class="workspace">
     <aside id="map-key" class="sidebar" aria-label="Map key">
-      <div class="sidebar-heading"><span class="section-number">MAP KEY</span><button id="close-key" class="key-close" aria-label="Hide map key">×</button></div>
+      <div class="sidebar-heading"><span class="section-number">MAP KEY</span><button id="close-key" class="key-close" aria-label="Hide map key" title="Retract menu and expand map">‹</button></div>
       <div id="key-controls" data-section-name="controls" class="key-toolbar"><p>Choose the symbols shown on your map.</p><label class="grid-toggle"><input id="show-coordinate-grid" type="checkbox" checked aria-describedby="coordinate-grid-help"> Coordinate grid (A–J / 1–9)</label><p id="coordinate-grid-help" class="small-note">Source-aligned tactical grid. Unlabelled margins show —.</p><div class="layer-bulk"><button id="key-show-all" disabled>Show all</button><button id="key-hide-all" disabled>Hide all</button></div><p id="key-summary" role="status">Loading icons…</p></div>
       <div id="map-key-resizer" class="key-resizer" role="separator" aria-label="Resize map key sections" aria-orientation="horizontal" aria-controls="key-controls map-key-content" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" tabindex="0" title="Drag or use Up and Down to resize map key sections"></div>
       <div id="map-key-content" data-section-name="layers" class="key-content"></div>
@@ -108,7 +108,7 @@ setKeyOpen(keyOpen);
 keyToggle.addEventListener('click', () => {
   // This button is an explicit opener. Clicking it must never hide an already open key.
   setKeyOpen(true);
-  document.querySelector('#map-key-content')!.scrollTop = 0;
+
   document.querySelector<HTMLButtonElement>('#key-show-all')!.focus();
 });
 document.querySelector('#close-key')!.addEventListener('click', () => setKeyOpen(false, true));
