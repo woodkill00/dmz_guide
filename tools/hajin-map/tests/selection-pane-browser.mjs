@@ -150,6 +150,21 @@ try {
         ),
         true,
       );
+      await page.locator("#original-input").focus();
+      await page.evaluate(() =>
+        selectionFixture.popup.setContent(selectionFixture.node),
+      );
+      assert.equal(
+        await page.locator("#pane #original-input").count(),
+        1,
+        "same-node Leaflet refresh returns the original control to its pane",
+      );
+      assert.equal(
+        await page
+          .locator("#original-input")
+          .evaluate((node) => document.activeElement === node),
+        true,
+      );
       await page.locator("#source-action").click();
       assert.equal(await page.evaluate(() => selectionFixture.state.hits), 1);
       assert.equal(await page.locator(".ui-map-selection-source").count(), 1);
@@ -189,6 +204,20 @@ try {
         ),
         true,
       );
+      // The owner freezes the first request; a rejected second popup must not
+      // invalidate that still-live first source or redirect it to the newer node.
+      await page.evaluate(() => {
+        selectionFixture.state.held = true;
+        selectionFixture.open();
+        selectionFixture.openNext();
+        selectionFixture.flush();
+      });
+      assert.equal(await page.locator("#pane #original-content").count(), 1);
+      assert.equal(await page.locator("#pane #next-content").count(), 0);
+      await page.evaluate(() => {
+        selectionFixture.state.back();
+        selectionFixture.map.closePopup(selectionFixture.next);
+      });
       // Request acceptance precedes the move, and protected focus rejects late work.
       await page.evaluate(() => {
         selectionFixture.state.held = true;
@@ -280,6 +309,57 @@ try {
         await page.evaluate(() => selectionFixture.camera()),
         initial,
       );
+      await page.evaluate(async () => {
+        const { mountSelectionPane } = await import(
+          "/src/map/selection-pane.ts"
+        );
+        const fixture = selectionFixture;
+        fixture.state.failures = [];
+        fixture.map.closePopup(fixture.next);
+        const fail = mountSelectionPane(fixture.map, {
+          request: (intent) => intent.run(),
+          canInspect: () => true,
+          showDetail(node) {
+            document.querySelector("#pane").append(node);
+            throw new Error("Synthetic detail host refusal");
+          },
+          onError: (error) => fixture.state.failures.push(error.message),
+        });
+        fixture.open();
+        fail();
+      });
+      assert.deepEqual(
+        await page.evaluate(() => selectionFixture.state.failures),
+        ["Synthetic detail host refusal"],
+      );
+      assert.equal(await page.locator("#pane #original-content").count(), 0);
+      assert.equal(
+        await page.evaluate(() =>
+          selectionFixture.node.parentElement?.classList.contains(
+            "leaflet-popup-content",
+          ),
+        ),
+        true,
+      );
+      assert.equal(await page.locator(".ui-map-selection-source").count(), 0);
+      await page.evaluate(async () => {
+        document.documentElement.dataset.uiVariant = "legacy";
+        const { mountSelectionPane } = await import(
+          "/src/map/selection-pane.ts"
+        );
+        const dispose = mountSelectionPane(selectionFixture.map, {
+          request: () => {
+            throw Error("Legacy must not mount");
+          },
+          canInspect: () => true,
+          showDetail: () => {
+            throw Error("Legacy must not project");
+          },
+        });
+        selectionFixture.openNext();
+        dispose();
+      });
+      assert.equal(await page.locator("#pane #next-content").count(), 0);
       assert.deepEqual(errors, []);
       await page.close();
       console.log(
