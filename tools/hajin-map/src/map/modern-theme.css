@@ -182,7 +182,9 @@ html[data-ui-variant="modern"]
     .nav-more > summary,
     .nav-more > div,
     .ui-nav-tools > summary,
-    .ui-nav-tools > div
+    .ui-nav-tools > div,
+    .ui-mobile-sections > summary,
+    .ui-mobile-sections > div
   ) {
   background-color: var(--ws-raised);
   color: var(--ws-text);
@@ -226,4 +228,95 @@ html[data-ui-variant="modern"]
   )
   :focus-visible {
   outline-color: var(--ws-accent);
+}
+
+html[data-ui-variant="modern"]
+  :is(#ui-map-task, #workspace-dialog, .help-header, .help-layout)
+  a.action {
+  color: var(--ws-accent-ink);
+  background-color: var(--ws-accent);
+}
+html[data-ui-variant="modern"]
+  :is(.safe-map-tools > label, .safe-map-credit, .map-credit) {
+  color: var(--ws-text);
+  background-color: var(--ws-surface);
+  border-color: var(--ws-line);
+  font-size: max(14px, 0.875rem);
+}
+html[data-ui-variant="modern"] .safe-map-tools > label {
+  min-block-size: 44px;
+}
+html[data-ui-variant="modern"]
+  :is(.map-controls, .map-top-right, .field-toolbar)
+  button {
+  color: var(--ws-text);
+  background-color: var(--ws-raised);
+  border-color: var(--ws-control-line);
+  min-block-size: 44px;
+  min-inline-size: 44px;
+}
+html[data-ui-variant="modern"]
+  #safe-controls
+  :is(.safe-access-badge, .safe-access-legend strong) {
+  color: var(--ws-danger-text);
+}
+html[data-ui-variant="modern"] :is(.safe-skip, .skip-link, .skip) {
+  top: 0.5rem;
+  left: 0.5rem;
+  max-inline-size: calc(100vw - 1rem);
+  min-block-size: 44px;
+  color: var(--ws-accent-ink);
+  background: var(--ws-accent);
+  padding: 0.75rem;
+  line-height: 1.4;
+}
+html[data-ui-variant="modern"] :is(.safe-skip, .skip-link, .skip):not(:focus) {
+  transform: translateY(calc(-100% - 1rem));
+}
+html[data-ui-variant="modern"] :is(.safe-skip, .skip-link, .skip):focus {
+  transform: none;
+  z-index: 3000;
+}
+html[data-ui-variant="modern"]
+  :is(.leaflet-popup-content-wrapper, .leaflet-popup-tip) {
+  color: var(--ws-text);
+  background: var(--ws-surface);
+}
+html[data-ui-variant="modern"]
+  .leaflet-popup-content
+  :is(p, small, strong, label, details, summary) {
+  color: var(--ws-text);
+}
+html[data-ui-variant="modern"] .leaflet-popup-content a {
+  color: var(--ws-accent);
+}
+html[data-ui-variant="modern"] .leaflet-popup-content button {
+  color: var(--ws-text);
+  background: var(--ws-raised);
+  border-color: var(--ws-control-line);
+  min-block-size: 44px;
+}
+html[data-ui-variant="modern"] .leaflet-container a.leaflet-popup-close-button {
+  color: var(--ws-text);
+}
+html[data-ui-variant="modern"] :is(.safe-skip, .skip-link, .skip) {
+  font-size: max(14px, 0.875rem);
+}
+html[data-ui-variant="modern"] .contents a {
+  display: flex;
+  align-items: center;
+  min-block-size: 44px;
+  font-size: max(14px, 0.875rem);
+  overflow-wrap: anywhere;
+}
+html[data-ui-variant="modern"] .contents > strong,
+html[data-ui-variant="modern"] .help-header .brand span {
+  font-size: max(14px, 0.75rem);
+}
+html[data-ui-variant="modern"] .help-header > a {
+  min-block-size: 44px;
+  font-size: max(14px, 0.875rem);
+}
+html[data-ui-variant="modern"] .help-header {
+  flex-wrap: wrap;
 }
