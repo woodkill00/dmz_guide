@@ -786,6 +786,7 @@ export function mountWorkspace(
     downloadBackup: () => downloadPrivateBackup(),
   });
   plannerUI=createFieldGuideUI({
+    refreshRoadNetwork:()=>{if(disposed||suspended)return;plannerUI?.renderRoadOverlay();if(dialog.open&&!dirty&&!detailActive)renderPanel(active==='planner'&&!!body.querySelector('.boss-directory'));},
     ...services,error:scopeError('routes'),map:viewer.map,records:getExplorerRecords,editPoint:id=>openPointEditing(id),addPoint:point=>openPointAt(point),
     allowed:()=>canInspect()&&!unsaved&&!pendingVisibility,
     draftAllowed:()=>!processing&&!interactionLocks&&(!unsaved||(!!plannerUI?.ownsDraft()&&['Map planner saved','Map toolkit saved'].includes(failedLabel??'')))&&!pendingVisibility&&(!dirty||!!plannerUI?.ownsDraft())&&(!detailActive||usabilityDetail),

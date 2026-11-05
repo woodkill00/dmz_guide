@@ -9,7 +9,7 @@ const server = await createServer({
   root: fileURLToPath(new URL("../", import.meta.url)),
   cacheDir: ".local/ui-marker-visual-vite",
   server: { host: "127.0.0.1", port: 0, hmr: false },
-  define: { "import.meta.env.VITE_LOCAL_PROVIDER_SNAPSHOTS": '"0"' },
+  define: { "import.meta.env.VITE_LOCAL_PROVIDER_SNAPSHOTS": '"1"' },
 });
 await server.listen();
 const base = `http://127.0.0.1:${server.httpServer.address().port}`,
@@ -87,10 +87,15 @@ try {
           body: Buffer.from(png, "base64"),
         }),
       );
+      let heldRoad,
+        holdRoad = true;
+      await c.route("**/roads.local.json", (r) => {
+        if (holdRoad) heldRoad = r;
+        else return r.fulfill({ status: 404, body: "Synthetic absent roads" });
+      });
       for (const path of [
         "current-captures.local.json",
         "providers.local.json",
-        "roads.local.json",
       ])
         await c.route("**/" + path, (r) =>
           r.fulfill({ status: 404, body: "Synthetic absent local data" }),
@@ -141,6 +146,8 @@ try {
       );
       for (const [label, width, height, theme, text] of cases) {
         await p.setViewportSize({ width, height });
+        holdRoad = true;
+        heldRoad = undefined;
         await p.goto(base + "/?tool=map");
         await p.locator('html[data-ui-adapter="map-pane"]').waitFor();
         await p.locator("#map-status").waitFor({ state: "hidden" });
@@ -174,6 +181,52 @@ try {
         await settle(p);
         const title = p.locator("#ui-selection-detail .marker-popup-title"),
           detail = p.locator("#ui-selection-detail .marker-popup-details");
+
+        const selectedNode = await title.elementHandle();
+        assert.ok(heldRoad, "Local road check started before marker selection");
+        await p.evaluate(() => {
+          window.__selectionLost = false;
+          const n = document.querySelector("#ui-selection-detail");
+          window.__selectionWatch = new MutationObserver(() => {
+            if (!n.isConnected) window.__selectionLost = true;
+          });
+          window.__selectionWatch.observe(document.body, {
+            subtree: true,
+            childList: true,
+          });
+        });
+        holdRoad = false;
+        await heldRoad.fulfill(
+          label === "desktop" || label === "mobile"
+            ? {
+                json: {
+                  kind: "dmz-road-network",
+                  version: 1,
+                  mapId: "hajin",
+                  coordinateSpaceVersion: "hajin-official-v1-4096",
+                  name: "SYNTHETIC empty road network",
+                  attribution: "Synthetic fixture, no game facts",
+                  verification: "unverified",
+                  nodes: [],
+                  edges: [],
+                },
+              }
+            : { status: 404, body: "Synthetic absent roads" },
+        );
+        await p.waitForTimeout(800);
+        assert.equal(
+          await selectedNode.evaluate((n) => n.isConnected),
+          true,
+          "Original selection must survive late road readiness",
+        );
+        assert.equal(
+          await p.evaluate(() => {
+            window.__selectionWatch.disconnect();
+            return window.__selectionLost;
+          }),
+          false,
+          "Selection must never disappear during background refresh",
+        );
         const geometry = await p.evaluate(() => {
           const title = document
               .querySelector("#ui-selection-detail .marker-popup-title")
