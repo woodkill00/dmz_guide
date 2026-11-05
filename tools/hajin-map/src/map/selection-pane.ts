@@ -16,6 +16,8 @@ export type SelectionCloseReason =
 export interface SelectionPaneOptions {
   request: (intent: SelectionPaneIntent) => unknown;
   canInspect: () => boolean;
+  /** An owner-confirmed readonly frame can close while its write lock unwinds. */
+  canReleaseClosed?: () => boolean;
   /** Move this original node. Call cleanup when the owner leaves this detail. */
   showDetail: (
     node: HTMLElement,
@@ -101,6 +103,14 @@ export function mountSelectionPane(
   const allowed = () => {
     try {
       return options.canInspect() === true;
+    } catch (error) {
+      report(error);
+      return false;
+    }
+  };
+  const releaseClosed = () => {
+    try {
+      return options.canReleaseClosed?.() === true;
     } catch (error) {
       report(error);
       return false;
@@ -284,7 +294,7 @@ export function mountSelectionPane(
   const close = (event: PopupEvent) => {
     const entry = pending.get(event.popup);
     if (entry) clearPending(entry);
-    if (active?.popup === event.popup && allowed())
+    if (active?.popup === event.popup && (allowed() || releaseClosed()))
       finish(active, "popup-close");
   };
   map.on("popupopen", open);

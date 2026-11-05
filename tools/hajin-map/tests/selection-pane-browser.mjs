@@ -42,6 +42,7 @@ try {
           pane = document.querySelector("#pane"),
           state = {
             allowed: true,
+            releaseClosed: false,
             sourceIdentity: "Synthetic identity v1",
             attempts: [],
             held: false,
@@ -95,6 +96,7 @@ try {
             return true;
           },
           canInspect: () => state.allowed,
+          canReleaseClosed: () => state.releaseClosed,
           getOrigin: () => document.querySelector("#origin"),
           showDetail(content, onBack) {
             const view = document.createElement("section"),
@@ -228,6 +230,29 @@ try {
         ),
         true,
       );
+      await page.evaluate(() => selectionFixture.open());
+      await page.locator("#other").focus();
+      await page.evaluate(() => {
+        selectionFixture.state.allowed = false;
+        selectionFixture.state.releaseClosed = true;
+        selectionFixture.map.closePopup(selectionFixture.popup);
+      });
+      assert.equal(
+        await page.locator("#pane #original-content").count(),
+        0,
+        "confirmed readonly owner can release while temporary write lock unwinds",
+      );
+      assert.equal(
+        await page
+          .locator("#other")
+          .evaluate((node) => document.activeElement === node),
+        true,
+        "readonly busy cleanup does not steal another connected focus",
+      );
+      await page.evaluate(() => {
+        selectionFixture.state.allowed = true;
+        selectionFixture.state.releaseClosed = false;
+      });
       await page.evaluate(() => {
         selectionFixture.state.held = true;
         selectionFixture.open();
