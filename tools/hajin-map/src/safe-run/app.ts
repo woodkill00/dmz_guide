@@ -227,6 +227,18 @@ function chooseStart(point: XY | null, spawnKey: string | null) {
   draw();
   calculate(!p.manual);
 }
+function safeIcon(s:Stop,index:number){return L.divIcon({
+        className:
+          "safe-number-marker" +
+          (restricted(s) ? " safe-locked" : "") +
+          (index < 0 ? " safe-excluded" : ""),
+        html:
+          (index < 0 ? "−" : String(index + 1)) +
+          (restricted(s)
+            ? '<span class="safe-lock-cue" aria-hidden="true">!</span>'
+            : ""),
+        iconSize: [28, 28],
+      });}
 function draw() {
   markers.clearLayers();
   safeMarkers.clear();
@@ -265,18 +277,7 @@ function draw() {
       ),
     );
     const marker = L.marker([s.point[1], s.point[0]], {
-      icon: L.divIcon({
-        className:
-          "safe-number-marker" +
-          (restricted(s) ? " safe-locked" : "") +
-          (index < 0 ? " safe-excluded" : ""),
-        html:
-          (index < 0 ? "−" : String(index + 1)) +
-          (restricted(s)
-            ? '<span class="safe-lock-cue" aria-hidden="true">!</span>'
-            : ""),
-        iconSize: [28, 28],
-      }),
+      icon: safeIcon(s,index),
       title: display(s) + " · " + accessLabel(access(s)),
       alt: display(s) + " · " + accessLabel(access(s)),
     })
@@ -524,7 +525,8 @@ function calculate(optimize: boolean) {
       p.manual = false;
       save();
       renderOrder();
-      draw();
+      // Optimization changes numbering, not safe identity or open popup content.
+      for(const [key,marker] of safeMarkers)marker.setIcon(safeIcon(find(key),p.order.indexOf(key)));
     }
     const description =
       p.mode === "direct"
