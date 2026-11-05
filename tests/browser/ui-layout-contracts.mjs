@@ -70,7 +70,11 @@ const fixtures = [
   { id: "home", path: "/", search: "#hub-query" },
   { id: "keys", path: "/keys/", search: "#key-search" },
   { id: "inventory", path: "/inventory/", search: "#inventory-query" },
-  { id: "upgrades", path: "/upgrades/", search: "#progress-query" },
+  {
+    id: "upgrades",
+    path: "/upgrades/?pack=observed%3Aupgrade-review-20261026",
+    search: "#progress-query",
+  },
   { id: "armory", path: "/armory/", search: "[data-weapon-search]" },
 ];
 const filterContracts = {
