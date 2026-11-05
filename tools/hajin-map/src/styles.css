@@ -32,6 +32,24 @@ html[data-ui-variant=modern] .ui-map-view-controls .field-toolbar-status:empty{d
 html[data-ui-variant=modern] #ui-map-route .route-plan-summary{position:static;max-width:none;width:auto;margin:0;border-radius:0;max-height:none;--tracker-available-height:none}
 html[data-ui-variant=modern] :is(.waypoint-routes-open,.find-locations){display:none}
 
+
+/* Named 071 task modes reuse the same task body and original controls. */
+html[data-ui-variant=modern] .ui-map-task-header{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:.25rem;padding:.5rem;background:var(--ws-surface);border-bottom:1px solid var(--ws-line)}
+html[data-ui-variant=modern] .ui-map-task-header h2{flex:1;min-width:0;margin:0;font-size:1rem;overflow-wrap:anywhere}
+html[data-ui-variant=modern] .ui-map-task-header button{min-width:44px;min-height:44px;padding:.4rem .5rem;color:var(--ws-text);background:var(--ws-raised);border:1px solid var(--ws-control-line,var(--ws-line));border-radius:.4rem}
+html[data-ui-variant=modern] .ui-map-mode-feedback{flex-basis:100%;margin:.25rem 0;font-size:.875rem}
+html[data-ui-variant=modern] .ui-map-task-body{min-width:0}
+html[data-ui-variant=modern] #ui-map-task{scroll-padding-block:calc(var(--ui-task-header-height,0px) + .5rem) .5rem}
+html[data-ui-variant=modern][data-map-space=scroll] .ui-map-task-header{position:static}
+html[data-ui-variant=modern][data-map-layout=peek] .workspace,html[data-ui-variant=modern][data-map-layout=half] .workspace{grid-template-columns:minmax(0,1fr)}
+html[data-ui-variant=modern][data-map-layout=peek] .workspace{grid-template-rows:minmax(0,1fr) auto auto}
+html[data-ui-variant=modern][data-map-layout=peek] .map-workspace,html[data-ui-variant=modern][data-map-layout=half] .map-workspace{grid-column:1;grid-row:1}
+html[data-ui-variant=modern][data-map-layout=peek] #ui-map-route{grid-column:1;grid-row:2}
+html[data-ui-variant=modern][data-map-layout=peek] #ui-map-task{grid-column:1;grid-row:3;overflow:visible;border-right:0}
+html[data-ui-variant=modern][data-map-layout=half] .workspace{grid-template-rows:minmax(0,1fr) var(--ui-map-half-task) auto}
+html[data-ui-variant=modern][data-map-layout=half] #ui-map-task{grid-column:1;grid-row:2;border-right:0;border-top:1px solid var(--ws-line)}
+html[data-ui-variant=modern][data-map-layout=half] #ui-map-route{grid-column:1;grid-row:3}
+
 #workspace-open{position:absolute;left:20px;right:auto;bottom:62px;z-index:450;padding:12px 18px;min-height:44px;background:#293822;color:#edf4df;border:1px solid #aabb7d;border-radius:4px;font-size:12px;font-weight:bold}
 #workspace-dialog{width:min(980px,calc(100vw - 24px));max-width:980px;max-height:calc(100dvh - 32px);padding:0;color:#e8e9df;background:#19211c;border:1px solid #667252;border-radius:8px;overflow:auto;overscroll-behavior:contain}
 #workspace-dialog .dialog-top{position:sticky;top:0;background:#19211c;z-index:2;padding:16px;border-bottom:1px solid #ffffff20;display:flex;justify-content:space-between;align-items:center;gap:12px}
