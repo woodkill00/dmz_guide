@@ -244,7 +244,8 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       const claim=document.createElement('p');claim.textContent=`Source claim · not independently verified · captured ${snapshot.capturedAt}`;
       const inspect=document.createElement('button');inspect.type='button';inspect.textContent='Details / flag discrepancy';inspect.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('map-record-details',{detail:{sourceId:source.id,recordId:record.id}})));
       const copy=document.createElement('button');copy.type='button';copy.textContent='Copy coordinates';copy.addEventListener('click',()=>{void (async()=>{try{await navigator.clipboard.writeText(`${x.toFixed(2)}, ${y.toFixed(2)}`);copy.textContent='Coordinates copied';}catch{const fallback=document.createElement('input');fallback.readOnly=true;fallback.value=`${x.toFixed(2)}, ${y.toFixed(2)}`;fallback.setAttribute('aria-label','Coordinates to copy');actions.append(fallback);fallback.focus();fallback.select();}})();});
-      details.append(claim,notes);actions.append(inspect,copy);
+      const edit=document.createElement("button");edit.type="button";edit.textContent="Edit";edit.dataset.editMarker="true";edit.addEventListener("click",()=>document.dispatchEvent(new CustomEvent("map-record-edit",{detail:{sourceId:source.id,recordId:record.id}})));
+      popup.insertBefore(edit,details);details.append(claim,notes);actions.append(inspect,copy);
       for(const [action,label] of [['waypoint','Add waypoint'],['tracking','My tracking']]){const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('map-planner-record',{detail:{sourceId:source.id,recordId:record.id,action}})));actions.append(b);}
       marker.bindPopup(popup, markerPopupOptions);
       markerPool.push({record, marker});

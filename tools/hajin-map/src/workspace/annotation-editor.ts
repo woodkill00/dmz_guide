@@ -1,3 +1,4 @@
+import {sourcePolicies} from "./policy.ts";
 import {stageEvidence,parseVertices,validateGeometry,geometryLength,type EvidenceAsset} from './owned-assets.ts';
 import type {UIServices} from './ui-context.ts';
 import type { Annotation, Workspace } from "./model.ts";
@@ -21,11 +22,12 @@ export function annotationEditor(
   form.id = "point-form";
   form.className = "annotation-form";
   form.append(
-    el("h3", initial ? "Edit private point" : "New private point"),
+    el("h3", initial?.origin ? "Edit marker" : initial ? "Edit private point" : "New private point"),
     note(
       "Canonical image pixels (0–4096). These are image coordinates, not game grid squares.",
     ),
   );
+  if(initial?.origin)form.append(note(`Your local edit of ${initial.origin.kind==="reviewed"?"Reviewed map":sourcePolicies[initial.origin.sourceId]?.name??"an imported map"}. Original source evidence is retained.`));
   const title = input(initial?.title ?? "");
   title.required = true;
   title.id = "point-title";
@@ -44,7 +46,7 @@ export function annotationEditor(
   for (const f of [x, y]) {
     f.min = "0";
     f.max = "4096";
-    f.step = "0.01";
+    f.step = "any";
     f.required = true;
   }
   const notes = el("textarea");
@@ -156,7 +158,7 @@ export function annotationEditor(
       });
       await save(
         initial
-          ? { ...value, id: initial.id, createdAt: initial.createdAt }
+          ? { ...value, id: initial.id, createdAt: initial.createdAt, ...(initial.origin?{origin:structuredClone(initial.origin)}:{}) }
           : value,
       );
       return true;

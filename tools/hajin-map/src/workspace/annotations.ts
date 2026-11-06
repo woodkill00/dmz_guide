@@ -8,6 +8,7 @@ export function pointBounds(x: number, y: number) {
 }
 export function annotationValid(a: Annotation) {
   pointBounds(a.x, a.y);
+  if(a.origin!==undefined){const o=a.origin;if(!o||typeof o!=="object"||Array.isArray(o)||Object.keys(o).sort().join(",")!=="categoryId,kind,recordId,sourceId"||!["source","reviewed"].includes(o.kind)||typeof o.sourceId!=="string"||!/^[a-z0-9-]{1,64}$/.test(o.sourceId)||typeof o.recordId!=="string"||!o.recordId.trim()||o.recordId.length>128||typeof o.categoryId!=="string"||!o.categoryId.trim()||o.categoryId.length>200||(o.kind==="reviewed"&&o.sourceId!=="reviewed"))throw Error("Invalid local marker origin.");}
   if(a.metadata!==undefined){const m=a.metadata;if(!m||Object.keys(m).sort().join(',')!=='approach,building,lastChecked,tags'||!Array.isArray(m.tags)||m.tags.length>20||new Set(m.tags).size!==m.tags.length||m.tags.some(t=>typeof t!=='string'||!t.trim()||t.length>40)||typeof m.building!=='string'||m.building.length>120||typeof m.approach!=='string'||m.approach.length>2000||typeof m.lastChecked!=='string'||(m.lastChecked!==''&&!validObservedDate(m.lastChecked)))throw new Error('Invalid point metadata.');}
   if(a.observedAt!==undefined&&!validObservedDate(a.observedAt))throw new Error('Observation date must be a real YYYY-MM-DD date.');
   if(a.geometry!==undefined){const g=validateGeometry(a.geometry),anchor=geometryAnchor(g);if(Math.abs(anchor.x-a.x)>.001||Math.abs(anchor.y-a.y)>.001)throw new Error('Geometry anchor must match its vertices.');}
@@ -82,6 +83,7 @@ export function makeAnnotation(input: {
 }
 export function saveAnnotation(state: Workspace, annotation: Annotation) {
   annotationValid(annotation);
+  if(annotation.origin&&state.annotations.some(a=>a.id!==annotation.id&&a.origin&&JSON.stringify([a.origin.kind,a.origin.sourceId,a.origin.recordId])===JSON.stringify([annotation.origin!.kind,annotation.origin!.sourceId,annotation.origin!.recordId])))throw Error("This marker already has a local edit.");
   if (annotation.iconId && !state.icons.some((i) => i.id === annotation.iconId))
     throw new Error("Selected icon is unavailable.");
   const i = state.annotations.findIndex((a) => a.id === annotation.id);

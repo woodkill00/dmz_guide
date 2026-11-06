@@ -29,6 +29,7 @@ export interface UsabilityHost extends UIServices {
   view: () => VisibilityState;
   applyView: (v: VisibilityState) => Promise<void>;
   editPoint: (id: string) => void;
+  editRecord?: (record:ExplorerRecord)=>void;
   jump: (r: ExplorerRecord, popup: HTMLElement) => void;
   receipt: () => Receipt | null;
   snooze: () => void;
@@ -107,6 +108,7 @@ export function createUsabilityUI(h: UsabilityHost) {
   function popup(r: ExplorerRecord) {
     const {root,details,actions}=markerPopup(r.title);
     details.append(note(`${r.sourceName} · ${r.category}`),note(position(r)),note(r.status),note(r.notes || "No notes supplied."));
+    if(h.editRecord){const edit=button("Edit",()=>{if(allowed())h.editRecord!(r);},"edit-selected-marker");edit.disabled=r.x===null||r.y===null;root.insertBefore(edit,details);}
     actions.append(button(r.kind === "custom" ? "Details / edit point" : "Details / flag discrepancy",()=>showRecord(r)));
     const nearby=button("Find nearby",()=>searchUI.nearby(r));nearby.disabled=r.x===null;actions.append(nearby);
     copy(r,actions);
@@ -144,6 +146,7 @@ export function createUsabilityUI(h: UsabilityHost) {
     go.disabled = r.x === null;
     node.append(go);
     copy(r, node);
+    if(h.editRecord)node.append(button("Edit",()=>{if(allowed())h.editRecord!(r);},"edit-location-marker"));
     if (r.kind === "custom")
       node.append(
         button(

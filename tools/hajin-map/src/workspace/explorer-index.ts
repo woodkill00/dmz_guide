@@ -1,3 +1,4 @@
+import {overridden,overrideVisible,markerOrigins} from "./marker-overrides.ts";
 import type { Workspace } from "./model.ts";
 import { placedRecords } from "./backup.ts";
 import { sourcePolicies } from "./policy.ts";
@@ -58,6 +59,7 @@ export function explorerRecords(
   legacy: LocalCapture[],
   selected = new Map<string, string>(),
 ): ExplorerRecord[] {
+  const localEdits=markerOrigins(state);
   const entries = new Map(state.snapshots.map((e) => [e.snapshot.sourceId, e]));
   for (const [id, key] of selected) {
     const e = state.snapshots.find((e) => e.key === key);
@@ -145,7 +147,7 @@ export function explorerRecords(
       id: a.id,
       kind: "custom",
       sourceId: "custom",
-      sourceName: "My points",
+      sourceName: a.origin?`My edit · ${a.origin.kind==="reviewed"?"Reviewed map":sourcePolicies[a.origin.sourceId]?.name??"Imported map"}`:"My points",
       title: a.title,
       category: a.category,
       categoryId: a.category,
@@ -155,7 +157,7 @@ export function explorerRecords(
       floor: a.applicability.floor,
       build: a.applicability.gameBuild,
       visible:
-        v.customEnabled &&
+        v.customEnabled && overrideVisible(a,v) &&
         `${a.title} ${a.category} ${a.notes} ${a.metadata?.tags.join(' ')??''} ${a.metadata?.building??''} ${a.metadata?.approach??''} ${a.metadata?.lastChecked??''}`
           .toLowerCase()
           .includes(v.query.trim().toLowerCase()),
@@ -190,7 +192,7 @@ export function explorerRecords(
       capturedAt: null,
       url: null,
     });
-  return records;
+  return records.filter(r=>!overridden(state,r.kind,r.sourceId,r.id,localEdits));
 }
 export function asDisplay(r: ExplorerRecord): DisplayRecord | null {
   return r.kind === "source" && r.x !== null && r.y !== null

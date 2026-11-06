@@ -42,6 +42,7 @@ const map = [
   "ui-marker-visual-browser",
   "selection-diagnostics-browser",
   "restored-selection-browser",
+  "marker-edit-browser",
   "ui-feature-coverage-browser",
   "ui-bosses-browser",
   "ui-theme-browser",
