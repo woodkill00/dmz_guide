@@ -8,7 +8,10 @@ const schema = JSON.parse(readFileSync("schemas/pack.schema.json"));
 const load = loadFixturePack;
 for (const n of ["official-starter", "demo-training"])
   test(`valid seed ${n}`, () =>
-    assert.equal(validatePack(load(n), schema).schemaVersion, 1));
+    assert.equal(
+      validatePack(load(n), schema).schemaVersion,
+      n === "official-starter" ? 2 : 1,
+    ));
 for (const [name, edit] of [
   ["missing reference", (p) => (p.recipes[0].inputs[0].itemId = "bad:id")],
   ["unknown field", (p) => (p.script = "x")],

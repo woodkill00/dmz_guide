@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Field upgrades",
+  "description": "An oxygen tank that allows you to breathe underwater.",
+  "id": "mw4:printer-item-rebreather",
+  "kind": "item",
+  "name": "Rebreather",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

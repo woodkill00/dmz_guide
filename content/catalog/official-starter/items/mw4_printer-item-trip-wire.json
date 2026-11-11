@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Lethals",
+  "description": "Thrown explosive trap that deploys a detonation wire upon landing. Multiple Trip Wires can link together, creating a connected network for wider area denial.",
+  "id": "mw4:printer-item-trip-wire",
+  "kind": "item",
+  "name": "Trip Wire",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

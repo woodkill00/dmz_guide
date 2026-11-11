@@ -1,0 +1,17 @@
+{
+  "aliases": [],
+  "category": "Ingredients",
+  "description": "GameRant reports: Deathstalker loot. Rarity and location are secondary reports, not independently gameplay-tested.",
+  "id": "mw4:ingredient-prototype-rf-module",
+  "kind": "item",
+  "name": "Prototype RF Module",
+  "rarity": "Legendary",
+  "sourceIds": [
+    "source:gamerant-ingredients-20261028",
+    "source:gamerant-x01-printer-20261106",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

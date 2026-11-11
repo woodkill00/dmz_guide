@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "consumable",
+  "description": "Grants infinite stamina.",
+  "id": "mw4:printer-item-energy-drink",
+  "kind": "item",
+  "name": "Energy Drink",
+  "rarity": "Common",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

@@ -1,3 +1,5 @@
+import { validateFieldOps, emptyFieldOps } from "./field-ops-state.mjs";
+import { validateItemBlueprints } from "./item-blueprints.mjs";
 import {
   validateProgressEntry,
   validateSpendHistory,
@@ -19,8 +21,11 @@ export function validateInventoryForPack(profile, pack) {
   // A mismatched backup retains its historical stock; rebind validates against the new known kinds.
   if (profile.contentVersion !== pack.contentVersion) return profile;
   for (const item of pack.items)
-    for (const field of ["inventory", "reserves"]) {
-      const value = profile[field][item.id];
+    for (const field of ["inventory", "reserves", "carried"]) {
+      const value =
+        field === "carried"
+          ? profile.fieldOps?.carried?.[item.id]
+          : profile[field][item.id];
       assert(
         value === undefined ||
           (Number.isSafeInteger(value) &&
@@ -37,6 +42,9 @@ export function resetProfile(profile, pack) {
   candidate.contentVersion = pack.contentVersion;
   for (const field of ["inventory", "reserves", "completion", "routes"])
     candidate[field] = {};
+  if (Object.hasOwn(candidate, "itemBlueprints")) candidate.itemBlueprints = {};
+  if (Object.hasOwn(candidate, "buildTargets")) candidate.buildTargets = {};
+  if (candidate.fieldOps) candidate.fieldOps = emptyFieldOps();
   candidate.goals = [];
   candidate.spoilers = false;
   if (candidate.schemaVersion >= 2) {
@@ -79,6 +87,29 @@ export function validateProfile(p) {
     "spoilers",
     "routes",
   ];
+  if (Object.hasOwn(p, "fieldOps")) {
+    keys.push("fieldOps");
+    validateFieldOps(p.fieldOps);
+  }
+  if (Object.hasOwn(p, "itemBlueprints")) {
+    keys.push("itemBlueprints");
+    validateItemBlueprints(p.itemBlueprints);
+  }
+  if (Object.hasOwn(p, "buildTargets")) {
+    keys.push("buildTargets");
+    assert(
+      p.buildTargets &&
+        typeof p.buildTargets === "object" &&
+        !Array.isArray(p.buildTargets) &&
+        Object.keys(p.buildTargets).length <= 100,
+      "Invalid build targets",
+    );
+    for (const [id, q] of Object.entries(p.buildTargets))
+      assert(
+        validID(id) && Number.isSafeInteger(q) && q >= 1 && q <= 1000000,
+        "Invalid build target quantity or item",
+      );
+  }
   if (p.schemaVersion >= 2) keys.push("upgradeProgress", "watchPins");
   if (p.schemaVersion === 3) keys.push("spendHistory");
   assert(
@@ -192,9 +223,14 @@ export function previewProfile(p, pack) {
   const known = new Set(
     [...pack.items, ...pack.recipes, ...pack.objectives].map((r) => r.id),
   );
+  const knownItems = new Set(pack.items.map((item) => item.id));
   const refs = new Set([
     ...Object.keys(p.inventory),
+    ...Object.keys(p.fieldOps?.carried || {}),
+    ...(p.fieldOps?.discoveries || []).map((entry) => entry.itemId),
     ...Object.keys(p.reserves),
+    ...Object.keys(p.itemBlueprints || {}),
+    ...Object.keys(p.buildTargets || {}),
     ...Object.keys(p.completion),
     ...Object.keys(p.upgradeProgress || {}),
     ...(p.watchPins || []),
@@ -207,7 +243,23 @@ export function previewProfile(p, pack) {
   ]);
   return {
     versionMismatch: p.contentVersion !== pack.contentVersion,
-    unresolved: [...refs].filter((id) => !known.has(id)),
+    unresolved: [
+      ...new Set([
+        ...[...refs].filter((id) => !known.has(id)),
+        ...Object.keys(p.itemBlueprints || {}).filter(
+          (id) => !knownItems.has(id),
+        ),
+        ...Object.keys(p.buildTargets || {}).filter(
+          (id) => !knownItems.has(id),
+        ),
+        ...(p.fieldOps?.discoveries || [])
+          .map((entry) => entry.locationId)
+          .filter(
+            (id) =>
+              id && !pack.locations.some((location) => location.id === id),
+          ),
+      ]),
+    ],
     inventoryEntries: Object.keys(p.inventory).length,
     goals: p.goals.length,
   };

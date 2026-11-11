@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Lethals",
+  "description": "Explosive incendiary device that sticks to all surfaces.",
+  "id": "mw4:printer-item-thermite",
+  "kind": "item",
+  "name": "Thermite",
+  "rarity": "Common",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Upgrade materials",
+  "description": "Can be extracted and sold in the FOB for cash.",
+  "id": "mw4:printer-item-foreign-intelligence-targets",
+  "kind": "item",
+  "name": "Foreign Intelligence Targets",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

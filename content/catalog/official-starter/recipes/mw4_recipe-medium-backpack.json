@@ -4,14 +4,22 @@
   "ingredientsKnown": true,
   "inputs": [
     {
-      "consumed": true,
+      "consumption": "consumed",
       "itemId": "mw4:synthetics",
-      "quantity": 50
+      "quantity": 50,
+      "sourceIds": [
+        "source:fob"
+      ],
+      "status": "verified"
     },
     {
-      "consumed": true,
+      "consumption": "consumed",
       "itemId": "mw4:rigid-synthetics",
-      "quantity": 5
+      "quantity": 5,
+      "sourceIds": [
+        "source:fob"
+      ],
+      "status": "verified"
     }
   ],
   "name": "Print Medium Backpack",
@@ -23,7 +31,8 @@
     "mw4:printer-access"
   ],
   "sourceIds": [
-    "source:fob"
+    "source:fob",
+    "source:gameboost-printer-20261030"
   ],
   "station": "3D Printer",
   "status": "verified"

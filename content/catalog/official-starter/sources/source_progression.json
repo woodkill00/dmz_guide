@@ -1,5 +1,12 @@
 {
   "id": "source:progression",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "web",
+    "lineageKey": "source-progression",
+    "observationKey": "source-progression"
+  },
   "publishedAt": "2026-10-19",
   "reviewedAt": "2026-10-21",
   "supports": "Separate DMZ track; conflicting printer image description.",

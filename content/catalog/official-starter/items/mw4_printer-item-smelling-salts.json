@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "consumable",
+  "description": "Grants infinite stamina, enhanced movement ability, and faster reloads for 60 seconds.",
+  "id": "mw4:printer-item-smelling-salts",
+  "kind": "item",
+  "name": "Smelling Salts",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

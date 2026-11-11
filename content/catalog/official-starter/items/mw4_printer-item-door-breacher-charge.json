@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "consumable",
+  "description": "A single-use tool to breach locked doors.",
+  "id": "mw4:printer-item-door-breacher-charge",
+  "kind": "item",
+  "name": "Door Breacher Charge",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

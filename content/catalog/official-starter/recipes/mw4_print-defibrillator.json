@@ -1,0 +1,38 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:print-defibrillator",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:electronics",
+      "quantity": 30,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-control-unit",
+      "quantity": 3,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    }
+  ],
+  "name": "Print Defibrillator",
+  "output": {
+    "itemId": "mw4:printer-item-defibrillator",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access-defibrillator-recipe-access"
+  ],
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "station": "3D Printer",
+  "status": "observed"
+}

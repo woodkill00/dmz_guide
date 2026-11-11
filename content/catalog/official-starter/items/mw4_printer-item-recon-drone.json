@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Field upgrades",
+  "description": "Remote-controlled drone that has manual and auto marking capabilities.",
+  "id": "mw4:printer-item-recon-drone",
+  "kind": "item",
+  "name": "Recon Drone",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

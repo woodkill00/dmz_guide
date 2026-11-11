@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "equipment",
+  "description": "Personal protective equipment to protect the wearer from radiation.",
+  "id": "mw4:printer-item-gas-mask",
+  "kind": "item",
+  "name": "Gas Mask",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

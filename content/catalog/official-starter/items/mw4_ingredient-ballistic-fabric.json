@@ -1,0 +1,18 @@
+{
+  "aliases": [],
+  "category": "Ingredients",
+  "description": "GameRant reports: Air-base armory and barracks; La Grande Vie roof. Rarity and location are secondary reports, not independently gameplay-tested.",
+  "id": "mw4:ingredient-ballistic-fabric",
+  "kind": "item",
+  "name": "Ballistic Fabric",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:gamerant-ingredients-20261028",
+    "source:gameboost-printer-20261030",
+    "source:gamerant-x01-printer-20261106",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

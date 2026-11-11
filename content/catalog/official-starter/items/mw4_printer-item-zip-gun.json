@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Lethals",
+  "description": "A single-use pistol that can be deployed quickly, capable of eliminating hostiles at close range.",
+  "id": "mw4:printer-item-zip-gun",
+  "kind": "item",
+  "name": "Zip Gun",
+  "rarity": "Common",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

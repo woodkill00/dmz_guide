@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Fire Support",
+  "description": "Call in heat-seeking missiles that track the deployed beacon.",
+  "id": "mw4:tcno-item-01c4ce77d447df2c",
+  "kind": "item",
+  "name": "Sticky Artillery",
+  "rarity": "Legendary",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

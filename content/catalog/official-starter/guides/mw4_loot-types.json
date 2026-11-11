@@ -1,0 +1,33 @@
+{
+  "body": "Browse the reported loot-container and source types. Each page lists associated items and supports identification notes and photographs. These are source types, not calibrated map positions.",
+  "category": "locations",
+  "id": "mw4:loot-types",
+  "relatedIds": [
+    "mw4:loot-type-cash-registers",
+    "mw4:loot-type-computers",
+    "mw4:loot-type-dressers",
+    "mw4:loot-type-duffel-bags",
+    "mw4:loot-type-filing-cabinets",
+    "mw4:loot-type-first-aid-boxes",
+    "mw4:loot-type-footlockers",
+    "mw4:loot-type-hidden-caches",
+    "mw4:loot-type-jackets",
+    "mw4:loot-type-lockers",
+    "mw4:loot-type-loose-loot",
+    "mw4:loot-type-luggage",
+    "mw4:loot-type-medicine-cabinets",
+    "mw4:loot-type-refrigerators",
+    "mw4:loot-type-rifle-cases",
+    "mw4:loot-type-safes",
+    "mw4:loot-type-supply-crates",
+    "mw4:loot-type-tool-boxes",
+    "mw4:loot-type-tool-chests",
+    "mw4:loot-type-weapons-lockers"
+  ],
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "title": "Loot source types"
+}

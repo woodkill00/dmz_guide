@@ -32,6 +32,20 @@ async function weaponArt(raw) {
     return { status: 404 };
   }
 }
+let itemIconReader;
+async function itemIcon(raw) {
+  try {
+    itemIconReader ||= import("./item-icons.mjs").then(
+      ({ createItemIconReader }) =>
+        createItemIconReader({ root: resolve(root, "..") }),
+    );
+    return await (
+      await itemIconReader
+    )(raw);
+  } catch {
+    return { status: 404 };
+  }
+}
 let siteAuditReader;
 async function siteAudit(raw) {
   try {
@@ -77,13 +91,20 @@ const types = {
   ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml",
   ".webp": "image/webp",
+  ".wasm": "application/wasm",
+  ".gz": "application/gzip",
 };
 const server = createServer(async (req, res) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "no-referrer");
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' http://127.0.0.1:4173 http://127.0.0.1:4174 http://127.0.0.1:4176 http://127.0.0.1:5175; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+    "default-src 'self'; script-src 'self'" +
+      (req.url?.startsWith("/field-desk/") ||
+      req.url?.startsWith("/assets/src/vendor/ocr/")
+        ? " 'wasm-unsafe-eval'"
+        : "") +
+      "; worker-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' http://127.0.0.1:4173 http://127.0.0.1:4174 http://127.0.0.1:4176 http://127.0.0.1:5175; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
   );
   if (!["GET", "HEAD"].includes(req.method)) {
     res.writeHead(405, { Allow: "GET, HEAD" });
@@ -108,6 +129,19 @@ const server = createServer(async (req, res) => {
         req.method === "HEAD"
           ? undefined
           : report.bytes || "Report route not found",
+      );
+    }
+    if (req.url?.startsWith("/local-item-icons/")) {
+      const image = await itemIcon(req.url);
+      res.writeHead(image.status, {
+        "Content-Type": image.type || "text/plain",
+        "Cache-Control": "no-store",
+        "Cross-Origin-Resource-Policy": "same-origin",
+      });
+      return res.end(
+        req.method === "HEAD"
+          ? undefined
+          : image.bytes || "Item icon unavailable locally",
       );
     }
     if (req.url?.startsWith("/local-key-images/")) {

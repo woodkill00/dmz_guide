@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "equipment",
+  "description": "A reusable parachute.",
+  "id": "mw4:printer-item-parachute",
+  "kind": "item",
+  "name": "Parachute",
+  "rarity": "Legendary",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

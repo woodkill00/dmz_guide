@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "equipment",
+  "description": "Personal protective equipment to protect the wearer from radiation.",
+  "id": "mw4:printer-item-durable-gas-mask",
+  "kind": "item",
+  "name": "Durable Gas Mask",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

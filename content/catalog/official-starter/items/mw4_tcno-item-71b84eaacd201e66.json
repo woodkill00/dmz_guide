@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Weapon Manuals",
+  "description": "Unlocks ability to purchase this weapon in Gunsmith.",
+  "id": "mw4:tcno-item-71b84eaacd201e66",
+  "kind": "item",
+  "name": "Astaroth .57 Manual",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

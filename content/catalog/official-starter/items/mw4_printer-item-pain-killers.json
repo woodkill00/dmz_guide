@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "consumable",
+  "description": "Grants max health, reduced damage effects, and faster health regen for a minute.",
+  "id": "mw4:printer-item-pain-killers",
+  "kind": "item",
+  "name": "Pain Killers",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

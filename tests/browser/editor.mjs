@@ -463,6 +463,7 @@ export async function runEditorTests({
       mimeType: "application/json",
       buffer: Buffer.from(bundle),
     });
+    await page.locator(".catalog-context > summary").click();
     await page.selectOption("#pack-select", "official:mw4-dmz-starter");
     await page.waitForTimeout(600);
     assert(await page.locator("#content-stage").isHidden());

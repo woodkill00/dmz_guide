@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Lethals",
+  "description": "Charge with a thermal lance that can burrow into surfaces before exploding.",
+  "id": "mw4:printer-item-drill-charge",
+  "kind": "item",
+  "name": "Drill Charge",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

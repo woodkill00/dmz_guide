@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Lethals",
+  "description": "Source-reported item reference; current-build behavior is not independently verified.",
+  "id": "mw4:printer-item-c4",
+  "kind": "item",
+  "name": "C4",
+  "rarity": "Common",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

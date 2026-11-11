@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Sam Airburst Turret"
+  ],
+  "category": "Field upgrades",
+  "description": "Portable artillery turret that intercepts aerial threats.",
+  "id": "mw4:printer-item-sam-airburst-turret",
+  "kind": "item",
+  "name": "SAM Airburst Turret",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

@@ -1,0 +1,47 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:print-railgun-sentry",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-power-regulator",
+      "quantity": 2,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-nitro-compounds",
+      "quantity": 3,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-control-unit",
+      "quantity": 5,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    }
+  ],
+  "name": "Print Railgun Sentry",
+  "output": {
+    "itemId": "mw4:printer-item-railgun-sentry",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access-railgun-sentry-recipe-access"
+  ],
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "station": "3D Printer",
+  "status": "observed"
+}

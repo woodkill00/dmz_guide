@@ -1,13 +1,15 @@
 {
   "aliases": [],
-  "category": "upgrade material",
-  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "category": "Ingredients",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established. GameRant reports: Industrial loot; toolboxes. Rarity and location are secondary reports, not independently gameplay-tested.",
   "id": "observed:reactive-metals",
   "kind": "item",
   "name": "Reactive Metals",
+  "rarity": "Uncommon",
   "sourceIds": [
     "source:upgrade-observation-02",
-    "source:detonated-fob-20261025"
+    "source:detonated-fob-20261025",
+    "source:gamerant-ingredients-20261028"
   ],
   "stats": [],
   "status": "observed",

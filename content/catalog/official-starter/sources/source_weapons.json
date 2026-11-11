@@ -1,5 +1,12 @@
 {
   "id": "source:weapons",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "web",
+    "lineageKey": "source-weapons",
+    "observationKey": "source-weapons"
+  },
   "publishedAt": "2026-10-19",
   "reviewedAt": "2026-11-01",
   "supports": "Launch weapon identities/classes and labelled basic launch observations; not current live DMZ numeric performance.",

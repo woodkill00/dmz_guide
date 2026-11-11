@@ -55,6 +55,10 @@ export function featurePages(packs) {
       )
       .replace("Progress without the spoilers.", "Your upgrades, at a glance.")
       .replace(
+        "</header>",
+        '</header><section class="panel"><div id="upgrade-budget-summary" aria-live="polite"></div><p class="actions"><a id="budget-needed-link" href="/needed/">Needed / remaining items</a><a href="/inventory/">Edit saved inventory</a></p><button id="budget-setup" type="button" disabled data-startup-disabled hidden>Review tracking update</button><details><summary>Completion and remaining items</summary><p>Check off completed upgrades below. Completion changes status only; it never spends inventory. Remaining item amounts use saved stock after reserves. Listed partial costs stay provisional. Use Needed / remaining items for shared totals and ingredient-printing forecasts.</p></details></section>',
+      )
+      .replace(
         '<div id="progress-rows"></div>',
         `<p id="upgrade-group-explanation" class="notice">Groups match filters when any listed tier matches. Each header keeps the lowest visible listed incomplete tier for context; this is not verified unlock order. Expand Other tiers to inspect earlier/later versions.</p><section class="upgrade-list-shell" aria-label="Upgrade checklist"><div class="upgrade-list-heading"><span>Upgrade</span><span>Completion</span><span>Missing materials</span><span>Readiness</span><span>Track</span><span class="upgrade-details-heading">Details</span></div><div id="progress-rows"></div></section>`,
       )
@@ -79,6 +83,10 @@ export function featurePages(packs) {
     page: "missions",
     body: pages[0].body
       .replace("Progress without the spoilers.", "Your missions, in one place.")
+      .replace(
+        "</header>",
+        '</header><section class="panel" aria-labelledby="orders-coverage-title"><h2 id="orders-coverage-title">DMZ Orders pages 1–24</h2><p>Page numbers without a recorded mission remain unrecorded. They do not count as completed. Chapter page numbers may differ by the order you choose chapters; match missions by chapter and name.</p><div id="orders-coverage" class="orders-coverage"></div></section><section class="panel" aria-labelledby="story-workspace-title"><h2 id="story-workspace-title">Story mission workspace</h2><p>Open a recorded story mission below to inspect its sourced steps, requirements, linked records, evidence and your manual completion state. Missing steps remain unrecorded.</p><button type="button" id="show-story-missions">Show story missions</button></section>',
+      )
       .replace(
         "<noscript>",
         `<p class="actions"><a href="http://127.0.0.1:5175/?tool=missions" target="_blank" rel="noopener noreferrer">Open map mission tracker ↗</a><a href="/collection/">Review collection needs</a></p><noscript>`,

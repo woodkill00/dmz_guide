@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "consumable",
+  "description": "Mitigates the negative effects caused by radiation for a minute.",
+  "id": "mw4:printer-item-radiation-blockers",
+  "kind": "item",
+  "name": "Radiation Blockers",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

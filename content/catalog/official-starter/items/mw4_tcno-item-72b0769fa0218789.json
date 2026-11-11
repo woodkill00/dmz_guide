@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Fire Support",
+  "description": "Explosive payload that drills through multiple floors.",
+  "id": "mw4:tcno-item-72b0769fa0218789",
+  "kind": "item",
+  "name": "Drill Charge Bomb",
+  "rarity": "Legendary",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

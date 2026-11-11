@@ -47,7 +47,7 @@ test("071 static registry admission matches frozen inventory; this is not browse
   assert.equal(new Set(features.map((f) => f.id)).size, features.length);
   assert.equal(
     features.length,
-    77,
+    82,
     "Rebaseline the owning registry contract deliberately",
   );
   assert.deepEqual(
@@ -73,7 +73,13 @@ test("071 canonical hub and ambiguous feature labels preserve distinct owners", 
     "tool-missions",
   ])
     assert.equal(featureHub(id), "DMZ Guide", id);
-  for (const id of ["recipes", "upgrades", "inventory", "collection"])
+  for (const id of [
+    "recipes",
+    "upgrades",
+    "inventory",
+    "collection",
+    "field-desk",
+  ])
     assert.equal(featureHub(id), "DMZ FOB", id);
   for (const id of ["armory", "armory-workbench", "weapon-updates"])
     assert.equal(featureHub(id), "DMZ Weapons", id);

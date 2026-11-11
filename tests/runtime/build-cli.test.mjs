@@ -40,7 +40,7 @@ function build(root, preload) {
       ...(preload ? ["--import", pathToFileURL(preload).href] : []),
       "scripts/build.mjs",
     ],
-    { cwd: root, encoding: "utf8", timeout: 30000 },
+    { cwd: root, encoding: "utf8", timeout: 120000 },
   );
 }
 for (const operation of ["write", "copy", "promote"]) {

@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Ingredients",
+  "description": "GameRant reports: Hajin safes; infrequent drop. Rarity and location are secondary reports, not independently gameplay-tested.",
+  "id": "mw4:ingredient-gold-skull",
+  "kind": "item",
+  "name": "Gold Skull",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:gamerant-ingredients-20261028",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

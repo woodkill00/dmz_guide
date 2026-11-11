@@ -1,0 +1,38 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:print-power-regulator",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:electronics",
+      "quantity": 100,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-printed-circuit-board",
+      "quantity": 3,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    }
+  ],
+  "name": "Print Power Regulator",
+  "output": {
+    "itemId": "mw4:ingredient-power-regulator",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:upgrade-epic-ingredient-printing"
+  ],
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "station": "3D Printer",
+  "status": "observed"
+}

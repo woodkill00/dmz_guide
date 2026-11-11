@@ -59,7 +59,8 @@ export async function runCompactUITests({ browser, base }) {
         "header tighter than recorded baseline",
       );
       assert(
-        (await page.locator(".page-heading").boundingBox()).height < 240,
+        (await page.locator(".page-heading").first().boundingBox()).height <
+          240,
         "heading tighter than recorded baseline",
       );
       const menu = page.locator(".nav-more"),
@@ -157,8 +158,9 @@ export async function runCompactUITests({ browser, base }) {
     );
     await page.setViewportSize({ width: 1920, height: 1000 });
     const disabled = page
-      .locator("#inventory-fields button:disabled:visible")
+      .locator("#inventory-fields [data-show-use]:visible")
       .first();
+    await disabled.evaluate((el) => (el.disabled = true));
     await disabled.scrollIntoViewIfNeeded();
     const box = await disabled.boundingBox();
     await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);

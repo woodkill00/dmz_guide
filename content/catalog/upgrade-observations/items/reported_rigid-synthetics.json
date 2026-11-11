@@ -1,12 +1,14 @@
 {
   "aliases": [],
-  "category": "upgrade material",
-  "description": "Community-source item identity. Current build, locations and unlisted mechanics remain unverified.",
+  "category": "Ingredients",
+  "description": "Community-source item identity. Current build, locations and unlisted mechanics remain unverified. GameRant reports: Residential loot; civilian bags. Rarity and location are secondary reports, not independently gameplay-tested.",
   "id": "reported:rigid-synthetics",
   "kind": "item",
   "name": "Rigid Synthetics",
+  "rarity": "Uncommon",
   "sourceIds": [
-    "source:detonated-fob-20261025"
+    "source:detonated-fob-20261025",
+    "source:gamerant-ingredients-20261028"
   ],
   "stats": [],
   "status": "unverified",

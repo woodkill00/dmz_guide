@@ -546,6 +546,27 @@ async function packChanged() {
   $("#location-search").value = "";
   $("#goal-locations").checked = filters.goalOnly;
   mapChanged();
+  const params = new URL(location.href).searchParams;
+  const locationIds = params.getAll("location");
+  if (
+    !navigationContext &&
+    !collectionRoute &&
+    params.get("pack") === state.pack.id &&
+    locationIds.length === 1
+  ) {
+    const requestedLocation = viewPack.locations.find(
+      (location) => location.id === locationIds[0] && !location.spoiler,
+    );
+    if (requestedLocation) {
+      filters.mapId = requestedLocation.mapId;
+      $("#map-select").value = filters.mapId;
+      mapChanged();
+      selectLocation(requestedLocation.id);
+    } else {
+      $("#location-detail").textContent =
+        "Requested location unavailable in this catalog. Choose a listed location; no position was inferred.";
+    }
+  }
 }
 $("#map-select").addEventListener("change", (e) => {
   if (collectionRoute?.map.id !== e.target.value) {

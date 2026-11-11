@@ -1,0 +1,16 @@
+{
+  "description": "Reported unlock route: Found blueprint. Record access only after checking your game; a listed level is not automatically player completion.",
+  "effects": [],
+  "id": "mw4:printer-access-2-plate-ballistic-gel-vest-recipe-access",
+  "name": "2-Plate Ballistic Gel Vest recipe access",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "progression"
+}

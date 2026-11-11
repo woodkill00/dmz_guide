@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "backpack",
+  "description": "A medium backpack with a weapon slot and one secure slot.",
+  "id": "mw4:printer-item-medium-weapon-backpack",
+  "kind": "item",
+  "name": "Medium Weapon Backpack",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

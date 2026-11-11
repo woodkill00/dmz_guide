@@ -1,3 +1,4 @@
+import { revealTrackerControl } from "./tracker-controls.mjs";
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 export async function runRefinedInventoryTests({
@@ -44,6 +45,10 @@ export async function runRefinedInventoryTests({
       .first()
       .getAttribute("data-inventory-item");
     await stock(first).fill("7");
+    await revealTrackerControl(
+      page,
+      `[data-id="${first}"][data-field="reserves"]`,
+    );
     await reserve(first).fill("9");
     const before = await stock(first).boundingBox();
     await stock(first).fill("8");
@@ -231,6 +236,9 @@ export async function runRefinedInventoryTests({
       5000,
     );
     assert.equal(await page.locator("[data-inventory-item]").count(), 50);
+    // This scale journey exercises catalog-order rows; the product now defaults to name/rarity.
+    await revealTrackerControl(page, "#inventory-sort");
+    await page.locator("#inventory-sort").selectOption("source");
     await page.locator('[data-show-use="demo:board"][aria-expanded]').click();
     assert(
       !(
@@ -288,25 +296,33 @@ export async function runRefinedInventoryTests({
     await stock(sectionItem).fill("7");
     assert(
       await page
-        .locator(".inventory-group h2")
+        .locator(".inventory-group > h3")
         .allTextContents()
         .then((names) =>
           names.every((name) => name.includes("Second synthetic section")),
         ),
     );
     await page.locator("#inventory-section").selectOption("");
+    await revealTrackerControl(page, "#inventory-sort");
     await page.locator("#inventory-sort").selectOption("name");
     await page.locator("#inventory-query").fill(sectionItem);
     assert.equal(await stock(sectionItem).inputValue(), "7");
     await page.locator("#inventory-query").fill("");
+    await revealTrackerControl(page, "#inventory-sort");
     await page.locator("#inventory-sort").selectOption("source");
+    await revealTrackerControl(page, "#inventory-use-filter");
     await page.locator("#inventory-use-filter").selectOption("recipes");
     assert(
       (await page.locator('[data-inventory-item="demo:board"]').count()) > 0,
     );
+    await revealTrackerControl(page, "#inventory-use-filter");
     await page.locator("#inventory-use-filter").selectOption("");
     evidence.checks.push(
       "section and recipe-use filters, source/name sort and search preserve independent offpage drafts",
+    );
+    await revealTrackerControl(
+      page,
+      '[data-show-use="demo:board"][data-kind="recipes"]',
     );
     await page
       .locator('[data-show-use="demo:board"][data-kind="recipes"]')
@@ -357,7 +373,7 @@ export async function runRefinedInventoryTests({
       scrollBy(0, rect.bottom - innerHeight + 5);
       node
         .closest(".inventory-entry")
-        .previousElementSibling.querySelector('[data-field="reserves"]')
+        .previousElementSibling.querySelector("[data-show-use][aria-expanded]")
         .focus({ preventScroll: true });
     });
     for (let i = 0; i < 8; i++) {
@@ -446,6 +462,7 @@ export async function runRefinedInventoryTests({
       await page.locator("#progress-track").inputValue(),
       "dmz-upgrade",
     );
+    await revealTrackerControl(page, "#upgrade-layout");
     await page.locator("#upgrade-layout").selectOption("flat");
     assert.equal(await page.locator("#progress-track").isDisabled(), true);
     assert.equal(

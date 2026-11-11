@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Fire support",
+  "description": "UAV recon ship that reveals enemy locations on the minimap.",
+  "id": "mw4:printer-item-uav",
+  "kind": "item",
+  "name": "UAV",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

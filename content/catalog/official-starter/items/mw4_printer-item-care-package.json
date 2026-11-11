@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Fire support",
+  "description": "Source-reported item reference; current-build behavior is not independently verified.",
+  "id": "mw4:printer-item-care-package",
+  "kind": "item",
+  "name": "Care Package",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

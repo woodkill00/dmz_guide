@@ -1,0 +1,47 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:print-fulton-drop-marker",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-prototype-rf-module",
+      "quantity": 1,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-comms-module",
+      "quantity": 3,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-control-unit",
+      "quantity": 5,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    }
+  ],
+  "name": "Print Fulton Drop Marker",
+  "output": {
+    "itemId": "mw4:printer-item-fulton-drop-marker",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access-fulton-drop-marker-recipe-access"
+  ],
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "station": "3D Printer",
+  "status": "observed"
+}

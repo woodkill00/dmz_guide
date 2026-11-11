@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Molotov"
+  ],
+  "category": "Lethals",
+  "description": "Improvised incendiary device that explodes on impact.",
+  "id": "mw4:printer-item-molotov-cocktail",
+  "kind": "item",
+  "name": "Molotov Cocktail",
+  "rarity": "Common",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

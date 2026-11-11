@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Railgun"
+  ],
+  "category": "Fire support",
+  "description": "Electromagnetic cannon that fires tungsten flechette rounds at hypersonic velocity. Deployable as an autonomous sentry.",
+  "id": "mw4:printer-item-railgun-sentry",
+  "kind": "item",
+  "name": "Railgun Sentry",
+  "rarity": "Legendary",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

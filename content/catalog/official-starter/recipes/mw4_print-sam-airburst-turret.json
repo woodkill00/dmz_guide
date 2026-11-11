@@ -1,0 +1,38 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:print-sam-airburst-turret",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:metals",
+      "quantity": 30,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-detonators",
+      "quantity": 3,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    }
+  ],
+  "name": "Print SAM Airburst Turret",
+  "output": {
+    "itemId": "mw4:printer-item-sam-airburst-turret",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access-sam-airburst-turret-recipe-access"
+  ],
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "station": "3D Printer",
+  "status": "observed"
+}

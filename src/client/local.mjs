@@ -1,3 +1,4 @@
+import { enhanceItemWorkspace } from "./item-workspace.mjs";
 import { adviceMarkup } from "./upgrade-advice-view.mjs";
 import { saveWatchPin } from "./watch-pin.mjs";
 import { createReaderContext } from "../domain/reader-flow.mjs";
@@ -8,8 +9,10 @@ import {
 } from "../domain/reader-flow.mjs";
 import { imageDescription } from "../content/image-description.mjs";
 import { loadBundledPayloads } from "../content/bundled-assets.mjs";
-import { init, state, $, esc, error } from "./common.mjs";
+import { getCatalog, init, state, $, esc, error, persist } from "./common.mjs";
+import { mountBuildTargets } from "./build-target-controls.mjs";
 import { readRecord } from "../storage/store.mjs";
+import { locationTimeline } from "../domain/field-ops.mjs";
 import {
   allRecords,
   renderDetail,
@@ -80,21 +83,65 @@ async function render() {
   const chosen = records.find((r) => r.id === id);
   const link = (r) =>
     `/local/?pack=${encodeURIComponent(state.pack.id)}&id=${encodeURIComponent(r.id)}`;
-  let markup = `<p><a href="/editor/?pack=${encodeURIComponent(state.pack.id)}">Edit this private pack</a> · <a href="/local/?pack=${encodeURIComponent(state.pack.id)}">All local records</a></p>`;
+  let markup = `<p class="local-record-links"><a href="/editor/?pack=${encodeURIComponent(state.pack.id)}">Edit this private pack</a> · <a href="/local/?pack=${encodeURIComponent(state.pack.id)}">All local records</a></p>`;
+  const focusedItem = chosen?.recordType === "item" && !chosen.spoiler;
+  let repositoryItem = false;
+  if (focusedItem) {
+    try {
+      const published = await getCatalog(state.pack.id, {
+        publishedOnly: true,
+      });
+      repositoryItem = published.items.some((item) => item.id === chosen.id);
+    } catch {
+      /* A private-only catalog has no repository detail destination. */
+    }
+    if (token !== generation) return;
+  }
+
+  document.querySelector("[data-local-library-heading]").hidden = focusedItem;
+  document.querySelector("[data-local-library-actions]").hidden = focusedItem;
+  if (focusedItem)
+    markup = `<p class="item-local-context">Saved catalog view · <a href="/local/?pack=${encodeURIComponent(state.pack.id)}">All local records</a></p>`;
   if (chosen) {
+    const detailMarkup = renderDetail(chosen, [state.pack], {
+      authorActions: focusedItem
+        ? `<p>Private record · repository pages remain unchanged.</p><a class="button" href="/editor/?pack=${encodeURIComponent(state.pack.id)}&amp;record=${encodeURIComponent(chosen.id)}">Edit private item &amp; pictures</a>${repositoryItem ? `<p>Repository changes use separate Content Studio actions.</p><a class="button" data-repository-reference href="${esc(recordUrl(chosen))}">Repository item &amp; photo actions</a>` : ""}`
+        : "",
+    });
     markup +=
-      `<p class="notice">PRIVATE PACK PREVIEW · ${esc(state.pack.contentVersion)}. This is not the published snapshot.</p><div id="private-picture"></div>` +
-      renderDetail(chosen, [state.pack])
-        .replaceAll("<h1>", "<h2>")
-        .replaceAll("</h1>", "</h2>");
+      `${focusedItem ? "" : `<p class="notice">PRIVATE PACK PREVIEW · ${esc(state.pack.contentVersion)}. This is not the published snapshot.</p>`}<div id="private-picture"></div>` +
+      (focusedItem
+        ? detailMarkup
+        : detailMarkup.replaceAll("<h1>", "<h2>").replaceAll("</h1>", "</h2>"));
   } else
     markup += `<label>Search private visible records<input id="local-query" type="search"></label><div class="card-grid">${records.map((r) => `<article class="panel" data-local-search="${esc(recordSearchText(r))}"><p>${esc(r.recordType)} · ${esc(r.status)}</p><h2><a href="${link(r)}">${r.spoiler ? "Spoiler-protected record" : esc(r.name || r.title)}</a></h2><p>${r.spoiler ? "Reveal only after choosing this record." : esc(r.description || r.category || "")}</p></article>`).join("")}</div>`;
   if (
     chosen?.recordType === "item" &&
     (!chosen.spoiler || state.profile.spoilers)
   )
-    markup += `<section id="item-upgrade-advice" class="panel"><h2>Your known unfinished upgrade uses</h2>${adviceMarkup(state.pack, state.profile, { itemId: chosen.id })}<button type="button" data-item-pin="${esc(chosen.id)}" aria-pressed="${(state.profile.watchPins || []).includes(chosen.id)}">${(state.profile.watchPins || []).includes(chosen.id) ? "Remove your watch pin" : "Add your watch pin"}</button></section>`;
+    markup += `<details id="item-upgrade-advice" class="panel"><summary>Your unfinished upgrade needs</summary>${adviceMarkup(state.pack, state.profile, { itemId: chosen.id })}<button type="button" data-item-pin="${esc(chosen.id)}" aria-pressed="${(state.profile.watchPins || []).includes(chosen.id)}">${(state.profile.watchPins || []).includes(chosen.id) ? "Remove your watch pin" : "Add your watch pin"}</button></details>`;
+  if (
+    chosen?.recordType === "location" &&
+    (!chosen.spoiler || state.profile.spoilers)
+  ) {
+    const timeline = locationTimeline(state.pack, state.profile, chosen.id);
+    markup += `<section class="panel" aria-labelledby="location-timeline-title"><h2 id="location-timeline-title">Location timeline</h2><p>Source reports and your private observations have different authority. Dates show when each record was reviewed or saved.</p>${timeline.length ? `<ol>${timeline.map((row) => `<li><strong>${row.kind === "private" ? "My observation" : "Source report"}</strong> · ${esc(row.date || "Date unknown")} · ${row.url ? `<a href="${esc(row.url)}" target="_blank" rel="noopener noreferrer">${esc(row.title)}</a>` : esc(row.title)} · ${esc(row.detail)}${row.kind === "private" ? ` · <a href="/field-desk/?pack=${encodeURIComponent(state.pack.id)}#discovery-${encodeURIComponent(row.id)}">Review private entry${row.photoId ? " and photo" : ""}</a>` : ""}</li>`).join("")}</ol>` : "<p>No dated reports or private discoveries for this location.</p>"}</section>`;
+  }
   $("#local-records").innerHTML = markup;
+  if (focusedItem) {
+    const slot = $("#item-private-picture-slot");
+    if (slot) slot.append($("#private-picture"));
+    const advice = $("#item-upgrade-advice");
+    advice.classList.add("item-personal-uses");
+    $("#item-uses")?.append(advice);
+    await enhanceItemWorkspace(state.pack, state.profile);
+    if (token !== generation) return;
+  }
+  await mountBuildTargets($("#local-records"), {
+    pack: () => state.pack,
+    profile: () => state.profile,
+    save: persist,
+  });
   $("#item-upgrade-advice")?.addEventListener("click", async (event) => {
     const button = event.target.closest("button");
     if (!button || state.saving) return;
@@ -121,6 +168,7 @@ async function render() {
   });
   // Private relationships always stay in this exact selected pack, never a public fork.
   for (const a of $("#local-records").querySelectorAll("a[href]")) {
+    if (a.hasAttribute("data-repository-reference")) continue;
     const url = new URL(a.href, location.href);
     const target = records.find((r) => recordUrl(r) === url.pathname);
     if (target) a.href = link(target);

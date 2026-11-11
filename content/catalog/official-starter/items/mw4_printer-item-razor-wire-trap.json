@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Field upgrades",
+  "description": "Deploy a mine which ensnares your enemies in razor wire.",
+  "id": "mw4:printer-item-razor-wire-trap",
+  "kind": "item",
+  "name": "Razor Wire Trap",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

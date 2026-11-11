@@ -1,3 +1,7 @@
+const matchesCatalogType = (card, type) =>
+  type.startsWith("category:")
+    ? card.dataset.category === type.slice(9)
+    : card.dataset.type === type;
 import {
   matchesTokens,
   readHomeSearch,
@@ -94,8 +98,11 @@ else if (form) {
     for (const card of cards) {
       const show =
         matchesTokens(card.dataset.search, query.value) &&
-        (!type.value || card.dataset.type === type.value) &&
-        (!pack.value || card.dataset.pack === pack.value);
+        (!type.value || matchesCatalogType(card, type.value)) &&
+        (pack.value
+          ? card.dataset.pack === pack.value
+          : form.dataset.gameOnlyDefault !== "true" ||
+            card.dataset.fixture !== "true");
       card.hidden = !show;
       if (show) count++;
     }
@@ -272,8 +279,11 @@ function mountModernCatalog(form) {
       const matches = cards.filter(
         (card) =>
           matchesTokens(card.dataset.search, saved.query) &&
-          (!saved.type || card.dataset.type === saved.type) &&
-          (!saved.pack || card.dataset.pack === saved.pack),
+          (!saved.type || matchesCatalogType(card, saved.type)) &&
+          (saved.pack
+            ? card.dataset.pack === saved.pack
+            : form.dataset.gameOnlyDefault !== "true" ||
+              card.dataset.fixture !== "true"),
       ).length;
       return saved.page < Math.max(1, Math.ceil(matches / saved.size));
     } catch {
@@ -311,8 +321,11 @@ function mountModernCatalog(form) {
     const matches = ordered.filter(
       (card) =>
         matchesTokens(card.dataset.search, query.value) &&
-        (!type.value || card.dataset.type === type.value) &&
-        (!pack.value || card.dataset.pack === pack.value),
+        (!type.value || matchesCatalogType(card, type.value)) &&
+        (pack.value
+          ? card.dataset.pack === pack.value
+          : form.dataset.gameOnlyDefault !== "true" ||
+            card.dataset.fixture !== "true"),
     );
     const pages = Math.max(1, Math.ceil(matches.length / size));
     page = Math.min(Math.max(0, page), pages - 1);

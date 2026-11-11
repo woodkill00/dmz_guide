@@ -9,6 +9,7 @@ import { chromium, firefox, webkit } from "playwright";
 const repo = path.resolve(process.cwd(), "../..");
 const registryPath = path.join(repo, "src/ui/feature-registry.mjs");
 const { features } = await import(pathToFileURL(registryPath).href);
+const registrySnapshot = JSON.parse(await readFile(path.join(repo, "specs/071-ui-ux-implementation/registry-snapshot.json"), "utf8"));
 const destinations = JSON.parse(
   await readFile(path.join(repo, "src/ui/map-destinations.json"), "utf8"),
 );
@@ -18,7 +19,7 @@ const toolFeatures = mapFeatures.filter((feature) =>
 );
 assert.equal(
   features.length,
-  77,
+  registrySnapshot.count,
   "Registry changed: rebaseline the full feature coverage contract.",
 );
 assert.equal(mapFeatures.length, 48);

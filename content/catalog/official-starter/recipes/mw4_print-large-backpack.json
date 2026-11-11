@@ -1,0 +1,47 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:print-large-backpack",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-nylon-laminate",
+      "quantity": 2,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-structural-alloy",
+      "quantity": 5,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:rigid-synthetics",
+      "quantity": 10,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    }
+  ],
+  "name": "Print Large Backpack",
+  "output": {
+    "itemId": "mw4:printer-item-large-backpack",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access-large-backpack-recipe-access"
+  ],
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "station": "3D Printer",
+  "status": "observed"
+}

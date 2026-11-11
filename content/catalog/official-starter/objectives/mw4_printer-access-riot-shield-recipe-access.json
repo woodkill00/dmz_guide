@@ -1,0 +1,16 @@
+{
+  "description": "Reported unlock route: Found blueprint. Record access only after checking your game; a listed level is not automatically player completion.",
+  "effects": [],
+  "id": "mw4:printer-access-riot-shield-recipe-access",
+  "name": "Riot Shield recipe access",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "progression"
+}

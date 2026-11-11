@@ -1,3 +1,5 @@
+import {createCollectionImport} from "./collection-import.ts";
+import {mountItemAreaHighlight} from "../map/item-area-highlight.ts";
 import {markerDraft,overridden,overrideVisible,markerOrigins} from "./marker-overrides.ts";
 import { groupMapCategories, type CategoryInput } from "../map/category-groups.ts";
 import {mountSelectionPane} from '../map/selection-pane.ts';
@@ -315,6 +317,7 @@ export function mountWorkspace(
   const checkSave=button('Check save status',async()=>{if(writing||!store){error('The current save is still pending. Keep this page open.');return;}try{const result=(await store.read()).current;if(unconfirmedWrite&&unsaved&&result&&result.revision===unconfirmedRevision&&JSON.stringify(result.data)===JSON.stringify(asJson(unsaved))){validateWorkspace(result.data);if(!unconfirmedTicket||!operationOwner.settle(unconfirmedTicket,{outcome:'confirmed',receipt:result},{verifyReceipt:r=>r===result}).accepted)throw new Error('The retained save owner could not confirm this receipt. Keep your recovery state.');state=unsaved;revision=result.revision;unsaved=undefined;failedLabel=undefined;retainedFailure=false;unconfirmedWrite=false;unconfirmedRevision=undefined;unconfirmedTicket=undefined;dirty=false;issues.clear('map-workspace','write');issues.clear('map-workspace','workspace');issues.clear('map-workspace','write-pending');renderPanel();notice('The saved revision is confirmed. Review your destination, then continue.');paneHost?.refresh();}else notice('No matching saved revision was confirmed. Your draft and existing recovery state are kept.');}catch(cause){error(cause);}},'workspace-check-save');
   checkSave.hidden=true;
   if(modern)top.append(checkSave);
+  const itemAreaHighlight = mountItemAreaHighlight(viewer.map,()=>{if(!modern && dialog.open)dialog.close();});
   const searchHighlight = L.layerGroup().addTo(viewer.map);
   let highlightRecord: { key: string; signature: string } | undefined;
   const highlightSignature = (r: ReturnType<typeof explorerRecords>[number]) =>
@@ -718,9 +721,11 @@ export function mountWorkspace(
     },
   });
   (document.querySelector("#key-update-slot") ?? document.querySelector(".key-toolbar"))!.append(updatesUI.root);
+  const collectionImport=createCollectionImport({records:getExplorerRecords,allowed:()=>canInspect()&&!unsaved&&!pendingVisibility,highlight:records=>{if(!records.length){notice('No selected area has registered coordinates.');return;}itemAreaHighlight.show('Collection areas',records,false);},createRoute:records=>plannerUI!.addCollectionRoute(records),openRoutes:()=>{openTool('routes');},changed:()=>{if(active==='explore'&&canInspect())renderPanel();else notice('A collection plan is ready. Open Find locations to review it.');},error});
   const usabilityUI = createUsabilityUI({
     ...services,error:scopeError('find'),
     records: getExplorerRecords,
+    highlightItemArea:(name,records)=>{if(canInspect())itemAreaHighlight.show(name,records);},
     addWaypoint:r=>plannerUI!.addRecord(r),trackRecord:r=>plannerUI!.observe(r),
     mapCenter:()=>{const p=viewer.map.getCenter();if(![p.lng,p.lat].every(n=>n>=0&&n<=4096))throw new Error('Move the map center inside the terrain first.');return{x:p.lng,y:p.lat,label:'Map center'};},
     openSearch:()=>openExplore('search'),
@@ -967,8 +972,8 @@ export function mountWorkspace(
     if (active === "icons") renderIcons();
     if (active === "backup") renderBackup();
     if(active==='planner')body.append(plannerUI!.panel());
-    if(active==='health')body.append(healthPanel({...services,captures:()=>legacy.map(source=>({id:source.id,capturedAt:source.getSnapshot()?.capturedAt??null,records:source.getSnapshot()?.records.length??0,files:source.getSnapshotLocation()})),navigate:target=>{if(!canInspect())return;if(target==='updates'){dialog.close();document.querySelector<HTMLButtonElement>('#toggle-key')?.click();const controls=document.querySelector<HTMLElement>('#map-source-updates');if(controls){controls.tabIndex=-1;controls.focus();controls.scrollIntoView({block:'center'});}}else{active=target;renderPanel();}}}));
-    if (active === "explore") {if(modern){const scopes=el('div',undefined,'ui-find-scopes');scopes.setAttribute('role','group');scopes.setAttribute('aria-label','Find scope');scopes.append(button('Map locations',()=>{openTool('explore');},'ui-find-map'),button('My workspace',()=>{openTool('workspace-search');},'ui-find-workspace'),note('Map locations searches imported sites and your placed points. My workspace searches private workspace records.'));body.append(scopes);}body.append(usabilityUI.panel());}
+    if(active==='health')body.append(healthPanel({...services,records:getExplorerRecords,captures:()=>legacy.map(source=>({id:source.id,capturedAt:source.getSnapshot()?.capturedAt??null,records:source.getSnapshot()?.records.length??0,files:source.getSnapshotLocation()})),navigate:target=>{if(!canInspect())return;if(target==='updates'){dialog.close();document.querySelector<HTMLButtonElement>('#toggle-key')?.click();const controls=document.querySelector<HTMLElement>('#map-source-updates');if(controls){controls.tabIndex=-1;controls.focus();controls.scrollIntoView({block:'center'});}}else{active=target;renderPanel();}}}));
+    if (active === "explore") {if(modern){const scopes=el('div',undefined,'ui-find-scopes');scopes.setAttribute('role','group');scopes.setAttribute('aria-label','Find scope');scopes.append(button('Map locations',()=>{openTool('explore');},'ui-find-map'),button('My workspace',()=>{openTool('workspace-search');},'ui-find-workspace'),note('Map locations searches imported sites and your placed points. My workspace searches private workspace records.'));body.append(scopes);}body.append(collectionImport.panel(),usabilityUI.panel());}
     if(preservePosition){dialog.scrollTop=scrollTop;dialog.scrollLeft=scrollLeft;const tabs=body.querySelector('.planner-tabs');if(tabs)tabs.scrollLeft=tabsLeft;}
   }
   function renderPoints() {
@@ -2741,6 +2746,8 @@ export function mountWorkspace(
       window.removeEventListener('pagehide',suspendView);window.removeEventListener('pageshow',resumeView);
       findButton.remove();
       searchHighlight.remove();
+      itemAreaHighlight.destroy();
+      collectionImport.destroy();
       document.removeEventListener("map-duplicate-details", duplicateDetails);
       document.removeEventListener("map-record-details", recordDetails);
       window.removeEventListener("beforeunload", beforeUnload);

@@ -1,0 +1,40 @@
+{
+  "description": "Increases the amount of cash your bank can hold to 500,000. TroubleChute-listed requirements and prerequisite links, reviewed 2026-11-10; not independently verified for the current build. Consumption remains unknown where not previously confirmed.",
+  "effects": [],
+  "id": "mw4:upgrade-bank-upgrade-ii",
+  "name": "Bank Upgrade II",
+  "oneTime": true,
+  "prerequisites": [
+    "mw4:upgrade-bank-upgrade-i"
+  ],
+  "requirements": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:dmz-cash",
+      "quantity": 50000,
+      "sourceIds": [
+        "source:detonated-fob-20261025",
+        "source:gameboost-printer-20261030",
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:detonated-fob-20261025",
+    "source:gameboost-printer-20261030",
+    "source:tcno-fob-20261110",
+    "source:tcno-items-20261110"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "detonated-bank-upgrade-ii-20261025"
+    ],
+    "prerequisiteStatus": "known",
+    "tierLabel": "II"
+  }
+}

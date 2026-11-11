@@ -30,8 +30,9 @@ const spend = (id) => `[data-upgrade-spend="${id}"]`;
 const reverse = (id) => `[data-upgrade-reverse="${id}"]`;
 const progress = (id) =>
   `[data-upgrade-id="${id}"][data-upgrade-field="completion"]`;
-const owned = (id) => `[data-field="inventory"][data-id="${id}"]`;
-const reserved = (id) => `[data-field="reserves"][data-id="${id}"]`;
+const owned = (id) =>
+  `:nth-match([data-field="inventory"][data-id="${id}"], 1)`;
+const reserved = (id) => `[data-field="reserves"][data-id="${id}"]:visible`;
 
 async function ready(page) {
   await page.waitForFunction(
@@ -66,9 +67,17 @@ async function saved(page, revision, packId = PACK) {
   );
 }
 async function downloadJSON(page, selector) {
-  const pending = page.waitForEvent("download");
+  await openParentDetails(page.locator(selector));
+  const pending = page
+    .waitForEvent("download", { timeout: 10000 })
+    .catch((reason) => reason);
   await page.click(selector);
-  return JSON.parse(await readFile(await (await pending).path(), "utf8"));
+  const result = await pending;
+  if (result instanceof Error)
+    throw new Error(
+      `${result.message}; page error: ${await page.locator("#error").textContent()}`,
+    );
+  return JSON.parse(await readFile(await result.path(), "utf8"));
 }
 function numberText(value) {
   const text = value.trim().replaceAll(",", "");
@@ -935,8 +944,10 @@ export async function runIndependentUpgradeSpending({
       );
       await page.click("#cancel-inventory");
       await page.waitForFunction(
-        (selector) => document.querySelector(selector)?.value === "10",
-        owned(A),
+        (id) =>
+          document.querySelector(`[data-field="inventory"][data-id="${id}"]`)
+            ?.value === "10",
+        A,
       );
       assert.equal(await page.locator(owned(A)).inputValue(), "10");
       assert.deepEqual(
@@ -975,11 +986,15 @@ export async function runIndependentUpgradeSpending({
           !hiddenError.includes("747"),
         "Hidden requirement refusal exposes no secret name or amount",
       );
+      await page.reload();
+      await ready(page);
+      await openInventoryDetails(page, A);
       await page.locator(reserved(A)).fill("4");
       await saveInventory(page);
       await openPurchase(page);
       const bought = await apply(page);
       await refused(page, spend(SECOND), /reserve|insufficient|stock/i);
+      await openInventoryDetails(page, A);
       await page.locator(reserved(A)).fill("3");
       await saveInventory(page);
       await openPurchase(page, SECOND);
@@ -1686,15 +1701,20 @@ export async function runIndependentUpgradeSpending({
         const { state } = await import("/assets/src/client/common.mjs");
         return state.pack?.id === "official:mw4-dmz-starter" && !state.loading;
       });
+      await page.waitForFunction(
+        () =>
+          document.querySelector("main")?.getAttribute("aria-busy") === "false",
+      );
       assert.equal(
         await page.locator("#upgrade-spend-confirm[open]").count(),
         0,
       );
       // WebKit can ignore offscreen programmatic focus after native modal close.
       // Prepare the intended visible target; retain the exact focus assertion below.
+      await openParentDetails(page.locator("#pack-select"));
       await page.locator("#pack-select").scrollIntoViewIfNeeded();
-      await page.locator("#pack-select").focus();
       assert.deepEqual((await durable(page)).value, initial);
+      await page.locator("#pack-select").focus();
       await focusIs(page, "#pack-select");
       evidence.scenarios.push(
         "Unconfirmed document navigation and selected-pack change discard stale preview without any debit/event; old modal focus cannot steal focus from the new pack",
@@ -1730,6 +1750,8 @@ export async function runIndependentUpgradeSpending({
       );
       await ready(page);
       assert.equal((await active(page)).schemaVersion, 3);
+      await page.locator("#inventory-query").fill("cash");
+      await openInventoryDetails(page, cash);
       assert.equal(
         await page.locator(owned(cash)).getAttribute("max"),
         "2000000",
@@ -1738,15 +1760,17 @@ export async function runIndependentUpgradeSpending({
         await page.locator(reserved(cash)).getAttribute("max"),
         "2000000",
       );
+      await page.locator(owned(cash)).fill("2000000");
+      await page.locator(reserved(cash)).fill("2000000");
+      await page.locator("#inventory-query").fill("ballistic flight logs");
       assert.equal(
         await page
           .locator(owned("observed:ballistic-flight-logs"))
           .getAttribute("max"),
         "1000000",
       );
-      await page.locator(owned(cash)).fill("2000000");
-      await page.locator(reserved(cash)).fill("2000000");
       await page.locator(owned("observed:ballistic-flight-logs")).fill("5");
+      await page.locator("#inventory-query").fill("regional combat notes");
       await page.locator(owned("observed:regional-combat-notes")).fill("5");
       await saveInventory(page, observedPack);
       await refused(
@@ -1755,6 +1779,8 @@ export async function runIndependentUpgradeSpending({
         /reserve|insufficient|stock/i,
         observedPack,
       );
+      await page.locator("#inventory-query").fill("cash");
+      await openInventoryDetails(page, cash);
       await page.locator(reserved(cash)).fill("1800000");
       await saveInventory(page, observedPack);
       const before = await active(page);

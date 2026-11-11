@@ -1,0 +1,38 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:print-trophy-system",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:electronics",
+      "quantity": 15,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-control-unit",
+      "quantity": 3,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    }
+  ],
+  "name": "Print Trophy System",
+  "output": {
+    "itemId": "mw4:printer-item-trophy-system",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access-trophy-system-recipe-access"
+  ],
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "station": "3D Printer",
+  "status": "observed"
+}

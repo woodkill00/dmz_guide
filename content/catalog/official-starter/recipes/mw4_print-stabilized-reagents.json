@@ -1,0 +1,38 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:print-stabilized-reagents",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:chemicals",
+      "quantity": 100,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:binding-catalyst",
+      "quantity": 3,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    }
+  ],
+  "name": "Print Stabilized Reagents",
+  "output": {
+    "itemId": "mw4:ingredient-stabilized-reagents",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:upgrade-epic-ingredient-printing"
+  ],
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "station": "3D Printer",
+  "status": "observed"
+}

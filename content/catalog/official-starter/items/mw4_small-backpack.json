@@ -5,8 +5,11 @@
   "id": "mw4:small-backpack",
   "kind": "item",
   "name": "Small Backpack",
+  "rarity": "Uncommon",
   "sourceIds": [
-    "source:fob"
+    "source:fob",
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
   ],
   "stats": [],
   "status": "verified",

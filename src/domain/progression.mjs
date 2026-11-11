@@ -12,6 +12,28 @@ const recordGroups = [
 ];
 const recordsOf = (pack) => recordGroups.flatMap((group) => pack[group] || []);
 export const progressStates = ["unknown", "locked", "unlocked", "completed"];
+export function ordersPageCoverage(pack, count = 24) {
+  if (!Number.isSafeInteger(count) || count < 1 || count > 100)
+    throw Error("Invalid Orders page count");
+  const pages = new Map();
+  for (const objective of pack.objectives || []) {
+    if (
+      objective.track !== "dmz-order" ||
+      !Number.isSafeInteger(objective.orderPage) ||
+      objective.orderPage < 1 ||
+      objective.orderPage > count
+    )
+      continue;
+    const list = pages.get(objective.orderPage) || [];
+    list.push(objective.id);
+    pages.set(objective.orderPage, list);
+  }
+  return Array.from({ length: count }, (_, index) => ({
+    page: index + 1,
+    state: pages.has(index + 1) ? "recorded" : "unrecorded",
+    objectiveIds: pages.get(index + 1) || [],
+  }));
+}
 const localURL = (pack, id) =>
   `/local/?pack=${encodeURIComponent(pack.id)}&id=${encodeURIComponent(id)}`;
 
@@ -303,6 +325,7 @@ export function progressRows(
           [
             guard.text(r.name || r.title),
             guard.text(r.description || r.body || ""),
+            ...(r.track === "dmz-story" ? (r.steps || []).map(guard.text) : []),
             t,
           ]
             .join(" ")
@@ -362,6 +385,10 @@ export function progressRows(
         hidden: false,
         name: guard.text(r.name || r.title),
         description: guard.text(r.description || r.body || ""),
+        steps:
+          t === "dmz-story"
+            ? (r.steps || []).slice(0, 32).map((step) => guard.text(step))
+            : [],
         status: r.status,
         state:
           r.track === "dmz-upgrade"

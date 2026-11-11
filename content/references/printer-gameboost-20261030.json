@@ -1,0 +1,757 @@
+{
+  "source": "https://gameboost.com/blog/mw4-dmz-all-3d-printer-recipes",
+  "sourceUpdated": "2026-10-30",
+  "reviewed": "2026-11-06",
+  "scope": "Reported factual table rows; no independent live-build validation. Revive Pistol level remains unconfirmed. Snapshot contains no article prose or images.",
+  "rows": [
+    {
+      "name": "Energy Drink",
+      "category": "Consumable",
+      "rarity": "Common",
+      "cost": "10 Chemicals, 10 Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Bandage",
+      "category": "Consumable",
+      "rarity": "Uncommon",
+      "cost": "15 Synthetics, 15 Chemicals",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "Pain Killers",
+      "category": "Consumable",
+      "rarity": "Uncommon",
+      "cost": "15 Electronics, 15 Chemicals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Sedative Inhaler",
+      "category": "Consumable",
+      "rarity": "Uncommon",
+      "cost": "15 Synthetics, 15 Chemicals",
+      "unlock": "DMZ level 3"
+    },
+    {
+      "name": "Radiation Blockers",
+      "category": "Consumable",
+      "rarity": "Rare",
+      "cost": "30 Chemicals, 3 Biomaterials",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Smelling Salts",
+      "category": "Consumable",
+      "rarity": "Rare",
+      "cost": "30 Chemicals, 3 Detonators",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Medkit",
+      "category": "Consumable",
+      "rarity": "Epic",
+      "cost": "30 Chemicals, 1 Binding Catalyst, 5 Biomaterials",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "Self-Revive Kit",
+      "category": "Consumable",
+      "rarity": "Legendary",
+      "cost": "1 Stabilized Reagents, 5 Biomaterials, 3 Binding Catalyst",
+      "unlock": "DMZ level 48"
+    },
+    {
+      "name": "Door Breacher Charge",
+      "category": "Consumable",
+      "rarity": "Ultra",
+      "cost": "1 Experimental Compounds, 5 Stock Rod, 3 Volatile Explosives",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "1-Plate Armor Vest",
+      "category": "Plate Carrier",
+      "rarity": "Uncommon",
+      "cost": "25 Synthetics, 25 Metals",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "2-Plate Armor Vest",
+      "category": "Plate Carrier",
+      "rarity": "Rare",
+      "cost": "50 Synthetics, 5 Reactive Metals",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "2-Plate Ballistic Gel Vest",
+      "category": "Plate Carrier",
+      "rarity": "Epic",
+      "cost": "50 Synthetics, 3 Binding Catalyst, 10 Reactive Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "2-Plate Helmet Armor Vest",
+      "category": "Plate Carrier",
+      "rarity": "Epic",
+      "cost": "50 Synthetics, 3 Structural Alloy, 10 Reactive Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "3-Plate Armor Vest",
+      "category": "Plate Carrier",
+      "rarity": "Legendary",
+      "cost": "2 Ballistic Fabric, 5 Nylon Cloth, 10 Reactive Metals",
+      "unlock": "DMZ Orders"
+    },
+    {
+      "name": "3-Plate Ballistic Gel Vest",
+      "category": "Plate Carrier",
+      "rarity": "Ultra",
+      "cost": "2 Experimental Compounds, 4 Stabilized Reagents, 10 Biomaterials",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "3-Plate Helmet Armor Vest",
+      "category": "Plate Carrier",
+      "rarity": "Ultra",
+      "cost": "2 Nano-Structured Alloy, 4 Alloyed Plating, 10 Reactive Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Tempered Armor Vest",
+      "category": "Plate Carrier",
+      "rarity": "Ultra",
+      "cost": "2 Military Composites, 4 Ballistic Fabric, 10 Rigid Synthetics",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Small Backpack",
+      "category": "Backpack",
+      "rarity": "Uncommon",
+      "cost": "25 Synthetics, 25 Metals",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "Medium Backpack",
+      "category": "Backpack",
+      "rarity": "Rare",
+      "cost": "50 Synthetics, 5 Rigid Synthetics",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "Medium Scavenger Backpack",
+      "category": "Backpack",
+      "rarity": "Epic",
+      "cost": "50 Metals, 3 Nylon Cloth, 10 Rigid Synthetics",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Medium Weapon Backpack",
+      "category": "Backpack",
+      "rarity": "Epic",
+      "cost": "50 Synthetics, 3 High-Tenacity Fibers, 10 Rigid Synthetics",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Small Secure Backpack",
+      "category": "Backpack",
+      "rarity": "Epic",
+      "cost": "50 Metals, 3 Structural Alloy, 10 Rigid Synthetics",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Large Backpack",
+      "category": "Backpack",
+      "rarity": "Legendary",
+      "cost": "2 Nylon Laminate, 5 Structural Alloy, 10 Rigid Synthetics",
+      "unlock": "DMZ Orders"
+    },
+    {
+      "name": "Large Scavenger Backpack",
+      "category": "Backpack",
+      "rarity": "Legendary",
+      "cost": "2 Nylon Laminate, 5 High-Tenacity Fibers, 10 Rigid Synthetics",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Medium Secure Backpack",
+      "category": "Backpack",
+      "rarity": "Legendary",
+      "cost": "2 Alloyed Plating, 5 Nylon Cloth, 10 Reactive Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Large Secure Backpack",
+      "category": "Backpack",
+      "rarity": "Ultra",
+      "cost": "2 Prototype RF Module, 4 Alloyed Plating, 10 Rigid Synthetics",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Secure Scavenger Backpack",
+      "category": "Backpack",
+      "rarity": "Ultra",
+      "cost": "2 Military Composites, 4 Nylon Laminate, 10 Reactive Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Concussion Grenade",
+      "category": "Tactical",
+      "rarity": "Common",
+      "cost": "10 Synthetics, 10 Chemicals",
+      "unlock": "DMZ level 4"
+    },
+    {
+      "name": "Smoke Grenade",
+      "category": "Tactical",
+      "rarity": "Common",
+      "cost": "10 Synthetics, 10 Chemicals",
+      "unlock": "DMZ level 4"
+    },
+    {
+      "name": "Snapshot Grenade",
+      "category": "Tactical",
+      "rarity": "Common",
+      "cost": "10 Synthetics, 10 Chemicals",
+      "unlock": "DMZ level 9"
+    },
+    {
+      "name": "Shock Stick",
+      "category": "Tactical",
+      "rarity": "Common",
+      "cost": "10 Synthetics, 10 Chemicals",
+      "unlock": "DMZ level 17"
+    },
+    {
+      "name": "Flash",
+      "category": "Tactical",
+      "rarity": "Common",
+      "cost": "10 Synthetics, 10 Chemicals",
+      "unlock": "DMZ Orders"
+    },
+    {
+      "name": "Decoy Grenade",
+      "category": "Tactical",
+      "rarity": "Common",
+      "cost": "10 Synthetics, 10 Chemicals",
+      "unlock": "DMZ Orders"
+    },
+    {
+      "name": "Screamer Mine",
+      "category": "Tactical",
+      "rarity": "Common",
+      "cost": "10 Synthetics, 10 Chemicals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Stim",
+      "category": "Tactical",
+      "rarity": "Uncommon",
+      "cost": "15 Synthetics, 15 Chemicals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Heartbeat Sensor",
+      "category": "Tactical",
+      "rarity": "Uncommon",
+      "cost": "25 Synthetics, 25 Chemicals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Spotter Scope",
+      "category": "Tactical",
+      "rarity": "Rare",
+      "cost": "50 Synthetics, 5 Electronic Sensors",
+      "unlock": "DMZ level 12"
+    },
+    {
+      "name": "C4",
+      "category": "Lethal",
+      "rarity": "Common",
+      "cost": "10 Chemicals, 10 Metals",
+      "unlock": "DMZ Orders"
+    },
+    {
+      "name": "Claymore",
+      "category": "Lethal",
+      "rarity": "Common",
+      "cost": "10 Chemicals, 10 Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Frag Grenade",
+      "category": "Lethal",
+      "rarity": "Common",
+      "cost": "10 Chemicals, 10 Metals",
+      "unlock": "DMZ level 7"
+    },
+    {
+      "name": "Molotov Cocktail",
+      "category": "Lethal",
+      "rarity": "Common",
+      "cost": "10 Chemicals, 10 Metals",
+      "unlock": "DMZ level 36"
+    },
+    {
+      "name": "Proximity Mine",
+      "category": "Lethal",
+      "rarity": "Common",
+      "cost": "10 Chemicals, 10 Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Semtex",
+      "category": "Lethal",
+      "rarity": "Common",
+      "cost": "10 Chemicals, 10 Metals",
+      "unlock": "DMZ level 23"
+    },
+    {
+      "name": "Thermite",
+      "category": "Lethal",
+      "rarity": "Common",
+      "cost": "10 Chemicals, 10 Metals",
+      "unlock": "DMZ level 41"
+    },
+    {
+      "name": "Zip Gun",
+      "category": "Lethal",
+      "rarity": "Common",
+      "cost": "10 Chemicals, 10 Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Drill Charge",
+      "category": "Lethal",
+      "rarity": "Uncommon",
+      "cost": "15 Chemicals, 15 Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Throwing Knife",
+      "category": "Lethal",
+      "rarity": "Uncommon",
+      "cost": "25 Chemicals, 25 Metals",
+      "unlock": "DMZ level 7"
+    },
+    {
+      "name": "Trip Wire",
+      "category": "Lethal",
+      "rarity": "Uncommon",
+      "cost": "15 Chemicals, 15 Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Ammo Box",
+      "category": "Field Upgrade",
+      "rarity": "Uncommon",
+      "cost": "15 Synthetics, 15 Metals",
+      "unlock": "DMZ level 12"
+    },
+    {
+      "name": "Inflatable Decoy",
+      "category": "Field Upgrade",
+      "rarity": "Uncommon",
+      "cost": "15 Synthetics, 15 Electronics",
+      "unlock": "DMZ level 52"
+    },
+    {
+      "name": "Portable Radar",
+      "category": "Field Upgrade",
+      "rarity": "Uncommon",
+      "cost": "15 Synthetics, 15 Electronics",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Razor Wire Trap",
+      "category": "Field Upgrade",
+      "rarity": "Uncommon",
+      "cost": "15 Electronics, 15 Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Rebreather",
+      "category": "Field Upgrade",
+      "rarity": "Uncommon",
+      "cost": "15 Synthetics, 15 Chemicals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Riot Shield",
+      "category": "Field Upgrade",
+      "rarity": "Uncommon",
+      "cost": "15 Synthetics, 15 Metals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Seeker Drone",
+      "category": "Field Upgrade",
+      "rarity": "Uncommon",
+      "cost": "15 Synthetics, 15 Electronics",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Smoke Wall",
+      "category": "Field Upgrade",
+      "rarity": "Uncommon",
+      "cost": "15 Electronics, 15 Chemicals",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Armor Box",
+      "category": "Field Upgrade",
+      "rarity": "Rare",
+      "cost": "30 Metals, 3 Reactive Metals",
+      "unlock": "DMZ level 14"
+    },
+    {
+      "name": "DDOS",
+      "category": "Field Upgrade",
+      "rarity": "Rare",
+      "cost": "30 Electronics, 3 Detonators",
+      "unlock": "DMZ Orders"
+    },
+    {
+      "name": "Defibrillator",
+      "category": "Field Upgrade",
+      "rarity": "Rare",
+      "cost": "30 Electronics, 3 Control Unit",
+      "unlock": "Story Mission"
+    },
+    {
+      "name": "Recon Drone",
+      "category": "Field Upgrade",
+      "rarity": "Rare",
+      "cost": "30 Metals, 3 Electronic Sensors",
+      "unlock": "DMZ Orders"
+    },
+    {
+      "name": "SAM Airburst Turret",
+      "category": "Field Upgrade",
+      "rarity": "Rare",
+      "cost": "30 Metals, 3 Detonators",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Trophy System",
+      "category": "Field Upgrade",
+      "rarity": "Rare",
+      "cost": "15 Electronics, 3 Control Unit",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Revive Pistol",
+      "category": "Field Upgrade",
+      "rarity": "Legendary",
+      "cost": "2 Power Regulator, 3 Binding Catalyst, 5 Detonators",
+      "unlock": "DMZ level 25 (unconfirmed)"
+    },
+    {
+      "name": "Fulton Drop Marker",
+      "category": "Field Upgrade",
+      "rarity": "Ultra",
+      "cost": "1 Prototype RF Module, 3 Comms Module, 5 Control Unit",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Care Package",
+      "category": "Fire Support",
+      "rarity": "Rare",
+      "cost": "20 Electronics, 2 Control Unit, 2 Rigid Synthetics",
+      "unlock": "DMZ level 28"
+    },
+    {
+      "name": "Bomb Glider",
+      "category": "Fire Support",
+      "rarity": "Epic",
+      "cost": "30 Chemicals, 2 Stock Rod, 5 Control Unit",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Bombing Run",
+      "category": "Fire Support",
+      "rarity": "Epic",
+      "cost": "30 Chemicals, 2 Nitro Compounds, 5 Control Unit",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Combat Drone",
+      "category": "Fire Support",
+      "rarity": "Epic",
+      "cost": "30 Electronics, 2 CPU, 5 Control Unit",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "UAV",
+      "category": "Fire Support",
+      "rarity": "Epic",
+      "cost": "30 Electronics, 2 Structural Alloy, 5 Electronic Sensors",
+      "unlock": "DMZ level 31"
+    },
+    {
+      "name": "Advanced UAV",
+      "category": "Fire Support",
+      "rarity": "Legendary",
+      "cost": "2 Comms Module, 3 Nitro Compounds, 5 Electronic Sensors",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Artillery Beacon",
+      "category": "Fire Support",
+      "rarity": "Legendary",
+      "cost": "2 Volatile Explosives, 3 Nitro Compounds, 5 Detonators",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Impact Warhead",
+      "category": "Fire Support",
+      "rarity": "Legendary",
+      "cost": "2 Turned Components, 3 Nitro Compounds, 5 Detonators",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Railgun Sentry",
+      "category": "Fire Support",
+      "rarity": "Legendary",
+      "cost": "2 Power Regulator, 3 Nitro Compounds, 5 Control Unit",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Crossfire",
+      "category": "Fire Support",
+      "rarity": "Ultra",
+      "cost": "2 Prototype RF Module, 3 Volatile Explosives, 5 Electronic Sensors",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Weak Night Vision Goggles",
+      "category": "Gear",
+      "rarity": "Uncommon",
+      "cost": "25 Metals, 5 Control Unit",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Disposable Parachute",
+      "category": "Gear",
+      "rarity": "Rare",
+      "cost": "30 Chemicals, 3 Rigid Synthetics",
+      "unlock": "DMZ level 55"
+    },
+    {
+      "name": "Gas Mask",
+      "category": "Gear",
+      "rarity": "Rare",
+      "cost": "30 Chemicals, 3 Rigid Synthetics",
+      "unlock": "DMZ level 26"
+    },
+    {
+      "name": "Night Vision Goggles",
+      "category": "Gear",
+      "rarity": "Rare",
+      "cost": "50 Metals, 3 Printed Circuit Board, 10 Control Unit",
+      "unlock": "DMZ Orders"
+    },
+    {
+      "name": "Durable Gas Mask",
+      "category": "Gear",
+      "rarity": "Epic",
+      "cost": "30 Chemicals, 1 High-Tenacity Fibers, 5 Biomaterials",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Elite Night Vision Goggles",
+      "category": "Gear",
+      "rarity": "Legendary",
+      "cost": "2 Power Regulator, 3 CPU, 5 Electronic Sensors",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Parachute",
+      "category": "Gear",
+      "rarity": "Legendary",
+      "cost": "2 Turned Components, 5 Nylon Cloth, 10 Rigid Synthetics",
+      "unlock": "Found blueprint"
+    },
+    {
+      "name": "Bank Upgrade I",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "$20,000",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "Bank Upgrade II",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "$50,000",
+      "unlock": "Earlier tier"
+    },
+    {
+      "name": "Bank Upgrade III",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "$100,000, 5 Infantry Invasion Plans",
+      "unlock": "Earlier tier"
+    },
+    {
+      "name": "Dog Tag Case Upgrade I",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "$10,000, 10 Rigid Synthetics, 10 Biomaterials",
+      "unlock": "Station"
+    },
+    {
+      "name": "Stash Item Upgrade I",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "$10,000, 10 Rigid Synthetics, 10 Electronic Sensors",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "Stash Weapon Upgrade I",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "$50,000, 20 Reactive Metals, 10 Stock Rod, 5 Comms Module",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "MIA Recovery Discount I",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "5 Regional Combat Notes, 10 Control Unit, 10 Rigid Synthetics",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "MIA Recovery Discount III",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "5 W.M.D. Manifest, 5 Foreign Intelligence Targets, 10 Power Regulator, 10 Comms Module",
+      "unlock": "Earlier tier"
+    },
+    {
+      "name": "Gunsmith Upgrade I",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "$50,000, 20 Reactive Metals, 10 CPU, 5 Power Regulator",
+      "unlock": "Station"
+    },
+    {
+      "name": "Vendor Item Upgrade I",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "20 Electronic Sensors, 10 CPU, 10 Printed Circuit Board, 2 Prototype RF Module",
+      "unlock": "Station"
+    },
+    {
+      "name": "Uncommon Ingredient Printing",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "$50,000, 20 Biomaterials, 10 High-Tenacity Fibers, 5 Comms Module",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "Epic Ingredient Printing",
+      "category": "Upgrade",
+      "rarity": null,
+      "cost": "$100,000, 10 Binding Catalyst, 10 Printed Circuit Board, 5 Military Composites",
+      "unlock": "Starting recipe"
+    },
+    {
+      "name": "Biomaterials",
+      "category": "Ingredient",
+      "rarity": "Uncommon",
+      "cost": "20 Synthetics, 20 Chemicals",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Control Unit",
+      "category": "Ingredient",
+      "rarity": "Uncommon",
+      "cost": "20 Electronics, 20 Metals",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Detonators",
+      "category": "Ingredient",
+      "rarity": "Uncommon",
+      "cost": "20 Electronics, 20 Chemicals",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Electronic Sensors",
+      "category": "Ingredient",
+      "rarity": "Uncommon",
+      "cost": "20 Synthetics, 20 Electronics",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Reactive Metals",
+      "category": "Ingredient",
+      "rarity": "Uncommon",
+      "cost": "20 Chemicals, 20 Metals",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Rigid Synthetics",
+      "category": "Ingredient",
+      "rarity": "Uncommon",
+      "cost": "20 Synthetics, 20 Metals",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Alloyed Plating",
+      "category": "Ingredient",
+      "rarity": "Epic",
+      "cost": "100 Metals, 3 Structural Alloy",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Ballistic Fabric",
+      "category": "Ingredient",
+      "rarity": "Epic",
+      "cost": "100 Synthetics, 3 High-Tenacity Fibers",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Comms Module",
+      "category": "Ingredient",
+      "rarity": "Epic",
+      "cost": "100 Electronics, 3 CPU",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Nylon Laminate",
+      "category": "Ingredient",
+      "rarity": "Epic",
+      "cost": "100 Synthetics, 3 Nylon Cloth",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Power Regulator",
+      "category": "Ingredient",
+      "rarity": "Epic",
+      "cost": "100 Electronics, 3 Printed Circuit Board",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Stabilized Reagents",
+      "category": "Ingredient",
+      "rarity": "Epic",
+      "cost": "100 Chemicals, 3 Binding Catalyst",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Turned Components",
+      "category": "Ingredient",
+      "rarity": "Epic",
+      "cost": "100 Metals, 3 Stock Rod",
+      "unlock": "Ingredient printing upgrade"
+    },
+    {
+      "name": "Volatile Explosives",
+      "category": "Ingredient",
+      "rarity": "Epic",
+      "cost": "100 Chemicals, 3 Nitro Compounds",
+      "unlock": "Ingredient printing upgrade"
+    }
+  ]
+}

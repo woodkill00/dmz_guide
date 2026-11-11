@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Tacticals",
+  "description": "Electrical device that sticks to surfaces, electrocutes enemies, destroys equipment, and causes vehicles to go haywire.",
+  "id": "mw4:printer-item-shock-stick",
+  "kind": "item",
+  "name": "Shock Stick",
+  "rarity": "Common",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

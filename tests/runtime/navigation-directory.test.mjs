@@ -40,7 +40,7 @@ test("033 FR-001/003: compact directory includes every item and exact scoped act
     packs.reduce((n, p) => n + p.items.length, 0),
   );
   assert.match(html, /id="catalog-sort"/);
-  assert.match(html, /All packs/);
+  assert.match(html, /All game catalogs/);
   for (const { key, pack } of fixtureCatalog.entries)
     for (const item of pack.items) {
       assert(html.includes(guidancePath(key, item.id) + "#edit"));

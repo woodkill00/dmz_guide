@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Fulton Marker"
+  ],
+  "category": "Field upgrades",
+  "description": "Source-reported item reference; current-build behavior is not independently verified.",
+  "id": "mw4:printer-item-fulton-drop-marker",
+  "kind": "item",
+  "name": "Fulton Drop Marker",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

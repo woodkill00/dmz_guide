@@ -1,14 +1,16 @@
 {
   "aliases": [],
-  "category": "upgrade material",
-  "description": "Displayed upgrade requirement label. No location or consumption rule established.",
+  "category": "Ingredients",
+  "description": "Displayed upgrade requirement label. No location or consumption rule established. GameRant reports: Rice mill; city construction; Namjjog. Rarity and location are secondary reports, not independently gameplay-tested.",
   "id": "observed:stock-rod",
   "kind": "item",
   "name": "Stock Rod",
+  "rarity": "Rare",
   "sourceIds": [
     "source:upgrade-observation-02",
     "source:upgrade-observation-07",
-    "source:detonated-fob-20261025"
+    "source:detonated-fob-20261025",
+    "source:gamerant-ingredients-20261028"
   ],
   "stats": [],
   "status": "observed",

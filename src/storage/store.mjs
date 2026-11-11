@@ -1,3 +1,4 @@
+import { journalInventory } from "../domain/field-ops-state.mjs";
 import { clone } from "../content/limits.mjs";
 import { validateProfile } from "../domain/profile.mjs";
 let dbPromise;
@@ -71,7 +72,7 @@ export async function commitRecord(
   key,
   value,
   expectedRevision,
-  { keepPrevious = true, initialPrevious = null } = {},
+  { keepPrevious = true, initialPrevious = null, journal = {} } = {},
 ) {
   const db = await database();
   return new Promise((resolve, reject) => {
@@ -91,6 +92,7 @@ export async function commitRecord(
           return;
         }
         const next = clone(value);
+        if (store === "profiles") journalInventory(old?.value, next, journal);
         next.revision = actual + 1;
         if (!Number.isSafeInteger(next.revision) || next.revision < 1)
           throw new Error("Storage revision limit exceeded");
@@ -117,15 +119,47 @@ export async function commitRecord(
   });
 }
 export const loadProfile = async (id) => await readRecord("profiles", id);
-export async function saveProfile(p, expectedRevision) {
+export async function saveProfile(p, expectedRevision, journal = {}) {
   validateProfile(p);
-  return commitRecord("profiles", p.packId, p, expectedRevision);
+  return commitRecord("profiles", p.packId, p, expectedRevision, { journal });
 }
 
-export async function listRecords(store) {
+export async function listRecords(store, { excludePrefix = null } = {}) {
   const db = await database();
   return new Promise((resolve, reject) => {
     const tx = transaction(db, store, "readonly");
+    if (excludePrefix) {
+      const os = tx.objectStore(store),
+        rows = [],
+        request = os.openKeyCursor();
+      let visited = 0;
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const cursor = request.result;
+        if (!cursor) {
+          resolve(rows);
+          return;
+        }
+        if (++visited > 5000) {
+          reject(Error("Local record listing limit reached"));
+          return;
+        }
+        if (
+          typeof cursor.key === "string" &&
+          cursor.key.startsWith(excludePrefix)
+        ) {
+          cursor.continue();
+          return;
+        }
+        const get = os.get(cursor.key);
+        get.onerror = () => reject(get.error);
+        get.onsuccess = () => {
+          rows.push(get.result);
+          cursor.continue();
+        };
+      };
+      return;
+    }
     const r = tx.objectStore(store).getAll();
     r.onsuccess = () => resolve(r.result || []);
     r.onerror = () => reject(r.error);

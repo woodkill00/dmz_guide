@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Field upgrades",
+  "description": "Deploy a drone that will seek nearby enemies and snapshot them.",
+  "id": "mw4:printer-item-seeker-drone",
+  "kind": "item",
+  "name": "Seeker Drone",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

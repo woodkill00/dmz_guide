@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Field upgrades",
+  "description": "Equip a placeable, destructible riot shield to defend your team or hold the front-line.",
+  "id": "mw4:printer-item-riot-shield",
+  "kind": "item",
+  "name": "Riot Shield",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

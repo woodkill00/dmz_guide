@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Weapon Manuals",
+  "description": "Unlocks ability to purchase this weapon in Gunsmith.",
+  "id": "mw4:tcno-item-56fb09f7ee91010d",
+  "kind": "item",
+  "name": "X-58 Nyx Manual",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

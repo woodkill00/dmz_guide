@@ -1,0 +1,47 @@
+{
+  "eligibility": "unknown",
+  "id": "mw4:print-care-package",
+  "ingredientsKnown": true,
+  "inputs": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:electronics",
+      "quantity": 20,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-control-unit",
+      "quantity": 2,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:rigid-synthetics",
+      "quantity": 2,
+      "sourceIds": [
+        "source:gameboost-printer-20261030"
+      ],
+      "status": "observed"
+    }
+  ],
+  "name": "Print Care Package",
+  "output": {
+    "itemId": "mw4:printer-item-care-package",
+    "quantity": 1
+  },
+  "prerequisites": [
+    "mw4:printer-access-dmz-level-28"
+  ],
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "station": "3D Printer",
+  "status": "observed"
+}

@@ -8,6 +8,10 @@ Spec Kit is MIT licensed. Its original license and copyright notice are retained
 
 ## Game content and other assets
 
-The opt-in `tools/hajin-map` workspace declares its own pinned npm dependencies and lock: Leaflet 1.9.4 (BSD-2-Clause), Vite 7.3.7 (MIT), TypeScript 5.9.3 (Apache-2.0), Playwright 1.64.1 (Apache-2.0), and Leaflet type definitions (MIT). Their installed package license/notice files apply; the [Leaflet license](tools/hajin-map/third_party/leaflet-LICENSE) is retained and local viewer builds include `leaflet-LICENSE.txt`. These tooling/code licenses do not license map imagery, icons or third-party location datasets. The native guide dependency set is unchanged.
+The opt-in `tools/hajin-map` workspace declares its own pinned npm dependencies and lock: Leaflet 1.9.4 (BSD-2-Clause), Vite 7.3.7 (MIT), TypeScript 5.9.3 (Apache-2.0), Playwright 1.64.1 (Apache-2.0), and Leaflet type definitions (MIT). Their installed package license/notice files apply; the [Leaflet license](tools/hajin-map/third_party/leaflet-LICENSE) is retained and local viewer builds include `leaflet-LICENSE.txt`. These tooling/code licenses do not license map imagery, icons or third-party location datasets. Native-guide OCR dependencies are documented below.
 
 The project-code MIT license does not grant rights to game artwork, maps, trademarks, third-party datasets or private screenshots. No such assets are approved by this notice. Maintain source-specific rights and attribution in the [asset register](docs/licensing-and-assets.md) before adding assets. An external link in research is not a license to copy its contents.
+
+## Local screenshot recognition
+
+The Field desk bundles Tesseract.js7.0.0 (Apache-2.0), its locked Tesseract.js core (Apache-2.0), and the English data npm package @tesseract.js-data/eng1.0.0 (package declares MIT). Upstream license files, English package metadata and file hashes are retained in [src/vendor/ocr](src/vendor/ocr/provenance.json). See [Tesseract.js](https://github.com/naptha/tesseract.js) and [language data](https://github.com/naptha/tessdata). `node scripts/prepare-ocr.mjs` copies the pinned local installation; recognition does not download a language model from a remote service. This notice covers OCR software/data, not user screenshots or game assets.

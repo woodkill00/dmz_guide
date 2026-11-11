@@ -1,0 +1,16 @@
+{
+  "id": "source:gamerant-ingredients-20261028",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "web",
+    "lineageKey": "gamerant-ingredients-20261028",
+    "observationKey": "gamerant-ingredients-20261028"
+  },
+  "publishedAt": "2026-10-28",
+  "reviewedAt": "2026-11-06",
+  "supports": "Lists 29 ingredient identities, rarity tiers and reported acquisition locations. Secondary reporting, not independently verified gameplay or guaranteed spawns. Used-for lists have not been imported as confirmed recipes or upgrade requirements.",
+  "title": "GameRant: MW4 DMZ ingredient reference",
+  "type": "community",
+  "url": "https://gamerant.com/mw4-dmz-all-ingredients-locations/"
+}

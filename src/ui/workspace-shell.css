@@ -1,3 +1,4 @@
+@import "./layout-tokens.css";
 /* 071 presentation adapters. Domain content and legacy selectors remain owned by their original modules. */
 html[data-ui-variant="modern"] {
   --ws-bg: #111719;

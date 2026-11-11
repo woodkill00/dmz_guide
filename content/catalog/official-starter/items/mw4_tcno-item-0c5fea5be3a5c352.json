@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Blueprints",
+  "description": "Exfil recipe to print this item at the 3D Printer.",
+  "id": "mw4:tcno-item-0c5fea5be3a5c352",
+  "kind": "item",
+  "name": "Balloon Extract Blueprint",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

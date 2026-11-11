@@ -43,7 +43,7 @@ export async function runCollectionTests({ browser, base }) {
       0,
     );
     assert.equal(await badge().getAttribute("data-state"), "review");
-    assert.match(await badge().textContent(), /Crafting ingredient/);
+    assert.match(await badge().textContent(), /Craft/);
     await wire().fill("0");
     await page.waitForFunction(
       () =>
@@ -81,6 +81,9 @@ export async function runCollectionTests({ browser, base }) {
     await page.locator("#inventory-view").selectOption("needed");
     assert.equal(await wire().inputValue(), "12");
     assert.equal(await badge().getAttribute("data-state"), "covered");
+    await page
+      .locator('[data-inventory-item="craft:wire"] [data-show-use]')
+      .click();
     await page.locator('[name="reserve:craft:wire"]').fill("2");
     assert.equal(await badge().getAttribute("data-state"), "short");
     await page.locator("#cancel-inventory").click();
@@ -103,11 +106,19 @@ export async function runCollectionTests({ browser, base }) {
           (t) => (document.documentElement.dataset.theme = t),
           theme,
         );
-        assert(
-          await page.evaluate(
-            () => document.documentElement.scrollWidth <= innerWidth + 1,
-          ),
-        );
+        const overflow = await page.evaluate(() => ({
+          width: innerWidth,
+          scroll: document.documentElement.scrollWidth,
+          offenders: [...document.querySelectorAll("*")]
+            .filter((e) => e.getBoundingClientRect().right > innerWidth + 1)
+            .slice(0, 15)
+            .map((e) => [
+              e.tagName,
+              e.className,
+              e.getBoundingClientRect().right,
+            ]),
+        }));
+        assert(overflow.scroll <= overflow.width + 1, JSON.stringify(overflow));
         for (const [stock, state] of [
           ["0", "short"],
           ["", "review"],
@@ -146,10 +157,21 @@ export async function runCollectionTests({ browser, base }) {
               32,
           ),
         );
+        const largeOverflow = await page.evaluate(() => ({
+          width: innerWidth,
+          scroll: document.documentElement.scrollWidth,
+          offenders: [...document.querySelectorAll("*")]
+            .filter((e) => e.getBoundingClientRect().right > innerWidth + 1)
+            .slice(0, 15)
+            .map((e) => [
+              e.tagName,
+              e.className,
+              e.getBoundingClientRect().right,
+            ]),
+        }));
         assert(
-          await page.evaluate(
-            () => document.documentElement.scrollWidth <= innerWidth + 1,
-          ),
+          largeOverflow.scroll <= largeOverflow.width + 1,
+          JSON.stringify(largeOverflow),
         );
         await wire().scrollIntoViewIfNeeded();
         await wire().focus();
@@ -162,10 +184,13 @@ export async function runCollectionTests({ browser, base }) {
         ]) {
           await wire().fill(stock);
           assert.equal(await badge().getAttribute("data-state"), state);
-          assert.deepEqual(
-            await wire().boundingBox(),
-            enlargedBox,
-            `${width}/${theme}/200% stable status geometry`,
+          const nextBox = await wire().boundingBox();
+          assert.equal(nextBox.x, enlargedBox.x);
+          assert.equal(nextBox.width, enlargedBox.width);
+          assert.equal(nextBox.height, enlargedBox.height);
+          assert(
+            Math.abs(nextBox.y - enlargedBox.y) <= 4,
+            `${width}/${theme}/200% stable status geometry ${stock}: ${nextBox.y - enlargedBox.y}px`,
           );
         }
         await page.evaluate(

@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "backpack",
+  "description": "A large backpack with four secure slots and increased resource capacity.",
+  "id": "mw4:printer-item-secure-scavenger-backpack",
+  "kind": "item",
+  "name": "Secure Scavenger Backpack",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

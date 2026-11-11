@@ -59,7 +59,7 @@ export async function runLocalNetworkTests({
     await page.waitForSelector(ready);
     await page.reload();
     await page.waitForSelector(ready);
-    assert.equal(await page.locator("h1").count(), 1);
+    assert.equal(await page.locator("h1:visible").count(), 1, route);
   }
   assert.deepEqual(
     remote,

@@ -1,0 +1,2 @@
+# Requirements assessment (implementer, not reviewer approval)
+Scope is actionable and authorized. Reconcile cannot delete unseen stock; scans are absolute snapshots; compartments conserve quantities on transfer; stale/unknown inputs fail; undo checks affected values; imports bind pack/version; no fake coordinates/API availability; profile/byte/node/photo limits are explicit. User screen-capture exclusion is binding. No reviewer-owned checklist markers are changed.

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
+import { chooseCatalog } from "./reviewer-disclosures.mjs";
 // A valid reference-only manifest deliberately has no raster payload.
 // A dangling map.assetId instead tests pack rejection, not missing-image fallback.
 export function referenceOnlyMapFixture(source) {
@@ -69,7 +70,7 @@ export async function runMapsTests({ browser, base }) {
       path: "test-results/maps-real-desktop.png",
       fullPage: true,
     });
-    await page.selectOption("#pack-select", "demo:training-pack");
+    await chooseCatalog(page, "demo:training-pack");
     await page.waitForFunction(() =>
       document
         .querySelector("#imagery-status")
@@ -184,7 +185,7 @@ export async function runMapsTests({ browser, base }) {
     );
     await page.check("#goal-locations");
     assert.equal(await page.locator("#location-list button").count(), 0);
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await chooseCatalog(page, "official:mw4-dmz-starter");
     await page.waitForFunction(
       () =>
         document.querySelector("#location-list").querySelectorAll("button")
@@ -200,7 +201,7 @@ export async function runMapsTests({ browser, base }) {
       "0 0 100 100",
     );
     // Missing local raster produces an explicit fallback; it cannot hide the list.
-    await page.selectOption("#pack-select", "demo:training-pack");
+    await chooseCatalog(page, "demo:training-pack");
     await page.waitForFunction(() =>
       document.querySelector("#pack-note").textContent.includes("FICTIONAL"),
     );
@@ -342,9 +343,9 @@ export async function runMapsTests({ browser, base }) {
     assert.equal(await page.locator("#location-list button").count(), 0);
     await page.selectOption("#floor-select", "");
     // Rapid context changes must not let a late image contaminate the real map.
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
-    await page.selectOption("#pack-select", "demo:training-pack");
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await chooseCatalog(page, "official:mw4-dmz-starter");
+    await chooseCatalog(page, "demo:training-pack");
+    await chooseCatalog(page, "official:mw4-dmz-starter");
     await page.waitForFunction(
       () =>
         document.querySelector("#location-list").querySelectorAll("button")
@@ -352,7 +353,7 @@ export async function runMapsTests({ browser, base }) {
     );
     assert.equal(await page.locator("#map-background image").count(), 0);
     assert.equal(await page.locator("#map-markers [role=button]").count(), 0);
-    await page.selectOption("#pack-select", "demo:training-pack");
+    await chooseCatalog(page, "demo:training-pack");
     await page.waitForFunction(() =>
       document
         .querySelector("#imagery-status")
@@ -401,7 +402,7 @@ export async function runMapsTests({ browser, base }) {
     await page.reload();
     await ready();
     await page.waitForFunction(() => window.__mapDecoded > 0);
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await chooseCatalog(page, "official:mw4-dmz-starter");
     await page.waitForFunction(
       () =>
         document.querySelector("#location-list").querySelectorAll("button")

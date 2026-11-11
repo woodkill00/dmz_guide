@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { writeFile } from "node:fs/promises";
 import { captureDocumentEvidence } from "./page-edit.mjs";
+import { chooseCatalog } from "./reviewer-disclosures.mjs";
 const ready = (page) =>
   page.waitForFunction(
     () => document.querySelector("main")?.getAttribute("aria-busy") === "false",
@@ -175,10 +176,7 @@ async function fixedJourneys({ browser, base, captureScreenshots }) {
         document.querySelector("#save-status").textContent,
       ),
     );
-    await recoveredPage.selectOption(
-      "#pack-select",
-      "official:mw4-dmz-starter",
-    );
+    await chooseCatalog(recoveredPage, "official:mw4-dmz-starter");
     await ready(recoveredPage);
     assert(
       !/storage unavailable/i.test(

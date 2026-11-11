@@ -103,8 +103,8 @@ test("consumption amendment preserves original amounts/effects and observation i
       ),
     ),
   );
-  assert.equal(pack.contentVersion, "2026.10.28.1");
-  assert.equal(pack.sources.filter((s) => s.type === "observation").length, 9);
+  assert.equal(pack.contentVersion, "2026.11.09.1");
+  assert.equal(pack.sources.filter((s) => s.type === "observation").length, 10);
   for (const old of seed.upgrades) {
     const current = pack.objectives.find((r) => r.id === `observed:${old.id}`);
     assert.equal(current.name, old.name);

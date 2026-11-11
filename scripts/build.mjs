@@ -1,3 +1,5 @@
+import { quickTrackerPage } from "../src/ui/quick-tracker.mjs";
+import { renderItemMaintenance } from "../src/ui/item-maintenance.mjs";
 import { buildSiteTopology } from "../src/domain/site-topology.mjs";
 import { buildUnifiedIndex } from "../src/content/unified-index.mjs";
 import {
@@ -119,6 +121,12 @@ async function generate(dist) {
       page: path,
       scripts: ["/assets/src/client/catalog.mjs"],
     });
+  pages.push({
+    path: "/items/manage/",
+    title: "Add or edit items",
+    body: renderItemMaintenance(catalog.entries),
+    page: "item-maintenance",
+  });
   for (const record of allRecords(packs)) {
     const entry = catalog.entries.find(
       (entry) => entry.pack.id === record.pack.id,
@@ -160,9 +168,13 @@ async function generate(dist) {
   for (const moduleName of [
     "private-pages",
     "collection-page",
+    "needed-page",
+    "quick-collect-page",
+    "x01-printer-page",
     "features",
     "editor-page",
     "local-page",
+    "field-desk-page",
     "maps-page",
     "progression-page",
     "community-page",
@@ -171,6 +183,8 @@ async function generate(dist) {
     "keys-page",
     "hub-page",
     "main-hubs",
+    "run-plan-page",
+    "data-review-page",
   ]) {
     const file = join(root, `src/ui/${moduleName}.mjs`);
     try {
@@ -182,7 +196,7 @@ async function generate(dist) {
     const extensions = await module.featurePages(packs);
     for (const page of extensions)
       pages.push({
-        ...page,
+        ...quickTrackerPage(page),
         path: "/" + page.path.replace(/^\/+|\/+$/g, "") + "/",
       });
   }

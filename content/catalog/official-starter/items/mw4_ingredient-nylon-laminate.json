@@ -1,0 +1,18 @@
+{
+  "aliases": [],
+  "category": "Ingredients",
+  "description": "GameRant reports: Citadel wings; Deadtown cells; Mujin club. Rarity and location are secondary reports, not independently gameplay-tested.",
+  "id": "mw4:ingredient-nylon-laminate",
+  "kind": "item",
+  "name": "Nylon Laminate",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:gamerant-ingredients-20261028",
+    "source:gameboost-printer-20261030",
+    "source:gamerant-x01-printer-20261106",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

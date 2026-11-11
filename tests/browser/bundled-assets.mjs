@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { allRecords, recordUrl } from "../../src/ui/render.mjs";
 import { expectConsoleErrors } from "./health.mjs";
+import { openParentDetails } from "./reviewer-disclosures.mjs";
 
 export async function runBundledAssetTests({
   browser,
@@ -117,6 +118,9 @@ export async function runBundledAssetTests({
     );
     const p = await denied.newPage();
     await p.goto(base + detailURL);
+    const publicImage = p.locator("img[data-public-image]");
+    await openParentDetails(publicImage);
+    await publicImage.scrollIntoViewIfNeeded();
     await p.waitForFunction(
       () =>
         document.querySelector("img[data-public-image]")?.naturalWidth === 8,

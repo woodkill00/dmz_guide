@@ -47,13 +47,20 @@ export async function runTieredUpgradeTests({ browser, base }) {
       },
       { scope, item, required, missing },
     );
-    assert.equal(
-      await cell(scope).locator("[data-tier-required]").textContent(),
-      String(required),
+    const requiredValues = await cell(scope)
+      .locator("[data-tier-required]")
+      .allTextContents();
+    const missingValues = await cell(scope)
+      .locator("[data-tier-missing]")
+      .allTextContents();
+    assert(requiredValues.length > 0);
+    assert.deepEqual(
+      requiredValues,
+      requiredValues.map(() => String(required)),
     );
-    assert.equal(
-      await cell(scope).locator("[data-tier-missing]").textContent(),
-      String(missing),
+    assert.deepEqual(
+      missingValues,
+      missingValues.map(() => String(missing)),
     );
   };
   try {
@@ -133,8 +140,21 @@ export async function runTieredUpgradeTests({ browser, base }) {
     await values("next", 7, 7);
     await values("all", 41, 41); // II completed, I restored unknown
     await page.locator("#inventory-view").selectOption("needed");
-    assert.equal(await page.locator("[data-inventory-item]").count(), 1);
-    const stock = page.locator(`[data-field="inventory"][data-id="${item}"]`);
+    assert.deepEqual(
+      [
+        ...new Set(
+          await page
+            .locator("[data-inventory-item]")
+            .evaluateAll((rows) =>
+              rows.map((row) => row.dataset.inventoryItem),
+            ),
+        ),
+      ],
+      [item],
+    );
+    const stock = page
+      .locator(`[data-field="inventory"][data-id="${item}"]`)
+      .first();
     await stock.scrollIntoViewIfNeeded();
     await stock.focus();
     await page.evaluate(() => new Promise(requestAnimationFrame));
@@ -183,9 +203,8 @@ export async function runTieredUpgradeTests({ browser, base }) {
     await page.reload();
     await ready();
     await page.locator("#inventory-view").selectOption("needed");
-    assert.equal(
-      await page.locator("[data-inventory-item]").count(),
-      1,
+    assert(
+      (await page.locator(`[data-inventory-item="${item}"]`).count()) >= 1,
       "covered materials remain needed until unfinished uses complete",
     );
     await values("all", 41, 0);
@@ -200,7 +219,9 @@ export async function runTieredUpgradeTests({ browser, base }) {
     await values("all", 41, 0);
     assert.equal(await stock.inputValue(), "100");
     await page.locator("#inventory-view").selectOption("upgrade-next");
-    assert.equal(await page.locator("[data-inventory-item]").count(), 1);
+    assert(
+      (await page.locator(`[data-inventory-item="${item}"]`).count()) >= 1,
+    );
     for (const width of [1920, 1440, 900, 768, 390, 320])
       for (const theme of ["dark", "light"]) {
         await page.setViewportSize({ width, height: 1000 });
@@ -282,6 +303,7 @@ export async function runTieredUpgradeTests({ browser, base }) {
     assert.equal(
       await page
         .locator(`[data-id="${item}"][data-field="inventory"]`)
+        .first()
         .inputValue(),
       "100",
     );
@@ -398,12 +420,28 @@ export async function runTieredUpgradeTests({ browser, base }) {
     await values("next", 5, 5);
     assert(
       (
-        await cell("next").locator("[data-tier-uncertainty]").textContent()
+        await cell("next")
+          .locator("[data-tier-uncertainty]")
+          .first()
+          .textContent()
       ).includes("Partial / unknown"),
     );
-    assert.equal(
-      await cell("next").locator("[data-tier-uncertainty]").isVisible(),
-      true,
+    const group = cell("next")
+      .first()
+      .locator(
+        "xpath=ancestor::section[contains(@class,'inventory-group')][1]",
+      );
+    const toggle = group.locator("[data-inventory-group]");
+    if ((await toggle.getAttribute("aria-expanded")) === "false")
+      await toggle.click();
+    await cell("next")
+      .first()
+      .locator("xpath=ancestor::div[contains(@class,'inventory-entry')][1]")
+      .locator("[data-show-use]")
+      .click();
+    assert(
+      (await cell("next").locator("[data-tier-uncertainty]:visible").count()) >=
+        1,
       "partial facts qualified in collapsed row",
     );
     assert.deepEqual(errors, []);

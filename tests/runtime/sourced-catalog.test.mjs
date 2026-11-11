@@ -100,7 +100,7 @@ test("032 FR001/003 original observations, identities and row evidence survive e
     id: "mw4-user-context-unverified",
     mode: "dmz",
   });
-  assert.equal(pack.contentVersion, "2026.10.28.1");
+  assert.equal(pack.contentVersion, "2026.11.09.1");
   let count = 0;
   for (const old of seed.upgrades) {
     const o = pack.objectives.find((o) => o.id === `observed:${old.id}`);
@@ -308,7 +308,15 @@ test("032 FR007 legacy purchase survives rebind, cannot be re-debited and guarde
 });
 
 test("032 FR006/008 portable source evidence and spoiler-safe progress projection", async () => {
-  const sources = pack.sources.filter((s) => s.type === "community");
+  const sources = pack.sources.filter(
+    (s) => s.type === "community" && s.url.startsWith("https://detonated.com/"),
+  );
+  assert.equal(pack.sources.filter((s) => s.type === "community").length, 4);
+  assert.equal(
+    pack.sources.find((s) => s.id === "source:gamerant-ingredients-20261028")
+      .url,
+    "https://gamerant.com/mw4-dmz-all-ingredients-locations/",
+  );
   assert.equal(sources.length, 3);
   assert(
     sources.every(

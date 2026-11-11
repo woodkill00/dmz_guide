@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Stimpistol"
+  ],
+  "category": "Field upgrades",
+  "description": "A ranged medicinal injector to revive fallen allies from afar or heal them to full.",
+  "id": "mw4:printer-item-revive-pistol",
+  "kind": "item",
+  "name": "Revive Pistol",
+  "rarity": "Legendary",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

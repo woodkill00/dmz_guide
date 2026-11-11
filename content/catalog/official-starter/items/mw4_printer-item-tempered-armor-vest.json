@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "plate-carrier",
+  "description": "A heavily armored plate carrier that uses enhanced plates.",
+  "id": "mw4:printer-item-tempered-armor-vest",
+  "kind": "item",
+  "name": "Tempered Armor Vest",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

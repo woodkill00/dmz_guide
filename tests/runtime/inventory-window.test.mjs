@@ -1,7 +1,10 @@
+import * as inventoryItems from "../../src/domain/inventory-items.mjs";
+import * as inventoryPresentation from "../../src/domain/inventory-presentation.mjs";
 import { itemUses } from "../../src/domain/item-uses.mjs";
 import {
   upgradeNeedCell,
   needsValues,
+  collectionNeedsValues,
   upgradeNeedsDetail,
 } from "../../src/client/upgrade-needs-view.mjs";
 import { upgradeNeeds } from "../../src/domain/upgrade-needs.mjs";
@@ -48,17 +51,26 @@ for (const count of [100, 1000, 5000]) {
     };
     vm.runInNewContext(`${render}\n${filter}\nrender();`, {
       ...helper,
+      ...inventoryItems,
+      ...inventoryPresentation,
       itemUses,
       useLabels,
       useCell,
       upgradeNeedCell,
       upgradeNeeds,
       needsValues,
+      collectionNeedsValues,
       upgradeNeedsDetail,
       usesList,
       planShared: () => ({ ledger: [] }),
       stockLimit,
       renderSpendingSummary() {}, // this extraction exercises inventory rows only
+      refreshTrackerContext() {}, // presentation is exercised in the real browser journey
+      compactInventoryRows() {},
+      hydrateInventoryIcons() {},
+      inventoryDirtyState() {},
+      URL,
+      location: { href: "http://127.0.0.1/inventory/" },
       registerDraftGuard() {},
       document: { addEventListener() {}, querySelectorAll: () => [] },
       $: (selector) => nodes[selector],
@@ -71,6 +83,7 @@ for (const count of [100, 1000, 5000]) {
     assert(
       (fields.innerHTML.match(/data-inventory-item=/g) || []).length <= 50,
     );
+    assert.equal(nodes["#inventory-pagination"].hidden, false);
   });
 }
 
@@ -291,7 +304,7 @@ function nativeInvalidHarness() {
     '$("#inventory-form")?.addEventListener(\n  "invalid"',
   );
   const end = source.indexOf(
-    '$("#inventory-form")?.addEventListener("submit"',
+    "const saveInventory = inventorySaveAction(",
     start,
   );
   vm.runInNewContext(source.slice(start, end), context);

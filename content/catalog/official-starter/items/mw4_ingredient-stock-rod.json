@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Ingredients",
+  "description": "GameRant reports: Rice mill; city construction; Namjjog. Rarity and location are secondary reports, not independently gameplay-tested.",
+  "id": "mw4:ingredient-stock-rod",
+  "kind": "item",
+  "name": "Stock Rod",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gamerant-ingredients-20261028",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

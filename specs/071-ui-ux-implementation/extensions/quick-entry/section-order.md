@@ -1,0 +1,15 @@
+# Inventory section order
+
+2026-11-08, feature071 / quick-entry. User specifies Consumables, Plate carriers, Backpacks, Tacticals, Lethals, Field upgrades, Fire support, Gear, Ingredients.
+
+SO1: apply that sequence to item sections and the type chooser, retaining alphabetic item names within each section (and the existing optional rarity/catalog modes). SO2: use the same display ordering in Needed. SO3: keep all additional categories and original item IDs, saved quantities, blueprint flags, grouping boundaries, draft and paging behavior. Existing broad Equipment/Materials wrappers remain; their ordered child sections follow the requested sequence. Gear is the display label for the existing Equipment type; literal gear category metadata is normalized to that same view group, without rewriting catalog files.
+
+Plan/tasks: centralize ranked section/family comparators in the existing inventory metadata helper; apply them to item comparison, rendered header groups, chooser and Needed groups. Keep unknown categories after ranked sections with deterministic name order. Preserve all source metadata, records and storage. Verify exact requested labels/order plus alphabetical names, alternate sort, paging drafts and Gear filtering in the real browser; run existing grouping/quantity tests and build checks.
+
+Analysis: sorting item rows alone would leave group headers and the dropdown alphabetical, and the Equipment label would miss the requested Gear position. Presentation aliases and explicit header ordering fix both without merging item/profile identities or dropping unlisted types. This is a bounded reversible layout change, not a content or schema migration. No independent review/skill execution is claimed.
+
+Verification receipt follows below. Reviewer-owned checklists are unchanged.
+
+Implemented/converged SO1–SO3. Shared comparators now govern default item sorting, subtype header order, broad family order, the Inventory type selector and Needed families/types. Equipment's underlying filter value remains Equipment while its visible type label is Gear; literal gear metadata normalizes to the same group. Unlisted types remain present after the ranked sections. No catalog records, quantities, ownership flags or profile schemas changed.
+
+Verification: 28 inventory metadata/draft/capacity runtime tests passed, zero failed (`.local/quick-entry/section-order-runtime.log`). New live browser test passed exact nine labels/order in both headers and selector, alphabetical items, alternate rarity mode, paging with unsaved quantity/blueprint flags, Gear filter and Needed ordering (`section-order-browser.log`). Existing nested Inventory grouping/invalid-focus/keyboard/mobile test passed (`section-order-regression.log`). Needed layout/model parity and both-theme viewport regression passed (`section-order-needed.log`). Formatting and Python repository checks passed, git diff --check passed with pre-existing line-ending notices only. Modern build emitted 1516 routes plus 404 (`section-order-build.log`). No production code changed after these checks; no independent release approval is claimed.

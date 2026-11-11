@@ -202,6 +202,7 @@ async function cancel(page, previous) {
   assert.deepEqual(await active(page), previous.value);
 }
 async function backup(page) {
+  await revealReviewerControl(page, "#export-current-profile");
   const pending = page.waitForEvent("download");
   await page.click("#export-current-profile");
   const download = await pending;

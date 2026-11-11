@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { openCatalogContext } from "./open-catalog-context.mjs";
 import { readFile } from "node:fs/promises";
 import { chromium, firefox, webkit } from "playwright";
 import { pathToFileURL } from "node:url";
@@ -280,6 +281,7 @@ export async function runWorkbenchTests({ browser, base }) {
     assert.equal(candidate.inventory["craft:output"], 2);
     await page.locator("#craft-cancel").click();
     assert(await page.locator("#craft-recovery").isVisible());
+    await openCatalogContext(page);
     await page.locator("#pack-select").selectOption("demo:training-pack");
     assert.equal(
       await page.locator("#pack-select").inputValue(),
@@ -362,6 +364,7 @@ export async function runWorkbenchTests({ browser, base }) {
       locations[1].name,
     );
     const mappedURL = page.url();
+    await openCatalogContext(page);
     await page.locator("#pack-select").selectOption("demo:training-pack");
     await ready();
     assert(await page.locator("#collection-route-panel").isHidden());
@@ -422,6 +425,7 @@ export async function runWorkbenchTests({ browser, base }) {
     await page.waitForFunction(() => window.__qaHeld === true);
     await page.locator('[data-route-move="0"][data-delta="1"]').click();
     assert.equal(await page.locator("[data-route-remove]").count(), 2);
+    await openCatalogContext(page);
     await page.locator("#pack-select").selectOption("demo:training-pack");
     await ready();
     await page.evaluate(() => window.__qaRelease());
@@ -506,6 +510,7 @@ export async function runWorkbenchTests({ browser, base }) {
       0,
     );
     assert(!new URL(page.url()).searchParams.has("collectionRoute"));
+    await openCatalogContext(page);
     await page.locator("#pack-select").selectOption("demo:training-pack");
     await ready();
     assert((await page.locator("#location-list button").count()) > 0);

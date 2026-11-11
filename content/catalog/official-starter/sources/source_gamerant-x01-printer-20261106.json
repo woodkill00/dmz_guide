@@ -1,0 +1,16 @@
+{
+  "id": "source:gamerant-x01-printer-20261106",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "web",
+    "lineageKey": "gamerant-x01-printer-20261106",
+    "observationKey": "gamerant-x01-printer-20261106"
+  },
+  "publishedAt": "2026-11-06",
+  "reviewedAt": "2026-11-06",
+  "supports": "Reports nine X01 printer recipes and input quantities, Production Assembly location and carried-backpack requirement. Secondary reporting; no independent current-build validation, output yield or armor-slot verification.",
+  "title": "GameRant: X01 printer recipes",
+  "type": "community",
+  "url": "https://gamerant.com/mw4-dmz-legendary-materials-x01-3d-printer-location/"
+}

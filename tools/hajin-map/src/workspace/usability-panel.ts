@@ -18,6 +18,7 @@ import { displayDuplicates } from "../map/display-duplicates.ts";
 import type { VisibilityState } from "./types.ts";
 export interface UsabilityHost extends UIServices {
   records: () => ExplorerRecord[];
+  highlightItemArea?:(name:string,records:readonly ExplorerRecord[])=>void;
   addWaypoint:(r:ExplorerRecord)=>Promise<void>;trackRecord:(r:ExplorerRecord)=>Promise<void>;
   mapCenter:()=>SearchOrigin;
   jumpPosition:(origin:SearchOrigin)=>void;
@@ -250,7 +251,7 @@ export function createUsabilityUI(h: UsabilityHost) {
     const nearby=button("Nearby",()=>searchUI.nearby(r));nearby.disabled=r.x===null;row.append(nearby);
     return row;
   }
-  const searchUI=createSearchPanel({records:h.records,separate:()=>meta(h).separate,card,error:h.error,center:h.mapCenter,go:h.jumpPosition,open:h.openSearch,allowed});
+  const searchUI=createSearchPanel({records:h.records,separate:()=>meta(h).separate,card,highlightItemArea:h.highlightItemArea,error:h.error,center:h.mapCenter,go:h.jumpPosition,open:h.openSearch,allowed});
   function search(root:HTMLElement){searchUI.render(root);}
   function duplicates(root: HTMLElement) {
     const records = h.records(),

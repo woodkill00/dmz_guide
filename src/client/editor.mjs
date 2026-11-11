@@ -234,6 +234,25 @@ async function loadWorkspace() {
   baselinePayloads = clone(payloads);
   $("#private-reader").href = `/local/?pack=${encodeURIComponent(id)}`;
   renderRecords();
+  const requestedRecord = new URL(location.href).searchParams.get("record");
+  if (
+    requestedRecord &&
+    new URL(location.href).searchParams.get("pack") === id
+  ) {
+    const matches = GROUPS.flatMap((group) =>
+      (draft[group] || []).flatMap((record, index) =>
+        record.id === requestedRecord ? [{ group, index }] : [],
+      ),
+    );
+    assert(
+      matches.length === 1,
+      "The requested private record is missing. Choose a record explicitly; nothing has been changed.",
+    );
+    $("#editor-section").value = matches[0].group;
+    renderRecords();
+    $("#editor-record").value = String(matches[0].index);
+    renderFields();
+  }
 }
 function showDiff(diff) {
   const root = $("#stage-diff");

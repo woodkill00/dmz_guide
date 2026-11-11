@@ -3,7 +3,12 @@ import { spoilerGuard } from "./progression.mjs";
 const unsafe = new Set(["unknown", "unverified", "disputed", "stale"]);
 const amount = (n) => Number.isSafeInteger(n) && n >= 0 && n <= 1e12;
 // Collection advice only. Never executes a craft or changes profile/goals/routes.
-export function collectionNeeds(pack, profile, upgrades) {
+export function collectionNeeds(
+  pack,
+  profile,
+  upgrades,
+  { reported = false, missions = true } = {},
+) {
   const guard = spoilerGuard(pack, profile.spoilers);
   const safe = (r) =>
     r &&
@@ -31,6 +36,9 @@ export function collectionNeeds(pack, profile, upgrades) {
         rootIds: new Set(),
         causes: [],
         used: false,
+        ...(reported
+          ? { planning: true, provisional: false, estimated: false }
+          : {}),
       });
     return rows.get(id);
   };
@@ -38,6 +46,12 @@ export function collectionNeeds(pack, profile, upgrades) {
     tick();
     if (!items.has(id)) return;
     const d = ensure(id);
+    if (reported) {
+      d.provisional ||= unknown || consumption === "unknown";
+      if (consumption === "unknown") consumption = "consumed";
+      unknown = false;
+    }
+
     d.used = true;
     d.craft ||= craft;
     d.direct ||= !craft;
@@ -78,6 +92,7 @@ export function collectionNeeds(pack, profile, upgrades) {
         null,
       );
       add(id, r?.knownRetained ?? 0, "retained", false, null);
+      if (reported && r?.quantityUnknown) ensure(id).unknown = true;
       for (const c of r?.contributors || []) {
         tick();
         included.add(c.id);
@@ -89,7 +104,8 @@ export function collectionNeeds(pack, profile, upgrades) {
           quantity: c.quantity,
           consumption: c.consumption,
         });
-        ensure(id).unknown ||= c.partial;
+        if (reported) ensure(id).provisional ||= c.partial;
+        else ensure(id).unknown ||= c.partial;
         if (ensure(id).names.size < 50)
           ensure(id).names.add(
             objectives.get(c.id)?.track === "campaign"
@@ -98,7 +114,7 @@ export function collectionNeeds(pack, profile, upgrades) {
           );
       }
     }
-    for (const r of pack.objectives) {
+    for (const r of missions ? pack.objectives : []) {
       tick();
       if (
         !safe(r) ||
@@ -115,7 +131,14 @@ export function collectionNeeds(pack, profile, upgrades) {
         if (item && scopeOf(pack, item) === scopeOf(pack, r)) {
           add(
             c.itemId,
-            unsafe.has(r.status) || unsafe.has(c.status) ? null : c.quantity,
+            (
+              reported
+                ? ["disputed", "stale"].includes(r.status) ||
+                  ["disputed", "stale"].includes(c.status)
+                : unsafe.has(r.status) || unsafe.has(c.status)
+            )
+              ? null
+              : c.quantity,
             c.consumption,
             r.requirementsKnown !== true ||
               unsafe.has(r.status) ||
@@ -128,8 +151,14 @@ export function collectionNeeds(pack, profile, upgrades) {
             id: r.id,
             kind: "objective",
             name: r.track === "campaign" ? `Campaign: ${r.name}` : r.name,
-            quantity:
-              unsafe.has(r.status) || unsafe.has(c.status) ? null : c.quantity,
+            quantity: (
+              reported
+                ? ["disputed", "stale"].includes(r.status) ||
+                  ["disputed", "stale"].includes(c.status)
+                : unsafe.has(r.status) || unsafe.has(c.status)
+            )
+              ? null
+              : c.quantity,
             consumption: c.consumption,
           });
         }
@@ -190,6 +219,11 @@ export function collectionNeeds(pack, profile, upgrades) {
           edges.push({
             recipe: r,
             c,
+            numericUncertain:
+              !chosen ||
+              (reported &&
+                (["disputed", "stale"].includes(r.status) ||
+                  ["disputed", "stale"].includes(c.status))),
             uncertain:
               !chosen ||
               r.ingredientsKnown !== true ||
@@ -224,8 +258,18 @@ export function collectionNeeds(pack, profile, upgrades) {
             : Math.max(0, d.consumed + d.retained + reserve - held);
         d.missing = d.required === null ? null : d.knownMissing;
         deficit = d.missing;
+        if (reported) {
+          d.stockMissing = held === undefined;
+          if (d.stockMissing && d.required !== null && amount(reserve)) {
+            deficit = d.required + reserve;
+            d.estimated = true;
+            d.provisional = true;
+          }
+        }
       }
-      for (const { recipe: r, c, uncertain } of graph.get(id)) {
+      for (const { recipe: r, c, uncertain, numericUncertain } of graph.get(
+        id,
+      )) {
         tick();
         if (d?.used && (deficit === null || deficit > 0)) {
           const yieldCount = r.output.quantity;
@@ -234,7 +278,9 @@ export function collectionNeeds(pack, profile, upgrades) {
               ? null
               : Math.ceil(deficit / yieldCount);
           const q =
-            uncertain || batches === null || !amount(c.quantity)
+            (reported ? numericUncertain : uncertain) ||
+            batches === null ||
+            !amount(c.quantity)
               ? null
               : c.consumption === "retained"
                 ? c.quantity
@@ -248,6 +294,10 @@ export function collectionNeeds(pack, profile, upgrades) {
             true,
           );
           const child = ensure(c.itemId);
+          if (reported) {
+            child.estimated ||= d.estimated;
+            child.provisional ||= d.provisional;
+          }
           child.causes.push({
             id: r.id,
             kind: "recipe",
@@ -322,6 +372,10 @@ export function collectionNeeds(pack, profile, upgrades) {
       d.knownMissing = null;
     }
   }
+  rows.blocked =
+    upgrades.all.status !== "ok" ||
+    profile.packId !== pack.id ||
+    profile.contentVersion !== pack.contentVersion;
   for (const d of rows.values()) {
     if (!d.used) continue;
     if (
@@ -337,7 +391,7 @@ export function collectionNeeds(pack, profile, upgrades) {
     d.state =
       d.knownMissing > 0
         ? "short"
-        : d.unknown || d.missing == null
+        : d.unknown || d.provisional || d.missing == null
           ? "review"
           : "covered";
     d.label =

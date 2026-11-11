@@ -651,12 +651,12 @@ export async function runIndependentUpgradeAdviceUI({
       await page.goto(route(base, "inventory"));
       await ready(page);
       const old = (await profile(page)).revision;
-      await page
-        .locator(`[data-field="inventory"][data-id="${ITEM}"]`)
-        .fill(String(held));
-      await page
-        .locator(`[data-field="reserves"][data-id="${ITEM}"]`)
-        .fill(String(reserved));
+      const row = page
+        .locator('.inventory-group:has([data-inventory-group="Ingredients"])')
+        .locator(`[data-inventory-item="${ITEM}"]`);
+      await row.locator(`[data-field="inventory"]`).fill(String(held));
+      await row.locator(".inventory-row > button[data-show-use]").click();
+      await row.locator(`[data-field="reserves"]`).fill(String(reserved));
       await page
         .getByRole("button", { name: "Save inventory", exact: true })
         .click();

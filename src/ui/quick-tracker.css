@@ -1,0 +1,1925 @@
+/* Focused tracker pages: state remains owned by the existing inventory/armory stores. */
+.quick-tracker {
+  --tracker-gap: clamp(0.4rem, 0.7vw, 0.75rem);
+}
+.quick-tracker-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.4rem 0 0.75rem;
+}
+.quick-tracker-nav a {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  text-decoration: none;
+}
+.quick-tracker-nav a[aria-current="page"] {
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+}
+.quick-tracker .page-heading {
+  margin: 0.4rem 0;
+  padding: 0;
+}
+.quick-tracker .page-heading h1 {
+  font-size: clamp(1.4rem, 2vw, 1.9rem);
+  margin: 0.25rem 0;
+}
+.quick-tracker .page-heading .eyebrow {
+  display: block;
+  margin: 0;
+}
+.quick-tracker .tracker-explanation,
+.quick-tracker .tracker-catalog-note {
+  font-size: 0.85rem;
+  margin: 0.25rem 0;
+}
+.quick-tracker .profile-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+}
+.quick-tracker .profile-toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  margin: 0;
+}
+.quick-tracker .profile-toolbar select {
+  min-width: 0;
+  flex: 1;
+}
+.quick-tracker .profile-toolbar button {
+  font-size: 0.8rem;
+}
+.quick-tracker #save-status,
+.quick-tracker #armory-status {
+  margin: 0.35rem 0;
+  padding: 0.35rem 0;
+  border: 0;
+  font-size: 0.85rem;
+}
+.quick-tracker .filter-bar {
+  padding: 0.6rem;
+  gap: var(--tracker-gap);
+  margin: 0.6rem 0;
+  align-items: end;
+}
+.quick-tracker .filter-bar label {
+  margin: 0;
+}
+.quick-tracker .tracker-more-filters {
+  min-width: 8rem;
+  align-self: center;
+}
+.tracker-filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+.quick-tracker #inventory-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  font-size: 0.8rem;
+}
+.quick-tracker #inventory-pagination p {
+  margin: 0;
+}
+.quick-tracker #inventory-pagination button {
+  padding: 0.35rem 0.6rem;
+}
+.quick-tracker .inventory-category h2,
+.quick-tracker .inventory-group h3 {
+  margin: 0;
+}
+.quick-tracker .inventory-category h2 button,
+.quick-tracker .inventory-group h3 button {
+  padding: 0.45rem 0.6rem;
+  font-size: 0.9rem;
+}
+.quick-tracker .inventory-category {
+  margin: 0.6rem 0;
+  overflow-x: auto;
+}
+.quick-tracker .inventory-group {
+  margin: 0;
+}
+.quick-tracker #inventory-fields {
+  overflow: visible;
+}
+.quick-tracker #inventory-fields .inventory-head {
+  display: none;
+}
+.quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.6fr) 180px minmax(110px, 1fr) 70px;
+  gap: 0.6rem;
+  align-items: center;
+  min-height: 58px;
+  padding: 0.35rem 0.5rem;
+}
+.quick-tracker .inventory-row .inventory-name {
+  grid-column: auto;
+}
+.quick-tracker .inventory-name small {
+  font-size: 0.75rem;
+}
+.quick-tracker .inventory-upgrade-need {
+  font-size: 0.75rem;
+  padding: 0;
+}
+.quick-tracker .inventory-upgrade-need strong,
+.quick-tracker .inventory-upgrade-need small {
+  display: inline;
+  margin-right: 0.4rem;
+}
+.quick-tracker .owned-cell {
+  display: flex;
+  gap: 0.25rem;
+}
+.quick-tracker .owned-cell .stock-steps {
+  display: contents;
+}
+.quick-tracker .owned-cell [data-stock-step="-1"] {
+  order: -1;
+}
+.quick-tracker .owned-cell label {
+  flex: 1;
+}
+.quick-tracker .owned-cell .mobile-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.quick-tracker .owned-cell input {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  text-align: center;
+}
+.quick-tracker .owned-cell button {
+  width: 32px;
+  height: 36px;
+}
+.quick-tracker .tracker-inventory-math {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.6rem 0;
+}
+.quick-tracker .tracker-inventory-math > * {
+  flex: 1 1 120px;
+}
+.quick-tracker .tracker-inventory-math .mobile-label {
+  display: block;
+}
+.quick-tracker .inventory-save-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  position: sticky;
+  bottom: 0.5rem;
+  z-index: 2;
+  min-height: 50px;
+}
+.quick-tracker .inventory-save-bar span {
+  margin-right: auto;
+  align-self: center;
+}
+.quick-tracker .inventory-save-bar[data-dirty="true"] {
+  border-color: var(--accent);
+}
+.quick-tracker .inventory-save-bar button {
+  padding: 0.4rem 0.7rem;
+}
+.quick-tracker .upgrade-family {
+  margin: 0.65rem 0;
+}
+.quick-tracker .upgrade-family > h2 {
+  padding: 0.3rem 0.5rem;
+  font-size: 1rem;
+  margin: 0;
+}
+.quick-tracker .upgrade-family > h2 small {
+  font-size: 0.75rem;
+}
+.quick-tracker .compact-progress {
+  padding: 0.5rem;
+  margin: 0.3rem 0;
+}
+.quick-tracker .upgrade-summary {
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+.quick-tracker .upgrade-summary h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+.quick-tracker .upgrade-requirements {
+  max-height: none;
+}
+.quick-tracker .upgrade-completion-check {
+  white-space: nowrap;
+}
+.quick-tracker .panel {
+  padding: 0.65rem;
+}
+.quick-tracker .tracker-weapon-group {
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  margin: 0.6rem 0;
+}
+.quick-tracker .tracker-weapon-group > summary {
+  padding: 0.5rem;
+  text-transform: capitalize;
+  background: var(--surface);
+}
+.quick-tracker .tracker-weapon-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1.2fr) 150px minmax(100px, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid var(--line);
+  padding: 0.4rem 0.6rem;
+}
+.quick-tracker .tracker-weapon-row label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+}
+.quick-tracker .tracker-roster-filter {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.quick-tracker .tracker-roster-filter label {
+  flex: 1;
+  min-width: 130px;
+}
+.quick-tracker .tracker-roster-fieldset {
+  padding: 0;
+  border: 0;
+}
+.quick-tracker .tracker-weapon-row button {
+  font-size: 0.8rem;
+  padding: 0.35rem 0.6rem;
+}
+.quick-tracker .needed-table {
+  min-width: 0;
+}
+.quick-tracker .needed-table th,
+.quick-tracker .needed-table td {
+  padding: 0.45rem;
+}
+.quick-tracker .tracker-budget-details {
+  margin: 0.4rem 0;
+}
+@media (max-width: 700px) {
+  .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+    grid-template-columns: minmax(0, 1fr) 160px;
+  }
+  .quick-tracker .inventory-row > .inventory-upgrade-need {
+    grid-column: 1;
+  }
+  .quick-tracker .inventory-row > [data-show-use] {
+    grid-column: 2;
+  }
+  .quick-tracker .tracker-weapon-row {
+    grid-template-columns: minmax(0, 1fr) minmax(130px, 1fr);
+  }
+  .quick-tracker .profile-toolbar label {
+    flex-basis: 100%;
+    flex-wrap: wrap;
+  }
+  .quick-tracker .profile-toolbar select {
+    width: 100%;
+    flex-basis: 100%;
+  }
+  .quick-tracker .owned-cell input,
+  .quick-tracker .owned-cell button {
+    min-height: 44px;
+  }
+  .quick-tracker .owned-cell button {
+    min-width: 36px;
+  }
+  .quick-tracker .inventory-save-bar {
+    position: static;
+  }
+}
+@media (max-height: 550px), (pointer: coarse) {
+  .quick-tracker .inventory-save-bar {
+    position: static;
+  }
+}
+main.quick-tracker {
+  padding-block-start: 0.5rem;
+}
+.quick-tracker .breadcrumbs {
+  margin: 0.2rem 0 0.4rem;
+}
+.quick-tracker .quick-tracker-nav {
+  margin: 0.3rem 0;
+}
+.quick-tracker .page-heading {
+  margin: 0;
+}
+.quick-tracker .page-heading h1 {
+  margin: 0.1rem 0;
+}
+.quick-tracker .profile-toolbar {
+  margin: 0.25rem 0;
+}
+.quick-tracker .inventory-save-bar[data-dirty="false"] {
+  position: static;
+}
+.quick-tracker #inventory-fields .inventory-category,
+.quick-tracker #inventory-fields .inventory-group {
+  padding: 0.15rem;
+  margin: 0.25rem 0;
+}
+.quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+  padding: 0.2rem 0.4rem;
+  min-height: 54px;
+}
+.quick-tracker
+  #inventory-fields
+  .inventory-entry
+  > .inventory-row
+  .owned-cell
+  input,
+.quick-tracker #inventory-fields .inventory-entry > .inventory-row button {
+  min-height: 32px;
+}
+.quick-tracker #inventory-fields .inventory-category h2 button,
+.quick-tracker #inventory-fields .inventory-group h3 button {
+  min-height: 32px;
+}
+.quick-tracker .tracker-explanation p {
+  max-width: 80ch;
+}
+.quick-tracker .tracker-needed-calculation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  padding: 0.35rem 0;
+}
+.quick-tracker .needed-table th {
+  width: auto;
+}
+.quick-tracker #upgrade-budget-summary .notice {
+  padding: 0.35rem 0.6rem;
+  margin: 0.35rem 0;
+}
+.quick-tracker #upgrade-budget-summary > p {
+  margin: 0.3rem 0;
+}
+.quick-tracker #progress-filters {
+  grid-template-columns: minmax(120px, 1fr) auto auto auto;
+}
+.quick-tracker #progress-filters .tracker-more-filters {
+  order: 1;
+}
+.quick-tracker .tracker-more-filters[open] {
+  grid-column: 1/-1;
+}
+.quick-tracker #inventory-fields.comfortable .inventory-entry > .inventory-row {
+  min-height: 66px;
+  padding-block: 0.6rem;
+}
+@media (max-width: 700px), (pointer: coarse) {
+  .quick-tracker
+    #inventory-fields
+    .inventory-entry
+    > .inventory-row
+    .owned-cell
+    input,
+  .quick-tracker #inventory-fields .inventory-entry > .inventory-row button,
+  .quick-tracker #inventory-fields .inventory-category h2 button,
+  .quick-tracker #inventory-fields .inventory-group h3 button {
+    min-height: 44px;
+  }
+  .quick-tracker #progress-filters {
+    grid-template-columns: 1fr;
+  }
+  .quick-tracker .tracker-needed-calculation {
+    grid-template-columns: 1fr;
+  }
+}
+body[data-page] main.quick-tracker {
+  padding-block-start: 0.5rem;
+}
+.quick-tracker .tracker-context {
+  font-size: 0.8rem;
+  margin: 0.3rem 0;
+  min-width: 0;
+}
+.quick-tracker .tracker-context > summary {
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.quick-tracker .tracker-context.catalog-context > summary {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.25;
+  min-height: 3.5rem;
+}
+.quick-tracker #inventory-fields .inventory-upgrade-need {
+  min-height: 0;
+}
+.quick-tracker #inventory-fields .owned-cell input {
+  min-height: 32px;
+  height: 32px;
+}
+.quick-tracker .tracker-filter-options .upgrade-view-controls {
+  flex-basis: 100%;
+}
+.quick-tracker .upgrade-family .compact-progress .upgrade-summary {
+  grid-template-columns:
+    minmax(130px, 1.2fr) 105px minmax(140px, 1.5fr) minmax(100px, 1fr)
+    65px;
+}
+.quick-tracker .tracker-edit-stock {
+  display: inline-block;
+  margin-inline: 0.3rem;
+}
+.quick-tracker .needed-table td,
+.quick-tracker .needed-table th {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px), (pointer: coarse) {
+  .quick-tracker #inventory-fields .owned-cell input {
+    min-height: 44px;
+    height: 44px;
+  }
+  .quick-tracker .upgrade-family .compact-progress .upgrade-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+html[data-ui-variant] body[data-page] main.quick-tracker {
+  padding-block-start: 0.5rem;
+}
+.quick-tracker
+  #inventory-fields
+  .inventory-upgrade-need
+  [data-tier-uncertainty]:empty {
+  display: none;
+}
+.quick-tracker #inventory-fields .inventory-upgrade-need small {
+  font-size: 0.75rem;
+}
+.quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+  min-height: 54px;
+}
+@media (min-width: 701px) {
+  .quick-tracker #inventory-fields .inventory-upgrade-need {
+    display: flex;
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .quick-tracker #inventory-fields .upgrade-need-label {
+    display: none;
+  }
+  .quick-tracker #inventory-fields .inventory-row > [data-show-use] {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+.quick-tracker .quick-tracker-nav {
+  align-items: center;
+}
+.quick-tracker .quick-tracker-nav .tracker-context {
+  margin-left: auto;
+  max-width: min(100%, 40rem);
+}
+.quick-tracker .tracker-context[open] {
+  flex-basis: 100%;
+  max-width: none;
+}
+.quick-tracker .tracker-context .profile-toolbar {
+  margin: 0.5rem 0;
+}
+.quick-tracker .page-heading {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.quick-tracker .tracker-explanation[open] {
+  flex-basis: 100%;
+}
+.quick-tracker #inventory-pagination #inventory-count {
+  flex-basis: 100%;
+}
+.quick-tracker .filter-bar:has(#inventory-query) {
+  grid-template-columns:
+    minmax(160px, 2fr) minmax(130px, 1fr) minmax(130px, 1fr)
+    auto;
+}
+@media (max-width: 700px) {
+  .quick-tracker .quick-tracker-nav .tracker-context {
+    margin-left: 0;
+    width: 100%;
+  }
+  .quick-tracker .filter-bar:has(#inventory-query) {
+    grid-template-columns: 1fr;
+  }
+}
+html[data-ui-variant] main.quick-tracker .tracker-budget-panel {
+  padding: 0.4rem 0.6rem;
+  margin-block: 0.4rem;
+  font-size: 0.8rem;
+}
+html[data-ui-variant] main.quick-tracker .tracker-budget-panel .notice {
+  border: 0;
+  padding: 0;
+  margin: 0.2rem 0;
+}
+html[data-ui-variant]
+  main.quick-tracker
+  .tracker-budget-panel
+  .tracker-budget-details {
+  margin: 0.2rem 0;
+}
+html[data-ui-variant] main.quick-tracker .tracker-budget-panel > details {
+  margin: 0.2rem 0;
+}
+.quick-tracker .upgrade-family > h2 {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.quick-tracker .upgrade-family > h2 small {
+  display: inline;
+}
+html[data-ui-variant] main.quick-tracker .upgrade-family .compact-progress {
+  padding: 0.35rem 0.5rem;
+  margin: 0.2rem 0;
+}
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-family
+  .compact-progress
+  button {
+  white-space: nowrap;
+  width: auto;
+  min-width: max-content;
+  padding: 0.3rem 0.5rem;
+}
+.quick-tracker .upgrade-family .compact-progress .upgrade-summary {
+  grid-template-columns:
+    minmax(140px, 1.3fr) 105px minmax(140px, 1.5fr) minmax(110px, 1fr)
+    minmax(75px, auto);
+}
+.quick-tracker .upgrade-family > details > summary {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+}
+@media (min-width: 701px) and (pointer: fine) {
+  html[data-ui-variant] main.quick-tracker .filter-bar input,
+  html[data-ui-variant] main.quick-tracker .filter-bar select,
+  html[data-ui-variant] main.quick-tracker .filter-bar button {
+    min-height: 36px;
+    height: auto;
+    padding: 0.35rem 0.6rem;
+  }
+  html[data-ui-variant] main.quick-tracker .filter-bar {
+    padding: 0.45rem 0.6rem;
+  }
+}
+@media (max-width: 700px) {
+  .quick-tracker .upgrade-family .compact-progress .upgrade-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+  .quick-tracker
+    .upgrade-family
+    .compact-progress
+    .upgrade-summary
+    > :first-child {
+    grid-column: 1/-1;
+  }
+}
+.quick-tracker .owned-cell button,
+.quick-tracker [data-show-use],
+.quick-tracker .tracker-weapon-row button {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+@media (pointer: coarse) {
+  .quick-tracker .tracker-weapon-row label {
+    min-height: 44px;
+  }
+}
+html[data-ui-variant] main.quick-tracker .page-heading {
+  padding: 0;
+  margin-block: 0.2rem;
+  min-height: 0;
+}
+@media (min-width: 701px) and (pointer: fine) {
+  .quick-tracker .breadcrumbs a {
+    min-height: 24px;
+    padding-block: 0;
+  }
+}
+/* Family cards expose several current tiers together; expanded content stays in flow. */
+.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .upgrade-list-heading {
+  display: none;
+}
+.quick-tracker .upgrade-list-shell[data-layout="grouped"] #progress-rows {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  align-items: start;
+}
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .upgrade-family {
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  padding: 0.35rem;
+  margin: 0;
+  min-width: 0;
+}
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .compact-progress {
+  display: block;
+}
+.quick-tracker .upgrade-list-shell[data-layout="grouped"] .upgrade-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+}
+.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .upgrade-summary
+  > :first-child {
+  grid-column: 1/-1;
+}
+.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .upgrade-summary
+  > .upgrade-manual {
+  grid-column: 1;
+}
+.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .upgrade-summary
+  .upgrade-cell-label {
+  display: block;
+}
+.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .upgrade-summary
+  .upgrade-blocker {
+  border: 0;
+  padding: 0;
+}
+.quick-tracker .upgrade-list-shell[data-layout="grouped"] .upgrade-family > h2 {
+  margin: 0.15rem;
+  padding: 0;
+  font-size: 0.95rem;
+}
+.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .upgrade-family
+  > h2
+  small {
+  font-size: 0.7rem;
+}
+@media (max-width: 1100px) {
+  .quick-tracker .upgrade-list-shell[data-layout="grouped"] #progress-rows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .quick-tracker .upgrade-list-shell[data-layout="grouped"] #progress-rows {
+    grid-template-columns: 1fr;
+  }
+}
+/* Reset the original flat-table cell placement inside the grouped cards. */
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .upgrade-family
+  .compact-progress
+  .upgrade-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-right: 0;
+  width: auto;
+}
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .upgrade-family
+  .upgrade-summary
+  > :nth-child(-n + 5) {
+  grid-column: auto;
+  grid-row: auto;
+  min-width: 0;
+  max-width: none;
+  width: auto;
+}
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .upgrade-family
+  .upgrade-summary
+  > :first-child {
+  grid-column: 1/-1;
+}
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .compact-progress
+  > details,
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-list-shell[data-layout="grouped"]
+  .compact-progress
+  > details
+  > summary {
+  position: static;
+  width: auto;
+  max-width: none;
+  padding: 0.3rem 0;
+  margin: 0;
+}
+/* Keep the mobile task controls compact without shrinking their touch targets. */
+@media (max-width: 700px) {
+  .quick-tracker .quick-tracker-nav > a[data-tracker-link] {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+    padding: 0.45rem 0.25rem;
+    font-size: 0.8rem;
+  }
+  .quick-tracker .filter-bar:has(#inventory-query) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .quick-tracker .filter-bar:has(#inventory-query) > label:first-child {
+    grid-column: 1/-1;
+  }
+  .quick-tracker .filter-bar:has(#inventory-query) .tracker-more-filters {
+    grid-column: 1/-1;
+  }
+  .quick-tracker .filter-bar:has(#inventory-query) label {
+    min-width: 0;
+  }
+  .quick-tracker .filter-bar:has(#inventory-query) select {
+    min-width: 0;
+    width: 100%;
+  }
+  .quick-tracker #progress-filters {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .quick-tracker #progress-filters > label {
+    grid-column: 1/-1;
+  }
+  .quick-tracker #progress-filters .tracker-more-filters {
+    grid-column: 1/-1;
+  }
+  .quick-tracker #progress-filters button {
+    padding-inline: 0.3rem;
+  }
+}
+/* Needed shares the inventory's named groups and compact rows, not a wide table. */
+.quick-tracker :is(#needed-list, #needed-print-inputs).needed-grouped-list {
+  max-block-size: none;
+  overflow: visible;
+  border: 0;
+}
+.quick-tracker .needed-group {
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  margin: 0.6rem 0;
+  min-width: 0;
+}
+.quick-tracker .needed-group > summary {
+  background: var(--surface);
+  padding: 0.45rem 0.6rem;
+  font-weight: 650;
+  cursor: pointer;
+  min-height: 36px;
+  align-content: center;
+}
+.quick-tracker .needed-subgroup {
+  margin: 0.35rem;
+  border-radius: 0.25rem;
+}
+.quick-tracker .needed-subgroup > summary {
+  background: var(--raised);
+  font-size: 0.85rem;
+}
+.quick-tracker .needed-row {
+  display: grid;
+  grid-template-columns:
+    minmax(160px, 1.6fr) minmax(100px, 1fr) minmax(100px, 1fr)
+    minmax(100px, auto);
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.45rem 0.6rem;
+  border-top: 1px solid var(--line);
+  min-height: 58px;
+}
+.quick-tracker .needed-row > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.quick-tracker .needed-identity > a {
+  font-weight: 600;
+}
+.quick-tracker .needed-identity small,
+.quick-tracker .needed-metric-label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.quick-tracker .needed-metric {
+  position: relative;
+}
+.quick-tracker .needed-details-button {
+  background: var(--surface);
+  color: var(--text);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+}
+.quick-tracker .needed-detail {
+  padding: 0.6rem;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  overflow-wrap: anywhere;
+}
+.quick-tracker .needed-detail .tracker-needed-calculation {
+  position: relative;
+  padding: 0.45rem 0;
+}
+.quick-tracker .needed-detail .tracker-needed-calculation > span {
+  position: relative;
+}
+.quick-tracker .needed-detail > details {
+  margin: 0.4rem 0;
+}
+.quick-tracker .needed-group-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.4rem 0;
+}
+.quick-tracker .needed-group-actions button {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+  background: var(--surface);
+  color: var(--text);
+}
+@media (max-width: 700px) {
+  .quick-tracker .needed-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .quick-tracker .needed-identity {
+    grid-column: 1/-1;
+  }
+  .quick-tracker .needed-details-button {
+    grid-column: 1/-1;
+    justify-self: start;
+    min-height: 44px;
+  }
+  .quick-tracker .needed-group > summary {
+    min-height: 44px;
+  }
+  .quick-tracker .filter-bar:has(#needed-query) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .quick-tracker .filter-bar:has(#needed-query) > label:first-child {
+    grid-column: 1/-1;
+  }
+  .quick-tracker .filter-bar:has(#needed-query) > label {
+    min-width: 0;
+  }
+  .quick-tracker .filter-bar:has(#needed-query) select {
+    width: 100%;
+    min-width: 0;
+  }
+}
+.quick-tracker .needed-detail .tracker-needed-calculation > span > small {
+  display: block;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+/* Item blueprints are a distinct, staged checklist alongside inventory quantities. */
+.quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+  grid-template-columns:
+    minmax(150px, 1.5fr) 180px minmax(130px, 1fr) minmax(100px, 1fr)
+    70px;
+}
+.quick-tracker .inventory-blueprint label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 36px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.quick-tracker #inventory-fields .inventory-blueprint input[type="checkbox"] {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  padding: 0;
+  margin: 0;
+}
+.quick-tracker .inventory-blueprint small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+@media (max-width: 700px) {
+  .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .quick-tracker #inventory-fields .inventory-row > .inventory-name {
+    grid-column: 1/-1;
+  }
+  .quick-tracker #inventory-fields .inventory-row > .owned-cell {
+    grid-column: 1;
+  }
+  .quick-tracker #inventory-fields .inventory-row > .inventory-blueprint {
+    grid-column: 2;
+  }
+  .quick-tracker #inventory-fields .inventory-row > .inventory-upgrade-need {
+    grid-column: 1;
+  }
+  .quick-tracker #inventory-fields .inventory-row > [data-show-use] {
+    grid-column: 2;
+  }
+  .quick-tracker .inventory-blueprint label {
+    min-height: 44px;
+  }
+}
+
+/* Shared column positions keep normal and mirrored inventory rows aligned. */
+.quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+  grid-template-columns:
+    minmax(12rem, 18rem) 2.75rem 11rem 10rem minmax(6rem, 1fr)
+    4rem;
+  grid-template-areas: "name icon owned blueprint need actions";
+  gap: calc(0.3rem + 0.1vw);
+  align-items: center;
+  min-height: 4rem;
+  padding: 0.25rem 0.375rem;
+}
+.quick-tracker
+  #inventory-fields
+  .inventory-entry
+  > .inventory-row
+  > .inventory-name {
+  grid-area: name;
+}
+.quick-tracker
+  #inventory-fields
+  .inventory-entry
+  > .inventory-row
+  > .inventory-item-icon {
+  grid-area: icon;
+}
+.quick-tracker
+  #inventory-fields
+  .inventory-entry
+  > .inventory-row
+  > .owned-cell {
+  grid-area: owned;
+}
+.quick-tracker
+  #inventory-fields
+  .inventory-entry
+  > .inventory-row
+  > .inventory-blueprint {
+  grid-area: blueprint;
+}
+.quick-tracker
+  #inventory-fields
+  .inventory-entry
+  > .inventory-row
+  > .inventory-upgrade-need {
+  grid-area: need;
+}
+.quick-tracker
+  #inventory-fields
+  .inventory-entry
+  > .inventory-row
+  > [data-show-use] {
+  grid-area: actions;
+}
+.quick-tracker #inventory-fields .inventory-name small {
+  margin: 0;
+  line-height: 1.25;
+}
+.quick-tracker #inventory-fields .inventory-name .collection-state {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 3.2em;
+  gap: 0.25rem;
+  padding: 0.05rem 0.3rem;
+  margin-top: 0.125rem;
+  font-size: 0.7rem;
+  vertical-align: top;
+}
+.quick-tracker #inventory-fields .collection-state .collection-short,
+.quick-tracker #inventory-fields .collection-state .collection-kind {
+  display: inline;
+  min-block-size: 0;
+  line-height: 1.2;
+}
+.quick-tracker #inventory-fields .collection-state .collection-kind:empty {
+  display: none;
+}
+.inventory-item-icon {
+  width: 2.75rem;
+  min-height: 2.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  gap: 0.1rem;
+  color: var(--muted);
+  text-align: center;
+}
+.inventory-item-icon img {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+}
+.inventory-item-icon a {
+  display: grid;
+  place-items: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+.inventory-icon-placeholder {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px dashed var(--muted);
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  line-height: 1;
+}
+.inventory-item-icon small {
+  font-size: 0.65rem;
+  line-height: 1.1;
+}
+@media (max-width: 1100px) and (min-width: 701px) {
+  .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+    grid-template-columns: minmax(0, 18rem) 2.75rem 11rem minmax(4rem, 1fr);
+    grid-template-areas: "name icon owned actions" "blueprint blueprint need need";
+    row-gap: 0.125rem;
+  }
+}
+@media (max-width: 700px) {
+  .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+    grid-template-columns: minmax(0, 1fr) 4rem;
+    grid-template-areas: "name icon" "owned actions" "blueprint blueprint" "need need";
+    row-gap: 0.125rem;
+    padding-block: 0.375rem;
+  }
+  .quick-tracker
+    #inventory-fields
+    .inventory-entry
+    > .inventory-row
+    > .inventory-item-icon {
+    justify-self: center;
+  }
+  .quick-tracker
+    #inventory-fields
+    .inventory-entry
+    > .inventory-row
+    > .inventory-upgrade-need {
+    overflow-wrap: anywhere;
+  }
+  .quick-tracker
+    #inventory-fields
+    .inventory-entry
+    > .inventory-row
+    > .inventory-blueprint
+    label {
+    min-height: 2.75rem;
+  }
+}
+
+.quick-tracker #inventory-fields .owned-cell input {
+  font-size: 0.8rem;
+  padding-inline: 0.2rem;
+}
+.quick-tracker
+  #inventory-fields
+  .inventory-entry
+  > .inventory-row
+  > [data-show-use] {
+  justify-self: end;
+  width: 4rem;
+}
+@media (max-width: 700px) {
+  .quick-tracker
+    #inventory-fields
+    .inventory-upgrade-need
+    > .upgrade-need-label {
+    display: inline;
+    margin-right: 0.4rem;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .quick-tracker
+    #inventory-fields
+    .inventory-entry
+    > .inventory-row
+    > .inventory-upgrade-need {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 1.5rem;
+    gap: 0.125rem 0.4rem;
+  }
+  .quick-tracker
+    #inventory-fields
+    .inventory-entry
+    > .inventory-row
+    > .inventory-blueprint:has(.inventory-blueprint-unavailable) {
+    display: none;
+  }
+}
+
+/* Required counts are visible row metrics, never hidden in disclosure content. */
+.quick-tracker
+  #inventory-fields
+  .inventory-entry
+  > .inventory-row
+  > .inventory-counts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.125rem 0.75rem;
+  min-height: 0;
+  align-content: center;
+  justify-content: stretch;
+}
+.quick-tracker
+  #inventory-fields
+  .inventory-counts
+  .inventory-count-column
+  > small {
+  display: block;
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  font-weight: 600;
+}
+.quick-tracker
+  #inventory-fields
+  .inventory-counts
+  .inventory-count-column
+  > strong {
+  display: block;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+.quick-tracker #inventory-fields .inventory-counts > [data-tier-uncertainty] {
+  grid-column: 1 / -1;
+  font-size: 0.65rem;
+}
+.quick-tracker .needed-row {
+  grid-template-columns:
+    minmax(150px, 1.6fr) repeat(3, minmax(90px, 1fr))
+    minmax(100px, auto);
+}
+@media (max-width: 700px) {
+  .quick-tracker .needed-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.quick-tracker .needed-metric .needed-number {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.quick-collect-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+body[data-page="quick-collect"] #error[hidden] {
+  display: block !important;
+  visibility: hidden;
+}
+.quick-tracker .collect-row {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) minmax(5rem, auto) minmax(
+      9rem,
+      12rem
+    );
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+.quick-tracker .collect-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.quick-tracker .collect-name small,
+.quick-tracker .collect-remaining small {
+  display: block;
+  font-size: 0.75rem;
+}
+.quick-tracker .collect-remaining strong {
+  font-variant-numeric: tabular-nums;
+  color: #ffb4b4;
+}
+.quick-tracker .collect-remaining {
+  min-height: 4.25rem;
+}
+body[data-page="quick-collect"] .filter-bar {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) auto;
+  gap: 0.5rem;
+}
+.quick-tracker .collect-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem;
+  align-items: end;
+}
+.quick-tracker .collect-actions button {
+  min-width: 0;
+  min-height: 2.75rem;
+  margin: 0;
+  padding: 0.35rem;
+  font-size: 0.8rem;
+}
+@media (max-width: 600px) {
+  body[data-page="quick-collect"] .filter-bar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.quick-tracker .collect-row[data-covered="true"] .collect-remaining strong {
+  color: #bcf5cc;
+}
+[data-theme="light"] .quick-tracker .collect-remaining strong {
+  color: #a12626;
+}
+[data-theme="light"]
+  .quick-tracker
+  .collect-row[data-covered="true"]
+  .collect-remaining
+  strong {
+  color: #226337;
+}
+.quick-tracker .collect-row form {
+  display: grid;
+  grid-template-columns: minmax(3rem, 1fr) auto;
+  gap: 0.35rem;
+  margin: 0;
+}
+.quick-tracker .collect-row input,
+.quick-tracker .collect-row button {
+  min-width: 0;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.35rem;
+  margin: 0;
+}
+.quick-tracker .collect-icon img {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+.quick-tracker .collect-help {
+  font-size: 0.8rem;
+}
+@media (max-width: 600px) {
+  .quick-tracker .collect-row {
+    grid-template-columns: 2rem minmax(0, 1fr) minmax(5rem, auto);
+  }
+  .quick-tracker .collect-row form {
+    grid-column: 2/-1;
+  }
+}
+
+/* FOB cards keep direct costs visible, with optional evidence and purchase details. */
+.build-collect {
+  margin-block: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  min-width: 0;
+}
+.build-collect h2 {
+  font-size: 1rem;
+  margin: 0 0 0.4rem;
+}
+.quick-tracker #build-collect .build-ingredient {
+  grid-template-columns: 1.5rem minmax(0, 1fr) minmax(2.5rem, max-content);
+  gap: 0.25rem;
+  min-height: 3rem;
+  padding: 0.2rem 0;
+}
+.build-ingredient-name {
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+.build-ingredient [data-collect-remaining] {
+  font-size: 0.85rem;
+  color: #ffb4b4;
+  font-variant-numeric: tabular-nums;
+}
+.build-ingredient[data-covered="true"] [data-collect-remaining] {
+  color: #bcf5cc;
+}
+[data-theme="light"] .build-ingredient [data-collect-remaining] {
+  color: #a12626;
+}
+[data-theme="light"]
+  .build-ingredient[data-covered="true"]
+  [data-collect-remaining] {
+  color: #226337;
+}
+.quick-tracker #build-collect .collect-icon img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.build-quantity {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+#build-collect .build-secondary {
+  margin: 0.15rem 0;
+}
+#build-collect .build-secondary > summary {
+  font-size: 0.7rem;
+  min-height: 1.75rem;
+  padding: 0.2rem;
+}
+#build-collect > details[data-build-group] > summary {
+  font-size: 0.85rem;
+  padding: 0.3rem;
+}
+.build-collect details {
+  margin: 0.4rem 0;
+  min-width: 0;
+}
+.build-collect summary {
+  cursor: pointer;
+  min-height: 2.75rem;
+  display: list-item;
+  padding: 0.4rem;
+  overflow-wrap: anywhere;
+}
+.build-target-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.build-target-actions label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+.build-target-actions input {
+  width: 5rem;
+  min-height: 2.75rem;
+}
+.build-target-choice {
+  min-width: 0;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+}
+.build-target-choice label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+}
+.build-target-choice input[type="checkbox"] {
+  width: 1.1rem;
+  min-height: 1.1rem;
+  flex-shrink: 0;
+}
+.build-target-choice .build-target-count {
+  font-size: 0.7rem;
+}
+.build-target-choice input[type="number"] {
+  width: 4.5rem;
+  min-width: 0;
+  min-height: 2rem;
+  padding: 0.2rem;
+  margin: 0.2rem 0;
+}
+.build-target-choice [data-build-status] {
+  display: block;
+  font-size: 0.65rem;
+}
+.quick-tracker #inventory-fields .inventory-build-target {
+  grid-area: build;
+  min-width: 0;
+}
+.quick-tracker #inventory-fields .inventory-build-target [data-build-status] {
+  display: none;
+}
+@media (min-width: 1101px) {
+  .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+    grid-template-columns:
+      minmax(10rem, 18rem) 2.75rem 10rem 8rem 10rem minmax(6rem, 1fr)
+      4rem;
+    grid-template-areas: "name icon owned blueprint build need actions";
+  }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+    grid-template-areas: "name icon owned actions" "blueprint build build need";
+  }
+}
+@media (max-width: 700px) {
+  .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 4rem;
+    grid-template-areas: "name name name icon" "owned owned owned actions" "blueprint blueprint blueprint blueprint" "need need build build";
+    padding-block: 0.2rem;
+  }
+  .quick-tracker-nav > a[data-tracker-link] {
+    font-size: 0.75rem;
+    padding-inline: 0.2rem;
+    overflow-wrap: anywhere;
+  }
+}
+@media (max-width: 400px) {
+  .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+    grid-template-columns: minmax(0, 1fr) 2.75rem;
+    grid-template-areas:
+      "name icon"
+      "owned owned"
+      "blueprint blueprint"
+      "need need"
+      "build build"
+      "actions actions";
+  }
+  .quick-tracker #inventory-fields .inventory-entry > .inventory-row > [data-show-use] {
+    justify-self: start;
+  }
+}
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-list-shell[data-layout]
+  .fob-upgrade-card {
+  padding: calc(0.4rem + 2px);
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  min-width: 0;
+  margin-block: 0.45rem;
+}
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-list-shell[data-layout]
+  .fob-upgrade-card
+  .upgrade-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.4rem;
+  padding: 0;
+  width: auto;
+  align-items: start;
+}
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-list-shell[data-layout]
+  .fob-upgrade-card
+  .upgrade-summary
+  > :nth-child(n) {
+  grid-column: auto;
+  grid-row: auto;
+  min-width: 0;
+  max-width: none;
+  width: auto;
+}
+html[data-ui-variant]
+  main.quick-tracker
+  .upgrade-list-shell[data-layout]
+  .fob-upgrade-card
+  .upgrade-summary
+  > :first-child {
+  grid-column: 1 / -1;
+}
+.quick-tracker .fob-upgrade-card .upgrade-manual {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+.quick-tracker .fob-upgrade-card .upgrade-manual > small {
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  min-width: max-content;
+}
+.quick-tracker .fob-upgrade-card .upgrade-summary h3,
+.quick-tracker .fob-upgrade-card .upgrade-summary h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+.quick-tracker .fob-card-body {
+  min-width: 0;
+}
+.quick-tracker .fob-effect {
+  margin: 0.4rem 0;
+  font-size: 0.85rem;
+}
+.quick-tracker .fob-prerequisites {
+  font-size: 0.75rem;
+  margin: 0.25rem 0;
+}
+.quick-tracker .fob-materials {
+  display: grid;
+  gap: 0.25rem;
+}
+.quick-tracker .fob-material {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.35rem 0.5rem;
+  padding-block: 0.35rem;
+  border-top: 1px solid var(--line);
+  align-items: center;
+  min-width: 0;
+}
+.quick-tracker .fob-material-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.quick-tracker .fob-material-name > a {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.quick-tracker .fob-material-name > small {
+  font-size: 0.7rem;
+}
+.quick-tracker .fob-material-name > small,
+.quick-tracker .fob-material-count {
+  display: block;
+}
+.quick-tracker .fob-material-count {
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+.quick-tracker .fob-material[data-stock-state="short"] .fob-material-count,
+.quick-tracker .fob-material[data-stock-state="short"] .fob-material-missing {
+  color: #ffb4b4;
+}
+.quick-tracker .fob-material[data-stock-state="covered"] .fob-material-count {
+  color: #bcf5cc;
+}
+.quick-tracker .fob-material[data-stock-state="review"] .fob-material-count {
+  color: #f6d079;
+}
+html[data-theme="light"]
+  .quick-tracker
+  .fob-material[data-stock-state="short"]
+  .fob-material-count,
+html[data-theme="light"]
+  .quick-tracker
+  .fob-material[data-stock-state="short"]
+  .fob-material-missing {
+  color: #a12626;
+}
+html[data-theme="light"]
+  .quick-tracker
+  .fob-material[data-stock-state="covered"]
+  .fob-material-count {
+  color: #226337;
+}
+html[data-theme="light"]
+  .quick-tracker
+  .fob-material[data-stock-state="review"]
+  .fob-material-count {
+  color: #785200;
+}
+.quick-tracker .fob-material-icon {
+  width: 2rem;
+  text-align: center;
+  font-size: 0.6rem;
+}
+.quick-tracker .fob-material-icon img {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+.quick-tracker .fob-material-icon > span,
+.quick-tracker .fob-material-icon > small {
+  display: block;
+}
+.quick-tracker .fob-material-icon > span {
+  font-size: 1.25rem;
+}
+.quick-tracker .fob-material-icon > small {
+  font-size: 0.5rem;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.quick-tracker .fob-stock-controls {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(3rem, 1fr) 2.75rem auto 2.75rem;
+  gap: 0.25rem;
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+@media (max-width: 1499px) {
+  .quick-tracker .fob-stock-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.quick-tracker .fob-stock-controls input,
+.quick-tracker .fob-stock-controls button {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  margin: 0;
+  padding: 0.25rem;
+  font-size: 0.8rem;
+}
+.quick-tracker .fob-stock-controls input {
+  text-align: center;
+}
+.quick-tracker .fob-stock-controls button {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--line);
+}
+.quick-tracker .fob-stock-controls [data-fob-save] {
+  color: var(--lime);
+}
+.quick-tracker .fob-upgrade-card button {
+  max-inline-size: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.quick-tracker .fob-upgrade-card [data-track-upgrade] {
+  justify-self: end;
+}
+.quick-tracker .fob-stock-controls [data-fob-dirty] {
+  grid-column: 1 / -1;
+  font-size: 0.7rem;
+}
+.quick-tracker .fob-stock-controls [data-fob-dirty][hidden] {
+  display: block !important;
+  visibility: hidden;
+}
+.quick-tracker .fob-material-progress {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+}
+.quick-tracker .fob-material-progress progress {
+  width: 100%;
+  height: 0.35rem;
+}
+.quick-tracker .fob-stock-note {
+  display: block;
+  font-size: 0.7rem;
+  margin-top: 0.25rem;
+}
+.quick-tracker .upgrade-list-shell.hide-materials .fob-materials,
+.quick-tracker .upgrade-list-shell.hide-materials .fob-material-progress {
+  display: none;
+}
+@media (min-width: 1500px) {
+  .quick-tracker .fob-material {
+    grid-template-columns: 2rem minmax(0, 1fr) minmax(15rem, 17rem);
+  }
+  .quick-tracker .fob-stock-controls {
+    grid-column: auto;
+  }
+}
+
+/* Shared ingredient tiles with one small in-flow details area. */
+.quick-tracker .build-summary {
+  margin-block: 0.5rem 0.75rem;
+}
+.quick-tracker .build-summary h2 {
+  font-size: 0.85rem;
+  margin: 0.3rem 0;
+}
+.quick-tracker .build-summary h2 small {
+  font-weight: normal;
+  color: var(--muted);
+}
+.quick-tracker .build-summary-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.quick-tracker .build-summary-entry {
+  display: contents;
+}
+.quick-tracker .build-summary-tile {
+  --rarity: #9da3a8;
+  display: grid;
+  grid-template-rows: 2rem 1rem;
+  place-items: center;
+  width: 3.5rem;
+  min-width: 0;
+  min-height: 3.5rem;
+  padding: 0.2rem;
+  margin: 0;
+  border: 1px solid var(--rarity);
+  border-bottom-width: 3px;
+  border-radius: 0.35rem;
+  background: var(--surface);
+  color: var(--text);
+}
+.quick-tracker .build-summary-tile[data-rarity="uncommon"] {
+  --rarity: #7db76a;
+}
+.quick-tracker .build-summary-tile[data-rarity="rare"] {
+  --rarity: #6aa9ed;
+}
+.quick-tracker .build-summary-tile[data-rarity="epic"] {
+  --rarity: #b58be3;
+}
+.quick-tracker .build-summary-tile[data-rarity="legendary"] {
+  --rarity: #e5aa54;
+}
+.quick-tracker .build-summary-tile[data-rarity="ultra"] {
+  --rarity: #e8849d;
+}
+.quick-tracker .build-summary-tile[aria-expanded="true"] {
+  outline: 2px solid var(--text);
+  outline-offset: 1px;
+}
+.quick-tracker .build-summary-tile [data-inventory-icon],
+.quick-tracker .build-summary-tile img {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+.quick-tracker .build-summary-tile strong {
+  font-size: 0.75rem;
+  line-height: 1;
+  color: #ffb4b4;
+}
+.quick-tracker .build-summary-tile[data-covered="true"] strong {
+  color: #bcf5cc;
+}
+html[data-theme="light"] .quick-tracker .build-summary-tile strong {
+  color: #a12626;
+}
+html[data-theme="light"]
+  .quick-tracker
+  .build-summary-tile[data-covered="true"]
+  strong {
+  color: #226337;
+}
+.quick-tracker .build-summary-info {
+  order: 1;
+  flex: 0 0 100%;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  font-size: 0.8rem;
+  max-height: 9rem;
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
+.quick-tracker .build-summary-info[hidden] {
+  display: none;
+}
+.quick-tracker .build-summary-info p {
+  margin: 0.25rem 0;
+}
+.quick-tracker .build-summary-info small,
+.quick-tracker .build-summary-info a {
+  display: block;
+}
+.quick-tracker .build-summary-info [data-build-peek-close] {
+  float: right;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  margin: 0;
+  padding: 0.2rem;
+}
+
+.quick-tracker .build-summary-tile {
+  width: calc(7rem + 0.5vw);
+  max-width: 100%;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 0.35rem;
+  row-gap: 0.15rem;
+  min-height: 3.75rem;
+  padding: 0.3rem;
+}
+.quick-tracker .build-summary-tile [data-inventory-icon] {
+  grid-row: 1 / 3;
+}
+.quick-tracker .build-summary-name {
+  font-size: 0.7rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  text-align: left;
+  width: 100%;
+}
+.quick-tracker .build-summary-tile strong {
+  justify-self: start;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.quick-tracker .build-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 6.5rem), 1fr));
+}
+.quick-tracker .build-summary-tile {
+  width: 100%;
+}
+.quick-tracker .build-summary-info {
+  grid-column: 1 / -1;
+}
+.quick-tracker .build-summary h2 small {
+  margin-inline-start: 0.4rem;
+}
+
+.quick-tracker .build-summary-tile {
+  grid-template-rows: 2rem auto;
+}
+.quick-tracker .build-summary-tile [data-inventory-icon] {
+  grid-row: 1;
+  grid-column: 1;
+}
+.quick-tracker .build-summary-tile strong {
+  grid-row: 1;
+  grid-column: 2;
+  justify-self: end;
+}
+.quick-tracker .build-summary-name {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.quick-tracker .build-tile-group {
+  margin-block: 0.6rem;
+  padding: 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+}
+.quick-tracker .build-tile-group .build-summary {
+  margin: 0;
+}
+.quick-tracker .build-tile-group h2,
+.quick-tracker .build-tile-group h3 {
+  font-size: 0.85rem;
+  margin: 0.2rem 0 0.4rem;
+}
+
+.quick-tracker .build-summary-missing {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  font-size: 0.65rem;
+  color: var(--muted);
+  line-height: 1.1;
+}

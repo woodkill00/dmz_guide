@@ -512,6 +512,15 @@ export function upgradeAdvice(
       status: "ok",
       ...(includeIdentityState
         ? {
+            excludedNumericUpgradeIds: [...canonical.keys()].filter(
+              (id) =>
+                (conflictedGroups.has(canonical.get(id)) ||
+                  ["disputed", "stale"].includes(objectives.get(id).status) ||
+                  disputedEntities.has(id)) &&
+                !guard.limited &&
+                !guard.contains(id) &&
+                !guard.contains(objectives.get(id).name),
+            ),
             completedUpgradeIds: [...canonical.keys()].filter(
               (id) =>
                 completedGroups.has(canonical.get(id)) &&

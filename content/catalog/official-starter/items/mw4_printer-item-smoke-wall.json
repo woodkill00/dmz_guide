@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Field upgrades",
+  "description": "Fire off a fast rocket that leaves a trail of smoke behind it for safe battlefield rotations.",
+  "id": "mw4:printer-item-smoke-wall",
+  "kind": "item",
+  "name": "Smoke Wall",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

@@ -1,5 +1,12 @@
 {
   "id": "source:story",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "web",
+    "lineageKey": "source-story",
+    "observationKey": "source-story"
+  },
   "publishedAt": "2026-09-16",
   "reviewedAt": "2026-10-21",
   "supports": "Campaign premise only; not mission walkthroughs or DMZ objectives.",

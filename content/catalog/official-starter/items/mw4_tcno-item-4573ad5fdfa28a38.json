@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "Tacticals",
+  "description": "Slows victim's movement and aiming.",
+  "id": "mw4:tcno-item-4573ad5fdfa28a38",
+  "kind": "item",
+  "name": "Wounding Grenade",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

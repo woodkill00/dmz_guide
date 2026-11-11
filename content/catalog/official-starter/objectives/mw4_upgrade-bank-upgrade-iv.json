@@ -1,0 +1,63 @@
+{
+  "description": "Increases the amount of cash your bank can hold to 2 Million. TroubleChute-listed requirements and prerequisite links, reviewed 2026-11-10; not independently verified for the current build. Consumption remains unknown where not previously confirmed.",
+  "effects": [],
+  "id": "mw4:upgrade-bank-upgrade-iv",
+  "name": "Bank Upgrade IV",
+  "oneTime": true,
+  "prerequisites": [
+    "mw4:upgrade-bank-upgrade-iii"
+  ],
+  "requirements": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:dmz-cash",
+      "quantity": 200000,
+      "sourceIds": [
+        "source:upgrade-observation-04",
+        "source:upgrade-consumption-confirmation-20261026",
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:printer-item-ballistic-flight-logs",
+      "quantity": 5,
+      "sourceIds": [
+        "source:upgrade-observation-04",
+        "source:upgrade-consumption-confirmation-20261026",
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:printer-item-regional-combat-notes",
+      "quantity": 5,
+      "sourceIds": [
+        "source:upgrade-observation-04",
+        "source:upgrade-consumption-confirmation-20261026",
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:upgrade-observation-04",
+    "source:upgrade-consumption-confirmation-20261026",
+    "source:detonated-fob-20261025",
+    "source:tcno-fob-20261110",
+    "source:tcno-items-20261110"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "upgrade-observation-04"
+    ],
+    "prerequisiteStatus": "known",
+    "tierLabel": "IV"
+  }
+}

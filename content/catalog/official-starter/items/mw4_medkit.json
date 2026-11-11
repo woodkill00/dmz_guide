@@ -5,8 +5,11 @@
   "id": "mw4:medkit",
   "kind": "item",
   "name": "Medkit",
+  "rarity": "Epic",
   "sourceIds": [
-    "source:fob"
+    "source:fob",
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
   ],
   "stats": [],
   "status": "verified",

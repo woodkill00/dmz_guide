@@ -1,0 +1,48 @@
+{
+  "description": "Increases the amount of cash your bank can hold to 25 Million. TroubleChute-listed requirements and prerequisite links, reviewed 2026-11-10; not independently verified for the current build. Consumption remains unknown where not previously confirmed.",
+  "effects": [],
+  "id": "mw4:upgrade-bank-upgrade-vii",
+  "name": "Bank Upgrade VII",
+  "oneTime": true,
+  "prerequisites": [
+    "mw4:upgrade-bank-upgrade-vi"
+  ],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "mw4:dmz-cash",
+      "quantity": 500000,
+      "sourceIds": [
+        "source:detonated-fob-20261025",
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "mw4:printer-item-w-m-d-manifest",
+      "quantity": 10,
+      "sourceIds": [
+        "source:detonated-fob-20261025",
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:detonated-fob-20261025",
+    "source:tcno-fob-20261110",
+    "source:tcno-items-20261110"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "detonated-bank-upgrade-vii-20261025"
+    ],
+    "prerequisiteStatus": "known",
+    "tierLabel": "VII"
+  }
+}

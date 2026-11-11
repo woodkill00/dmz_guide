@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Frag"
+  ],
+  "category": "Lethals",
+  "description": "Anti-personnel explosive that destroys target with a burst of flying shrapnel.",
+  "id": "mw4:printer-item-frag-grenade",
+  "kind": "item",
+  "name": "Frag Grenade",
+  "rarity": "Common",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "backpack",
+  "description": "A small backpack with three secure slots.",
+  "id": "mw4:printer-item-small-secure-backpack",
+  "kind": "item",
+  "name": "Small Secure Backpack",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

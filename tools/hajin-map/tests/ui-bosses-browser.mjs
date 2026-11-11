@@ -223,6 +223,10 @@ try {
       }
       // The supported9999 bound needs a four-digit slot, including999→1000.
       await page.locator("#boss-open-ltA").click();
+      const killsBeforeAttempt = await page.locator(".boss-detail-counts dd").first().textContent();
+      await page.locator("#boss-attempt-record-ltA").click();
+      await page.waitForFunction(() => document.querySelector("#boss-checklist details summary")?.textContent?.includes("Attempts · 1") || [...document.querySelectorAll("#boss-checklist details summary")].some((node) => node.textContent?.includes("Attempts · 1")));
+      assert.equal(await page.locator(".boss-detail-counts dd").first().textContent(), killsBeforeAttempt);
       await page
         .getByText("Target settings and history", { exact: true })
         .click();

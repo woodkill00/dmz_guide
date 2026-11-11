@@ -42,9 +42,14 @@ export async function runHomeWorkflowTests({ browser, base }) {
     await page.locator('#hub-pins a[href="/upgrades/"]').waitFor();
     await page.locator('#hub-pins a[href="/upgrades/"]').click();
     await ready();
+    await page.locator(".catalog-context > summary").click();
     await page
       .locator("#pack-select")
       .selectOption("observed:upgrade-review-20261026");
+    await page.waitForFunction(
+      () =>
+        document.querySelector("main")?.getAttribute("aria-busy") === "false",
+    );
     await page.locator("[data-complete-upgrade]").first().waitFor();
     const before = await page.evaluate(async () => {
       const { state } = await import("/assets/src/client/common.mjs");
@@ -54,6 +59,7 @@ export async function runHomeWorkflowTests({ browser, base }) {
         goals: state.profile.goals,
       };
     });
+    await page.locator(".tracker-more-filters > summary").click();
     await page.locator("#upgrade-layout").selectOption("flat");
     const checkbox = page.locator("[data-complete-upgrade]").first();
     const id = await checkbox.getAttribute("data-complete-upgrade");

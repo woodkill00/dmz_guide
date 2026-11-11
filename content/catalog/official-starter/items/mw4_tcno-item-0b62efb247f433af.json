@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "Lethals",
+  "description": "Detonates when an enemy gets too close. Does massive vehicle damage.",
+  "id": "mw4:tcno-item-0b62efb247f433af",
+  "kind": "item",
+  "name": "At Mine",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

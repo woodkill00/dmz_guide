@@ -1,0 +1,970 @@
+{
+  "source": "https://tools.tcno.co/dmz/fob",
+  "reviewed": "2026-11-10",
+  "htmlSha256": "faee5ee59a6e13061f5c37d9d789070105f94dc23fecc8c66be585b306b82c3d",
+  "scope": "34 listed upgrades; factual costs, effects and prerequisite links. Source-reported, not independently gameplay or build verified. Consumption not established by collection counters.",
+  "rows": [
+    {
+      "id": "stash-item-upgrade-1",
+      "name": "Stash Item Upgrade 1",
+      "description": "Increases Stash item capacity by 18.",
+      "prerequisites": [],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 10000,
+          "rarity": null
+        },
+        {
+          "name": "Rigid Synthetics",
+          "quantity": 10,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "Electronic Sensors",
+          "quantity": 10,
+          "rarity": "Uncommon"
+        }
+      ]
+    },
+    {
+      "id": "stash-item-upgrade-2",
+      "name": "Stash Item Upgrade 2",
+      "description": "Increases Stash item capacity by 18.",
+      "prerequisites": [
+        {
+          "name": "Stash Item Upgrade 1",
+          "href": "/dmz/fob#stash-item-upgrade-1"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 50000,
+          "rarity": null
+        },
+        {
+          "name": "Detonators",
+          "quantity": 20,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "Nylon Cloth",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Power Regulator",
+          "quantity": 5,
+          "rarity": "Epic"
+        }
+      ]
+    },
+    {
+      "id": "stash-item-upgrade-3",
+      "name": "Stash Item Upgrade 3",
+      "description": "Increases Stash item capacity by 18.",
+      "prerequisites": [
+        {
+          "name": "Stash Item Upgrade 2",
+          "href": "/dmz/fob#stash-item-upgrade-2"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 100000,
+          "rarity": null
+        },
+        {
+          "name": "Binding Catalyst",
+          "quantity": 20,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Stock Rod",
+          "quantity": 20,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Alloyed Plating",
+          "quantity": 10,
+          "rarity": "Epic"
+        }
+      ]
+    },
+    {
+      "id": "stash-item-upgrade-4",
+      "name": "Stash Item Upgrade 4",
+      "description": "Increases Stash item capacity by 18.",
+      "prerequisites": [
+        {
+          "name": "Stash Item Upgrade 3",
+          "href": "/dmz/fob#stash-item-upgrade-3"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Gold Skull",
+          "quantity": 5,
+          "rarity": "Ultra"
+        },
+        {
+          "name": "Alloyed Plating",
+          "quantity": 30,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Turned Components",
+          "quantity": 30,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Experimental Compounds",
+          "quantity": 10,
+          "rarity": "Legendary"
+        }
+      ]
+    },
+    {
+      "id": "stash-weapon-upgrade-1",
+      "name": "Stash Weapon Upgrade 1",
+      "description": "Increases Stash weapon capacity by 6.",
+      "prerequisites": [
+        {
+          "name": "Stash Item Upgrade 1",
+          "href": "/dmz/fob#stash-item-upgrade-1"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 50000,
+          "rarity": null
+        },
+        {
+          "name": "Reactive Metals",
+          "quantity": 20,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "Stock Rod",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Comms Module",
+          "quantity": 5,
+          "rarity": "Epic"
+        }
+      ]
+    },
+    {
+      "id": "stash-weapon-upgrade-2",
+      "name": "Stash Weapon Upgrade 2",
+      "description": "Increases Stash weapon capacity by 6.",
+      "prerequisites": [
+        {
+          "name": "Stash Weapon Upgrade 1",
+          "href": "/dmz/fob#stash-weapon-upgrade-1"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 100000,
+          "rarity": null
+        },
+        {
+          "name": "Structural Alloy",
+          "quantity": 20,
+          "rarity": "Rare"
+        },
+        {
+          "name": "High-Tenacity Fibers",
+          "quantity": 20,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Turned Components",
+          "quantity": 10,
+          "rarity": "Epic"
+        }
+      ]
+    },
+    {
+      "id": "stash-weapon-upgrade-3",
+      "name": "Stash Weapon Upgrade 3",
+      "description": "Increases Stash weapon capacity by 6.",
+      "prerequisites": [
+        {
+          "name": "Stash Weapon Upgrade 2",
+          "href": "/dmz/fob#stash-weapon-upgrade-2"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Gold Bar",
+          "quantity": 5,
+          "rarity": "Ultra"
+        },
+        {
+          "name": "Stabilized Reagents",
+          "quantity": 30,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Volatile Explosives",
+          "quantity": 30,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Nano-Structured Alloy",
+          "quantity": 10,
+          "rarity": "Legendary"
+        }
+      ]
+    },
+    {
+      "id": "mia-recovery-discount-1",
+      "name": "MIA Recovery Discount 1",
+      "description": "Reduces the cost of recovering an operator who is Missing In Action by 5%.",
+      "prerequisites": [],
+      "requirements": [
+        {
+          "name": "Regional Combat Notes",
+          "quantity": 5,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "Control Unit",
+          "quantity": 10,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "Rigid Synthetics",
+          "quantity": 10,
+          "rarity": "Uncommon"
+        }
+      ]
+    },
+    {
+      "id": "mia-recovery-discount-2",
+      "name": "MIA Recovery Discount 2",
+      "description": "Reduces the cost of recovering an operator who is Missing In Action by 5%.",
+      "prerequisites": [
+        {
+          "name": "MIA Recovery Discount 1",
+          "href": "/dmz/fob#mia-recovery-discount-1"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Nuclear Program Files",
+          "quantity": 5,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Degraded Execution Footage",
+          "quantity": 5,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Binding Catalyst",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Nitro Compounds",
+          "quantity": 10,
+          "rarity": "Rare"
+        }
+      ]
+    },
+    {
+      "id": "mia-recovery-discount-3",
+      "name": "MIA Recovery Discount 3",
+      "description": "Reduces the cost of recovering an operator who is Missing In Action by 5%.",
+      "prerequisites": [
+        {
+          "name": "MIA Recovery Discount 2",
+          "href": "/dmz/fob#mia-recovery-discount-2"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "W.M.D. Manifest",
+          "quantity": 5,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Foreign Intelligence Targets",
+          "quantity": 5,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Power Regulator",
+          "quantity": 10,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Comms Module",
+          "quantity": 10,
+          "rarity": "Epic"
+        }
+      ]
+    },
+    {
+      "id": "mia-recovery-discount-4",
+      "name": "MIA Recovery Discount 4",
+      "description": "Reduces the cost of recovering an operator who is Missing In Action by 5%.",
+      "prerequisites": [
+        {
+          "name": "MIA Recovery Discount 3",
+          "href": "/dmz/fob#mia-recovery-discount-3"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Sanctioned Assassination List",
+          "quantity": 5,
+          "rarity": "Legendary"
+        },
+        {
+          "name": "Ballistic Fabric",
+          "quantity": 30,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Nylon Laminate",
+          "quantity": 30,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Prototype RF Module",
+          "quantity": 10,
+          "rarity": "Legendary"
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-1",
+      "name": "Bank Upgrade 1",
+      "description": "Increases the amount of cash your bank can hold to 250,000.",
+      "prerequisites": [],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 20000,
+          "rarity": null
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-2",
+      "name": "Bank Upgrade 2",
+      "description": "Increases the amount of cash your bank can hold to 500,000.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 1",
+          "href": "/dmz/fob#bank-upgrade-1"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 50000,
+          "rarity": null
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-3",
+      "name": "Bank Upgrade 3",
+      "description": "Increases the amount of cash your bank can hold to 1 Million.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 2",
+          "href": "/dmz/fob#bank-upgrade-2"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 100000,
+          "rarity": null
+        },
+        {
+          "name": "Infantry Invasion Plans",
+          "quantity": 5,
+          "rarity": "Uncommon"
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-4",
+      "name": "Bank Upgrade 4",
+      "description": "Increases the amount of cash your bank can hold to 2 Million.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 3",
+          "href": "/dmz/fob#bank-upgrade-3"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 200000,
+          "rarity": null
+        },
+        {
+          "name": "Ballistic Flight Logs",
+          "quantity": 5,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "Regional Combat Notes",
+          "quantity": 5,
+          "rarity": "Uncommon"
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-5",
+      "name": "Bank Upgrade 5",
+      "description": "Increases the amount of cash your bank can hold to 5 Million.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 4",
+          "href": "/dmz/fob#bank-upgrade-4"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 500000,
+          "rarity": null
+        },
+        {
+          "name": "Degraded Execution Footage",
+          "quantity": 10,
+          "rarity": "Rare"
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-6",
+      "name": "Bank Upgrade 6",
+      "description": "Increases the amount of cash your bank can hold to 10 Million.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 5",
+          "href": "/dmz/fob#bank-upgrade-5"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 500000,
+          "rarity": null
+        },
+        {
+          "name": "Nuclear Program Files",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Encrypted Archive",
+          "quantity": 10,
+          "rarity": "Rare"
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-7",
+      "name": "Bank Upgrade 7",
+      "description": "Increases the amount of cash your bank can hold to 25 Million.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 6",
+          "href": "/dmz/fob#bank-upgrade-6"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 500000,
+          "rarity": null
+        },
+        {
+          "name": "W.M.D. Manifest",
+          "quantity": 10,
+          "rarity": "Epic"
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-8",
+      "name": "Bank Upgrade 8",
+      "description": "Increases the amount of cash your bank can hold to 50 Million.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 7",
+          "href": "/dmz/fob#bank-upgrade-7"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 500000,
+          "rarity": null
+        },
+        {
+          "name": "Foreign Intelligence Targets",
+          "quantity": 10,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Cipher Code Ledger",
+          "quantity": 10,
+          "rarity": "Epic"
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-9",
+      "name": "Bank Upgrade 9",
+      "description": "Increases the amount of cash your bank can hold to 100 Million.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 8",
+          "href": "/dmz/fob#bank-upgrade-8"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 500000,
+          "rarity": null
+        },
+        {
+          "name": "Sanctioned Assassination List",
+          "quantity": 10,
+          "rarity": "Legendary"
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-10",
+      "name": "Bank Upgrade 10",
+      "description": "Increases the amount of cash your bank can hold to 250 Million.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 9",
+          "href": "/dmz/fob#bank-upgrade-9"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 500000,
+          "rarity": null
+        },
+        {
+          "name": "Gold Bar",
+          "quantity": 10,
+          "rarity": "Ultra"
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-11",
+      "name": "Bank Upgrade 11",
+      "description": "Increases the amount of cash your bank can hold to 500 Million.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 10",
+          "href": "/dmz/fob#bank-upgrade-10"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 500000,
+          "rarity": null
+        },
+        {
+          "name": "Gold Skull",
+          "quantity": 10,
+          "rarity": "Ultra"
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-12",
+      "name": "Bank Upgrade 12",
+      "description": "Increases the amount of cash your bank can hold to 1 Billion.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 11",
+          "href": "/dmz/fob#bank-upgrade-11"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Gold Bar",
+          "quantity": 20,
+          "rarity": "Ultra"
+        },
+        {
+          "name": "Gold Skull",
+          "quantity": 20,
+          "rarity": "Ultra"
+        },
+        {
+          "name": "Irradiated Container Medium",
+          "quantity": 3,
+          "rarity": "Ultra"
+        },
+        {
+          "name": "Fulton Marker",
+          "quantity": 3,
+          "rarity": "Ultra"
+        }
+      ]
+    },
+    {
+      "id": "bank-upgrade-13",
+      "name": "Bank Upgrade 13",
+      "description": "Increases the amount of cash your bank can hold to 2 Billion.",
+      "prerequisites": [
+        {
+          "name": "Bank Upgrade 12",
+          "href": "/dmz/fob#bank-upgrade-12"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Key Fallout DRC Locker",
+          "quantity": 1,
+          "rarity": "Ultra"
+        },
+        {
+          "name": "Key Shopping DRC Locker",
+          "quantity": 1,
+          "rarity": "Ultra"
+        },
+        {
+          "name": "Key Milbase DRC Locker",
+          "quantity": 1,
+          "rarity": "Ultra"
+        },
+        {
+          "name": "Door Breacher Charge",
+          "quantity": 5,
+          "rarity": "Ultra"
+        }
+      ]
+    },
+    {
+      "id": "uncommon-ingredient-printing-1",
+      "name": "Uncommon Ingredient Printing",
+      "description": "Unlocks access to higher-rarity crafting materials.",
+      "prerequisites": [],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 50000,
+          "rarity": null
+        },
+        {
+          "name": "Biomaterials",
+          "quantity": 20,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "High-Tenacity Fibers",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Comms Module",
+          "quantity": 5,
+          "rarity": "Epic"
+        }
+      ]
+    },
+    {
+      "id": "epic-ingredient-printing-1",
+      "name": "Epic Ingredient Printing",
+      "description": "Unlocks access to higher-rarity crafting materials.",
+      "prerequisites": [],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 100000,
+          "rarity": null
+        },
+        {
+          "name": "Binding Catalyst",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Printed Circuit Board",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Military Composites",
+          "quantity": 5,
+          "rarity": "Legendary"
+        }
+      ]
+    },
+    {
+      "id": "gunsmith-upgrade-1",
+      "name": "Gunsmith Upgrade 1",
+      "description": "Reduces the cost of Gunsmith purchases by 5%.",
+      "prerequisites": [],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 50000,
+          "rarity": null
+        },
+        {
+          "name": "Reactive Metals",
+          "quantity": 20,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "CPU",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Power Regulator",
+          "quantity": 5,
+          "rarity": "Epic"
+        }
+      ]
+    },
+    {
+      "id": "gunsmith-upgrade-2",
+      "name": "Gunsmith Upgrade 2",
+      "description": "Reduces the cost of Gunsmith purchases by 5%.",
+      "prerequisites": [
+        {
+          "name": "Gunsmith Upgrade 1",
+          "href": "/dmz/fob#gunsmith-upgrade-1"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 100000,
+          "rarity": null
+        },
+        {
+          "name": "Nitro Compounds",
+          "quantity": 20,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Comms Module",
+          "quantity": 10,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Military Composites",
+          "quantity": 10,
+          "rarity": "Legendary"
+        }
+      ]
+    },
+    {
+      "id": "vendor-item-upgrade-1",
+      "name": "Vendor Item Upgrade I",
+      "description": "Unlocks additional purchase options at the vendor.",
+      "prerequisites": [],
+      "requirements": [
+        {
+          "name": "Electronic Sensors",
+          "quantity": 20,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "CPU",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Printed Circuit Board",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Prototype RF Module",
+          "quantity": 2,
+          "rarity": "Legendary"
+        }
+      ]
+    },
+    {
+      "id": "vendor-item-upgrade-2",
+      "name": "Vendor Item Upgrade II",
+      "description": "Unlocks additional purchase options at the vendor.",
+      "prerequisites": [
+        {
+          "name": "Vendor Item Upgrade I",
+          "href": "/dmz/fob#vendor-item-upgrade-1"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Control Unit",
+          "quantity": 20,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "High-Tenacity Fibers",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Nylon Cloth",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Nano-Structured Alloy",
+          "quantity": 2,
+          "rarity": "Legendary"
+        }
+      ]
+    },
+    {
+      "id": "dog-tag-case-upgrade-1",
+      "name": "Dog Tag Case Upgrade 1",
+      "description": "Increases Dog Tag Case storage capacity by 20.",
+      "prerequisites": [],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 10000,
+          "rarity": null
+        },
+        {
+          "name": "Rigid Synthetics",
+          "quantity": 10,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "Biomaterials",
+          "quantity": 10,
+          "rarity": "Uncommon"
+        }
+      ]
+    },
+    {
+      "id": "dog-tag-case-upgrade-2",
+      "name": "Dog Tag Case Upgrade 2",
+      "description": "Increases Dog Tag Case storage capacity by 20.",
+      "prerequisites": [
+        {
+          "name": "Dog Tag Case Upgrade 1",
+          "href": "/dmz/fob#dog-tag-case-upgrade-1"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 50000,
+          "rarity": null
+        },
+        {
+          "name": "Detonators",
+          "quantity": 20,
+          "rarity": "Uncommon"
+        },
+        {
+          "name": "Nylon Cloth",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Power Regulator",
+          "quantity": 5,
+          "rarity": "Epic"
+        }
+      ]
+    },
+    {
+      "id": "dog-tag-case-upgrade-3",
+      "name": "Dog Tag Case Upgrade 3",
+      "description": "Increases Dog Tag Case storage capacity by 20.",
+      "prerequisites": [
+        {
+          "name": "Dog Tag Case Upgrade 2",
+          "href": "/dmz/fob#dog-tag-case-upgrade-2"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 100000,
+          "rarity": null
+        },
+        {
+          "name": "Printed Circuit Board",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Structural Alloy",
+          "quantity": 10,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Power Regulator",
+          "quantity": 5,
+          "rarity": "Epic"
+        }
+      ]
+    },
+    {
+      "id": "dog-tag-case-upgrade-4",
+      "name": "Dog Tag Case Upgrade 4",
+      "description": "Increases Dog Tag Case storage capacity by 20.",
+      "prerequisites": [
+        {
+          "name": "Dog Tag Case Upgrade 3",
+          "href": "/dmz/fob#dog-tag-case-upgrade-3"
+        }
+      ],
+      "requirements": [
+        {
+          "name": "Cash",
+          "quantity": 200000,
+          "rarity": null
+        },
+        {
+          "name": "CPU",
+          "quantity": 20,
+          "rarity": "Rare"
+        },
+        {
+          "name": "Stabilized Reagents",
+          "quantity": 10,
+          "rarity": "Epic"
+        },
+        {
+          "name": "Experimental Compounds",
+          "quantity": 5,
+          "rarity": "Legendary"
+        }
+      ]
+    }
+  ]
+}

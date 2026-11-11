@@ -1,3 +1,12 @@
+import { refreshTrackerContext } from "./quick-tracker.mjs";
+import { fobUpgradeMaterials, parseUpgradeStock } from "./fob-upgrade-card.mjs";
+import { hydrateInventoryIcons } from "./inventory-icons.mjs";
+import { registerDraftGuard } from "./common.mjs";
+import { upgradeBudget } from "../domain/upgrade-budget.mjs";
+import {
+  installBudgetSetup,
+  renderBudgetSummary,
+} from "./upgrade-budget-setup.mjs";
 import { upgradeFamilies } from "../domain/upgrade-families.mjs";
 import {
   upgradeOverview,
@@ -21,6 +30,7 @@ import { init, state, $, esc, error, persist, download } from "./common.mjs";
 import { closeDialog } from "./dialog-focus.mjs";
 import {
   progressRows,
+  ordersPageCoverage,
   progressSources,
   progressStates,
   spoilerGuard,
@@ -40,6 +50,8 @@ let resetTarget = null,
   visibleRows = new Map(),
   saving = false,
   offset = 0;
+let budget = null;
+const stockDrafts = new Map();
 let overview = null,
   view = null,
   viewPack = null,
@@ -61,13 +73,15 @@ const provenance = (source) =>
     : "";
 function setBusy(value) {
   for (const control of document.querySelectorAll(
-    "#pack-select, #spoiler-toggle, #progress-reset, #progress-reset-yes, [data-progress-id], [data-upgrade-id], [data-complete-upgrade], #upgrade-progress-apply, #upgrade-progress-cancel, #upgrade-progress-export, #upgrade-undo",
+    "#pack-select, #spoiler-toggle, #progress-reset, #progress-reset-yes, [data-progress-id], [data-upgrade-id], [data-complete-upgrade], [data-fob-owned], [data-fob-step], [data-fob-save], [data-fob-cancel], #upgrade-progress-apply, #upgrade-progress-cancel, #upgrade-progress-export, #upgrade-undo",
   ))
     control.disabled = value || control.hasAttribute("data-upgrade-readonly");
 }
 function upgradeControls(row, guard) {
   const upgrade = row.upgrade,
-    readonly = state.profile.schemaVersion < 2,
+    readonly =
+      state.profile.schemaVersion < 2 ||
+      state.profile.contentVersion !== state.pack.contentVersion,
     settings = `/settings/?pack=${encodeURIComponent(state.pack.id)}`,
     select = (field, values) =>
       `<label>Manual ${field} for ${esc(row.name)}<select data-upgrade-id="${esc(row.id)}" data-upgrade-field="${field}"${readonly ? " disabled data-upgrade-readonly" : ""}>${values.map((value) => `<option value="${value}"${upgrade[field] === value ? " selected" : ""}>${value === "completed" ? "Recorded completed" : value}</option>`).join("")}</select></label>`;
@@ -83,6 +97,22 @@ ${spendingActions(state.pack, state.profile, row.id)}
 <p>Listed requirements are not a remaining shopping budget. Unknown consumption or quantities prevent exact affected advice; recorded progress does not update held stock.</p>`;
 }
 const focusedMissions = !!document.querySelector("[data-focused-missions]");
+let selectedOrdersPage = null;
+document
+  .querySelector("#orders-coverage")
+  ?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-orders-page]");
+    if (!button) return;
+    selectedOrdersPage =
+      button.dataset.ordersPage === "all"
+        ? null
+        : Number(button.dataset.ordersPage);
+    if (selectedOrdersPage)
+      document.querySelector("#progress-track").value = "dmz-order";
+    offset = 0;
+    render();
+    document.querySelector("#progress-count")?.focus({ preventScroll: true });
+  });
 if (focusedMissions) {
   document
     .querySelector('#progress-state option[value="not-completed"]')
@@ -90,6 +120,15 @@ if (focusedMissions) {
   for (const o of [...document.querySelector("#progress-track").options])
     if (o.value && !["dmz-order", "dmz-story"].includes(o.value)) o.remove();
 }
+document
+  .querySelector("#show-story-missions")
+  ?.addEventListener("click", () => {
+    document.querySelector("#progress-track").value = "dmz-story";
+    selectedOrdersPage = null;
+    offset = 0;
+    render();
+    document.querySelector("#progress-count")?.focus({ preventScroll: true });
+  });
 const focusedUpgrades = !!document.querySelector("[data-focused-upgrades]");
 if (focusedUpgrades) {
   $("#progress-track").value = "dmz-upgrade";
@@ -97,6 +136,8 @@ if (focusedUpgrades) {
 }
 function summaryFor(row, guard) {
   if (!row.upgrade) return "";
+  if (focusedUpgrades)
+    return `<span class="upgrade-manual"><label class="upgrade-completion-check"><input type="checkbox" data-complete-upgrade="${esc(row.id)}" aria-label="Completed: ${esc(row.name)}"${row.upgrade.completion === "completed" ? " checked" : ""}${state.profile.schemaVersion < 2 || state.profile.contentVersion !== state.pack.contentVersion ? " disabled data-upgrade-readonly" : ""}><span>Completed</span></label><small>Tier ${esc(guard.text(row.upgrade.tierLabel || "—"))}</small></span>`;
   const unknownCost =
     !row.requirements.length ||
     row.requirements.some(
@@ -104,9 +145,29 @@ function summaryFor(row, guard) {
     );
   const record = state.pack.objectives.find((r) => r.id === row.id);
   const reasons = upgradeReadinessReasons(state.pack, state.profile, record);
-  return `<span class="upgrade-manual">${!row.hidden ? `<label class="upgrade-completion-check"><input type="checkbox" data-complete-upgrade="${esc(row.id)}" aria-label="Completed: ${esc(row.name)}"${row.upgrade.completion === "completed" ? " checked" : ""}${state.profile.schemaVersion < 2 ? " disabled data-upgrade-readonly" : ""}><span>Completed</span></label>` : ""}${row.upgrade.tierLabel ? `<small>${esc(guard.text(row.upgrade.tierLabel))}</small>` : ""}</span><span class="upgrade-requirements" data-upgrade-column="materials">${focusedUpgrades ? missingMarkup(state.pack, overview?.rows.get(row.id)) : `${row.requirements.filter((r) => !r.hidden).length} visible requirements`}</span><span class="upgrade-blocker" data-upgrade-column="readiness"><span class="upgrade-cell-label">Readiness</span>${row.disputed ? "Evidence conflict · " : ""}${unknownCost ? "Unknown price / consumption · " : ""}${row.upgrade.completion === "completed" ? "Manual report only" : reasons.length ? "Eligibility unknown / blocked" : "Readiness not certified"}</span>`;
+  return `<span class="upgrade-manual">${!row.hidden ? `<label class="upgrade-completion-check"><input type="checkbox" data-complete-upgrade="${esc(row.id)}" aria-label="Completed: ${esc(row.name)}"${row.upgrade.completion === "completed" ? " checked" : ""}${state.profile.schemaVersion < 2 || state.profile.contentVersion !== state.pack.contentVersion ? " disabled data-upgrade-readonly" : ""}><span>Completed</span></label>` : ""}${row.upgrade.tierLabel ? `<small>${esc(guard.text(row.upgrade.tierLabel))}</small>` : ""}</span><span class="upgrade-requirements" data-upgrade-column="materials">${focusedUpgrades ? missingMarkup(state.pack, overview?.rows.get(row.id)) : `${row.requirements.filter((r) => !r.hidden).length} visible requirements`}</span><span class="upgrade-blocker" data-upgrade-column="readiness"><span class="upgrade-cell-label">Readiness</span>${row.disputed ? "Evidence conflict · " : ""}${unknownCost ? "Unknown price / consumption · " : ""}${row.upgrade.completion === "completed" ? "Manual report only" : reasons.length ? "Eligibility unknown / blocked" : "Readiness not certified"}</span>`;
 }
 function render() {
+  refreshTrackerContext();
+  if (focusedMissions) {
+    const coverage = ordersPageCoverage(state.pack);
+    if (
+      selectedOrdersPage &&
+      coverage[selectedOrdersPage - 1]?.state !== "recorded"
+    )
+      selectedOrdersPage = null;
+    $("#orders-coverage").innerHTML =
+      coverage
+        .map((row) =>
+          row.state === "recorded"
+            ? `<button type="button" class="orders-page ${row.state}" data-orders-page="${row.page}" aria-pressed="${selectedOrdersPage === row.page}" title="Show recorded missions for page ${row.page}">Page ${row.page} · recorded</button>`
+            : `<span class="orders-page ${row.state}" title="Page ${row.page}: unrecorded">Page ${row.page} · unrecorded</span>`,
+        )
+        .join("") +
+      (selectedOrdersPage
+        ? '<button type="button" data-orders-page="all">Show all recorded missions</button>'
+        : "");
+  }
   if (focusedUpgrades) $("#progress-track").value = "dmz-upgrade";
   const openIds = new Set(
     [...document.querySelectorAll("details[data-progress-detail][open]")].map(
@@ -130,12 +191,22 @@ function render() {
     }
     if (overviewPack !== state.pack || overviewProfile !== state.profile) {
       overview = upgradeOverview(state.pack, state.profile);
+      budget = upgradeBudget(state.pack, state.profile);
+      if (budget.status === "ok")
+        for (const [id, row] of overview.rows) {
+          const own = budget.rows.get(id);
+          if (own && !own.completed) {
+            row.materials = own.materials;
+            row.unknown = own.unknown;
+          }
+        }
       familyModel = upgradeFamilies(state.pack, state.profile, {
         completedIds: overview.completedUpgradeIds,
       });
       overviewPack = state.pack;
       overviewProfile = state.profile;
     }
+    renderBudgetSummary(state, budget);
     $("#upgrade-catalog-summary").textContent =
       `${overview.completed} recorded completed / ${overview.total} visible upgrades in this catalog; ${overview.total - overview.completed} not marked complete. Coverage is incomplete; these are not game-wide totals.`;
     if (
@@ -185,7 +256,13 @@ function render() {
     allowedIds: focusedMissions
       ? new Set(
           state.pack.objectives
-            .filter((r) => ["dmz-order", "dmz-story"].includes(r.track))
+            .filter(
+              (r) =>
+                ["dmz-order", "dmz-story"].includes(r.track) &&
+                (selectedOrdersPage === null ||
+                  (r.track === "dmz-order" &&
+                    r.orderPage === selectedOrdersPage)),
+            )
             .map((r) => r.id),
         )
       : focusedUpgrades && view.quick !== "all"
@@ -252,12 +329,12 @@ function render() {
   $("#progress-limit-note").textContent = rows.privacyLimited
     ? "This large spoiler dictionary exceeds the protected-display budget. Text is conservatively hidden; reveal spoilers or use a smaller pack to inspect it."
     : "The source chooser shows its first 500 choices. Narrow the track to reduce this list.";
-  const rowMarkup = (r) =>
+  const baseRowMarkup = (r) =>
     `<article class="panel compact-progress${r.upgrade?.completion === "completed" ? " upgrade-is-completed" : ""}"><div class="upgrade-summary"><div><${groupedUpgrades ? "h3" : "h2"}>${r.url && !r.hidden ? `<a href="${esc(r.url)}" ${focusedUpgrades ? `data-open-upgrade="${esc(r.id)}" aria-expanded="${openIds.has(r.id)}" aria-controls="progress-detail-${esc(r.id)}"` : ""} tabindex="0">${esc(r.name)}</a>` : esc(r.name)}</${groupedUpgrades ? "h3" : "h2"}><small data-upgrade-column="evidence">${focusedUpgrades ? "" : `${esc(r.track)} / `}${esc(labelStatus(r.status))}</small>${r.upgrade?.completion === "completed" ? "<small>Recorded completed</small>" : ""}${focusedUpgrades && familyModel.records.get(r.id)?.completed && !familyModel.records.get(r.id)?.ownCompleted ? "<small>Equivalent source identity recorded completed</small>" : ""}${focusedUpgrades && !r.hidden && (r.disputed || r.upgrade?.reviewRequired || overview?.rows.get(r.id)?.unknown) ? `<small class="upgrade-critical">${r.disputed ? "Evidence conflict. " : ""}${r.upgrade?.reviewRequired ? "Progress needs review. " : ""}${overview?.rows.get(r.id)?.unknown ? "Costs / stock unknown or partial." : ""}</small>` : ""}</div>${summaryFor(r, guard)}${r.upgrade && !r.hidden ? `<button type="button" data-track-upgrade="${esc(r.id)}" ${state.profile.goals.some((g) => g.id === r.id) ? "disabled" : ""}>${state.profile.goals.some((g) => g.id === r.id) ? "Tracked" : "Track"}</button>` : ""}</div><details ${r.hidden ? "" : `id="progress-detail-${esc(r.id)}"`} data-progress-detail="${r.hidden ? "protected" : esc(r.id)}" ${openIds.has(r.id) ? "open" : ""}><summary>Details / progress${r.upgrade?.reviewRequired ? " · Review required" : ""}</summary>${
       r.hidden
         ? "<p>Reveal spoilers to inspect or track this record.</p>"
         : `
-<p>${esc(r.description)}</p>${r.disputed ? '<p class="notice">Sources disagree. Your manual state does not resolve this evidence conflict or verify readiness.</p>' : ""}
+<p>${esc(r.description)}</p>${r.track === "dmz-story" ? `<section class="story-mission-steps" aria-label="Recorded story mission steps"><h3>Recorded steps</h3>${r.steps.length ? `<ol>${r.steps.map((step) => `<li>${esc(step)}</li>`).join("")}</ol>` : "<p>No story steps recorded for this mission. Check the cited source and add verified steps to the catalog before treating it as a complete walkthrough.</p>"}<p><a href="/run-plan/?pack=${encodeURIComponent(state.pack.id)}">Add mission to a run plan</a> · <a href="http://127.0.0.1:5175/?tool=missions" target="_blank" rel="noopener noreferrer">Open map mission tracker</a></p></section>` : ""}${r.disputed ? '<p class="notice">Sources disagree. Your manual state does not resolve this evidence conflict or verify readiness.</p>' : ""}
 ${
   r.type === "objective"
     ? `${r.upgrade ? `${focusedUpgrades ? `<div data-direct-materials="${esc(r.id)}"></div>` : ""}${upgradeControls(r, guard)}` : `<label>Manual state for ${esc(r.name)}<select data-progress-id="${esc(r.id)}">${progressStates.map((v) => `<option value="${v}" ${r.state === v ? "selected" : ""}>${v}</option>`).join("")}</select></label>`}
@@ -272,6 +349,26 @@ ${r.related.length ? `<h3>Related records</h3><ul>${r.related.map((ref) => `<li>
 <h3>Evidence &amp; sources</h3><ul class="source-list">${r.sources.map((s) => `<li>${s.url ? `<a href="${esc(s.url)}" rel="noreferrer noopener">${esc(s.title)}</a>` : esc(s.title)}<p>${esc(s.supports)}</p><p>${esc(s.type)} · Published ${esc(s.publishedAt)} · Reviewed ${esc(s.reviewedAt)}</p>${provenance(s)}</li>`).join("") || "<li>No sources recorded. Treat this as unverified.</li>"}</ul>
 ${r.url ? `<p><a href="${esc(r.url)}">Open selected private record</a></p>` : ""}`
     }</details></article>`;
+  const rowMarkup = (r) => {
+    const html = baseRowMarkup(r);
+    if (!focusedUpgrades || r.hidden || !r.upgrade) return html;
+    return html
+      .replace(
+        "panel compact-progress",
+        "panel compact-progress fob-upgrade-card",
+      )
+      .replace(
+        "<details ",
+        () =>
+          fobUpgradeMaterials(
+            state.pack,
+            state.profile,
+            r,
+            budget?.rows.get(r.id),
+            stockDrafts,
+          ) + "<details ",
+      );
+  };
   const rowById = new Map(rows.map((r) => [r.id, r]));
   const empty =
     '<section class="panel"><h2>No matching records.</h2><p>Clear filters or select a catalog with known records for this track. Missing mission coverage is unknown.</p></section>';
@@ -297,7 +394,24 @@ ${r.url ? `<p><a href="${esc(r.url)}">Open selected private record</a></p>` : ""
   ))
     renderRequirementBudget(details);
   renderSpendingSummary();
+  if (focusedUpgrades)
+    for (const controls of document.querySelectorAll(".fob-stock-controls")) {
+      const input = controls.querySelector("[data-fob-owned]"),
+        cancel = document.createElement("button");
+      cancel.type = "button";
+      cancel.dataset.fobCancel = input.dataset.fobOwned;
+      cancel.textContent = "×";
+      cancel.setAttribute(
+        "aria-label",
+        "Cancel stock edit for " +
+          state.pack.items.find((i) => i.id === input.dataset.fobOwned).name,
+      );
+      if (input.hasAttribute("data-upgrade-readonly"))
+        cancel.setAttribute("data-upgrade-readonly", "");
+      controls.insertBefore(cancel, controls.querySelector("[data-fob-dirty]"));
+    }
   setBusy(saving);
+  if (focusedUpgrades) hydrateInventoryIcons(state.pack);
 }
 // One save at a time avoids local controls racing the revision used by persist.
 async function save(candidate) {
@@ -356,6 +470,17 @@ function dismissUpgrade({ focus = true } = {}) {
   $("#upgrade-progress-result").textContent = "";
 }
 function requestUpgrade(control, inline = false, savedRow = null) {
+  if (stockDrafts.size) {
+    error(
+      new Error("Save or cancel your stock edits before changing completion."),
+    );
+    control.checked =
+      visibleRows.get(
+        control.dataset.upgradeId || control.dataset.completeUpgrade,
+      )?.upgrade?.completion === "completed";
+    render();
+    return;
+  }
   const id = control.dataset.upgradeId,
     field = control.dataset.upgradeField,
     value = control.value,
@@ -548,6 +673,7 @@ $("#progress-reset-yes").addEventListener("click", async () => {
   }
 });
 document.addEventListener("pack-changing", () => {
+  stockDrafts.clear();
   navigation++;
   undoProgress = null;
   if (focusedUpgrades) $("#upgrade-feedback").textContent = "";
@@ -573,6 +699,7 @@ window.addEventListener("popstate", () => {
   dismissUpgrade({ focus: false });
 });
 installSpending({ onSaved: render, isDirty: () => saving });
+if (focusedUpgrades) installBudgetSetup({ state, persist, render, error });
 init(render).catch(error);
 
 singleExpansion($("#progress-rows"), "details[data-progress-detail]");
@@ -659,6 +786,123 @@ $("#progress-rows").addEventListener("click", async (event) => {
   }
 });
 
+async function commitStock(ids = [...stockDrafts.keys()]) {
+  if (saving || state.loading || state.saving) return false;
+  if (
+    state.profile.contentVersion !== state.pack.contentVersion ||
+    state.profile.schemaVersion < 2
+  )
+    return false;
+  const candidate = structuredClone(state.profile);
+  try {
+    for (const id of ids) {
+      const item = state.pack.items.find((i) => i.id === id);
+      if (!item) throw new Error("This item is no longer in the catalog.");
+      const value = parseUpgradeStock(
+        stockDrafts.get(id) ?? String(candidate.inventory[id] ?? ""),
+        item,
+        candidate,
+      );
+      if (value === undefined) delete candidate.inventory[id];
+      else candidate.inventory[id] = value;
+    }
+    const active = document.activeElement;
+    const origin = active?.closest?.(".fob-upgrade-card");
+    const upgrade = origin?.querySelector("[data-open-upgrade]")?.dataset
+      .openUpgrade;
+    const item =
+      active?.dataset?.fobOwned ||
+      active?.dataset?.item ||
+      active?.dataset?.fobSave;
+    const y = window.scrollY;
+    if (!(await save(candidate))) return false;
+    for (const id of ids) stockDrafts.delete(id);
+    render();
+    if (item)
+      document
+        .querySelector(
+          `[data-fob-owned="${CSS.escape(item)}"][data-upgrade="${CSS.escape(upgrade || "")}"]`,
+        )
+        ?.focus({ preventScroll: true });
+    window.scrollTo({ top: y });
+    return true;
+  } catch (reason) {
+    error(reason);
+    return false;
+  }
+}
+if (focusedUpgrades) {
+  registerDraftGuard({
+    isDirty: () => stockDrafts.size > 0,
+    save: () => commitStock(),
+  });
+  const root = $("#progress-rows");
+  root.addEventListener("input", (event) => {
+    const input = event.target.closest("[data-fob-owned]");
+    if (!input) return;
+    const id = input.dataset.fobOwned;
+    stockDrafts.set(id, input.value);
+    for (const mirror of root.querySelectorAll("[data-fob-owned]"))
+      if (mirror.dataset.fobOwned === id && mirror !== input)
+        mirror.value = input.value;
+    for (const label of root.querySelectorAll("[data-fob-dirty]"))
+      if (label.dataset.fobDirty === id) label.hidden = false;
+  });
+  root.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && event.target.matches("[data-fob-owned]")) {
+      event.preventDefault();
+      commitStock([event.target.dataset.fobOwned]);
+    }
+    if (event.key === "Escape" && event.target.matches("[data-fob-owned]")) {
+      stockDrafts.delete(event.target.dataset.fobOwned);
+      render();
+    }
+  });
+  root.addEventListener("click", async (event) => {
+    const button = event.target.closest(
+      "[data-fob-save],[data-fob-step],[data-fob-cancel]",
+    );
+    if (!button || saving || state.saving) return;
+    const id =
+      button.dataset.fobSave || button.dataset.item || button.dataset.fobCancel;
+    if (button.dataset.fobCancel) {
+      stockDrafts.delete(id);
+      $("#error").hidden = true;
+      const upgrade = button
+        .closest(".fob-stock-controls")
+        .querySelector("[data-fob-owned]").dataset.upgrade;
+      const y = window.scrollY;
+      render();
+      document
+        .querySelector(
+          `[data-fob-owned="${CSS.escape(id)}"][data-upgrade="${CSS.escape(upgrade)}"]`,
+        )
+        ?.focus({ preventScroll: true });
+      window.scrollTo({ top: y });
+      return;
+    }
+    if (button.dataset.fobStep) {
+      try {
+        const item = state.pack.items.find((i) => i.id === id);
+        const current =
+          parseUpgradeStock(
+            stockDrafts.get(id) ?? String(state.profile.inventory[id] ?? 0),
+            item,
+            state.profile,
+          ) ?? 0;
+        const next = String(
+          Math.max(0, current + Number(button.dataset.fobStep)),
+        );
+        parseUpgradeStock(next, item, state.profile);
+        stockDrafts.set(id, next);
+      } catch (reason) {
+        error(reason);
+        return;
+      }
+    }
+    await commitStock([id]);
+  });
+}
 function renderRequirementBudget(details) {
   const direct = details.querySelector("[data-direct-materials]");
   if (direct)
@@ -667,6 +911,26 @@ function renderRequirementBudget(details) {
       state.profile,
       overview?.rows.get(direct.dataset.directMaterials),
     );
+  if (direct) {
+    for (const link of direct.querySelectorAll(
+      '.upgrade-material-card h4 a[href*="/local/"]',
+    )) {
+      const url = new URL(link.href);
+      const item = state.pack.items.find(
+        (i) => i.id === url.searchParams.get("id"),
+      );
+      if (!item) continue;
+      const edit = document.createElement("a");
+      edit.href =
+        "/inventory/?pack=" +
+        encodeURIComponent(state.pack.id) +
+        "&item=" +
+        encodeURIComponent(item.id);
+      edit.textContent = "Edit global stock";
+      edit.className = "tracker-edit-stock";
+      link.after(document.createTextNode(" / "), edit);
+    }
+  }
   const root = details.querySelector("[data-upgrade-budget]");
   if (!root) return;
   try {

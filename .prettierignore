@@ -4,3 +4,6 @@ release/
 test-results/
 .author-state/
 package-lock.json
+
+# Pinned third-party minified OCR distributions
+src/vendor/ocr/

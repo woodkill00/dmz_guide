@@ -1,7 +1,36 @@
+import { hydrateInventoryIcons } from "./inventory-icons.mjs";
+import { buildTargetControl } from "../ui/build-target-control.mjs";
+import { inventoryReviewReasons } from "../domain/inventory-review.mjs";
+import {
+  automaticIngredientBlueprint,
+  inventoryBlueprintAvailable,
+  inventoryUpgradeUse,
+  compareInventoryMaterialItems,
+  currencyQuantityText,
+  currencyQuantityRaw,
+} from "../domain/inventory-presentation.mjs";
+import {
+  compactInventoryRows,
+  inventoryDirtyState,
+  refreshTrackerContext,
+} from "./quick-tracker.mjs";
+import {
+  inventoryFamily,
+  inventoryFamilyLabel,
+  inventoryTypeLabel,
+  inventoryInputLimit,
+  itemSection,
+  itemRarity,
+  compareItems,
+  compareInventorySections,
+  compareInventoryFamilies,
+} from "../domain/inventory-items.mjs";
+import { inventorySaveAction } from "./inventory-save.mjs";
 import { upgradeNeeds } from "../domain/upgrade-needs.mjs";
 import {
   upgradeNeedCell,
   needsValues,
+  collectionNeedsValues,
   upgradeNeedsDetail,
 } from "./upgrade-needs-view.mjs";
 import { itemUses } from "../domain/item-uses.mjs";
@@ -46,12 +75,17 @@ import {
 } from "./common.mjs";
 import {
   newProfile,
+  validateProfile,
   resetProfile,
-  stockLimit,
   parseProfile,
   previewProfile,
   previewUpgradeMigration,
 } from "../domain/profile.mjs";
+import {
+  PROFILE_BACKUP_SCOPE,
+  PROFILE_BACKUP_EXCLUSIONS,
+  verifiedBackupStatus,
+} from "../domain/backup-scope.mjs";
 import { loadProfile, readRecord } from "../storage/store.mjs";
 let staged = null,
   stagedPack = null,
@@ -71,6 +105,7 @@ let inventoryDraft = null;
 let pendingInventoryInvalid = null;
 let inventoryIndex = new Map();
 let inventoryPageNumber = 0;
+let inventoryMatches = [];
 let inventoryUses = new Map();
 let inventoryLedger = new Map();
 let inventoryPlanWarning = "";
@@ -79,9 +114,13 @@ let inventoryUpgradeNeeds = null,
   needsFingerprint = "";
 let inventoryPack = null;
 const collapsedGroups = new Set();
+const loadedInventoryGroups = new Set();
+const collapsedCategories = new Set();
 function groupFor(item) {
-  return item.category || item.kind || "Other";
+  return itemSection(item);
 }
+const groupIdentity = (item) =>
+  JSON.stringify([inventoryFamily(item), groupFor(item)]);
 function derivedInventory() {
   inventoryLedger = new Map();
   inventoryPlanWarning = "";
@@ -109,11 +148,15 @@ function derivedInventory() {
     inventoryPlanWarning =
       "Plan preview unavailable: check quantities, content binding and unresolved requirements.";
   }
+  if (state.profile.contentVersion !== state.pack.contentVersion)
+    inventoryPlanWarning =
+      "This inventory is linked to an older catalog. Review the tracking update to restore Needed and Missing counts; your saved stock is retained.";
   if (inventoryUpgradeNeeds.collection.limited)
     inventoryPlanWarning +=
       " Collection needs reached a safety limit; membership and quantities are incomplete. Resolve content before relying on this list.";
 }
 function updateInventoryPreview() {
+  inventoryDirtyState(inventoryDraft?.isDirty() || false);
   for (const input of document.querySelectorAll(
     "#inventory-fields [data-field]",
   )) {
@@ -121,8 +164,20 @@ function updateInventoryPreview() {
     const incomplete =
       inventoryDraft.raw.get(`${prefix}:${input.dataset.id}`) ===
       INVALID_NUMBER_DRAFT;
+    const raw = inventoryDraft.raw.get(`${prefix}:${input.dataset.id}`);
+    const badCurrency =
+      input.dataset.currencyQuantity &&
+      !(
+        (raw === "" && prefix === "owned") ||
+        (/^\d+$/.test(raw) &&
+          Number(raw) <=
+            inventoryInputLimit(
+              state.profile,
+              inventoryIndex.get(input.dataset.id),
+            ))
+      );
     input.setCustomValidity(
-      incomplete
+      incomplete || badCurrency
         ? "Incomplete numeric entry retained. Enter a complete number or explicitly clear the stock."
         : "",
     );
@@ -136,6 +191,17 @@ function updateInventoryPreview() {
   if (warning) {
     warning.hidden = !inventoryPlanWarning;
     warning.textContent = inventoryPlanWarning;
+    let trackingLink = document.querySelector("#inventory-tracking-update");
+    if (!trackingLink) {
+      trackingLink = document.createElement("a");
+      trackingLink.id = "inventory-tracking-update";
+      trackingLink.textContent = "Review tracking update";
+      warning.after(trackingLink);
+    }
+    trackingLink.href =
+      "/needed/?pack=" + encodeURIComponent(state.pack.id) + "#budget-setup";
+    trackingLink.hidden =
+      state.profile.contentVersion === state.pack.contentVersion;
   }
   for (const node of document.querySelectorAll("[data-plan-item]")) {
     const ledger = inventoryLedger.get(node.dataset.planItem);
@@ -152,26 +218,74 @@ function updateInventoryPreview() {
             : `${ledger.missing} / ${ledger.retainedMissing}`;
   }
   for (const cell of document.querySelectorAll("[data-upgrade-need]")) {
-    const values = needsValues(
-      inventoryUpgradeNeeds[cell.dataset.upgradeNeed],
-      cell.dataset.item,
-    );
+    const combined = cell.dataset.upgradeNeed === "collection";
+    const values = combined
+      ? collectionNeedsValues(
+          inventoryUpgradeNeeds.listedCollection,
+          cell.dataset.item,
+          inventoryUses.get(cell.dataset.item),
+        )
+      : needsValues(
+          inventoryUpgradeNeeds[cell.dataset.upgradeNeed],
+          cell.dataset.item,
+        );
+    for (const number of cell.querySelectorAll(
+      "[data-tier-required],[data-tier-missing]",
+    )) {
+      number.classList.add("needed-number");
+      if (combined) number.dataset.neededNumber = values.state;
+    }
+    cell.title = values.note;
+
     cell.querySelector("[data-tier-required]").textContent = values.required;
     cell.querySelector("[data-tier-missing]").textContent = values.missing;
     const scope = inventoryUpgradeNeeds[cell.dataset.upgradeNeed];
     cell.querySelector("[data-tier-uncertainty]").textContent =
-      scope.used.has(cell.dataset.item) && scope.partial
-        ? "Partial / unknown scope"
-        : "";
+      combined && values.emptyReason === "completed"
+        ? "All listed requirements completed"
+        : combined && values.emptyReason === "unlisted"
+          ? "No listed requirement"
+          : combined && values.emptyReason === "blocked"
+            ? "Review tracking / quantities"
+            : combined &&
+                inventoryUpgradeNeeds.listedCollection.get(cell.dataset.item)
+                  ?.craftEstimate
+              ? inventoryUpgradeNeeds.listedCollection.get(cell.dataset.item)
+                  ?.estimated
+                ? "Craft estimate; blank outputs = 0"
+                : "Listed crafting inputs"
+              : !combined && values.provisional
+                ? "Listed / provisional"
+                : combined &&
+                    inventoryUpgradeNeeds.listedCollection.get(
+                      cell.dataset.item,
+                    )?.listed
+                  ? "Listed / provisional"
+                  : (
+                        combined
+                          ? inventoryUpgradeNeeds.collection.get(
+                              cell.dataset.item,
+                            )?.unknown
+                          : scope.used.has(cell.dataset.item) && scope.partial
+                      )
+                    ? "Partial / unknown scope"
+                    : "";
   }
   for (const badge of document.querySelectorAll("[data-collection-state]")) {
-    const need = inventoryUpgradeNeeds.collection.get(
+    const need = inventoryUpgradeNeeds.listedCollection.get(
       badge.dataset.collectionState,
     );
     badge.hidden = !need?.used;
     badge.dataset.state = need?.state || "none";
     const description = need?.used
-      ? `${need.label}${need.craft ? " · Crafting ingredient" : ""}`
+      ? inventoryReviewReasons(
+          state.pack,
+          state.profile,
+          inventoryUpgradeNeeds.listedCollection,
+          need,
+        )
+          .map((r) => r.text)
+          .join(" ") || need.label
       : "";
     badge.setAttribute("aria-label", description);
     badge.title = description;
@@ -190,6 +304,7 @@ function updateInventoryPreview() {
       state.pack,
       inventoryUpgradeNeeds,
       details.dataset.upgradeNeedsDetail,
+      state.profile,
     );
   for (const node of document.querySelectorAll("[data-available]")) {
     const raw = inventoryDraft.raw.get(`owned:${node.dataset.available}`),
@@ -204,14 +319,12 @@ function updateInventoryPreview() {
   for (const button of document.querySelectorAll("[data-stock-step]")) {
     const raw = inventoryDraft.raw.get(`owned:${button.dataset.id}`);
     button.disabled =
-      state.saving ||
-      raw === "" ||
-      !Number.isInteger(Number(raw)) ||
-      Number(raw) < 0;
+      state.saving || !Number.isInteger(Number(raw)) || Number(raw) < 0;
   }
 }
 function checkpointInventory() {
   inventoryDraft?.checkpoint();
+  inventoryDirtyState(inventoryDraft?.isDirty() || false);
   const notice = $("#error");
   if (
     !inventoryDraft?.firstInvalid() &&
@@ -229,7 +342,8 @@ function revealInvalidInventory() {
   if ($("#inventory-section")) $("#inventory-section").value = "";
   if ($("#inventory-sort")) $("#inventory-sort").value = "source";
   if ($("#inventory-use-filter")) $("#inventory-use-filter").value = "";
-  collapsedGroups.delete(groupFor(inventoryIndex.get(invalid.id)));
+  collapsedGroups.delete(groupIdentity(inventoryIndex.get(invalid.id)));
+  collapsedCategories.delete(inventoryFamily(inventoryIndex.get(invalid.id)));
   const ids = [...inventoryIndex.keys()];
   inventoryPageNumber = Math.floor(
     ids.indexOf(invalid.id) / INVENTORY_PAGE_SIZE,
@@ -237,8 +351,18 @@ function revealInvalidInventory() {
   filterInventory(false);
   $("#error").textContent +=
     " Review the focused inventory quantity; all other edits are retained.";
-  for (const input of document.querySelectorAll("#inventory-form [data-field]"))
+  for (const input of document.querySelectorAll(
+    "#inventory-form [data-field],#inventory-form [data-build-quantity]",
+  ))
     if (input.name === invalid.name) {
+      const detail = input.closest("[data-item-detail]");
+      if (detail) {
+        detail.hidden = false;
+        detail
+          .closest(".inventory-entry")
+          .querySelector("[data-show-use]")
+          .setAttribute("aria-expanded", "true");
+      }
       input.focus();
       break;
     }
@@ -251,53 +375,154 @@ document.addEventListener("profile-saved", checkpointInventory);
 function renderInventoryPage(matches) {
   const page = inventoryPage(matches, inventoryPageNumber);
   inventoryPageNumber = page.page;
-  const groups = new Map();
-  for (const id of page.ids) {
+  inventoryMatches = matches;
+  const pageIds = new Set(page.ids),
+    totals = new Map(),
+    groups = new Map();
+  for (const item of inventoryIndex.values()) {
+    const identity = groupIdentity(item);
+    totals.set(identity, (totals.get(identity) || 0) + 1);
+  }
+  for (const [index, id] of matches.entries()) {
     const item = inventoryIndex.get(id),
-      key = groupFor(item);
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(item);
+      identity = groupIdentity(item);
+    if (!groups.has(identity))
+      groups.set(identity, {
+        representative: item,
+        items: [],
+        matching: 0,
+        firstIndex: index,
+      });
+    const group = groups.get(identity);
+    group.matching++;
+    if (pageIds.has(id) || loadedInventoryGroups.has(identity))
+      group.items.push(item);
+  }
+  const upgradeIdentity = JSON.stringify(["Materials", "Upgrade materials"]);
+  if ($("#inventory-section")?.value === "Upgrade materials") groups.clear();
+  const upgradeItems = matches
+    .map((id) => inventoryIndex.get(id))
+    .filter(
+      (item) =>
+        item.kind !== "currency" &&
+        item.kind !== "weapon" &&
+        inventoryUpgradeUse(inventoryUses.get(item.id)).remaining > 0,
+    );
+  if (
+    upgradeItems.length &&
+    (!$("#inventory-section")?.value ||
+      $("#inventory-section").value === "Upgrade materials")
+  ) {
+    const visible = upgradeItems
+      .filter(
+        (item) =>
+          pageIds.has(item.id) || loadedInventoryGroups.has(upgradeIdentity),
+      )
+      .sort(compareInventoryMaterialItems);
+    groups.set(upgradeIdentity, {
+      representative: upgradeItems[0],
+      items: visible,
+      matching: upgradeItems.length,
+      firstIndex: matches.indexOf(upgradeItems[0].id),
+      upgradeView: true,
+    });
+    totals.set(upgradeIdentity, upgradeItems.length);
+  }
+  const renderedGroups = [...groups]
+    .sort(([, a], [, b]) =>
+      compareInventorySections(
+        groupFor(a.representative),
+        groupFor(b.representative),
+      ),
+    )
+    .map(
+      ([
+        identity,
+        { items, representative, matching, firstIndex, upgradeView },
+      ]) => {
+        const key = upgradeView
+            ? "Upgrade materials"
+            : groupFor(representative),
+          total = totals.get(identity);
+        return {
+          family: upgradeView ? "Materials" : inventoryFamily(representative),
+          count: items.length,
+          html: `<section class="inventory-group"><h3><button type="button" data-inventory-group="${esc(key)}" data-inventory-group-key="${esc(identity)}" aria-expanded="${!collapsedGroups.has(identity)}">${esc(inventoryTypeLabel(key))} <small>${items.length} on this page · ${matching} matching / ${total} visible catalog items</small></button></h3><div role="list" aria-label="${esc(inventoryTypeLabel(key))} items" ${collapsedGroups.has(identity) ? "hidden" : ""}><div class="inventory-row inventory-head" aria-hidden="true" ${items.length ? "" : "hidden"}><span>Item / unit</span><span>Icon</span><span>Owned</span><span>Blueprint</span><span>Reserve</span><span>Goal need</span><span>Goal missing</span><span>Upgrades + missions</span><span>Next upgrade tiers<br><small>Required / missing</small></span><span>All unfinished upgrades<br><small>Required / missing</small></span>${Object.values(
+            useLabels,
+          )
+            .map((label) => `<span class="inventory-use">${label}</span>`)
+            .join("")}<span>Details</span></div>${items
+            .map((r) => {
+              const uses = inventoryUses.get(r.id);
+              const granted = automaticIngredientBlueprint(
+                state.pack,
+                state.profile,
+                r,
+              );
+              const upgradeUse = inventoryUpgradeUse(uses);
+              const url = `/local/?pack=${encodeURIComponent(state.pack.id)}&id=${encodeURIComponent(r.id)}`;
+              const quantity = (field, prefix, label) =>
+                `<label class="quantity-cell"><span class="mobile-label">${label}</span><input aria-label="${label} for ${esc(r.name)}" name="${prefix}:${esc(r.id)}" data-id="${esc(r.id)}" data-field="${field}" type="${r.kind === "currency" ? "text" : "number"}" ${r.kind === "currency" ? 'inputmode="numeric" data-currency-quantity="true"' : ""} min="0" max="${inventoryInputLimit(state.profile, r)}" value="${esc(inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "" : r.kind === "currency" ? currencyQuantityText(inventoryDraft.raw.get(`${prefix}:${r.id}`)) : inventoryDraft.raw.get(`${prefix}:${r.id}`))}" ${field === "reserves" ? "required" : `placeholder="${inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "Invalid entry" : "Not entered"}"`}></label>`;
+              return `<div class="inventory-entry" role="listitem" data-inventory-item="${esc(r.id)}"><div class="inventory-row"><div class="inventory-name"><a href="${esc(url)}" tabindex="0" target="_blank" rel="noopener noreferrer">${esc(r.name)}</a><small>${esc(r.unit)} · Rarity: ${esc(itemRarity(r))}</small>${upgradeUse.used ? `<small class="inventory-upgrade-use">${upgradeUse.completed ? "* Upgrade use completed" : `Upgrade item - ${upgradeUse.remaining} unfinished`}</small>` : ""}<small class="collection-state" data-collection-state="${esc(r.id)}" hidden><span class="collection-short"></span><span class="collection-kind"></span><span class="sr-only collection-description"></span></small></div><div class="inventory-item-icon" data-inventory-icon="${esc(r.id)}" data-icon-status="missing"><span aria-hidden="true" class="inventory-icon-placeholder">+</span><small>Icon needed</small></div><div class="owned-cell">${quantity("inventory", "owned", "Owned")}<div class="stock-steps"><button type="button" data-stock-step="-1" data-id="${esc(r.id)}" aria-label="Decrease owned ${esc(r.name)}">−</button><button type="button" data-stock-step="1" data-id="${esc(r.id)}" aria-label="Increase owned ${esc(r.name)}">+</button></div></div><div class="inventory-blueprint">${inventoryBlueprintAvailable(r, uses) ? `<label><input type="checkbox" data-item-blueprint="${esc(r.id)}" aria-label="Blueprint owned for ${esc(r.name)}" ${granted || inventoryDraft.blueprintOwned(r.id) ? "checked" : ""} ${granted ? `disabled title="Granted by ${esc(granted.name)}"` : ""}><span>Blueprint owned${granted ? " - upgrade" : ""}</span></label>` : '<span class="inventory-blueprint-unavailable" aria-label="No listed crafting recipe">&mdash;</span>'}</div>${quantity("reserves", "reserve", "Reserve")}<span class="inventory-plan" role="group" aria-label="Needed, consumed / retained"><span class="mobile-label">Goal need</span><span data-plan-item="${esc(r.id)}" data-plan-field="needed"></span></span><span class="inventory-plan" role="group" aria-label="Missing, consumed / retained"><span class="mobile-label">Goal missing</span><span data-plan-item="${esc(r.id)}" data-plan-field="missing"></span></span>${upgradeNeedCell(r.id, "collection", "Upgrades + missions")}${upgradeNeedCell(r.id, "next", "Next upgrade tiers")}${upgradeNeedCell(r.id, "all", "All unfinished upgrades")}${Object.keys(
+                useLabels,
+              )
+                .map((kind) => useCell(uses[kind], kind, r.id))
+                .join(
+                  "",
+                )}<button type="button" data-show-use="${esc(r.id)}" aria-expanded="false" aria-label="Uses and details for ${esc(r.name)}">Uses</button></div><div class="inventory-details" data-item-detail="${esc(r.id)}" hidden><h3>${esc(r.name)} · draft details</h3><p>Rarity: ${esc(itemRarity(r))}. ${esc(r.description || "No acquisition information recorded.")}</p><p>Available after your fixed reserve: <span data-available="${esc(r.id)}"></span>. Blank owned is not entered. Needed/Missing are separate consumed quantities and retained tool floors from your selected goals; units are never combined.</p><button type="button" data-clear-stock="${esc(r.id)}">Clear stock (not entered)</button><p>Catalog uses are references, not quantities allocated or advice to discard.</p><div data-upgrade-needs-detail="${esc(r.id)}"></div>${Object.entries(
+                useLabels,
+              )
+                .map(
+                  ([kind, label]) =>
+                    `<section data-uses-kind="${kind}" data-uses-item="${esc(r.id)}"><h4>${label}</h4><div class="uses-page">${usesList(uses[kind])}</div></section>`,
+                )
+                .join(
+                  "",
+                )}<section data-uses-kind="acquisition" data-uses-item="${esc(r.id)}"><h4>Obtaining this item: producing recipes</h4><div class="uses-page">${usesList(uses.acquisition)}</div></section></div></div>`;
+            })
+            .join(
+              "",
+            )}${items.length === matching ? "" : `<div role="listitem" class="inventory-offpage"><button type="button" data-inventory-page-for="${firstIndex}" data-inventory-load-group="${esc(identity)}">${esc(inventoryTypeLabel(key))}</button></div>`}</div></section>`,
+        };
+      },
+    );
+  const families = new Map();
+  for (const row of renderedGroups) {
+    if (!families.has(row.family)) families.set(row.family, []);
+    families.get(row.family).push(row);
   }
   $("#inventory-fields").innerHTML =
-    [...groups]
-      .map(([key, items]) => {
-        const total = [...inventoryIndex.values()].filter(
-          (item) => groupFor(item) === key,
-        ).length;
+    [...families]
+      .sort(([a], [b]) => compareInventoryFamilies(a, b))
+      .map(([family, rows]) => {
         const matching = matches.filter(
-          (id) => groupFor(inventoryIndex.get(id)) === key,
+          (id) => inventoryFamily(inventoryIndex.get(id)) === family,
         ).length;
-        return `<section class="inventory-group"><h2><button type="button" data-inventory-group="${esc(key)}" aria-expanded="${!collapsedGroups.has(key)}">${esc(key)} <small>${items.length} on this page · ${matching} matching / ${total} visible catalog items</small></button></h2><div role="list" aria-label="${esc(key)} items" ${collapsedGroups.has(key) ? "hidden" : ""}><div class="inventory-row inventory-head" aria-hidden="true"><span>Item / unit</span><span>Owned</span><span>Reserve</span><span>Goal need</span><span>Goal missing</span><span>Next upgrade tiers<br><small>Required / missing</small></span><span>All unfinished upgrades<br><small>Required / missing</small></span>${Object.values(
-          useLabels,
-        )
-          .map((label) => `<span class="inventory-use">${label}</span>`)
-          .join("")}<span>Details</span></div>${items
-          .map((r) => {
-            const uses = inventoryUses.get(r.id);
-            const url = `/local/?pack=${encodeURIComponent(state.pack.id)}&id=${encodeURIComponent(r.id)}`;
-            const quantity = (field, prefix, label) =>
-              `<label class="quantity-cell"><span class="mobile-label">${label}</span><input aria-label="${label} for ${esc(r.name)}" name="${prefix}:${esc(r.id)}" data-id="${esc(r.id)}" data-field="${field}" type="number" min="0" max="${stockLimit(state.profile, r)}" value="${esc(inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "" : inventoryDraft.raw.get(`${prefix}:${r.id}`))}" ${field === "reserves" ? "required" : `placeholder="${inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "Invalid entry" : "Not entered"}"`}></label>`;
-            return `<div class="inventory-entry" role="listitem" data-inventory-item="${esc(r.id)}"><div class="inventory-row"><div class="inventory-name"><a href="${esc(url)}" tabindex="0" target="_blank" rel="noopener noreferrer">${esc(r.name)}</a><small>${esc(r.unit)}</small><small class="collection-state" data-collection-state="${esc(r.id)}" hidden><span class="collection-short"></span><span class="collection-kind"></span><span class="sr-only collection-description"></span></small></div><div class="owned-cell">${quantity("inventory", "owned", "Owned")}<div class="stock-steps"><button type="button" data-stock-step="-1" data-id="${esc(r.id)}" aria-label="Decrease owned ${esc(r.name)}">−</button><button type="button" data-stock-step="1" data-id="${esc(r.id)}" aria-label="Increase owned ${esc(r.name)}">+</button></div></div>${quantity("reserves", "reserve", "Reserve")}<span class="inventory-plan" role="group" aria-label="Needed, consumed / retained"><span class="mobile-label">Goal need</span><span data-plan-item="${esc(r.id)}" data-plan-field="needed"></span></span><span class="inventory-plan" role="group" aria-label="Missing, consumed / retained"><span class="mobile-label">Goal missing</span><span data-plan-item="${esc(r.id)}" data-plan-field="missing"></span></span>${upgradeNeedCell(r.id, "next", "Next upgrade tiers")}${upgradeNeedCell(r.id, "all", "All unfinished upgrades")}${Object.keys(
-              useLabels,
-            )
-              .map((kind) => useCell(uses[kind], kind, r.id))
-              .join(
-                "",
-              )}<button type="button" data-show-use="${esc(r.id)}" aria-expanded="false" aria-label="Uses and details for ${esc(r.name)}">Uses</button></div><div class="inventory-details" data-item-detail="${esc(r.id)}" hidden><h3>${esc(r.name)} · draft details</h3><p>Available after your fixed reserve: <span data-available="${esc(r.id)}"></span>. Blank owned is not entered. Needed/Missing are separate consumed quantities and retained tool floors from your selected goals; units are never combined.</p><button type="button" data-clear-stock="${esc(r.id)}">Clear stock (not entered)</button><p>Catalog uses are references, not quantities allocated or advice to discard.</p><div data-upgrade-needs-detail="${esc(r.id)}"></div>${Object.entries(
-              useLabels,
-            )
-              .map(
-                ([kind, label]) =>
-                  `<section data-uses-kind="${kind}" data-uses-item="${esc(r.id)}"><h4>${label}</h4><div class="uses-page">${usesList(uses[kind])}</div></section>`,
-              )
-              .join(
-                "",
-              )}<section data-uses-kind="acquisition" data-uses-item="${esc(r.id)}"><h4>Obtaining this item: producing recipes</h4><div class="uses-page">${usesList(uses.acquisition)}</div></section></div></div>`;
-          })
-          .join("")}</div></section>`;
+        return `<section class="inventory-category"><h2><button type="button" data-inventory-category="${esc(family)}" aria-expanded="${!collapsedCategories.has(family)}">${esc(inventoryFamilyLabel(family))} <small>${matching} matching · ${rows.reduce((n, r) => n + r.count, 0)} on this page</small></button></h2><div data-inventory-category-body ${collapsedCategories.has(family) ? "hidden" : ""}>${rows.map((r) => r.html).join("")}</div></section>`;
       })
       .join("") || "<p>No matching visible items.</p>";
-  $("#inventory-pagination").hidden = matches.length <= INVENTORY_PAGE_SIZE;
+  // Keep the pager and its focus target available while filtering a large catalog,
+  // including the no-results state. Filtering must not remove active navigation.
+  $("#inventory-pagination").hidden =
+    inventoryIndex.size <= INVENTORY_PAGE_SIZE;
+  for (const entry of document.querySelectorAll(".inventory-entry")) {
+    const id = entry.dataset.inventoryItem,
+      cell = document.createElement("div");
+    cell.className = "inventory-build-target";
+    cell.innerHTML = buildTargetControl(state.pack, id, state.profile);
+    const control = cell.querySelector("[data-build-control]");
+    if (control) {
+      control.querySelector("[data-build-select]").checked =
+        inventoryDraft.buildSelected(id);
+      const input = control.querySelector("[data-build-quantity]");
+      input.value = inventoryDraft.buildQuantity(id);
+      input.disabled = !inventoryDraft.buildSelected(id);
+    }
+    const row = entry.querySelector(".inventory-row");
+    row.insertBefore(cell, row.querySelector(":scope > [data-show-use]"));
+  }
+  compactInventoryRows();
+  void hydrateInventoryIcons(state.pack);
   updateInventoryPreview();
   $("#inventory-page-status").textContent =
     `Items ${page.first}–${page.last} of ${matches.length} matches. Page ${page.page + 1} of ${page.pages}.`;
@@ -315,6 +540,7 @@ function renderInventoryPage(matches) {
     `Next page${!matches.length ? " (no matches)" : page.page === page.pages - 1 ? " (last page)" : ""}`;
 }
 function render() {
+  refreshTrackerContext();
   pendingInventoryInvalid = null;
   if ($("#inventory-fields")) {
     inventoryUses = itemUses(state.pack, state.profile);
@@ -323,7 +549,9 @@ function render() {
     );
     if (inventoryPack !== state.pack) {
       inventoryPageNumber = 0;
+      loadedInventoryGroups.clear();
       collapsedGroups.clear();
+      collapsedCategories.clear();
     }
     inventoryPack = state.pack;
     const section = $("#inventory-section");
@@ -331,12 +559,28 @@ function render() {
       const selected = section.value;
       section.innerHTML =
         '<option value="">All sections</option>' +
-        [...new Set([...inventoryIndex.values()].map(groupFor))]
-          .map((key) => `<option value="${esc(key)}">${esc(key)}</option>`)
+        [
+          ...new Set(
+            [...inventoryIndex.values()]
+              .map(groupFor)
+              .concat(
+                [...inventoryUses.values()].some((u) => u.upgrades.length)
+                  ? ["Upgrade materials"]
+                  : [],
+              ),
+          ),
+        ]
+          .sort(compareInventorySections)
+          .map(
+            (key) =>
+              `<option value="${esc(key)}">${esc(inventoryTypeLabel(key))}</option>`,
+          )
           .join("");
       section.value = selected;
     }
-    inventoryDraft = createInventoryDraft(state.pack.items, state.profile);
+    inventoryDraft = createInventoryDraft(state.pack.items, state.profile, {
+      allowCurrencyUpgrade: true,
+    });
     $("#completion-fields").innerHTML = state.pack.objectives
       .filter((r) => !r.spoiler)
       .map((r) =>
@@ -346,6 +590,12 @@ function render() {
       )
       .join("");
     checkpointInventory();
+    if (new URL(location.href).searchParams.has("item")) {
+      const item = inventoryIndex.get(
+        new URL(location.href).searchParams.get("item"),
+      );
+      if (item) $("#inventory-query").value = item.name;
+    }
     filterInventory(false);
   }
   renderSpendingSummary();
@@ -360,17 +610,201 @@ function render() {
     $("#version-status").textContent =
       `Profile content: ${summary.currentVersion}; active content: ${summary.activeVersion}. ${summary.versionMismatch ? "Planning blocked until explicit rebind." : "Versions match."} Unresolved references: ${summary.unresolvedCount}.`;
   }
+  renderBackupScope();
 }
+function renderBackupScope() {
+  const node = $("#backup-scope-status");
+  if (!node || !state.pack) return;
+  let saved = null;
+  try {
+    saved = verifiedBackupStatus(
+      JSON.parse(
+        localStorage.getItem(`dmz-verified-profile-backup:${state.pack.id}`) ||
+          "null",
+      ),
+      state.pack.id,
+    );
+  } catch {
+    /* Storage status may be unavailable; never infer a successful save. */
+  }
+  node.textContent = `${saved ? `Last confirmed profile file write: ${saved.savedAt} (revision ${saved.revision}).` : "No confirmed profile file write on this browser."} Includes: ${PROFILE_BACKUP_SCOPE.join(", ")}. Excludes: ${PROFILE_BACKUP_EXCLUSIONS.join(", ")}. Ordinary downloads cannot be verified by this page.`;
+}
+$("#save-verified-profile")?.addEventListener("click", async () => {
+  try {
+    if (hasUnsavedDraft())
+      throw Error(
+        "Save or discard current edits before backing up the saved profile.",
+      );
+    if (!window.showSaveFilePicker)
+      throw Error(
+        "Verified file saving is unavailable in this browser. Use Export private backup and confirm the download yourself.",
+      );
+    validateProfile(state.profile);
+    const snapshot = state.profile;
+    const content = JSON.stringify(snapshot, null, 2);
+    const handle = await window.showSaveFilePicker({
+      suggestedName: `dmz-profile-${snapshot.revision}.json`,
+      types: [
+        {
+          description: "DMZ profile JSON",
+          accept: { "application/json": [".json"] },
+        },
+      ],
+    });
+    const writable = await handle.createWritable();
+    try {
+      await writable.write(content);
+      await writable.close();
+    } catch (cause) {
+      try {
+        await writable.abort();
+      } catch {}
+      throw cause;
+    }
+    try {
+      localStorage.setItem(
+        `dmz-verified-profile-backup:${state.pack.id}`,
+        JSON.stringify({
+          packId: state.pack.id,
+          revision: snapshot.revision,
+          savedAt: new Date().toISOString(),
+        }),
+      );
+    } catch {
+      /* File is saved; date cannot be retained. */
+    }
+    renderBackupScope();
+    status(
+      "Profile backup file write confirmed. Check excluded workspaces for separate backups.",
+    );
+  } catch (cause) {
+    if (cause?.name !== "AbortError") error(cause);
+  }
+});
+$("#inventory-form")?.addEventListener("keydown", (event) => {
+  if (
+    event.key !== "Enter" ||
+    event.altKey ||
+    event.ctrlKey ||
+    event.metaKey ||
+    event.shiftKey ||
+    !event.target.matches('[data-field="inventory"]')
+  )
+    return;
+  event.preventDefault();
+  if (state.saving || state.loading) return;
+  if (!event.target.checkValidity()) {
+    event.target.reportValidity();
+    return;
+  }
+  const fields = [
+    ...document.querySelectorAll('#inventory-fields [data-field="inventory"]'),
+  ].filter((input) => input.getClientRects().length && !input.disabled);
+  const next = fields[fields.indexOf(event.target) + 1];
+  if (next) {
+    next.focus();
+    next.select();
+  } else
+    document.querySelector('#inventory-form button[type="submit"]')?.focus();
+});
+$("#inventory-form")?.addEventListener("change", (event) => {
+  const build = event.target.closest(
+    "[data-build-select],[data-build-quantity]",
+  );
+  if (build && !state.saving && !state.loading) {
+    const root = build.closest("[data-build-control]"),
+      id = root.dataset.buildItem,
+      selected = root.querySelector("[data-build-select]");
+    try {
+      inventoryDraft.setBuild(
+        id,
+        selected.checked
+          ? root.querySelector("[data-build-quantity]").value
+          : null,
+        state.profile,
+      );
+      for (const peer of document.querySelectorAll("[data-build-control]"))
+        if (peer.dataset.buildItem === id) {
+          peer.querySelector("[data-build-select]").checked =
+            inventoryDraft.buildSelected(id);
+          peer.querySelector("[data-build-quantity]").disabled =
+            !inventoryDraft.buildSelected(id);
+          peer.querySelector("[data-build-quantity]").value =
+            inventoryDraft.buildQuantity(id);
+        }
+      updateInventoryPreview();
+    } catch (reason) {
+      selected.checked = inventoryDraft.buildSelected(id);
+      error(reason);
+    }
+    return;
+  }
+  const control = event.target.closest("[data-item-blueprint]");
+  if (
+    !control ||
+    state.saving ||
+    state.loading ||
+    !inventoryBlueprintAvailable(
+      inventoryIndex.get(control.dataset.itemBlueprint),
+      inventoryUses.get(control.dataset.itemBlueprint),
+    )
+  )
+    return;
+  inventoryDraft.setBlueprint(
+    control.dataset.itemBlueprint,
+    control.checked,
+    state.profile,
+  );
+  for (const peer of document.querySelectorAll("[data-item-blueprint]"))
+    if (
+      peer.dataset.itemBlueprint === control.dataset.itemBlueprint &&
+      peer !== control
+    )
+      peer.checked = control.checked;
+  inventoryDirtyState(inventoryDraft.isDirty());
+  status(
+    inventoryDraft.isDirty()
+      ? "Unsaved inventory edits \u00b7 save locally or export a validated backup."
+      : "Saved values unchanged / no unsaved inventory edits.",
+  );
+});
+$("#inventory-form")?.addEventListener("focusout", (event) => {
+  const input = event.target;
+  if (input.dataset.currencyQuantity)
+    input.value = currencyQuantityText(currencyQuantityRaw(input.value));
+});
 $("#inventory-form")?.addEventListener("input", (e) => {
   const input = e.target;
+  if (input.hasAttribute("data-build-quantity")) {
+    const control = input.closest("[data-build-control]"),
+      id = control.dataset.buildItem;
+    if (!control.querySelector("[data-build-select]").checked) return;
+    inventoryDraft.setBuild(id, input.value, state.profile);
+    for (const peer of document.querySelectorAll("[data-build-control]"))
+      if (peer.dataset.buildItem === id && peer !== control)
+        peer.querySelector("[data-build-quantity]").value = input.value;
+    inventoryDirtyState(inventoryDraft.isDirty());
+    return;
+  }
   if (input.dataset.field) {
     inventoryDraft.set(
       input.dataset.field,
       input.dataset.id,
-      input.value,
+      input.dataset.currencyQuantity
+        ? currencyQuantityRaw(input.value)
+        : input.value,
       state.profile,
       { badInput: input.validity.badInput },
     );
+    for (const peer of document.querySelectorAll(
+      "#inventory-fields [data-field]",
+    ))
+      if (
+        peer !== input &&
+        peer.dataset.id === input.dataset.id &&
+        peer.dataset.field === input.dataset.field
+      )
+        peer.value = input.value;
     updateInventoryPreview();
     status(
       hasUnsavedDraft()
@@ -382,7 +816,11 @@ $("#inventory-form")?.addEventListener("input", (e) => {
 $("#inventory-form")?.addEventListener(
   "invalid",
   (event) => {
-    if (!event.target.dataset.field) return;
+    if (
+      !event.target.dataset.field &&
+      !event.target.hasAttribute("data-build-quantity")
+    )
+      return;
     event.preventDefault();
     if (pendingInventoryInvalid) return;
     const pending = { draft: inventoryDraft, pack: state.pack };
@@ -402,7 +840,7 @@ $("#inventory-form")?.addEventListener(
         return;
       error(
         new Error(
-          "Quantity must be a nonnegative integer within this field’s displayed limit (1000000, or 2000000 for v3 currency).",
+          "Enter a whole nonnegative quantity: up to 2,000,000 for currency, or 1,000,000 for other items.",
         ),
       );
       revealInvalidInventory();
@@ -418,9 +856,17 @@ for (const event of ["input", "pointerdown", "keydown"])
     },
     true,
   );
+const saveInventory = inventorySaveAction({
+  state,
+  getDraft: () => inventoryDraft,
+  persist,
+  render,
+  error,
+  revealInvalid: revealInvalidInventory,
+});
 $("#inventory-form")?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  await persist();
+  await saveInventory();
 });
 $("#completion-fields")?.addEventListener("change", async (e) => {
   if (state.saving || state.loading) return;
@@ -553,7 +999,7 @@ $("#reset-profile")?.addEventListener("click", () => {
   resetRevision = state.revision;
   $("#reset-confirm").hidden = false;
   $("#reset-confirm p").textContent =
-    `Clear inventory, reserves, goals and progress for ${state.pack.title}? Recorded spending history and duplicate-purchase guards stay unchanged. A previous snapshot is retained.`;
+    `Clear inventory, build targets, reserves, goals and progress for ${state.pack.title}? Recorded spending history and duplicate-purchase guards stay unchanged. A previous snapshot is retained.`;
 });
 $("#cancel-reset")?.addEventListener(
   "click",
@@ -609,6 +1055,8 @@ $("#cancel-inventory")?.addEventListener("click", async () => {
     state.profile = record?.value || newProfile(pack);
     state.revision = state.profile.revision;
     render();
+    $("#error").hidden = true;
+    $("#error").textContent = "";
     status("Inventory edits canceled; saved profile restored.");
   } catch (reason) {
     error(reason);
@@ -617,8 +1065,41 @@ $("#cancel-inventory")?.addEventListener("click", async () => {
 $("#inventory-fields")?.addEventListener("click", (event) => {
   const button = event.target.closest("button");
   if (!button || state.saving || state.loading) return;
+  if (button.dataset.inventoryPageFor !== undefined) {
+    const index = Number(button.dataset.inventoryPageFor);
+    if (
+      !Number.isInteger(index) ||
+      index < 0 ||
+      index >= inventoryMatches.length
+    )
+      return;
+    const item = inventoryIndex.get(inventoryMatches[index]),
+      identity = button.dataset.inventoryLoadGroup || groupIdentity(item);
+    collapsedCategories.delete(
+      identity === JSON.stringify(["Materials", "Upgrade materials"])
+        ? "Materials"
+        : inventoryFamily(item),
+    );
+    collapsedGroups.delete(identity);
+    loadedInventoryGroups.add(button.dataset.inventoryLoadGroup || identity);
+    filterInventory(false);
+    [...document.querySelectorAll("[data-inventory-group-key]")]
+      .find((node) => node.dataset.inventoryGroupKey === identity)
+      ?.focus();
+    return;
+  }
+  if (button.dataset.inventoryCategory !== undefined) {
+    const key = button.dataset.inventoryCategory;
+    if (collapsedCategories.has(key)) collapsedCategories.delete(key);
+    else collapsedCategories.add(key);
+    button.setAttribute("aria-expanded", String(!collapsedCategories.has(key)));
+    button
+      .closest(".inventory-category")
+      .querySelector(":scope > [data-inventory-category-body]").hidden =
+      collapsedCategories.has(key);
+  }
   if (button.dataset.inventoryGroup !== undefined) {
-    const key = button.dataset.inventoryGroup;
+    const key = button.dataset.inventoryGroupKey;
     if (collapsedGroups.has(key)) collapsedGroups.delete(key);
     else collapsedGroups.add(key);
     button.setAttribute("aria-expanded", String(!collapsedGroups.has(key)));
@@ -627,9 +1108,22 @@ $("#inventory-fields")?.addEventListener("click", (event) => {
   }
   if (button.dataset.showUse) {
     const id = button.dataset.showUse;
-    const detail = [...document.querySelectorAll("[data-item-detail]")].find(
-      (node) => node.dataset.itemDetail === id,
-    );
+    const detail = [
+      ...(button.closest(".inventory-entry") || document).querySelectorAll(
+        "[data-item-detail]",
+      ),
+    ].find((node) => node.dataset.itemDetail === id);
+    if (button.dataset.kind && !detail.hidden) {
+      const section = [...detail.querySelectorAll("[data-uses-kind]")].find(
+        (node) => node.dataset.usesKind === button.dataset.kind,
+      );
+      const heading = section?.querySelector("h4");
+      if (heading) {
+        heading.tabIndex = -1;
+        heading.focus();
+      }
+      return;
+    }
     const opening = detail.hidden;
     for (const node of document.querySelectorAll("[data-item-detail]"))
       node.hidden = true;
@@ -657,22 +1151,40 @@ $("#inventory-fields")?.addEventListener("click", (event) => {
   }
   const id = button.dataset.clearStock || button.dataset.id;
   if (!id) return;
-  const input = [...document.querySelectorAll('[data-field="inventory"]')].find(
-    (node) => node.dataset.id === id,
-  );
+  const input = [
+    ...(button.closest(".inventory-entry") || document).querySelectorAll(
+      '[data-field="inventory"]',
+    ),
+  ].find((node) => node.dataset.id === id);
   if (button.dataset.clearStock) input.value = "";
   else if (button.dataset.stockStep) {
-    if (input.value === "" || !Number.isInteger(Number(input.value))) return;
+    if (
+      input.validity.badInput ||
+      !Number.isInteger(
+        Number(
+          input.dataset.currencyQuantity
+            ? currencyQuantityRaw(input.value)
+            : input.value,
+        ),
+      )
+    )
+      return;
     input.value = String(
       Math.max(
         0,
         Math.min(
-          stockLimit(state.profile, inventoryIndex.get(id)),
-          Number(input.value) + Number(button.dataset.stockStep),
+          inventoryInputLimit(state.profile, inventoryIndex.get(id)),
+          Number(
+            input.dataset.currencyQuantity
+              ? currencyQuantityRaw(input.value)
+              : input.value,
+          ) + Number(button.dataset.stockStep),
         ),
       ),
     );
   } else return;
+  if (input.dataset.currencyQuantity)
+    input.value = currencyQuantityText(currencyQuantityRaw(input.value));
   input.dispatchEvent(new Event("input", { bubbles: true }));
 });
 function upgradeControls(record) {
@@ -801,7 +1313,10 @@ installSpending({ onSaved: render, isDirty: hasUnsavedDraft });
 init(render).catch(error);
 
 function filterInventory(reset = true) {
-  if (reset) inventoryPageNumber = 0;
+  if (reset) {
+    inventoryPageNumber = 0;
+    loadedInventoryGroups.clear();
+  }
   if (!$("#inventory-query")) return;
   const q = $("#inventory-query").value.trim().toLowerCase(),
     mode = $("#inventory-view").value;
@@ -842,8 +1357,12 @@ function filterInventory(reset = true) {
     usage = $("#inventory-use-filter")?.value || "";
   const view = $("#inventory-view").value;
   if (section)
-    matches = matches.filter(
-      (id) => groupFor(inventoryIndex.get(id)) === section,
+    matches = matches.filter((id) =>
+      section === "Upgrade materials"
+        ? inventoryIndex.get(id).kind !== "currency" &&
+          inventoryIndex.get(id).kind !== "weapon" &&
+          inventoryUpgradeUse(inventoryUses.get(id)).remaining > 0
+        : groupFor(inventoryIndex.get(id)) === section,
     );
   if (usage)
     matches = matches.filter((id) => inventoryUses.get(id)[usage].length);
@@ -862,9 +1381,9 @@ function filterInventory(reset = true) {
     });
   }
   const sort = $("#inventory-sort")?.value;
-  if (sort === "name")
+  if (sort === "name" || sort === "rarity")
     matches.sort((a, b) =>
-      inventoryIndex.get(a).name.localeCompare(inventoryIndex.get(b).name),
+      compareItems(inventoryIndex.get(a), inventoryIndex.get(b), sort),
     );
   renderInventoryPage(matches);
   $("#inventory-count").textContent =
@@ -897,8 +1416,13 @@ for (const [id, collapse] of [
 ])
   $(`#${id}`)?.addEventListener("click", () => {
     for (const item of inventoryIndex.values()) {
-      if (collapse) collapsedGroups.add(groupFor(item));
-      else collapsedGroups.delete(groupFor(item));
+      if (collapse) {
+        collapsedGroups.add(groupIdentity(item));
+        collapsedCategories.add(inventoryFamily(item));
+      } else {
+        collapsedGroups.delete(groupIdentity(item));
+        collapsedCategories.delete(inventoryFamily(item));
+      }
     }
     filterInventory(false);
   });

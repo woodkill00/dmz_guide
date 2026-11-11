@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Fire support",
+  "description": "Call in an aerial bombing run that bombards target location",
+  "id": "mw4:printer-item-bombing-run",
+  "kind": "item",
+  "name": "Bombing Run",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

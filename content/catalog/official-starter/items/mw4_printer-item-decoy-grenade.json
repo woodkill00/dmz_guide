@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Decoy"
+  ],
+  "category": "Tacticals",
+  "description": "Counter-intel grenade that simulates gunfire, movement, and radar signatures to confuse the enemy.",
+  "id": "mw4:printer-item-decoy-grenade",
+  "kind": "item",
+  "name": "Decoy Grenade",
+  "rarity": "Common",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

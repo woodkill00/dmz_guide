@@ -58,7 +58,10 @@ export async function hashBytes(bytes) {
     .map((x) => x.toString(16).padStart(2, "0"))
     .join("");
 }
-export function imageInfo(bytes) {
+export function imageInfo(
+  bytes,
+  rasterLimits = { dimension: LIMITS.dimension, pixels: LIMITS.pixels },
+) {
   assert(
     bytes instanceof Uint8Array &&
       bytes.length > 0 &&
@@ -74,9 +77,9 @@ export function imageInfo(bytes) {
         Number.isInteger(h) &&
         w > 0 &&
         h > 0 &&
-        w <= LIMITS.dimension &&
-        h <= LIMITS.dimension &&
-        w * h <= LIMITS.pixels,
+        w <= rasterLimits.dimension &&
+        h <= rasterLimits.dimension &&
+        w * h <= rasterLimits.pixels,
       "Raster dimensions/pixels exceed limits",
     );
   if (
@@ -295,7 +298,7 @@ export function imageInfo(bytes) {
       Number.isInteger(height) &&
       width > 0 &&
       height > 0 &&
-      width <= LIMITS.dimension &&
+      width <= rasterLimits.dimension &&
       height <= LIMITS.dimension &&
       width * height <= LIMITS.pixels,
     "Raster dimensions/pixels exceed limits",
@@ -442,9 +445,11 @@ export function profileImpact(profile, before, after) {
   if (!profile)
     return { rebindRequired: false, unresolved: [], affectedGoals: [] };
   const known = new Set(GROUPS.flatMap((k) => after[k].map((r) => r.id)));
+  const knownItems = new Set(after.items.map((item) => item.id));
   const refs = new Set([
     ...Object.keys(profile.inventory || {}),
     ...Object.keys(profile.reserves || {}),
+    ...Object.keys(profile.itemBlueprints || {}),
     ...Object.keys(profile.completion || {}),
     ...Object.keys(profile.upgradeProgress || {}),
     ...(profile.watchPins || []),
@@ -464,7 +469,14 @@ export function profileImpact(profile, before, after) {
       profile.packId !== after.id ||
       profile.contentVersion !== after.contentVersion ||
       JSON.stringify(before?.game) !== JSON.stringify(after.game),
-    unresolved: [...refs].filter((id) => !known.has(id)),
+    unresolved: [
+      ...new Set([
+        ...[...refs].filter((id) => !known.has(id)),
+        ...Object.keys(profile.itemBlueprints || {}).filter(
+          (id) => !knownItems.has(id),
+        ),
+      ]),
+    ],
     spendingUnresolved: [...spendingRefs].filter((id) => !known.has(id)),
     spendingHistoryPreserved: true,
     affectedGoals: (profile.goals || [])

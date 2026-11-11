@@ -1,3 +1,4 @@
+import { revealTrackerControl } from "./tracker-controls.mjs";
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { measuredFixture } from "./measured-scale.mjs";
@@ -79,9 +80,17 @@ export async function runInventoryPaginationLayout(
         document.querySelector("main")?.getAttribute("aria-busy") === "false",
     );
     await field(0).fill("0003");
+    await revealTrackerControl(
+      page,
+      '[data-field="reserves"][data-id="demo:scale-item-0"]',
+    );
     await field(0, "reserves").fill("4");
     await keyboardPage("#inventory-next", middle);
     await field(75).fill("");
+    await revealTrackerControl(
+      page,
+      '[data-field="reserves"][data-id="demo:scale-item-75"]',
+    );
     await field(75, "reserves").fill("0005");
     const controls = await page.evaluateHandle(() =>
       [
@@ -127,7 +136,7 @@ export async function runInventoryPaginationLayout(
       );
       assert.equal(
         await page.locator("#theme-toggle").getAttribute("aria-label"),
-        `Switch to ${theme === "dark" ? "light" : "dark"} theme`,
+        `${nextTheme} — switch theme`,
       );
       for (const enlarged of [false, true]) {
         if (enlarged) style = await page.addStyleTag({ url: css });
@@ -171,6 +180,10 @@ export async function runInventoryPaginationLayout(
             entries.every(
               ({ selector, node }) => document.querySelector(selector) === node,
             ),
+          );
+          await revealTrackerControl(
+            page,
+            '[data-field="reserves"][data-id="demo:scale-item-75"]',
           );
           const geometry = await page.evaluate(() => {
             const rect = (node) => {
@@ -228,7 +241,10 @@ export async function runInventoryPaginationLayout(
           );
           assert.equal(geometry.rows, 50);
           assert.equal(geometry.status, middle);
-          assert.equal(geometry.count, "101 of 101 items match.");
+          assert.equal(
+            geometry.count,
+            "101 of 101 visible catalog items match.",
+          );
           assert.equal(geometry.query, "");
           assert.equal(geometry.view, "all");
           assert.equal(geometry.fontSize, baselineFont * (enlarged ? 2 : 1));
@@ -282,7 +298,7 @@ export async function runInventoryPaginationLayout(
             );
             assert.equal(
               await page.locator("#inventory-count").textContent(),
-              "0 of 101 items match.",
+              "0 of 101 visible catalog items match.",
             );
             assert.equal(
               await page.locator("[data-inventory-item]").count(),

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { openCatalogContext } from "./open-catalog-context.mjs";
 import { authorPath } from "../../src/content/author-target.mjs";
 
 export async function runNavigationDirectoryTests({
@@ -20,9 +21,11 @@ export async function runNavigationDirectoryTests({
       "Items",
     );
     await page.selectOption("#catalog-pack", "");
+    assert((await page.locator(".item-row:visible").count()) > 0);
     assert.equal(
-      await page.locator(".item-row:visible").count(),
-      await page.locator(".item-row").count(),
+      await page.locator('.item-row[data-fixture="true"]:visible').count(),
+      0,
+      "The all-game view excludes fictional fixture rows",
     );
     const modern =
       (await page.locator("html").getAttribute("data-ui-variant")) === "modern";
@@ -43,6 +46,7 @@ export async function runNavigationDirectoryTests({
             type: row.dataset.type,
             status: row.dataset.status,
             pack: row.dataset.pack,
+            fixture: row.dataset.fixture === "true",
           })),
         ),
       );
@@ -53,6 +57,9 @@ export async function runNavigationDirectoryTests({
       ),
       "Synthetic fixture remains available for sorting checks",
     );
+    const gameGroups = directoryGroups.map((rows) =>
+      rows.filter((row) => !row.fixture),
+    );
     // Start with type/status so the final name check must restore name order.
     for (const size of modern ? [50, 25, 100] : [null]) {
       if (modern)
@@ -60,7 +67,7 @@ export async function runNavigationDirectoryTests({
       for (const sortKey of ["type", "status", "name"]) {
         await page.selectOption("#catalog-sort", sortKey);
         if (modern) {
-          const sortedGroups = directoryGroups.map((rows) =>
+          const sortedGroups = gameGroups.map((rows) =>
             [...rows]
               .sort(
                 (a, b) =>
@@ -114,7 +121,7 @@ export async function runNavigationDirectoryTests({
               ),
             ),
           );
-        const expectedGroups = directoryGroups.map((rows) =>
+        const expectedGroups = gameGroups.map((rows) =>
           [...rows]
             .sort(
               (a, b) =>
@@ -130,7 +137,7 @@ export async function runNavigationDirectoryTests({
         );
         assert.equal(
           await page.locator(".item-row:visible").count(),
-          directoryGroups.flat().length,
+          gameGroups.flat().length,
           "Sorting cannot remove, duplicate or mix catalog rows",
         );
       }
@@ -413,6 +420,7 @@ export async function runDirectoryRemovalTests({
     await field.fill(old + " private draft");
     page.once("dialog", (dialog) => dialog.dismiss());
     const other = initial.entries.find((e) => e.key !== entry.key);
+    await openCatalogContext(page);
     await page.selectOption("#pack-select", other.key);
     assert.equal(await page.locator("#pack-select").inputValue(), entry.key);
     assert.equal(await field.inputValue(), old + " private draft");

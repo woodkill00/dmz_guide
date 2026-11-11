@@ -1,0 +1,16 @@
+{
+  "description": "Reported unlock route: DMZ level 36. Record access only after checking your game; a listed level is not automatically player completion.",
+  "effects": [],
+  "id": "mw4:printer-access-dmz-level-36",
+  "name": "DMZ level 36",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "progression"
+}

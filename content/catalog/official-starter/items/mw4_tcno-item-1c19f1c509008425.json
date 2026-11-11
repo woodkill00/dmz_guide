@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Blueprints",
+  "description": "Exfil recipe to print this item at the 3D Printer.",
+  "id": "mw4:tcno-item-1c19f1c509008425",
+  "kind": "item",
+  "name": "Bombing Run Blueprint",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

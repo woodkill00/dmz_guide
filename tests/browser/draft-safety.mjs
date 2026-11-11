@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
 import { captureDocumentEvidence } from "./page-edit.mjs";
+import { chooseCatalog, clickCatalogBackup, openInventoryDetails, openParentDetails } from "./reviewer-disclosures.mjs";
 
 const training = "demo:training-pack";
 const official = "official:mw4-dmz-starter";
@@ -101,14 +102,15 @@ export async function runDraftSafetyTests({
     await page.goto(`${base}/inventory/?pack=${encodeURIComponent(training)}`);
     await ready(page);
     await page.locator(wire).fill("17");
+    await openInventoryDetails(page, "demo:wire");
     await page.locator(reserve).fill("4");
-    await page.selectOption("#pack-select", official);
+    await chooseCatalog(page, official);
     if (baseline) {
       await page.waitForFunction(() =>
         document.querySelector("#pack-note").textContent.includes("MW4"),
       );
       assert.equal(await page.locator("#draft-navigation:visible").count(), 0);
-      await page.selectOption("#pack-select", training);
+      await chooseCatalog(page, training);
       await page.waitForSelector(wire);
       assert.equal(await page.locator(wire).inputValue(), "0");
       assert.equal(await page.locator(reserve).inputValue(), "0");
@@ -121,22 +123,22 @@ export async function runDraftSafetyTests({
       assert.equal(await page.locator("#pack-select").inputValue(), training);
       assert.equal(await page.locator(wire).inputValue(), "17");
       assert.equal(await page.locator(reserve).inputValue(), "4");
-      await page.selectOption("#pack-select", official);
+      await chooseCatalog(page, official);
       await page.click("#draft-save");
       await page.waitForFunction(() =>
         document.querySelector("#pack-note").textContent.includes("MW4"),
       );
-      await page.selectOption("#pack-select", training);
+      await chooseCatalog(page, training);
       await page.waitForSelector(wire);
       assert.equal(await page.locator(wire).inputValue(), "17");
       assert.equal(await page.locator(reserve).inputValue(), "4");
       await page.locator(wire).fill("31");
-      await page.selectOption("#pack-select", official);
+      await chooseCatalog(page, official);
       await page.click("#draft-discard");
       await page.waitForFunction(() =>
         document.querySelector("#pack-note").textContent.includes("MW4"),
       );
-      await page.selectOption("#pack-select", training);
+      await chooseCatalog(page, training);
       await page.waitForSelector(wire);
       assert.equal(await page.locator(wire).inputValue(), "17");
       evidence.scenarios.push(
@@ -161,6 +163,7 @@ export async function runDraftSafetyTests({
 }
 
 async function exportBackup(page, selector) {
+  await openParentDetails(page.locator(selector));
   const [download] = await Promise.all([
     page.waitForEvent("download"),
     page.click(selector),
@@ -212,6 +215,7 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
     await page.goto(inventoryUrl);
     await ready(page);
     await page.locator(wire).fill("23");
+    await openInventoryDetails(page, "demo:wire");
     await page.locator(reserve).fill("5");
     await plannerLink().click();
     await page.waitForSelector("#draft-navigation:visible");
@@ -297,7 +301,7 @@ async function extendedJourneys({ browser, base, captureScreenshots, prefix }) {
     await page.locator(wire).fill("-1");
     const downloads = [];
     page.on("download", (value) => downloads.push(value));
-    await page.click("#export-current-profile");
+    await clickCatalogBackup(page);
     await page.waitForSelector("#error:not([hidden])");
     assert.equal(downloads.length, 0, "Invalid draft cannot download");
     await page.evaluate(() => {
@@ -395,7 +399,7 @@ async function visualJourneys({ page, base, prefix }) {
           );
         }
         await page.locator(wire).fill("73");
-        await page.selectOption("#pack-select", official);
+        await chooseCatalog(page, official);
         await page.waitForSelector("#draft-navigation:visible");
         assert(
           await page.evaluate(
@@ -462,7 +466,7 @@ async function visualJourneys({ page, base, prefix }) {
         }
         await page.click("#draft-stay");
         assert.equal(await page.locator(wire).inputValue(), "73");
-        await page.selectOption("#pack-select", official);
+        await chooseCatalog(page, official);
         await page.click("#draft-discard");
         await ready(page);
       }

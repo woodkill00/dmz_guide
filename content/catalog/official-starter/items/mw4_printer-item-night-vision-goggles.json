@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "equipment",
+  "description": "Night vision goggles that allow sight in near total darkness. Users can toggle between normal vision and night vision.",
+  "id": "mw4:printer-item-night-vision-goggles",
+  "kind": "item",
+  "name": "Night Vision Goggles",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

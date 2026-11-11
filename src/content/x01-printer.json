@@ -1,0 +1,191 @@
+{
+  "format": "dmz-x01-printer-reference",
+  "version": 1,
+  "packId": "official:mw4-dmz-starter",
+  "station": "X01 3D Printer",
+  "map": "X01",
+  "location": "Production Assembly · lower floors",
+  "locationHint": "Reported access: western ladder, then north-side stairs.",
+  "inventoryContext": "carried-backpack",
+  "source": {
+    "id": "source:gamerant-x01-printer-20261106",
+    "url": "https://gamerant.com/mw4-dmz-legendary-materials-x01-3d-printer-location/",
+    "publishedAt": "2026-11-06",
+    "reviewedAt": "2026-11-06"
+  },
+  "recipes": [
+    {
+      "itemId": "mw4:x01-3-5-plate-armor-vest",
+      "name": "3.5-Plate Armor Vest",
+      "category": "Plate Carriers",
+      "materials": [
+        {
+          "itemId": "mw4:x01-specter-fabric-sample",
+          "name": "Specter Fabric Sample",
+          "quantity": 1
+        },
+        {
+          "itemId": "mw4:ingredient-power-regulator",
+          "name": "Power Regulator",
+          "quantity": 2
+        },
+        {
+          "itemId": "mw4:ingredient-structural-alloy",
+          "name": "Structural Alloy",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:x01-survivor-box",
+      "name": "Survivor Box",
+      "category": "Field Upgrades",
+      "materials": [
+        {
+          "itemId": "mw4:x01-sr-16-bio-agent-sample",
+          "name": "SR-16 Bio Agent Sample",
+          "quantity": 1
+        },
+        {
+          "itemId": "mw4:ingredient-ballistic-fabric",
+          "name": "Ballistic Fabric",
+          "quantity": 2
+        },
+        {
+          "itemId": "mw4:ingredient-high-tenacity-fibers",
+          "name": "High-Tenacity Fibers",
+          "quantity": 3
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:x01-argonaut-armor",
+      "name": "Argonaut Armor",
+      "category": "Fire Support",
+      "materials": [
+        {
+          "itemId": "mw4:x01-specter-fabric-sample",
+          "name": "Specter Fabric Sample",
+          "quantity": 1
+        },
+        {
+          "itemId": "mw4:ingredient-alloyed-plating",
+          "name": "Alloyed Plating",
+          "quantity": 2
+        },
+        {
+          "itemId": "mw4:ingredient-high-tenacity-fibers",
+          "name": "High-Tenacity Fibers",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:x01-encodable-blank-keycard",
+      "name": "Encodable Blank Keycard",
+      "category": "Keys",
+      "materials": [
+        {
+          "itemId": "mw4:ingredient-printed-circuit-board",
+          "name": "Printed Circuit Board",
+          "quantity": 6
+        },
+        {
+          "itemId": "mw4:ingredient-control-unit",
+          "name": "Control Unit",
+          "quantity": 8
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:x01-staff-emergency-exfil-keycard",
+      "name": "Staff Emergency Exfil Keycard",
+      "category": "Keys",
+      "materials": [
+        {
+          "itemId": "mw4:ingredient-cpu",
+          "name": "CPU",
+          "quantity": 2
+        },
+        {
+          "itemId": "mw4:ingredient-printed-circuit-board",
+          "name": "Printed Circuit Board",
+          "quantity": 4
+        },
+        {
+          "itemId": "mw4:ingredient-control-unit",
+          "name": "Control Unit",
+          "quantity": 8
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:ingredient-experimental-compounds",
+      "name": "Experimental Compounds",
+      "category": "Ingredients",
+      "materials": [
+        {
+          "itemId": "mw4:ingredient-volatile-explosives",
+          "name": "Volatile Explosives",
+          "quantity": 2
+        },
+        {
+          "itemId": "mw4:binding-catalyst",
+          "name": "Binding Catalysts",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:ingredient-military-composites",
+      "name": "Military Composites",
+      "category": "Ingredients",
+      "materials": [
+        {
+          "itemId": "mw4:ingredient-nylon-laminate",
+          "name": "Nylon Laminate",
+          "quantity": 2
+        },
+        {
+          "itemId": "mw4:ingredient-nylon-cloth",
+          "name": "Nylon Cloth",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:ingredient-nano-structured-alloy",
+      "name": "Nano-Structured Alloy",
+      "category": "Ingredients",
+      "materials": [
+        {
+          "itemId": "mw4:ingredient-turned-components",
+          "name": "Turned Components",
+          "quantity": 2
+        },
+        {
+          "itemId": "mw4:ingredient-structural-alloy",
+          "name": "Structural Alloy",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:ingredient-prototype-rf-module",
+      "name": "Prototype RF Module",
+      "category": "Ingredients",
+      "materials": [
+        {
+          "itemId": "mw4:ingredient-power-regulator",
+          "name": "Power Regulator",
+          "quantity": 2
+        },
+        {
+          "itemId": "mw4:ingredient-cpu",
+          "name": "CPU",
+          "quantity": 5
+        }
+      ]
+    }
+  ]
+}

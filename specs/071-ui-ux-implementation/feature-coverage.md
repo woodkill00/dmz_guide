@@ -2,10 +2,12 @@
 
 Recipes have primary FOB/Crafting ownership; Guide Reference may retain a clearly secondary link without changing URL/identity.
 
-Current registry: 77 IDs (28 guide,48 map,1 Studio), including45 map-tool targets plus canvas/safe/help. Older76-destination prose is superseded. registry-snapshot.json records public feature metadata only. T001 freezes live source/build identity; T066 refuses unmapped destinations after changes. Every row inherits applicable state variants from contracts/workspaces.md. F-ID means exact allowlisted activation/feature identity, correct scope and story-specific nonmutating Back/preservation journey.
+Current registry: 82 IDs (33 guide,48 map,1 Studio), including45 map-tool targets plus canvas/safe/help. Older76-destination prose is superseded. registry-snapshot.json records public feature metadata only. T001 freezes live source/build identity; T066 refuses unmapped destinations after changes. Every row inherits applicable state variants from contracts/workspaces.md. F-ID means exact allowlisted activation/feature identity, correct scope and story-specific nonmutating Back/preservation journey.
 
 | Feature / existing path | New hub/context | Representation | Origin/data owner | Task | Fallback / journey |
 |---|---|---|---|---|---|
+| `field-desk` · Field desk · `/field-desk/` | DMZ FOB / Field operations | native compact page | 4173: existing Guide profile CAS + private photo records; 5175 owns reviewed collection routes | FO-1–FO-7 | extensions/field-operations; staged scans, conserved transfers, guarded undo, complete backups and reviewed map handoff; no account sync claim or independent approval |
+| `quick-collect` · Quick collect · `/quick-collect/` | DMZ FOB / Quick collect | native page/list | 4173: existing Guide profile inventory and collection needs | QC1–QC5 | Explicit add/undo, tracking update and shared inventory checks in extensions/quick-entry/quick-collect.md; implementation evidence recorded there, no independent approval implied |
 | `dmz-guide` · DMZ Guide · `/dmz-guide/` | DMZ Guide | native page/detail | 4173: Public reference hub | T014 | Native /features/ and existing scoped reference/recovery help; F-dmz-guide |
 | `dmz-fob` · DMZ FOB · `/dmz-fob/` | DMZ FOB | native page/detail | 4173: Public preparation hub | T014 | Native /features/ and existing scoped reference/recovery help; F-dmz-fob |
 | `dmz-weapons` · DMZ Weapons · `/dmz-weapons/` | DMZ Weapons | native page/detail | 4173: Public weapon hub | T014 | Native /features/ and existing scoped reference/recovery help; F-dmz-weapons |
@@ -143,3 +145,10 @@ This inventories existing built UI output, not game completeness or newly execut
 | upgrades | 1 | T039 |
 | weapon-updates | 1 | T051 |
 | weapons | 1 | T048 |
+
+
+Inventory-items extension (2026-11-06): `item-maintenance` → `/items/manage/` (Reference, guide), reached from Items, Inventory and All features. Catalog grouping, exact Add/Edit target and no automatic writes are covered by inventory-items browser/runtime tests. This added structural registry row does not approve reviewer-owned 071 release criteria.
+
+Upgrade-checklist extension (2026-11-06): `needed` → `/needed/` (Prepare, guide), DMZ FOB ownership, linked from Upgrades, Inventory and All features. Saved-inventory budget, explicit setup and printer forecast are scoped to that extension. Adds one structural destination; does not self-approve release criteria.
+
+X01-printer extension (2026-11-06): `x01-printer` → `/recipes/x01/` (Prepare/DMZ FOB, guide). Separate carried-material reference linked from Recipes, Collection and Needed. Adds one structural destination; no reviewer approval implied.

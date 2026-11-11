@@ -1,0 +1,16 @@
+{
+  "description": "Confirm access to the relevant FOB station in your game. This report does not supply a full station unlock rule.",
+  "effects": [],
+  "id": "mw4:printer-access-vendor-item-upgrade-i-station-access",
+  "name": "Vendor Item Upgrade I station access",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "progression"
+}

@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Tacticals",
+  "description": "Creates a blinding flash that disorients nearby personnel.",
+  "id": "mw4:printer-item-flash",
+  "kind": "item",
+  "name": "Flash",
+  "rarity": "Common",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

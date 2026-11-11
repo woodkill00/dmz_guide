@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Keys",
+  "description": "Listed as a FOB upgrade material by TroubleChute. Acquisition and live-build applicability are not independently verified.",
+  "id": "mw4:tcno-key-shopping-drc-locker",
+  "kind": "item",
+  "name": "Key Shopping DRC Locker",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:tcno-fob-20261110",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

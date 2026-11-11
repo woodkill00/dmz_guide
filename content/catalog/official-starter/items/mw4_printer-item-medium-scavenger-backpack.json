@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "backpack",
+  "description": "A medium backpack with two secure slots and increased resource capacity.",
+  "id": "mw4:printer-item-medium-scavenger-backpack",
+  "kind": "item",
+  "name": "Medium Scavenger Backpack",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

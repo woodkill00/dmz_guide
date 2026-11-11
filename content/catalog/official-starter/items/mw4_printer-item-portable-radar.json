@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Field upgrades",
+  "description": "Emits a periodic radar ping to detect nearby enemies.",
+  "id": "mw4:printer-item-portable-radar",
+  "kind": "item",
+  "name": "Portable Radar",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

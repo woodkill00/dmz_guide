@@ -1,12 +1,18 @@
 {
-  "aliases": [],
-  "category": "printer-ingredient",
-  "description": "",
+  "aliases": [
+    "Binding Catalysts"
+  ],
+  "category": "Ingredients",
+  "description": "GameRant reports: Mirae hospital; medical tents. Rarity and location are secondary reports, not independently gameplay-tested.",
   "id": "mw4:binding-catalyst",
   "kind": "item",
   "name": "Binding Catalyst",
+  "rarity": "Rare",
   "sourceIds": [
-    "source:fob"
+    "source:fob",
+    "source:gamerant-ingredients-20261028",
+    "source:gamerant-x01-printer-20261106",
+    "source:tcno-items-20261110"
   ],
   "stats": [],
   "status": "verified",

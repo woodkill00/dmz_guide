@@ -1,0 +1,21 @@
+{
+  "body": "Computers is a loot-source type listed by TroubleChute. The related items below are reported possibilities, not guaranteed drops.\nSpecific map positions are not recorded here. Add identification notes and example photographs through Edit loot type or Add photos.",
+  "category": "locations",
+  "id": "mw4:loot-type-computers",
+  "relatedIds": [
+    "mw4:ingredient-electronic-sensors",
+    "mw4:ingredient-detonators",
+    "mw4:ingredient-comms-module",
+    "mw4:ingredient-control-unit",
+    "mw4:ingredient-printed-circuit-board",
+    "mw4:printer-item-foreign-intelligence-targets",
+    "mw4:ingredient-cpu",
+    "mw4:ingredient-power-regulator"
+  ],
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "title": "Computers"
+}

@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Blueprints",
+  "description": "Exfil recipe to print this item at the 3D Printer.",
+  "id": "mw4:tcno-item-27ae65ea566ed90a",
+  "kind": "item",
+  "name": "2-Plate Gel Carrier Blueprint",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

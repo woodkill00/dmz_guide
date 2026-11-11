@@ -119,8 +119,10 @@ export function itemUses(pack, profile) {
       item: {
         ...item,
         name: guard.text(item.name),
+        description: guard.text(item.description || ""),
         category: guard.text(item.category || item.kind || "Other"),
         unit: guard.text(item.unit || ""),
+        ...(item.rarity ? { rarity: guard.text(item.rarity) } : {}),
       },
       ...groups,
     });

@@ -1,3 +1,4 @@
+import "./quick-tracker.mjs";
 import {
   emptyArmory,
   validateArmory,
@@ -616,6 +617,87 @@ $("#observation-list").addEventListener("click", async (event) => {
     }
 });
 
+function acquisitionRoster() {
+  const root = $("#acquisition-roster");
+  if (!root) return;
+  if (!root.children.length) {
+    const categories = [...new Set(db.weapons.map((w) => w.category))].sort();
+    root.innerHTML = categories
+      .map(
+        (category) =>
+          `<details class="tracker-weapon-group" open data-weapon-category="${e(category)}"><summary>${e(category.replaceAll("-", " "))}</summary>${db.weapons
+            .filter((w) => w.category === category)
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(
+              (w) =>
+                `<div class="tracker-weapon-row" data-acquisition-weapon="${e(w.id)}"><a href="/armory/${encodeURIComponent(w.id)}/">${e(w.name)}</a><label><input type="checkbox" data-roster-manual="${e(w.id)}" aria-label="Manual found: ${e(w.name)}">Manual found</label><small data-acquisition-counts></small><button type="button" data-inspect-acquisition="${e(w.id)}">Attachments / blueprints</button></div>`,
+            )
+            .join("")}</details>`,
+      )
+      .join("");
+  }
+  const term = $("#acquisition-query").value.trim().toLowerCase(),
+    category = $("#acquisition-class").value,
+    show = $("#acquisition-show").value;
+  let count = 0;
+  for (const row of root.querySelectorAll("[data-acquisition-weapon]")) {
+    const weapon = db.weapons.find(
+        (w) => w.id === row.dataset.acquisitionWeapon,
+      ),
+      entry = workspace.acquisition[weapon.id] || {
+        manual: false,
+        attachments: [],
+        blueprints: [],
+      };
+    row.querySelector("input").checked = entry.manual;
+    row.querySelector("[data-acquisition-counts]").textContent =
+      `${entry.attachments.length} attachments � ${entry.blueprints.length} blueprints`;
+    row.hidden =
+      !(weapon.name + " " + weapon.category).toLowerCase().includes(term) ||
+      (!!category && weapon.category !== category) ||
+      (show === "found" && !entry.manual) ||
+      (show === "missing" && entry.manual);
+    if (!row.hidden) count++;
+  }
+  for (const group of root.children)
+    group.hidden = ![
+      ...group.querySelectorAll("[data-acquisition-weapon]"),
+    ].some((row) => !row.hidden);
+  $("#acquisition-count").textContent =
+    `${count} matching weapons � ${db.weapons.filter((w) => workspace.acquisition[w.id]?.manual).length} manuals found`;
+}
+for (const id of ["acquisition-query", "acquisition-class", "acquisition-show"])
+  $("#" + id)?.addEventListener(
+    id === "acquisition-query" ? "input" : "change",
+    acquisitionRoster,
+  );
+$("#acquisition-roster")?.addEventListener("change", async (event) => {
+  const control = event.target.closest("[data-roster-manual]");
+  if (!control) return;
+  const id = control.dataset.rosterManual,
+    manual = control.checked;
+  try {
+    await mutate((value) => {
+      const entry = value.acquisition[id] || {
+        manual: false,
+        attachments: [],
+        blueprints: [],
+      };
+      value.acquisition[id] = { ...entry, manual };
+    });
+  } catch (error) {
+    failure(error);
+    acquisitionRoster();
+  }
+});
+$("#acquisition-roster")?.addEventListener("click", (event) => {
+  const control = event.target.closest("[data-inspect-acquisition]");
+  if (!control) return;
+  $("#tracker-weapon").value = control.dataset.inspectAcquisition;
+  $("#acquisition-editor").open = true;
+  tracker();
+  $("#tracker-weapon").focus();
+});
 const tracked = () =>
   workspace.acquisition[$("#tracker-weapon").value] || {
     manual: false,
@@ -623,6 +705,7 @@ const tracked = () =>
     blueprints: [],
   };
 function tracker() {
+  acquisitionRoster();
   const weapon = $("#tracker-weapon").value,
     entry = tracked(),
     term = $("#tracker-search").value.trim().toLowerCase(),

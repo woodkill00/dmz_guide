@@ -1,12 +1,15 @@
 {
-  "aliases": [],
+  "aliases": [
+    "Cash"
+  ],
   "category": "currency",
   "description": "",
   "id": "mw4:dmz-cash",
   "kind": "currency",
   "name": "DMZ Cash",
   "sourceIds": [
-    "source:fob"
+    "source:fob",
+    "source:tcno-items-20261110"
   ],
   "stats": [],
   "status": "verified",

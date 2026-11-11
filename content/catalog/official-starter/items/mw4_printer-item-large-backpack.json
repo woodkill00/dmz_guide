@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "backpack",
+  "description": "A large backpack with a weapon slot and two secure slots.",
+  "id": "mw4:printer-item-large-backpack",
+  "kind": "item",
+  "name": "Large Backpack",
+  "rarity": "Legendary",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

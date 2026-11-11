@@ -621,6 +621,7 @@
             "resource"
           ]
         },
+        "rarity": {"type":"string","minLength":1,"maxLength":80},
         "category": {
           "type": "string",
           "maxLength": 80,
@@ -963,9 +964,23 @@
             "progression"
           ]
         },
+        "orderPage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 24
+        },
         "description": {
           "type": "string",
           "maxLength": 4000
+        },
+        "steps": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
         },
         "requirements": {
           "type": "array",
@@ -1734,9 +1749,23 @@
             "progression"
           ]
         },
+        "orderPage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 24
+        },
         "description": {
           "type": "string",
           "maxLength": 4000
+        },
+        "steps": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
         },
         "requirements": {
           "type": "array",

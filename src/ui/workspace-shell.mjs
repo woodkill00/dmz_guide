@@ -21,6 +21,7 @@ export function featureHub(feature) {
       "boss-checklist",
       "tool-missions",
       "tool-reference-library",
+      "data-review",
     ].includes(id)
   )
     return "DMZ Guide";
@@ -30,7 +31,13 @@ export function featureHub(feature) {
       "planner",
       "inventory",
       "collection",
+      "needed",
+      "quick-collect",
+      "field-desk",
+      "run-plan",
+      "x01-printer",
       "items",
+      "item-maintenance",
       "upgrades",
       "recipes",
       "tool-collections",

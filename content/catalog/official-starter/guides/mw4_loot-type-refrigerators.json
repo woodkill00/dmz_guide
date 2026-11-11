@@ -1,0 +1,21 @@
+{
+  "body": "Refrigerators is a loot-source type listed by TroubleChute. The related items below are reported possibilities, not guaranteed drops.\nSpecific map positions are not recorded here. Add identification notes and example photographs through Edit loot type or Add photos.",
+  "category": "locations",
+  "id": "mw4:loot-type-refrigerators",
+  "relatedIds": [
+    "mw4:reactive-metals",
+    "mw4:ingredient-detonators",
+    "mw4:ingredient-volatile-explosives",
+    "mw4:ingredient-stabilized-reagents",
+    "mw4:biomaterials",
+    "mw4:ingredient-nitro-compounds",
+    "mw4:printer-item-energy-drink",
+    "mw4:binding-catalyst"
+  ],
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "title": "Refrigerators"
+}

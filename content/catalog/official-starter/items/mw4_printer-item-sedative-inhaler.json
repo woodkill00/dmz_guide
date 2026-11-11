@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "consumable",
+  "description": "Immunity to all radar, immunity to all marking systems, and immunity to all thermal.",
+  "id": "mw4:printer-item-sedative-inhaler",
+  "kind": "item",
+  "name": "Sedative Inhaler",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

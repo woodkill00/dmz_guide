@@ -33,6 +33,8 @@ async function saved(page, revision) {
   );
 }
 async function findProgress(page, query) {
+  await openParentDetails(page.locator("#progress-state"));
+  await page.locator("#progress-state").selectOption("");
   await page.locator("#progress-query").fill(query);
   await page
     .locator("#progress-filters")
@@ -423,7 +425,14 @@ export async function runSourcedCatalogJourneys({
         await page.click("#apply-restore");
         await saved(page, seeded.revision);
         const rebound = await profile(page);
-        assert.equal(rebound.contentVersion, "2026.10.28.1");
+        assert.equal(
+          rebound.contentVersion,
+          await page.evaluate(
+            async () =>
+              (await import("/assets/src/client/common.mjs")).state.pack
+                .contentVersion,
+          ),
+        );
         assert.deepEqual(rebound.inventory, seeded.inventory);
         assert.deepEqual(
           rebound.spendHistory,

@@ -20,16 +20,16 @@ export function renderMainNavigation({
   extra = [],
   surface = "guide",
 } = {}) {
-  const current = featureForPage(page),
-    primary = [
-      "home",
-      "hajin-map",
-      "planner",
-      "missions",
-      "catalog",
-      "settings",
-      "search",
-    ];
+  let current = featureForPage(page);
+  const primary = [
+    "home",
+    "hajin-map",
+    "planner",
+    "missions",
+    "catalog",
+    "settings",
+    "search",
+  ];
   const labels = {
     "hajin-map": "Map",
     planner: "Prepare",
@@ -39,8 +39,13 @@ export function renderMainNavigation({
     search: "Search",
   };
   const link = (f, label = f.label) => {
-    const legacyBossWindow=f.id==='boss-checklist'&&['map','help'].includes(surface)&&resolvePresentation(page==='safe-runs'?'safe-runs':'map').variant==='legacy';
-    const external = legacyBossWindow ||
+    const legacyBossWindow =
+      f.id === "boss-checklist" &&
+      ["map", "help"].includes(surface) &&
+      resolvePresentation(page === "safe-runs" ? "safe-runs" : "map")
+        .variant === "legacy";
+    const external =
+      legacyBossWindow ||
       (f.kind !== "guide" &&
         !(f.kind === "map" && ["map", "help"].includes(surface))) ||
       (surface !== "guide" && f.kind === "guide");
@@ -54,10 +59,11 @@ export function renderMainNavigation({
     .map((p) => ({
       id: p.page,
       label: p.title,
-      group: "Reference",
+      group: p.page === "run-plan" ? "Prepare" : "Reference",
       path: p.path,
       kind: "guide",
     }));
+  if (!current) current = additional.find((f) => f.id === page);
   const rolloutSurface =
     page === "safe-runs" ? "safe-runs" : surface === "help" ? "map" : surface;
   if (resolvePresentation(rolloutSurface).variant === "modern") {
@@ -79,7 +85,7 @@ export function renderMainNavigation({
     return `<nav class="site-nav${surface !== "guide" ? " companion-nav" : ""}" aria-label="Main navigation" data-navigation-surface="${e(surface)}" data-ui-navigation="modern"><details class="ui-mobile-sections"><summary>${e(activeHub === "Tools" ? "Sections" : activeHub)} · Sections</summary><div class="ui-primary-links">${primaryMarkup}</div></details>${modernLink(
       features.find((f) => f.id === "search"),
       "Search",
-    )}<details class="nav-more"><summary>Tools · All features</summary><div><input data-navigation-filter hidden type="search" maxlength="100" aria-label="Find a link in this menu" placeholder="Find a workspace…"><button type="button" data-ui-density aria-pressed="false">Compact spacing</button>${["map","help"].includes(surface)?'<button type="button" id="theme-toggle">Light mode</button>':""}${[
+    )}<details class="nav-more"><summary>Tools · All features</summary><div><input data-navigation-filter hidden type="search" maxlength="100" aria-label="Find a link in this menu" placeholder="Find a workspace…"><button type="button" data-ui-density aria-pressed="false">Compact spacing</button>${["map", "help"].includes(surface) ? '<button type="button" id="theme-toggle">Light mode</button>' : ""}${[
       "Map",
       "DMZ Guide",
       "DMZ FOB",
@@ -129,5 +135,7 @@ export function renderBreadcrumbs(page, title = "") {
   const f = featureForPage(page);
   return page === "home"
     ? ""
-    : `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span>${f ? `<a href="/features/#${f.group.toLowerCase()}">${e(f.group)}</a><span aria-hidden="true">/</span>${title && title !== f.label ? `<a href="${e(featureURL(f))}">${e(f.label)}</a><span aria-hidden="true">/</span><span aria-current="page">${e(title)}</span>` : `<span aria-current="page">${e(f.label)}</span>`}` : "<span>Details</span>"}</nav>`;
+    : page === "run-plan"
+      ? `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/dmz-fob/">Prepare</a><span aria-hidden="true">/</span><span aria-current="page">${e(title || "Next run plan")}</span></nav>`
+      : `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span>${f ? `<a href="/features/#${f.group.toLowerCase()}">${e(f.group)}</a><span aria-hidden="true">/</span>${title && title !== f.label ? `<a href="${e(featureURL(f))}">${e(f.label)}</a><span aria-hidden="true">/</span><span aria-current="page">${e(title)}</span>` : `<span aria-current="page">${e(f.label)}</span>`}` : "<span>Details</span>"}</nav>`;
 }

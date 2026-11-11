@@ -1,0 +1,16 @@
+{
+  "id": "source:tcno-items-20261110",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-10",
+    "kind": "web",
+    "lineageKey": "tcno-dmz",
+    "observationKey": "tcno-items-20261110"
+  },
+  "publishedAt": "Not stated",
+  "reviewedAt": "2026-11-10",
+  "supports": "256 provider item records, 157 unlock references and 34 FOB upgrades. Reported descriptions, rarity and loot-container types; not guaranteed loot or independently verified current-build mechanics.",
+  "title": "TroubleChute: item descriptions, loot sources and unlock references",
+  "type": "community",
+  "url": "https://tools.tcno.co/dmz/fob"
+}

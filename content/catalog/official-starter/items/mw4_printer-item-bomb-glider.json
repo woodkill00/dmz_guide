@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Fire support",
+  "description": "Hand-held glider with an explosive payload.",
+  "id": "mw4:printer-item-bomb-glider",
+  "kind": "item",
+  "name": "Bomb Glider",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

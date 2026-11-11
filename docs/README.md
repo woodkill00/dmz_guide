@@ -1,5 +1,7 @@
 # Documentation
 
+- [Activision access inquiry (parked draft)](activision-access/README.md): official contact routes, a ready-to-personalize request and the separate personal-data export option. Nothing has been sent.
+
 - [CODMunity baseline and DMZ checks](codmunity-baseline.md): preferred damage/stats, \*WZ labels, reviewed updates and six-hour local monitoring.
 
 - [Weapon armory and Gunsmith](gunsmith.md): game-inspired list, weapon displays, slot navigation and local artwork.
@@ -49,3 +51,5 @@ The older planning documents describe proposals at their recorded date. The cons
 - [Home, navigation and verified workflows](home-navigation.md): dashboard, public search, shortcuts, map tools, upgrades and missions.
 
 The [visual site map](site-map.md) inventories all built pages, companion destinations and their connections, with a separate runtime menu/tab audit.
+
+- [TroubleChute item reference](tcno-item-reference.md): sourced item details, loot sources, unlock references and local refresh/preview commands.

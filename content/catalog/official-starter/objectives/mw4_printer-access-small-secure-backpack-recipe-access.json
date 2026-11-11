@@ -1,0 +1,16 @@
+{
+  "description": "Reported unlock route: Found blueprint. Record access only after checking your game; a listed level is not automatically player completion.",
+  "effects": [],
+  "id": "mw4:printer-access-small-secure-backpack-recipe-access",
+  "name": "Small Secure Backpack recipe access",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "progression"
+}

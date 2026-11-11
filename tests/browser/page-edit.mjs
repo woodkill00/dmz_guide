@@ -113,7 +113,8 @@ export async function captureDocumentEvidence(page, path) {
         })),
     }));
   const beforeLayout = await snapshot();
-  const dimensions = await measure();
+  let dimensions = await measure();
+  let settledDuringCapture = false;
   assert(dimensions.width > 0 && dimensions.height > 0);
   const tiled = dimensions.width > 32000 || dimensions.height > 32000;
   const slices = [];
@@ -144,6 +145,20 @@ export async function captureDocumentEvidence(page, path) {
         ...(tiled ? { clip } : {}),
       });
       assert.equal(png.subarray(1, 4).toString(), "PNG");
+      // A full-page capture can trigger lazy media below the viewport. Accept
+      // its expanded document only when the completed PNG and a fresh page
+      // measurement agree exactly; otherwise retain the strict failure.
+      if (!tiled &&
+          (png.readUInt32BE(16) !== clip.width || png.readUInt32BE(20) !== clip.height)) {
+        const settled = await measure();
+        if (png.readUInt32BE(16) === settled.width &&
+            png.readUInt32BE(20) === settled.height) {
+          dimensions = settled;
+          clip.width = settled.width;
+          clip.height = settled.height;
+          settledDuringCapture = true;
+        }
+      }
       assert.equal(
         png.readUInt32BE(16),
         clip.width,
@@ -212,6 +227,7 @@ export async function captureDocumentEvidence(page, path) {
       {
         url: page.url(),
         mode: tiled ? "document-tiles" : "full-page",
+        settledDuringCapture,
         coordinateSpace: "CSS document pixels",
         dimensions,
         maxTileHeight: tiled ? maxSlice : null,

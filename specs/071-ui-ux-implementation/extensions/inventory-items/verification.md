@@ -1,0 +1,36 @@
+# Verification and convergence — inventory items
+
+Date: 2026-11-06. Active owner: feature 071, inventory-items extension. Manual bounded specification/plan/tasks/analysis/implementation/convergence record; no skill invocation or independent release approval claimed.
+
+Implemented: I1–I7. The supplied GameRant article contains 29 named ingredient rows (6 Uncommon, 8 Rare, 8 Epic, 5 Legendary, 2 Ultra). Starter: 73 item definitions including 25 newly added definitions and four enriched existing ingredient definitions. Upgrade observations: 113 definitions, with the existing 29 enriched. Existing IDs, kinds, units, recipe requirements and upgrade amounts remain intact. Both versions are 2026.11.06.1. Source claims are explicitly secondary and not independently gameplay-tested. No article images/prose or generated Used For requirement graph is imported.
+
+Passed evidence:
+
+- `npm test`: 843 passed, 0 failed, 0 skipped, final run 186500.6016 ms (includes the empty-filter pager repair). Original validators, spending, spoiler safety, transactional recovery, canonical bytes, HTTP author boundaries and registry invariants remain covered.
+- `node tests/browser/inventory-items.mjs` and `node tests/browser/inventory-cash-stale.mjs`: Chromium, Firefox and WebKit. Exact legacy cash 1333601, preview cancel/confirm, rebind, retained other quantities/completion, previous saved recovery record, reload, 2m cash/1m noncurrency limits, retained filter/sort drafts, 29 ingredients, alphabetical/rarity views, real-catalog default, Add/Edit destinations and mobile geometry. No application console errors. Run with `BROWSER=firefox` or `BROWSER=webkit` to choose an installed engine; default Chromium. Uses fresh browser contexts, not owner storage.
+- `DMZ_UI_VARIANT=modern node tests/browser/inventory-items-studio.mjs`: isolated temporary repository. Exact-catalog Add does not write automatically; optional rarity/category entry, version change, validate/preview/save, exact-record Edit and durable renamed record, stale target HTTP 400. Temporary target checked before cleanup. No writes to owner content from this test.
+- Existing `runRefinedInventoryTests`: passed, including a 5000-item admitted QA catalog, 50-row mounting, mission correction, use disclosures, category filters and off-page invalid-draft recovery. Original source-order journey now explicitly selects Catalog order; new default-name behavior is independently tested.
+- Existing `runInventoryPaginationLayout`: passed at 320/390/1280px, light/dark, normal/enlarged text, keyboard page/no-result/boundary focus, stable controls, draft preservation and strict browser health. Exact theme/count expectations reconciled with current UI copy; assertions retained. Large-catalog pager stays visible for empty filters.
+- Modern build: 950 independent HTML routes plus 404, successful transactional publication to local dist. Local guide remains 4173; Content Studio 4174 restarted with the current target parser/schema. No Git publication.
+- `py -3 scripts/check.py`: 0 failures. `npm run format:check`: passed after formatting the pre-existing site-navigation style drift. `git diff --check`: passed (Git may print line-ending normalization notices).
+
+Visual evidence is machine-local under `.local/inventory/screenshots/`; browser and runtime logs are under `.local/inventory/`. Chromium/Firefox capture screenshots. WebKit screenshot capture is omitted because Playwright 1.58.2 injects a `body {}` animation-sync style that strict CSP rejects; its functional, geometry and console checks remain enabled and pass. No CSP relaxation or diagnostic suppression was added.
+
+Convergence: no open implementation/contract findings within I1–I7. Game completeness, independently tested rarity/spawn facts, automatic article refresh, merging different catalogs' stock and wider 071 release promotion are not claimed. Existing local catalog overrides intentionally retain priority over the bundled baseline; no automatic overwrite of private edits. Reviewer-owned release checklists remain untouched.
+
+## Nested categories follow-up — I8
+
+Implemented main category buttons with nested type buttons, compact h2/h3 headings, expanded-state arrows and matching/page counts. Weapons contains every matching weapon class; Materials contains resources, ingredients and upgrade materials. Equipment, Consumables, Currency and unknown/custom types have their own main sections. All matching type headings remain discoverable across pages; an off-page type has a Show items shortcut to its first page. The 50-quantity-row cap remains unchanged. Category/type identities are scoped together, so identically named types in different main categories cannot collapse each other. Type labels use own-property lookups so custom labels such as constructor remain inert strings.
+
+T7 / I8 analysis and fix cycle: initial wrapping preserved rows but only exposed current-page types. Visual review identified the discoverability gap; final rendering indexes matching types in a linear pass, retains all headers and adds guarded navigation to the required page. Invalid recovery opens both the main category and type and keeps other-page drafts. Final browser acceptance exercises this path and verifies a type initially lacking mounted rows becomes reachable. Existing scale test's heading selector changed from h2 to direct h3 to match the new semantic hierarchy without also collecting item-detail h3 headings. Assertions and 5000-item fixture are retained.
+
+Evidence (2026-11-06):
+
+- Full `npm test` after initial two-level rendering: 844 passed, zero failures/skips (180851.7071 ms). Subsequent all-type indexing and custom-label guard were verified with 27 focused inventory runtime tests, all passed. No second full-suite result is claimed for those final refinements.
+- `node tests/browser/inventory-sections.mjs`, with Chromium (default), BROWSER=firefox and BROWSER=webkit: passed on the final build. Covers all-type header discovery/off-page shortcut, nested disclosures, independent same-label identities, unchanged input DOM/raw text through toggles, expand/collapse all, filtering, hidden-invalid recovery, keyboard operation, mobile 44px targets/no horizontal overflow, no console errors. Fresh contexts only.
+- Existing runRefinedInventoryTests and runInventoryPaginationLayout: both passed after final refinements, including the 5000-item catalog and themes/enlarged text/320–1280px layout journeys.
+- `node tests/browser/inventory-items.mjs`: final cash/ingredient/directory regression passed.
+- Modern build passed: 950 independent HTML routes plus 404; local guide 4173 serves the updated build. No content, profile IDs, source facts or registry destinations changed for I8.
+- `npm run format:check`, `py -3 scripts/check.py`, `git diff --check`: passed. Visual captures reviewed at desktop and 390px mobile under `.local/inventory/screenshots/nested-*.png`; local logs are ignored.
+
+I8 convergence: implemented and verified, no unresolved scoped findings. Reviewer-owned release approval remains untouched. Disclosure state persists through current-page filtering/paging and save rerenders, and resets on catalog change; no reload-persistence claim is made.

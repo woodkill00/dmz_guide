@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { revealReviewerControl } from "./reviewer-disclosures.mjs";
+import { revealReviewerControl, chooseCatalog, clickCatalogBackup } from "./reviewer-disclosures.mjs";
 import { readFile, mkdir } from "node:fs/promises";
 const packId = "demo:training-pack";
 const progressURL = "/progression/?pack=demo%3Atraining-pack";
@@ -77,7 +77,7 @@ async function profile(page) {
 }
 async function downloadProfile(page) {
   const pending = page.waitForEvent("download");
-  await page.click("#export-current-profile");
+  await clickCatalogBackup(page);
   const download = await pending;
   return JSON.parse(await readFile(await download.path(), "utf8"));
 }
@@ -512,7 +512,7 @@ export async function runProgressionTests({ browser, base }) {
     await stale.close();
     // A pack change cancels the reset, and never clears the other pack.
     await page.click("#progress-reset");
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await chooseCatalog(page, "official:mw4-dmz-starter");
     await page.waitForFunction(() =>
       document.querySelector("#pack-note").textContent.includes("MW4"),
     );
@@ -520,7 +520,7 @@ export async function runProgressionTests({ browser, base }) {
       await page.locator("#progress-reset-confirm").isVisible(),
       false,
     );
-    await page.selectOption("#pack-select", packId);
+    await chooseCatalog(page, packId);
     await page.waitForSelector(upgradeControl("completion"), {
       state: "attached",
     });

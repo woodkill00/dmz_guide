@@ -1,0 +1,17 @@
+{
+  "aliases": [],
+  "category": "Ingredients",
+  "description": "GameRant reports: Mirae hospital; medical tents. Rarity and location are secondary reports, not independently gameplay-tested.",
+  "id": "mw4:ingredient-stabilized-reagents",
+  "kind": "item",
+  "name": "Stabilized Reagents",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:gamerant-ingredients-20261028",
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

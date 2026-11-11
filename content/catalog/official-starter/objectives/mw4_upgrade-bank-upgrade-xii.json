@@ -1,0 +1,61 @@
+{
+  "description": "Increases the amount of cash your bank can hold to 1 Billion. TroubleChute-listed requirements and prerequisite links, reviewed 2026-11-10; not independently verified for the current build. Consumption remains unknown where not previously confirmed.",
+  "effects": [],
+  "id": "mw4:upgrade-bank-upgrade-xii",
+  "name": "Bank Upgrade XII",
+  "oneTime": true,
+  "prerequisites": [
+    "mw4:upgrade-bank-upgrade-xi"
+  ],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "mw4:ingredient-gold-bar",
+      "quantity": 20,
+      "sourceIds": [
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "mw4:ingredient-gold-skull",
+      "quantity": 20,
+      "sourceIds": [
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "mw4:tcno-irradiated-container-medium",
+      "quantity": 3,
+      "sourceIds": [
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "mw4:printer-item-fulton-drop-marker",
+      "quantity": 3,
+      "sourceIds": [
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:tcno-fob-20261110",
+    "source:tcno-items-20261110"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [],
+    "prerequisiteStatus": "known",
+    "tierLabel": "XII"
+  }
+}

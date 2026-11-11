@@ -1,5 +1,8 @@
 import { mountHomeMindmap } from "./home-mindmap.mjs";
-import { validateTopology } from "../domain/site-topology.mjs";
+import {
+  validateTopology,
+  TOPOLOGY_JSON_NODES,
+} from "../domain/site-topology.mjs";
 import { readPublicJSON } from "./public-data.mjs";
 const $ = (s) => document.querySelector(s),
   make = (tag, text, cls) => {
@@ -316,7 +319,12 @@ function reset() {
 }
 try {
   data = validateTopology(
-    await readPublicJSON("/assets/content/site-topology.json", 12582912),
+    await readPublicJSON(
+      "/assets/content/site-topology.json",
+      12582912,
+      undefined,
+      { nodes: TOPOLOGY_JSON_NODES },
+    ),
   );
   mountHomeMindmap(data);
   for (const n of data.nodes) byId.set(n.id, n);

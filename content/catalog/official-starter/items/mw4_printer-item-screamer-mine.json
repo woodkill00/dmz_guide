@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Tacticals",
+  "description": "Proximity-triggered alarm that flashes enemies within the vicinity.",
+  "id": "mw4:printer-item-screamer-mine",
+  "kind": "item",
+  "name": "Screamer Mine",
+  "rarity": "Common",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

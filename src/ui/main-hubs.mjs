@@ -25,6 +25,7 @@ export function featurePages() {
           "Find missions, keys and the reference information for your next deployment.",
         ) +
         links() +
+        '<p class="actions"><a href="/data-review/">Review unknown and disputed data</a></p>' +
         section(
           "missions",
           "Missions and progression",
@@ -49,23 +50,24 @@ export function featurePages() {
           "Prepare your upgrades, materials and loadout. Existing trackers remain the place to record progress.",
         ) +
         links() +
+        '<p class="actions"><a class="button primary" href="/run-plan/">Prepare my next run</a></p>' +
         section(
           "upgrades",
           "Upgrades",
           "Open the existing upgrade tracker to review tiers, requirements and completion. This hub does not change inventory or mark progress.",
-          ["upgrades"],
+          ["upgrades", "needed", "quick-collect"],
         ) +
         section(
           "inventory",
           "Inventory and materials",
           "Record held stock and review outstanding collection needs.",
-          ["inventory", "items", "collection"],
+          ["inventory", "field-desk", "items", "collection"],
         ) +
         section(
           "crafting",
           "Crafting and preparation",
           "Review recipes and plan what to collect before you deploy.",
-          ["recipes", "planner"],
+          ["recipes", "x01-printer", "planner"],
         ),
     },
     {

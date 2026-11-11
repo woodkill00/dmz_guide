@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { chooseCatalog } from "./reviewer-disclosures.mjs";
 export async function runCommunityTests({ browser, base }) {
   const context = await browser.newContext({
       viewport: { width: 390, height: 844 },
@@ -58,7 +59,7 @@ export async function runCommunityTests({ browser, base }) {
     review = JSON.parse(await readFile(await reviewFile.path(), "utf8"));
   assert.equal(review.decision, "needs-evidence");
   assert.deepEqual(review.correction, packet);
-  await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+  await chooseCatalog(page, "official:mw4-dmz-starter");
   await page.waitForFunction(
     () => document.querySelector("#review-stage").hidden,
   );
@@ -112,7 +113,7 @@ export async function runCommunityTests({ browser, base }) {
     mimeType: "application/json",
     buffer: Buffer.from(raw),
   });
-  await page.selectOption("#pack-select", "demo:training-pack");
+  await chooseCatalog(page, "demo:training-pack");
   await page.waitForTimeout(650);
   assert.equal(await page.locator("#review-stage").isVisible(), false);
   assert.deepEqual(await snapshots(), before);

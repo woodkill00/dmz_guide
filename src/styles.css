@@ -1,4 +1,46 @@
 @import "./ui/layout-tokens.css";
+.build-target-choice {
+  min-width: 0;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+}
+.build-target-choice label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+}
+.build-target-choice input[type="checkbox"] {
+  width: 1.1rem;
+  min-height: 1.1rem;
+  flex-shrink: 0;
+}
+.build-target-choice .build-target-count {
+  font-size: 0.7rem;
+}
+.build-target-choice input[type="number"] {
+  width: 4.5rem;
+  min-width: 0;
+  min-height: 2rem;
+  padding: 0.2rem;
+  margin: 0.2rem 0;
+}
+.build-target-choice [data-build-status] {
+  display: block;
+  font-size: 0.65rem;
+}
+.build-target-choice:has([data-build-select]:not(:checked))
+  .build-target-count {
+  display: none;
+}
+.item-row:has(> .build-target-choice) {
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem) auto;
+}
+@media (max-width: 800px) {
+  .item-row:has(> .build-target-choice) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 :root {
   color-scheme: dark;
   --bg: #111513;
@@ -1532,11 +1574,11 @@ main :where(p, li, a, ul, ol, section, article, div) {
 .inventory-group {
   margin-block: 1rem;
 }
-.inventory-group > h2 {
+.inventory-group > h3 {
   font-size: 1rem;
   margin: 0;
 }
-.inventory-group > h2 button {
+.inventory-group > h3 button {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -3863,4 +3905,314 @@ html[data-key-density="comfortable"] .key-directory td {
 }
 .home-mindmap .mindmap-outline ul {
   padding-left: 0.25rem;
+}
+
+.inventory-category {
+  margin-block: calc(1rem + 0.25vw);
+  min-inline-size: 0;
+}
+.inventory-category > h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.inventory-category > h2 button {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  inline-size: 100%;
+  min-block-size: 44px;
+  text-align: start;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: calc(0.6rem + 0.1vw);
+}
+.inventory-category > h2 small {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: normal;
+}
+.inventory-category > div {
+  padding-inline: clamp(0px, calc(0.5vw + 0.2rem), 0.75rem);
+  border-inline-start: 2px solid var(--line);
+}
+:is([data-inventory-category], [data-inventory-group])::before {
+  content: "▾";
+  flex-shrink: 0;
+}
+:is(
+    [data-inventory-category],
+    [data-inventory-group]
+  )[aria-expanded="false"]::before {
+  content: "▸";
+}
+
+.needed-table-scroll {
+  overflow: auto;
+  max-inline-size: 100%;
+  max-block-size: calc(100dvh - 12rem);
+  border: 1px solid var(--line);
+}
+.needed-table {
+  inline-size: 100%;
+  min-inline-size: 52rem;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.needed-table :is(th, td) {
+  padding: calc(0.45rem + 0.1vw);
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+.needed-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--raised);
+}
+.needed-table small {
+  display: block;
+  color: var(--muted);
+  font-weight: normal;
+}
+.needed-table th[scope="row"] {
+  min-inline-size: 10rem;
+}
+#upgrade-budget-summary p {
+  margin-block: 0.4rem;
+}
+.inventory-offpage {
+  padding: 0.5rem;
+}
+
+.needed-number {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.needed-number[data-needed-number="covered"] {
+  color: #bcf5cc;
+}
+.needed-number[data-needed-number="short"] {
+  color: #ffb4b4;
+}
+.needed-number[data-needed-number="review"] {
+  color: #ffe49a;
+}
+[data-theme="light"] .needed-number[data-needed-number="covered"] {
+  color: #14542c;
+}
+[data-theme="light"] .needed-number[data-needed-number="short"] {
+  color: #851624;
+}
+[data-theme="light"] .needed-number[data-needed-number="review"] {
+  color: #614800;
+}
+.needed-table td {
+  position: relative;
+}
+.needed-table .sr-only {
+  inset-inline-start: 0;
+  inset-block-start: 0;
+}
+
+.x01-recipe-group {
+  margin-block: calc(1rem + 0.25vw);
+}
+.x01-table-scroll {
+  max-inline-size: 100%;
+  overflow: auto;
+}
+.x01-recipe-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.x01-recipe-table :is(th, td) {
+  text-align: start;
+  vertical-align: top;
+  padding: calc(0.5rem + 0.1vw);
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.x01-recipe-table th:first-child {
+  inline-size: 35%;
+}
+.x01-recipe-table thead {
+  background: var(--raised);
+}
+.x01-costs {
+  margin: 0;
+  padding-inline-start: 1.25rem;
+}
+
+.loot-type-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0;
+  list-style: none;
+  margin-block: 0.5rem;
+}
+.loot-type-buttons a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: var(--surface);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.item-detail-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+.item-core-facts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.25rem 0.75rem;
+  margin: 0.25rem 0;
+}
+.item-core-facts dd {
+  margin: 0;
+}
+.item-source-notes,
+.item-use-group {
+  margin-block: 0.5rem;
+}
+.item-use-list {
+  max-height: 18rem;
+  overflow: auto;
+}
+.item-detail-layout .provenance > details > summary {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Data selection is an advanced disclosure; errors and unsaved work stay visible. */
+.catalog-context {
+  margin-block: 0.4rem 0.75rem;
+  min-width: 0;
+  max-width: min(100%, 32rem);
+}
+.catalog-context > summary {
+  cursor: pointer;
+  font-size: 0.875rem;
+  min-height: 2.75rem;
+  align-content: center;
+}
+.catalog-context[open] {
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  max-height: 20rem;
+  overflow: auto;
+}
+.catalog-context #pack-note {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.catalog-context select {
+  max-width: 100%;
+}
+.catalog-context [data-fixture="true"] {
+  color: #e5aa54;
+}
+#save-status[data-catalog-quiet="true"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.quick-tracker .tracker-context.catalog-context {
+  max-width: min(100%, 32rem);
+}
+
+.quick-tracker .tracker-context.catalog-context[open] {
+  max-width: min(100%, 32rem);
+}
+
+.catalog-context summary[data-unsaved="true"] {
+  color: #e5aa54;
+}
+html[data-theme="light"] .catalog-context summary[data-unsaved="true"],
+html[data-theme="light"] .catalog-context summary[data-fixture="true"] {
+  color: #6b4a12;
+}
+.run-plan-card {
+  display: grid;
+  gap: clamp(0.55rem, 1vw, 0.9rem);
+  margin-block: clamp(0.6rem, 1vw, 1rem);
+}
+.run-plan-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.run-plan-heading h2 {
+  margin: 0;
+}
+.run-plan-card [data-reservation-form] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.6rem;
+}
+.run-plan-card [data-reservation-form] label {
+  min-width: min(100%, 12rem);
+}
+.run-plan-card [data-reservation-form] select {
+  max-width: min(100%, 24rem);
+}
+.run-plan-card [data-reservation-form] input {
+  width: min(100%, 8rem);
+}
+.run-plan-reservations {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  padding-inline-start: 1.25rem;
+}
+.run-plan-sections {
+  display: grid;
+  align-items: start;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: clamp(0.7rem, 1.5vw, 1.2rem);
+}
+.run-plan-sections > section {
+  min-width: 0;
+  padding: clamp(0.6rem, 1vw, 0.9rem);
+  border: 1px solid var(--border, currentColor);
+  border-radius: 0.5rem;
+}
+.run-plan-card h3 {
+  margin-block: 0 0.5rem;
+}
+.orders-coverage {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+  gap: 0.5rem;
+}
+.orders-page {
+  border: 1px solid var(--border, currentColor);
+  padding: 0.4rem 0.55rem;
+  border-radius: 0.35rem;
+  font-variant-numeric: tabular-nums;
+}
+.orders-page.unrecorded {
+  opacity: 0.68;
+}
+.run-prerequisite {
+  margin-inline-start: calc(var(--depth, 0) * 0.75rem);
 }

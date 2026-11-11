@@ -1,5 +1,7 @@
 import { resolvePresentation } from "../src/ui/presentation-config.mjs";
 import {
+  parseItemCreateTarget,
+  resolveItemCreateTarget,
   parseAuthorTarget,
   resolveAuthorTarget,
 } from "../src/content/author-target.mjs";
@@ -233,9 +235,14 @@ export async function createAuthorServer({
               );
             if (url.search) {
               try {
-                const target = parseAuthorTarget(url.searchParams);
-                if (!target) throw new Error("Editor target is missing");
-                resolveAuthorTarget((await store.read()).entries, target);
+                if (url.searchParams.has("create")) {
+                  const target = parseItemCreateTarget(url.searchParams);
+                  resolveItemCreateTarget((await store.read()).entries, target);
+                } else {
+                  const target = parseAuthorTarget(url.searchParams);
+                  if (!target) throw new Error("Editor target is missing");
+                  resolveAuthorTarget((await store.read()).entries, target);
+                }
               } catch (error) {
                 throw new AuthorError("INVALID_TARGET", error.message, 400);
               }

@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "DDoS"
+  ],
+  "category": "Field upgrades",
+  "description": "Activates a device that deactivates electronics, and disrupts enemy sensors in the immediate area for a short time.",
+  "id": "mw4:printer-item-ddos",
+  "kind": "item",
+  "name": "DDOS",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

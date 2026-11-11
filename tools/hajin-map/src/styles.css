@@ -229,6 +229,12 @@ body.map-page{height:100dvh;display:flex;flex-direction:column}body.map-page>#ap
 .key-grid-context p { margin-block: .4rem; }
 .key-grid-context button { min-height: 40px; padding: .4rem; color: #f5f3e9; background: #2b3628; border: 1px solid #849477; border-radius: .3rem; }
 .field-toolbar{position:absolute;z-index:600;inset-block-start:10px;inset-inline-start:50%;transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-inline-size:calc(100% - 28px);padding:5px;border:1px solid #6b775c;border-radius:6px;background:#172018;color:#f5f3e9}.field-toolbar button,.field-toolbar summary,.map-selection-inspector button{min-block-size:44px;padding:6px 10px;color:#f5f3e9;background:#2b3628;border:1px solid #849477;border-radius:4px;cursor:pointer}.field-toolbar details{position:relative}.field-toolbar details[open]{display:flex;flex-direction:column;gap:4px}.field-toolbar-status:empty{display:none}.field-toolbar-status{flex-basis:100%;max-inline-size:25rem;margin:2px;font-size:12px}.map-selection-inspector{position:absolute;z-index:610;right:12px;bottom:55px;inline-size:min(var(--selection-width,380px),calc(100% - 24px));max-block-size:min(var(--selection-height,300px),calc(100% - 90px));overflow:auto;padding:10px;border:1px solid #849477;border-radius:6px;background:#172018;color:#f5f3e9;box-shadow:0 5px 20px #0008;overscroll-behavior:contain}.map-selection-inspector[hidden]{display:none}.map-selection-inspector h2{font-size:16px;margin:0 0 8px;overflow-wrap:anywhere}.map-selection-inspector p{font-size:13px;white-space:pre-line;overflow-wrap:anywhere}.map-selection-inspector label{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:44px}.map-marker-selected{filter:drop-shadow(0 0 5px #ffe284);outline:2px solid #ffe284;outline-offset:3px}@media(max-width:760px){.field-toolbar{inset-block-start:5px;inline-size:calc(100% - 20px)}.field-toolbar button,.field-toolbar summary{font-size:12px;padding:5px 8px}.map-selection-inspector{left:8px;right:8px;bottom:45px;inline-size:auto;max-block-size:45dvh;border-radius:10px 10px 0 0}.map-heading{top:70px}}
+@media (min-width: 761px) {
+  .field-toolbar {
+    inset-inline-start: calc((100% - 260px) / 2);
+    max-inline-size: calc(100% - 300px);
+  }
+}
 
 /* Compact source navigation and stationary marker cards (067). */
 #map-key-content details[data-menu-section]{margin:0 0 8px;border:1px solid var(--line);border-radius:5px;min-width:0}

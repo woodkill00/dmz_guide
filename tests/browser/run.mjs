@@ -167,10 +167,13 @@ try {
     buffer: Buffer.from(JSON.stringify(backup)),
   });
   await page.waitForSelector("#restore-preview:not([hidden])");
+  await page.locator(".catalog-context > summary").click();
   await page.selectOption("#pack-select", "official:mw4-dmz-starter");
   await page.waitForFunction(
     () => document.querySelector("#restore-preview").hidden,
   );
+  if (!(await page.locator(".catalog-context").evaluate((node) => node.open)))
+    await page.locator(".catalog-context > summary").click();
   await page.selectOption("#pack-select", "demo:training-pack");
   await page.waitForFunction(() =>
     document.querySelector("#pack-note").textContent.includes("FICTIONAL"),
@@ -363,6 +366,7 @@ try {
     "9",
   );
   const unsavedDownload = deniedPage.waitForEvent("download");
+  await deniedPage.locator(".catalog-context > summary").click();
   await deniedPage.click("#export-current-profile");
   const unsaved = await unsavedDownload;
   assert.equal(
@@ -397,6 +401,7 @@ try {
   await qp.waitForSelector("#error:not([hidden])");
   assert.equal(await qp.locator("#restore-preview").isVisible(), true);
   const qdownload = qp.waitForEvent("download");
+  await qp.locator(".catalog-context > summary").click();
   await qp.click("#export-current-profile");
   const qd = await qdownload;
   assert.deepEqual(
@@ -442,6 +447,8 @@ try {
   await runRecoveryTruthfulnessTests({ browser, base });
   const { runReaderFlowTests } = await import("./reader-flow.mjs");
   await runReaderFlowTests({ browser, base });
+  const { runConnectedLayouts } = await import("./connected-layouts.mjs");
+  await runConnectedLayouts({ browser, base });
   checkHealth();
   server.assertAlive();
 } catch (error) {
@@ -462,3 +469,16 @@ try {
 console.log(
   "Browser acceptance passed: direct routes, persistence, planning, backup/reset/cancel/restore, hostile import, tab conflict, 320/390px, no-JS and console.",
 );
+// Feature 073 journeys own isolated local servers and profiles. Keep them
+// sequential so their disposable state cannot alter the main acceptance run.
+for (const script of [
+  "run-plan.mjs",
+  "run-plan-mixed.mjs",
+  "data-review.mjs",
+  "location-timeline.mjs",
+  "verified-backup.mjs",
+  "mission-coverage.mjs",
+  "mission-encounter.mjs",
+  "run-review.mjs",
+])
+  await import(`./${script}`);

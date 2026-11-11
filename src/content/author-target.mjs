@@ -66,3 +66,39 @@ export function authorPath({ packKey, packId, id, intent = "edit" }) {
 export function previewPath({ packKey, id }) {
   return `/preview?packKey=${encodeURIComponent(packKey)}&id=${encodeURIComponent(id)}`;
 }
+
+// A create destination selects a catalog and the existing Add item form only.
+// It never creates a record or falls back to another catalog.
+export function parseItemCreateTarget(params) {
+  assert(
+    [...params.keys()].sort().join(",") === "create,packId,packKey",
+    invalid,
+  );
+  const target = Object.fromEntries(params);
+  assert(target.create === "items", invalid);
+  parseAuthorTarget(
+    new URLSearchParams({
+      packKey: target.packKey,
+      packId: target.packId,
+      id: "create:item",
+      intent: "edit",
+    }),
+  );
+  return target;
+}
+export function resolveItemCreateTarget(entries, target) {
+  parseItemCreateTarget(new URLSearchParams(target));
+  const matches = entries.filter(
+    (entry) => entry.key === target.packKey && entry.pack.id === target.packId,
+  );
+  assert(
+    matches.length === 1,
+    "This catalog is missing or its identity changed. No substitute catalog was selected.",
+  );
+  return { entry: matches[0] };
+}
+export function itemCreatePath({ packKey, packId }) {
+  const params = new URLSearchParams({ create: "items", packKey, packId });
+  parseItemCreateTarget(params);
+  return "/?" + params;
+}

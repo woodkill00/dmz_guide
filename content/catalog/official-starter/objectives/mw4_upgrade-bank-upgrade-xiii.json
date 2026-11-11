@@ -1,0 +1,61 @@
+{
+  "description": "Increases the amount of cash your bank can hold to 2 Billion. TroubleChute-listed requirements and prerequisite links, reviewed 2026-11-10; not independently verified for the current build. Consumption remains unknown where not previously confirmed.",
+  "effects": [],
+  "id": "mw4:upgrade-bank-upgrade-xiii",
+  "name": "Bank Upgrade XIII",
+  "oneTime": true,
+  "prerequisites": [
+    "mw4:upgrade-bank-upgrade-xii"
+  ],
+  "requirements": [
+    {
+      "consumption": "unknown",
+      "itemId": "mw4:tcno-key-fallout-drc-locker",
+      "quantity": 1,
+      "sourceIds": [
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "mw4:tcno-key-shopping-drc-locker",
+      "quantity": 1,
+      "sourceIds": [
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "mw4:tcno-key-milbase-drc-locker",
+      "quantity": 1,
+      "sourceIds": [
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "unknown",
+      "itemId": "mw4:printer-item-door-breacher-charge",
+      "quantity": 5,
+      "sourceIds": [
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:tcno-fob-20261110",
+    "source:tcno-items-20261110"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [],
+    "prerequisiteStatus": "known",
+    "tierLabel": "XIII"
+  }
+}

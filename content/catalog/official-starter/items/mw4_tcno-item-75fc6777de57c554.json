@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Fire Support",
+  "description": "An untargetable orbital UAV that reveals the enemy's direction on the minimap in real time.",
+  "id": "mw4:tcno-item-75fc6777de57c554",
+  "kind": "item",
+  "name": "Directional UAV",
+  "rarity": "Legendary",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

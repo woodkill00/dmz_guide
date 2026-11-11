@@ -209,6 +209,7 @@ async function initializationHarness({
   };
   const context = vm.createContext({
     state,
+    mountCatalogContext: () => null, // Presentation bootstrap is exercised in browser tests.
     statusRevision: 0,
     documentDeparted: false,
     catalogReadController: new AbortController(),

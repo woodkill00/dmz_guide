@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Smoke"
+  ],
+  "category": "Tacticals",
+  "description": "Deploys a smoke screen that blocks vision and automated targeting systems.",
+  "id": "mw4:printer-item-smoke-grenade",
+  "kind": "item",
+  "name": "Smoke Grenade",
+  "rarity": "Common",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

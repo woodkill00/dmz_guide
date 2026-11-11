@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "equipment",
+  "description": "Parachute with a limited number of uses.",
+  "id": "mw4:printer-item-disposable-parachute",
+  "kind": "item",
+  "name": "Disposable Parachute",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

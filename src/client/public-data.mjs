@@ -1,5 +1,13 @@
 import { parseBounded } from "../content/limits.mjs";
-export async function readPublicJSON(path, maxBytes = 2097152, signal) {
+export async function readPublicJSON(
+  path,
+  maxBytes = 2097152,
+  signal,
+  options = {},
+) {
+  const nodeLimit = options.nodes ?? 150000;
+  if (!Number.isSafeInteger(nodeLimit) || nodeLimit < 1 || nodeLimit > 300000)
+    throw Error("Invalid public data node budget");
   const controller = new AbortController(),
     timer = setTimeout(() => controller.abort(), 3000),
     abort = () => controller.abort();
@@ -30,7 +38,7 @@ export async function readPublicJSON(path, maxBytes = 2097152, signal) {
     }
     return parseBounded(new TextDecoder().decode(bytes), maxBytes, {
       depth: 20,
-      nodes: 150000,
+      nodes: nodeLimit,
       string: 20000,
     });
   } finally {

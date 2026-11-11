@@ -64,6 +64,8 @@ export function profileChangeSummary(before, after, pack) {
   for (const [field, title] of [
     ["inventory", "Inventory"],
     ["reserves", "Protected reserves"],
+    ["itemBlueprints", "Item blueprint ownership"],
+    ["buildTargets", "Want to build / get targets"],
     ["completion", "Progress"],
     ["upgradeProgress", "Upgrade progress"],
     ["routes", "Crafting routes"],
@@ -88,11 +90,13 @@ export function profileChangeSummary(before, after, pack) {
       const display = (value) =>
         value === undefined
           ? "Not set"
-          : field === "routes"
-            ? name(value)
-            : field === "upgradeProgress"
-              ? `${value.completion} / ${value.availability}${value.reviewRequired ? " · review required" : ""}${value.legacyState ? " · legacy " + value.legacyState : ""}`
-              : String(value);
+          : field === "itemBlueprints"
+            ? "Owned"
+            : field === "routes"
+              ? name(value)
+              : field === "upgradeProgress"
+                ? `${value.completion} / ${value.availability}${value.reviewRequired ? " · review required" : ""}${value.legacyState ? " · legacy " + value.legacyState : ""}`
+                : String(value);
       changes.push({
         label: name(id),
         before: display(old),
@@ -101,6 +105,36 @@ export function profileChangeSummary(before, after, pack) {
     }
     if (hidden) changes.push(withheld());
     section(title, changes);
+  }
+  if (JSON.stringify(before.fieldOps) !== JSON.stringify(after.fieldOps)) {
+    const changes = [];
+    for (const id of new Set([
+      ...Object.keys(before.fieldOps?.carried || {}),
+      ...Object.keys(after.fieldOps?.carried || {}),
+    ])) {
+      const old = before.fieldOps?.carried?.[id],
+        next = after.fieldOps?.carried?.[id];
+      if (old === next) continue;
+      if (protectedReference(id)) {
+        protectedChanges = true;
+        continue;
+      }
+      changes.push({
+        label: name(id) + " · carried",
+        before: old === undefined ? "Not entered" : String(old),
+        after: next === undefined ? "Not entered" : String(next),
+      });
+    }
+    changes.push({
+      label: "Private field operations",
+      before: before.fieldOps
+        ? "Includes carried gear, quantity journal, scan receipts and discoveries"
+        : "Not enabled",
+      after: after.fieldOps
+        ? "Includes carried gear, quantity journal, scan receipts and discoveries"
+        : "Not included; photo references and history will be removed from this profile",
+    });
+    section("Field operations", changes);
   }
   section(
     "Watch pins",

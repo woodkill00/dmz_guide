@@ -6,7 +6,8 @@
   "kind": "resource",
   "name": "Chemicals",
   "sourceIds": [
-    "source:fob"
+    "source:fob",
+    "source:tcno-items-20261110"
   ],
   "stats": [],
   "status": "verified",

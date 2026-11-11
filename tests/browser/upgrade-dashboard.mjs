@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { openCatalogContext } from "./open-catalog-context.mjs";
 import { chromium, firefox, webkit } from "playwright";
 import { pathToFileURL } from "node:url";
 export async function runUpgradeDashboardTests({ browser, base }) {
@@ -7,7 +8,17 @@ export async function runUpgradeDashboardTests({ browser, base }) {
   page.setDefaultTimeout(15000);
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  const ready = () => page.locator("[data-complete-upgrade]").first().waitFor();
+  const ready = async () => {
+    await page.locator("[data-complete-upgrade]").first().waitFor();
+    const filters = page.locator(".tracker-more-filters");
+    if (!(await filters.evaluate((node) => node.open)))
+      await filters.locator(":scope > summary").click();
+  };
+  const openExplanation = async () => {
+    const details = page.locator(".tracker-explanation");
+    if (!(await details.evaluate((node) => node.open)))
+      await details.locator(":scope > summary").click();
+  };
   const snapshot = () =>
     page.evaluate(async () => {
       const { state } = await import("/assets/src/client/common.mjs");
@@ -108,6 +119,7 @@ export async function runUpgradeDashboardTests({ browser, base }) {
     await page.locator("[data-complete-upgrade]").first().click();
     await page.locator("#upgrade-progress-apply").click();
     await page.locator("#upgrade-undo").waitFor();
+    await openExplanation();
     await page.locator("#spoiler-toggle").click();
     await page.locator("#upgrade-undo").waitFor({ state: "hidden" });
     assert.equal(await page.locator("#upgrade-feedback").textContent(), "");
@@ -120,7 +132,9 @@ export async function runUpgradeDashboardTests({ browser, base }) {
     );
 
     await page
-      .locator(".compact-progress:not(.upgrade-is-completed) .upgrade-blocker")
+      .locator(
+        ".compact-progress:not(.upgrade-is-completed) [data-open-upgrade]",
+      )
       .first()
       .click();
     await page
@@ -214,6 +228,7 @@ export async function runUpgradeDashboardTests({ browser, base }) {
     });
     await page.locator("#upgrade-density").selectOption("comfortable");
     await page.locator("#progress-source").selectOption(shared.id);
+    await openCatalogContext(page);
     await page.locator("#pack-select").selectOption("demo:training-pack");
     await page.waitForFunction(
       () =>
@@ -249,6 +264,7 @@ export async function runUpgradeDashboardTests({ browser, base }) {
       await page.locator("#upgrade-density").inputValue(),
       "compact",
     );
+    await openCatalogContext(page);
     await page
       .locator("#pack-select")
       .selectOption("observed:upgrade-review-20261026");
@@ -273,6 +289,7 @@ export async function runUpgradeDashboardTests({ browser, base }) {
       await page.locator("#upgrade-density").inputValue(),
       "comfortable",
     );
+    await openCatalogContext(page);
     await page.locator("#pack-select").selectOption("demo:training-pack");
     await page.waitForFunction(
       () =>
@@ -323,12 +340,15 @@ export async function runUpgradeDashboardTests({ browser, base }) {
       return row.name;
     });
     await page.reload();
-    await page.locator("#spoiler-toggle").waitFor();
+    await page.locator("#spoiler-toggle").waitFor({ state: "attached" });
     await page.waitForFunction(
       () =>
         document.querySelector("main")?.getAttribute("aria-busy") === "false",
     );
     await page.locator("#progress-clear").click();
+    await ready();
+    await page.locator("#upgrade-layout").selectOption("flat");
+    await openExplanation();
     await page.locator("#spoiler-toggle").click();
     await page
       .locator('[data-complete-upgrade="reported:bank-upgrade-ii"]')

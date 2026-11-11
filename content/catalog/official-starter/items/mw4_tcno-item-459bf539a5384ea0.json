@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Fire Support",
+  "description": "Call in a drop of supplies.",
+  "id": "mw4:tcno-item-459bf539a5384ea0",
+  "kind": "item",
+  "name": "Airdrop",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

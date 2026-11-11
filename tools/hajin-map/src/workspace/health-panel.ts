@@ -2,9 +2,13 @@ import {boundedBytes} from '../map/bounded-input.ts';
 import {el,note,button,download} from './dom.ts';
 import {workspaceHealth,type CaptureHealth} from './health.ts';
 import type {UIServices} from './ui-context.ts';
-export function healthPanel(h:UIServices&{captures:()=>CaptureHealth[];navigate:(target:'sources'|'backup'|'updates')=>void}){
+import type {ExplorerRecord} from './explorer-index.ts';
+import {scopedMapCoverage} from './coverage.ts';
+import keyAccess from '../../../../src/ui/key-access.json' with {type:'json'};
+export function healthPanel(h:UIServices&{captures:()=>CaptureHealth[];records:()=>ExplorerRecord[];navigate:(target:'sources'|'backup'|'updates')=>void}){
  const root=el('section');root.id='workspace-health';
  const health=workspaceHealth(h.state(),h.captures());root.append(el('h3','Workspace health & recovery'),note('Your browser profile and local source files are separate stores. A private backup protects owned work; source captures and background files may need to be retained separately.'));
+ const coverage=scopedMapCoverage(h.records(),keyAccess.uses);const coveragePanel=el('details');coveragePanel.append(el('summary',`Map coverage · ${coverage.rows.length} source/category groups`),note(coverage.scope),note(`${coverage.guideKeyGridOnly} Guide key uses have a grid reference only; this does not establish an exact map point.`));const coverageList=el('ul');for(const row of coverage.rows)coverageList.append(el('li',`${row.source} / ${row.category}: ${row.positioned} positioned, ${row.unlocated} unlocated in loaded entries.`));coveragePanel.append(coverageList);root.append(coveragePanel);
  const format=(value:number,unit:string)=>unit==='bytes'?`${(value/1024/1024).toFixed(2)} MiB`:String(value);
  for(const b of health.budgets){const card=el('section',undefined,'workspace-card'),meter=el('meter');meter.min=0;meter.max=b.max;meter.value=b.used;meter.setAttribute('aria-label',b.label);meter.style.width='100%';card.append(el('h4',b.label),meter,note(`${format(b.used,b.unit)} of ${format(b.max,b.unit)} · ${format(Math.max(0,b.max-b.used),b.unit)} remaining`));root.append(card);}
  const storage=note('Checking browser storage estimate…');storage.id='health-browser-storage';root.append(storage);

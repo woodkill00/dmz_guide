@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "backpack",
+  "description": "A large backpack with three secure slots and increased resource capacity.",
+  "id": "mw4:printer-item-large-scavenger-backpack",
+  "kind": "item",
+  "name": "Large Scavenger Backpack",
+  "rarity": "Legendary",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

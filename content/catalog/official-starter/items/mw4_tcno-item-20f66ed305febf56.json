@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Field Upgrades",
+  "description": "Deploy a box of armor plates for you and your teammates.",
+  "id": "mw4:tcno-item-20f66ed305febf56",
+  "kind": "item",
+  "name": "Armor Drop",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

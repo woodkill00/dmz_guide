@@ -1,5 +1,7 @@
 import { parseRecoveryDraft } from "../content/studio-recovery.mjs";
 import {
+  parseItemCreateTarget,
+  resolveItemCreateTarget,
   parseAuthorTarget,
   resolveAuthorTarget,
   previewPath,
@@ -32,6 +34,7 @@ const node = (tag, text) => {
   return n;
 };
 let initialTarget = null,
+  initialCreateTarget = null,
   initialTargetApplied = false;
 let schema,
   entries = [],
@@ -706,7 +709,9 @@ async function loadCatalog() {
   const target =
     initialTarget && !initialTargetApplied
       ? resolveAuthorTarget(entries, initialTarget)
-      : null;
+      : initialCreateTarget && !initialTargetApplied
+        ? resolveItemCreateTarget(entries, initialCreateTarget)
+        : null;
   loadEntry(
     target?.entry ||
       entries.find((entry) => entry.key === key) ||
@@ -714,12 +719,19 @@ async function loadCatalog() {
       null,
   );
   if (target) {
-    selectRecord(target.group, target.index);
+    if (initialCreateTarget) {
+      $("#editor-section").value = "items";
+      guided.renderRecords();
+      $("#new-record-name").focus();
+    } else selectRecord(target.group, target.index);
     const context = $("#entry-context");
     context.hidden = false;
-    $("#entry-identity").textContent =
-      `${target.entry.pack.id} · ${target.record.id}`;
-    $("#return-record").href = previewPath(initialTarget);
+    $("#entry-identity").textContent = initialCreateTarget
+      ? `Add item to ${target.entry.pack.id}`
+      : `${target.entry.pack.id} · ${target.record.id}`;
+    $("#return-record").href = initialCreateTarget
+      ? "http://127.0.0.1:4173/items/manage/"
+      : previewPath(initialTarget);
     initialTargetApplied = true;
   }
   $("#recovery-help").hidden = !blocked;
@@ -732,7 +744,10 @@ async function loadCatalog() {
   }
 }
 async function start() {
-  initialTarget = parseAuthorTarget(new URLSearchParams(location.search));
+  const destination = new URLSearchParams(location.search);
+  if (destination.has("create"))
+    initialCreateTarget = parseItemCreateTarget(destination);
+  else initialTarget = parseAuthorTarget(destination);
   $("#pack-select").addEventListener("change", () => {
     if (
       busy ||

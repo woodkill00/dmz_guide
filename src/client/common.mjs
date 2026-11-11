@@ -1,3 +1,4 @@
+import { mountCatalogContext } from "./catalog-context.mjs";
 import {
   createCatalogLoader,
   parseCatalogManifest,
@@ -159,7 +160,11 @@ async function requestDeparture(proceed, origin, documentNavigation = false) {
       origin?.focus();
       return;
     }
-    if (decision === "save" && !(await persist())) return;
+    if (
+      decision === "save" &&
+      !(await (draftGuard?.save ? draftGuard.save() : persist()))
+    )
+      return;
     leaving = true;
     try {
       await proceed();
@@ -245,6 +250,8 @@ export async function getCatalog(id, { publishedOnly = false } = {}) {
 }
 let generation = 0;
 let disabledControls = [];
+mountCatalogContext({ pack: () => state.pack });
+
 export async function init(
   render,
   { requestedPack, opaqueContext = false } = {},
@@ -547,7 +554,9 @@ export async function init(
     let warning = null,
       contentWarning = false;
     try {
-      const records = await listRecords("content");
+      const records = await listRecords("content", {
+        excludePrefix: "field-photo:",
+      });
       for (const record of records.slice(0, 32)) {
         const pack = record.value?.pack;
         if (!pack || choices.some((entry) => entry.id === pack.id)) continue;
@@ -597,7 +606,7 @@ export async function init(
   })();
   return state;
 }
-export async function persist(candidate = state.profile) {
+export async function persist(candidate = state.profile, journal = {}) {
   if (state.saving) {
     error(new Error("A save is already in progress. Wait for it to finish."));
     return false;
@@ -615,7 +624,7 @@ export async function persist(candidate = state.profile) {
       throw new Error("Profile pack changed. Preview again before applying.");
     const packId = state.pack.id,
       token = generation;
-    const saved = await saveProfile(candidate, state.revision);
+    const saved = await saveProfile(candidate, state.revision, journal);
     if (token !== generation || state.pack.id !== packId) return false;
     state.profile = saved;
     state.revision = saved.revision;

@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Weapon Manuals",
+  "description": "Unlocks ability to purchase this weapon in Gunsmith.",
+  "id": "mw4:tcno-item-5bd35e1a2dfca954",
+  "kind": "item",
+  "name": "JOKR Manual",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

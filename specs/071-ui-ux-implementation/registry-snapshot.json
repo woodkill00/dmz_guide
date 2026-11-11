@@ -1,8 +1,43 @@
 {
   "source": "src/ui/feature-registry.mjs",
-  "date": "2026-11-05",
-  "count": 77,
+  "date": "2026-11-10",
+  "count": 82,
   "features": [
+    {
+      "id": "field-desk",
+      "label": "Field desk",
+      "kind": "guide",
+      "path": "/field-desk/",
+      "group": "Prepare"
+    },
+    {
+      "id": "quick-collect",
+      "label": "Quick collect",
+      "kind": "guide",
+      "path": "/quick-collect/",
+      "group": "Prepare"
+    },
+    {
+      "id": "x01-printer",
+      "label": "X01 3D Printer",
+      "kind": "guide",
+      "path": "/recipes/x01/",
+      "group": "Prepare"
+    },
+    {
+      "id": "needed",
+      "label": "Needed / remaining items",
+      "kind": "guide",
+      "path": "/needed/",
+      "group": "Prepare"
+    },
+    {
+      "id": "item-maintenance",
+      "label": "Add or edit items",
+      "kind": "guide",
+      "path": "/items/manage/",
+      "group": "Reference"
+    },
     {
       "id": "dmz-guide",
       "label": "DMZ Guide",

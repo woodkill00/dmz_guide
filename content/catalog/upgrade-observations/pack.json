@@ -498,7 +498,13 @@
       "reported:crossfire",
       "reported:durable-gas-mask",
       "reported:elite-night-vision-goggles",
-      "reported:parachute"
+      "reported:parachute",
+      "reported:ddos",
+      "reported:consumable-box",
+      "reported:medical-box",
+      "reported:hazmat-box",
+      "reported:utility-box",
+      "reported:survivor-box"
     ],
     "locations": [],
     "maps": [],
@@ -689,14 +695,16 @@
       "source:upgrade-consumption-confirmation-20261026",
       "source:detonated-fob-20261025",
       "source:detonated-recipes-20261019",
-      "source:detonated-levels-20261020"
+      "source:detonated-levels-20261020",
+      "source:gamerant-ingredients-20261028",
+      "source:owner-field-upgrades-20261109"
     ]
   },
   "pack": {
-    "contentVersion": "2026.10.28.1",
+    "contentVersion": "2026.11.09.1",
     "coverage": {
       "expectedTotal": null,
-      "note": "Source-listed coverage: 28 FOB definitions; 75 recipe identities/77 unlock routes; 69 milestones/90 reward entries. Craft costs and yields unprovided; eight cash prices unknown. Not complete or current-build verified. Original eight observations remain separately attributed."
+      "note": "Source-listed coverage: 28 FOB definitions; 75 recipe identities/77 unlock routes; 69 milestones/90 reward entries. Craft costs and yields unprovided; eight cash prices unknown. Not complete or current-build verified. Original eight observations remain separately attributed. Includes the 29 ingredients listed by GameRant (2026-10-28), with reported rarities and acquisition hints; complete-game item coverage remains unknown. Owner-reported Field upgrades roster: 21 item identities; newly listed boxes have no invented recipes, rarities or effects."
     },
     "description": "Eight preserved upgrade observations plus attributed community reports for FOB requirements, recipe unlock routes and DMZ level rewards. No original screenshots, article prose, third-party imagery or player state. Build applicability remains unverified.",
     "game": {

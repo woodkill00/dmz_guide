@@ -5,8 +5,11 @@
   "id": "mw4:two-plate-armor-vest",
   "kind": "item",
   "name": "2-Plate Armor Vest",
+  "rarity": "Rare",
   "sourceIds": [
-    "source:fob"
+    "source:fob",
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
   ],
   "stats": [],
   "status": "verified",

@@ -1,12 +1,16 @@
 {
   "aliases": [],
-  "category": "printer-ingredient",
-  "description": "",
+  "category": "Ingredients",
+  "description": "GameRant reports: Residential loot; civilian bags. Rarity and location are secondary reports, not independently gameplay-tested.",
   "id": "mw4:rigid-synthetics",
   "kind": "item",
   "name": "Rigid Synthetics",
+  "rarity": "Uncommon",
   "sourceIds": [
-    "source:fob"
+    "source:fob",
+    "source:gamerant-ingredients-20261028",
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
   ],
   "stats": [],
   "status": "verified",

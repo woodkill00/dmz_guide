@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Field upgrades",
+  "description": "Source-reported item reference; current-build behavior is not independently verified.",
+  "id": "mw4:printer-item-armor-box",
+  "kind": "item",
+  "name": "Armor Box",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

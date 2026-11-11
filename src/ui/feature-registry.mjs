@@ -2,6 +2,41 @@ import destinations from "./map-destinations.json" with { type: "json" };
 export const featureGroups = ["Map", "Prepare", "Track", "Reference", "Manage"];
 const rows = [
   [
+    "field-desk",
+    "Field desk",
+    "Prepare",
+    "/field-desk/",
+    "Screenshot stash scans, carried gear, run reconciliation, discoveries and quantity history",
+  ],
+  [
+    "quick-collect",
+    "Quick collect",
+    "Prepare",
+    "/quick-collect/",
+    "Remaining items and found amounts saved directly to inventory",
+  ],
+  [
+    "x01-printer",
+    "X01 3D Printer",
+    "Prepare",
+    "/recipes/x01/",
+    "In-raid printer recipes and carried-material requirements",
+  ],
+  [
+    "needed",
+    "Needed / remaining items",
+    "Prepare",
+    "/needed/",
+    "Outstanding upgrade items and ingredient printing from saved stock",
+  ],
+  [
+    "item-maintenance",
+    "Add or edit items",
+    "Reference",
+    "/items/manage/",
+    "Maintain item definitions, categories and rarities",
+  ],
+  [
     "dmz-guide",
     "DMZ Guide",
     "Reference",

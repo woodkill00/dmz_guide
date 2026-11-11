@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "plate-carrier",
+  "description": "Source-reported item reference; current-build behavior is not independently verified.",
+  "id": "mw4:printer-item-3-plate-helmet-armor-vest",
+  "kind": "item",
+  "name": "3-Plate Helmet Armor Vest",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

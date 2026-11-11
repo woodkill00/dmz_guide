@@ -1,3 +1,4 @@
+import { inventoryBlueprintOwnershipLabel } from "../domain/inventory-presentation.mjs";
 import {
   init,
   state,
@@ -193,7 +194,7 @@ function renderRecipes() {
           })
           .join(
             "; ",
-          )}</p>${r.inputs.length > 3 ? `<p>Inspect all ${r.inputs.length} inputs in preview.</p>` : ""}<p>${esc(c.reasons[0] || c.warnings[0] || "Check game access before recording.")}</p></div><div class="actions"><button type="button" data-compare-item="${esc(r.output.itemId)}">Compare / choose route</button><button type="button" data-craft-id="${esc(r.id)}">Craft preview…</button></div></article>`;
+          )}</p>${r.inputs.length > 3 ? `<p>Inspect all ${r.inputs.length} inputs in preview.</p>` : ""}<small class="item-blueprint-state" data-item-blueprint-for="${esc(r.output.itemId)}">${esc(inventoryBlueprintOwnershipLabel(state.pack, state.profile, r.output.itemId))}</small><p>${esc(c.reasons[0] || c.warnings[0] || "Check game access before recording.")}</p></div><div class="actions"><button type="button" data-compare-item="${esc(r.output.itemId)}">Compare / choose route</button><button type="button" data-craft-id="${esc(r.id)}">Craft preview…</button></div></article>`;
       })
       .join("") ||
     "<p>No recipes match, or readiness is unresolved. Unknown recipes are never invented.</p>";
@@ -410,7 +411,7 @@ function renderCraft() {
   else {
     const t = p.transition;
     $("#craft-preview").innerHTML =
-      `<h3>${esc(t.recipe.name)}</h3><p>Output: +${t.output.produced} ${esc(t.output.name)}; previously ${esc(val(t.output.held))}. Station: ${esc(model.visible.guard.text(t.recipe.station))}; pool: ${esc(t.recipe.eligibility)}.</p><ul>${t.inputs
+      `<h3>${esc(t.recipe.name)}</h3><p class="item-blueprint-state">${esc(inventoryBlueprintOwnershipLabel(state.pack, state.profile, t.recipe.output.itemId))}. Materials and recipe access are checked separately.</p><p>Output: +${t.output.produced} ${esc(t.output.name)}; previously ${esc(val(t.output.held))}. Station: ${esc(model.visible.guard.text(t.recipe.station))}; pool: ${esc(t.recipe.eligibility)}.</p><ul>${t.inputs
         .slice(craftCostPage * 50, craftCostPage * 50 + 50)
         .map(
           (c) =>

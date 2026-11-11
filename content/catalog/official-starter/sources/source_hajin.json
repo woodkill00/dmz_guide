@@ -1,5 +1,12 @@
 {
   "id": "source:hajin",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "web",
+    "lineageKey": "source-hajin",
+    "observationKey": "source-hajin"
+  },
   "publishedAt": "2026-10-05",
   "reviewedAt": "2026-10-21",
   "supports": "Named locations and Imjin Farmland grid; not calibrated geometry or item spawn guarantees.",

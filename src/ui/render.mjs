@@ -1,3 +1,15 @@
+import { renderItemMapAreas } from "./item-map-areas.mjs";
+import { itemIcon, renderItemWorkspace } from "./item-workspace.mjs";
+import { itemOverview } from "./item-summary.mjs";
+import { isLootType, LOOT_TYPES_INDEX } from "../domain/loot-types.mjs";
+import { renderTcnoItemIntel } from "./tcno-item-intel.mjs";
+import { x01Printer, x01Uses } from "../content/x01-printer.mjs";
+import { buildTargetControl } from "./build-target-control.mjs";
+import {
+  itemSection,
+  itemRarity,
+  rarityKey,
+} from "../domain/inventory-items.mjs";
 import {
   resolvePresentation,
   presentationAttributes,
@@ -100,7 +112,14 @@ export const isFixture = (pack) =>
 let extraNavigation = [];
 export function setNavigation(pages) {
   extraNavigation = pages.filter((p) =>
-    ["maps", "progression", "editor", "community"].includes(p.page),
+    [
+      "maps",
+      "progression",
+      "editor",
+      "community",
+      "run-plan",
+      "data-review",
+    ].includes(p.page),
   );
 }
 export function renderLayout({
@@ -121,6 +140,16 @@ export function renderLayout({
     scripts = [...scripts, "/assets/src/client/workspace-shell.mjs"];
   }
   if (page === "home") scripts = [...scripts, "/assets/src/client/catalog.mjs"];
+  if (
+    body.includes("data-item-workspace") ||
+    page === "local" ||
+    page === "items"
+  ) {
+    styles = [...styles, "/assets/src/ui/item-workspace.css"];
+    scripts = [...scripts, "/assets/src/client/item-workspace.mjs"];
+  }
+  if (body.includes("data-build-auto"))
+    scripts = [...scripts, "/assets/src/client/build-target-controls.mjs"];
   const navigation = renderMainNavigation({
     page,
     packId,
@@ -168,7 +197,7 @@ function referenceFacts(record) {
 export function renderCard(record, { directory = false } = {}) {
   record = displayRecord(record);
   const kind = record.recordType === "item" ? record.kind : record.recordType;
-  return `<article class="record-card${directory ? " item-row" : ""}" data-record-card data-search="${e(recordSearchText(record))}" data-type="${e(kind)}" data-pack="${e(record.pack.id)}">${directory ? '<div class="item-identity">' : ""}<div class="card-meta"><span>${e(kind)}</span><span class="badge ${record.status === "fictional" ? "fixture" : ""}">${e(statusLabel(record))}</span></div><h3><a href="${recordUrl(record)}">${e(publicTitle(record))}<span aria-hidden="true"> ↗</span></a></h3><p>${e(record.spoiler ? "Spoiler content. Open this record and choose Reveal spoiler content to read it." : record.description || record.body || record.category || record.station || "Open the record for evidence and scope.")}</p>${directory ? referenceFacts(record) : ""}<div class="card-foot">${isFixture(record.pack) ? '<strong class="fixture-text">FICTIONAL FIXTURE · NOT GAME DATA</strong>' : `<span>${e(record.category || record.recordType)} · ${e(record.pack.contentVersion)}</span>`}</div>${directory ? `</div><div class="item-row-actions"><a href="${e(recordUrl(record))}">Details<span class="sr-only"> ${e(publicTitle(record))}</span></a></div>` : ""}</article>`;
+  return `<article class="record-card${directory ? " item-row" : ""}" data-record-card data-search="${e(recordSearchText(record))}" data-type="${e(kind)}" data-pack="${e(record.pack.id)}">${directory ? '<div class="item-identity">' : ""}<div class="card-meta"><span>${e(kind)}</span><span class="badge ${record.status === "fictional" ? "fixture" : ""}">${e(statusLabel(record))}</span></div><h3><a href="${recordUrl(record)}">${e(publicTitle(record))}<span aria-hidden="true"> ↗</span></a></h3><p>${e(record.spoiler ? "Spoiler content. Open this record and choose Reveal spoiler content to read it." : record.description || record.body || record.category || record.station || "Open the record for evidence and scope.")}</p>${directory ? referenceFacts(record) : ""}<div class="card-foot">${isFixture(record.pack) ? '<strong class="fixture-text">FICTIONAL FIXTURE · NOT GAME DATA</strong>' : `<span>${e(record.category || record.recordType)} · ${e(record.pack.contentVersion)}</span>`}</div>${directory ? `</div>${!record.spoiler ? buildTargetControl(record.pack, record.id, null, { auto: true }) : ""}<div class="item-row-actions"><a href="${e(recordUrl(record))}">Details<span class="sr-only"> ${e(publicTitle(record))}</span></a></div>` : ""}</article>`;
 }
 export function renderHome() {
   return renderDashboard();
@@ -186,8 +215,9 @@ export function renderCatalog(
   packs = [...packs].sort(
     (a, b) => Number(isFixture(a)) - Number(isFixture(b)),
   );
-  const defaultPack =
-    packs.find((p) => !isFixture(p))?.id || packs[0]?.id || "";
+  const defaultPack = compact
+    ? ""
+    : packs.find((p) => !isFixture(p))?.id || packs[0]?.id || "";
   const records = allRecords(packs);
   const filtered = type
     ? records.filter((r) => r.recordType === type || r.kind === type)
@@ -197,10 +227,27 @@ export function renderCatalog(
       filtered.map((r) => (r.recordType === "item" ? r.kind : r.recordType)),
     ),
   ];
-  return `${pageHeading("FIELD REFERENCE", title, "Find a record. Check its evidence. Keep the unknowns in view.")}${type === "weapon" ? '<p><a class="button" href="/armory/">Open weapon database, attachments &amp; patch history</a></p>' : ""}<form class="filter-bar" id="catalog-filters" data-default-pack="${e(defaultPack)}" action="" method="get"><label class="search-field">Search records<input type="search" maxlength="200" id="catalog-search" placeholder="Try Medkit, resources, or M4…" autocomplete="off"></label><label>Record type<select name="type" id="catalog-type"><option value="">All types</option>${types.map((t) => `<option value="${e(t)}">${e(t)}</option>`).join("")}</select></label><label>Content pack<select name="pack" id="catalog-pack"><option value="">All packs</option>${packs.map((p) => `<option value="${e(p.id)}" ${p.id === defaultPack ? "selected" : ""}>${e(p.title)}${isFixture(p) ? " (fictional)" : ""}</option>`).join("")}</select></label>${compact ? '<label>Sort items<select id="catalog-sort" name="sort"><option value="name">Name</option><option value="type">Type</option><option value="status">Evidence status</option></select></label>' : ""}<button type="submit" class="button primary">Search</button><a class="text-link" href="?" id="clear-filters">Clear filters</a></form>${compact ? '<p class="notice directory-help">Edit and Remove open exact-record instructions for your local Content Studio. Removal is previewed and blocked when referenced; nothing changes until you explicitly confirm and save. Private player inventory is untouched. <a href="/local/">Browse private records</a> or <a href="/editor/">open the private editor</a>.</p>' : ""}<p class="result-count" id="catalog-count" role="status">${filtered.length} records. Coverage not established.</p><noscript><p class="notice">Search filters require JavaScript. All records are listed below and can be read without it.</p></noscript><div class="empty-state" id="catalog-empty" hidden><h2>No matching records.</h2><p>Try another word or clear the filters.</p><a class="button secondary" href="?">Clear filters</a></div>${packs
+  return `${pageHeading("FIELD REFERENCE", title, "Find a record. Check its evidence. Keep the unknowns in view.")}${type === "recipe" ? '<p><a class="button" href="/recipes/x01/">X01 in-raid printer · separate recipes</a></p>' : ""}${type === "weapon" ? '<p><a class="button" href="/armory/">Open weapon database, attachments &amp; patch history</a></p>' : ""}<form class="filter-bar" id="catalog-filters" data-default-pack="${e(defaultPack)}" data-game-only-default="${compact}" action="" method="get"><label class="search-field">Search records<input type="search" maxlength="200" id="catalog-search" placeholder="Try Medkit, resources, or M4…" autocomplete="off"></label><label>Record type<select name="type" id="catalog-type"><option value="">All types</option>${types.map((t) => `<option value="${e(t)}">${e(t)}</option>`).join("")}${
+    compact
+      ? `<optgroup label="Item categories">${[
+          ...new Set(
+            filtered
+              .filter((r) => !r.spoiler)
+              .map((r) => itemSection(r))
+              .filter(Boolean),
+          ),
+        ]
+          .sort()
+          .map(
+            (category) =>
+              `<option value="${e("category:" + category)}">${e(category)}</option>`,
+          )
+          .join("")}</optgroup>`
+      : ""
+  }</select></label><label>Content pack<select name="pack" id="catalog-pack"><option value="">All game catalogs</option>${packs.map((p) => `<option value="${e(p.id)}" ${p.id === defaultPack ? "selected" : ""}>${e(p.title)}${isFixture(p) ? " (fictional)" : ""}</option>`).join("")}</select></label>${compact ? '<label>Sort items<select id="catalog-sort" name="sort"><option value="name">Name</option><option value="category">Category</option><option value="rarity">Rarity</option><option value="type">Type</option><option value="status">Evidence status</option></select></label>' : ""}<button type="submit" class="button primary">Search</button><a class="text-link" href="?" id="clear-filters">Clear filters</a></form>${compact ? '<details class="directory-help"><summary>Manage items &amp; private records</summary><p><a href="/items/manage/">Add or edit items</a> · Edit and Remove open exact-record instructions for your local Content Studio. Removal is previewed and blocked when referenced; nothing changes until you explicitly confirm and save. Private player inventory is untouched. <a href="/local/">Browse private records</a> or <a href="/editor/">open the private editor</a>.</p></details>' : ""}<p class="result-count" id="catalog-count" role="status">${filtered.length} records. Coverage not established.</p><noscript><p class="notice">Search filters require JavaScript. All records are listed below and can be read without it.</p></noscript><div class="empty-state" id="catalog-empty" hidden><h2>No matching records.</h2><p>Try another word or clear the filters.</p><a class="button secondary" href="?">Clear filters</a></div>${packs
     .map(
       (pack) =>
-        `<section class="catalog-section" data-catalog-section${modern ? ' data-ui-directory data-ui-directory-layout="live" data-ui-directory-pagination="false"' : ""}><div class="section-heading"><div><p class="eyebrow">${isFixture(pack) ? "FICTIONAL FIXTURES · NOT GAME DATA" : "SOURCE-BACKED STARTER REFERENCE"}</p><h2>${e(pack.title)}</h2><p>${e(pack.coverage.note)}</p></div></div><div class="${compact || modern ? "item-directory" : "card-grid"}">${filtered
+        `<section class="catalog-section" data-catalog-section${modern ? ' data-ui-directory data-ui-directory-layout="live" data-ui-directory-pagination="false"' : ""}><div class="section-heading"><div><p class="eyebrow">${isFixture(pack) ? "FICTIONAL FIXTURES · NOT GAME DATA" : "SOURCE-BACKED STARTER REFERENCE"}</p><h2>${e(pack.title)}</h2><details class="directory-coverage"><summary>Catalog coverage</summary><p>${e(pack.coverage.note)}</p></details></div></div><div class="${compact || modern ? "item-directory" : "card-grid"}">${filtered
           .filter((r) => r.pack.id === pack.id)
           .sort((a, b) =>
             compact ? publicTitle(a).localeCompare(publicTitle(b)) : 0,
@@ -221,7 +268,7 @@ export function renderCatalog(
 export function renderItemRow(record, target) {
   record = displayRecord(record);
   const title = publicTitle(record);
-  return `<article class="item-row" data-record-card data-search="${e(recordSearchText(record))}" data-name="${e(title.toLowerCase())}" data-type="${e(record.kind)}" data-status="${e(statusLabel(record))}" data-pack="${e(record.pack.id)}"><div class="item-identity"><h3><a href="${e(recordUrl(record))}" tabindex="0">${e(title)}</a></h3><p>${e(record.kind)} · ${e(record.spoiler ? "Spoiler-protected" : record.category || "Uncategorized")} · ${e(statusLabel(record))}</p>${resolvePresentation("guide").variant === "modern" ? referenceFacts(record) : ""}</div><div class="item-row-actions" aria-label="Actions for ${e(title)}"><a href="${e(recordUrl(record))}" tabindex="0">Details</a>${target ? `<a data-directory-edit href="${e(target + "#edit")}" tabindex="0">Edit<span class="sr-only"> ${e(title)}</span></a><a data-directory-remove href="${e(target + "#remove")}" tabindex="0">Remove<span class="sr-only"> ${e(title)}</span></a>` : ""}</div></article>`;
+  return `<article class="item-row" data-record-card data-search="${e(recordSearchText(record))}" data-name="${e(title.toLowerCase())}" data-fixture="${isFixture(record.pack)}" data-category="${e(record.spoiler ? "Spoiler-protected" : itemSection(record))}" data-rarity="${e(record.spoiler ? "99:protected" : rarityKey(record))}" data-type="${e(record.kind)}" data-status="${e(statusLabel(record))}" data-pack="${e(record.pack.id)}">${itemIcon(record)}<div class="item-identity"><h3><a href="${e(recordUrl(record))}" tabindex="0">${e(title)}</a></h3><p>${e(record.kind)} · ${e(record.spoiler ? "Spoiler-protected" : itemSection(record))} · ${e(record.spoiler ? "Spoiler-protected" : itemRarity(record))}</p></div>${!record.spoiler ? `<details class="item-row-build"><summary>Build / get</summary>${buildTargetControl(record.pack, record.id, null, { auto: true })}</details>` : ""}<div class="item-row-actions" aria-label="Actions for ${e(title)}"><a href="${e(recordUrl(record))}" tabindex="0">Details</a>${target ? `<a data-directory-edit href="${e(target + "#edit")}" tabindex="0">Edit<span class="sr-only"> ${e(title)}</span></a><a data-directory-remove href="${e(target + "#remove")}" tabindex="0">Remove<span class="sr-only"> ${e(title)}</span></a>` : ""}</div></article>`;
 }
 
 function sourceMarkup(source) {
@@ -250,6 +297,11 @@ export function renderDetail(
 ) {
   record = displayRecord(record);
   const pack = record.pack;
+  const overview =
+    record.recordType === "item" ? itemOverview(record, pack) : null;
+  if (!record.spoiler && pack.id === x01Printer.packId && x01Uses(record.id))
+    authorActions +=
+      '<aside class="notice"><a href="/recipes/x01/">X01 printer recipes and uses</a> · Requires materials carried in X01; separate from FOB printing.</aside>';
   const records = allRecords(packs);
   const find = (id) => records.find((r) => r.id === id);
   const ref = (id) => {
@@ -288,7 +340,22 @@ export function renderDetail(
       .join("");
   }
   let detail = "";
+  let itemTarget = "";
+  if (
+    isLootType(record.id) &&
+    pack.guides.some((g) => g.id === LOOT_TYPES_INDEX)
+  )
+    detail += `<p class="loot-type-buttons">${ref(LOOT_TYPES_INDEX)}</p>`;
   if (record.recordType === "item") {
+    itemTarget = buildTargetControl(pack, record.id, null, { auto: true });
+    detail += `<section id="item-overview" tabindex="-1" class="panel item-overview"><h2>Overview</h2><dl class="item-core-facts"><dt>Category</dt><dd>${e(record.category || "Not recorded")}</dd><dt>Rarity</dt><dd>${e(itemRarity(record))}</dd><dt>Unit</dt><dd>${e(record.unit || "Not recorded")}</dd></dl>${overview.notes.length ? `<details class="item-source-notes"><summary>Additional notes</summary>${overview.notes.map((note) => `<p>${e(note)}</p>`).join("")}</details>` : ""}</section>`;
+    const mapAreas = renderItemMapAreas(record, pack);
+    detail +=
+      renderTcnoItemIntel(record, pack, ref, {
+        omitDescription: true,
+        mapAreas,
+      }) ||
+      `<section id="item-find" tabindex="-1" class="panel"><h2>Where to find</h2><p>No loot source recorded. No location has been inferred.</p>${mapAreas}</section>`;
     const uses = records.filter(
       (r) =>
         !r.spoiler &&
@@ -296,10 +363,27 @@ export function renderDetail(
     );
     const produces = records.filter((r) => r.output?.itemId === record.id);
     const locations = records.filter((r) => r.itemIds?.includes(record.id));
-    detail += `<section class="panel"><h2>Uses & acquisition</h2><h3>Used by recipes and objectives</h3><ul>${uses.map((r) => `<li>${ref(r.id)}</li>`).join("") || "<li>No recorded uses in this starter pack.</li>"}</ul><h3>Recipes producing this item</h3><ul>${produces.map((r) => `<li>${ref(r.id)}</li>`).join("") || "<li>No producing recipe recorded.</li>"}</ul><h3>Related locations</h3><ul>${locations.map((r) => `<li>${ref(r.id)} · ${e(r.spawnKind)} occurrence, not guaranteed</li>`).join("") || "<li>No verified item-location relation recorded.</li>"}</ul></section>`;
+    const list = (title, rows) =>
+      rows.length
+        ? `<details class="item-use-group"><summary>${e(title)} (${rows.length})</summary><ul class="item-use-list">${[...new Map(rows.map((r) => [r.id, r])).values()].map((r) => `<li>${ref(r.id)}</li>`).join("")}</ul></details>`
+        : "";
+    const crafting = uses.filter((r) => r.recordType === "recipe");
+    const upgrades = uses.filter(
+      (r) => r.recordType === "objective" && r.track === "dmz-upgrade",
+    );
+    const missions = uses.filter(
+      (r) => r.recordType === "objective" && r.track !== "dmz-upgrade",
+    );
+    const actualLocations = locations.filter((r) => !r.spoiler);
+    detail += `<section id="item-crafting" tabindex="-1" class="panel item-crafting"><h2>Crafting</h2>${
+      list(
+        "Recipes making this item",
+        produces.filter((r) => !r.spoiler),
+      ) || "<p>No crafting recipe recorded.</p>"
+    }${list("Used to craft", crafting)}</section><section id="item-uses" tabindex="-1" class="panel item-uses"><h2>Item uses</h2>${list("Missions", missions)}${list("Upgrades", upgrades)}${list("Mapped locations", actualLocations)}${!uses.length && !produces.length ? "<p>No crafting or mission uses recorded.</p>" : ""}<p><a href="/local/?pack=${encodeURIComponent(pack.id)}&amp;id=${encodeURIComponent(record.id)}">Track inventory and upgrade progress</a></p></section>`;
   }
 
-  if (record.stats)
+  if (record.stats && (record.recordType !== "item" || record.stats.length))
     detail += `<section class="panel"><h2>Statistics &amp; measurement context</h2>${
       record.stats.length
         ? record.stats
@@ -321,20 +405,6 @@ export function renderDetail(
             .join("")
         : "<p>No numeric statistics verified for this record. Missing values are unknown, not zero.</p>"
     }</section>`;
-  if (record.recordType === "item") {
-    const uses = pack.objectives.filter(
-      (o) =>
-        o.track === "dmz-upgrade" &&
-        !o.spoiler &&
-        o.requirements.some((c) => c.itemId === record.id),
-    );
-    detail += `<section class="panel"><h2>Known upgrade uses</h2><ul>${
-      uses
-        .slice(0, 32)
-        .map((o) => `<li>${ref(o.id)}</li>`)
-        .join("") || "<li>No known need in this catalog scope.</li>"
-    }</ul><p>Catalog requirements are not your remaining demand. <a href="/local/?pack=${encodeURIComponent(pack.id)}&amp;id=${encodeURIComponent(record.id)}">Open private progress-aware Keep/Search and watch pin</a>.</p><p>Locations are unknown unless supported by the selected catalog. No discard recommendation is implied.</p></section>`;
-  }
   if (record.inputs || record.requirements)
     detail += `<section class="panel"><h2>${record.inputs ? "Ingredients & retained tools" : "Requirements"}</h2>${record.station ? `<p>Station: ${e(record.station)}. Eligible game inventory: ${e(record.eligibility)}.</p>` : ""}${record.output ? `<p>Output: ${e(record.output.quantity)} × ${ref(record.output.itemId)}</p>` : ""}<ul class="requirements">${(record.inputs || record.requirements).map((input) => `<li><span>${ref(input.itemId)}<small>${input.consumption === "unknown" ? "Consumption unknown" : input.consumption === "consumed" || input.consumed === true ? "Consumed material" : "Retained tool"} · ${e(find(input.itemId)?.unit || "unknown unit")}</small></span><strong>${e(input.quantity ?? "Unknown")}</strong></li>`).join("") || ((record.ingredientsKnown ?? record.requirementsKnown) ? "<li>No listed material requirements.</li>" : "<li>Unknown cost. Requirements have not been verified.</li>")}</ul><p>Requirement completeness: ${(record.ingredientsKnown ?? record.requirementsKnown) ? "Known for this scoped record" : "Unknown; do not assume complete"}.</p><h3>Prerequisites</h3><ul>${(record.prerequisites || []).map((id) => `<li>${ref(id)}</li>`).join("") || "<li>No listed prerequisites; completeness is not established unless explicitly sourced.</li>"}</ul>${showPlanner ? `<a class="button primary" href="/planner/?pack=${encodeURIComponent(pack.id)}&amp;goal=${encodeURIComponent(record.id)}">Open planner ↗</a>` : ""}</section>`;
   if (record.recordType === "location" || record.recordType === "map")
@@ -342,37 +412,52 @@ export function renderDetail(
   if (record.effects?.length)
     detail += `<section class="panel"><h2>Recorded effects</h2><ul>${record.effects.map((effect) => `<li>${e(effect.type)} · ${e(effect.target)}: ${e(effect.value)}</li>`).join("")}</ul><p>Recorded effects are reference data, not proof of current player access.</p></section>`;
   if (record.relatedIds?.length)
-    detail += `<section class="panel"><h2>Related records</h2><ul>${record.relatedIds.map((id) => `<li>${ref(id)}</li>`).join("")}</ul></section>`;
-  return `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${e(catalogURL)}">Catalog</a><span aria-hidden="true">/</span><span>${e(record.recordType)}</span></nav>${isFixture(pack) ? '<aside class="notice fixture-notice"><strong>FICTIONAL FIXTURE · NOT GAME DATA</strong><p>This synthetic record demonstrates the guide’s behavior. Do not use it as gameplay advice.</p></aside>' : ""}${pageHeading(`${record.kind || record.recordType} / ${record.category || record.track || "REFERENCE"}`, publicTitle(record), record.spoiler ? "" : record.description || "")}<aside class="notice evidence-caveat"><strong>${e(statusLabel(record))}</strong><p>Source support is not current-build verification. Unknown mechanics and conflicting claims remain uncertain.</p></aside>${authorActions}${record.spoiler ? '<details class="spoiler-content"><summary>Reveal spoiler content</summary><h2>' + e(record.name || record.title) + "</h2>" + (record.description ? '<p class="lede">' + e(record.description) + "</p>" : "") : ""}${
+    detail += `<section class="panel"><h2>${isLootType(record.id) ? "Items reported in this loot type" : record.id === LOOT_TYPES_INDEX ? "Browse loot source types" : "Related records"}</h2><ul class="${record.id === LOOT_TYPES_INDEX ? "loot-type-buttons" : ""}">${record.relatedIds.map((id) => `<li>${ref(id)}</li>`).join("")}</ul></section>`;
+  const claimMarkup = claims.length
+    ? `<section class="panel"><h2>Claims &amp; conflicts</h2><p>Conflicting claims are preserved, not silently resolved.</p>${claims
+        .map(
+          (c) =>
+            `<article class="claim"><h3>${e(c.field)}: ${e(c.value ?? "Unknown")}</h3><p>Status: ${e(c.status)}. Locator: ${e(c.locator)}</p><p>Scope: ${e(JSON.stringify(c.scope || scope))}</p><ul class="source-list">${pack.sources
+              .filter((s) => s.id === c.sourceId)
+              .map((source) =>
+                sourceMarkup(
+                  record.spoiler ? source : maskedValue(source, guardFor(pack)),
+                ),
+              )
+              .join("")}</ul></article>`,
+        )
+        .join("")}</section>`
+    : "";
+  const evidence = `<aside class="panel provenance">${overview ? "<details><summary>Sources &amp; verification</summary>" : ""}<p class="eyebrow">RECORD INTELLIGENCE</p><h2>Evidence &amp; scope</h2><dl><dt>Verification</dt><dd>${e(statusLabel(record))}</dd><dt>Content version</dt><dd>${e(pack.contentVersion)}</dd><dt>Game / mode</dt><dd>${e(scope.gameId || scope.id)} / ${e(scope.mode)}</dd><dt>Build</dt><dd>${e(scope.build)}</dd><dt>Reviewed</dt><dd>${e(
+    sources
+      .map((s) => s.reviewedAt)
+      .filter(Boolean)
+      .sort()
+      .at(-1) || "Unknown",
+  )}</dd><dt>Record ID</dt><dd>${e(record.id)}</dd><dt>Pack</dt><dd>${e(pack.title)}</dd></dl><h3>Sources</h3><ul class="source-list">${sources.map((source) => sourceMarkup(record.spoiler ? source : maskedValue(source, guardFor(pack)))).join("") || "<li>No sources recorded. Treat this as unverified.</li>"}</ul><p class="muted">Verification applies only to the stated claim and scope, not every mechanic or the current live build.</p>${overview ? "</details>" : ""}</aside>`;
+
+  if (overview && !record.spoiler) {
+    return renderItemWorkspace({
+      record,
+      title: publicTitle(record),
+      overview,
+      rarity: itemRarity(record),
+      status: statusLabel(record),
+      fixture: isFixture(pack),
+      detail: detail + claimMarkup,
+      picture,
+      evidence,
+      actions: authorActions,
+      target: itemTarget,
+      catalogURL: catalogURL === "/catalog/" ? "/items/" : catalogURL,
+    });
+  }
+  return `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${e(catalogURL)}">Catalog</a><span aria-hidden="true">/</span><span>${e(record.recordType)}</span></nav>${isFixture(pack) ? '<aside class="notice fixture-notice"><strong>FICTIONAL FIXTURE · NOT GAME DATA</strong><p>This synthetic record demonstrates the guide’s behavior. Do not use it as gameplay advice.</p></aside>' : ""}${pageHeading(overview ? `${record.kind || "item"} reference` : `${record.kind || record.recordType} / ${record.category || record.track || "REFERENCE"}`, publicTitle(record), record.spoiler ? "" : overview?.summary || record.description || "")}<aside class="notice evidence-caveat"><strong>${e(statusLabel(record))}</strong>${overview ? " · Current-build verification varies." : "<p>Source support is not current-build verification. Unknown mechanics and conflicting claims remain uncertain.</p>"}</aside>${authorActions}${record.spoiler ? '<details class="spoiler-content"><summary>Reveal spoiler content</summary><h2>' + e(record.name || record.title) + "</h2>" + (record.description ? '<p class="lede">' + e(record.description) + "</p>" : "") : ""}${
     record.body
       ? `<div class="prose panel">${record.body
           .split("\n")
           .map((line) => `<p>${e(line)}</p>`)
           .join("")}</div>`
       : ""
-  }${picture}<div class="detail-grid"><div>${detail}${
-    claims.length
-      ? `<section class="panel"><h2>Claims &amp; conflicts</h2><p>Conflicting claims are preserved, not silently resolved.</p>${claims
-          .map(
-            (c) =>
-              `<article class="claim"><h3>${e(c.field)}: ${e(c.value ?? "Unknown")}</h3><p>Status: ${e(c.status)}. Locator: ${e(c.locator)}</p><p>Scope: ${e(JSON.stringify(c.scope || scope))}</p><ul class="source-list">${pack.sources
-                .filter((s) => s.id === c.sourceId)
-                .map((source) =>
-                  sourceMarkup(
-                    record.spoiler
-                      ? source
-                      : maskedValue(source, guardFor(pack)),
-                  ),
-                )
-                .join("")}</ul></article>`,
-          )
-          .join("")}</section>`
-      : ""
-  }</div><aside class="panel provenance"><p class="eyebrow">RECORD INTELLIGENCE</p><h2>Evidence &amp; scope</h2><dl><dt>Verification</dt><dd>${e(statusLabel(record))}</dd><dt>Content version</dt><dd>${e(pack.contentVersion)}</dd><dt>Game / mode</dt><dd>${e(scope.gameId || scope.id)} / ${e(scope.mode)}</dd><dt>Build</dt><dd>${e(scope.build)}</dd><dt>Reviewed</dt><dd>${e(
-    sources
-      .map((s) => s.reviewedAt)
-      .filter(Boolean)
-      .sort()
-      .at(-1) || "Unknown",
-  )}</dd><dt>Record ID</dt><dd>${e(record.id)}</dd><dt>Pack</dt><dd>${e(pack.title)}</dd></dl><h3>Sources</h3><ul class="source-list">${sources.map((source) => sourceMarkup(record.spoiler ? source : maskedValue(source, guardFor(pack)))).join("") || "<li>No sources recorded. Treat this as unverified.</li>"}</ul><p class="muted">Verification applies only to the stated claim and scope, not every mechanic or the current live build.</p></aside></div>${record.spoiler ? "</details>" : ""}`;
+  }${picture}<div class="detail-grid${overview ? " item-detail-layout" : ""}"><div>${detail}${claimMarkup}</div>${evidence}</div>${record.spoiler ? "</details>" : ""}`;
 }

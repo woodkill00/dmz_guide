@@ -1,5 +1,12 @@
 {
   "id": "source:fob",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "web",
+    "lineageKey": "source-fob",
+    "observationKey": "source-fob"
+  },
   "publishedAt": "2026-10-09",
   "reviewedAt": "2026-10-21",
   "supports": "Selected crafting costs, resource types, Orders overview and printer unlock claim.",

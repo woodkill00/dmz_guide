@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Trophy"
+  ],
+  "category": "Field upgrades",
+  "description": "Deployable autonomous defense system that destroys up to three nearby pieces of equipment and projectiles. Some larger targets may take multiple shots.",
+  "id": "mw4:printer-item-trophy-system",
+  "kind": "item",
+  "name": "Trophy System",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

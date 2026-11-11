@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Binoculars"
+  ],
+  "category": "Tacticals",
+  "description": "A scope used to call out enemy operators and spot threats in your vicinity.",
+  "id": "mw4:printer-item-spotter-scope",
+  "kind": "item",
+  "name": "Spotter Scope",
+  "rarity": "Rare",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

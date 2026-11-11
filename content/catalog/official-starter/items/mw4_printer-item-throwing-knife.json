@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Lethals",
+  "description": "Retrievable throwing knife that is lethal to unarmored targets and the head.",
+  "id": "mw4:printer-item-throwing-knife",
+  "kind": "item",
+  "name": "Throwing Knife",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

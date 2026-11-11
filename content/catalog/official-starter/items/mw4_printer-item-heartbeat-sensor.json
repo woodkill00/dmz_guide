@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Tacticals",
+  "description": "A limited use tablet that displays rough information about nearby enemies.",
+  "id": "mw4:printer-item-heartbeat-sensor",
+  "kind": "item",
+  "name": "Heartbeat Sensor",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

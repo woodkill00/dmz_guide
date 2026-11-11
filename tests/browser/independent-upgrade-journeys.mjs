@@ -6,6 +6,7 @@ import {
   openInventoryDetails,
   openParentDetails,
 } from "./reviewer-disclosures.mjs";
+import { openCatalogContext } from "./open-catalog-context.mjs";
 import { installPickerFocusDiagnostics } from "./picker-focus-diagnostics.mjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
@@ -14,8 +15,10 @@ const progressTraces = new WeakMap();
 const PACK = "observed:upgrade-review-20261026";
 const ITEM = "observed:power-regulator";
 const UPGRADE = "observed:dog-tag-case-upgrade-ii";
-const stock = `[data-field="inventory"][data-id="${ITEM}"]`;
-const reserve = `[data-field="reserves"][data-id="${ITEM}"]`;
+const itemGroup =
+  '#inventory-fields .inventory-group:has([data-inventory-group="Ingredients"])';
+const stock = `${itemGroup} [data-field="inventory"][data-id="${ITEM}"]`;
+const reserve = `${itemGroup} [data-field="reserves"][data-id="${ITEM}"]`;
 const upgrade = (field, id = UPGRADE) =>
   `[data-upgrade-id="${id}"][data-upgrade-field="${field}"]`;
 const url = (base, route) =>
@@ -113,6 +116,10 @@ async function ready(page) {
   await page.waitForFunction(
     () => document.querySelector("main")?.getAttribute("aria-busy") === "false",
   );
+  if (new URL(page.url()).pathname === "/inventory/") {
+    await page.locator("#inventory-query").fill("Power Regulator");
+    await page.locator(stock).waitFor({ state: "attached" });
+  }
 }
 async function active(page) {
   return page.evaluate(async () =>
@@ -283,6 +290,7 @@ async function setProgressCore(
   return after;
 }
 async function exportCurrent(page) {
+  await openCatalogContext(page);
   const next = page.waitForEvent("download");
   await page.click("#export-current-profile");
   const download = await next;
@@ -500,7 +508,7 @@ export async function runIndependentUpgradeJourneys({
         new Set(actual.rows.flatMap((r) => r[3].map((row) => row[0]))).size,
         22,
       );
-      assert.equal(actual.contentVersion, "2026.10.28.1");
+      assert.match(actual.contentVersion, /^\d{4}\.\d{2}\.\d{2}\.\d+$/);
       assert.deepEqual(
         actual.newUnknownCash,
         [
@@ -594,7 +602,9 @@ export async function runIndependentUpgradeJourneys({
       await ready(page);
       assert.equal(await page.locator(stock).inputValue(), "");
       assert.match(
-        (await page.locator(`[data-inventory-item="${ITEM}"]`).textContent()) +
+        (await page
+          .locator(`${itemGroup} [data-inventory-item="${ITEM}"]`)
+          .textContent()) +
           " " +
           ((await page.locator(stock).getAttribute("placeholder")) || ""),
         /Not entered/i,
@@ -627,6 +637,7 @@ export async function runIndependentUpgradeJourneys({
         initial,
         "Explicit0 from absence is dirty, not silently committed",
       );
+      await openInventoryDetails(page, ITEM);
       await page.locator(reserve).fill("9");
       let saved = await saveInventory(page);
       assert(Object.hasOwn(saved.inventory, ITEM));
@@ -636,7 +647,7 @@ export async function runIndependentUpgradeJourneys({
       await ready(page);
       assert.equal(await page.locator(stock).inputValue(), "0");
       await openInventoryDetails(page, ITEM);
-      await page.locator(`[data-clear-stock="${ITEM}"]`).focus();
+      await page.locator(`${itemGroup} [data-clear-stock="${ITEM}"]`).focus();
       await page.keyboard.press("Enter");
       assert.equal(await page.locator(stock).inputValue(), "");
       await planner.click();

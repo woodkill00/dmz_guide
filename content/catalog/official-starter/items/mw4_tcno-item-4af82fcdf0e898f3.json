@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Tacticals",
+  "description": "TroubleChute-listed item. Current-build behavior is not independently verified.",
+  "id": "mw4:tcno-item-4af82fcdf0e898f3",
+  "kind": "item",
+  "name": "Adrenaline",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

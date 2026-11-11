@@ -1,18 +1,22 @@
+import {parseItemArea} from "../map/item-area-link.ts";
 import {el,input,select,field,note,button,errorText} from './dom.ts';
 import {buildSearchIndex,searchIndex,searchOrigin,defaultSearchOptions,parseSearch,type SearchOrigin,type SearchOptions} from './search.ts';
 import type {ExplorerRecord} from './explorer-index.ts';
 export interface SearchHost{
+ highlightItemArea?:(name:string,records:readonly ExplorerRecord[])=>void;
  records:()=>ExplorerRecord[];separate:()=>readonly {a:string;b:string}[];
  card:(record:ExplorerRecord)=>HTMLElement;error:(error:unknown)=>void;
  center:()=>SearchOrigin;go:(origin:SearchOrigin)=>void;open:()=>void;allowed:()=>boolean;
 }
 export function createSearchPanel(h:SearchHost){
- let options=defaultSearchOptions(),page=0,advancedOpen=false,nearOpen=false,originText='',current:HTMLElement|undefined,refresh:(()=>void)|undefined,timer:ReturnType<typeof setTimeout>|undefined;
+ const itemArea=parseItemArea(location.search);
+ let options={...defaultSearchOptions(), ...(itemArea?{query:JSON.stringify(itemArea)}:{})},page=0,advancedOpen=false,nearOpen=false,originText='',current:HTMLElement|undefined,refresh:(()=>void)|undefined,timer:ReturnType<typeof setTimeout>|undefined;
  const schedule=(work:()=>void)=>{clearTimeout(timer);timer=setTimeout(()=>{if(current?.isConnected)work();},150);};
  const nearby=(r:ExplorerRecord)=>{if(!h.allowed()||r.x===null||r.y===null)return;options={...options,query:'',sort:'nearest',origin:{x:r.x,y:r.y,label:r.title}};originText=`${r.x.toFixed(2)},${r.y.toFixed(2)}`;page=0;clearTimeout(timer);h.open();};
  function render(root:HTMLElement){
   clearTimeout(timer);current=root;
   let records=h.records(),index=buildSearchIndex(records);
+  if(itemArea){const context=note(`Possible item area: ${itemArea}. Matching named locations are highlighted on the map when coordinates are available. Spawns are not guaranteed.`);context.id='item-area-context';root.append(context);}
   const query=input(options.query,'search',256);query.id='explorer-search';query.setAttribute('aria-label','Find locations across sites and my points');
   const status=note('');status.id='search-results-status';status.setAttribute('role','status');
   const results=el('div');results.id='explorer-results';
@@ -51,6 +55,7 @@ export function createSearchPanel(h:SearchHost){
    results.replaceChildren();
    try{
     const result=searchIndex(index,options,h.separate());
+    if(itemArea && options.query===JSON.stringify(itemArea))h.highlightItemArea?.(itemArea,records);
     nearSummary.textContent=result.origin?`Nearby / grid / coordinates · ${result.origin.label.slice(0,50)}`:"Nearby / grid / coordinates";go.hidden=!result.origin;
     if(result.origin){originStatus.textContent=`Origin: ${result.origin.label} · distance in canonical image pixels`;if(result.grid){origin.value=result.grid;originText=result.grid;}else if(!options.origin&&result.origin){origin.value=`${result.origin.x.toFixed(2)},${result.origin.y.toFixed(2)}`;}}
     else originStatus.textContent='Choose an origin to sort or limit by proximity. This is not live player tracking.';

@@ -1,0 +1,16 @@
+{
+  "id": "source:tcno-fob-20261110",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-10",
+    "kind": "web",
+    "lineageKey": "tcno-fob",
+    "observationKey": "tcno-fob-20261110"
+  },
+  "publishedAt": "Not stated",
+  "reviewedAt": "2026-11-10",
+  "supports": "34 listed FOB upgrades, including Bank I–XIII; factual material costs, described effects and explicit prerequisite links. Complete for this site snapshot, not independently verified current-build coverage or spending semantics.",
+  "title": "TroubleChute: FOB upgrade costs and prerequisite chains",
+  "type": "community",
+  "url": "https://tools.tcno.co/dmz/fob"
+}

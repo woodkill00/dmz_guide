@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "plate-carrier",
+  "description": "Reported X01 printer reference. Carried-backpack materials are required; this is separate from FOB printing. Item effects and rarity are not independently verified.",
+  "id": "mw4:x01-3-5-plate-armor-vest",
+  "kind": "item",
+  "name": "3.5-Plate Armor Vest",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:gamerant-x01-printer-20261106",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

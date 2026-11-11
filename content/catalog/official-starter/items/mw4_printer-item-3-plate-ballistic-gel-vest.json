@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "plate-carrier",
+  "description": "An extremely durable armor plate carrier with slots for 3 armor plates that regenerates over time.",
+  "id": "mw4:printer-item-3-plate-ballistic-gel-vest",
+  "kind": "item",
+  "name": "3-Plate Ballistic Gel Vest",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

@@ -1,3 +1,4 @@
+import { revealTrackerControl } from "./tracker-controls.mjs";
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
 import { readWeaponIntel } from "../../src/content/weapon-intel.mjs";
@@ -138,6 +139,7 @@ export async function runArmoryWorkbenchTests({
     await page.locator('[data-build-slot="optic"]').selectOption("");
     await page.locator('[data-build-slot="apex"]').selectOption("");
     await tab(page, "acquisition");
+    await revealTrackerControl(page, "#tracker-weapon");
     await page.locator("#tracker-weapon").selectOption("han-86");
     await page.locator("#tracker-manual").check();
     await waitRevision(page, 3);
@@ -382,6 +384,7 @@ export async function runArmoryWorkbenchTests({
         .textContent.includes("Synthetic quota"),
     );
     await tab(page, "acquisition");
+    await revealTrackerControl(page, "#tracker-weapon");
     await page.locator("#tracker-weapon").selectOption("m4");
     await page.locator("#tracker-manual").click();
     await page.waitForFunction(() =>

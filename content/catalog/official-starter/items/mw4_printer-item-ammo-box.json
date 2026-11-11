@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Field upgrades",
+  "description": "Source-reported item reference; current-build behavior is not independently verified.",
+  "id": "mw4:printer-item-ammo-box",
+  "kind": "item",
+  "name": "Ammo Box",
+  "rarity": "Uncommon",
+  "sourceIds": [
+    "source:gameboost-printer-20261030"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

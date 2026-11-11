@@ -1,13 +1,48 @@
 {
   "source": "src/ui/feature-registry.mjs",
-  "head": "123ebd7bb48e71ba7398327989b94c31edeb79c4",
+  "head": "2970096a12b1dbe47745d86837212e70c04b0e56",
   "hashes": {
-    "src/ui/feature-registry.mjs": "1246e00abaafadb1e6a7af6626f4d059bcda07b53a8af5bb2142982ce3066983",
+    "src/ui/feature-registry.mjs": "ea281f3a59b4a42d3df0e98c8b9d65202523bd31c73e60d2074bc20aa1486d71",
     "src/ui/map-destinations.json": "7eda40618c784083b520f1ad9c356fe3d284ce83a394389f9d6527beb7da85f0",
-    "specs/071-ui-ux-implementation/feature-coverage.md": "6e47b8d4a694e8d3ad9fb565f86c3751dc59fa9ae50ba364575e8ec516a2310f"
+    "specs/071-ui-ux-implementation/feature-coverage.md": "4a9181e7af77eeaf5a78df0b5151d3d4ebbf54e74d49c8d28cd7c1945197c63c"
   },
-  "count": 77,
+  "count": 82,
   "features": [
+    {
+      "id": "field-desk",
+      "label": "Field desk",
+      "kind": "guide",
+      "path": "/field-desk/",
+      "group": "Prepare"
+    },
+    {
+      "id": "quick-collect",
+      "label": "Quick collect",
+      "kind": "guide",
+      "path": "/quick-collect/",
+      "group": "Prepare"
+    },
+    {
+      "id": "x01-printer",
+      "label": "X01 3D Printer",
+      "kind": "guide",
+      "path": "/recipes/x01/",
+      "group": "Prepare"
+    },
+    {
+      "id": "needed",
+      "label": "Needed / remaining items",
+      "kind": "guide",
+      "path": "/needed/",
+      "group": "Prepare"
+    },
+    {
+      "id": "item-maintenance",
+      "label": "Add or edit items",
+      "kind": "guide",
+      "path": "/items/manage/",
+      "group": "Reference"
+    },
     {
       "id": "dmz-guide",
       "label": "DMZ Guide",

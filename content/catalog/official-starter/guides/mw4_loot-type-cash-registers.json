@@ -1,0 +1,27 @@
+{
+  "body": "Cash registers is a loot-source type listed by TroubleChute. The related items below are reported possibilities, not guaranteed drops.\nSpecific map positions are not recorded here. Add identification notes and example photographs through Edit loot type or Add photos.",
+  "category": "locations",
+  "id": "mw4:loot-type-cash-registers",
+  "relatedIds": [
+    "mw4:bandage",
+    "mw4:printer-item-infantry-invasion-plans",
+    "mw4:printer-item-encrypted-archive",
+    "mw4:printer-item-nuclear-program-files",
+    "mw4:printer-item-smelling-salts",
+    "mw4:medkit",
+    "mw4:printer-item-sedative-inhaler",
+    "mw4:printer-item-pain-killers",
+    "mw4:tcno-item-4af82fcdf0e898f3",
+    "mw4:dmz-cash",
+    "mw4:printer-item-regional-combat-notes",
+    "mw4:printer-item-energy-drink",
+    "mw4:printer-item-degraded-execution-footage",
+    "mw4:printer-item-ballistic-flight-logs"
+  ],
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "title": "Cash registers"
+}

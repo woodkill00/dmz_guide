@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Weapon Manuals",
+  "description": "Unlocks ability to purchase this weapon in Gunsmith.",
+  "id": "mw4:tcno-item-6be256679fa44724",
+  "kind": "item",
+  "name": "KG-7 Vulcan Manual",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

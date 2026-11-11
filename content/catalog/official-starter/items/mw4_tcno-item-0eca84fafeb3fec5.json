@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Fire Support",
+  "description": "Remote controlled anti-personnel drone.",
+  "id": "mw4:tcno-item-0eca84fafeb3fec5",
+  "kind": "item",
+  "name": "Turret Drone",
+  "rarity": "Epic",
+  "sourceIds": [
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Misc",
+  "description": "Listed as a FOB upgrade material by TroubleChute. Acquisition and live-build applicability are not independently verified.",
+  "id": "mw4:tcno-irradiated-container-medium",
+  "kind": "item",
+  "name": "Irradiated Container Medium",
+  "rarity": "Ultra",
+  "sourceIds": [
+    "source:tcno-fob-20261110",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

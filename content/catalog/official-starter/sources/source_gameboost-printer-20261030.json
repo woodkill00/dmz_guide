@@ -1,0 +1,16 @@
+{
+  "id": "source:gameboost-printer-20261030",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "web",
+    "lineageKey": "gameboost-printer-20261030",
+    "observationKey": "gameboost-printer-20261030"
+  },
+  "publishedAt": "Updated 2026-10-30",
+  "reviewedAt": "2026-11-06",
+  "supports": "107 factual table rows: 95 printable recipes and 12 upgrade entries. Secondary report; current build, unlisted costs and unlock details are not independently verified. Revive Pistol level 25 is explicitly unconfirmed.",
+  "title": "GameBoost: printer recipes and listed costs (2026-10-30)",
+  "type": "community",
+  "url": "https://gameboost.com/blog/mw4-dmz-all-3d-printer-recipes"
+}

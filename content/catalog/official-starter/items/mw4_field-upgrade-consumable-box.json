@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "category": "Field upgrades",
+  "description": "Player-reported Field upgrade item. Recipe costs, rarity, effects and unlock conditions are not documented in this catalog.",
+  "id": "mw4:field-upgrade-consumable-box",
+  "kind": "item",
+  "name": "Consumable Box",
+  "sourceIds": [
+    "source:owner-field-upgrades-20261109"
+  ],
+  "stats": [],
+  "status": "unverified",
+  "unit": "count"
+}

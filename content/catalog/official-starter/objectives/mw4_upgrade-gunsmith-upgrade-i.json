@@ -1,0 +1,71 @@
+{
+  "description": "Reduces the cost of Gunsmith purchases by 5%. TroubleChute-listed requirements and prerequisite links, reviewed 2026-11-10; not independently verified for the current build. Consumption remains unknown where not previously confirmed.",
+  "effects": [],
+  "id": "mw4:upgrade-gunsmith-upgrade-i",
+  "name": "Gunsmith Upgrade I",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:dmz-cash",
+      "quantity": 50000,
+      "sourceIds": [
+        "source:detonated-fob-20261025",
+        "source:gameboost-printer-20261030",
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:reactive-metals",
+      "quantity": 20,
+      "sourceIds": [
+        "source:detonated-fob-20261025",
+        "source:gameboost-printer-20261030",
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-cpu",
+      "quantity": 10,
+      "sourceIds": [
+        "source:detonated-fob-20261025",
+        "source:gameboost-printer-20261030",
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    },
+    {
+      "consumption": "consumed",
+      "itemId": "mw4:ingredient-power-regulator",
+      "quantity": 5,
+      "sourceIds": [
+        "source:detonated-fob-20261025",
+        "source:gameboost-printer-20261030",
+        "source:tcno-fob-20261110"
+      ],
+      "status": "observed"
+    }
+  ],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:detonated-fob-20261025",
+    "source:gameboost-printer-20261030",
+    "source:tcno-fob-20261110",
+    "source:tcno-items-20261110"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "track": "dmz-upgrade",
+  "upgrade": {
+    "observationKeys": [
+      "detonated-gunsmith-upgrade-i-20261025"
+    ],
+    "prerequisiteStatus": "known",
+    "tierLabel": "I"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "source:owner-field-upgrades-20261109",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": null,
+    "kind": "private-observation",
+    "lineageKey": "owner-field-upgrades-20261109",
+    "observationKey": "owner-field-upgrades-20261109"
+  },
+  "publishedAt": "Reported 2026-11-09",
+  "reviewedAt": "2026-11-09",
+  "supports": "The owner supplies a 21-item Field upgrades inventory roster and its in-game order. Item identities and classification are player-reported, not independently verified. Missing recipe costs, effects, rarities and unlock requirements are not established.",
+  "title": "Owner-reported Field upgrades roster / 2026-11-09",
+  "type": "observation",
+  "url": null
+}

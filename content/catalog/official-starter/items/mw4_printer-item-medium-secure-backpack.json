@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "backpack",
+  "description": "A medium backpack with four secure slots.",
+  "id": "mw4:printer-item-medium-secure-backpack",
+  "kind": "item",
+  "name": "Medium Secure Backpack",
+  "rarity": "Legendary",
+  "sourceIds": [
+    "source:gameboost-printer-20261030",
+    "source:tcno-items-20261110"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

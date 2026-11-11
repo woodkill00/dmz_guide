@@ -1,3 +1,4 @@
+import { listedCollectionNeeds } from "./listed-collection-needs.mjs";
 import { upgradeFamilies } from "./upgrade-families.mjs";
 import { upgradeAdvice } from "./upgrade-advice.mjs";
 import { scopeOf } from "../content/validate.mjs";
@@ -14,6 +15,7 @@ export function upgradeNeeds(pack, profile) {
     }),
     guard = spoilerGuard(pack, profile.spoilers);
   const next = upgradeAdvice(pack, profile, {
+    includeIdentityState: true,
     scope: "selected-upgrades",
     strictVisibility: true,
     rootIds: groups.nextIds,
@@ -87,6 +89,7 @@ export function upgradeNeeds(pack, profile) {
     );
   const project = (advice, membership) => ({
     status: advice.status,
+    excludedNumericIds: new Set(advice.excludedNumericUpgradeIds || []),
     partial: advice.completeness !== "complete-for-listed-costs",
     reasons: advice.reasons || [],
     used: new Set([
@@ -102,5 +105,11 @@ export function upgradeNeeds(pack, profile) {
     all: project(all, allUses),
   };
   result.collection = collectionNeeds(pack, profile, result);
+  result.listedCollection = listedCollectionNeeds(
+    pack,
+    profile,
+    result.collection,
+    result.all,
+  );
   return result;
 }
