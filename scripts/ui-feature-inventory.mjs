@@ -57,5 +57,5 @@ await writeFile(
   ) + "\n",
 );
 console.log(
-  `Frozen ${metadata.length} reviewed feature identities and ${paths.length} source hashes.`,
+  `Captured ${metadata.length} feature identities and ${paths.length} source hashes; review status is recorded by each owning feature.`,
 );

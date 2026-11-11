@@ -55,7 +55,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <header class="app-header">
     <a class="brand" href="/" aria-label="Hajin Field Guide home"><span class="brand-mark">${icon('cross')}</span><span>FIELD GUIDE<span class="brand-sub">MODERN WARFARE · DMZ</span></span></a>
     <div class="header-center"><span class="status-dot"></span> HAJIN EXCLUSION ZONE</div>
-    <div class="header-links"><div class="local-badge"><span></span> LOCAL EDITION</div><a id="open-help" class="help-link" href="/help.html" target="_blank" rel="noopener noreferrer">Help</a></div>
+    <div class="header-links"><div class="local-badge"><span></span> LOCAL EDITION</div><a class="help-link" href="/x01.html">X01 map</a><a id="open-help" class="help-link" href="/help.html" target="_blank" rel="noopener noreferrer">Help</a></div>
   </header>
   <main class="workspace">
     <aside id="map-key" class="sidebar" aria-label="Map key">

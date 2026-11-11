@@ -23,7 +23,19 @@ tools/hajin-map/public/maps/hajin/official/markers.json
 tools/hajin-map/public/maps/hajin/official/icons/
 ```
 
-These paths are ignored. Never force-add unknown-rights assets, private screenshots or game datasets. The original workspace's research acquisition scripts are not distributed here; there is no automatic scraper/downloader. Public redistribution permission remains unverified and is not granted by this integration, external source links or attribution. See [asset policy](licensing-and-assets.md).
+These paths are ignored. Never force-add unknown-rights assets, private screenshots or game datasets. The Hajin research acquisition scripts are not distributed here. X01 has a separate exact-source local capture command below. Public redistribution permission remains unverified and is not granted by this integration, external source links or attribution. See [asset policy](licensing-and-assets.md).
+
+### X01 secondary map
+
+Open **More → X01 Black Site**, the **X01 map** link on Hajin, or `http://127.0.0.1:5175/x01.html`. It has two floors, a source-aligned A–J / 0–8 grid switch, search, category switches and persistent marker details. X01 uses a distinct coordinate frame and does not read or change the Hajin workspace, safe routes or private map backup.
+
+The committed snapshot contains 48 source-reported COD Central marker positions. Floor images are local-only and ignored by Git. To download the two pinned WebP rasters for your own viewer, run from `tools/hajin-map/`:
+
+```text
+node scripts/capture-x01.mjs --assets
+```
+
+The script fetches only the exact COD Central X01 page and two pinned raster URLs, validates size/type/hash, updates the source marker snapshot and writes images under `public/maps/x01/codcentral/`. Inspect the snapshot diff before committing a later refresh. If the source image hash changes, the command stops for review. Without these local images, the X01 page displays a setup message and still lists markers. Source and coordinate limits are recorded in [the X01 assessment](../specs/074-x01-secondary-map/sources.md). DMZHub's requested X01 page remains linked with key-room sectors shown as unplotted references while its direct collection endpoint is unavailable.
 
 ## Map controls
 

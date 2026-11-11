@@ -10,7 +10,7 @@ import {
 import { featureHub, featureLabel } from "../../src/ui/workspace-shell.mjs";
 import { renderMainNavigation } from "../../src/ui/site-navigation.mjs";
 
-test("071 static registry admission matches frozen inventory; this is not browser activation", async () => {
+test("Current static registry admission matches its captured inventory; browser activation is separate", async () => {
   const fixture = JSON.parse(
     await readFile(
       new URL("../fixtures/ui-feature-coverage.json", import.meta.url),
@@ -47,7 +47,7 @@ test("071 static registry admission matches frozen inventory; this is not browse
   assert.equal(new Set(features.map((f) => f.id)).size, features.length);
   assert.equal(
     features.length,
-    82,
+    83,
     "Rebaseline the owning registry contract deliberately",
   );
   assert.deepEqual(

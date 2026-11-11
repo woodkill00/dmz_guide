@@ -2,7 +2,7 @@
 
 Recipes have primary FOB/Crafting ownership; Guide Reference may retain a clearly secondary link without changing URL/identity.
 
-Current registry: 82 IDs (33 guide,48 map,1 Studio), including45 map-tool targets plus canvas/safe/help. Older76-destination prose is superseded. registry-snapshot.json records public feature metadata only. T001 freezes live source/build identity; T066 refuses unmapped destinations after changes. Every row inherits applicable state variants from contracts/workspaces.md. F-ID means exact allowlisted activation/feature identity, correct scope and story-specific nonmutating Back/preservation journey.
+Current registry after feature 074: 83 IDs (33 guide,49 map,1 Studio), including45 map-tool targets plus Hajin canvas/safe/help and the separate X01 surface. The reviewed feature 071 inventory originally had 82 IDs; the X01 addition is owned and verified by `specs/074-x01-secondary-map/`. Older76-destination prose is superseded. registry-snapshot.json records public feature metadata only. T001 freezes live source/build identity; T066 refuses unmapped destinations after changes. Every row inherits applicable state variants from contracts/workspaces.md. F-ID means exact allowlisted activation/feature identity, correct scope and story-specific nonmutating Back/preservation journey.
 
 | Feature / existing path | New hub/context | Representation | Origin/data owner | Task | Fallback / journey |
 |---|---|---|---|---|---|

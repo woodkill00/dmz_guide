@@ -1,0 +1,503 @@
+{
+  "schemaVersion": 1,
+  "mapId": "x01",
+  "coordinateVersion": "codcentral-x01-v4",
+  "source": "https://codcentral.net/blog/mw4-dmz-map/",
+  "capturedAt": "2026-11-11T15:00:22.339Z",
+  "floors": [
+    {
+      "id": 1,
+      "name": "Data Center floor",
+      "url": "https://codcentral.net/assets/library/mw4/dmz/map/x01-floor-1-v4.webp",
+      "sha256": "7c928152f8552195b75ba6a0fbb0518bbf8f696b505ad882e194e4964ef7b2d4"
+    },
+    {
+      "id": 2,
+      "name": "Main Warehouse floor",
+      "url": "https://codcentral.net/assets/library/mw4/dmz/map/x01-floor-2-v4.webp",
+      "sha256": "01074c7bbc2bec9e7438d073bd9efbef8580a03460a57b1f8f5b8cc7a47679b0"
+    }
+  ],
+  "markers": [
+    {
+      "id": "x01-data-center",
+      "name": "Data Center",
+      "floor": 1,
+      "layer": "poi",
+      "grid": "H5",
+      "x": 0.7889400000000001,
+      "y": 0.61843,
+      "description": "Where X01 starts: the squad spawns in the Data Center after the freight elevator. Our Maintenance Room key came from a jacket here, and one door had a trap on it that you can defuse."
+    },
+    {
+      "id": "x01-deep-vault",
+      "name": "Deep Vault",
+      "floor": 1,
+      "layer": "poi",
+      "grid": "C2/C3",
+      "x": 0.30045,
+      "y": 0.32559,
+      "description": "The long wing in the northwest of the Data Center floor, behind a big round vault door at its southeast end, the Deep Vault gate. A Deep Vault keycard such as Deep Vault 301 opens the gate without being used up. The elevator behind the gate goes down to lower levels with numbered keycard rooms, such as Room 301 on the third level. The Core Room and Blix are further in. Expect other squads, it was the busiest spot in our runs."
+    },
+    {
+      "id": "x01-supply-depot",
+      "name": "Supply Depot",
+      "floor": 1,
+      "layer": "poi",
+      "grid": "F2",
+      "x": 0.55932,
+      "y": 0.31667,
+      "description": "North side of the Data Center floor. The Keycard Encoder Station is on its east side, and the flooded barracks for the order Water Wading lie underneath."
+    },
+    {
+      "id": "x01-pump-station",
+      "name": "Pump Station",
+      "floor": 1,
+      "layer": "poi",
+      "grid": "G3",
+      "x": 0.69879,
+      "y": 0.3521,
+      "description": "Northeast of the central hall, next to the Power Generators."
+    },
+    {
+      "id": "x01-power-generators-1",
+      "name": "Power Generators",
+      "floor": 1,
+      "layer": "poi",
+      "grid": "G3/H3",
+      "x": 0.74068,
+      "y": 0.42997,
+      "description": "Shown on both floors. We found a Medal of Unquestioning Service in a Tool Chest and a Gilded Medal of Absolute Loyalty (Legendary) in an Industrial Locker here."
+    },
+    {
+      "id": "x01-tech-lab",
+      "name": "Tech Lab",
+      "floor": 1,
+      "layer": "poi",
+      "grid": "E4",
+      "x": 0.47576,
+      "y": 0.49436,
+      "description": "Inside the central hall, west of the Bio Lab."
+    },
+    {
+      "id": "x01-bio-lab",
+      "name": "Bio Lab",
+      "floor": 1,
+      "layer": "poi",
+      "grid": "F4",
+      "x": 0.59485,
+      "y": 0.5133800000000001,
+      "description": "Inside the central hall, east of the Tech Lab."
+    },
+    {
+      "id": "x01-medical-wing",
+      "name": "Medical Wing",
+      "floor": 1,
+      "layer": "poi",
+      "grid": "C4/C5",
+      "x": 0.28235,
+      "y": 0.55328,
+      "description": "West end of the Data Center floor. The lift here goes up to the Admin Offices."
+    },
+    {
+      "id": "x01-production-assembly",
+      "name": "Production Assembly",
+      "floor": 1,
+      "layer": "poi",
+      "grid": "E5/F5",
+      "x": 0.52841,
+      "y": 0.61549,
+      "description": "The big hall in the middle of the Data Center floor. The Maintenance Room key opens a door on its 3rd floor, next to fenced pipework."
+    },
+    {
+      "id": "x01-cargo-bay",
+      "name": "Cargo Bay",
+      "floor": 2,
+      "layer": "poi",
+      "grid": "E2/F2",
+      "x": 0.52038,
+      "y": 0.28721,
+      "description": "North end of the Main Warehouse floor, with an Emergency Exfil Shaft in its northwest corner."
+    },
+    {
+      "id": "x01-control-room",
+      "name": "Control Room",
+      "floor": 2,
+      "layer": "poi",
+      "grid": "G3",
+      "x": 0.69439,
+      "y": 0.35918,
+      "description": "Counts for the order Sight Seeing, which asks for 5 unopened containers in the X01 Control Room. An Industrial Locker here counted for us."
+    },
+    {
+      "id": "x01-power-generators-2",
+      "name": "Power Generators",
+      "floor": 2,
+      "layer": "poi",
+      "grid": "G3/H3",
+      "x": 0.74068,
+      "y": 0.42997,
+      "description": "Shown on both floors. We found a Medal of Unquestioning Service in a Tool Chest and a Gilded Medal of Absolute Loyalty (Legendary) in an Industrial Locker here."
+    },
+    {
+      "id": "x01-admin-offices",
+      "name": "Admin Offices",
+      "floor": 2,
+      "layer": "poi",
+      "grid": "C4/C5",
+      "x": 0.32023,
+      "y": 0.55774,
+      "description": "West wing of the Main Warehouse floor. The lift here goes down to the Medical Wing."
+    },
+    {
+      "id": "x01-main-warehouse",
+      "name": "Main Warehouse",
+      "floor": 2,
+      "layer": "poi",
+      "grid": "F4/F5",
+      "x": 0.52841,
+      "y": 0.55101,
+      "description": "Counts for the order Sight Seeing, which asks for 5 unopened containers in the X01 Main Warehouse. Containers in the Power Generators did not count for it."
+    },
+    {
+      "id": "x01-motor-pool",
+      "name": "Motor Pool",
+      "floor": 2,
+      "layer": "poi",
+      "grid": "E7/F7",
+      "x": 0.52545,
+      "y": 0.80513,
+      "description": "South end of the Main Warehouse floor, with the exfil icon at its south edge."
+    },
+    {
+      "id": "x01-spawn",
+      "name": "Spawn: Data Center",
+      "floor": 1,
+      "layer": "spawn",
+      "grid": "H5",
+      "x": 0.7386400000000001,
+      "y": 0.59933,
+      "description": "One of the X01 spawns. We have also spawned on the Main Warehouse floor and in a storeroom in the Supply Depot, so the spawn is not fixed. Anyone who was too far from the freight elevator when travel started stays behind on Hajin."
+    },
+    {
+      "id": "x01-exfil-production-assembly",
+      "name": "Exfil: Production Assembly",
+      "floor": 1,
+      "layer": "exfil",
+      "grid": "G5",
+      "x": 0.6196200000000001,
+      "y": 0.62104,
+      "description": "Lift exfil. Pull the lever next to the lift door (Exfil Activated). The lift took about 40 seconds to arrive for us, then Exfil Departing counts down from 25 seconds. We extracted here."
+    },
+    {
+      "id": "x01-exfil-tech-lab",
+      "name": "Exfil: Tech Lab",
+      "floor": 1,
+      "layer": "exfil",
+      "grid": "E4",
+      "x": 0.44492,
+      "y": 0.50261,
+      "description": "Exfil icon on the map just west of the Tech Lab, the same icon as the lift exfil at Production Assembly. We have not confirmed the extraction steps here yet."
+    },
+    {
+      "id": "x01-exfil-motor-pool",
+      "name": "Exfil: Motor Pool",
+      "floor": 2,
+      "layer": "exfil",
+      "grid": "F8",
+      "x": 0.54924,
+      "y": 0.90236,
+      "description": "Exfil icon on the map at the south end of the Motor Pool. We have not confirmed the extraction steps yet."
+    },
+    {
+      "id": "x01-key-maintenance-room",
+      "name": "Maintenance Room",
+      "floor": 1,
+      "layer": "key",
+      "grid": "E5",
+      "x": 0.45606,
+      "y": 0.66498,
+      "description": "Keycard. Opens the Maintenance Room at the top of the X01 Production Assembly on the Data Center floor, grid E5, next to fenced pipework. From the Production Assembly hall take the metal stairs up to the catwalk, climb the yellow ladder and take the concrete stairs to the top level. The door is at the far end of the room with the big insulated pipe behind a red fence, with a red no-entry sign and the card reader on its right."
+    },
+    {
+      "id": "x01-hidden-stash",
+      "name": "Hidden Stash",
+      "floor": 1,
+      "layer": "stash",
+      "grid": "F5",
+      "x": 0.52045,
+      "y": 0.56902,
+      "description": "The hidden stash for the order Explorer. It sits at the north edge of the Production Assembly, in a small storage room through a doorway with a stairs sign, right next to an Ammo Armor Cache. The order puts a gold globe on this spot until you loot it."
+    },
+    {
+      "id": "x01-3d-printer",
+      "name": "3D Printer",
+      "floor": 1,
+      "layer": "printer",
+      "grid": "E5",
+      "x": 0.47447,
+      "y": 0.61768,
+      "description": "The 3D Printer on the west side of the Production Assembly. Visiting it counts for the order Crafting Material."
+    },
+    {
+      "id": "x01-encoder-supply-depot",
+      "name": "Keycard Encoder Station: Supply Depot",
+      "floor": 1,
+      "layer": "encoder",
+      "grid": "F2",
+      "x": 0.58545,
+      "y": 0.32677,
+      "description": "Keycard Encoder Station on the east side of the Supply Depot. It turns an Encodable Blank Keycard into the Maintenance Room keycard (Maintenance Access, Rare, about 15 seconds) or the Executive Room keycard (Executive Access, Legendary, about 30 seconds). Visiting it counts for the order Crafting Material."
+    },
+    {
+      "id": "x01-encoder-data-center",
+      "name": "Keycard Encoder Station: Data Center",
+      "floor": 1,
+      "layer": "encoder",
+      "grid": "I5",
+      "x": 0.84492,
+      "y": 0.57786,
+      "description": "Keycard Encoder Station in a small room on the east edge of the Data Center. It turns an Encodable Blank Keycard into the Small Test Chamber keycard (Engineering Access, Epic, about 20 seconds) or the Audit Room keycard (Audit Officer Access, Epic, about 25 seconds). Visiting it also counts for the order Crafting Material."
+    },
+    {
+      "id": "x01-exfil-shaft-medical-wing",
+      "name": "Emergency Exfil Shaft: Medical Wing",
+      "floor": 1,
+      "layer": "exfil",
+      "grid": "C4",
+      "x": 0.29038,
+      "y": 0.55253,
+      "description": "Emergency Exfil Shaft in the Medical Wing, right next to the lift up to the Admin Offices. It needs a Staff Emergency Exfil Keycard, which you print at the X01 3D Printer."
+    },
+    {
+      "id": "x01-exfil-shaft-cargo-bay",
+      "name": "Emergency Exfil Shaft: Cargo Bay",
+      "floor": 2,
+      "layer": "exfil",
+      "grid": "E2",
+      "x": 0.47682,
+      "y": 0.24065999999999999,
+      "description": "Emergency Exfil Shaft at the northwest corner of the Cargo Bay. It needs a Staff Emergency Exfil Keycard, which you print at the X01 3D Printer."
+    },
+    {
+      "id": "x01-ammo-deep-vault",
+      "name": "Ammo Armor Cache: Deep Vault",
+      "floor": 1,
+      "layer": "ammo",
+      "grid": "C2",
+      "x": 0.27189,
+      "y": 0.27685,
+      "description": "At the northwest end of the Deep Vault. Refills ammo and armor plates."
+    },
+    {
+      "id": "x01-ammo-north-corridor",
+      "name": "Ammo Armor Cache: north corridor",
+      "floor": 1,
+      "layer": "ammo",
+      "grid": "F4",
+      "x": 0.50932,
+      "y": 0.44856999999999997,
+      "description": "In the corridor north of the Tech Lab. Refills ammo and armor plates."
+    },
+    {
+      "id": "x01-ammo-pump-station",
+      "name": "Ammo Armor Cache: Pump Station",
+      "floor": 1,
+      "layer": "ammo",
+      "grid": "H3",
+      "x": 0.71348,
+      "y": 0.40084000000000003,
+      "description": "On the south side of the Pump Station, next to the lift. Refills ammo and armor plates."
+    },
+    {
+      "id": "x01-ammo-medical-wing",
+      "name": "Ammo Armor Cache: Medical Wing",
+      "floor": 1,
+      "layer": "ammo",
+      "grid": "C5",
+      "x": 0.26826,
+      "y": 0.55774,
+      "description": "West of the Medical Wing lift. Refills ammo and armor plates."
+    },
+    {
+      "id": "x01-ammo-hidden-stash",
+      "name": "Ammo Armor Cache: hidden stash",
+      "floor": 1,
+      "layer": "ammo",
+      "grid": "F5",
+      "x": 0.51098,
+      "y": 0.56961,
+      "description": "At the north edge of the Production Assembly, right next to the hidden stash. Refills ammo and armor plates."
+    },
+    {
+      "id": "x01-ammo-data-center",
+      "name": "Ammo Armor Cache: Data Center",
+      "floor": 1,
+      "layer": "ammo",
+      "grid": "H6",
+      "x": 0.76917,
+      "y": 0.7096800000000001,
+      "description": "At the south end of the Data Center. Refills ammo and armor plates."
+    },
+    {
+      "id": "x01-ammo-cargo-bay",
+      "name": "Ammo Armor Cache: Cargo Bay",
+      "floor": 2,
+      "layer": "ammo",
+      "grid": "F2",
+      "x": 0.54621,
+      "y": 0.30623,
+      "description": "In the Cargo Bay, east of the area icon. Refills ammo and armor plates."
+    },
+    {
+      "id": "x01-ammo-admin-offices",
+      "name": "Ammo Armor Cache: Admin Offices",
+      "floor": 2,
+      "layer": "ammo",
+      "grid": "C5",
+      "x": 0.22667,
+      "y": 0.59907,
+      "description": "At the west end of the Admin Offices. Refills ammo and armor plates."
+    },
+    {
+      "id": "x01-ammo-main-warehouse",
+      "name": "Ammo Armor Cache: Main Warehouse",
+      "floor": 2,
+      "layer": "ammo",
+      "grid": "F5",
+      "x": 0.56402,
+      "y": 0.59158,
+      "description": "On the east side of the Main Warehouse. Refills ammo and armor plates."
+    },
+    {
+      "id": "x01-ammo-motor-pool",
+      "name": "Ammo Armor Cache: Motor Pool",
+      "floor": 2,
+      "layer": "ammo",
+      "grid": "F7",
+      "x": 0.54924,
+      "y": 0.8133,
+      "description": "In the Motor Pool, east of the area icon. Refills ammo and armor plates."
+    },
+    {
+      "id": "x01-stairs-supply-depot",
+      "name": "Stairs: Supply Depot north",
+      "floor": 1,
+      "layer": "conn",
+      "grid": "F2",
+      "x": 0.5697,
+      "y": 0.25740999999999997,
+      "description": "Up stairs at the north end of the Supply Depot."
+    },
+    {
+      "id": "x01-stairs-cargo-bay",
+      "name": "Stairs: Cargo Bay",
+      "floor": 2,
+      "layer": "conn",
+      "grid": "F2",
+      "x": 0.54924,
+      "y": 0.27231,
+      "description": "Down stairs in the Cargo Bay, northeast of the area icon."
+    },
+    {
+      "id": "x01-small-test-chamber",
+      "name": "Small Test Chamber",
+      "floor": 1,
+      "layer": "key",
+      "grid": "F4",
+      "x": 0.49545,
+      "y": 0.52189,
+      "description": "Keycard. Opens the Small Test Chamber inside the X01 Tech Lab on the Data Center floor, grid F4, in front of the security checkpoints. From the Logistics Tunnel go into the Tech Lab and past the reception counter. The door has a red no-entry sign and a keypad on the wall to its left."
+    },
+    {
+      "id": "x01-logistics-tunnel",
+      "name": "Logistics Tunnel",
+      "floor": 1,
+      "layer": "poi",
+      "grid": "F6",
+      "x": 0.5378799999999999,
+      "y": 0.7138,
+      "description": "The corridor that loops around the Tech Lab, the Bio Lab and the Production Assembly, and most of the stairs between the floors open onto it. The Wheelson for the X01 5/5 order Door Opener sits in the tunnel next to the Tech Lab, and the wide corridor northwest from the tunnel leads to the Deep Vault. The tac map shows no name here, we added it."
+    },
+    {
+      "id": "x01-key-audit-room",
+      "name": "Audit Room",
+      "floor": 2,
+      "layer": "key",
+      "grid": "G5",
+      "x": 0.61212,
+      "y": 0.60185,
+      "description": "Keycard. Opens the Audit Room on the Main Warehouse floor, grid G5. From the Main Warehouse hall take the stairwell on the east side up, follow the corridor and turn into the dark corridor. The door has a red no-entry sign and a card reader on its left."
+    },
+    {
+      "id": "x01-key-executive-room",
+      "name": "Executive Room",
+      "floor": 2,
+      "layer": "key",
+      "grid": "C5",
+      "x": 0.28106000000000003,
+      "y": 0.59343,
+      "description": "Keycard. Opens the Executive Room on the second floor of the Admin Offices, grid C5. In the statue atrium take the stairs on the west side up and turn back into the small office with the water cooler. The green double door is on its west wall, with the card reader to its right."
+    },
+    {
+      "id": "x01-key-deep-vault-301",
+      "name": "Deep Vault 301",
+      "floor": 1,
+      "layer": "key",
+      "grid": "C2",
+      "x": 0.27652,
+      "y": 0.32071,
+      "description": "Keycard. Opens Room 301 on the third level of the X01 Deep Vault, under the northwest end of the wing, grid C2. Go through the round Deep Vault gate (the card opens it and is not used up), take the elevator behind it down to the lab level and the stairwell down to level 3. Follow the corridor along the railing past 303 and 302. Room 301 is the last door, with the card reader on the wall."
+    },
+    {
+      "id": "x01-key-deep-vault-106",
+      "name": "Deep Vault 106",
+      "floor": 1,
+      "layer": "key",
+      "grid": "D2",
+      "x": 0.31742000000000004,
+      "y": 0.33418,
+      "description": "Keycard. Opens Room 106 on the lab level of the X01 Deep Vault, grid D2, the first level you reach with the elevator behind the round Deep Vault gate (the card opens the gate and is not used up there). Follow the corridor past the stairwell with the big painted 1 to its end. The door has the number 106 painted large on the wall next to it and a card reader."
+    },
+    {
+      "id": "x01-key-deep-vault-406",
+      "name": "Deep Vault 406",
+      "floor": 1,
+      "layer": "key",
+      "grid": "D2",
+      "x": 0.33787999999999996,
+      "y": 0.34007,
+      "description": "Keycard. Opens Room 406 on level 4 of the X01 Deep Vault, grid D2, in the middle of the wing and right under Room 106 on the tac map (the card opens the round Deep Vault gate first and is not used up there). Take the elevator behind the gate down and the stairwell down past the painted 3 to the landing with the big painted 4, then go around the corner and along the hall with the railing. Room 406 is the double door with the 406 plate on the wall to its left and the card reader to its right."
+    },
+    {
+      "id": "x01-key-superintendents-office",
+      "name": "Superintendent's Office",
+      "floor": 2,
+      "layer": "key",
+      "grid": "E4",
+      "x": 0.45226999999999995,
+      "y": 0.50421,
+      "description": "Keycard. Opens the Superintendent's Office up on an elevated platform in the X01 Main Warehouse, on the Main Warehouse floor, just west of the Main Warehouse icon (the tooltip says F4, where the climb starts; the office sits just west of that line in E4). One way in. Take the metal stairs up, climb over the IBC tank onto the upper deck, then jump from the blue barrels across to the small balcony in front of the door. Card reader to the right of the door, next to a red no-entry sign."
+    },
+    {
+      "id": "x01-key-chol-mins-stash-room",
+      "name": "Lt. Chol-Min's Stash Room",
+      "floor": 2,
+      "layer": "key",
+      "grid": "E7",
+      "x": 0.41894,
+      "y": 0.8636400000000001,
+      "description": "Key. Opens Lt. Chol-Min's Stash Room on the upper level of the X01 Motor Pool, Main Warehouse floor, grid E7, above the hall where Lieutenant Chol-Min sits. Go up the rope inside the barred cage at the northwest corner of the Motor Pool block (if the gates will not open, kill Chol-Min in the room first, the way up is blocked while he is there), walk through the room with the control panels and follow the catwalk south across the hall. The stash room is the blue door at the end, with the card reader on the wall to its left."
+    },
+    {
+      "id": "x01-bounty-station",
+      "name": "Bounty Station",
+      "floor": 2,
+      "layer": "bounty",
+      "grid": "E5",
+      "x": 0.49561,
+      "y": 0.57744,
+      "description": "The X01 Bounty Station, at the west end of Main Warehouse. Pay off your bounty here without going back to Hajin, or check the Wanted players in your match. Marked with a money bag and a skull on the tac map."
+    }
+  ]
+}

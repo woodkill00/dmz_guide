@@ -22,7 +22,7 @@ assert.equal(
   registrySnapshot.count,
   "Registry changed: rebaseline the full feature coverage contract.",
 );
-assert.equal(mapFeatures.length, 48);
+assert.equal(mapFeatures.length, 49);
 assert.equal(toolFeatures.length, 45);
 const plannerTargets = new Set(destinations.planner.map(([target]) => target));
 const expectedTabs = {
@@ -73,7 +73,7 @@ const report = {
     .update(await readFile(registryPath))
     .digest("hex"),
   scope:
-    "Actual48map entries including45tool handlers; does not certify remaining29guide/Studio entries",
+    "Actual49map entries including45tool handlers and the X01 surface; does not certify guide/Studio entries",
   results: [],
 };
 await server.listen();
@@ -113,6 +113,9 @@ try {
           contentType: "image/png",
           body: Buffer.from(image, "base64"),
         }),
+      );
+      await context.route("**/maps/x01/codcentral/*.webp", (route) =>
+        route.fulfill({contentType:"image/png",body:Buffer.from(image,"base64")}),
       );
       await context.route("**/maps/hajin/official/markers.json", (route) =>
         route.fulfill({
@@ -201,7 +204,12 @@ try {
         try {
           await page.goto(base + feature.path);
           await page.waitForLoadState("domcontentloaded");
-          if (feature.id === "safe-runs") {
+          if (feature.id === "x01-map") {
+            await page.locator("#x01-map").waitFor({state:"visible",timeout:7000});
+            assert(await page.locator("#x01-controls").isVisible());
+            assert(await page.locator("#x01-details").isVisible());
+            result.owner = "x01-floor-map";
+          } else if (feature.id === "safe-runs") {
             await page
               .locator(
                 'html[data-ui-surface="safe-runs"][data-ui-variant="modern"][data-ui-contract="071-v1"][data-ui-mounted="071-v1"][data-ui-adapter="safe-run-layout"]',

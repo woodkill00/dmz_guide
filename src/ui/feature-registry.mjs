@@ -59,6 +59,7 @@ const rows = [
   ],
   ["home", "Home", "Prepare", "/", "Your field desk and recent work"],
   ["hajin-map", "Interactive map", "Map", "/", "Explore Hajin", "map"],
+  ["x01-map", "X01 Black Site", "Map", "/x01.html", "Explore both X01 facility floors", "map"],
   [
     "safe-runs",
     "Safe runs",

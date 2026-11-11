@@ -1,7 +1,7 @@
 {
   "source": "src/ui/feature-registry.mjs",
-  "date": "2026-11-10",
-  "count": 82,
+  "date": "2026-11-11",
+  "count": 83,
   "features": [
     {
       "id": "field-desk",
@@ -71,6 +71,13 @@
       "label": "Interactive map",
       "kind": "map",
       "path": "/",
+      "group": "Map"
+    },
+    {
+      "id": "x01-map",
+      "label": "X01 Black Site",
+      "kind": "map",
+      "path": "/x01.html",
       "group": "Map"
     },
     {
