@@ -139,6 +139,7 @@ test("X01 source and rendered views are read-only references with links, no fals
   assert.match(text, /carried|backpack/);
   assert.match(text, /GameRant/);
   assert.match(text, /Production Assembly/);
+  assert.match(text, /x01-workspace\.html\?floor=1&marker=x01-3d-printer/);
   assert(!text.includes("data-craft-id"));
   assert(!text.includes("4 armor plates"));
   assert.equal(

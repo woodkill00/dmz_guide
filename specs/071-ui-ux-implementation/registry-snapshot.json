@@ -77,7 +77,7 @@
       "id": "x01-map",
       "label": "X01 Black Site",
       "kind": "map",
-      "path": "/x01.html",
+      "path": "/x01-workspace.html",
       "group": "Map"
     },
     {
