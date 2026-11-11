@@ -33,7 +33,8 @@ export async function runX01Browser(browser,base){
     await page.setViewportSize({width:390,height:844});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
     await page.locator(".x01-sources summary").click();
-    assert.equal(await page.getByRole("link",{name:"DMZHub X01 map"}).count(),1);
+    assert.equal(await page.locator('a[href="https://dmzhub.gg/maps/x01-black-site"]').count(),1);
+    assert.equal(await page.locator('a[href="/x01-dmzhub.html"]').count(),2);
     const missing=await context.newPage();
     await missing.route("**/maps/x01/codcentral/*.webp",route=>route.fulfill({status:404,body:"Missing local image"}));
     await missing.goto(`${base}/x01.html`);

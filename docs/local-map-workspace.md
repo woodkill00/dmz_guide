@@ -27,15 +27,23 @@ These paths are ignored. Never force-add unknown-rights assets, private screensh
 
 ### X01 secondary map
 
-Open **More → X01 Black Site**, the **X01 map** link on Hajin, or `http://127.0.0.1:5175/x01.html`. It has two floors, a source-aligned A–J / 0–8 grid switch, search, category switches and persistent marker details. X01 uses a distinct coordinate frame and does not read or change the Hajin workspace, safe routes or private map backup.
+Open **More → X01 Black Site**, the **X01 map** link on Hajin, or `http://127.0.0.1:5175/x01.html` for the COD Central view. Follow **DMZHub X01 map** there, or open `http://127.0.0.1:5175/x01-dmzhub.html`, for the separate DMZHub view. Both have two floors, search, category switches and persistent marker details. The COD Central view also has its source-aligned A–J / 0–8 grid switch. X01 uses distinct coordinate frames and does not read or change the Hajin workspace, safe routes or private map backup.
 
-The committed snapshot contains 48 source-reported COD Central marker positions. Floor images are local-only and ignored by Git. To download the two pinned WebP rasters for your own viewer, run from `tools/hajin-map/`:
+The committed COD Central snapshot contains 48 source-reported marker positions. Its floor images are local-only and ignored by Git. To download the two pinned WebP rasters for your own viewer, run from `tools/hajin-map/`:
 
 ```text
 node scripts/capture-x01.mjs --assets
 ```
 
-The script fetches only the exact COD Central X01 page and two pinned raster URLs, validates size/type/hash, updates the source marker snapshot and writes images under `public/maps/x01/codcentral/`. Inspect the snapshot diff before committing a later refresh. If the source image hash changes, the command stops for review. Without these local images, the X01 page displays a setup message and still lists markers. Source and coordinate limits are recorded in [the X01 assessment](../specs/074-x01-secondary-map/sources.md). DMZHub's requested X01 page remains linked with key-room sectors shown as unplotted references while its direct collection endpoint is unavailable.
+The script fetches only the exact COD Central X01 page and two pinned raster URLs, validates size/type/hash, updates the source marker snapshot and writes images under `public/maps/x01/codcentral/`. Inspect the snapshot diff before committing a later refresh. If the source image hash changes, the command stops for review.
+
+The separate DMZHub snapshot contains 125 public source features: 76 on the first floor and 49 on the second. For its local-only floor tiles and category icons, run from `tools/hajin-map/` with Edge available:
+
+```text
+node scripts/capture-dmzhub-x01.mjs --assets
+```
+
+This opens the normal DMZHub page in a headed Playwright browser, captures its public metadata and both complete floor feeds, validates the bounded point/line geometry, and downloads 32 level-2 tiles and the referenced WebP icons under ignored `public/maps/x01/dmzhub/`. It writes a review draft to ignored `.local/x01-dmzhub/snapshot.json`; compare it with the checked-in snapshot before a refresh. If the public page cannot load, the command stops. Both X01 pages keep their marker lists available when local images are absent. Their markers are shown on their own provider images; cross-provider matches are not inferred from names or grid labels. See the [COD Central assessment](../specs/074-x01-secondary-map/sources.md) and [DMZHub coverage assessment](../specs/075-x01-dmzhub-coverage/analysis.md).
 
 ## Map controls
 

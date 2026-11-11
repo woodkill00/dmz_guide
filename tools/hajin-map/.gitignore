@@ -24,3 +24,4 @@ public/maps/hajin/update-authorization.local.json
 
 # Separate, private local road-centerline reference (not redistributed).
 public/maps/hajin/roads.local.json
+public/maps/x01/dmzhub/

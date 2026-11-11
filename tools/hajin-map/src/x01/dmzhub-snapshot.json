@@ -1,0 +1,1821 @@
+{
+  "schemaVersion": 1,
+  "mapId": "x01",
+  "coordinateVersion": "dmzhub-x01-v1-wm-4096",
+  "source": "https://dmzhub.gg/maps/x01-black-site",
+  "apiSource": "https://api.dmzhub.gg/api/v2/maps/x01-black-site",
+  "capturedAt": "2026-11-11T16:24:35.153Z",
+  "revision": "x01-v1-wm",
+  "categories": [
+    {
+      "id": 52,
+      "slug": "key-room",
+      "name": "Key Room",
+      "layer": "keys-and-locks",
+      "renderer": "marker",
+      "icon": "01m5em7ssm6s6et7d9r6w647c9.webp"
+    },
+    {
+      "id": 53,
+      "slug": "exfiltration",
+      "name": "Exfil",
+      "layer": "exfiltration",
+      "renderer": "marker",
+      "icon": "01m6zqbzs3qy5k2wscq5xctxyg.webp"
+    },
+    {
+      "id": 64,
+      "slug": "emergency-exfil",
+      "name": "Emergency Exfil",
+      "layer": "exfiltration",
+      "renderer": "marker",
+      "icon": "01m6rbmjwymerx2mdtng28rwam.webp"
+    },
+    {
+      "id": 61,
+      "slug": "dead-corpse",
+      "name": "Corpse",
+      "layer": "discoveries",
+      "renderer": "marker",
+      "icon": "01m5hnmfxtfbpyjm8mxj5r1zxq.webp"
+    },
+    {
+      "id": 72,
+      "slug": "safe",
+      "name": "Safe",
+      "layer": "discoveries",
+      "renderer": "marker",
+      "icon": "01m5hsx2kj7xy2yh9e32rkz9es.webp"
+    },
+    {
+      "id": 62,
+      "slug": "weapon-locker",
+      "name": "Weapon Locker",
+      "layer": "loot",
+      "renderer": "marker",
+      "icon": "01m6g65b63cestqg11r2mat28p.webp"
+    },
+    {
+      "id": 73,
+      "slug": "argonaut-armor",
+      "name": "Argonaut Armor",
+      "layer": "loot",
+      "renderer": "marker",
+      "icon": "01m70094wt9wyzgadg635n5423.webp"
+    },
+    {
+      "id": 59,
+      "slug": "ammo-armor-cache",
+      "name": "Ammo Armor cache",
+      "layer": "services",
+      "renderer": "marker",
+      "icon": "01m5dsny4z9kpz7dq8ze50yyqf.webp"
+    },
+    {
+      "id": 60,
+      "slug": "bounty-terminal",
+      "name": "Bounty Terminal",
+      "layer": "services",
+      "renderer": "marker",
+      "icon": "01m66e0nf11v7q7gp32608znfy.webp"
+    },
+    {
+      "id": 67,
+      "slug": "keycard-encoder",
+      "name": "Keycard Encoder",
+      "layer": "services",
+      "renderer": "marker",
+      "icon": "01m6rep35k6p164mabqb7kdska.webp"
+    },
+    {
+      "id": 54,
+      "slug": "player-s-spawn",
+      "name": "Player's Spawn",
+      "layer": "intel",
+      "renderer": "marker",
+      "icon": "01m5fjzg7n8eve677f0nfaz3n7.webp"
+    },
+    {
+      "id": 65,
+      "slug": "stairs",
+      "name": "Stairs",
+      "layer": "intel",
+      "renderer": "marker",
+      "icon": "01m6rcgpv0nny134c6m4kchv0j.webp"
+    },
+    {
+      "id": 68,
+      "slug": "ascender",
+      "name": "Ascender",
+      "layer": "intel",
+      "renderer": "marker",
+      "icon": "01m6zpsyrn7f3yc9255ctd567e.webp"
+    },
+    {
+      "id": 69,
+      "slug": "3d-printer",
+      "name": "3D Printer",
+      "layer": "intel",
+      "renderer": "marker",
+      "icon": "01m6zq2fbhs3sne85n1q4c349w.webp"
+    },
+    {
+      "id": 71,
+      "slug": "core-room",
+      "name": "Core Room",
+      "layer": "intel",
+      "renderer": "marker",
+      "icon": "01m6ztfkqmg8j05qjwqm592n9x.webp"
+    },
+    {
+      "id": 55,
+      "slug": "hidden-entrances",
+      "name": "Hidden Entrances",
+      "layer": "secret-routes",
+      "renderer": "line",
+      "icon": "01m66ecfrf9vamda9b4d81hv95.webp"
+    },
+    {
+      "id": 70,
+      "slug": "wheelson",
+      "name": "Wheelson",
+      "layer": "bosses",
+      "renderer": "line",
+      "icon": "01m6zqtzca4f0v2g0zq74vhdqn.webp"
+    },
+    {
+      "id": 58,
+      "slug": "radiation-zone",
+      "name": "Radiation Zone",
+      "layer": "hazards",
+      "renderer": "circle",
+      "icon": "01m59c1ft6ety59psba47ph3cr.webp"
+    },
+    {
+      "id": 66,
+      "slug": "mine-trap",
+      "name": "Mine Trap",
+      "layer": "hazards",
+      "renderer": "line",
+      "icon": "01m6rdp897gadhzs2rf51jwcpz.webp"
+    },
+    {
+      "id": 56,
+      "slug": "major-poi-labels",
+      "name": "Major POI",
+      "layer": "labels",
+      "renderer": "label",
+      "icon": null
+    },
+    {
+      "id": 57,
+      "slug": "minor-poi-labels",
+      "name": "Minor POI",
+      "layer": "labels",
+      "renderer": "label",
+      "icon": null
+    }
+  ],
+  "floors": [
+    {
+      "id": 1,
+      "slug": "x01-1st-v1-wm",
+      "name": "First Floor",
+      "grid": {
+        "columns": 10,
+        "rows": null,
+        "frame": {
+          "x": 0.238,
+          "y": 0.252,
+          "width": 0.564,
+          "height": 0.506
+        },
+        "extend": {
+          "left": false,
+          "right": false,
+          "top": false,
+          "bottom": false
+        }
+      }
+    },
+    {
+      "id": 2,
+      "slug": "x01-2nd-v1-wm",
+      "name": "Second Floor",
+      "grid": {
+        "columns": 10,
+        "rows": null,
+        "frame": {
+          "x": 0.22,
+          "y": 0.239,
+          "width": 0.563,
+          "height": 0.533
+        },
+        "extend": {
+          "left": false,
+          "right": false,
+          "top": false,
+          "bottom": false
+        }
+      }
+    }
+  ],
+  "markers": [
+    {
+      "id": "dmzhub-669",
+      "sourceId": 669,
+      "floor": 1,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.50449602,
+      "y": 0.33703482,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-670",
+      "sourceId": 670,
+      "floor": 1,
+      "categoryId": 56,
+      "title": "Supply Depot",
+      "x": 0.54035713,
+      "y": 0.35889778,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zs7pbxr7tg668smkm9f6zm.webp"
+    },
+    {
+      "id": "dmzhub-671",
+      "sourceId": 671,
+      "floor": 1,
+      "categoryId": 56,
+      "title": "Data Center",
+      "x": 0.69081146,
+      "y": 0.53734164,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zsd7sdszvv1pbpe6swvehb.webp"
+    },
+    {
+      "id": "dmzhub-672",
+      "sourceId": 672,
+      "floor": 1,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.37702877,
+      "y": 0.59395666,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-673",
+      "sourceId": 673,
+      "floor": 1,
+      "categoryId": 56,
+      "title": "Deep vault",
+      "x": 0.37087931,
+      "y": 0.36681316,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zsgakb1e9979jz3wp14cwg.webp"
+    },
+    {
+      "id": "dmzhub-674",
+      "sourceId": 674,
+      "floor": 1,
+      "categoryId": 53,
+      "title": null,
+      "x": 0.46329162,
+      "y": 0.47035497,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-677",
+      "sourceId": 677,
+      "floor": 1,
+      "categoryId": 57,
+      "title": "Deep Core Control Room",
+      "x": 0.34480054,
+      "y": 0.34223345,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-678",
+      "sourceId": 678,
+      "floor": 1,
+      "categoryId": 59,
+      "title": null,
+      "x": 0.34728905,
+      "y": 0.3321501,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-679",
+      "sourceId": 679,
+      "floor": 1,
+      "categoryId": 56,
+      "title": "Power Generators",
+      "x": 0.66091036,
+      "y": 0.42783904,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zrwe0ezj079ws432paecvd.webp"
+    },
+    {
+      "id": "dmzhub-680",
+      "sourceId": 680,
+      "floor": 1,
+      "categoryId": 56,
+      "title": "Pump Station",
+      "x": 0.64087844,
+      "y": 0.38321267,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zs9619h3ms7eec2bk312gv.webp"
+    },
+    {
+      "id": "dmzhub-682",
+      "sourceId": 682,
+      "floor": 1,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.38457251,
+      "y": 0.5341389,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-684",
+      "sourceId": 684,
+      "floor": 1,
+      "categoryId": 59,
+      "title": null,
+      "x": 0.34532288,
+      "y": 0.50157393,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-685",
+      "sourceId": 685,
+      "floor": 1,
+      "categoryId": 53,
+      "title": null,
+      "x": 0.58139511,
+      "y": 0.53958807,
+      "renderer": "marker",
+      "path": null,
+      "icon": "01m6zqe97k0m70yvbcqj86a9n8.webp"
+    },
+    {
+      "id": "dmzhub-686",
+      "sourceId": 686,
+      "floor": 1,
+      "categoryId": 59,
+      "title": null,
+      "x": 0.50740289,
+      "y": 0.50824328,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-687",
+      "sourceId": 687,
+      "floor": 1,
+      "categoryId": 59,
+      "title": null,
+      "x": 0.50773619,
+      "y": 0.43621682,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-688",
+      "sourceId": 688,
+      "floor": 1,
+      "categoryId": 59,
+      "title": null,
+      "x": 0.64334461,
+      "y": 0.40687024,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-689",
+      "sourceId": 689,
+      "floor": 1,
+      "categoryId": 59,
+      "title": null,
+      "x": 0.67967412,
+      "y": 0.59427235,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-695",
+      "sourceId": 695,
+      "floor": 1,
+      "categoryId": 61,
+      "title": null,
+      "x": 0.34987837,
+      "y": 0.49221358,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-696",
+      "sourceId": 696,
+      "floor": 1,
+      "categoryId": 61,
+      "title": null,
+      "x": 0.33924343,
+      "y": 0.54243821,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-705",
+      "sourceId": 705,
+      "floor": 1,
+      "categoryId": 56,
+      "title": "Production Assembly",
+      "x": 0.52202533,
+      "y": 0.53688183,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zpve7fjh4b2rpen3t4mb8r.webp"
+    },
+    {
+      "id": "dmzhub-706",
+      "sourceId": 706,
+      "floor": 1,
+      "categoryId": 64,
+      "title": null,
+      "x": 0.35972169,
+      "y": 0.49681915,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-707",
+      "sourceId": 707,
+      "floor": 1,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.44537872,
+      "y": 0.50699238,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-708",
+      "sourceId": 708,
+      "floor": 1,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.36451999,
+      "y": 0.5367134,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-709",
+      "sourceId": 709,
+      "floor": 1,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.36592717,
+      "y": 0.47007884,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-710",
+      "sourceId": 710,
+      "floor": 1,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.50500082,
+      "y": 0.58212978,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-711",
+      "sourceId": 711,
+      "floor": 1,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.53058161,
+      "y": 0.44678667,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-712",
+      "sourceId": 712,
+      "floor": 1,
+      "categoryId": 53,
+      "title": null,
+      "x": 0.70514784,
+      "y": 0.42876158,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-714",
+      "sourceId": 714,
+      "floor": 1,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.30339461,
+      "y": 0.50039477,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-715",
+      "sourceId": 715,
+      "floor": 1,
+      "categoryId": 56,
+      "title": "Medical Wing",
+      "x": 0.35201669,
+      "y": 0.50093303,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zs3n501fyhw7ee6ts3m3y9.webp"
+    },
+    {
+      "id": "dmzhub-718",
+      "sourceId": 718,
+      "floor": 1,
+      "categoryId": 66,
+      "title": null,
+      "x": 0.34899773,
+      "y": 0.51944509,
+      "renderer": null,
+      "path": [
+        [
+          0.34899773,
+          0.52192022
+        ],
+        [
+          0.34899773,
+          0.51696995
+        ]
+      ],
+      "icon": null
+    },
+    {
+      "id": "dmzhub-721",
+      "sourceId": 721,
+      "floor": 1,
+      "categoryId": 67,
+      "title": null,
+      "x": 0.55829772,
+      "y": 0.36113615,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-723",
+      "sourceId": 723,
+      "floor": 1,
+      "categoryId": 52,
+      "title": "Small Test Chamber",
+      "x": 0.49966623,
+      "y": 0.47724188,
+      "renderer": "marker",
+      "path": null,
+      "icon": "01m67a0w00fa0nqme0n4thhzf9.webp"
+    },
+    {
+      "id": "dmzhub-724",
+      "sourceId": 724,
+      "floor": 1,
+      "categoryId": 56,
+      "title": "Tech Lab",
+      "x": 0.48459008,
+      "y": 0.46847259,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zqhzf17631k5bvxcrs09m8.webp"
+    },
+    {
+      "id": "dmzhub-725",
+      "sourceId": 725,
+      "floor": 1,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.75278462,
+      "y": 0.49148627,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-726",
+      "sourceId": 726,
+      "floor": 1,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.54668404,
+      "y": 0.31991894,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-728",
+      "sourceId": 728,
+      "floor": 1,
+      "categoryId": 54,
+      "title": "Player's Spawn",
+      "x": 0.65073211,
+      "y": 0.60335672,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-729",
+      "sourceId": 729,
+      "floor": 1,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.66049149,
+      "y": 0.3593632,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-732",
+      "sourceId": 732,
+      "floor": 1,
+      "categoryId": 52,
+      "title": "Deep Vault Room 301",
+      "x": 0.34937694,
+      "y": 0.35888101,
+      "renderer": "marker",
+      "path": null,
+      "icon": "01m67a0a9caqsds5spp5sb2dy8.webp"
+    },
+    {
+      "id": "dmzhub-733",
+      "sourceId": 733,
+      "floor": 1,
+      "categoryId": 52,
+      "title": "Maintenance Room",
+      "x": 0.47550149,
+      "y": 0.56593276,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-734",
+      "sourceId": 734,
+      "floor": 1,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.40655444,
+      "y": 0.4029077,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-735",
+      "sourceId": 735,
+      "floor": 1,
+      "categoryId": 55,
+      "title": null,
+      "x": 0.51820925,
+      "y": 0.51277504,
+      "renderer": null,
+      "path": [
+        [
+          0.5183574,
+          0.5157115
+        ],
+        [
+          0.5180611,
+          0.50983859
+        ]
+      ],
+      "icon": null
+    },
+    {
+      "id": "dmzhub-740",
+      "sourceId": 740,
+      "floor": 1,
+      "categoryId": 61,
+      "title": null,
+      "x": 0.36434652,
+      "y": 0.34597363,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-744",
+      "sourceId": 744,
+      "floor": 1,
+      "categoryId": 67,
+      "title": null,
+      "x": 0.72726963,
+      "y": 0.51154312,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-763",
+      "sourceId": 763,
+      "floor": 1,
+      "categoryId": 68,
+      "title": null,
+      "x": 0.63358913,
+      "y": 0.36230767,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-764",
+      "sourceId": 764,
+      "floor": 1,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.5995889,
+      "y": 0.58269013,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-765",
+      "sourceId": 765,
+      "floor": 1,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.60029306,
+      "y": 0.52565227,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-766",
+      "sourceId": 766,
+      "floor": 1,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.59489451,
+      "y": 0.44611938,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-767",
+      "sourceId": 767,
+      "floor": 1,
+      "categoryId": 69,
+      "title": null,
+      "x": 0.48135422,
+      "y": 0.53881986,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-768",
+      "sourceId": 768,
+      "floor": 1,
+      "categoryId": 56,
+      "title": "Bio Lab",
+      "x": 0.56623585,
+      "y": 0.47666422,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zqnxm5x007zscwd5g2e25b.webp"
+    },
+    {
+      "id": "dmzhub-769",
+      "sourceId": 769,
+      "floor": 1,
+      "categoryId": 70,
+      "title": null,
+      "x": 0.52357575,
+      "y": 0.51221528,
+      "renderer": null,
+      "path": [
+        [
+          0.53089272,
+          0.59397843
+        ],
+        [
+          0.43657577,
+          0.59397843
+        ],
+        [
+          0.43576115,
+          0.46859567
+        ],
+        [
+          0.47241395,
+          0.43041638
+        ],
+        [
+          0.61088011,
+          0.43067085
+        ],
+        [
+          0.61139034,
+          0.59363307
+        ],
+        [
+          0.53091842,
+          0.59401417
+        ]
+      ],
+      "icon": null
+    },
+    {
+      "id": "dmzhub-784",
+      "sourceId": 784,
+      "floor": 1,
+      "categoryId": 68,
+      "title": null,
+      "x": 0.47918484,
+      "y": 0.68230968,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-785",
+      "sourceId": 785,
+      "floor": 1,
+      "categoryId": 68,
+      "title": null,
+      "x": 0.36181654,
+      "y": 0.50468254,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-786",
+      "sourceId": 786,
+      "floor": 1,
+      "categoryId": 68,
+      "title": null,
+      "x": 0.65026618,
+      "y": 0.40676503,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-787",
+      "sourceId": 787,
+      "floor": 1,
+      "categoryId": 52,
+      "title": "X01 VAULT DRC LOCKER KEY",
+      "x": 0.33504074,
+      "y": 0.32439026,
+      "renderer": "marker",
+      "path": null,
+      "icon": "01m67a0ka527q3jc3ncsf7e7y0.webp"
+    },
+    {
+      "id": "dmzhub-788",
+      "sourceId": 788,
+      "floor": 1,
+      "categoryId": 71,
+      "title": null,
+      "x": 0.34658771,
+      "y": 0.3430402,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-792",
+      "sourceId": 792,
+      "floor": 1,
+      "categoryId": 72,
+      "title": null,
+      "x": 0.34034619,
+      "y": 0.48669573,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-795",
+      "sourceId": 795,
+      "floor": 1,
+      "categoryId": 55,
+      "title": null,
+      "x": 0.49468019,
+      "y": 0.55922296,
+      "renderer": null,
+      "path": [
+        [
+          0.50177348,
+          0.55736611
+        ],
+        [
+          0.48758689,
+          0.5610798
+        ]
+      ],
+      "icon": null
+    },
+    {
+      "id": "dmzhub-796",
+      "sourceId": 796,
+      "floor": 1,
+      "categoryId": 72,
+      "title": null,
+      "x": 0.4871927,
+      "y": 0.56485846,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-799",
+      "sourceId": 799,
+      "floor": 1,
+      "categoryId": 73,
+      "title": null,
+      "x": 0.33195373,
+      "y": 0.32742249,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-800",
+      "sourceId": 800,
+      "floor": 1,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.34097406,
+      "y": 0.32943522,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-801",
+      "sourceId": 801,
+      "floor": 1,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.34322915,
+      "y": 0.33136745,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-802",
+      "sourceId": 802,
+      "floor": 1,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.33364504,
+      "y": 0.33974042,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-803",
+      "sourceId": 803,
+      "floor": 1,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.34333654,
+      "y": 0.35976629,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-804",
+      "sourceId": 804,
+      "floor": 1,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.35122933,
+      "y": 0.36210212,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-805",
+      "sourceId": 805,
+      "floor": 1,
+      "categoryId": 61,
+      "title": null,
+      "x": 0.34720239,
+      "y": 0.36129679,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-806",
+      "sourceId": 806,
+      "floor": 1,
+      "categoryId": 52,
+      "title": "Deep Vault 406",
+      "x": 0.37894749,
+      "y": 0.36181235,
+      "renderer": "marker",
+      "path": null,
+      "icon": "01m67a0a9caqsds5spp5sb2dy8.webp"
+    },
+    {
+      "id": "dmzhub-807",
+      "sourceId": 807,
+      "floor": 1,
+      "categoryId": 72,
+      "title": null,
+      "x": 0.37540752,
+      "y": 0.36121194,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-808",
+      "sourceId": 808,
+      "floor": 1,
+      "categoryId": 72,
+      "title": null,
+      "x": 0.37968249,
+      "y": 0.35701622,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-809",
+      "sourceId": 809,
+      "floor": 1,
+      "categoryId": 72,
+      "title": null,
+      "x": 0.385512,
+      "y": 0.3629213,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-810",
+      "sourceId": 810,
+      "floor": 1,
+      "categoryId": 72,
+      "title": null,
+      "x": 0.38147021,
+      "y": 0.36719472,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-811",
+      "sourceId": 811,
+      "floor": 1,
+      "categoryId": 52,
+      "title": "Deep Vault 106",
+      "x": 0.37946137,
+      "y": 0.36468408,
+      "renderer": "marker",
+      "path": null,
+      "icon": "01m67a0a9caqsds5spp5sb2dy8.webp"
+    },
+    {
+      "id": "dmzhub-812",
+      "sourceId": 812,
+      "floor": 1,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.37642881,
+      "y": 0.36015635,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-813",
+      "sourceId": 813,
+      "floor": 1,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.38457912,
+      "y": 0.36407401,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-814",
+      "sourceId": 814,
+      "floor": 1,
+      "categoryId": 62,
+      "title": "LT Crate",
+      "x": 0.38156177,
+      "y": 0.36109243,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-815",
+      "sourceId": 815,
+      "floor": 1,
+      "categoryId": 72,
+      "title": null,
+      "x": 0.50131933,
+      "y": 0.47264202,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-816",
+      "sourceId": 816,
+      "floor": 1,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.50460156,
+      "y": 0.48007035,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-667",
+      "sourceId": 667,
+      "floor": 2,
+      "categoryId": 52,
+      "title": "Superintendent's Office",
+      "x": 0.47334492,
+      "y": 0.47360782,
+      "renderer": "marker",
+      "path": null,
+      "icon": "01m67a0w00fa0nqme0n4thhzf9.webp"
+    },
+    {
+      "id": "dmzhub-675",
+      "sourceId": 675,
+      "floor": 2,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.47313144,
+      "y": 0.30130026,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-676",
+      "sourceId": 676,
+      "floor": 2,
+      "categoryId": 56,
+      "title": "Cargo Bay",
+      "x": 0.51447128,
+      "y": 0.34096923,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6znxcg780v9y474yhz5g6x0.webp"
+    },
+    {
+      "id": "dmzhub-683",
+      "sourceId": 683,
+      "floor": 2,
+      "categoryId": 53,
+      "title": null,
+      "x": 0.53332328,
+      "y": 0.70844569,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-690",
+      "sourceId": 690,
+      "floor": 2,
+      "categoryId": 59,
+      "title": null,
+      "x": 0.53170407,
+      "y": 0.65396696,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-691",
+      "sourceId": 691,
+      "floor": 2,
+      "categoryId": 59,
+      "title": null,
+      "x": 0.5453693,
+      "y": 0.52125154,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-692",
+      "sourceId": 692,
+      "floor": 2,
+      "categoryId": 59,
+      "title": null,
+      "x": 0.31666006,
+      "y": 0.52558328,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-693",
+      "sourceId": 693,
+      "floor": 2,
+      "categoryId": 59,
+      "title": null,
+      "x": 0.53163744,
+      "y": 0.35018555,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-694",
+      "sourceId": 694,
+      "floor": 2,
+      "categoryId": 60,
+      "title": null,
+      "x": 0.4981351,
+      "y": 0.51435545,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-697",
+      "sourceId": 697,
+      "floor": 2,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.46961152,
+      "y": 0.5189207,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-698",
+      "sourceId": 698,
+      "floor": 2,
+      "categoryId": 56,
+      "title": "Main Warehouse",
+      "x": 0.51968266,
+      "y": 0.49850414,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zrh2y0qs0wvv27gk72g32y.webp"
+    },
+    {
+      "id": "dmzhub-699",
+      "sourceId": 699,
+      "floor": 2,
+      "categoryId": 56,
+      "title": "Admin Offices",
+      "x": 0.38069944,
+      "y": 0.50047459,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zr9tjf22a8cf17f4d8gceh.webp"
+    },
+    {
+      "id": "dmzhub-700",
+      "sourceId": 700,
+      "floor": 2,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.46881944,
+      "y": 0.56159556,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-701",
+      "sourceId": 701,
+      "floor": 2,
+      "categoryId": 56,
+      "title": "Motor Pool",
+      "x": 0.50066113,
+      "y": 0.66360167,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zrk3dvmy2ckms1kj9063ke.webp"
+    },
+    {
+      "id": "dmzhub-704",
+      "sourceId": 704,
+      "floor": 2,
+      "categoryId": 64,
+      "title": null,
+      "x": 0.48492559,
+      "y": 0.31209888,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-719",
+      "sourceId": 719,
+      "floor": 2,
+      "categoryId": 66,
+      "title": null,
+      "x": 0.39555675,
+      "y": 0.51434735,
+      "renderer": null,
+      "path": [
+        [
+          0.39547175,
+          0.51077756
+        ],
+        [
+          0.39564175,
+          0.51791713
+        ]
+      ],
+      "icon": null
+    },
+    {
+      "id": "dmzhub-720",
+      "sourceId": 720,
+      "floor": 2,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.67540255,
+      "y": 0.39860169,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-722",
+      "sourceId": 722,
+      "floor": 2,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.5948078,
+      "y": 0.6123767,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-727",
+      "sourceId": 727,
+      "floor": 2,
+      "categoryId": 52,
+      "title": "Audit Room",
+      "x": 0.57879177,
+      "y": 0.5293136,
+      "renderer": "marker",
+      "path": null,
+      "icon": "01m67a0w00fa0nqme0n4thhzf9.webp"
+    },
+    {
+      "id": "dmzhub-730",
+      "sourceId": 730,
+      "floor": 2,
+      "categoryId": 52,
+      "title": "Executive Room",
+      "x": 0.35449052,
+      "y": 0.52500307,
+      "renderer": "marker",
+      "path": null,
+      "icon": "01m67a0a9caqsds5spp5sb2dy8.webp"
+    },
+    {
+      "id": "dmzhub-736",
+      "sourceId": 736,
+      "floor": 2,
+      "categoryId": 54,
+      "title": "Player Spawn",
+      "x": 0.29966065,
+      "y": 0.54534278,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-741",
+      "sourceId": 741,
+      "floor": 2,
+      "categoryId": 52,
+      "title": "Lt. Chol-Min's Stash Room",
+      "x": 0.44641937,
+      "y": 0.68997556,
+      "renderer": "marker",
+      "path": null,
+      "icon": "01m67a0a9caqsds5spp5sb2dy8.webp"
+    },
+    {
+      "id": "dmzhub-760",
+      "sourceId": 760,
+      "floor": 2,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.55143926,
+      "y": 0.71420958,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-762",
+      "sourceId": 762,
+      "floor": 2,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.53431599,
+      "y": 0.32790815,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-770",
+      "sourceId": 770,
+      "floor": 2,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.3647622,
+      "y": 0.47593038,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-771",
+      "sourceId": 771,
+      "floor": 2,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.36753138,
+      "y": 0.53752211,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-772",
+      "sourceId": 772,
+      "floor": 2,
+      "categoryId": 68,
+      "title": null,
+      "x": 0.36106997,
+      "y": 0.50753363,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-773",
+      "sourceId": 773,
+      "floor": 2,
+      "categoryId": 64,
+      "title": null,
+      "x": 0.36130073,
+      "y": 0.49876776,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-774",
+      "sourceId": 774,
+      "floor": 2,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.44076075,
+      "y": 0.50606752,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-775",
+      "sourceId": 775,
+      "floor": 2,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.50645178,
+      "y": 0.58850295,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-776",
+      "sourceId": 776,
+      "floor": 2,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.53075902,
+      "y": 0.44514494,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-777",
+      "sourceId": 777,
+      "floor": 2,
+      "categoryId": 68,
+      "title": null,
+      "x": 0.47833489,
+      "y": 0.68244177,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-778",
+      "sourceId": 778,
+      "floor": 2,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.59919955,
+      "y": 0.5841033,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-779",
+      "sourceId": 779,
+      "floor": 2,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.60580893,
+      "y": 0.52646525,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-780",
+      "sourceId": 780,
+      "floor": 2,
+      "categoryId": 65,
+      "title": null,
+      "x": 0.59524659,
+      "y": 0.44761543,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-781",
+      "sourceId": 781,
+      "floor": 2,
+      "categoryId": 56,
+      "title": "Control Room",
+      "x": 0.63731259,
+      "y": 0.38497696,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zrrwagapdqswpn21pd6nem.webp"
+    },
+    {
+      "id": "dmzhub-782",
+      "sourceId": 782,
+      "floor": 2,
+      "categoryId": 56,
+      "title": "Power Generators",
+      "x": 0.6646026,
+      "y": 0.42876146,
+      "renderer": "label",
+      "path": null,
+      "icon": "01m6zrwe0ezj079ws432paecvd.webp"
+    },
+    {
+      "id": "dmzhub-783",
+      "sourceId": 783,
+      "floor": 2,
+      "categoryId": 68,
+      "title": null,
+      "x": 0.63400515,
+      "y": 0.36381653,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-789",
+      "sourceId": 789,
+      "floor": 2,
+      "categoryId": 55,
+      "title": null,
+      "x": 0.43396275,
+      "y": 0.66606899,
+      "renderer": null,
+      "path": [
+        [
+          0.4272107,
+          0.66308967
+        ],
+        [
+          0.44064583,
+          0.67351784
+        ],
+        [
+          0.4407148,
+          0.65862014
+        ]
+      ],
+      "icon": null
+    },
+    {
+      "id": "dmzhub-790",
+      "sourceId": 790,
+      "floor": 2,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.44326192,
+      "y": 0.65591515,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-791",
+      "sourceId": 791,
+      "floor": 2,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.42531924,
+      "y": 0.65632053,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-793",
+      "sourceId": 793,
+      "floor": 2,
+      "categoryId": 55,
+      "title": null,
+      "x": 0.33817518,
+      "y": 0.4937158,
+      "renderer": null,
+      "path": [
+        [
+          0.33797304,
+          0.49987731
+        ],
+        [
+          0.33837732,
+          0.48755429
+        ]
+      ],
+      "icon": null
+    },
+    {
+      "id": "dmzhub-794",
+      "sourceId": 794,
+      "floor": 2,
+      "categoryId": 55,
+      "title": null,
+      "x": 0.40511508,
+      "y": 0.48419929,
+      "renderer": null,
+      "path": [
+        [
+          0.40167064,
+          0.48413177
+        ],
+        [
+          0.40855951,
+          0.48426681
+        ]
+      ],
+      "icon": null
+    },
+    {
+      "id": "dmzhub-797",
+      "sourceId": 797,
+      "floor": 2,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.34993301,
+      "y": 0.51899033,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-798",
+      "sourceId": 798,
+      "floor": 2,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.34660485,
+      "y": 0.5190583,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-817",
+      "sourceId": 817,
+      "floor": 2,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.45834484,
+      "y": 0.47518702,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-818",
+      "sourceId": 818,
+      "floor": 2,
+      "categoryId": 62,
+      "title": null,
+      "x": 0.46214475,
+      "y": 0.4751404,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-836",
+      "sourceId": 836,
+      "floor": 2,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.40471433,
+      "y": 0.54032876,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    },
+    {
+      "id": "dmzhub-845",
+      "sourceId": 845,
+      "floor": 2,
+      "categoryId": 54,
+      "title": null,
+      "x": 0.27737475,
+      "y": 0.43450364,
+      "renderer": null,
+      "path": null,
+      "icon": null
+    }
+  ]
+}

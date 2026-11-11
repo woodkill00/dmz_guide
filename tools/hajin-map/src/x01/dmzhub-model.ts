@@ -1,0 +1,18 @@
+export type HubCategory={id:number;slug:string;name:string;layer:string;renderer:string;icon:string|null};
+export type HubMarker={id:string;sourceId:number;floor:1|2;categoryId:number;title:string|null;x:number;y:number;renderer:string|null;path:[number,number][]|null;icon:string|null};
+export type HubSnapshot={schemaVersion:1;mapId:'x01';coordinateVersion:'dmzhub-x01-v1-wm-4096';source:string;apiSource:string;capturedAt:string;revision:string;categories:HubCategory[];floors:{id:1|2;slug:string;name:string;grid:{columns:number;rows:number|null;frame:{x:number;y:number;width:number;height:number}}}[];markers:HubMarker[]};
+const normalized=(value:unknown)=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=1;
+const icon=(value:unknown)=>value===null||typeof value==='string'&&/^[a-z0-9-]{1,80}\.webp$/.test(value);
+export function validateHubSnapshot(input:unknown):HubSnapshot{
+  const value=input as HubSnapshot;
+  if(!value||value.schemaVersion!==1||value.mapId!=='x01'||value.coordinateVersion!=='dmzhub-x01-v1-wm-4096'||value.source!=='https://dmzhub.gg/maps/x01-black-site'||value.apiSource!=='https://api.dmzhub.gg/api/v2/maps/x01-black-site'||value.revision!=='x01-v1-wm'||!/^\d{4}-\d{2}-\d{2}T/.test(value.capturedAt)||!Array.isArray(value.categories)||value.categories.length<1||value.categories.length>100||!Array.isArray(value.floors)||value.floors.length!==2||!Array.isArray(value.markers)||value.markers.length<1||value.markers.length>500)throw Error('Invalid DMZHub X01 snapshot');
+  const categories=new Set<number>();
+  for(const row of value.categories){if(!Number.isInteger(row.id)||categories.has(row.id)||typeof row.slug!=='string'||!/^[a-z0-9-]{1,80}$/.test(row.slug)||typeof row.name!=='string'||row.name.length<1||row.name.length>100||/[<>\u0000-\u001f]/.test(row.name)||typeof row.layer!=='string'||!/^[a-z0-9-]{1,80}$/.test(row.layer)||!['marker','line','circle','label'].includes(row.renderer)||!icon(row.icon))throw Error('Invalid DMZHub category');categories.add(row.id);}
+  for(let index=0;index<2;index++){const row=value.floors[index],frame=row?.grid?.frame;if(row?.id!==index+1||row.slug!==`x01-${index?'2nd':'1st'}-v1-wm`||typeof row.name!=='string'||row.name.length>80||row.grid?.columns!==10||!frame||![frame.x,frame.y,frame.width,frame.height].every(normalized)||frame.x+frame.width>1||frame.y+frame.height>1)throw Error('Invalid DMZHub floor');}
+  const ids=new Set<string>();
+  for(const row of value.markers){if(!row||!Number.isInteger(row.sourceId)||row.id!==`dmzhub-${row.sourceId}`||ids.has(row.id)||![1,2].includes(row.floor)||!categories.has(row.categoryId)||row.title!==null&&(typeof row.title!=='string'||row.title.length>120||/[<>\u0000-\u001f]/.test(row.title))||!normalized(row.x)||!normalized(row.y)||![null,'marker','label'].includes(row.renderer)||!icon(row.icon)||row.path!==null&&(!Array.isArray(row.path)||row.path.length<2||row.path.length>100||!row.path.every(point=>Array.isArray(point)&&point.length===2&&point.every(normalized))))throw Error('Invalid DMZHub marker');ids.add(row.id);}
+  return value;
+}
+export function hubCategory(snapshot:HubSnapshot,id:number){return snapshot.categories.find(row=>row.id===id)!;}
+export function hubName(snapshot:HubSnapshot,row:HubMarker){return row.title||`${hubCategory(snapshot,row.categoryId).name} #${row.sourceId}`;}
+export function filteredHubMarkers(snapshot:HubSnapshot,floor:1|2,enabled:ReadonlySet<number>,query:string){const q=query.trim().toLocaleLowerCase();return snapshot.markers.filter(row=>row.floor===floor&&enabled.has(row.categoryId)&&(!q||`${hubName(snapshot,row)} ${hubCategory(snapshot,row.categoryId).name}`.toLocaleLowerCase().includes(q)));}

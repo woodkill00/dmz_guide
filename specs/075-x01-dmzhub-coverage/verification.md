@@ -1,0 +1,9 @@
+# Verification · 2026-11-11
+
+- `node scripts/capture-dmzhub-x01.mjs --assets`: public headed-browser capture succeeded, metadata and both feature feeds complete (`truncated=false`), 76 first-floor and 49 second-floor features, 21 categories, eight line geometries. Downloaded 32 level-2 floor tiles and 37 WebP icons (1,937,486 bytes) to ignored local paths. Repeated metadata/feed capture without assets also passed after stronger validation.
+- Map `npm test`: 226/226 pass, including snapshot counts, source categories and malformed-data rejection.
+- Map `npm run build`: exit 0, including TypeScript; `dist/x01-dmzhub.html` emitted.
+- Focused Chromium browser journey: direct marker URL opens the correct floor, 76/49 source markers appear, seven first-floor safes can be searched, show/hide all and persistent details work, reload retains selection, 390px has no horizontal overflow and Fit floor keeps all first-floor marker centers visible, missing tiles leave the list usable. No script errors or external requests in the controlled journey.
+- Live local-image visual pass: both floors loaded all tiles and icons without HTTP failures or script errors. Desktop and 390px screenshots were inspected. Initial mobile crop exposed an insufficient minimum zoom; after the fix, the full facility is visible on both floors. No physical-device test is claimed.
+- Full map `npm run test:browser`: exit 0, including both X01 journeys, no runtime errors or external requests in its controlled test context. Root `npm run check`: exit 0, repository checks 0 failures, 994/994 runtime tests pass, 1,866 routes built. Staged whitespace check: pass. Final Git scope contains the sanitized snapshot and source code; downloaded tiles, icons, raw payloads and screenshots are ignored.
+- Cross-provider duplicate collapse was deliberately not attempted: COD Central and DMZHub images and coordinate frames differ. The two views link to each other and keep their source claims separate.

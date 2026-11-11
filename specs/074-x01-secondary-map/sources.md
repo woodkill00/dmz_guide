@@ -18,3 +18,7 @@ Provider grids are not interchangeable. For example, DMZHub lists Audit Room as 
 The optional A–J / 0–8 overlay uses COD Central's own floor-stage line percentages (vertical: 9.989, 19.977, 29.966, 39.955, 49.943, 59.932, 69.920, 79.909, 89.898; horizontal: 11.111 through 88.889). It is anchored to the same 1320×1188 raster frame as the captured markers, not a generic ten-by-nine guess.
 
 The 48-point snapshot is a captured provider subset, not an inventory of every X01 location. Boss positions are not plotted from general area descriptions. Roads, cross-floor route edges, access requirements and current-match spawn/exfil state are unknown until separately verified.
+
+## Later coverage update · 2026-11-11
+
+Feature 075 captured DMZHub's public X01 metadata and both floor feeds in a normal headed browser, after direct scripted requests had returned a security challenge. Its 125 markers now have a separately linked local view on DMZHub's own 4096×4096 floor tiles. The COD Central frame and marker set remain separate; this earlier access assessment is retained as historical evidence, not a current claim that DMZHub markers are unavailable.

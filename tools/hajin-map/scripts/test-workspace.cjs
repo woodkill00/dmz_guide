@@ -189,6 +189,8 @@ const checks = [];
   checks.push(...await runIconStudioBrowser(page,base,{image,snapshot}));
   const {runX01Browser}=await import('../tests/x01-browser.mjs');
   checks.push(...await runX01Browser(browser,base));
+  const {runX01HubBrowser}=await import('../tests/x01-dmzhub-browser.mjs');
+  checks.push(...await runX01HubBrowser(browser,base));
   await page.locator('#toggle-key').click();
   await page.evaluate(() => {
     const banner = document.createElement('div'); banner.textContent = 'SYNTHETIC TEST FIXTURE — NOT GAME DATA';
