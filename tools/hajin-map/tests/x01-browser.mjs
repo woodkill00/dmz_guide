@@ -1,13 +1,17 @@
 import assert from "node:assert/strict";
+import {routeSharedIconFixture,sharedIconPaths} from './x01-shared-icon-fixture.mjs';
 
 export async function runX01Browser(browser,base){
   const context=await browser.newContext({viewport:{width:1280,height:800}}),errors=[],external=[];
   const png=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==","base64");
-  await context.route("**/*",route=>{const url=new URL(route.request().url());if(url.origin!==base){external.push(url.href);return route.abort();}if(url.pathname.startsWith("/maps/x01/"))return route.fulfill({body:png,contentType:"image/png"});return route.continue();});
+  await context.route("**/*",async route=>{const url=new URL(route.request().url());if(url.origin!==base){external.push(url.href);return route.abort();}if(await routeSharedIconFixture(route,png))return;if(url.pathname.startsWith("/maps/x01/"))return route.fulfill({body:png,contentType:"image/png"});return route.continue();});
   const page=await context.newPage();page.on("pageerror",error=>errors.push(error.message));
   try{
     await page.goto(`${base}/x01.html?marker=x01-bounty-station`);
     await page.locator("#x01-results button").first().waitFor();
+    await page.locator('.x01-shared-marker').first().waitFor();
+    assert.ok(await page.locator(`.x01-shared-marker img[src="${sharedIconPaths.bounty}"]`).count()>0);
+    assert.ok(await page.locator(`.x01-layers img[src="${sharedIconPaths.bounty}"]`).count()>0);
     assert.match(await page.locator("#x01-detail-body").textContent(),/Bounty Station/);
     assert.equal(await page.locator('input[name="x01-floor"]:checked').inputValue(),"2");
     assert.equal(await page.locator(".x01-grid-label").count(),19);

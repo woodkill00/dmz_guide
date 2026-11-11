@@ -45,6 +45,8 @@ node scripts/capture-dmzhub-x01.mjs --assets
 
 This opens the normal DMZHub page in a headed Playwright browser, captures its public metadata and both complete floor feeds, validates the bounded point/line geometry, and downloads 32 level-2 tiles and the referenced WebP icons under ignored `public/maps/x01/dmzhub/`. It writes a review draft to ignored `.local/x01-dmzhub/snapshot.json`; compare it with the checked-in snapshot before a refresh. If the public page cannot load, the command stops. Both X01 pages keep their marker lists available when local images are absent. Their markers are shown on their own provider images; cross-provider matches are not inferred from names or grid labels. See the [COD Central assessment](../specs/074-x01-secondary-map/sources.md) and [DMZHub coverage assessment](../specs/075-x01-dmzhub-coverage/analysis.md).
 
+When current Hajin capture assets are installed, both X01 views reuse Hajin's active symbols and pin shape for matching Exfil, Ammo Armor Cache, Safe, Bounty, Spawn and Key types. Emergency Exfil uses the Exfil symbol while keeping its own label. Key Rooms and other X01-only types retain their source icons. If a Hajin icon is missing, the X01 view falls back to its source symbol; no Hajin workspace state is read or changed.
+
 ## Map controls
 
 ### Safe-run map
