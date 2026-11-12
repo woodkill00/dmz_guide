@@ -991,7 +991,9 @@ html[data-ui-variant]
     4rem;
   grid-template-areas: "name icon owned blueprint need actions";
   gap: calc(0.3rem + 0.1vw);
-  align-items: center;
+  align-items: start;
+  align-content: start;
+  grid-auto-rows: max-content;
   min-height: 4rem;
   padding: 0.25rem 0.375rem;
 }
