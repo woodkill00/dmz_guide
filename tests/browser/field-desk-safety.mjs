@@ -86,20 +86,18 @@ try {
   );
   assert.equal((await saved()).inventory["mw4:bandage"], 11);
   const backup = await saved();
-  await page
-    .locator("#field-import")
-    .setInputFiles({
-      name: "bad.json",
-      mimeType: "application/json",
-      buffer: Buffer.from(
-        JSON.stringify({
-          kind: "dmz-field-backup",
-          version: 1,
-          profile: backup,
-          photos: [{ id: "bad" }],
-        }),
-      ),
-    });
+  await page.locator("#field-import").setInputFiles({
+    name: "bad.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(
+      JSON.stringify({
+        kind: "dmz-field-backup",
+        version: 1,
+        profile: backup,
+        photos: [{ id: "bad" }],
+      }),
+    ),
+  });
   await page.waitForFunction(() =>
     document.querySelector("#error")?.textContent.includes("photo"),
   );

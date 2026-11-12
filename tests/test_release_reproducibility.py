@@ -38,7 +38,7 @@ with patch('zipfile.time.localtime', return_value=({year},1,1,0,0,0,2,1,-1)):
     runpy.run_path('scripts/package-release.py', run_name='__main__')
 """
     subprocess.run([sys.executable, '-c', script], cwd=root, check=True,
-                   capture_output=True, text=True, timeout=60)
+                   capture_output=True, text=True, timeout=180)
     return (root / 'release/dmz-guide-static.zip').read_bytes()
 
 

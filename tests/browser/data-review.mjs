@@ -19,7 +19,9 @@ try {
       ?.textContent?.includes("visible issues"),
   );
   assert.equal((await page.locator("#review-list li").count()) > 0, true);
-  await page.getByText("Browse records needing review", { exact: true }).click();
+  await page
+    .getByText("Browse records needing review", { exact: true })
+    .click();
   await page.locator("#review-query").fill("no registered map position");
   assert.match(
     await page.locator("#review-list").textContent(),

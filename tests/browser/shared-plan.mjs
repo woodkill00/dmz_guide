@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
-import { revealReviewerControl, openInventoryDetails } from "./reviewer-disclosures.mjs";
+import {
+  revealReviewerControl,
+  openInventoryDetails,
+} from "./reviewer-disclosures.mjs";
 export async function runSharedPlanTests({ browser, base }) {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
@@ -131,7 +134,9 @@ export async function runSharedPlanTests({ browser, base }) {
       .then((s) => s.includes("Executable in this manual model"))),
   );
   await page.goto(base + "/inventory/?pack=demo%3Atraining-pack");
-  await page.waitForSelector('[data-field="reserves"][data-id="demo:wire"]', { state: "attached" });
+  await page.waitForSelector('[data-field="reserves"][data-id="demo:wire"]', {
+    state: "attached",
+  });
   await openInventoryDetails(page, "demo:wire");
   await page.locator('[data-field="reserves"][data-id="demo:wire"]').fill("0");
   await page

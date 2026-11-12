@@ -4,13 +4,63 @@ const owners = new Set(["inventory", "progression", "boss", "observation"]);
 const id = (value) =>
   typeof value === "string" && /^[a-zA-Z0-9:._-]{1,120}$/.test(value);
 const text = (value, max) => typeof value === "string" && value.length <= max;
-const quantity = (value, signed = false) => Number.isSafeInteger(value) && value >= (signed ? -2000000 : 0) && value <= 2000000;
-const keys = (value, allowed) => value && typeof value === "object" && !Array.isArray(value) && Object.keys(value).sort().join() === allowed.slice().sort().join();
+const quantity = (value, signed = false) =>
+  Number.isSafeInteger(value) &&
+  value >= (signed ? -2000000 : 0) &&
+  value <= 2000000;
+const keys = (value, allowed) =>
+  value &&
+  typeof value === "object" &&
+  !Array.isArray(value) &&
+  Object.keys(value).sort().join() === allowed.slice().sort().join();
 export function validateReviewPayload(owner, value) {
-  if (owner === "inventory" && keys(value, ["itemId", "pool", "mode", "quantity"]) && id(value.itemId) && ["stash", "carried"].includes(value.pool) && ["set", "delta"].includes(value.mode) && quantity(value.quantity, value.mode === "delta")) return value;
-  if (owner === "progression" && keys(value, ["objectiveId", "status"]) && id(value.objectiveId) && ["unknown", "incomplete", "locked", "unlocked", "completed"].includes(value.status)) return value;
-  if (owner === "observation" && keys(value, ["itemId", "locationId", "place", "container", "notes", "quantity"]) && id(value.itemId) && (value.locationId === null || id(value.locationId)) && text(value.place, 160) && text(value.container, 120) && text(value.notes, 1000) && (value.quantity === null || quantity(value.quantity))) return value;
-  if (owner === "boss" && keys(value, ["bossId", "event", "date", "notes"]) && id(value.bossId) && ["kill", "attempt", "dog-tag"].includes(value.event) && /^\d{4}-\d{2}-\d{2}$/.test(value.date) && !Number.isNaN(Date.parse(value.date)) && new Date(value.date).toISOString().slice(0, 10) === value.date && text(value.notes, 500)) return value;
+  if (
+    owner === "inventory" &&
+    keys(value, ["itemId", "pool", "mode", "quantity"]) &&
+    id(value.itemId) &&
+    ["stash", "carried"].includes(value.pool) &&
+    ["set", "delta"].includes(value.mode) &&
+    quantity(value.quantity, value.mode === "delta")
+  )
+    return value;
+  if (
+    owner === "progression" &&
+    keys(value, ["objectiveId", "status"]) &&
+    id(value.objectiveId) &&
+    ["unknown", "incomplete", "locked", "unlocked", "completed"].includes(
+      value.status,
+    )
+  )
+    return value;
+  if (
+    owner === "observation" &&
+    keys(value, [
+      "itemId",
+      "locationId",
+      "place",
+      "container",
+      "notes",
+      "quantity",
+    ]) &&
+    id(value.itemId) &&
+    (value.locationId === null || id(value.locationId)) &&
+    text(value.place, 160) &&
+    text(value.container, 120) &&
+    text(value.notes, 1000) &&
+    (value.quantity === null || quantity(value.quantity))
+  )
+    return value;
+  if (
+    owner === "boss" &&
+    keys(value, ["bossId", "event", "date", "notes"]) &&
+    id(value.bossId) &&
+    ["kill", "attempt", "dog-tag"].includes(value.event) &&
+    /^\d{4}-\d{2}-\d{2}$/.test(value.date) &&
+    !Number.isNaN(Date.parse(value.date)) &&
+    new Date(value.date).toISOString().slice(0, 10) === value.date &&
+    text(value.notes, 500)
+  )
+    return value;
   throw Error("Invalid run review report");
 }
 
@@ -50,7 +100,14 @@ export function validateRunReview(doc) {
       !entry.label ||
       Object.keys(entry).some(
         (key) =>
-          !["id", "owner", "label", "state", "expectedRevision", "payload"].includes(key),
+          ![
+            "id",
+            "owner",
+            "label",
+            "state",
+            "expectedRevision",
+            "payload",
+          ].includes(key),
       ) ||
       !["staged", "uncertain", "rejected", "saved"].includes(entry.state) ||
       seen.has(entry.id) ||

@@ -437,7 +437,7 @@ export async function runContributorWorkflows({
         );
         assert.equal(
           await themeToggle.getAttribute("aria-label"),
-          `Switch to ${theme === "dark" ? "light" : "dark"} theme`,
+          `${theme === "dark" ? "Light mode" : "Dark mode"} — switch theme`,
         );
         assert.equal(
           await themeToggle.textContent(),

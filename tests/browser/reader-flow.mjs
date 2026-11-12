@@ -66,7 +66,9 @@ async function probeReloadSemantics({ browser, base }) {
           await control.focus();
           await control.press("Enter");
           await page.waitForURL(/\/local\/\?context=/);
-          await page.waitForSelector("[data-item-workspace][data-item-id='demo:wire'] h1");
+          await page.waitForSelector(
+            "[data-item-workspace][data-item-id='demo:wire'] h1",
+          );
         }
         const snapshot = () =>
           page.evaluate(() => ({
@@ -88,14 +90,18 @@ async function probeReloadSemantics({ browser, base }) {
           ]);
         let reader = null;
         if (scenario === "reader") {
-          await page.waitForSelector("[data-item-workspace][data-item-id='demo:wire'] h1");
+          await page.waitForSelector(
+            "[data-item-workspace][data-item-id='demo:wire'] h1",
+          );
           reader = await page.evaluate(async () => {
             const { state } = await import("/assets/src/client/common.mjs");
             return {
               packId: state.pack?.id,
               goals: state.profile?.goals,
               revision: state.revision,
-              target: document.querySelector("[data-item-workspace][data-item-id='demo:wire'] h1")?.textContent,
+              target: document.querySelector(
+                "[data-item-workspace][data-item-id='demo:wire'] h1",
+              )?.textContent,
               error: document.querySelector("#error")?.textContent,
             };
           });
@@ -243,7 +249,9 @@ export async function runReaderFlowTests({
     await checkpoint("before-item-activation");
     await itemControl.press("Enter");
     await page.waitForURL(/\/local\/\?context=/);
-    await page.waitForSelector("[data-item-workspace][data-item-id='demo:wire'] h1");
+    await page.waitForSelector(
+      "[data-item-workspace][data-item-id='demo:wire'] h1",
+    );
     assert(!page.url().includes("wire") && !page.url().includes("pack="));
     assert.match(await page.locator("#local-records").textContent(), /wire/i);
     const itemURL = page.url();
@@ -257,7 +265,9 @@ export async function runReaderFlowTests({
         setTimeout(() => location.reload(), 0);
       }),
     ]);
-    await page.waitForSelector("[data-item-workspace][data-item-id='demo:wire'] h1");
+    await page.waitForSelector(
+      "[data-item-workspace][data-item-id='demo:wire'] h1",
+    );
     assert.equal(page.url(), itemURL);
     assert.equal(
       await page.evaluate(() => history.length),
@@ -336,7 +346,12 @@ export async function runReaderFlowTests({
     // Token destination mismatch fails before any record is rendered.
     await page.goto(page.url().replace("/maps/", "/local/"));
     await page.waitForSelector("#error:not([hidden])");
-    assert.equal(await page.locator("[data-item-workspace][data-item-id='demo:wire'] h1").count(), 0);
+    assert.equal(
+      await page
+        .locator("[data-item-workspace][data-item-id='demo:wire'] h1")
+        .count(),
+      0,
+    );
     assert.match(await page.locator("#error").textContent(), /unavailable/);
     // Same-version private override must not silently resolve the previous context.
     await page.goto(`${base}/planner/?pack=demo%3Atraining-pack`);
@@ -361,7 +376,12 @@ export async function runReaderFlowTests({
     });
     await page.goto(base + staleURL);
     await page.waitForSelector("#error:not([hidden])");
-    assert.equal(await page.locator("[data-item-workspace][data-item-id='demo:wire'] h1").count(), 0);
+    assert.equal(
+      await page
+        .locator("[data-item-workspace][data-item-id='demo:wire'] h1")
+        .count(),
+      0,
+    );
     assert.match(await page.locator("#error").textContent(), /changed/);
     await page.goto(`${base}/planner/?pack=demo%3Atraining-pack`);
     await ready();
@@ -369,7 +389,9 @@ export async function runReaderFlowTests({
       .locator('[data-need-item="demo:wire"][data-need-destination="local"]')
       .first()
       .click();
-    await page.waitForSelector("[data-item-workspace][data-item-id='demo:wire'] h1");
+    await page.waitForSelector(
+      "[data-item-workspace][data-item-id='demo:wire'] h1",
+    );
     assert.match(
       await page.locator("#local-records").textContent(),
       /Synthetic private changed wire/,
@@ -377,7 +399,12 @@ export async function runReaderFlowTests({
     assert(!page.url().includes("pack=") && !page.url().includes("wire"));
     await chooseCatalog(page, "official:mw4-dmz-starter");
     await page.waitForSelector("#error:not([hidden])");
-    assert.equal(await page.locator("[data-item-workspace][data-item-id='demo:wire'] h1").count(), 0);
+    assert.equal(
+      await page
+        .locator("[data-item-workspace][data-item-id='demo:wire'] h1")
+        .count(),
+      0,
+    );
     assert(!page.url().includes("pack="));
     // Expiry and session-storage denial are explicit failures, never a default record.
     await page.goto(`${base}/planner/?pack=demo%3Atraining-pack`);
@@ -399,7 +426,12 @@ export async function runReaderFlowTests({
     });
     await page.goto(base + expiredURL);
     await page.waitForSelector("#error:not([hidden])");
-    assert.equal(await page.locator("[data-item-workspace][data-item-id='demo:wire'] h1").count(), 0);
+    assert.equal(
+      await page
+        .locator("[data-item-workspace][data-item-id='demo:wire'] h1")
+        .count(),
+      0,
+    );
     const denied = await browser.newContext();
     try {
       await denied.addInitScript(() =>
@@ -419,7 +451,12 @@ export async function runReaderFlowTests({
         await deniedPage.locator("#error").textContent(),
         /unavailable/,
       );
-      assert.equal(await deniedPage.locator("[data-item-workspace][data-item-id='demo:wire'] h1").count(), 0);
+      assert.equal(
+        await deniedPage
+          .locator("[data-item-workspace][data-item-id='demo:wire'] h1")
+          .count(),
+        0,
+      );
       await deniedPage.goto(base + "/planner/?pack=demo%3Atraining-pack");
       await deniedPage.waitForFunction(
         () => document.querySelector("#goal-select")?.options.length > 1,
@@ -538,7 +575,9 @@ export async function runReaderFlowTests({
           );
           if (route === detailRoute)
             assert(
-              await page.locator(".evidence-caveat:visible, .item-trust:visible").count(),
+              await page
+                .locator(".evidence-caveat:visible, .item-trust:visible")
+                .count(),
               "Detail keeps visible evidence context",
             );
           const normal = await page.evaluate(() => {

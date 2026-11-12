@@ -204,11 +204,30 @@ async function preservedDrafts({ browser, base, evidence }) {
   const page = await context.newPage();
   const wire = page.locator('[data-field="inventory"][data-id="demo:wire"]');
   const reserve = page.locator('[data-field="reserves"][data-id="demo:wire"]');
+  const choosePack = async (id) => {
+    await page.locator("details.catalog-context").evaluate((el) => {
+      el.open = true;
+    });
+    await page.selectOption("#pack-select", id);
+  };
+  const showWire = async () => {
+    await page.fill("#inventory-query", "wire");
+    const group = page
+      .locator('[data-inventory-item="demo:wire"]')
+      .locator(
+        'xpath=ancestor::section[contains(@class,"inventory-group")]/h3/button',
+      );
+    if ((await group.getAttribute("aria-expanded")) === "false")
+      await group.click();
+    await wire.waitFor({ state: "visible" });
+  };
   try {
     await page.goto(`${base}/inventory/?pack=${encodeURIComponent(training)}`);
     await ready(page);
-    await wire.fill("-1");
+    await showWire();
+    await page.locator('[data-show-use="demo:wire"]').click();
     await reserve.fill("4");
+    await wire.fill("-1");
     await page.fill("#inventory-query", "cell");
     assert.equal(await wire.isVisible(), false);
     await page
@@ -224,7 +243,7 @@ async function preservedDrafts({ browser, base, evidence }) {
     );
     assert.equal(await wire.inputValue(), "-1");
     await page.fill("#inventory-query", "cell");
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await choosePack("official:mw4-dmz-starter");
     await page.click("#draft-discard");
     await page.waitForFunction(() =>
       document
@@ -236,19 +255,20 @@ async function preservedDrafts({ browser, base, evidence }) {
     assert.equal(await wire.inputValue(), "-1");
     assert.equal(await reserve.inputValue(), "4");
     await page.fill("#inventory-query", "cell");
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await choosePack("official:mw4-dmz-starter");
     await page.click("#draft-stay");
     await page.fill("#inventory-query", "");
     assert.equal(await wire.inputValue(), "-1");
     // Re-show only to enter a valid value; hiding it again must not change its checkpoint.
     await page.fill("#inventory-query", "");
+    await showWire();
     await wire.fill("29");
     await page.fill("#inventory-query", "cell");
     await page.evaluate(() => {
       window.scaleFailSave = true;
       document.querySelector("#error").hidden = true;
     });
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await choosePack("official:mw4-dmz-starter");
     await page.click("#draft-save");
     await page.waitForSelector("#error:not([hidden])");
     await page.fill("#inventory-query", "");
@@ -260,7 +280,7 @@ async function preservedDrafts({ browser, base, evidence }) {
     });
     failCatalog = false;
     await page.fill("#inventory-query", "cell");
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await choosePack("official:mw4-dmz-starter");
     await page.click("#draft-save");
     await page.waitForFunction(
       () =>
@@ -268,7 +288,7 @@ async function preservedDrafts({ browser, base, evidence }) {
           "official:mw4-dmz-starter" &&
         document.querySelector("main").getAttribute("aria-busy") === "false",
     );
-    await page.selectOption("#pack-select", training);
+    await choosePack(training);
     await ready(page);
     await page.fill("#inventory-query", "");
     await page.waitForSelector(
@@ -286,9 +306,10 @@ async function preservedDrafts({ browser, base, evidence }) {
       "Hidden saved value is durable after reload",
     );
     assert.equal(await reserve.inputValue(), "4");
+    await showWire();
     await wire.fill("");
     await page.fill("#inventory-query", "cell");
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await choosePack("official:mw4-dmz-starter");
     await page.click("#draft-discard");
     await page.waitForFunction(
       () =>
@@ -296,7 +317,7 @@ async function preservedDrafts({ browser, base, evidence }) {
           "official:mw4-dmz-starter" &&
         document.querySelector("main").getAttribute("aria-busy") === "false",
     );
-    await page.selectOption("#pack-select", training);
+    await choosePack(training);
     await ready(page);
     await page.fill("#inventory-query", "");
     await page.waitForSelector(
@@ -368,8 +389,40 @@ async function pagedDrafts({ browser, base, evidence }) {
   });
   const page = await context.newPage();
   page.on("download", () => downloads++);
-  const field = (i, kind = "inventory") =>
-    page.locator(`[data-field="${kind}"][data-id="demo:scale-item-${i}"]`);
+  const field = (i, kind = "inventory") => {
+    const locator = page.locator(
+      `[data-field="${kind}"][data-id="demo:scale-item-${i}"]`,
+    );
+    const row = page.locator(`[data-inventory-item="demo:scale-item-${i}"]`);
+    return {
+      inputValue: () => locator.inputValue(),
+      fill: async (value) => {
+        const group = row.locator(
+          'xpath=ancestor::section[contains(@class,"inventory-group")]/h3/button',
+        );
+        if ((await group.getAttribute("aria-expanded")) === "false")
+          await group.click();
+        if (kind === "reserves") {
+          const details = row.locator("[data-show-use]");
+          if ((await details.getAttribute("aria-expanded")) === "false")
+            await details.click();
+        }
+        await locator.fill(value);
+      },
+    };
+  };
+  const choosePack = async (id) => {
+    await page.locator("details.catalog-context").evaluate((el) => {
+      el.open = true;
+    });
+    await page.selectOption("#pack-select", id);
+  };
+  const exportProfile = async () => {
+    await page.locator("details.catalog-context").evaluate((el) => {
+      el.open = true;
+    });
+    await page.click("#export-current-profile");
+  };
   const range = async (expected) =>
     assert.equal(
       await page.locator("#inventory-page-status").textContent(),
@@ -485,7 +538,7 @@ async function pagedDrafts({ browser, base, evidence }) {
       1,
       "Paging/filtering does not request catalogs",
     );
-    await page.click("#export-current-profile");
+    await exportProfile();
     await invalidFocus('[data-field="inventory"][data-id="demo:scale-item-0"]');
     assert.equal(await field(0).inputValue(), "-1");
     assert.equal(downloads, 0);
@@ -581,7 +634,7 @@ async function pagedDrafts({ browser, base, evidence }) {
       "Successful save does not normalize raw draft strings",
     );
     const downloadPromise = page.waitForEvent("download");
-    await page.click("#export-current-profile");
+    await exportProfile();
     const downloaded = JSON.parse(
       await readFile(await (await downloadPromise).path(), "utf8"),
     );
@@ -599,10 +652,10 @@ async function pagedDrafts({ browser, base, evidence }) {
     assert.equal(await field(75, "reserves").inputValue(), "5");
     await field(75).fill("-1");
     await next();
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await choosePack("official:mw4-dmz-starter");
     await page.click("#draft-stay");
     await range("Items 101–101 of 101 matches. Page 3 of 3.");
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await choosePack("official:mw4-dmz-starter");
     await page.click("#draft-discard");
     await page.waitForFunction(() =>
       document
@@ -613,7 +666,7 @@ async function pagedDrafts({ browser, base, evidence }) {
     await page.click("#inventory-previous");
     assert.equal(await field(75).inputValue(), "-1");
     await next();
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await choosePack("official:mw4-dmz-starter");
     await page.click("#draft-save");
     await invalidFocus(
       '[data-field="inventory"][data-id="demo:scale-item-75"]',
@@ -621,7 +674,7 @@ async function pagedDrafts({ browser, base, evidence }) {
     assert.equal(await page.locator("#pack-select").inputValue(), training);
     assert.equal(await field(75).inputValue(), "-1");
     failCatalog = false;
-    await page.selectOption("#pack-select", "official:mw4-dmz-starter");
+    await choosePack("official:mw4-dmz-starter");
     await page.click("#draft-discard");
     await page.waitForFunction(
       () =>
@@ -731,6 +784,12 @@ async function measure({ browser, base, count, kind, baseline }) {
         });
         assert.equal(result.visible, 1, "Stable exact fixture filter result");
       } else {
+        await page.waitForFunction(
+          (expected) =>
+            document.querySelectorAll("#goal-select option").length ===
+            expected,
+          count + 1,
+        );
         assert.equal(
           await page.locator("#goal-select option").count(),
           count + 1,

@@ -13,11 +13,13 @@ let activePack = null,
   generation = 0,
   controller = new AbortController();
 const urls = new Map();
-export function releaseInventoryIcons() {
+export function releaseInventoryIcons({ revoke = true } = {}) {
   generation++;
   controller.abort();
   controller = new AbortController();
-  for (const url of urls.values()) URL.revokeObjectURL(url);
+  if (revoke)
+    for (const url of urls.values())
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
   urls.clear();
   activePack = null;
 }
@@ -39,6 +41,21 @@ export async function hydrateInventoryIcons(
       (!cell.dataset.iconPack || cell.dataset.iconPack === pack.id) &&
       (!visibleOnly || !cell.closest("[hidden]")),
   );
+  let localFiles = new Set();
+  if (cells.length) {
+    try {
+      const response = await fetch("/local-item-icons-available.json", {
+        signal,
+      });
+      if (response.ok) {
+        const files = await response.json();
+        if (Array.isArray(files)) localFiles = new Set(files);
+      }
+    } catch {
+      // Private local icons are optional; the visible placeholder remains.
+    }
+  }
+  if (token !== generation || signal.aborted) return;
   const pending = new Map();
   for (const cell of cells) {
     const item = pack.items.find((i) => i.id === cell.dataset.inventoryIcon),
@@ -48,11 +65,12 @@ export async function hydrateInventoryIcons(
       local = registeredId && registry.assets[registeredId],
       asset =
         attached ||
-        (local && {
-          ...local,
-          id: registeredId,
-          localURL: "/local-item-icons/" + local.file,
-        });
+        (local &&
+          localFiles.has(local.file) && {
+            ...local,
+            id: registeredId,
+            localURL: "/local-item-icons/" + local.file,
+          });
     if (asset) {
       const key = pack.id + ":" + asset.id + ":" + asset.sha256;
       if (!pending.has(key)) pending.set(key, { asset, item, cells: [] });
@@ -195,7 +213,7 @@ if (typeof window !== "undefined") {
   const suspend = () => {
     if (!suspended) resumePack = activePack;
     suspended = true;
-    releaseInventoryIcons();
+    releaseInventoryIcons({ revoke: false });
   };
   window.addEventListener("beforeunload", suspend);
   window.addEventListener("pagehide", suspend);

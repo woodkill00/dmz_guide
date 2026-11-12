@@ -185,6 +185,9 @@ export async function runInventoryPaginationLayout(
             page,
             '[data-field="reserves"][data-id="demo:scale-item-75"]',
           );
+          await page
+            .locator('[data-field="reserves"][data-id="demo:scale-item-75"]')
+            .scrollIntoViewIfNeeded();
           const geometry = await page.evaluate(() => {
             const rect = (node) => {
               const r = node.getBoundingClientRect();

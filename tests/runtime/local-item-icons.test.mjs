@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 import registry from "../../src/content/item-icons.json" with { type: "json" };
 import {
   createItemIconReader,
+  listAvailableItemIcons,
   validateItemIconBytes,
 } from "../../scripts/item-icons.mjs";
 import { fetchItemIcon } from "../../scripts/collect-item-icons.mjs";
@@ -80,6 +81,15 @@ test("local reader rejects unsafe paths and handles missing/tampered files witho
     404,
   );
   assert.equal(reads, 1);
+});
+test("availability omits missing private icons without exposing local paths", async () => {
+  const available = await listAvailableItemIcons({
+    root: ".",
+    read: async () => {
+      throw Error("missing");
+    },
+  });
+  assert.deepEqual(available, []);
 });
 test("collector rejects unknown URL, incorrect MIME and over-budget responses", async () => {
   await assert.rejects(

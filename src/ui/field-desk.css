@@ -120,10 +120,18 @@ body[data-page="field-desk"] textarea {
   border: 1px solid var(--border, #64715f);
   border-radius: 0.4rem;
 }
-.run-review-list li strong { overflow-wrap: anywhere; }
-.run-review-list li small { opacity: 0.8; }
-.run-review-list li .field-inline { margin-inline-start: auto; }
-#review-queue-preview { scroll-margin-top: 1rem; }
+.run-review-list li strong {
+  overflow-wrap: anywhere;
+}
+.run-review-list li small {
+  opacity: 0.8;
+}
+.run-review-list li .field-inline {
+  margin-inline-start: auto;
+}
+#review-queue-preview {
+  scroll-margin-top: 1rem;
+}
 .field-desk-nav {
   position: relative;
 }

@@ -99,7 +99,13 @@ function report(reason) {
   error(reason);
   message(reason.message || String(reason));
 }
-const reviewQueue = createRunReviewQueue({ state, persist, visibleItems, esc, report });
+const reviewQueue = createRunReviewQueue({
+  state,
+  persist,
+  visibleItems,
+  esc,
+  report,
+});
 function releasePhotos() {
   if (previewURL) URL.revokeObjectURL(previewURL);
   previewURL = null;

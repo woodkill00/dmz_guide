@@ -15,7 +15,9 @@ export async function stopStashOCR() {
 }
 export async function recognizeStash(canvas, onProgress = () => {}) {
   const token = ++sequence;
-  const { default: Tesseract } = await import("../vendor/ocr/tesseract.esm.min.js");
+  const { default: Tesseract } = await import(
+    "../vendor/ocr/tesseract.esm.min.js"
+  );
   const { createWorker } = Tesseract;
   let timeout, cancel;
   progressSink = onProgress;
