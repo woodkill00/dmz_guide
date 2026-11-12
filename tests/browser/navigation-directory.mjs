@@ -291,7 +291,7 @@ export async function runNavigationDirectoryTests({
       if (captureScreenshots)
         await page.screenshot({
           path: `test-results/${browser.browserType().name()}-items-${width}.png`,
-          fullPage: true,
+          fullPage: false,
         });
     }
     await page.goto(base + "/sitemap/?pack=demo%3Atraining-pack");
