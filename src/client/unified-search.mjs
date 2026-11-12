@@ -23,6 +23,10 @@ if (form) {
   const params = new URL(location.href).searchParams;
   query.value = (params.get("q") || "").slice(0, 200);
   try {
+    if (!params.has("q"))
+      query.value = (
+        sessionStorage.getItem("dmz-unified-search-query") || ""
+      ).slice(0, 200);
     const raw = sessionStorage.getItem("dmz-unified-search-transfer");
     sessionStorage.removeItem("dmz-unified-search-transfer");
     if (raw && raw.length < 2048) {
@@ -30,6 +34,7 @@ if (form) {
       if (typeof v.query === "string" && v.query.length <= 200)
         query.value = v.query;
     }
+    sessionStorage.setItem("dmz-unified-search-query", query.value);
   } catch {}
   if ([...type.options].some((o) => o.value === params.get("type")))
     type.value = params.get("type");
@@ -89,6 +94,12 @@ if (form) {
     render();
   });
   form.addEventListener("input", () => {
+    try {
+      sessionStorage.setItem(
+        "dmz-unified-search-query",
+        query.value.slice(0, 200),
+      );
+    } catch {}
     offset = 0;
     render();
   });
