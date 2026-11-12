@@ -623,7 +623,9 @@ export async function runStudioTests({
     const historyUrl = new URL("/preview", author.url);
     historyUrl.searchParams.set("packKey", historyEntry.key);
     historyUrl.searchParams.set("id", allRecords([historyEntry.pack])[0].id);
-    const historyResponse = await page.goto(historyUrl.href);
+    const historyResponse = await page.goto(historyUrl.href, {
+      waitUntil: "domcontentloaded",
+    });
     assert.equal(historyResponse.status(), 200);
     await page.goto(author.url);
     await page.waitForSelector('[data-path="contentVersion"]');
