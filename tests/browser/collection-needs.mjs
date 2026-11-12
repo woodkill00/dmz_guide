@@ -174,6 +174,9 @@ export async function runCollectionTests({ browser, base }) {
           JSON.stringify(largeOverflow),
         );
         await wire().scrollIntoViewIfNeeded();
+        await wire().evaluate((node) =>
+          node.scrollIntoView({ block: "center", inline: "nearest" }),
+        );
         await wire().focus();
         await page.evaluate(() => new Promise(requestAnimationFrame));
         const enlargedBox = await wire().boundingBox();
