@@ -440,6 +440,14 @@ async function layoutEvidence(page, { prefix, label, captureScreenshots }) {
 }
 
 async function pixel(image) {
+  const disclosure = image.locator(
+    "xpath=ancestor::details[contains(@class, 'item-pictures')]",
+  );
+  if (
+    (await disclosure.count()) &&
+    !(await disclosure.evaluate((node) => node.open))
+  )
+    await disclosure.locator("summary").click();
   await image.scrollIntoViewIfNeeded();
   await image
     .page()
