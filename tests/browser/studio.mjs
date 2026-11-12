@@ -1238,14 +1238,16 @@ export async function runStudioTests({
     );
     await savedPreview.waitForFunction(
       () => {
-        const image = document.querySelector("main img");
+        const image = document.querySelector(
+          ".item-pictures img[data-public-image]",
+        );
         return image?.complete && image.naturalWidth > 0;
       },
       null,
       { timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS },
     );
     await savedPreview
-      .locator("main img")
+      .locator(".item-pictures img[data-public-image]")
       .first()
       .evaluate(async (image) => {
         await image.decode();
@@ -1253,11 +1255,17 @@ export async function runStudioTests({
           throw new Error("Saved preview image width mismatch");
       });
     assert.equal(
-      await savedPreview.locator("main img").first().getAttribute("alt"),
+      await savedPreview
+        .locator(".item-pictures img[data-public-image]")
+        .first()
+        .getAttribute("alt"),
       "Gold synthetic grid showing the test rifle silhouette.",
     );
     assert.equal(
-      await savedPreview.locator("main img").nth(1).getAttribute("alt"),
+      await savedPreview
+        .locator(".item-pictures img[data-public-image]")
+        .nth(1)
+        .getAttribute("alt"),
       "",
     );
     await savedPreview.close();
