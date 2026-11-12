@@ -1476,6 +1476,10 @@ body[data-page="quick-collect"] .filter-bar {
 }
 @media (min-width: 701px) and (max-width: 1100px) {
   .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+    grid-template-columns: minmax(10rem, 1fr) 2.75rem minmax(10rem, 1fr) minmax(
+        8rem,
+        1fr
+      );
     grid-template-areas: "name icon owned actions" "blueprint build build need";
   }
 }
