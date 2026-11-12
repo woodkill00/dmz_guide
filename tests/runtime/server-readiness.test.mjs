@@ -324,8 +324,18 @@ async function failure(t, mode, pattern, options) {
         }
       },
       semanticResponse
-        ? { setupMs: 5000, startupMs: options.timeoutMs, outcomeMs: 7500, started }
-        : { setupMs: 2500, startupMs: options.timeoutMs, overallMs: 3000, started },
+        ? {
+            setupMs: 5000,
+            startupMs: options.timeoutMs,
+            outcomeMs: 7500,
+            started,
+          }
+        : {
+            setupMs: 2500,
+            startupMs: options.timeoutMs,
+            overallMs: 3000,
+            started,
+          },
     );
     assert(
       performance.now() - started < (semanticResponse ? 9000 : 3000),
