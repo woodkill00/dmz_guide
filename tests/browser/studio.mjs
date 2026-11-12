@@ -1596,6 +1596,7 @@ export async function runStudioTests({
       await publicPage.locator(".stat-row").textContent(),
       /Original Studio test evidence/,
     );
+    await publicPage.locator(".item-pictures > summary").click();
     await publicPage.locator("main img").first().waitFor();
     await publicPage.locator("main img").first().scrollIntoViewIfNeeded();
     await publicPage.waitForFunction(
