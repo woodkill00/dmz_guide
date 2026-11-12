@@ -1348,7 +1348,9 @@ export async function runStudioTests({
       "Applied import still requires an explicit save",
     );
     const unchangedPreview = await context.newPage();
-    await unchangedPreview.goto(new URL(savedPreviewURL, author.url).href);
+    await unchangedPreview.goto(new URL(savedPreviewURL, author.url).href, {
+      waitUntil: "domcontentloaded",
+    });
     assert.match(
       await unchangedPreview.locator("main").textContent(),
       /Studio Test Rifle/,
