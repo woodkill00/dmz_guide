@@ -450,6 +450,7 @@ body[data-page] main.quick-tracker {
   min-height: 0;
 }
 .quick-tracker #inventory-fields .owned-cell input {
+  display: block;
   min-height: 32px;
   height: 32px;
   margin-top: 0;
