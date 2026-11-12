@@ -1236,10 +1236,21 @@ export async function runStudioTests({
       await savedPreview.locator("main").textContent(),
       /17\.5\s+ms/,
     );
-    await savedPreview
+    const previewImage = savedPreview
       .locator(".item-pictures img[data-public-image]")
-      .first()
-      .scrollIntoViewIfNeeded();
+      .first();
+    assert.equal(await previewImage.getAttribute("loading"), "eager");
+    const imageSource = await previewImage.getAttribute("src");
+    const imageResponse = await savedPreview.request.get(
+      new URL(imageSource, savedPreview.url()).href,
+    );
+    assert.equal(
+      imageResponse.status(),
+      200,
+      "Saved preview serves picture bytes",
+    );
+    assert.match(imageResponse.headers()["content-type"], /^image\//);
+    await previewImage.scrollIntoViewIfNeeded();
     await savedPreview.waitForFunction(
       () => {
         const image = document.querySelector(
