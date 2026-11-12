@@ -247,6 +247,14 @@ export async function runMetadataFloorTests({
             document.querySelector("main")?.getAttribute("aria-busy") ===
             "false",
         );
+      if (await page.locator(".catalog-context > details").count()) {
+        await page.locator(".catalog-context").evaluate((node) => {
+          node.open = true;
+        });
+        await page.locator(".catalog-context > details").evaluate((node) => {
+          node.open = true;
+        });
+      }
       if (surface.name === "progression") {
         // Compact rows deliberately disclose their evidence before metadata measurements.
         await page

@@ -62,6 +62,7 @@ jobs:
       - name: Report selected Node
         run: node --version
       - run: npm ci --ignore-scripts
+      - run: npm run map:install
       - run: npm run format:check
       - run: npm run build
       - run: npm test

@@ -4117,6 +4117,11 @@ html[data-key-density="comfortable"] .key-directory td {
   max-height: 20rem;
   overflow: auto;
 }
+.catalog-context > details {
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: min(100%, calc(100vw - 1.5rem));
+}
 .catalog-context #pack-note {
   font-size: 0.875rem;
   line-height: 1.45;
