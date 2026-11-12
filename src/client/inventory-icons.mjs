@@ -13,11 +13,13 @@ let activePack = null,
   generation = 0,
   controller = new AbortController();
 const urls = new Map();
-export function releaseInventoryIcons() {
+export function releaseInventoryIcons({ revoke = true } = {}) {
   generation++;
   controller.abort();
   controller = new AbortController();
-  for (const url of urls.values()) URL.revokeObjectURL(url);
+  if (revoke)
+    for (const url of urls.values())
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
   urls.clear();
   activePack = null;
 }
@@ -211,7 +213,7 @@ if (typeof window !== "undefined") {
   const suspend = () => {
     if (!suspended) resumePack = activePack;
     suspended = true;
-    releaseInventoryIcons();
+    releaseInventoryIcons({ revoke: false });
   };
   window.addEventListener("beforeunload", suspend);
   window.addEventListener("pagehide", suspend);

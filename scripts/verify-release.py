@@ -114,6 +114,15 @@ def verify_release():
                     if name not in ('href', 'src') or not value or not value.startswith('/'):
                         continue
                     path = unquote(urlsplit(value).path).lstrip('/')
+                    if tag == 'image' and name == 'href' and re.fullmatch(r'local-weapon-art/[a-z0-9]+(?:-[a-z0-9]+)*\.webp', path):
+                        # Optional private art is served locally with an in-page text fallback.
+                        continue
+                    if tag in ('img', 'a') and re.fullmatch(r'local-key-images/(?:icon-)?[a-z0-9]+(?:-[a-z0-9]+)*\.webp', path):
+                        # Reviewed key imagery stays in the owner's local checkout; the page cites its source.
+                        continue
+                    if tag == 'a' and path == 'local-site-audit/':
+                        # This route exists only after the owner runs a local site audit.
+                        continue
                     file = target / 'dist' / path
                     if file.is_dir():
                         file /= 'index.html'
