@@ -284,6 +284,13 @@ async function withBootstrappedAttempt(
 }
 async function failure(t, mode, pattern, options) {
   options ??= await fixture(t, mode);
+  const semanticResponse = mode === "status" || mode === "redirect";
+  if (semanticResponse) {
+    // These cases prove response handling. The separate timeout fixtures keep
+    // the strict 100ms probe and 2.5s overall deadline contracts.
+    options.timeoutMs = 12000;
+    options.requestTimeoutMs = 1000;
+  }
   const started = performance.now();
   let rejection;
   try {
@@ -316,10 +323,22 @@ async function failure(t, mode, pattern, options) {
           assert.match(diagnostics.lastProbe, /Request timeout after 100ms/);
         }
       },
-      { setupMs: 2500, startupMs: options.timeoutMs, overallMs: 3000, started },
+      semanticResponse
+        ? {
+            setupMs: 6000,
+            startupMs: options.timeoutMs,
+            outcomeMs: 12500,
+            started,
+          }
+        : {
+            setupMs: 2500,
+            startupMs: options.timeoutMs,
+            overallMs: 3000,
+            started,
+          },
     );
     assert(
-      performance.now() - started < 3000,
+      performance.now() - started < (semanticResponse ? 14000 : 3000),
       "failure and cleanup are bounded",
     );
   } catch (error) {

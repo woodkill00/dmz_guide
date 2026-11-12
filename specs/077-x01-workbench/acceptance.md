@@ -12,6 +12,9 @@ Date: 2026-11-12. Environment: Windows, Node 24, Chromium through Playwright.
 | Desktop/mobile visual inspection | Desktop and mobile screenshots inspected locally; the long default review panel was corrected. Screenshots remain in ignored `.local` storage. |
 | `node tests/browser/measured-scale-runner.mjs --engines` | Firefox and WebKit functional, pagination and measured-scale checks passed after adapting disclosures to the current inventory UI. |
 | `node tests/browser/contributor-workflows.mjs --engines` | Firefox and WebKit contributor workflows passed with the current theme control label. |
+| Post-merge repair: Chromium measured scale and focused Gunsmith browser | Both passed after sharing the icon availability request and restoring the public raster editor module to the build. Clean extraction verified 2,094 file hashes and the owned Node server. |
+| `node scripts/checklist.browser.cjs` from `tools/hajin-map` | Boss checklist browser journeys passed, including directory navigation, quota retry and the deep-link timing check. |
+| Linux Firefox key workspace (WSL Ubuntu 24.04) | Full key workspace journey passed at 320/390/768/1440px and normal/200% text after wrapping map-area headings. |
 | `py -3 scripts/package-release.py` and `py -3 scripts/verify-release.py` | 2,093-file static archive packaged; clean extraction, hashes, native links and owned Node server verified. Optional local-only art and audit routes are explicitly scoped. |
 
 Independent source and test-evidence review completed on 2026-11-12; FR-002 and FR-003 remain open for owner touch and backup/photo checks. The physical phone, screen reader and 200% text zoom acceptance checks in [the verification matrix](../../docs/x01-workbench-verification.md) remain for the owner. No gameplay observation was available. This file records implementer test evidence; the independent review is separately recorded in the reviewer-owned checklist.

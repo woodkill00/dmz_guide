@@ -293,6 +293,7 @@ export function renderDetail(
     catalogURL = "/catalog/",
     showPlanner = true,
     authorActions = "",
+    imageLoading = "lazy",
   } = {},
 ) {
   record = displayRecord(record);
@@ -335,7 +336,7 @@ export function renderDetail(
         const caption = record.spoiler
           ? asset.attribution
           : guardFor(pack).text(asset.attribution);
-        return `<figure class="panel"><img data-public-image class="local-raster" loading="lazy" decoding="async" src="${e(url)}" width="${asset.width}" height="${asset.height}" alt="${e(imageDescription(record, assetId, publicTitle(record)))}"><figcaption>${e(caption)} · ${e(asset.license)}. Image availability does not verify game facts.</figcaption></figure>`;
+        return `<figure class="panel"><img data-public-image class="local-raster" loading="${e(imageLoading)}" decoding="async" src="${e(url)}" width="${asset.width}" height="${asset.height}" alt="${e(imageDescription(record, assetId, publicTitle(record)))}"><figcaption>${e(caption)} · ${e(asset.license)}. Image availability does not verify game facts.</figcaption></figure>`;
       })
       .join("");
   }

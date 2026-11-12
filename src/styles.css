@@ -3048,6 +3048,11 @@ body[data-page="collection"] main > nav a {
   font-size: 1.1rem;
   font-weight: 700;
   padding: 0.5rem;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+.key-location-group > summary span {
+  overflow-wrap: anywhere;
 }
 .key-location-group[hidden] {
   display: none;
@@ -4111,6 +4116,11 @@ html[data-key-density="comfortable"] .key-directory td {
   border-radius: 0.4rem;
   max-height: 20rem;
   overflow: auto;
+}
+.catalog-context > details {
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: min(100%, calc(100vw - 1.5rem));
 }
 .catalog-context #pack-note {
   font-size: 0.875rem;

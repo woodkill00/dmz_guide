@@ -278,8 +278,8 @@ body[data-page="items"] .directory-help summary {
     grid-row: 2;
   }
   .item-section-nav {
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    flex-wrap: wrap;
+    overflow-x: visible;
     max-width: 100%;
   }
   .item-section-nav a {

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { renderSavedPreview } from "../../scripts/author-preview.mjs";
 import { fixtureCatalog } from "../helpers/catalog.mjs";
 
-test("saved preview uses validated local IDs, saved revision and lazy media", () => {
+test("saved preview uses validated local IDs, saved revision and eager media", () => {
   const snapshot = structuredClone(fixtureCatalog);
   const entry = snapshot.entries.find((item) =>
     item.pack.items.some((record) => record.assetId),
@@ -19,7 +19,7 @@ test("saved preview uses validated local IDs, saved revision and lazy media", ()
   assert.match(html, /href="\/assets\/src\/ui\/companion-navigation\.css"/);
   assert.ok(html.includes('rel="icon" href="/assets/src/favicon.svg"'));
   assert.ok(html.includes(snapshot.revision));
-  assert.match(html, /loading="lazy"/);
+  assert.match(html, /loading="eager"/);
   assert.ok(
     html.includes(
       `/api/media?packKey=${entry.key}&amp;assetId=${encodeURIComponent(record.assetId)}`,

@@ -805,12 +805,20 @@ $("#inventory-form")?.addEventListener("input", (e) => {
         peer.dataset.field === input.dataset.field
       )
         peer.value = input.value;
+    const focusedTop = input.getBoundingClientRect().top;
     updateInventoryPreview();
     status(
       hasUnsavedDraft()
         ? "Unsaved inventory edits · save locally or export a validated backup."
         : "Saved values unchanged · no unsaved inventory edits.",
     );
+    // The catalog summary observes save-status and can resize above this row
+    // in a microtask after the input event. Anchor once that update settles.
+    queueMicrotask(() => {
+      if (document.activeElement !== input || !input.isConnected) return;
+      const shift = input.getBoundingClientRect().top - focusedTop;
+      if (Math.abs(shift) > 1) window.scrollBy(0, shift);
+    });
   }
 });
 $("#inventory-form")?.addEventListener(

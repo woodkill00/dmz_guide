@@ -145,6 +145,7 @@
 }
 .quick-tracker .owned-cell {
   display: flex;
+  align-items: flex-start;
   gap: 0.25rem;
 }
 .quick-tracker .owned-cell .stock-steps {
@@ -449,8 +450,10 @@ body[data-page] main.quick-tracker {
   min-height: 0;
 }
 .quick-tracker #inventory-fields .owned-cell input {
+  display: block;
   min-height: 32px;
   height: 32px;
+  margin-top: 0;
 }
 .quick-tracker .tracker-filter-options .upgrade-view-controls {
   flex-basis: 100%;
@@ -991,7 +994,9 @@ html[data-ui-variant]
     4rem;
   grid-template-areas: "name icon owned blueprint need actions";
   gap: calc(0.3rem + 0.1vw);
-  align-items: center;
+  align-items: start;
+  align-content: start;
+  grid-auto-rows: max-content;
   min-height: 4rem;
   padding: 0.25rem 0.375rem;
 }
@@ -1015,6 +1020,7 @@ html[data-ui-variant]
   > .inventory-row
   > .owned-cell {
   grid-area: owned;
+  align-self: start;
 }
 .quick-tracker
   #inventory-fields
@@ -1042,11 +1048,11 @@ html[data-ui-variant]
   line-height: 1.25;
 }
 .quick-tracker #inventory-fields .inventory-name .collection-state {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   width: fit-content;
   max-width: 100%;
-  min-height: 3.2em;
+  min-height: 4.5em;
   gap: 0.25rem;
   padding: 0.05rem 0.3rem;
   margin-top: 0.125rem;
@@ -1473,6 +1479,10 @@ body[data-page="quick-collect"] .filter-bar {
 }
 @media (min-width: 701px) and (max-width: 1100px) {
   .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
+    grid-template-columns: minmax(10rem, 1fr) 2.75rem minmax(10rem, 1fr) minmax(
+        8rem,
+        1fr
+      );
     grid-template-areas: "name icon owned actions" "blueprint build build need";
   }
 }

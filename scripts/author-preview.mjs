@@ -48,6 +48,7 @@ export function renderSavedPreview(snapshot, packKey, id) {
         referenceURL,
         catalogURL: "/",
         showPlanner: false,
+        imageLoading: "eager",
         authorActions: renderAuthorActions(record, {
           edit: authorPath({ packKey, packId: pack.id, id, intent: "edit" }),
           images: authorPath({

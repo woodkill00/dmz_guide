@@ -3,7 +3,6 @@
 AUTHOR_ONLY_PATHS = frozenset({
     'assets/src/client/studio.mjs',
     'assets/src/content/studio-recovery.mjs',
-    'assets/src/client/raster-editor.mjs',
     'assets/src/client/studio-media.mjs',
     'assets/src/ui/studio-page.mjs',
     'assets/src/ui/studio.css',

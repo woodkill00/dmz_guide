@@ -487,6 +487,11 @@ export async function runStudioTests({
     clone = join(sandbox, "fresh-clone");
   let author, reader, context, activePage;
   let phase = "prepare isolated repository";
+  const phaseHeartbeat = setInterval(
+    () => console.log(`Studio still running: ${phase}`),
+    60_000,
+  );
+  phaseHeartbeat.unref();
   let lifecycleDiagnostics, timeoutDiagnostics;
   const prefix = engineName.replace(/[^a-z0-9-]/gi, "-");
   const git = (args, cwd = repository) =>
@@ -583,7 +588,9 @@ export async function runStudioTests({
       assert.equal(await field(path).inputValue(), id);
     };
     const snapshot = async () => {
-      const response = await fetch(author.url + "/api/catalog");
+      const response = await fetch(author.url + "/api/catalog", {
+        signal: AbortSignal.timeout(STUDIO_API_FUNCTIONAL_DEADLINE_MS),
+      });
       assert.equal(response.status, 200);
       return response.json();
     };
@@ -616,7 +623,9 @@ export async function runStudioTests({
     const historyUrl = new URL("/preview", author.url);
     historyUrl.searchParams.set("packKey", historyEntry.key);
     historyUrl.searchParams.set("id", allRecords([historyEntry.pack])[0].id);
-    const historyResponse = await page.goto(historyUrl.href);
+    const historyResponse = await page.goto(historyUrl.href, {
+      waitUntil: "domcontentloaded",
+    });
     assert.equal(historyResponse.status(), 200);
     await page.goto(author.url);
     await page.waitForSelector('[data-path="contentVersion"]');
@@ -1219,6 +1228,8 @@ export async function runStudioTests({
     await page.click("#saved-preview");
     const savedPreview = await openedPreview;
     await savedPreview.waitForLoadState("domcontentloaded");
+    if (await savedPreview.locator(".item-pictures").count())
+      await savedPreview.locator(".item-pictures > summary").click();
     assert.match(
       await savedPreview.locator("h1").textContent(),
       /Studio Test Rifle/,
@@ -1227,8 +1238,33 @@ export async function runStudioTests({
       await savedPreview.locator("main").textContent(),
       /17\.5\s+ms/,
     );
+    const previewImage = savedPreview
+      .locator(".item-pictures img[data-public-image]")
+      .first();
+    assert.equal(await previewImage.getAttribute("loading"), "eager");
+    const imageSource = await previewImage.getAttribute("src");
+    const imageResponse = await savedPreview.request.get(
+      new URL(imageSource, savedPreview.url()).href,
+    );
+    assert.equal(
+      imageResponse.status(),
+      200,
+      "Saved preview serves picture bytes",
+    );
+    assert.match(imageResponse.headers()["content-type"], /^image\//);
+    await previewImage.scrollIntoViewIfNeeded();
+    await savedPreview.waitForFunction(
+      () => {
+        const image = document.querySelector(
+          ".item-pictures img[data-public-image]",
+        );
+        return image?.complete && image.naturalWidth > 0;
+      },
+      null,
+      { timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS },
+    );
     await savedPreview
-      .locator("main img")
+      .locator(".item-pictures img[data-public-image]")
       .first()
       .evaluate(async (image) => {
         await image.decode();
@@ -1236,11 +1272,17 @@ export async function runStudioTests({
           throw new Error("Saved preview image width mismatch");
       });
     assert.equal(
-      await savedPreview.locator("main img").first().getAttribute("alt"),
+      await savedPreview
+        .locator(".item-pictures img[data-public-image]")
+        .first()
+        .getAttribute("alt"),
       "Gold synthetic grid showing the test rifle silhouette.",
     );
     assert.equal(
-      await savedPreview.locator("main img").nth(1).getAttribute("alt"),
+      await savedPreview
+        .locator(".item-pictures img[data-public-image]")
+        .nth(1)
+        .getAttribute("alt"),
       "",
     );
     await savedPreview.close();
@@ -1306,7 +1348,9 @@ export async function runStudioTests({
       "Applied import still requires an explicit save",
     );
     const unchangedPreview = await context.newPage();
-    await unchangedPreview.goto(new URL(savedPreviewURL, author.url).href);
+    await unchangedPreview.goto(new URL(savedPreviewURL, author.url).href, {
+      waitUntil: "domcontentloaded",
+    });
     assert.match(
       await unchangedPreview.locator("main").textContent(),
       /Studio Test Rifle/,
@@ -1525,12 +1569,16 @@ export async function runStudioTests({
     phase = "fresh isolated Git clone and public rendering";
     await git(["add", "content/catalog", "media"]);
     await commit("Synthetic pictured weapon authored through real UI");
+    phase = "clone authored catalog";
     await git(["clone", "--no-local", repository, clone], sandbox);
+    phase = "build fresh clone";
     await run(process.execPath, ["scripts/build.mjs"], {
       cwd: clone,
       maxBuffer: 4 * 1024 * 1024,
     });
+    phase = "start fresh clone reader";
     reader = await startReader(clone);
+    phase = "verify fresh clone public images";
     context = await browser.newContext({
       viewport: { width: 390, height: 844 },
     });
@@ -1552,7 +1600,13 @@ export async function runStudioTests({
       await publicPage.locator(".stat-row").textContent(),
       /Original Studio test evidence/,
     );
+    await publicPage.locator(".item-pictures > summary").click();
     await publicPage.locator("main img").first().waitFor();
+    await publicPage.locator("main img").first().scrollIntoViewIfNeeded();
+    await publicPage.waitForFunction(
+      (image) => image.complete && image.naturalWidth > 0,
+      await publicPage.locator("main img").first().elementHandle(),
+    );
     const pixels = await publicPage
       .locator("main img")
       .first()
@@ -1582,6 +1636,10 @@ export async function runStudioTests({
     );
     assert.equal(await publicPictures.nth(1).getAttribute("loading"), "lazy");
     await publicPictures.nth(1).scrollIntoViewIfNeeded();
+    await publicPage.waitForFunction(
+      (image) => image.complete && image.naturalWidth > 0,
+      await publicPictures.nth(1).elementHandle(),
+    );
     const additionalPixel = await publicPictures
       .nth(1)
       .evaluate(async (image) => {
@@ -1772,6 +1830,7 @@ export async function runStudioTests({
       { cause: error },
     );
   } finally {
+    clearInterval(phaseHeartbeat);
     await context?.close();
     await author?.close();
     await reader?.close();

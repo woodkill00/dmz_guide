@@ -50,7 +50,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 25
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -62,6 +62,7 @@ jobs:
       - name: Report selected Node
         run: node --version
       - run: npm ci --ignore-scripts
+      - run: npm run map:install
       - run: npm run format:check
       - run: npm run build
       - run: npm test
@@ -152,7 +153,7 @@ jobs:
   browser-engines:
     name: Firefox and WebKit smoke (Ubuntu)
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
