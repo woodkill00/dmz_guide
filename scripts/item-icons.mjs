@@ -39,3 +39,21 @@ export function createItemIconReader({ root, read = readCatalogFile } = {}) {
     }
   };
 }
+export async function listAvailableItemIcons({
+  root,
+  read = readCatalogFile,
+} = {}) {
+  const available = [];
+  for (const entry of Object.values(registry.assets)) {
+    try {
+      validateItemIconBytes(
+        entry,
+        await read(root, ".local/item-icons/" + entry.file, 1024 * 1024),
+      );
+      available.push(entry.file);
+    } catch {
+      // The registered icon remains optional until its reviewed local file is present.
+    }
+  }
+  return available;
+}

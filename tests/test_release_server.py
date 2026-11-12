@@ -136,9 +136,9 @@ class ReleaseWatchdogTests(unittest.TestCase):
         identity = identity_for(output_files)
         for folder in ('src', 'schemas', 'content'):
             (self.root / folder).mkdir(exist_ok=True)
-        for name in ('content/site.json', 'package.json', 'package-lock.json'):
+        for name in ('content/site.json', 'content/weapon-intel.json', 'package.json', 'package-lock.json'):
             (self.root / name).write_text('{}')
-        source_paths = [self.root / name for name in ('content/site.json', 'package.json', 'package-lock.json')]
+        source_paths = [self.root / name for name in ('content/site.json', 'content/weapon-intel.json', 'package.json', 'package-lock.json')]
         source_paths += [path for folder in ('src', 'schemas', 'scripts') for path in (self.root / folder).rglob('*') if path.is_file() and '__pycache__' not in path.parts and path.suffix not in ('.pyc', '.pyo')]
         identity.pop('buildId')
         identity['sourceFiles'] = {path.relative_to(self.root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest() for path in source_paths}

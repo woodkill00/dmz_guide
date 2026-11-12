@@ -39,6 +39,21 @@ export async function hydrateInventoryIcons(
       (!cell.dataset.iconPack || cell.dataset.iconPack === pack.id) &&
       (!visibleOnly || !cell.closest("[hidden]")),
   );
+  let localFiles = new Set();
+  if (cells.length) {
+    try {
+      const response = await fetch("/local-item-icons-available.json", {
+        signal,
+      });
+      if (response.ok) {
+        const files = await response.json();
+        if (Array.isArray(files)) localFiles = new Set(files);
+      }
+    } catch {
+      // Private local icons are optional; the visible placeholder remains.
+    }
+  }
+  if (token !== generation || signal.aborted) return;
   const pending = new Map();
   for (const cell of cells) {
     const item = pack.items.find((i) => i.id === cell.dataset.inventoryIcon),
@@ -48,11 +63,12 @@ export async function hydrateInventoryIcons(
       local = registeredId && registry.assets[registeredId],
       asset =
         attached ||
-        (local && {
-          ...local,
-          id: registeredId,
-          localURL: "/local-item-icons/" + local.file,
-        });
+        (local &&
+          localFiles.has(local.file) && {
+            ...local,
+            id: registeredId,
+            localURL: "/local-item-icons/" + local.file,
+          });
     if (asset) {
       const key = pack.id + ":" + asset.id + ":" + asset.sha256;
       if (!pending.has(key)) pending.set(key, { asset, item, cells: [] });

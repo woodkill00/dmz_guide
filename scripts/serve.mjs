@@ -33,6 +33,18 @@ async function weaponArt(raw) {
   }
 }
 let itemIconReader;
+let itemIconAvailability;
+async function availableItemIcons() {
+  try {
+    itemIconAvailability ||= import("./item-icons.mjs").then(
+      ({ listAvailableItemIcons }) =>
+        listAvailableItemIcons({ root: resolve(root, "..") }),
+    );
+    return await itemIconAvailability;
+  } catch {
+    return [];
+  }
+}
 async function itemIcon(raw) {
   try {
     itemIconReader ||= import("./item-icons.mjs").then(
@@ -129,6 +141,17 @@ const server = createServer(async (req, res) => {
         req.method === "HEAD"
           ? undefined
           : report.bytes || "Report route not found",
+      );
+    }
+    if (req.url === "/local-item-icons-available.json") {
+      res.writeHead(200, {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store",
+      });
+      return res.end(
+        req.method === "HEAD"
+          ? undefined
+          : JSON.stringify(await availableItemIcons()),
       );
     }
     if (req.url?.startsWith("/local-item-icons/")) {
