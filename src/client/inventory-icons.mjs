@@ -13,6 +13,17 @@ let activePack = null,
   generation = 0,
   controller = new AbortController();
 const urls = new Map();
+let availableLocalFiles;
+function localIconFiles() {
+  availableLocalFiles ||= fetch("/local-item-icons-available.json")
+    .then(async (response) => {
+      if (!response.ok) return new Set();
+      const files = await response.json();
+      return new Set(Array.isArray(files) ? files : []);
+    })
+    .catch(() => new Set());
+  return availableLocalFiles;
+}
 export function releaseInventoryIcons({ revoke = true } = {}) {
   generation++;
   controller.abort();
@@ -41,20 +52,7 @@ export async function hydrateInventoryIcons(
       (!cell.dataset.iconPack || cell.dataset.iconPack === pack.id) &&
       (!visibleOnly || !cell.closest("[hidden]")),
   );
-  let localFiles = new Set();
-  if (cells.length) {
-    try {
-      const response = await fetch("/local-item-icons-available.json", {
-        signal,
-      });
-      if (response.ok) {
-        const files = await response.json();
-        if (Array.isArray(files)) localFiles = new Set(files);
-      }
-    } catch {
-      // Private local icons are optional; the visible placeholder remains.
-    }
-  }
+  const localFiles = cells.length ? await localIconFiles() : new Set();
   if (token !== generation || signal.aborted) return;
   const pending = new Map();
   for (const cell of cells) {

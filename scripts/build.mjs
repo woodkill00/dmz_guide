@@ -271,7 +271,6 @@ async function generate(dist) {
     "src/content/author-target.mjs",
     "src/ui/author-actions.mjs",
     "src/client/studio.mjs",
-    "src/client/raster-editor.mjs",
     "src/content/studio-recovery.mjs",
     "src/client/studio-media.mjs",
     "src/ui/studio-page.mjs",
