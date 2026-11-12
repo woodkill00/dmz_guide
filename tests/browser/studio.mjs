@@ -487,6 +487,11 @@ export async function runStudioTests({
     clone = join(sandbox, "fresh-clone");
   let author, reader, context, activePage;
   let phase = "prepare isolated repository";
+  const phaseHeartbeat = setInterval(
+    () => console.log(`Studio still running: ${phase}`),
+    60_000,
+  );
+  phaseHeartbeat.unref();
   let lifecycleDiagnostics, timeoutDiagnostics;
   const prefix = engineName.replace(/[^a-z0-9-]/gi, "-");
   const git = (args, cwd = repository) =>
@@ -583,7 +588,9 @@ export async function runStudioTests({
       assert.equal(await field(path).inputValue(), id);
     };
     const snapshot = async () => {
-      const response = await fetch(author.url + "/api/catalog");
+      const response = await fetch(author.url + "/api/catalog", {
+        signal: AbortSignal.timeout(STUDIO_API_FUNCTIONAL_DEADLINE_MS),
+      });
       assert.equal(response.status, 200);
       return response.json();
     };
@@ -1219,6 +1226,8 @@ export async function runStudioTests({
     await page.click("#saved-preview");
     const savedPreview = await openedPreview;
     await savedPreview.waitForLoadState("domcontentloaded");
+    if (await savedPreview.locator(".item-pictures").count())
+      await savedPreview.locator(".item-pictures > summary").click();
     assert.match(
       await savedPreview.locator("h1").textContent(),
       /Studio Test Rifle/,
@@ -1226,6 +1235,14 @@ export async function runStudioTests({
     assert.match(
       await savedPreview.locator("main").textContent(),
       /17\.5\s+ms/,
+    );
+    await savedPreview.waitForFunction(
+      () => {
+        const image = document.querySelector("main img");
+        return image?.complete && image.naturalWidth > 0;
+      },
+      null,
+      { timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS },
     );
     await savedPreview
       .locator("main img")
@@ -1772,6 +1789,7 @@ export async function runStudioTests({
       { cause: error },
     );
   } finally {
+    clearInterval(phaseHeartbeat);
     await context?.close();
     await author?.close();
     await reader?.close();

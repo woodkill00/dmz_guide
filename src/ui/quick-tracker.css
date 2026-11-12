@@ -1043,7 +1043,7 @@ html[data-ui-variant]
   line-height: 1.25;
 }
 .quick-tracker #inventory-fields .inventory-name .collection-state {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   width: fit-content;
   max-width: 100%;

@@ -180,6 +180,22 @@ export async function runCollectionTests({ browser, base }) {
         await wire().focus();
         await page.evaluate(() => new Promise(requestAnimationFrame));
         const enlargedBox = await wire().boundingBox();
+        const statusGeometry = () =>
+          wire().evaluate((input) => {
+            const rect = (node) => {
+              const box = node.getBoundingClientRect();
+              return { top: box.top, height: box.height, width: box.width };
+            };
+            const row = input.closest(".inventory-row");
+            return {
+              scrollY,
+              input: rect(input),
+              row: rect(row),
+              name: rect(row.querySelector(".inventory-name")),
+              badge: rect(row.querySelector(".collection-state")),
+            };
+          });
+        const initialGeometry = await statusGeometry();
         for (const [stock, state] of [
           ["0", "short"],
           ["", "review"],
@@ -191,10 +207,10 @@ export async function runCollectionTests({ browser, base }) {
           assert.equal(nextBox.x, enlargedBox.x);
           assert.equal(nextBox.width, enlargedBox.width);
           assert.equal(nextBox.height, enlargedBox.height);
-          assert(
-            Math.abs(nextBox.y - enlargedBox.y) <= 4,
-            `${width}/${theme}/200% stable status geometry ${stock}: ${nextBox.y - enlargedBox.y}px`,
-          );
+          if (Math.abs(nextBox.y - enlargedBox.y) > 4)
+            assert.fail(
+              `${width}/${theme}/200% stable status geometry ${stock}: ${nextBox.y - enlargedBox.y}px; ${JSON.stringify({ before: initialGeometry, after: await statusGeometry() })}`,
+            );
         }
         await page.evaluate(
           () => (document.documentElement.style.fontSize = ""),
