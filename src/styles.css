@@ -3048,6 +3048,11 @@ body[data-page="collection"] main > nav a {
   font-size: 1.1rem;
   font-weight: 700;
   padding: 0.5rem;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+.key-location-group > summary span {
+  overflow-wrap: anywhere;
 }
 .key-location-group[hidden] {
   display: none;
