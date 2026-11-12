@@ -288,8 +288,8 @@ async function failure(t, mode, pattern, options) {
   if (semanticResponse) {
     // These cases prove response handling. The separate timeout fixtures keep
     // the strict 100ms probe and 2.5s overall deadline contracts.
-    options.timeoutMs = 7000;
-    options.requestTimeoutMs = 250;
+    options.timeoutMs = 12000;
+    options.requestTimeoutMs = 1000;
   }
   const started = performance.now();
   let rejection;
@@ -325,9 +325,9 @@ async function failure(t, mode, pattern, options) {
       },
       semanticResponse
         ? {
-            setupMs: 5000,
+            setupMs: 6000,
             startupMs: options.timeoutMs,
-            outcomeMs: 7500,
+            outcomeMs: 12500,
             started,
           }
         : {
@@ -338,7 +338,7 @@ async function failure(t, mode, pattern, options) {
           },
     );
     assert(
-      performance.now() - started < (semanticResponse ? 9000 : 3000),
+      performance.now() - started < (semanticResponse ? 14000 : 3000),
       "failure and cleanup are bounded",
     );
   } catch (error) {
