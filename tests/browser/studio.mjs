@@ -1565,12 +1565,16 @@ export async function runStudioTests({
     phase = "fresh isolated Git clone and public rendering";
     await git(["add", "content/catalog", "media"]);
     await commit("Synthetic pictured weapon authored through real UI");
+    phase = "clone authored catalog";
     await git(["clone", "--no-local", repository, clone], sandbox);
+    phase = "build fresh clone";
     await run(process.execPath, ["scripts/build.mjs"], {
       cwd: clone,
       maxBuffer: 4 * 1024 * 1024,
     });
+    phase = "start fresh clone reader";
     reader = await startReader(clone);
+    phase = "verify fresh clone public images";
     context = await browser.newContext({
       viewport: { width: 390, height: 844 },
     });
@@ -1593,6 +1597,11 @@ export async function runStudioTests({
       /Original Studio test evidence/,
     );
     await publicPage.locator("main img").first().waitFor();
+    await publicPage.locator("main img").first().scrollIntoViewIfNeeded();
+    await publicPage.waitForFunction(
+      (image) => image.complete && image.naturalWidth > 0,
+      await publicPage.locator("main img").first().elementHandle(),
+    );
     const pixels = await publicPage
       .locator("main img")
       .first()
@@ -1622,6 +1631,10 @@ export async function runStudioTests({
     );
     assert.equal(await publicPictures.nth(1).getAttribute("loading"), "lazy");
     await publicPictures.nth(1).scrollIntoViewIfNeeded();
+    await publicPage.waitForFunction(
+      (image) => image.complete && image.naturalWidth > 0,
+      await publicPictures.nth(1).elementHandle(),
+    );
     const additionalPixel = await publicPictures
       .nth(1)
       .evaluate(async (image) => {
