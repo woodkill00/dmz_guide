@@ -1236,6 +1236,10 @@ export async function runStudioTests({
       await savedPreview.locator("main").textContent(),
       /17\.5\s+ms/,
     );
+    await savedPreview
+      .locator(".item-pictures img[data-public-image]")
+      .first()
+      .scrollIntoViewIfNeeded();
     await savedPreview.waitForFunction(
       () => {
         const image = document.querySelector(
