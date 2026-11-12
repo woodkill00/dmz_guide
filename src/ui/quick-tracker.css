@@ -1015,6 +1015,7 @@ html[data-ui-variant]
   > .inventory-row
   > .owned-cell {
   grid-area: owned;
+  align-self: start;
 }
 .quick-tracker
   #inventory-fields

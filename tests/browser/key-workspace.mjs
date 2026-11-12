@@ -233,7 +233,22 @@ export async function runKeyWorkspaceTests({ browser, base }) {
           await page.evaluate(
             () => document.documentElement.scrollWidth <= innerWidth + 1,
           ),
-          `${width}/${zoom}`,
+          `${width}/${zoom}: ${JSON.stringify(
+            await page.evaluate(() =>
+              [...document.querySelectorAll("main *")]
+                .filter((node) => {
+                  const box = node.getBoundingClientRect();
+                  return box.width > 0 && box.right > innerWidth + 1;
+                })
+                .slice(0, 8)
+                .map((node) => ({
+                  tag: node.tagName,
+                  className: node.className,
+                  text: node.textContent?.trim().slice(0, 45),
+                  right: Math.round(node.getBoundingClientRect().right),
+                })),
+            ),
+          )}`,
         );
       }
     await page.setViewportSize({ width: 390, height: 1000 });
