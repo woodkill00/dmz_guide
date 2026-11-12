@@ -452,6 +452,7 @@ body[data-page] main.quick-tracker {
 .quick-tracker #inventory-fields .owned-cell input {
   min-height: 32px;
   height: 32px;
+  margin-top: 0;
 }
 .quick-tracker .tracker-filter-options .upgrade-view-controls {
   flex-basis: 100%;

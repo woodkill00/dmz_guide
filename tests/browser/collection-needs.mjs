@@ -193,6 +193,10 @@ export async function runCollectionTests({ browser, base }) {
               row: rect(row),
               name: rect(row.querySelector(".inventory-name")),
               badge: rect(row.querySelector(".collection-state")),
+              owned: rect(input.closest(".owned-cell")),
+              label: rect(input.closest("label")),
+              inputMarginTop: getComputedStyle(input).marginTop,
+              focused: document.activeElement === input,
             };
           });
         const initialGeometry = await statusGeometry();
