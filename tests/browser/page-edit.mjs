@@ -61,6 +61,15 @@ export async function openStudioForEvidence(page, action) {
   );
 }
 
+async function revealItemEditActions(page) {
+  const disclosure = page.locator(".item-edit-actions");
+  if (
+    (await disclosure.count()) &&
+    !(await disclosure.evaluate((node) => node.open))
+  )
+    await disclosure.locator("summary").click();
+}
+
 async function waitForModernEvidenceShell(page) {
   if ((await page.locator("html").getAttribute("data-ui-variant")) !== "modern")
     return;
@@ -124,7 +133,7 @@ export async function captureDocumentEvidence(page, path) {
   // Playwright 1.58 screenshotter trims fullPage+clip in DOCUMENT coordinates;
   // Firefox passes that documentRect directly to Page.screenshot. Keep the
   // original viewport/layout unchanged and bound each actual PNG, not the page.
-  for (let y = 0; y < dimensions.height; y += heightStep) {
+  captureTiles: for (let y = 0; y < dimensions.height; y += heightStep) {
     for (let x = 0; x < dimensions.width; x += widthStep) {
       const clip = {
         x,
@@ -175,6 +184,7 @@ export async function captureDocumentEvidence(page, path) {
         "Evidence PNG spans its full declared height",
       );
       slices.push({ file, clip });
+      if (!tiled) break captureTiles;
     }
   }
   try {
@@ -629,6 +639,7 @@ export async function runPageEditTests({
         (candidate) => candidate.id === record.id,
       );
       await page.goto(reader.url + recordUrl(rendered));
+      await revealItemEditActions(page);
       for (const [selector, intent] of [
         ["[data-edit-record]", "edit"],
         ["[data-edit-images]", "images"],
@@ -735,6 +746,7 @@ export async function runPageEditTests({
       tool = "demo:tool",
       location = entry.pack.locations[0].id;
     await page.goto(author.url + previewPath(target(wire)));
+    await revealItemEditActions(page);
     await page.locator("[data-edit-images]").click();
     await page.waitForFunction(
       () => document.activeElement?.id === "picture-file",
@@ -953,6 +965,7 @@ export async function runPageEditTests({
       await pixel(page.locator("img[data-public-image]").nth(1)),
       [0, 204, 0, 255],
     );
+    await revealItemEditActions(page);
     await openStudioForEvidence(page, () =>
       page.locator("[data-edit-record]").click(),
     );
@@ -978,6 +991,7 @@ export async function runPageEditTests({
       label: "public-detail",
       captureScreenshots,
     });
+    await revealItemEditActions(page);
     const guidanceLink = page.locator("[data-edit-images]");
     const guidanceURL = new URL(
       await guidanceLink.getAttribute("href"),

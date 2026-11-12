@@ -76,7 +76,10 @@ try {
       await page.locator(".nav-more summary").focus();
       await page.keyboard.press("Enter");
       assert(await page.locator(".nav-more").evaluate((n) => n.open));
-      await page.getByRole("link", { name: "Maps", exact: true }).click();
+      await page
+        .locator(".nav-more")
+        .getByRole("link", { name: "Maps", exact: true })
+        .click();
       await page.waitForSelector("#location-list button");
       assert.match(
         await page.locator("#location-count").textContent(),
