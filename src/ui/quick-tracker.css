@@ -145,6 +145,7 @@
 }
 .quick-tracker .owned-cell {
   display: flex;
+  align-items: flex-start;
   gap: 0.25rem;
 }
 .quick-tracker .owned-cell .stock-steps {
