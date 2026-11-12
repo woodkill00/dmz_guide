@@ -125,27 +125,23 @@ export function candidateMatches(
 ): Candidate[] {
   if (!alignment.accepted) return [];
   const candidates: Candidate[] = [];
+  const hubRows = hub.markers.filter((row) => row.floor === alignment.floor);
+  const categoryById = new Map(hub.categories.map((row) => [row.id, row.slug]));
   for (const source of cod.markers.filter(
     (row) => row.floor === alignment.floor,
   )) {
     const mapped = alignPoint(source, alignment);
-    const nearby = hub.markers
-      .filter((row) => row.floor === alignment.floor)
-      .map((row) => ({
-        row,
-        distance: Math.hypot(row.x - mapped.x, row.y - mapped.y),
-      }))
-      .filter((item) => item.distance <= 0.03)
-      .sort((a, b) => a.distance - b.distance);
-    for (const { row, distance } of nearby) {
-      const category = hub.categories.find(
-        (item) => item.id === row.categoryId,
-      )!;
+    const nearby: Candidate[] = [];
+    for (const row of hubRows) {
+      const distance = Math.hypot(row.x - mapped.x, row.y - mapped.y);
+      if (distance > 0.03) continue;
       const sameName = !!row.title && name(row.title) === name(source.name);
       const sameType =
-        compatible[source.layer]?.includes(category.slug) && distance <= 0.012;
+        compatible[source.layer]?.includes(
+          categoryById.get(row.categoryId) || "",
+        ) && distance <= 0.012;
       if (!sameName && !sameType) continue;
-      candidates.push({
+      nearby.push({
         id: `${source.id}__${row.id}`,
         codId: source.id,
         hubId: row.id,
@@ -153,17 +149,41 @@ export function candidateMatches(
         distance,
         reason: sameName ? "same name" : "same type",
       });
+      nearby.sort(
+        (a, b) =>
+          (a.reason === "same name" ? 0 : 1) -
+            (b.reason === "same name" ? 0 : 1) || a.distance - b.distance,
+      );
+      if (nearby.length > 3) nearby.pop();
     }
+    candidates.push(...nearby);
+    if (candidates.length >= 100) break;
   }
-  return candidates.sort((a, b) => a.distance - b.distance);
+  return candidates.sort((a, b) => a.distance - b.distance).slice(0, 100);
 }
 export type Change = {
-  kind: "added" | "removed" | "renamed" | "moved" | "floor";
+  kind:
+    | "added"
+    | "removed"
+    | "renamed"
+    | "moved"
+    | "floor"
+    | "metadata"
+    | "snapshot";
   id: string;
   before?: string;
   after?: string;
   distance?: number;
 };
+export function stableJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+  if (value && typeof value === "object")
+    return `{${Object.entries(value)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, entry]) => `${JSON.stringify(key)}:${stableJson(entry)}`)
+      .join(",")}}`;
+  return JSON.stringify(value) ?? "undefined";
+}
 export function sourceDiff<
   T extends { id: string; x: number; y: number; floor?: number },
 >(before: T[], after: T[], label: (row: T) => string): Change[] {
@@ -197,6 +217,19 @@ export function sourceDiff<
     const distance = Math.hypot(row.x - previous.x, row.y - previous.y);
     if (distance > 0.0001)
       changes.push({ kind: "moved", id: row.id, distance });
+    const semantic = (value: T) => {
+      const copy = { ...value } as Record<string, unknown>;
+      for (const key of ["id", "x", "y", "floor", "name", "title"])
+        delete copy[key];
+      return stableJson(copy);
+    };
+    if (semantic(previous) !== semantic(row))
+      changes.push({
+        kind: "metadata",
+        id: row.id,
+        before: semantic(previous),
+        after: semantic(row),
+      });
   }
   for (const row of before)
     if (!next.has(row.id))
@@ -208,6 +241,7 @@ export type Connector = {
   second: HubMarker;
   kind: "stairs" | "ascender";
   distance: number;
+  provisional: true;
 };
 export function pairedConnectors(hub: HubSnapshot): Connector[] {
   const pairs: Connector[] = [];
@@ -230,7 +264,13 @@ export function pairedConnectors(hub: HubSnapshot): Connector[] {
         .map((b) => ({ b, d: Math.hypot(b.x - top.b.x, b.y - top.b.y) }))
         .sort((x, y) => x.d - y.d)[0];
       if (reverse?.b.id === a.id)
-        pairs.push({ first: a, second: top.b, kind, distance: top.d });
+        pairs.push({
+          first: a,
+          second: top.b,
+          kind,
+          distance: top.d,
+          provisional: true,
+        });
     }
   }
   return pairs;
@@ -286,8 +326,8 @@ export function routeLegs(stops: Stop[], connectors: Connector[]): RouteLeg[] {
       connector: chosen?.connector,
       distance: chosen?.distance ?? Infinity,
       warning: chosen
-        ? `Via source-reported ${chosen.connector.kind}; door/corridor access unverified.`
-        : "No paired floor connector is recorded.",
+        ? `Possible ${chosen.connector.kind} pairing inferred from nearby source markers; floor connection and door/corridor access unverified.`
+        : "No nearby floor-connector hypothesis is available.",
     });
   }
   return legs;

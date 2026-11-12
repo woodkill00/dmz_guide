@@ -61,9 +61,21 @@ const coordinate = (value: unknown) =>
   value <= 1;
 const identifier = (value: unknown) =>
   typeof value === "string" && /^[a-zA-Z0-9_-]{1,100}$/.test(value);
-const isDate = (value: unknown) =>
+const isDate = (value: unknown) => {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value))
+    return false;
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  return (
+    parsed.getUTCFullYear() === year &&
+    parsed.getUTCMonth() + 1 === month &&
+    parsed.getUTCDate() === day
+  );
+};
+const isTimestamp = (value: unknown) =>
   typeof value === "string" &&
-  /^\d{4}-\d{2}-\d{2}/.test(value) &&
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/.test(value) &&
+  isDate(value.slice(0, 10)) &&
   !Number.isNaN(Date.parse(value));
 export function validatePrivateState(value: unknown): PrivateState {
   const state = value as PrivateState;
@@ -88,6 +100,7 @@ export function validatePrivateState(value: unknown): PrivateState {
   for (const row of state.points) {
     if (
       !identifier(row.id) ||
+      !row.id.startsWith("mine_") ||
       ids.has(row.id) ||
       !safeText(row.name, 100) ||
       !row.name.trim() ||
@@ -96,7 +109,7 @@ export function validatePrivateState(value: unknown): PrivateState {
       ![1, 2].includes(row.floor) ||
       !coordinate(row.x) ||
       !coordinate(row.y) ||
-      !isDate(row.createdAt)
+      !isTimestamp(row.createdAt)
     )
       throw Error("Invalid X01 private point");
     ids.add(row.id);
@@ -136,7 +149,7 @@ export function validatePrivateState(value: unknown): PrivateState {
   const decisions = new Set<string>();
   for (const row of state.decisions) {
     if (
-      !identifier(row.candidateId) ||
+      !/^x01-[a-z0-9-]{1,80}__dmzhub-[0-9]{1,12}$/.test(row.candidateId) ||
       decisions.has(row.candidateId) ||
       !["same", "separate"].includes(row.status)
     )

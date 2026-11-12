@@ -24,10 +24,12 @@ import {
   pairedConnectors,
   routeLegs,
   sourceDiff,
+  stableJson,
   type Alignment,
   type Floor,
   type Stop,
 } from "./workbench-model.ts";
+import { boundedBytes } from "../map/bounded-input.ts";
 import {
   emptyState,
   makeBackup,
@@ -43,6 +45,11 @@ let hub: HubSnapshot = validateHubSnapshot(hubRaw),
   cod: X01Snapshot = validateSnapshot(codRaw),
   state: PrivateState = emptyState();
 const query = new URL(location.href).searchParams;
+type UpdateDraft = {
+  source: "hub" | "cod";
+  snapshot: HubSnapshot | X01Snapshot;
+  changes: ReturnType<typeof sourceDiff>;
+};
 let floor: Floor = query.get("floor") === "2" ? 2 : 1,
   selectedId = query.get("marker") || "",
   showHub = true,
@@ -50,21 +57,26 @@ let floor: Floor = query.get("floor") === "2" ? 2 : 1,
   showCustom = true,
   compare = false,
   search = "",
-  draftUpdate: {
-    source: "hub" | "cod";
-    snapshot: HubSnapshot | X01Snapshot;
-    changes: ReturnType<typeof sourceDiff>;
-  } | null = null,
+  draftUpdate: UpdateDraft | null = null,
   importDraft: PrivateState | null = null;
 let alignment: Alignment, otherAlignment: Alignment;
 let sharedIcons: SharedIcons = {};
+let updateGeneration = 0,
+  importGeneration = 0;
+function assertUsableSources(nextHub: HubSnapshot, nextCod: X01Snapshot) {
+  for (const nextFloor of [1, 2] as const)
+    if (!deriveAlignment(nextHub, nextCod, nextFloor).accepted)
+      throw Error(
+        `Floor ${nextFloor} calibration failed; previous workspace retained.`,
+      );
+}
 const refreshAlignment = () => {
   alignment = deriveAlignment(hub, cod, floor);
   otherAlignment = deriveAlignment(hub, cod, floor === 1 ? 2 : 1);
 };
 refreshAlignment();
 const app = document.querySelector<HTMLElement>("#app")!;
-app.innerHTML = `<main class="x01-workbench"><header class="wb-head"><div><p class="x01-eyebrow">DMZ FIELD GUIDE · X01</p><h1>X01 planning workbench</h1><p>Compare sources · mark discoveries · plan schematic routes</p></div><nav aria-label="X01 views"><a href="/x01-dmzhub.html">DMZHub source map</a><a href="/x01.html">COD Central source map</a><a href="/">Hajin map</a></nav></header><div class="wb-grid"><aside id="workbench-controls" class="wb-panel" aria-label="X01 source and location controls"><h2>Explore</h2><div class="wb-row" role="group" aria-label="Floor"><label><input type="radio" name="wb-floor" value="1" checked>First floor</label><label><input type="radio" name="wb-floor" value="2">Second floor</label></div><div class="wb-row" role="group" aria-label="Visible sources"><label><input id="wb-show-hub" type="checkbox" checked>DMZHub</label><label><input id="wb-show-cod" type="checkbox" checked>COD Central</label><label><input id="wb-show-custom" type="checkbox" checked>Mine</label></div><div class="wb-row"><label><input id="wb-compare" type="checkbox">Side-by-side source maps</label></div><label>Find a place or marker<input id="wb-search" type="search" maxlength="100" placeholder="safe, printer, room"></label><p id="wb-count" class="wb-stats" role="status"></p><div id="wb-nearby" class="wb-nearby" hidden><strong>Markers here</strong><div id="wb-nearby-list" class="wb-list"></div><button id="wb-nearby-close" type="button">Close list</button></div><div id="wb-results" class="wb-list" aria-label="X01 locations"></div><details id="wb-review-panel"><summary>Source review</summary><p id="wb-alignment" class="wb-stats"></p><p>Matching names and positions are candidates only. Choose Same or Separate to record your review.</p><div id="wb-candidates"></div></details></aside><section class="wb-map-panel" aria-label="X01 workbench maps"><div class="wb-mapbar"><button id="wb-zoom-in" type="button" aria-label="Zoom in">+</button><button id="wb-zoom-out" type="button" aria-label="Zoom out">−</button><button id="wb-fit" type="button">Fit</button><button id="wb-add" type="button">Add my POI</button><span id="wb-map-status"></span></div><div id="wb-maps" class="wb-maps"><div id="wb-map" role="region" aria-label="X01 DMZHub floor with optional calibrated COD Central markers" tabindex="0"></div><div id="wb-cod-map" role="region" aria-label="COD Central X01 floor comparison" tabindex="0"></div></div><p class="wb-caption">COD Central overlay uses a measured display alignment. Dashed route legs are schematic; access and travel time are unverified. Right-click to add your own point.</p></section><aside class="wb-panel" aria-label="X01 planning tools"><h2>Selected location</h2><div id="wb-detail">Choose a map marker or result.</div><p id="wb-message" class="wb-status" role="status"></p><details id="wb-custom-panel"><summary>My POI</summary><form id="wb-point-form" class="wb-form"><input id="wb-point-id" type="hidden"><label>Name<input id="wb-point-name" maxlength="100" required></label><label>Type<input id="wb-point-kind" maxlength="50" value="Place"></label><div class="wb-inline"><label>Floor<select id="wb-point-floor"><option value="1">First</option><option value="2">Second</option></select></label><label>Photo (PNG/JPEG/WebP, ≤2 MiB)<input id="wb-point-photo" type="file" accept="image/png,image/jpeg,image/webp"></label></div><div class="wb-inline"><label>X (0–1)<input id="wb-point-x" type="number" min="0" max="1" step="0.000001" required></label><label>Y (0–1)<input id="wb-point-y" type="number" min="0" max="1" step="0.000001" required></label></div><label>Notes<textarea id="wb-point-notes" maxlength="2000"></textarea></label><div class="wb-row"><button type="submit">Save POI</button><button id="wb-point-delete" type="button">Delete POI</button><button id="wb-point-clear" type="button">New</button></div></form></details><details id="wb-route-panel"><summary>Waypoints and route</summary><p class="wb-stats">Select a marker, then Add waypoint. Move stops with buttons. Lines are straight schematic segments through reported floor connectors.</p><div class="wb-row"><button id="wb-route-add" type="button">Add selected</button><button id="wb-route-clear" type="button">Clear route</button></div><div id="wb-route-list"></div><div id="wb-route-legs"></div></details><details id="wb-observe-panel"><summary>Gameplay observations</summary><form id="wb-observe-form" class="wb-form"><p id="wb-observe-target">Select a location first.</p><label>Date<input id="wb-observe-date" type="date" required></label><label>Game build<input id="wb-observe-build" maxlength="80" placeholder="e.g. Season 1 build"></label><label>Outcome<select id="wb-observe-outcome"><option value="confirmed">Confirmed in my match</option><option value="absent">Absent in my match</option><option value="uncertain">Uncertain</option></select></label><label>Notes<textarea id="wb-observe-notes" maxlength="2000"></textarea></label><button type="submit">Save observation</button></form><div id="wb-observations"></div></details><details id="wb-update-panel"><summary>Review source update</summary><p>Capture a source snapshot locally, then choose its JSON draft. Nothing is applied until you review the diff.</p><label>Source<select id="wb-update-source"><option value="hub">DMZHub</option><option value="cod">COD Central</option></select></label><label>Snapshot JSON<input id="wb-update-file" type="file" accept="application/json,.json"></label><button id="wb-update-review" type="button">Review file</button><div id="wb-update-preview"></div><button id="wb-update-apply" type="button" disabled>Apply reviewed update</button></details><details id="wb-backup-panel"><summary>Backup and restore</summary><button id="wb-export" type="button">Download private backup</button><label>Backup JSON<input id="wb-import-file" type="file" accept="application/json,.json"></label><button id="wb-import-review" type="button">Preview restore</button><div id="wb-import-preview"></div><button id="wb-import-apply" type="button" disabled>Replace private workspace</button></details></aside></div></main>`;
+app.innerHTML = `<main class="x01-workbench"><header class="wb-head"><div><p class="x01-eyebrow">DMZ FIELD GUIDE · X01</p><h1>X01 planning workbench</h1><p>Compare sources · mark discoveries · plan schematic routes</p></div><nav aria-label="X01 views"><a href="/x01-dmzhub.html">DMZHub source map</a><a href="/x01.html">COD Central source map</a><a href="/">Hajin map</a></nav></header><div class="wb-grid"><aside id="workbench-controls" class="wb-panel" aria-label="X01 source and location controls"><h2>Explore</h2><div class="wb-row" role="group" aria-label="Floor"><label><input type="radio" name="wb-floor" value="1" checked>First floor</label><label><input type="radio" name="wb-floor" value="2">Second floor</label></div><div class="wb-row" role="group" aria-label="Visible sources"><label><input id="wb-show-hub" type="checkbox" checked>DMZHub</label><label><input id="wb-show-cod" type="checkbox" checked>COD Central</label><label><input id="wb-show-custom" type="checkbox" checked>Mine</label></div><div class="wb-row"><label><input id="wb-compare" type="checkbox">Side-by-side source maps</label></div><label>Find a place or marker<input id="wb-search" type="search" maxlength="100" placeholder="safe, printer, room"></label><p id="wb-count" class="wb-stats" role="status"></p><div id="wb-nearby" class="wb-nearby" hidden><strong>Markers here</strong><div id="wb-nearby-list" class="wb-list"></div><button id="wb-nearby-close" type="button">Close list</button></div><div id="wb-results" class="wb-list" aria-label="X01 locations"></div><details id="wb-review-panel"><summary>Source review</summary><p id="wb-alignment" class="wb-stats"></p><p>Matching names and positions are candidates only. Choose Same or Separate to record your review.</p><div id="wb-candidates"></div></details></aside><section class="wb-map-panel" aria-label="X01 workbench maps"><div class="wb-mapbar"><button id="wb-zoom-in" type="button" aria-label="Zoom in">+</button><button id="wb-zoom-out" type="button" aria-label="Zoom out">−</button><button id="wb-fit" type="button">Fit</button><button id="wb-add" type="button">Add my POI</button><span id="wb-map-status"></span></div><div id="wb-maps" class="wb-maps"><div id="wb-map" role="region" aria-label="X01 DMZHub floor with optional calibrated COD Central markers" tabindex="0"></div><div id="wb-cod-map" role="region" aria-label="COD Central X01 floor comparison" tabindex="0"></div></div><p class="wb-caption">COD Central overlay uses a measured display alignment. Dashed route legs are schematic; access and travel time are unverified. Right-click to add your own point.</p></section><aside class="wb-panel" aria-label="X01 planning tools"><h2>Selected location</h2><div id="wb-detail">Choose a map marker or result.</div><p id="wb-message" class="wb-status" role="status"></p><details id="wb-custom-panel"><summary>My POI</summary><form id="wb-point-form" class="wb-form"><input id="wb-point-id" type="hidden"><label>Name<input id="wb-point-name" maxlength="100" required></label><label>Type<input id="wb-point-kind" maxlength="50" value="Place"></label><div class="wb-inline"><label>Floor<select id="wb-point-floor"><option value="1">First</option><option value="2">Second</option></select></label><label>Photo (PNG/JPEG/WebP, ≤2 MiB)<input id="wb-point-photo" type="file" accept="image/png,image/jpeg,image/webp"></label></div><div class="wb-inline"><label>X (0–1)<input id="wb-point-x" type="number" min="0" max="1" step="0.000001" required></label><label>Y (0–1)<input id="wb-point-y" type="number" min="0" max="1" step="0.000001" required></label></div><label>Notes<textarea id="wb-point-notes" maxlength="2000"></textarea></label><div class="wb-row"><button type="submit">Save POI</button><button id="wb-point-delete" type="button">Delete POI</button><button id="wb-point-clear" type="button">New</button></div></form></details><details id="wb-route-panel"><summary>Waypoints and route</summary><p class="wb-stats">Select a marker, then Add waypoint. Move stops with buttons. Lines are straight schematic segments through possible floor connectors inferred from nearby markers.</p><div class="wb-row"><button id="wb-route-add" type="button">Add selected</button><button id="wb-route-clear" type="button">Clear route</button></div><div id="wb-route-list"></div><div id="wb-route-legs"></div></details><details id="wb-observe-panel"><summary>Gameplay observations</summary><form id="wb-observe-form" class="wb-form"><p id="wb-observe-target">Select a location first.</p><label>Date<input id="wb-observe-date" type="date" required></label><label>Game build<input id="wb-observe-build" maxlength="80" placeholder="e.g. Season 1 build"></label><label>Outcome<select id="wb-observe-outcome"><option value="confirmed">Confirmed in my match</option><option value="absent">Absent in my match</option><option value="uncertain">Uncertain</option></select></label><label>Notes<textarea id="wb-observe-notes" maxlength="2000"></textarea></label><button type="submit">Save observation</button></form><div id="wb-observations"></div></details><details id="wb-update-panel"><summary>Review source update</summary><p>Capture a source snapshot locally, then choose its JSON draft. Nothing is applied until you review the diff.</p><label>Source<select id="wb-update-source"><option value="hub">DMZHub</option><option value="cod">COD Central</option></select></label><label>Snapshot JSON<input id="wb-update-file" type="file" accept="application/json,.json"></label><button id="wb-update-review" type="button">Review file</button><div id="wb-update-preview"></div><button id="wb-update-apply" type="button" disabled>Apply reviewed update</button></details><details id="wb-backup-panel"><summary>Backup and restore</summary><button id="wb-export" type="button">Download private backup</button><label>Backup JSON<input id="wb-import-file" type="file" accept="application/json,.json"></label><button id="wb-import-review" type="button">Preview restore</button><div id="wb-import-preview"></div><button id="wb-import-apply" type="button" disabled>Replace private workspace</button></details></aside></div></main>`;
 const $ = <T extends Element = HTMLElement>(selector: string) =>
   document.querySelector<T>(selector)!;
 const message = (value: string, error = false) => {
@@ -424,6 +436,10 @@ function render() {
 }
 async function commit(next: PrivateState) {
   try {
+    assertUsableSources(
+      next.hubOverride || validateHubSnapshot(hubRaw),
+      next.codOverride || validateSnapshot(codRaw),
+    );
     state = await savePrivateState(next);
     render();
     message("Saved locally.");
@@ -444,7 +460,15 @@ const node = <K extends keyof HTMLElementTagNameMap>(
 function renderCandidates() {
   const host = $("#wb-candidates");
   host.replaceChildren();
-  for (const candidate of candidateMatches(hub, cod, alignment)) {
+  const candidates = candidateMatches(hub, cod, alignment);
+  if (candidates.length >= 100)
+    host.append(
+      node(
+        "p",
+        "First 100 candidate pairs shown. This review is incomplete; narrow the source snapshot to inspect more.",
+      ),
+    );
+  for (const candidate of candidates) {
     const codRow = cod.markers.find((row) => row.id === candidate.codId)!,
       hubRow = hub.markers.find((row) => row.id === candidate.hubId)!,
       decision = state.decisions.find(
@@ -608,14 +632,23 @@ function renderRoute() {
 function renderObservations() {
   const host = $("#wb-observations");
   host.replaceChildren();
+  const stops = allStops();
   $("#wb-observe-target").textContent =
-    allStops().get(selectedId)?.name || "Select a location first.";
+    stops.get(selectedId)?.name || "Select a location first.";
+  const orphaned = state.observations.filter((row) => !stops.has(row.targetId));
   for (const row of state.observations.filter(
-    (row) => row.targetId === selectedId,
+    (row) => row.targetId === selectedId || !stops.has(row.targetId),
   )) {
+    if (row === orphaned[0])
+      host.append(
+        node(
+          "h3",
+          `${orphaned.length} observations for missing source markers`,
+        ),
+      );
     const box = node(
       "div",
-      `${row.date} · ${row.outcome}${row.build ? " · " + row.build : ""} ${row.notes}`,
+      `${!stops.has(row.targetId) ? `Missing ${row.targetId} · ` : ""}${row.date} · ${row.outcome}${row.build ? " · " + row.build : ""} ${row.notes}`,
     );
     box.className = "wb-review-row";
     const remove = node("button", "Delete");
@@ -644,6 +677,7 @@ function fillPoint(row?: PrivatePoint, coordinates?: { x: number; y: number }) {
   value("#wb-point-x", String(row?.x ?? coordinates?.x ?? ""));
   value("#wb-point-y", String(row?.y ?? coordinates?.y ?? ""));
   value("#wb-point-notes", row?.notes || "");
+  $<HTMLInputElement>("#wb-point-photo").value = "";
   $("#wb-custom-panel").setAttribute("open", "");
   $<HTMLInputElement>("#wb-point-name").focus();
 }
@@ -735,6 +769,7 @@ $<HTMLFormElement>("#wb-point-form").onsubmit = async (event) => {
       })
     ) {
       selectedId = id;
+      $<HTMLInputElement>("#wb-point-photo").value = "";
       render();
     }
   } catch (error) {
@@ -799,67 +834,136 @@ $<HTMLFormElement>("#wb-observe-form").onsubmit = (event) => {
 $<HTMLInputElement>("#wb-observe-date").value = new Date()
   .toISOString()
   .slice(0, 10);
-async function jsonFile(selector: string, max: number) {
-  const file = $<HTMLInputElement>(selector).files?.[0];
+async function jsonFile(file: File | undefined, max: number) {
   if (!file) throw Error("Choose a JSON file.");
   if (file.size > max) throw Error("File is too large.");
   return JSON.parse(await file.text()) as unknown;
 }
+function snapshotChanges(
+  before: HubSnapshot | X01Snapshot,
+  after: HubSnapshot | X01Snapshot,
+) {
+  const changes: ReturnType<typeof sourceDiff> = [];
+  for (const key of ["floors", "categories", "revision"] as const) {
+    const oldValue = (before as unknown as Record<string, unknown>)[key],
+      newValue = (after as unknown as Record<string, unknown>)[key];
+    if (stableJson(oldValue) !== stableJson(newValue))
+      changes.push({
+        kind: "snapshot",
+        id: key,
+        before: stableJson(oldValue),
+        after: stableJson(newValue),
+      });
+  }
+  return changes;
+}
+async function verifyCodFloorImages(snapshot: X01Snapshot) {
+  for (const row of snapshot.floors) {
+    if (cod.floors[row.id - 1].sha256 === row.sha256) continue;
+    const response = await fetch(`/maps/x01/codcentral/floor-${row.id}.webp`, {
+      cache: "no-store",
+    });
+    const bytes = await boundedBytes(response, 8_000_000);
+    if (
+      String.fromCharCode(...bytes.slice(0, 4)) !== "RIFF" ||
+      String.fromCharCode(...bytes.slice(8, 12)) !== "WEBP"
+    )
+      throw Error(`Floor ${row.id} local image is not WebP.`);
+    const safeBytes = new Uint8Array(bytes.byteLength);
+    safeBytes.set(bytes);
+    const digest = Array.from(
+      new Uint8Array(await crypto.subtle.digest("SHA-256", safeBytes)),
+    )
+      .map((value) => value.toString(16).padStart(2, "0"))
+      .join("");
+    if (digest !== row.sha256)
+      throw Error(
+        `Floor ${row.id} image changed; capture the matching local raster before applying this snapshot.`,
+      );
+  }
+}
 for (const selector of ["#wb-update-source", "#wb-update-file"])
   $(selector).addEventListener("change", () => {
+    updateGeneration++;
     draftUpdate = null;
     $<HTMLButtonElement>("#wb-update-apply").disabled = true;
     $("#wb-update-preview").replaceChildren();
   });
 $<HTMLInputElement>("#wb-import-file").addEventListener("change", () => {
+  importGeneration++;
   importDraft = null;
   $<HTMLButtonElement>("#wb-import-apply").disabled = true;
   $("#wb-import-preview").replaceChildren();
 });
 $("#wb-update-review").addEventListener("click", async () => {
+  const token = ++updateGeneration,
+    file = $<HTMLInputElement>("#wb-update-file").files?.[0],
+    source = $<HTMLSelectElement>("#wb-update-source").value as "hub" | "cod";
+  draftUpdate = null;
+  $<HTMLButtonElement>("#wb-update-apply").disabled = true;
+  $("#wb-update-preview").replaceChildren();
   try {
-    const source = $<HTMLSelectElement>("#wb-update-source").value as
-        | "hub"
-        | "cod",
-      input = await jsonFile("#wb-update-file", 1_000_000);
+    const input = await jsonFile(file, 1_000_000);
+    if (
+      token !== updateGeneration ||
+      file !== $<HTMLInputElement>("#wb-update-file").files?.[0] ||
+      source !== $<HTMLSelectElement>("#wb-update-source").value
+    )
+      return;
+    let nextDraft: UpdateDraft;
     if (source === "hub") {
       const snapshot = validateHubSnapshot(input);
-      for (const f of [1, 2] as const)
-        if (!deriveAlignment(snapshot, cod, f).accepted)
-          throw Error(`Floor ${f} calibration failed; update not applied.`);
-      draftUpdate = {
+      assertUsableSources(snapshot, cod);
+      nextDraft = {
         source,
         snapshot,
-        changes: sourceDiff(
-          hub.markers,
-          snapshot.markers,
-          (row) => row.title || `Marker #${row.sourceId}`,
-        ),
+        changes: [
+          ...sourceDiff(
+            hub.markers,
+            snapshot.markers,
+            (row) => row.title || `Marker #${row.sourceId}`,
+          ),
+          ...snapshotChanges(hub, snapshot),
+        ],
       };
     } else {
       const snapshot = validateSnapshot(input);
-      for (const f of [1, 2] as const)
-        if (!deriveAlignment(hub, snapshot, f).accepted)
-          throw Error(`Floor ${f} calibration failed; update not applied.`);
-      draftUpdate = {
+      assertUsableSources(hub, snapshot);
+      await verifyCodFloorImages(snapshot);
+      if (
+        token !== updateGeneration ||
+        file !== $<HTMLInputElement>("#wb-update-file").files?.[0] ||
+        source !== $<HTMLSelectElement>("#wb-update-source").value
+      )
+        return;
+      nextDraft = {
         source,
         snapshot,
-        changes: sourceDiff(cod.markers, snapshot.markers, (row) => row.name),
+        changes: [
+          ...sourceDiff(cod.markers, snapshot.markers, (row) => row.name),
+          ...snapshotChanges(cod, snapshot),
+        ],
       };
     }
+    if (token !== updateGeneration) return;
+    draftUpdate = nextDraft;
     const preview = $("#wb-update-preview");
     preview.replaceChildren(
       node(
         "p",
-        `${draftUpdate.changes.length} changes: ${draftUpdate.changes.filter((row) => row.kind === "added").length} added, ${draftUpdate.changes.filter((row) => row.kind === "removed").length} removed, ${draftUpdate.changes.filter((row) => row.kind === "moved").length} moved, ${draftUpdate.changes.filter((row) => row.kind === "floor").length} changed floor, ${draftUpdate.changes.filter((row) => row.kind === "renamed").length} renamed.`,
+        `${draftUpdate.changes.length} changes: ${draftUpdate.changes.filter((row) => row.kind === "added").length} added, ${draftUpdate.changes.filter((row) => row.kind === "removed").length} removed, ${draftUpdate.changes.filter((row) => row.kind === "moved").length} moved, ${draftUpdate.changes.filter((row) => row.kind === "floor").length} changed floor, ${draftUpdate.changes.filter((row) => row.kind === "renamed").length} renamed, ${draftUpdate.changes.filter((row) => row.kind === "metadata").length} marker metadata, ${draftUpdate.changes.filter((row) => row.kind === "snapshot").length} source metadata.`,
       ),
     );
-    for (const row of draftUpdate.changes.slice(0, 100))
+    for (const row of draftUpdate.changes)
       preview.append(
-        node("div", `${row.kind}: ${row.after || row.before || row.id}`),
+        node(
+          "div",
+          `${row.kind} ${row.id}: ${row.kind === "snapshot" || row.kind === "metadata" ? `${row.before} → ${row.after}` : row.after || row.before || row.id}`,
+        ),
       );
     $<HTMLButtonElement>("#wb-update-apply").disabled = false;
   } catch (error) {
+    if (token !== updateGeneration) return;
     draftUpdate = null;
     $<HTMLButtonElement>("#wb-update-apply").disabled = true;
     message(String(error), true);
@@ -867,20 +971,27 @@ $("#wb-update-review").addEventListener("click", async () => {
 });
 $("#wb-update-apply").addEventListener("click", async () => {
   if (!draftUpdate) return;
-  const changed = draftUpdate.changes.length > 0,
+  const reviewed = draftUpdate,
+    changed = reviewed.changes.length > 0,
     next = {
       ...state,
       hubOverride:
-        draftUpdate.source === "hub"
-          ? (draftUpdate.snapshot as HubSnapshot)
+        reviewed.source === "hub"
+          ? (reviewed.snapshot as HubSnapshot)
           : state.hubOverride,
       codOverride:
-        draftUpdate.source === "cod"
-          ? (draftUpdate.snapshot as X01Snapshot)
+        reviewed.source === "cod"
+          ? (reviewed.snapshot as X01Snapshot)
           : state.codOverride,
       decisions: changed ? [] : state.decisions,
     };
-  if (await commit(next)) {
+  $<HTMLButtonElement>("#wb-update-apply").disabled = true;
+  $<HTMLInputElement>("#wb-update-file").disabled = true;
+  $<HTMLSelectElement>("#wb-update-source").disabled = true;
+  const saved = await commit(next);
+  $<HTMLInputElement>("#wb-update-file").disabled = false;
+  $<HTMLSelectElement>("#wb-update-source").disabled = false;
+  if (saved) {
     hub = state.hubOverride || validateHubSnapshot(hubRaw);
     cod = state.codOverride || validateSnapshot(codRaw);
     refreshAlignment();
@@ -893,7 +1004,7 @@ $("#wb-update-apply").addEventListener("click", async () => {
         ? "Source update applied locally. Duplicate reviews cleared for recheck."
         : "Source snapshot refreshed locally; duplicate reviews retained.",
     );
-  }
+  } else $<HTMLButtonElement>("#wb-update-apply").disabled = false;
 });
 $("#wb-export").addEventListener("click", async () => {
   try {
@@ -910,14 +1021,40 @@ $("#wb-export").addEventListener("click", async () => {
   }
 });
 $("#wb-import-review").addEventListener("click", async () => {
+  const token = ++importGeneration,
+    file = $<HTMLInputElement>("#wb-import-file").files?.[0];
+  importDraft = null;
+  $<HTMLButtonElement>("#wb-import-apply").disabled = true;
+  $("#wb-import-preview").replaceChildren();
   try {
-    importDraft = await parseBackup(
-      await jsonFile("#wb-import-file", 30_000_000),
+    const input = await jsonFile(file, 30_000_000);
+    if (
+      token !== importGeneration ||
+      file !== $<HTMLInputElement>("#wb-import-file").files?.[0]
+    )
+      return;
+    const parsed = await parseBackup(input);
+    if (
+      token !== importGeneration ||
+      file !== $<HTMLInputElement>("#wb-import-file").files?.[0]
+    )
+      return;
+    assertUsableSources(
+      parsed.hubOverride || validateHubSnapshot(hubRaw),
+      parsed.codOverride || validateSnapshot(codRaw),
     );
+    if (parsed.codOverride) await verifyCodFloorImages(parsed.codOverride);
+    if (
+      token !== importGeneration ||
+      file !== $<HTMLInputElement>("#wb-import-file").files?.[0]
+    )
+      return;
+    importDraft = parsed;
     $("#wb-import-preview").textContent =
       `Restore ${importDraft.points.length} POIs, ${importDraft.photos.length} photos, ${importDraft.observations.length} observations? This replaces this private workspace.`;
     $<HTMLButtonElement>("#wb-import-apply").disabled = false;
   } catch (error) {
+    if (token !== importGeneration) return;
     importDraft = null;
     $<HTMLButtonElement>("#wb-import-apply").disabled = true;
     message(String(error), true);
@@ -925,7 +1062,12 @@ $("#wb-import-review").addEventListener("click", async () => {
 });
 $("#wb-import-apply").addEventListener("click", async () => {
   if (!importDraft) return;
-  if (await commit({ ...importDraft, revision: state.revision })) {
+  const reviewed = importDraft;
+  $<HTMLButtonElement>("#wb-import-apply").disabled = true;
+  $<HTMLInputElement>("#wb-import-file").disabled = true;
+  const saved = await commit({ ...reviewed, revision: state.revision });
+  $<HTMLInputElement>("#wb-import-file").disabled = false;
+  if (saved) {
     hub = state.hubOverride || validateHubSnapshot(hubRaw);
     cod = state.codOverride || validateSnapshot(codRaw);
     refreshAlignment();
@@ -934,10 +1076,19 @@ $("#wb-import-apply").addEventListener("click", async () => {
     importDraft = null;
     $<HTMLButtonElement>("#wb-import-apply").disabled = true;
     message("Private workspace restored.");
-  }
+  } else $<HTMLButtonElement>("#wb-import-apply").disabled = false;
 });
 readPrivateState()
   .then((saved) => {
+    try {
+      assertUsableSources(saved.hubOverride || validateHubSnapshot(hubRaw), saved.codOverride || validateSnapshot(codRaw));
+    } catch (error) {
+      state = saved;
+      showImages();
+      render();
+      message(`Saved X01 source alignment is invalid: ${String(error)}. Restore a valid backup to recover.`, true);
+      return;
+    }
     state = saved;
     hub = saved.hubOverride || hub;
     cod = saved.codOverride || cod;

@@ -356,3 +356,11 @@
   border-color: #ffe477;
   background: #525b2d;
 }
+#wb-update-preview {
+  max-height: clamp(12rem, 35dvh, 24rem);
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
+.wb-change-row {
+  overflow-wrap: anywhere;
+}

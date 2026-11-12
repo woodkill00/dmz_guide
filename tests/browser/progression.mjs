@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
-import { revealReviewerControl, chooseCatalog, clickCatalogBackup } from "./reviewer-disclosures.mjs";
+import {
+  revealReviewerControl,
+  chooseCatalog,
+  clickCatalogBackup,
+} from "./reviewer-disclosures.mjs";
 import { readFile, mkdir } from "node:fs/promises";
 const packId = "demo:training-pack";
 const progressURL = "/progression/?pack=demo%3Atraining-pack";

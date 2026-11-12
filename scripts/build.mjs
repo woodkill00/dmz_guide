@@ -271,13 +271,15 @@ async function generate(dist) {
     "src/content/author-target.mjs",
     "src/ui/author-actions.mjs",
     "src/client/studio.mjs",
+    "src/client/raster-editor.mjs",
     "src/content/studio-recovery.mjs",
     "src/client/studio-media.mjs",
     "src/ui/studio-page.mjs",
     "src/ui/studio.css",
   ]);
   const copyFilter = (path) =>
-    !authorOnly.has(relative(root, path).replaceAll("\\", "/"));
+    !authorOnly.has(relative(root, path).replaceAll("\\", "/")) &&
+    !path.endsWith(".d.mts");
   for (const folder of ["src", "schemas"]) {
     await copyInventory(
       join(root, folder),

@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
 import { captureDocumentEvidence } from "./page-edit.mjs";
-import { chooseCatalog, clickCatalogBackup, openInventoryDetails, openParentDetails } from "./reviewer-disclosures.mjs";
+import {
+  chooseCatalog,
+  clickCatalogBackup,
+  openInventoryDetails,
+  openParentDetails,
+} from "./reviewer-disclosures.mjs";
 
 const training = "demo:training-pack";
 const official = "official:mw4-dmz-starter";

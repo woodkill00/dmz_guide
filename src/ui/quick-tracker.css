@@ -1499,7 +1499,11 @@ body[data-page="quick-collect"] .filter-bar {
       "build build"
       "actions actions";
   }
-  .quick-tracker #inventory-fields .inventory-entry > .inventory-row > [data-show-use] {
+  .quick-tracker
+    #inventory-fields
+    .inventory-entry
+    > .inventory-row
+    > [data-show-use] {
     justify-self: start;
   }
 }

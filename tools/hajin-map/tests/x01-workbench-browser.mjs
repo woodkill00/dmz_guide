@@ -150,16 +150,14 @@ export async function runX01WorkbenchBrowser(browser, base) {
     await page.locator("#wb-point-name").fill("Private test point");
     await page.locator("#wb-point-x").fill("0.5");
     await page.locator("#wb-point-y").fill("0.5");
-    await page
-      .locator("#wb-point-photo")
-      .setInputFiles({
-        name: "test.png",
-        mimeType: "image/png",
-        buffer: Buffer.from(
-          "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==",
-          "base64",
-        ),
-      });
+    await page.locator("#wb-point-photo").setInputFiles({
+      name: "test.png",
+      mimeType: "image/png",
+      buffer: Buffer.from(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==",
+        "base64",
+      ),
+    });
     await page.locator("#wb-point-form button[type=submit]").click();
     await page.waitForFunction(() =>
       document
@@ -171,6 +169,25 @@ export async function runX01WorkbenchBrowser(browser, base) {
     await page.locator("#wb-results button").first().waitFor();
     await page.locator("#wb-search").fill("Private test point");
     assert.equal(await page.locator("#wb-results button").count(), 1);
+    await page.locator("#wb-results button").click();
+    await page.getByRole("button", { name: "Edit my POI" }).click();
+    await page
+      .locator("#wb-point-photo")
+      .setInputFiles({
+        name: "switch.png",
+        mimeType: "image/png",
+        buffer: Buffer.from(
+          "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==",
+          "base64",
+        ),
+      });
+    await page.locator("#wb-point-clear").click();
+    assert.equal(
+      await page
+        .locator("#wb-point-photo")
+        .evaluate((input) => input.files.length),
+      0,
+    );
     await page.locator("#wb-results button").click();
     await page
       .locator("#wb-observe-panel")
@@ -189,19 +206,16 @@ export async function runX01WorkbenchBrowser(browser, base) {
     await page.locator("#wb-export").click();
     const download = await downloadPromise;
     const backup = readFileSync(await download.path());
-    await page
-      .locator("#wb-import-file")
-      .setInputFiles({
-        name: "backup.json",
-        mimeType: "application/json",
-        buffer: backup,
-      });
+    await page.locator("#wb-import-file").setInputFiles({
+      name: "backup.json",
+      mimeType: "application/json",
+      buffer: backup,
+    });
     await page.locator("#wb-import-review").click();
-    await page.waitForFunction(
-      () =>
-        !!document.querySelector("#wb-import-preview")?.textContent ||
-        document.querySelector("#wb-message")?.classList.contains("wb-error"),
-    );
+    await page
+      .locator("#wb-import-preview")
+      .getByText(/Restore 1 POIs/)
+      .waitFor();
     assert.match(
       await page.locator("#wb-import-preview").textContent(),
       /1 POIs, 1 photos, 1 observations/,
@@ -210,24 +224,80 @@ export async function runX01WorkbenchBrowser(browser, base) {
     await page.waitForFunction(() =>
       document.querySelector("#wb-message")?.textContent.includes("restored"),
     );
+    const invalidBackup = JSON.parse(backup.toString("utf8"));
+    invalidBackup.state.hubOverride = JSON.parse(
+      readFileSync(
+        new URL("../src/x01/dmzhub-snapshot.json", import.meta.url),
+        "utf8",
+      ),
+    );
+    for (const row of invalidBackup.state.hubOverride.markers)
+      if (row.floor === 1 && row.title) row.x = 0.5;
+    await page
+      .locator("#wb-import-file")
+      .setInputFiles({
+        name: "bad-alignment.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify(invalidBackup)),
+      });
+    await page.locator("#wb-import-review").click();
+    await page.waitForFunction(() =>
+      document
+        .querySelector("#wb-message")
+        ?.textContent.includes("calibration failed"),
+    );
+    assert.equal(await page.locator("#wb-import-apply").isDisabled(), true);
+    assert.match(
+      await page.locator("#wb-detail").textContent(),
+      /Private test point/,
+    );
+    await page.evaluate(() => {
+      const original = File.prototype.text;
+      File.prototype.text = function () {
+        return this.name === "slow-backup.json"
+          ? new Promise((resolve) =>
+              setTimeout(() => original.call(this).then(resolve), 450),
+            )
+          : original.call(this);
+      };
+    });
+    await page
+      .locator("#wb-import-file")
+      .setInputFiles({
+        name: "slow-backup.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify(invalidBackup)),
+      });
+    await page.locator("#wb-import-review").click();
+    await page
+      .locator("#wb-import-file")
+      .setInputFiles({
+        name: "good-backup.json",
+        mimeType: "application/json",
+        buffer: backup,
+      });
+    await page.locator("#wb-import-review").click();
+    await page
+      .locator("#wb-import-preview")
+      .getByText(/Restore 1 POIs/)
+      .waitFor();
+    await page.waitForTimeout(550);
+    assert.equal(await page.locator("#wb-import-apply").isDisabled(), false);
     await page
       .locator("#wb-update-panel")
       .evaluate((element) => (element.open = true));
-    await page
-      .locator("#wb-update-file")
-      .setInputFiles({
-        name: "snapshot.json",
-        mimeType: "application/json",
-        buffer: readFileSync(
-          new URL("../src/x01/dmzhub-snapshot.json", import.meta.url),
-        ),
-      });
+    await page.locator("#wb-update-file").setInputFiles({
+      name: "snapshot.json",
+      mimeType: "application/json",
+      buffer: readFileSync(
+        new URL("../src/x01/dmzhub-snapshot.json", import.meta.url),
+      ),
+    });
     await page.locator("#wb-update-review").click();
-    await page.waitForFunction(
-      () =>
-        !!document.querySelector("#wb-update-preview")?.textContent ||
-        document.querySelector("#wb-message")?.classList.contains("wb-error"),
-    );
+    await page
+      .locator("#wb-update-preview")
+      .getByText(/0 changes/)
+      .waitFor();
     assert.match(
       await page.locator("#wb-update-preview").textContent(),
       /0 changes/,
@@ -253,22 +323,31 @@ export async function runX01WorkbenchBrowser(browser, base) {
       x: 0.5,
       y: 0.5,
     });
-    await page
-      .locator("#wb-update-file")
-      .setInputFiles({
-        name: "changed.json",
-        mimeType: "application/json",
-        buffer: Buffer.from(JSON.stringify(changed)),
-      });
+    changed.markers[0].categoryId = changed.categories.find(
+      (row) => row.id !== changed.markers[0].categoryId,
+    ).id;
+    await page.locator("#wb-update-file").setInputFiles({
+      name: "changed.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(JSON.stringify(changed)),
+    });
     await page.locator("#wb-update-review").click();
     await page.waitForFunction(() =>
       document
         .querySelector("#wb-update-preview")
-        ?.textContent.includes("1 changes"),
+        ?.textContent.includes("2 changes"),
     );
     assert.match(
       await page.locator("#wb-update-preview").textContent(),
       /1 added/,
+    );
+    assert.match(
+      await page.locator("#wb-update-preview").textContent(),
+      /1 marker metadata/,
+    );
+    assert.match(
+      await page.locator("#wb-update-preview").textContent(),
+      /"categoryId"/,
     );
     await page.locator("#wb-update-apply").click();
     await page.waitForFunction(() =>
@@ -276,14 +355,123 @@ export async function runX01WorkbenchBrowser(browser, base) {
         .querySelector("#wb-message")
         ?.textContent.includes("Source update applied"),
     );
+    await page.evaluate(() => {
+      const original = File.prototype.text;
+      File.prototype.text = function () {
+        return this.name === "slow.json"
+          ? new Promise((resolve) =>
+              setTimeout(() => original.call(this).then(resolve), 450),
+            )
+          : original.call(this);
+      };
+    });
     await page
       .locator("#wb-update-file")
       .setInputFiles({
-        name: "bad.json",
+        name: "slow.json",
         mimeType: "application/json",
-        buffer: Buffer.from("{bad"),
+        buffer: readFileSync(
+          new URL("../src/x01/dmzhub-snapshot.json", import.meta.url),
+        ),
       });
     await page.locator("#wb-update-review").click();
+    await page
+      .locator("#wb-update-file")
+      .setInputFiles({
+        name: "current.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify(changed)),
+      });
+    await page.locator("#wb-update-review").click();
+    await page
+      .locator("#wb-update-preview")
+      .getByText(/0 changes/)
+      .waitFor();
+    await page.waitForTimeout(550);
+    assert.match(
+      await page.locator("#wb-update-preview").textContent(),
+      /0 changes/,
+    );
+    await page.locator("#wb-update-file").setInputFiles({
+      name: "bad.json",
+      mimeType: "application/json",
+      buffer: Buffer.from("{bad"),
+    });
+    await page.locator("#wb-update-review").click();
+    assert.equal(await page.locator("#wb-update-apply").isDisabled(), true);
+    const categoryChanged = structuredClone(changed);
+    categoryChanged.categories[0].name = "Synthetic category name";
+    await page
+      .locator("#wb-update-file")
+      .setInputFiles({
+        name: "category.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify(categoryChanged)),
+      });
+    await page.locator("#wb-update-review").click();
+    await page
+      .locator("#wb-update-preview")
+      .getByText(/1 source metadata/)
+      .waitFor();
+    assert.equal(await page.locator("#wb-update-apply").isDisabled(), false);
+    await page.goto(`${base}/x01-workspace.html?floor=1&marker=x01-3d-printer`);
+    await page.locator("#wb-results button").first().waitFor();
+    await page
+      .locator("#wb-observe-panel")
+      .evaluate((element) => (element.open = true));
+    await page
+      .locator("#wb-observe-notes")
+      .fill("Synthetic source marker observation");
+    await page.locator("#wb-observe-form button").click();
+    await page.waitForFunction(() =>
+      document
+        .querySelector("#wb-observations")
+        ?.textContent.includes("Synthetic source marker observation"),
+    );
+    const removed = JSON.parse(
+      readFileSync(
+        new URL("../src/x01/codcentral-snapshot.json", import.meta.url),
+        "utf8",
+      ),
+    );
+    removed.markers = removed.markers.filter(
+      (row) => row.id !== "x01-3d-printer",
+    );
+    await page
+      .locator("#wb-update-panel")
+      .evaluate((element) => (element.open = true));
+    await page.locator("#wb-update-source").selectOption("cod");
+    await page
+      .locator("#wb-update-file")
+      .setInputFiles({
+        name: "removed-cod.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify(removed)),
+      });
+    await page.locator("#wb-update-review").click();
+    await page
+      .locator("#wb-update-preview")
+      .getByText(/1 changes/)
+      .waitFor();
+    await page.locator("#wb-update-apply").click();
+    await page.waitForFunction(() =>
+      document
+        .querySelector("#wb-observations")
+        ?.textContent.includes("Missing x01-3d-printer"),
+    );
+    const wrongImage = structuredClone(removed);
+    wrongImage.floors[0].sha256 = "a".repeat(64);
+    await page
+      .locator("#wb-update-file")
+      .setInputFiles({
+        name: "wrong-image.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify(wrongImage)),
+      });
+    await page.locator("#wb-update-review").click();
+    await page.waitForFunction(() =>
+      document.querySelector("#wb-message")?.classList.contains("wb-error"),
+    );
     assert.equal(await page.locator("#wb-update-apply").isDisabled(), true);
     await page.locator("#wb-compare").check();
     assert.equal(

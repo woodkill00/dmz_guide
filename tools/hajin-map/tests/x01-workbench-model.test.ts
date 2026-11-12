@@ -78,6 +78,57 @@ test("X01 update diff exposes a source marker moved to another floor", () => {
     ["floor"],
   );
 });
+test("X01 update diff exposes changed marker meaning without a moved point", () => {
+  const before = [
+    {
+      id: "a",
+      x: 0.2,
+      y: 0.3,
+      floor: 1,
+      name: "Safe",
+      categoryId: 1,
+      description: "Old",
+    },
+  ];
+  const after = [{ ...before[0], categoryId: 2, description: "New" }];
+  const [change] = sourceDiff(before, after, (row) => row.name);
+  assert.equal(change.kind, "metadata");
+  assert.match(change.before!, /"categoryId":1/);
+  assert.match(change.after!, /"categoryId":2/);
+});
+test("X01 candidate review stays bounded with clustered valid markers", () => {
+  const crowdedHub = structuredClone(hub),
+    crowdedCod = structuredClone(cod);
+  const baseHub = crowdedHub.markers.find((row) =>
+    crowdedHub.categories.some(
+      (category) =>
+        category.id === row.categoryId && category.slug === "exfiltration",
+    ),
+  )!;
+  const baseCod = crowdedCod.markers.find((row) => row.layer === "exfil")!;
+  const fit = deriveAlignment(hub, cod, 1),
+    mapped = alignPoint({ x: 0.5, y: 0.5 }, fit);
+  for (let index = 0; index < 300; index++) {
+    crowdedHub.markers.push({
+      ...baseHub,
+      id: `dmzhub-${10000 + index}`,
+      sourceId: 10000 + index,
+      floor: 1,
+      title: null,
+      x: mapped.x,
+      y: mapped.y,
+    });
+    crowdedCod.markers.push({
+      ...baseCod,
+      id: `x01-cluster-${index}`,
+      name: `Synthetic exfil ${index}`,
+      floor: 1,
+      x: 0.5,
+      y: 0.5,
+    });
+  }
+  assert.equal(candidateMatches(crowdedHub, crowdedCod, fit).length, 100);
+});
 test("X01 floor changes use only paired source connectors and expose schematic uncertainty", () => {
   const connectors = pairedConnectors(hub);
   assert.ok(connectors.length >= 10);
@@ -93,5 +144,5 @@ test("X01 floor changes use only paired source connectors and expose schematic u
   const [leg] = routeLegs([a, b], connectors);
   assert.ok(leg.connector);
   assert.match(leg.warning, /unverified/);
-  assert.match(routeLegs([a, b], [])[0].warning, /No paired/);
+  assert.match(routeLegs([a, b], [])[0].warning, /No nearby/);
 });

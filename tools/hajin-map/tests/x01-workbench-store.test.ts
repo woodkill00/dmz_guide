@@ -7,7 +7,7 @@ import {
   validatePrivateState,
 } from "../src/x01/workbench-store.ts";
 const point = {
-  id: "custom-1",
+  id: "mine_custom-1",
   name: "Blue door",
   kind: "Entrance",
   floor: 1 as const,
@@ -24,7 +24,7 @@ test("X01 private backup keeps POI, observation, route and image bytes", async (
     {
       id: "obs-1",
       targetId: point.id,
-      date: "2026-11-11T13:00:00Z",
+      date: "2026-11-11",
       build: "Season 1",
       outcome: "confirmed",
       notes: "Reached in match",
@@ -44,7 +44,7 @@ test("X01 private backup keeps POI, observation, route and image bytes", async (
   const backup = await makeBackup(state),
     restored = await parseBackup(backup);
   assert.equal(restored.points[0].name, "Blue door");
-  assert.equal(restored.routeIds[0], "custom-1");
+  assert.equal(restored.routeIds[0], "mine_custom-1");
   assert.equal(restored.observations[0].outcome, "confirmed");
   assert.deepEqual(
     new Uint8Array(await restored.photos[0].blob.arrayBuffer()),
@@ -118,4 +118,24 @@ test("X01 restore refuses photo bytes that do not match declared image type", as
       }),
     /Image type/,
   );
+});
+test("X01 private IDs cannot impersonate source markers and dates must be exact", () => {
+  for (const id of ["dmzhub-707", "x01-3d-printer"]) {
+    const state = emptyState();
+    state.points = [{ ...point, id }];
+    assert.throws(() => validatePrivateState(state));
+  }
+  const state = emptyState();
+  state.points = [point];
+  state.observations = [
+    {
+      id: "obs-1",
+      targetId: point.id,
+      date: "2026-02-31",
+      build: "",
+      outcome: "confirmed",
+      notes: "",
+    },
+  ];
+  assert.throws(() => validatePrivateState(state));
 });

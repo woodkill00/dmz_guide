@@ -2,12 +2,16 @@ export function dataReviewIssues(pack, limit = 500) {
   if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1000)
     throw Error("Invalid review limit");
   const issues = [];
-  const protectedIds = new Set([
-    ...(pack.objectives || []),
-    ...(pack.items || []),
-    ...(pack.recipes || []),
-    ...(pack.locations || []),
-  ].filter((row) => row.spoiler).map((row) => row.id));
+  const protectedIds = new Set(
+    [
+      ...(pack.objectives || []),
+      ...(pack.items || []),
+      ...(pack.recipes || []),
+      ...(pack.locations || []),
+    ]
+      .filter((row) => row.spoiler)
+      .map((row) => row.id),
+  );
   const add = (type, record, reason) => {
     if (issues.length < limit)
       issues.push({

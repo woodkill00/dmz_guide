@@ -99,7 +99,13 @@ for path in files:
         raise SystemExit(f'Refusing test/private artifact: {relative}')
     if is_author_only(relative):
         raise SystemExit(f'Refusing author-only artifact: {relative}')
-    if path.suffix.lower() not in ('.html', '.css', '.mjs', '.js', '.json', '.svg', '.png', '.jpg', '.jpeg', '.webp'):
+    if path.suffix.lower() not in ('.html', '.css', '.mjs', '.js', '.json', '.svg', '.png', '.jpg', '.jpeg', '.webp') and relative not in {
+        'assets/src/vendor/ocr/CORE-LICENSE.txt',
+        'assets/src/vendor/ocr/worker.LICENSE.txt',
+        'assets/src/vendor/ocr/TESSERACT-LICENSE.md',
+        'assets/src/vendor/ocr/ENGLISH-README.md',
+        'assets/src/vendor/ocr/eng.traineddata.gz',
+    }:
         raise SystemExit(f'Unexpected production file: {relative}')
 identity_path = dist / 'assets/build-identity.json'
 if identity_path not in files:
@@ -118,7 +124,9 @@ if payload['dist/assets/build-identity.json'] != identity_bytes:
 actual_output = {name.removeprefix('dist/'): hashlib.sha256(data).hexdigest() for name, data in payload.items() if name != 'dist/assets/build-identity.json'}
 if actual_output != identity.get('outputFiles'):
     raise SystemExit('Build output missing, extra or changed; rebuild before packaging.')
-source_paths = [root / name for name in ('content/site.json', 'package.json', 'package-lock.json')]
+source_paths = [root / name for name in ('content/site.json', 'content/weapon-intel.json', 'package.json', 'package-lock.json')]
+if (root / 'content/codmunity-stats.json').is_file():
+    source_paths.append(root / 'content/codmunity-stats.json')
 for name in ('src', 'schemas', 'scripts'):
     source_paths.extend(bounded_files(root / name, caches=True))
 if len(source_paths) > 50000 or {path.relative_to(root).as_posix() for path in source_paths} != set(identity.get('sourceFiles', {})):

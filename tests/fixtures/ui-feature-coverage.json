@@ -2,7 +2,7 @@
   "source": "src/ui/feature-registry.mjs",
   "head": "27a96ec7753bbe909f09a5acf43dd2ed499ff3bb",
   "hashes": {
-    "src/ui/feature-registry.mjs": "44d8c69b6e47d118c005ad6cd2ff050ebc8a65071a808c2eb318fa662f723a2a",
+    "src/ui/feature-registry.mjs": "a2eec6a4450ff98c33c92354b7669c7f48e0a546118884f56db5b282aec8c3ea",
     "src/ui/map-destinations.json": "7eda40618c784083b520f1ad9c356fe3d284ce83a394389f9d6527beb7da85f0",
     "specs/071-ui-ux-implementation/feature-coverage.md": "3d4511eb0781dfc70cfddac5d2423913ec442a109c6dc84306e5e8f9e9b16add"
   },

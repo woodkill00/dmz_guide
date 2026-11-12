@@ -148,11 +148,16 @@ export async function captureDocumentEvidence(page, path) {
       // A full-page capture can trigger lazy media below the viewport. Accept
       // its expanded document only when the completed PNG and a fresh page
       // measurement agree exactly; otherwise retain the strict failure.
-      if (!tiled &&
-          (png.readUInt32BE(16) !== clip.width || png.readUInt32BE(20) !== clip.height)) {
+      if (
+        !tiled &&
+        (png.readUInt32BE(16) !== clip.width ||
+          png.readUInt32BE(20) !== clip.height)
+      ) {
         const settled = await measure();
-        if (png.readUInt32BE(16) === settled.width &&
-            png.readUInt32BE(20) === settled.height) {
+        if (
+          png.readUInt32BE(16) === settled.width &&
+          png.readUInt32BE(20) === settled.height
+        ) {
           dimensions = settled;
           clip.width = settled.width;
           clip.height = settled.height;

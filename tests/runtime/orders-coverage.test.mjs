@@ -41,7 +41,10 @@ test("official starter keeps unverified Orders and story steps unrecorded", () =
   const pack = loadFixturePack("official-starter");
   const pages = ordersPageCoverage(pack);
   assert.equal(pages.length, 24);
-  assert.equal(pages.every((page) => page.state === "unrecorded"), true);
+  assert.equal(
+    pages.every((page) => page.state === "unrecorded"),
+    true,
+  );
   assert.equal(
     pack.objectives.some((objective) =>
       (objective.steps || []).some((step) => /fictional|synthetic/i.test(step)),

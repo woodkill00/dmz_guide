@@ -16,7 +16,15 @@ const entry = (id, owner = "inventory") => ({
   owner,
   label: id,
   expectedRevision: 3,
-  payload: owner === "boss" ? {bossId:"fixture:target",event:"attempt",date:"2026-11-11",notes:""} : {itemId:"fixture:wire",pool:"stash",mode:"delta",quantity:1},
+  payload:
+    owner === "boss"
+      ? {
+          bossId: "fixture:target",
+          event: "attempt",
+          date: "2026-11-11",
+          notes: "",
+        }
+      : { itemId: "fixture:wire", pool: "stash", mode: "delta", quantity: 1 },
 });
 test("partial owner success keeps remaining work staged and prevents replay", () => {
   let review = emptyRunReview("fixture:pack");
