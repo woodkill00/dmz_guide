@@ -25,3 +25,16 @@ The Collection workbench now shows a short next-action list derived from its exi
 ## Mission health connection — 2026-11-13
 
 Data review now shows the scoped Orders roster gap and the local count of Fill later and stale section reviews, with a direct link to the audit. The browser journey verifies that a saved Fill later status appears in Data review in the same browser context. This does not certify all missions or the wider content-health dashboard in T016.
+
+## Exact record links — 2026-11-13
+
+Record detail lookup is now limited to its own catalog. Direct declared references gain reverse links on non-item details, without name-based inference or protected incoming records. A synthetic two-catalog runtime test verifies the link does not bind to a record from the wrong catalog. The broader relation journey in T010 remains open.
+
+## Regression run after relation work — 2026-11-13
+
+- `npm run format:check`: pass.
+- `npm run build`: 1,867 generated routes, pass.
+- `npm test`: 1,001/1,001 pass, 0 failures, 248.2 seconds, with stable build output.
+- `node tests/browser/run.mjs`: pass; includes Collection, navigation, reader, run-plan, Data review, mission coverage, after-run, 320/390px and connected layout journeys.
+
+The separate new mission-audit browser test also passed. These results cover the shipped increments; they do not close the remaining feature tasks.

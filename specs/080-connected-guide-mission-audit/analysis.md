@@ -37,3 +37,11 @@ The Collection workbench already computes shared unfinished mission/upgrade need
 ## Cycle 7 — 2026-11-13, audit and review connection
 
 The Data review page previously counted catalog uncertainty but had no route to editorial section status. It now reads the same bounded local audit format as `/missions/audit/` and presents scoped roster gaps, Fill later and stale counts. Failed or unavailable local reads produce an unavailable message without changing state. The audit browser journey verifies a saved section appears in Data review. Full multi-domain coverage and change-queue contracts remain open under T016–T019.
+
+## Cycle 8 — 2026-11-13, exact record links
+
+The detail renderer resolved target IDs across every loaded pack, so a duplicate ID in another catalog could point at the wrong record. Detail references now resolve within the selected pack, and a bounded direct-reference projection supplies reverse links for non-item records. A synthetic two-pack test verifies that the wrong catalog's link is excluded. The first build after editing failed because a broad text replacement also changed the catalog directory's pack list; that line was restored before retesting. Build and focused relation tests pass. FR-011 remains open for key/weapon/map-specific journeys and broader browser evidence.
+
+## Cycle 9 — 2026-11-13, regression convergence
+
+After the relation changes, `npm test` passed 1,001/1,001 against stable build output, and the full Chromium browser run passed its existing connected journeys. The feature's new mission-audit browser run passed separately. No new failure was reported by this regression pass. T010/T011 remain open because the tested direct relations do not yet cover all exact key, weapon and map journeys; T012–T023 remain pending implementation or broader evidence as described in tasks.
