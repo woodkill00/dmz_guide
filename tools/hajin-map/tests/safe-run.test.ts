@@ -346,4 +346,18 @@ test("063 solver validates caps and unique finite stops, graph version and mode"
   );
   assert.throws(() => solveRun({ ...input, start: [Infinity, 2] }));
   assert.throws(() => solveRun({ ...input, mode: "bad" as any }));
+  assert.throws(() => solveRun({ ...input, maxStops: 0 }));
+  assert.throws(() => solveRun({ ...input, priorityKeys: ["missing"] }));
+});
+test("079 priority stops are visited first and a short run does not mutate candidates", () => {
+  const stops = [
+    { key: "safe:near", point: [10, 0] as [number, number] },
+    { key: "clinic:mid", point: [50, 0] as [number, number] },
+    { key: "safe:far", point: [100, 0] as [number, number] },
+  ];
+  const input = { start: [0, 0] as [number, number], stops, mode: "direct" as const, optimize: true, graph: null };
+  assert.deepEqual(solveRun(input).order, ["safe:near", "clinic:mid", "safe:far"]);
+  assert.deepEqual(solveRun({ ...input, priorityKeys: ["clinic:mid"] }).order, ["clinic:mid", "safe:near", "safe:far"]);
+  assert.deepEqual(solveRun({ ...input, maxStops: 2 }).order, ["safe:near", "clinic:mid"]);
+  assert.equal(stops.length, 3);
 });

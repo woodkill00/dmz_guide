@@ -43,6 +43,63 @@ input,
 select {
   font: inherit;
 }
+textarea {
+  font: inherit;
+  width: 100%;
+  max-width: 100%;
+  resize: vertical;
+  border: 1px solid #738364;
+  border-radius: 4px;
+  background: #253025;
+  color: #edf1e7;
+  padding: 6px 9px;
+}
+#loot-options, #loot-observations {
+  margin-block: 12px;
+  padding: 10px;
+  border: 1px solid var(--safe-line);
+  border-radius: 6px;
+}
+#loot-options label, #loot-observations label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-block: 8px 4px;
+}
+#loot-observations label:not(:has(input[type="checkbox"])) {
+  display: block;
+}
+#loot-observations select, #loot-observations input[type="date"] {
+  width: 100%;
+}
+#observation-list {
+  max-height: 180px;
+  overflow: auto;
+}
+.loot-run-page #safe-controls {
+  display: block;
+  overflow: auto;
+}
+.loot-run-page #safe-intelligence {
+  max-block-size: none;
+  overflow: visible;
+}
+.loot-run-page :is(#safe-start-pane, #safe-candidates-pane, #safe-route-pane) {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+.loot-run-page :is(#safe-start-divider, #safe-route-divider) {
+  display: none;
+}
+.loot-run-page #safe-list {
+  max-height: min(42dvh, 440px);
+  overflow: auto;
+}
+.loot-run-page #visit-order {
+  max-height: min(38dvh, 400px);
+  overflow: auto;
+}
 button,
 select,
 input {

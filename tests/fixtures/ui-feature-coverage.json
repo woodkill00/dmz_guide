@@ -1,12 +1,12 @@
 {
   "source": "src/ui/feature-registry.mjs",
-  "head": "27a96ec7753bbe909f09a5acf43dd2ed499ff3bb",
+  "head": "638c853479eb467213f8b02aa78b81ded3f98026",
   "hashes": {
-    "src/ui/feature-registry.mjs": "a2eec6a4450ff98c33c92354b7669c7f48e0a546118884f56db5b282aec8c3ea",
+    "src/ui/feature-registry.mjs": "27f1786023d82c608072b7b5d25d7f604c13ec36275d663e2718c5e961256c42",
     "src/ui/map-destinations.json": "7eda40618c784083b520f1ad9c356fe3d284ce83a394389f9d6527beb7da85f0",
     "specs/071-ui-ux-implementation/feature-coverage.md": "3d4511eb0781dfc70cfddac5d2423913ec442a109c6dc84306e5e8f9e9b16add"
   },
-  "count": 83,
+  "count": 84,
   "features": [
     {
       "id": "field-desk",
@@ -90,6 +90,13 @@
       "label": "Safe runs",
       "kind": "map",
       "path": "/safes.html",
+      "group": "Map"
+    },
+    {
+      "id": "loot-runs",
+      "label": "Loot runs",
+      "kind": "map",
+      "path": "/loot.html",
       "group": "Map"
     },
     {

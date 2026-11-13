@@ -255,6 +255,8 @@ export interface SolveInput {
   mode: "direct" | "roads";
   optimize: boolean;
   graph: RoadGraph | null;
+  priorityKeys?: string[];
+  maxStops?: number;
 }
 export interface SolveOutput {
   order: string[];
@@ -273,7 +275,9 @@ export function solveRun(input: SolveInput): SolveOutput {
   );
   requireValue(
     ["direct", "roads"].includes(input.mode) &&
-      typeof input.optimize === "boolean",
+      typeof input.optimize === "boolean" &&
+      (input.maxStops === undefined || (Number.isInteger(input.maxStops) && input.maxStops >= 1 && input.maxStops <= limits.selected)) &&
+      (input.priorityKeys === undefined || (Array.isArray(input.priorityKeys) && input.priorityKeys.length <= limits.selected && input.priorityKeys.every((key) => validId(key) && input.stops.some((stop) => stop.key === key)) && new Set(input.priorityKeys).size === input.priorityKeys.length)),
     "Invalid route mode.",
   );
   if (input.mode === "roads") {
@@ -294,12 +298,14 @@ export function solveRun(input: SolveInput): SolveOutput {
     ordered: typeof remaining = [],
     legs: RoadLeg[] = [];
   let at = input.start;
-  while (remaining.length) {
+  const priority = new Set(input.priorityKeys ?? []);
+  while (remaining.length && ordered.length < (input.maxStops ?? limits.selected)) {
     let index = 0,
       best = Infinity,
       chosen: RoadLeg | undefined;
     if (input.optimize)
       for (let i = 0; i < remaining.length; i++) {
+        if (priority.size && remaining.some((s) => priority.has(s.key)) && !priority.has(remaining[i].key)) continue;
         const l = leg(at, remaining[i].point),
           cost = l.error ? Infinity : l.roadLength + l.connectorLength;
         if (

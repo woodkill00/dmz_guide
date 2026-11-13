@@ -47,12 +47,28 @@ test("Current static registry admission matches its captured inventory; browser 
   assert.equal(new Set(features.map((f) => f.id)).size, features.length);
   assert.equal(
     features.length,
-    83,
+    84,
     "Rebaseline the owning registry contract deliberately",
   );
-  assert.deepEqual(
-    [...features.map((f) => f.id)].sort(),
-    snapshot.features.map((f) => f.id).sort(),
+  assert.equal(snapshot.count, 83, "Keep the 071 historical baseline intact");
+  for (const prior of snapshot.features) {
+    const current = features.find((feature) => feature.id === prior.id);
+    assert(current, `071 baseline feature missing: ${prior.id}`);
+    assert.deepEqual(
+      {
+        id: current.id,
+        label: current.label,
+        kind: current.kind,
+        path: current.path,
+        group: current.group,
+      },
+      prior,
+      `071 baseline feature changed: ${prior.id}`,
+    );
+  }
+  assert.equal(
+    features.find((feature) => feature.id === "loot-runs")?.path,
+    "/loot.html",
   );
   for (const feature of features) {
     const url = new URL(featureURL(feature), "http://127.0.0.1:4173");
