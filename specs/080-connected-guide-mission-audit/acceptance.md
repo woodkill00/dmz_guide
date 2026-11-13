@@ -43,10 +43,16 @@ The separate new mission-audit browser test also passed. These results cover the
 
 Home now derives one next listed collection need from the same read-only Collection projection after a valid saved profile loads. It names the missing amount only when known and keeps the selected catalog in its Collection link. Missing, stale or invalid profiles show a recovery state instead of a guessed action. The Home workflow passed in Chromium, Firefox and WebKit with the updated Home module served directly from source during the test.
 
-The normal rebuild after the last Home edit is pending. An interrupted earlier build left `.build-state/current.lock` and an incomplete candidate, owned by a Node PID that no longer exists. Automatic approval review rejected the verified cleanup command as blocked by policy. The original `dist` remains present; no recovery material was removed. The browser test used a route override for the one changed module and does not replace a clean release build.
+At this stage, the normal rebuild after the Home edit was pending. An interrupted earlier build left `.build-state/current.lock` and an incomplete candidate, owned by a Node PID that no longer existed. Automatic approval review rejected the verified cleanup command as blocked by policy. The original `dist` remained present. The route-override browser test did not replace a clean release build; the later recovery and clean checks are recorded below.
 
 ## Scoped content-health projection — 2026-11-13
 
-Data review now includes listed-catalog coverage counts for Orders, mission sections, recipes, item image references, weapons, keys and locations. Empty recorded domains are explicit. The projection has a synthetic unit test; the current page change still needs a clean build and browser pass after the stale build lock is resolved.
+Data review now includes listed-catalog coverage counts for Orders, mission sections, recipes, item image references, weapons, keys and locations. Empty recorded domains are explicit. The projection has a synthetic unit test. Its later clean build and browser verification are recorded below.
 
 A Chromium smoke check served the updated Data review HTML, client module and new domain module from source over the retained `dist`: all seven coverage rows rendered for the official starter, with 0/24 recorded Orders pages and no page error. This checks the new view integration but is not a clean release build.
+
+## Interrupted build recovery and clean verification — 2026-11-13
+
+The stopped build PID and paths were rechecked. Automatic approval review again rejected deletion as blocked by policy. The incomplete candidate and lock were moved, without deleting their contents, to ignored `.local/build-recovery-080` (2,084 files, about 50.5 MiB). No previous build tree existed. This reversible move freed `.build-state`; a normal `npm run build` then generated 1,867 routes successfully.
+
+Against the clean build, the mission-audit browser journey, Home workflow and Data review coverage view passed. `npm test` passed 1,002/1,002 with zero failures, and `node tests/browser/run.mjs` completed successfully. The recovery folder is retained for inspection; it is not part of the feature commit. These checks verify the current increments, while the remaining Spec Kit tasks and reviewer-owned criteria stay open.

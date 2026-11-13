@@ -53,3 +53,7 @@ The Home action reuses `collectionWorkbench` and `connectedPreparation` after a 
 ## Cycle 11 — 2026-11-13, scoped content coverage
 
 The first Data review summary exposed mission roster counts but not the other listed content areas in FR-016. A pure bounded projection now counts listed recipe ingredient completeness, catalog image references, numeric weapon stats, key descriptions/sources and positioned locations alongside scoped Orders and checked mission sections. Zero-record domains display "None recorded" instead of a misleading 0/0 completion. Each row states that its denominator is the selected catalog's listed records; image references and weapon numbers do not assert loaded art or DMZ testing. Focused unit tests pass. Browser/build verification remains pending while the interrupted build lock is unresolved.
+
+## Cycle 12 — 2026-11-13, reversible recovery and clean recheck
+
+After the user's explicit instruction to handle cleanup, automatic approval review again rejected the narrow deletion as blocked by policy. A verified reversible move of the stopped candidate and lock into ignored `.local/build-recovery-080` was allowed; it preserved all bytes and did not touch current `dist`. A normal build then succeeded with 1,867 routes. The mission audit, Home and Data review checks passed against built files; the serialized runtime suite passed 1,002/1,002; and the full Chromium browser run passed. The build-state blocker is resolved. This cycle does not close unfinished functional tasks or reviewer-owned criteria.
