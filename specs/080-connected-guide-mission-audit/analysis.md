@@ -45,3 +45,7 @@ The detail renderer resolved target IDs across every loaded pack, so a duplicate
 ## Cycle 9 — 2026-11-13, regression convergence
 
 After the relation changes, `npm test` passed 1,001/1,001 against stable build output, and the full Chromium browser run passed its existing connected journeys. The feature's new mission-audit browser run passed separately. No new failure was reported by this regression pass. T010/T011 remain open because the tested direct relations do not yet cover all exact key, weapon and map journeys; T012–T023 remain pending implementation or broader evidence as described in tasks.
+
+## Cycle 10 — 2026-11-13, Home action and build state
+
+The Home action reuses `collectionWorkbench` and `connectedPreparation` after a valid profile/content match. The first Home browser run passed Chromium but stopped on an intermittent Firefox key-detail assertion; isolated Firefox and WebKit Home/key journeys then passed. A subsequent Home assertion failed because the local `dist` still contained the prior Home module. Inspection found an incomplete build candidate and lock in `.build-state`; its recorded PID was no longer running. An automated verified cleanup command was rejected by approval policy, so recovery material remains untouched. Current-source Home behavior passed the full Home workflow in Chromium, Firefox and WebKit using a single-module Playwright route override. A clean normal build and final release check remain open until the interrupted build state is resolved.

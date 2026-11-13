@@ -38,3 +38,9 @@ Record detail lookup is now limited to its own catalog. Direct declared referenc
 - `node tests/browser/run.mjs`: pass; includes Collection, navigation, reader, run-plan, Data review, mission coverage, after-run, 320/390px and connected layout journeys.
 
 The separate new mission-audit browser test also passed. These results cover the shipped increments; they do not close the remaining feature tasks.
+
+## Home next action — 2026-11-13
+
+Home now derives one next listed collection need from the same read-only Collection projection after a valid saved profile loads. It names the missing amount only when known and keeps the selected catalog in its Collection link. Missing, stale or invalid profiles show a recovery state instead of a guessed action. The Home workflow passed in Chromium, Firefox and WebKit with the updated Home module served directly from source during the test.
+
+The normal rebuild after the last Home edit is pending. An interrupted earlier build left `.build-state/current.lock` and an incomplete candidate, owned by a Node PID that no longer exists. Automatic approval review rejected the verified cleanup command as blocked by policy. The original `dist` remains present; no recovery material was removed. The browser test used a route override for the one changed module and does not replace a clean release build.

@@ -1,4 +1,6 @@
 import { summarizeHomeProgress } from "../domain/home-progress.mjs";
+import { collectionWorkbench } from "../domain/collection-workbench.mjs";
+import { connectedPreparation } from "../domain/connected-preparation.mjs";
 import { features, featureURL } from "../ui/feature-registry.mjs";
 import { getNavigation, toggleFeaturePin } from "./navigation-state.mjs";
 import { readPublicJSON } from "./public-data.mjs";
@@ -85,6 +87,22 @@ $("feature-query")?.addEventListener("input", () => {
   $("feature-count").textContent = count + " matching features";
 });
 if ($("hub-pack")) {
+  const nextAction = document.createElement("p");
+  nextAction.id = "hub-next-action";
+  nextAction.setAttribute("role", "status");
+  $("hub-progress").insertAdjacentElement("afterend", nextAction);
+  const nextMessage = (
+    message,
+    href = "/collection/",
+    label = "Open collection",
+  ) => {
+    nextAction.replaceChildren();
+    nextAction.append(message, " ");
+    const anchor = document.createElement("a");
+    anchor.href = `${href}?pack=${encodeURIComponent($("hub-pack").value)}`;
+    anchor.textContent = label;
+    nextAction.append(anchor);
+  };
   let catalogs = [],
     generation = 0;
   async function summary() {
@@ -93,6 +111,7 @@ if ($("hub-pack")) {
     const c = catalogs.find((c) => c.id === selected);
     if (!c) return;
     $("hub-progress").textContent = "Reading saved progress…";
+    nextMessage("Checking next collection action…");
     $("hub-key-summary").textContent = "Reading key stash…";
     const active = () =>
       !controller.signal.aborted &&
@@ -106,6 +125,7 @@ if ($("hub-pack")) {
         if (r === undefined) {
           $("hub-progress").textContent =
             "No saved profile for this catalog. Open Upgrades or Missions to begin.";
+          nextMessage("No saved collection action yet.");
           return;
         }
         const p = validateProfile(r.value);
@@ -115,17 +135,41 @@ if ($("hub-pack")) {
         if (p.contentVersion !== pack.contentVersion) {
           $("hub-progress").textContent =
             "Saved profile uses an older catalog version. Review it in Settings before interpreting progress.";
+          nextMessage(
+            "Saved profile needs a catalog review before calculating next actions.",
+            "/settings/",
+            "Open settings",
+          );
           return;
         }
         const summary = summarizeHomeProgress(pack, p);
         $("hub-progress").textContent = summary.limited
           ? "Progress scope is protected or exceeds the safe spoiler projection. Open Upgrades or Missions to review it."
           : `Saved revision ${p.revision}: ${summary.upgrades ? `${summary.upgradesDone}/${summary.upgrades} safely visible listed upgrades recorded complete` : "No safely visible upgrade definitions in this catalog (coverage unknown)"}; ${summary.missions ? `${summary.missionsDone}/${summary.missions} safely visible listed missions recorded complete` : "No safely visible mission definitions in this catalog (coverage unknown)"}. Missing records and unknown states are not completed.`;
+        try {
+          const next = connectedPreparation(collectionWorkbench(pack, p), 1)
+            .actions[0];
+          nextMessage(
+            next
+              ? `Next listed need: ${next.name} · ${next.missing === null ? "amount unknown" : `${next.missing} ${next.unit} missing`} · ${next.cause}.`
+              : "No known outstanding collection items; unrecorded requirements may remain.",
+          );
+        } catch {
+          nextMessage(
+            "Next collection action unavailable; inspect the detailed workbench.",
+          );
+        }
       })
       .catch(() => {
         if (active())
           $("hub-progress").textContent =
             "Saved progress unavailable, blocked, timed out or invalid. Open Settings to inspect; nothing was changed.";
+        if (active())
+          nextMessage(
+            "Next collection action unavailable; inspect your saved profile.",
+            "/settings/",
+            "Open settings",
+          );
       });
     readExistingRecord("dmz-keys-local", "workspace", "main", {
       signal: controller.signal,
