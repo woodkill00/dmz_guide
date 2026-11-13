@@ -62,6 +62,13 @@ try {
     ),
     false,
   );
+  await page.goto(
+    `${server.base}/data-review/?pack=official%3Amw4-dmz-starter`,
+  );
+  await page
+    .locator("#mission-audit-health")
+    .filter({ hasText: "1 sections marked Fill later" })
+    .waitFor();
   await context.close();
   console.log(
     "Mission audit empty coverage, status persistence, filtering, keyboard and 390px/200% layout PASS",

@@ -4,6 +4,10 @@ import { previewSourceImpact } from "../domain/source-impact.mjs";
 import { loadRunPlans } from "../domain/run-plans.mjs";
 import { parseBounded, LIMITS } from "../content/limits.mjs";
 import { validatePack } from "../content/validate.mjs";
+import {
+  missionAuditTargets,
+  validateMissionAudit,
+} from "../domain/mission-audit.mjs";
 
 const query = document.querySelector("#review-query");
 let renderedPack = null;
@@ -15,6 +19,31 @@ function render() {
     document.querySelector("#source-impact-results").replaceChildren();
   }
   const result = dataReviewIssues(state.pack);
+  const auditTargets = missionAuditTargets(state.pack);
+  const unrecorded = auditTargets.filter(
+    (target) => target.kind === "page" && !target.recorded,
+  ).length;
+  let auditText = `${unrecorded} of 24 scoped Orders pages unrecorded · ${auditTargets.filter((target) => target.kind === "mission").length / 9} recorded mission/story entries.`;
+  try {
+    const raw = localStorage.getItem(`dmz:mission-audit:v1:${state.pack.id}`);
+    if (raw) {
+      const saved = validateMissionAudit(JSON.parse(raw), state.pack.id);
+      const current = new Map(
+        auditTargets.map((target) => [target.id, target]),
+      );
+      const pending = saved.entries.filter(
+        (entry) => entry.state === "fill-later" && current.has(entry.id),
+      ).length;
+      const stale = saved.entries.filter(
+        (entry) =>
+          current.get(entry.id)?.sourceFingerprint !== entry.sourceFingerprint,
+      ).length;
+      auditText += ` ${pending} sections marked Fill later · ${stale} stale review entries.`;
+    } else auditText += " No local section review saved.";
+  } catch {
+    auditText += " Local audit unavailable; saved data was not changed.";
+  }
+  document.querySelector("#mission-audit-health").textContent = auditText;
   const needle = query.value.trim().toLocaleLowerCase();
   const rows = result.issues.filter(
     (row) =>

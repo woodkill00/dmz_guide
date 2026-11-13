@@ -33,3 +33,7 @@ The serialized full runtime suite passed 998/998 with a stable `dist`. A screens
 ## Cycle 6 — 2026-11-13, connected preparation
 
 The Collection workbench already computes shared unfinished mission/upgrade needs, stock, reserves, recipe steps and locations; a second calculation would create a conflicting source of truth. The new action strip is a bounded view of that projection. A browser regression exposed reuse of the existing `data-why-item` hook, which made exact test selectors ambiguous. The new action button now has a distinct hook and delegates to the same explanation. Focused Collection workbench and needs browser journeys pass. The action strip does not yet close FR-010/FR-011: exact key/map cross-links and full scenario evidence are still open.
+
+## Cycle 7 — 2026-11-13, audit and review connection
+
+The Data review page previously counted catalog uncertainty but had no route to editorial section status. It now reads the same bounded local audit format as `/missions/audit/` and presents scoped roster gaps, Fill later and stale counts. Failed or unavailable local reads produce an unavailable message without changing state. The audit browser journey verifies a saved section appears in Data review. Full multi-domain coverage and change-queue contracts remain open under T016–T019.
