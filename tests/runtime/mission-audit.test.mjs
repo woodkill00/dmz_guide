@@ -4,6 +4,25 @@ import {
   missionAuditTargets,
   validateMissionAudit,
 } from "../../src/domain/mission-audit.mjs";
+import { loadFixturePack } from "../helpers/catalog.mjs";
+
+test("official starter baseline has 24 unrecorded scoped pages and no Order or Story records", () => {
+  const pack = loadFixturePack("official-starter");
+  assert.equal(pack.id, "official:mw4-dmz-starter");
+  assert.equal(pack.objectives.length, 110);
+  assert.equal(
+    pack.objectives.filter((row) =>
+      ["dmz-order", "dmz-story"].includes(row.track),
+    ).length,
+    0,
+  );
+  const targets = missionAuditTargets(pack);
+  assert.equal(
+    targets.filter((row) => row.kind === "page" && !row.recorded).length,
+    24,
+  );
+  assert.equal(targets.filter((row) => row.kind === "mission").length, 0);
+});
 
 test("empty catalog creates 24 unrecorded page targets and no fictional missions", () => {
   const targets = missionAuditTargets({ id: "synthetic:test", objectives: [] });
@@ -48,6 +67,12 @@ test("recorded story and Order sections keep independent stable IDs", () => {
   assert.equal(
     targets.find((target) => target.objectiveId === "order-one").id,
     moved.find((target) => target.objectiveId === "order-one").id,
+  );
+  assert.notEqual(
+    targets.find((target) => target.objectiveId === "order-one")
+      .sourceFingerprint,
+    moved.find((target) => target.objectiveId === "order-one")
+      .sourceFingerprint,
   );
 });
 
@@ -94,6 +119,78 @@ test("audit import rejects duplicates and unsupported states", () => {
         pageSet: "hajin-launch",
         history: [],
         entries: [{ ...entry, state: "verified" }],
+      },
+      "synthetic:test",
+    ),
+  );
+});
+
+test("legacy version-one audit is normalized without changing review meaning", () => {
+  const legacy = {
+    version: 1,
+    packId: "synthetic:test",
+    contentVersion: "test.1",
+    pageSet: "hajin-launch",
+    entries: [
+      {
+        id: "page:synthetic:1",
+        state: "fill-later",
+        note: "Later",
+        reviewer: "",
+        reviewedAt: null,
+      },
+    ],
+  };
+  const normalized = validateMissionAudit(legacy, "synthetic:test");
+  assert.equal(normalized.entries[0].revision, 0);
+  assert.deepEqual(normalized.history, []);
+  assert.equal(normalized.entries[0].state, "fill-later");
+  assert.equal(legacy.history, undefined);
+});
+
+test("audit history rejects mismatched or invalid embedded entries", () => {
+  const entry = {
+    id: "page:synthetic:1",
+    state: "checked",
+    note: "",
+    reviewer: "",
+    reviewedAt: null,
+  };
+  const base = {
+    version: 1,
+    packId: "synthetic:test",
+    contentVersion: "test.1",
+    pageSet: "hajin-launch",
+    entries: [entry],
+  };
+  assert.throws(() =>
+    validateMissionAudit(
+      {
+        ...base,
+        history: [
+          {
+            id: entry.id,
+            before: null,
+            after: { ...entry, id: "page:other" },
+            at: new Date().toISOString(),
+          },
+        ],
+      },
+      "synthetic:test",
+    ),
+  );
+  assert.throws(() =>
+    validateMissionAudit(
+      {
+        ...base,
+        history: [
+          {
+            id: entry.id,
+            before: null,
+            after: { ...entry, note: "x".repeat(2001) },
+            at: new Date().toISOString(),
+          },
+        ],
       },
       "synthetic:test",
     ),

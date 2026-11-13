@@ -49,3 +49,10 @@
   width: 100%;
   max-width: 100%;
 }
+#mission-audit-stale-review {
+  display: inline-block !important;
+  width: 1.25rem !important;
+  min-height: 1.25rem;
+  margin-right: 0.35rem;
+  vertical-align: middle;
+}

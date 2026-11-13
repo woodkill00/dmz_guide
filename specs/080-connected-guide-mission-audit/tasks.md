@@ -4,7 +4,7 @@
 
 ## Phase 1 — Contracts and admission
 
-- [ ] T001 (FR-001–FR-009) Record current mission/catalog/page-set baseline and source/build scope in `research.md`; verify 24-slot projection and zero current Order/Story records with a repeatable read-only test.
+- [x] T001 (FR-001–FR-009) Record current mission/catalog/page-set baseline and source/build scope in `research.md`; verify 24-slot projection and zero current Order/Story records with a repeatable read-only test. Evidence: official starter baseline in `tests/runtime/mission-audit.test.mjs`, 2026-11-13.
 - [ ] T002 (FR-004–FR-007) Finalize bounded audit schema, migration/stale binding, spoiler/export contract and restore preview in `data-model.md` and focused contract tests.
 - [ ] T003 (FR-010–FR-018) Review shared IDs, existing profile/field-desk transactions, map handoff, backup exclusions and source-update contracts; amend plan/tasks for discovered ownership conflicts.
 

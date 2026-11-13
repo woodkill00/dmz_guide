@@ -69,9 +69,72 @@ try {
     .locator("#mission-audit-health")
     .filter({ hasText: "1 sections marked Fill later" })
     .waitFor();
+  await page.goto(
+    `${server.base}/missions/audit/?pack=official%3Amw4-dmz-starter`,
+  );
+  await page.locator("#mission-audit-pages button").first().waitFor();
+  await page.locator("#mission-audit-pages button").first().click();
+  assert.equal(await page.locator("#mission-audit-undo").isDisabled(), false);
+  await page.locator("#mission-audit-undo").click();
+  await page.reload();
+  await page.locator("#mission-audit-pages button").first().waitFor();
+  assert.match(
+    await page.locator("#mission-audit-summary").textContent(),
+    /0 sections to fill later/,
+  );
+  await page.locator("#mission-audit-import").setInputFiles({
+    name: "invalid-audit.json",
+    mimeType: "application/json",
+    buffer: Buffer.from('{"version":999}'),
+  });
+  assert.match(
+    await page.locator("#mission-audit-import-preview").textContent(),
+    /Import rejected/,
+  );
+  assert.equal(await page.locator("#mission-audit-restore").isVisible(), false);
+  assert.match(
+    await page.locator("#mission-audit-summary").textContent(),
+    /0 sections to fill later/,
+  );
+  await page.locator("#mission-audit-pages button").first().click();
+  await page.locator("#mission-audit-state").selectOption("fill-later");
+  await page.locator("#mission-audit-save").click();
+  await page.evaluate(() => {
+    const key = "dmz:mission-audit:v1:official:mw4-dmz-starter";
+    const audit = JSON.parse(localStorage.getItem(key));
+    audit.entries[0].sourceFingerprint = "00000000";
+    localStorage.setItem(key, JSON.stringify(audit));
+  });
+  await page.reload();
+  await page.locator("#mission-audit-pages button").first().waitFor();
+  await page.locator("#mission-audit-pages button").first().click();
+  assert.equal(
+    await page.locator("#mission-audit-stale-review-label").isVisible(),
+    true,
+  );
+  await page.locator("#mission-audit-save").click();
+  assert.match(
+    await page.locator("#save-status").textContent(),
+    /check the confirmation/,
+  );
+  await page.locator("#mission-audit-stale-review").check();
+  await page.locator("#mission-audit-save").click();
+  assert.equal(
+    await page.locator("#mission-audit-stale-review-label").isVisible(),
+    false,
+  );
+  assert.equal(
+    await page.evaluate(() => {
+      const audit = JSON.parse(
+        localStorage.getItem("dmz:mission-audit:v1:official:mw4-dmz-starter"),
+      );
+      return audit.entries[0].sourceFingerprint === "00000000";
+    }),
+    false,
+  );
   await context.close();
   console.log(
-    "Mission audit empty coverage, status persistence, filtering, keyboard and 390px/200% layout PASS",
+    "Mission audit coverage, persistence, undo, invalid import, stale review, filtering, keyboard and 390px/200% layout PASS",
   );
 } finally {
   await browser.close();

@@ -8,6 +8,8 @@
 
 `AuditEntry = { target, state, note, reviewer, reviewedAt, revision }`, where state is `not-checked | needs-correction | fill-later | ready-for-review | checked`. Empty content, source conflict, current-build uncertainty and staleness are computed signals, never editable states. `AuditEvent` retains bounded before/after state for undo and export. No audit mutation writes player progress or catalog records.
 
+The shipped v1 entry stores `id` and `sourceFingerprint` in place of the planned nested `target`. The validator accepts older v1 audits without `history` or `revision`, normalizes them to an empty history and revision zero, and rejects malformed events. It limits the JSON payload to 2,000,000 UTF-8 bytes, 10,000 entries and 1,000 history events. Saving an entry whose fingerprint differs from current catalog content requires an explicit review checkbox; the successful save increments its revision and records a before/after event. Undo appends a reverse event. Missing target IDs remain in the saved audit and count as stale.
+
 ## Connected player workflow (existing stores plus validated handoffs)
 
 `PreparationProjection` is derived from existing goal, stock, reserve, requirement, recipe and location records; it is not a second source of truth. Each action carries a stable target, input set, known/unknown explanation and deep link. `MatchSession` references a start snapshot and stages owner-reported deltas; apply uses existing inventory/progress transaction guards. The map receives only reviewed, explicit handoffs with source identity/version and no automatic retargeting.

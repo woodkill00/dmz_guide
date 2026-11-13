@@ -121,6 +121,8 @@ function render() {
     `${active.label} · ${active.section}`;
   const staleReview =
     saved && saved.sourceFingerprint !== active.sourceFingerprint;
+  $("#mission-audit-stale-review-label").hidden = !staleReview;
+  $("#mission-audit-stale-review").checked = false;
   $("#mission-audit-evidence").textContent =
     `${staleReview ? "Source content changed since this review; check it before saving again. " : ""}${
       active.warning ||
@@ -142,7 +144,7 @@ function write(candidate) {
     throw Error(
       "The saved audit could not be read. Recover it before replacing this catalog's audit.",
     );
-  validateMissionAudit(candidate, state.pack.id);
+  candidate = validateMissionAudit(candidate, state.pack.id);
   localStorage.setItem(key(state.pack.id), JSON.stringify(candidate));
   audit = candidate;
   dirty = false;
@@ -152,6 +154,17 @@ function write(candidate) {
 function save() {
   if (!active || !audit) return;
   const old = entryFor(active.id);
+  if (
+    old &&
+    old.sourceFingerprint !== active.sourceFingerprint &&
+    !$("#mission-audit-stale-review").checked
+  ) {
+    report(
+      "Review the changed source content and check the confirmation before saving this section.",
+    );
+    $("#mission-audit-stale-review").focus();
+    return;
+  }
   const next = {
     id: active.id,
     state: $("#mission-audit-state").value,
@@ -159,6 +172,7 @@ function save() {
     reviewer: $("#mission-audit-reviewer").value,
     reviewedAt: new Date().toISOString(),
     sourceFingerprint: active.sourceFingerprint,
+    revision: (old?.revision || 0) + 1,
   };
   const candidate = {
     ...audit,

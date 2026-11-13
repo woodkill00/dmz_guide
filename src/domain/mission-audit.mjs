@@ -93,44 +93,67 @@ export function validateMissionAudit(value, packId) {
     value.contentVersion.length > 200 ||
     value.pageSet !== "hajin-launch" ||
     !Array.isArray(value.entries) ||
-    !Array.isArray(value.history) ||
-    value.history.length > 1000
+    (value.history !== undefined && !Array.isArray(value.history)) ||
+    (value.history?.length || 0) > 1000
   )
     throw Error("Invalid mission audit file or catalog");
-  if (value.entries.length > 10000 || JSON.stringify(value).length > 2_000_000)
+  if (
+    value.entries.length > 10000 ||
+    new TextEncoder().encode(JSON.stringify(value)).byteLength > 2_000_000
+  )
     throw Error("Mission audit exceeds size limit");
+  const validEntry = (entry) =>
+    entry &&
+    typeof entry.id === "string" &&
+    entry.id.length <= 400 &&
+    auditStates.includes(entry.state) &&
+    typeof entry.note === "string" &&
+    entry.note.length <= 2000 &&
+    typeof entry.reviewer === "string" &&
+    entry.reviewer.length <= 120 &&
+    (entry.revision === undefined ||
+      (Number.isSafeInteger(entry.revision) && entry.revision >= 0)) &&
+    (entry.sourceFingerprint === undefined ||
+      /^[0-9a-f]{8}$/.test(entry.sourceFingerprint)) &&
+    (entry.reviewedAt === null ||
+      (typeof entry.reviewedAt === "string" &&
+        !Number.isNaN(Date.parse(entry.reviewedAt))));
   const seen = new Set();
   for (const entry of value.entries) {
-    if (
-      !entry ||
-      typeof entry.id !== "string" ||
-      entry.id.length > 400 ||
-      seen.has(entry.id) ||
-      !auditStates.includes(entry.state) ||
-      typeof entry.note !== "string" ||
-      entry.note.length > 2000 ||
-      typeof entry.reviewer !== "string" ||
-      entry.reviewer.length > 120 ||
-      (entry.sourceFingerprint !== undefined &&
-        !/^[0-9a-f]{8}$/.test(entry.sourceFingerprint)) ||
-      (entry.reviewedAt !== null &&
-        (typeof entry.reviewedAt !== "string" ||
-          Number.isNaN(Date.parse(entry.reviewedAt))))
-    )
+    if (!validEntry(entry) || seen.has(entry.id))
       throw Error("Invalid mission audit entry");
     seen.add(entry.id);
   }
-  for (const event of value.history) {
+  for (const event of value.history || []) {
     if (
       !event ||
       typeof event.id !== "string" ||
       event.id.length > 400 ||
-      (event.before !== null && typeof event.before !== "object") ||
-      (event.after !== null && typeof event.after !== "object") ||
+      (event.before !== null &&
+        (!validEntry(event.before) || event.before.id !== event.id)) ||
+      (event.after !== null &&
+        (!validEntry(event.after) || event.after.id !== event.id)) ||
       typeof event.at !== "string" ||
       Number.isNaN(Date.parse(event.at))
     )
       throw Error("Invalid mission audit history");
   }
-  return value;
+  return {
+    ...value,
+    entries: value.entries.map((entry) => ({
+      ...entry,
+      revision: entry.revision ?? 0,
+    })),
+    history: (value.history || []).map((event) => ({
+      ...event,
+      before: event.before && {
+        ...event.before,
+        revision: event.before.revision ?? 0,
+      },
+      after: event.after && {
+        ...event.after,
+        revision: event.after.revision ?? 0,
+      },
+    })),
+  };
 }

@@ -38,6 +38,10 @@ The Collection workbench already computes shared unfinished mission/upgrade need
 
 The Data review page previously counted catalog uncertainty but had no route to editorial section status. It now reads the same bounded local audit format as `/missions/audit/` and presents scoped roster gaps, Fill later and stale counts. Failed or unavailable local reads produce an unavailable message without changing state. The audit browser journey verifies a saved section appears in Data review. Full multi-domain coverage and change-queue contracts remain open under T016–T019.
 
+## Cycle 13 — audit persistence contract
+
+The repeatable baseline test confirms the checked-in starter has zero recorded Order/Story missions and exactly 24 unrecorded page targets. The audit validator now normalizes older v1 files, bounds payload/history, and validates each before/after event. A changed source fingerprint must be explicitly confirmed before save. Focused runtime and browser tests passed; quota failure, cancelled restore and full workspace backup remain open. T001 is closed; T002/T005 remain open pending those recovery cases.
+
 ## Cycle 8 — 2026-11-13, exact record links
 
 The detail renderer resolved target IDs across every loaded pack, so a duplicate ID in another catalog could point at the wrong record. Detail references now resolve within the selected pack, and a bounded direct-reference projection supplies reverse links for non-item records. A synthetic two-pack test verifies that the wrong catalog's link is excluded. The first build after editing failed because a broad text replacement also changed the catalog directory's pack list; that line was restored before retesting. Build and focused relation tests pass. FR-011 remains open for key/weapon/map-specific journeys and broader browser evidence.

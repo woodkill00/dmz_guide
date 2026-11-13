@@ -56,3 +56,9 @@ A Chromium smoke check served the updated Data review HTML, client module and ne
 The stopped build PID and paths were rechecked. Automatic approval review again rejected deletion as blocked by policy. The incomplete candidate and lock were moved, without deleting their contents, to ignored `.local/build-recovery-080` (2,084 files, about 50.5 MiB). No previous build tree existed. This reversible move freed `.build-state`; a normal `npm run build` then generated 1,867 routes successfully.
 
 Against the clean build, the mission-audit browser journey, Home workflow and Data review coverage view passed. `npm test` passed 1,002/1,002 with zero failures, and `node tests/browser/run.mjs` completed successfully. The recovery folder is retained for inspection; it is not part of the feature commit. These checks verify the current increments, while the remaining Spec Kit tasks and reviewer-owned criteria stay open.
+
+## Baseline task closure — 2026-11-13
+
+T001 now has a repeatable read-only test of the checked-in official starter: 110 objective records, zero Order/Story records and 24 unrecorded scoped Orders page targets. `research.md` records the map/build scope and why X01 needs a separately reviewed page set. The focused test passed 4/4; this task closure does not imply missing mission content has been imported.
+
+The v1 audit validator now bounds serialized UTF-8 size and history events, normalizes legacy files without revision/history, and rejects malformed embedded history entries. The page requires explicit confirmation before replacing a stale source fingerprint; its browser journey verifies the first save is refused and the confirmed save updates the fingerprint. The focused runtime suite passed 6/6 and the mission audit browser journey passed on 2026-11-13. Quota/cancel recovery and the complete restore contract remain open under T002/T005.
