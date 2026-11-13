@@ -1,0 +1,51 @@
+.mission-audit-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 0.4rem;
+  max-height: min(56vh, 38rem);
+  overflow: auto;
+}
+.mission-audit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.35rem 0.55rem;
+  text-align: left;
+  line-height: 1.25;
+  background: var(--raised);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--ui-radius);
+}
+.mission-audit-row:hover {
+  border-color: var(--accent);
+}
+.mission-audit-row span {
+  overflow-wrap: anywhere;
+}
+.mission-audit-row small {
+  flex: none;
+  max-width: 7rem;
+  text-align: right;
+  font-size: 0.72rem;
+}
+.mission-audit-row[aria-pressed="true"] {
+  background: var(--surface);
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+#mission-audit-editor label {
+  display: block;
+  max-width: 48rem;
+  margin-block: 0.6rem;
+}
+#mission-audit-editor textarea,
+#mission-audit-editor input,
+#mission-audit-editor select {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}

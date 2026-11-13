@@ -1,6 +1,6 @@
 # Tasks: Connected guide and mission audit
 
-**Status**: Planned. All boxes remain open until implementation and test evidence exist.
+**Status**: In progress. The mission-audit vertical slice is in the feature branch; unchecked tasks retain their remaining acceptance work.
 
 ## Phase 1 — Contracts and admission
 

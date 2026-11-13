@@ -123,6 +123,13 @@ const rows = [
     "DMZ Orders and story progress",
   ],
   [
+    "mission-audit",
+    "Mission audit",
+    "Manage",
+    "/missions/audit/",
+    "Review Orders and Story Mission content sections",
+  ],
+  [
     "progression",
     "Progress",
     "Track",
