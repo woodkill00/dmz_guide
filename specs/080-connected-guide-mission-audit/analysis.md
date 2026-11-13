@@ -29,3 +29,7 @@ An initial full `npm test` run reported 997/998 passing; the topology snapshot t
 ## Cycle 5 — 2026-11-13, stable verification and visual check
 
 The serialized full runtime suite passed 998/998 with a stable `dist`. A screenshot review found that default buttons made all 24 unrecorded pages look like bright primary actions; the page now uses compact muted cards with a clear selected outline. The added keyboard and 200% text browser test initially attempted inline CSS and was correctly blocked by the site's `style-src 'self'` policy. The test now loads a generated local CSS file, and the browser journey passes at 390px/200% text without horizontal document overflow. This repairs a test harness issue while preserving the production CSP.
+
+## Cycle 6 — 2026-11-13, connected preparation
+
+The Collection workbench already computes shared unfinished mission/upgrade needs, stock, reserves, recipe steps and locations; a second calculation would create a conflicting source of truth. The new action strip is a bounded view of that projection. A browser regression exposed reuse of the existing `data-why-item` hook, which made exact test selectors ambiguous. The new action button now has a distinct hook and delegates to the same explanation. Focused Collection workbench and needs browser journeys pass. The action strip does not yet close FR-010/FR-011: exact key/map cross-links and full scenario evidence are still open.
