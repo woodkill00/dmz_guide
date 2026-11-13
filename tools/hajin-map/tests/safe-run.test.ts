@@ -97,6 +97,26 @@ test("063 safe extraction reuses name/coordinate/floor grouping and retains near
   assert.equal(separate.safes.length, 2);
   assert.equal(separate.safes[0].nearby, 1);
 });
+test("078 loot extraction adds clinics while Safe Run stays safe-only", () => {
+  const raw = snapshot("Hospital Safe", 0.2);
+  raw.categories.push({ id: "dmz_clinic", name: "Clinics", group: "Facilities", icon: "/icons/clinic.png" });
+  raw.records.push({
+    id: "clinic-1",
+    name: "Mirae Clinic",
+    category: "dmz_clinic",
+    mapId: "hajin",
+    coordinateSpaceVersion: "hajin-official-v1-4096",
+    x: 0.2,
+    y: 0.1,
+  });
+  const captures = [{ source: source(), snapshot: parseSnapshot(raw, source()) }];
+  const safeOnly = extractStops(captures);
+  const loot = extractStops(captures, [], true);
+  assert.equal(safeOnly.safes.length, 1);
+  assert.deepEqual(loot.safes.map((s) => s.kind).sort(), ["clinic", "safe"]);
+  assert.equal(loot.safes[0].point[0], loot.safes[1].point[0]);
+  assert.equal(reconcile(null, loot).preference.order.length, 2);
+});
 test("063 no same-source merge, wrong-floor merge or distant merge", () => {
   const a = snapshot(),
     b = snapshot("Safe", 0.2);

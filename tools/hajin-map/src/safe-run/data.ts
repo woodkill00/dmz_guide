@@ -25,7 +25,7 @@ async function read(path: string, limit: number) {
     clearTimeout(timer);
   }
 }
-export async function loadDataset() {
+export async function loadDataset(includeClinics = false) {
   const selection = await loadCurrentCaptureSelection();
   let sources = selection.sources;
   if (!selection.present)
@@ -67,7 +67,7 @@ export async function loadDataset() {
     r.status === "fulfilled" ? [r.value] : [],
   );
   return {
-    data: extractStops(captures, guideKeys),
+    data: extractStops(captures, guideKeys, includeClinics),
     sources: captures.map(({ source, snapshot }) => ({
       name: source.name,
       page: source.page,

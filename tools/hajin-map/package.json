@@ -15,6 +15,7 @@
     "test:key-grid": "node --experimental-strip-types tests/key-grid-browser.mjs",
     "test:workflows": "node --experimental-strip-types tests/field-workflow-browser.mjs",
     "test:safes": "node tests/safe-run-browser.mjs",
+    "test:loot": "node tests/loot-run-browser.mjs",
     "test:sidebars": "node tests/sidebar-browser.mjs",
     "test:menu": "node tests/menu-browser.mjs"
   },

@@ -1,4 +1,5 @@
 import { displayDuplicates } from "../map/display-duplicates.ts";
+import { mapCategoryType } from "../map/category-groups.ts";
 import { toPixels } from "../map/coordinates.ts";
 import { hajin } from "../map/hajin.ts";
 import type { Snapshot } from "../map/source-snapshot.ts";
@@ -25,6 +26,7 @@ import {
 export const limits = { candidates: 200, selected: 64, stateBytes: 32768 };
 export const stateKey = "hajin-safe-run-v1";
 export interface Stop {
+  kind?: "safe" | "clinic" | "spawn";
   key: string;
   name: string;
   point: XY;
@@ -56,9 +58,11 @@ export interface Dataset {
 export function extractStops(
   captures: { source: MarkerSource; snapshot: Snapshot }[],
   keyCatalog: readonly KeyIdentity[] = [],
+  includeClinics = false,
 ): Dataset {
   requireValue(captures.length <= 5, "Too many sources.");
   const safes: Stop[] = [],
+    clinics: Stop[] = [],
     spawns: Stop[] = [];
   let referenceOnly = 0;
   for (const { source, snapshot } of captures) {
@@ -75,7 +79,12 @@ export function extractStops(
               )
             ? "spawn"
             : null;
-      if (!kind) continue;
+      const stopKind = kind ??
+        (includeClinics &&
+        mapCategoryType({ categoryId: category.id, path: [category.group, category.name] }) === "clinic"
+          ? "clinic"
+          : null);
+      if (!stopKind) continue;
       if (
         record.placement === "reference" ||
         record.x === null ||
@@ -85,6 +94,7 @@ export function extractStops(
         continue;
       }
       const stop: Stop = {
+        kind: stopKind,
         key: `${source.id}:${record.id}`,
         name: record.name,
         point: toPixels({ ...record, x: record.x, y: record.y }, hajin),
@@ -97,12 +107,12 @@ export function extractStops(
         matches: [],
         nearby: 0,
       };
-      if (kind === "safe") stop.access = classifyAccess(stop, keyCatalog);
-      (kind === "safe" ? safes : spawns).push(stop);
+      if (stopKind === "safe") stop.access = classifyAccess(stop, keyCatalog);
+      (stopKind === "safe" ? safes : stopKind === "clinic" ? clinics : spawns).push(stop);
     }
   }
   requireValue(
-    safes.length <= limits.candidates && spawns.length <= limits.candidates,
+    safes.length + clinics.length <= limits.candidates && spawns.length <= limits.candidates,
     "More than 200 safe or spawn candidates; refine the local capture before planning.",
   );
   const group = (rows: Stop[], category: string) => {
@@ -133,12 +143,14 @@ export function extractStops(
       .filter((s) => !result.suppressed.has(s.key))
       .sort((a, b) => a.key.localeCompare(b.key, "en"));
   };
-  const unique = group(safes, "safe");
+  const unique = [...group(safes, "safe"), ...group(clinics, "clinic")]
+    .sort((a, b) => a.key.localeCompare(b.key, "en"));
   for (const s of unique)
     s.nearby = unique.filter(
       (t) =>
         t.key !== s.key &&
         t.sourceId !== s.sourceId &&
+        t.kind === s.kind &&
         distance(s.point, t.point) <= 24,
     ).length;
   return { safes: unique, spawns: group(spawns, "spawn"), referenceOnly };
@@ -213,13 +225,13 @@ export function reconcile(
   const retained = p.order.filter((id) => ids.includes(id)),
     added = ids.filter((id) => !p.known.includes(id));
   if (p.order.length !== retained.length)
-    notices.push("Unavailable safe entries were removed from this route.");
+    notices.push("Unavailable entries were removed from this route.");
   if (retained.length + added.length <= limits.selected)
     p.order = [...retained, ...added];
   else {
     p.order = retained;
     notices.push(
-      `${added.length} new safe candidates left unselected: choose up to 64 stops.`,
+      `${added.length} new candidates left unselected: choose up to 64 stops.`,
     );
   }
   p.known = ids;

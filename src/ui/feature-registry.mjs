@@ -75,6 +75,14 @@ const rows = [
     "Select safes and a spawn to plan a visit order",
     "map",
   ],
+  [
+    "loot-runs",
+    "Loot runs",
+    "Map",
+    "/loot.html",
+    "Plan a combined safe and clinic visit order",
+    "map",
+  ],
   ["maps", "Maps", "Map", "/maps/", "Native map and location list"],
   [
     "map-workspace",

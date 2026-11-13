@@ -44,6 +44,14 @@ export function mountFieldToolbar(
   safeRun.textContent = "Safe Run map";
   safeRun.setAttribute("aria-label", "Safe Run map (opens in a new tab)");
   toolbar.append(safeRun);
+  const lootRun = document.createElement("a");
+  lootRun.className = "field-tool-link";
+  lootRun.href = "/loot.html";
+  lootRun.target = "_blank";
+  lootRun.rel = "noopener noreferrer";
+  lootRun.textContent = "Loot Run map";
+  lootRun.setAttribute("aria-label", "Loot Run map (opens in a new tab)");
+  toolbar.append(lootRun);
   const advanced = document.createElement("details"),
     summary = document.createElement("summary");
   summary.textContent = "Advanced";

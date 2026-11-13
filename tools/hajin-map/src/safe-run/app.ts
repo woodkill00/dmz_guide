@@ -22,10 +22,15 @@ import {
 import { loadDataset, loadRoads } from "./data.ts";
 import { accessLabel, unknownAccess } from "./access.ts";
 
+const isLootRun = document.body.classList.contains("loot-run-page");
+const runTitle = isLootRun ? "Loot Run map" : "Safe Run map";
+const candidateLabel = isLootRun ? "safes and clinics" : "safes";
+const storageKey = isLootRun ? "hajin-loot-run-v1" : stateKey;
+
 document.querySelector("#app")!.innerHTML = `
-<header class="safe-header"><div><p>HAJIN · SAFE ROUTING</p><h1>${document.documentElement.dataset.uiVariant==='modern'?'Safe Run map':'Safe runs'}</h1></div><a href="/" class="safe-main-map-link" aria-label="Return to main map">← Main map</a></header>
+<header class="safe-header"><div><p>HAJIN · ${isLootRun ? "LOOT ROUTING" : "SAFE ROUTING"}</p><h1>${runTitle}</h1></div><a href="/" class="safe-main-map-link" aria-label="Return to main map">← Main map</a><a href="${isLootRun ? "/safes.html" : "/loot.html"}" class="safe-main-map-link">${isLootRun ? "Safe Run" : "Loot Run"}</a></header>
 <main class="safe-layout"><aside id="safe-controls" tabindex="-1" aria-label="Safe-run planner">
-<div id="safe-intelligence" role="region" aria-label="Run status and source loading" tabindex="0"><p class="safe-intro">Choose a start and safes to visit. These are source-reported candidates, not live or guaranteed spawns.</p>
+<div id="safe-intelligence" role="region" aria-label="Run status and source loading" tabindex="0"><p class="safe-intro">Choose a start and ${candidateLabel} to visit. These are source-reported candidates, not live or guaranteed spawns.</p>
 <p id="data-status" role="status">Loading local source captures…</p><p id="saved-status" role="status"></p><button id="reload-data" type="button">Reload local captures</button>
 </div><div id="safe-start-pane" data-section-name="start and routing" role="region" aria-label="Start and routing" tabindex="0"><fieldset disabled id="safe-settings"><legend>1 · Start and routing</legend>
 <label for="spawn-select">Spawn location</label><select id="spawn-select"><option value="">Choose spawn or set a manual start</option></select>
@@ -33,10 +38,10 @@ document.querySelector("#app")!.innerHTML = `
 <form id="manual-start"><div class="safe-xy"><label>X <input id="start-x" type="number" min="0" max="4096" step="any" required></label><label>Y <input id="start-y" type="number" min="0" max="4096" step="any" required></label></div><button type="submit">Set manual start</button></form>
 <label for="route-mode">Route geometry</label><select id="route-mode"><option value="direct">Direct lines · not roads</option><option value="roads">Local roads · partial, unverified</option></select><p id="road-status">Checking local road coverage…</p>
 <div class="safe-actions"><button id="optimize" type="button">Optimize order</button><button id="fit-route" type="button">Fit run</button></div><p class="safe-note">Efficient nearest-neighbor order, not a guaranteed shortest tour. Open route, no return to spawn. Distances are image pixels, not game meters or travel times.</p></fieldset>
-</div><div id="safe-start-divider" role="separator" aria-label="Resize start and safe candidate sections" tabindex="0"></div><div id="safe-candidates-pane" data-section-name="safe candidates" role="region" aria-label="Safe candidates" tabindex="0"><fieldset disabled id="safe-choices"><legend>2 · Safe candidates</legend><label for="safe-search">Search safes, keys, access, source, notes or grid</label><input id="safe-search" type="search" maxlength="200"><div class="safe-actions"><button id="select-all" type="button">Select all safes</button><button id="select-none" type="button">Deselect all</button></div><p id="selection-count"></p><p class="safe-note safe-access-legend"><strong>Red !</strong>: source-reported locked/key/puzzle access. Gold: access not recorded, not guaranteed unlocked. Gray fill: excluded; red border still flags access requirements.</p><p class="safe-note">Search changes the list only. Matching names within 24 image pixels and compatible floors share one marker; differently named nearby entries stay separate for review. Key guides are linked only for a named access requirement in the same calibrated grid, never proximity alone.</p><div id="safe-list"></div></fieldset>
+</div><div id="safe-start-divider" role="separator" aria-label="Resize start and candidate sections" tabindex="0"></div><div id="safe-candidates-pane" data-section-name="route candidates" role="region" aria-label="Route candidates" tabindex="0"><fieldset disabled id="safe-choices"><legend>2 · ${isLootRun ? "Loot candidates" : "Safe candidates"}</legend><label for="safe-search">Search ${candidateLabel}, keys, access, source, notes or grid</label><input id="safe-search" type="search" maxlength="200"><div class="safe-actions"><button id="select-all" type="button">Select all ${candidateLabel}</button><button id="select-none" type="button">Deselect all</button>${isLootRun ? '<button id="select-safes" type="button">Select safes</button><button id="select-clinics" type="button">Select clinics</button>' : ""}</div><p id="selection-count"></p><p class="safe-note safe-access-legend"><strong>Red !</strong>: source-reported locked/key/puzzle safe access. ${isLootRun ? "Blue C: clinic. " : ""}Gold: safe access not recorded, not guaranteed unlocked. Gray fill: excluded; red border still flags access requirements.</p><p class="safe-note">Search changes the list only. Matching names within 24 image pixels and compatible floors share one marker within each type; differently named nearby entries stay separate for review. Key guides are linked only for a named access requirement in the same calibrated grid, never proximity alone.</p><div id="safe-list"></div></fieldset>
 </div><div id="safe-route-divider" role="separator" aria-label="Resize safe candidates and visit order" tabindex="0"></div><div id="safe-route-pane" data-section-name="visit order" role="region" aria-label="Visit order and source notes" tabindex="0"><section aria-labelledby="route-heading"><h2 id="route-heading">3 · Visit order</h2><p id="route-status" role="status">Choose your start to plan a run.</p><p class="safe-note">Drag the ↕ handle or use ↑ / ↓. Manual order stays until you choose Optimize.</p><ol id="visit-order"></ol></section>
-<details><summary>Source captures and limitations</summary><ul id="source-list"></ul><p>Safes may overlap across providers, have access requirements, or be absent in a match. Nearby warnings are review hints, not confirmed duplicates. This page rereads reviewed local captures; update providers through the main map. It does not collect new remote data.</p><p>Road mode uses the separate local road file, not the main workspace’s private road edits. Missing road legs are left undrawn and listed below; dashed lines are off-road connectors.</p><a href="${hajin.source}" target="_blank" rel="noopener noreferrer">Official map background</a></details>
-</div></aside><section class="safe-terrain" aria-label="Safe-run map"><div id="safe-map" tabindex="0" role="region" aria-label="Hajin safe-run map. Arrow keys pan; plus and minus zoom."></div><div class="safe-map-tools" role="group" aria-label="Map controls"><button id="safe-zoom-in" type="button" aria-label="Zoom in">+</button><button id="safe-zoom-out" type="button" aria-label="Zoom out">−</button><button id="safe-reset" type="button">${document.documentElement.dataset.uiVariant==='modern'?'Fit map':'Full map'}</button><label><input id="safe-grid" type="checkbox" checked> Grid</label></div><p id="terrain-status" role="status"></p><p class="safe-map-credit">Source-reported safe locations · © Activision · manual planning</p></section></main>`;
+<details><summary>Source captures and limitations</summary><ul id="source-list"></ul><p>${isLootRun ? "Safes and clinics" : "Safes"} may overlap across providers or be absent in a match. Safes can have access requirements. Nearby warnings are review hints, not confirmed duplicates. This page rereads reviewed local captures; update providers through the main map. It does not collect new remote data.</p><p>Road mode uses the separate local road file, not the main workspace’s private road edits. Missing road legs are left undrawn and listed below; dashed lines are off-road connectors.</p><a href="${hajin.source}" target="_blank" rel="noopener noreferrer">Official map background</a></details>
+</div></aside><section class="safe-terrain" aria-label="${runTitle}"><div id="safe-map" tabindex="0" role="region" aria-label="Hajin ${runTitle}. Arrow keys pan; plus and minus zoom."></div><div class="safe-map-tools" role="group" aria-label="Map controls"><button id="safe-zoom-in" type="button" aria-label="Zoom in">+</button><button id="safe-zoom-out" type="button" aria-label="Zoom out">−</button><button id="safe-reset" type="button">${document.documentElement.dataset.uiVariant==='modern'?'Fit map':'Full map'}</button><label><input id="safe-grid" type="checkbox" checked> Grid</label></div><p id="terrain-status" role="status"></p><p class="safe-map-credit">Source-reported ${candidateLabel} · © Activision · manual planning</p></section></main>`;
 const $ = <T extends HTMLElement>(id: string) =>
   document.getElementById(id) as T;
 const disposeModernLayout=mountSafeRunLayout();
@@ -95,7 +100,7 @@ let data: Dataset = { safes: [], spawns: [], referenceOnly: 0 },
 let stored: Preference | null = null,
   preferenceNotice = "";
 try {
-  const value = localStorage.getItem(stateKey);
+  const value = localStorage.getItem(storageKey);
   if (value) stored = parsePreference(value);
 } catch {
   preferenceNotice =
@@ -109,7 +114,12 @@ function button(label: string, action: () => void) {
   return b;
 }
 const grid = (s: Stop) => gridReferenceAt(...s.point) ?? "—";
-const display = (s: Stop) => `${s.name} · ${grid(s)} · ${s.sourceName}`;
+const display = (s: Stop) => {
+  const name = isLootRun && !new RegExp(`^${s.kind === "clinic" ? "clinics?" : "safes?"}$`, "i").test(s.name.trim())
+    ? `${s.kind === "clinic" ? "Clinic" : "Safe"} · ${s.name}`
+    : s.name;
+  return `${name} · ${grid(s)} · ${s.sourceName}`;
+};
 const access = (s: Stop) => s.access ?? unknownAccess();
 const restricted = (s: Stop) => access(s).state !== "unknown";
 function accessInfo(s: Stop, details = false) {
@@ -175,7 +185,7 @@ function save() {
   try {
     const text = JSON.stringify(p);
     parsePreference(text);
-    localStorage.setItem(stateKey, text);
+    localStorage.setItem(storageKey, text);
     savedStatus.textContent = preferenceNotice + "Run saved in this browser.";
   } catch {
     savedStatus.textContent =
@@ -230,10 +240,12 @@ function chooseStart(point: XY | null, spawnKey: string | null) {
 function safeIcon(s:Stop,index:number){return L.divIcon({
         className:
           "safe-number-marker" +
+          (s.kind === "clinic" ? " clinic-number-marker" : "") +
           (restricted(s) ? " safe-locked" : "") +
           (index < 0 ? " safe-excluded" : ""),
         html:
           (index < 0 ? "−" : String(index + 1)) +
+          (s.kind === "clinic" ? '<span class="clinic-kind-cue" aria-hidden="true">C</span>' : "") +
           (restricted(s)
             ? '<span class="safe-lock-cue" aria-hidden="true">!</span>'
             : ""),
@@ -265,21 +277,21 @@ function draw() {
       el("p", s.notes || "No additional source notes."),
       el(
         "p",
-        `${s.floor === null ? "Floor unknown" : "Floor " + s.floor}${s.nearby ? " · Nearby differently named source candidate: review before counting as a separate safe." : ""}`,
+        `${s.floor === null ? "Floor unknown" : "Floor " + s.floor}${s.nearby ? " · Nearby differently named source candidate: review before counting as a separate stop." : ""}`,
       ),
     );
     if (s.matches.length)
       content.append(el("p", "Also reported by " + s.matches.join(", ")));
-    content.append(accessInfo(s, true));
+    if (s.kind !== "clinic") content.append(accessInfo(s, true));
     content.append(
-      button(index < 0 ? "Include safe" : "Exclude safe", () =>
+      button(index < 0 ? `Include ${s.kind === "clinic" ? "clinic" : "safe"}` : `Exclude ${s.kind === "clinic" ? "clinic" : "safe"}`, () =>
         toggle(s.key, index < 0),
       ),
     );
     const marker = L.marker([s.point[1], s.point[0]], {
       icon: safeIcon(s,index),
-      title: display(s) + " · " + accessLabel(access(s)),
-      alt: display(s) + " · " + accessLabel(access(s)),
+      title: display(s) + (s.kind === "clinic" ? "" : " · " + accessLabel(access(s))),
+      alt: display(s) + (s.kind === "clinic" ? "" : " · " + accessLabel(access(s))),
     })
       .addTo(markers)
       .bindPopup(content, {
@@ -300,7 +312,7 @@ function toggle(key: string, on: boolean) {
   if (!p) return;
   if (on && !p.order.includes(key)) {
     if (p.order.length >= limits.selected) {
-      status.textContent = "At most 64 safes per run. Deselect a stop first.";
+      status.textContent = "At most 64 stops per run. Deselect a stop first.";
       renderChoices();
       return;
     }
@@ -342,7 +354,7 @@ function renderChoices() {
       .includes(query),
   );
   $("selection-count").textContent =
-    `${p.order.length} selected / ${data.safes.length} source candidates · ${data.safes.filter(restricted).length} reported access restrictions · ${shown.length} listed · maximum 64 per run`;
+    `${p.order.length} selected / ${data.safes.length} source candidates${isLootRun ? ` · ${data.safes.filter((s) => s.kind === "safe").length} safes · ${data.safes.filter((s) => s.kind === "clinic").length} clinics` : ""} · ${data.safes.filter(restricted).length} reported access restrictions · ${shown.length} listed · maximum 64 per run`;
   for (const s of shown) {
     const row = el("div", undefined, "safe-choice"),
       label = el("label"),
@@ -371,7 +383,7 @@ function renderChoices() {
     root.append(row);
   }
   if (!shown.length)
-    root.append(el("p", "No safe candidates match this search."));
+    root.append(el("p", `No ${candidateLabel} match this search.`));
 }
 function move(from: string, to: string) {
   if (!p) return;
@@ -403,7 +415,7 @@ function renderOrder() {
     handle.setAttribute("role", "img");
     handle.setAttribute(
       "aria-label",
-      `Drag safe ${i + 1} to reorder; use Up/Down buttons with keyboard or touch`,
+      `Drag stop ${i + 1} to reorder; use Up/Down buttons with keyboard or touch`,
     );
     handle.title = "Drag to reorder";
     row.append(handle);
@@ -447,7 +459,9 @@ function calculate(optimize: boolean) {
     return;
   }
   if (!p.order.length) {
-    status.textContent = "No safes selected. Choose safes to build your run.";
+    status.textContent = isLootRun
+      ? "No stops selected. Choose safes or clinics to build your run."
+      : "No safes selected. Choose safes to build your run.";
     return;
   }
   if (p.mode === "roads" && !graph) {
@@ -488,7 +502,7 @@ function calculate(optimize: boolean) {
   timer = setTimeout(
     () =>
       fail(
-        "Route calculation exceeded 10 seconds. Reduce selected safes or use Direct lines; previous order is retained.",
+        "Route calculation exceeded 10 seconds. Reduce selected stops or use Direct lines; previous order is retained.",
       ),
     10000,
   );
@@ -574,7 +588,7 @@ async function load() {
   ($("reload-data") as HTMLButtonElement).disabled = true;
   dataStatus.textContent = "Loading local captures…";
   try {
-    const loaded = await loadDataset();
+    const loaded = await loadDataset(isLootRun);
     if (!active || generation !== loadEpoch) return;
     const next = reconcile(p ?? stored, loaded.data);
     stopWork();
@@ -584,7 +598,7 @@ async function load() {
     data = loaded.data;
     p = next.preference;
     stored = null;
-    dataStatus.textContent = `${data.safes.length} positioned safe candidates · ${data.spawns.length} reported spawns${data.referenceOnly ? " · " + data.referenceOnly + " unpositioned entries omitted" : ""}. ${next.notices.join(" ")}`;
+    dataStatus.textContent = `${data.safes.length} positioned ${candidateLabel}${isLootRun ? ` (${data.safes.filter((s) => s.kind === "safe").length} safes, ${data.safes.filter((s) => s.kind === "clinic").length} clinics)` : ""} · ${data.spawns.length} reported spawns${data.referenceOnly ? " · " + data.referenceOnly + " unpositioned entries omitted" : ""}. ${next.notices.join(" ")}`;
     const sources = $("source-list");
     sources.replaceChildren();
     for (const s of loaded.sources) {
@@ -682,7 +696,7 @@ $("select-all").addEventListener("click", () => {
   if (!p) return;
   if (data.safes.length > limits.selected) {
     status.textContent =
-      "More than 64 candidates. Select the safes you want individually; selection retained.";
+      "More than 64 candidates. Select the stops you want individually; selection retained.";
     return;
   }
   p.order = [
@@ -695,6 +709,24 @@ $("select-all").addEventListener("click", () => {
   draw();
   calculate(!p.manual);
 });
+if (isLootRun) for (const kind of ["safe", "clinic"] as const) {
+  $(`select-${kind === "safe" ? "safes" : "clinics"}`).addEventListener("click", () => {
+    if (!p) return;
+    const additions = data.safes
+      .filter((s) => s.kind === kind && !p!.order.includes(s.key))
+      .map((s) => s.key);
+    if (p.order.length + additions.length > limits.selected) {
+      status.textContent = "At most 64 stops per run. Deselect some stops, then retry.";
+      return;
+    }
+    p.order.push(...additions);
+    save();
+    renderChoices();
+    renderOrder();
+    draw();
+    calculate(!p.manual);
+  });
+}
 $("select-none").addEventListener("click", () => {
   if (!p) return;
   p.order = [];

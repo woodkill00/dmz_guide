@@ -1,0 +1,7 @@
+# Analysis
+
+Initial review: requirements map to T1–T4. The shared planner already provides route ordering and road fallback; a separate solver is unnecessary. Safe Run must retain its existing dataset and local-storage key. Clinic category matching must use the repository's category mapping, and mixed stop types must not suppress one another as duplicates. No unresolved contract issue remains before implementation.
+
+Final analysis: LR-01 through LR-05 are implemented. Clinic capture extraction is opt-in; Safe Run still loads safes only. Loot Run uses its own saved plan, offers category selection, and labels clinic markers distinctly. The route estimator continues to disclose direct-line and partial-road limitations. Synthetic browser coverage checks a mixed route, saved selection, Safe Run isolation, the main-map entry, and narrow-screen map/plan controls. The current local capture loads 44 safes, 19 clinics, and 11 reported spawns; a 63-stop route rendered successfully. No duplicate or navigation conflict remains in the checked paths.
+
+Evidence: `node --experimental-strip-types --test tools/hajin-map/tests/safe-run.test.ts` (13 passed); `npm --prefix tools/hajin-map run test:loot` (pass); `npm --prefix tools/hajin-map run typecheck` (pass); `npm --prefix tools/hajin-map run build` (pass, includes `dist/loot.html`); `npm --prefix tools/hajin-map test` (240 passed); `npm --prefix tools/hajin-map run test:safes` (Chromium, Firefox, WebKit passed); `git diff --check` (pass).

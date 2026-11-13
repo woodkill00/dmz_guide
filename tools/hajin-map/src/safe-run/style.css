@@ -337,6 +337,31 @@ summary {
   color: #fff;
   border-color: #d6ddcf;
 }
+.clinic-number-marker {
+  background: #6bc9db;
+  color: #102b32;
+  border-color: #c8f5fb;
+}
+.clinic-number-marker.safe-excluded {
+  background: #414e42;
+  color: #fff;
+  border-color: #8bbcc5;
+}
+.clinic-kind-cue {
+  position: absolute;
+  right: -6px;
+  top: -7px;
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #d7f8fb;
+  color: #16343b;
+  font-size: 10px;
+  line-height: 1;
+  border: 1px solid #16343b;
+}
 .safe-locked {
   background: #a72937;
   color: #fff;
