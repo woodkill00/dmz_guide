@@ -8,6 +8,7 @@ import {
   missionAuditTargets,
   validateMissionAudit,
 } from "../domain/mission-audit.mjs";
+import { contentHealth } from "../domain/content-health.mjs";
 
 const query = document.querySelector("#review-query");
 let renderedPack = null;
@@ -24,10 +25,12 @@ function render() {
     (target) => target.kind === "page" && !target.recorded,
   ).length;
   let auditText = `${unrecorded} of 24 scoped Orders pages unrecorded · ${auditTargets.filter((target) => target.kind === "mission").length / 9} recorded mission/story entries.`;
+  let auditDoc = null;
   try {
     const raw = localStorage.getItem(`dmz:mission-audit:v1:${state.pack.id}`);
     if (raw) {
       const saved = validateMissionAudit(JSON.parse(raw), state.pack.id);
+      auditDoc = saved;
       const current = new Map(
         auditTargets.map((target) => [target.id, target]),
       );
@@ -44,6 +47,13 @@ function render() {
     auditText += " Local audit unavailable; saved data was not changed.";
   }
   document.querySelector("#mission-audit-health").textContent = auditText;
+  document.querySelector("#content-health-rows").innerHTML =
+    `<ul>${contentHealth(state.pack, auditDoc)
+      .map(
+        (row) =>
+          `<li>${esc(row.label)}: ${row.listed ? `<strong>${row.covered} / ${row.listed}</strong> listed · ${row.missing} not covered within listed records` : "None recorded in this catalog"}</li>`,
+      )
+      .join("")}</ul>`;
   const needle = query.value.trim().toLocaleLowerCase();
   const rows = result.issues.filter(
     (row) =>

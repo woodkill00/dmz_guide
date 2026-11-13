@@ -44,3 +44,9 @@ The separate new mission-audit browser test also passed. These results cover the
 Home now derives one next listed collection need from the same read-only Collection projection after a valid saved profile loads. It names the missing amount only when known and keeps the selected catalog in its Collection link. Missing, stale or invalid profiles show a recovery state instead of a guessed action. The Home workflow passed in Chromium, Firefox and WebKit with the updated Home module served directly from source during the test.
 
 The normal rebuild after the last Home edit is pending. An interrupted earlier build left `.build-state/current.lock` and an incomplete candidate, owned by a Node PID that no longer exists. Automatic approval review rejected the verified cleanup command as blocked by policy. The original `dist` remains present; no recovery material was removed. The browser test used a route override for the one changed module and does not replace a clean release build.
+
+## Scoped content-health projection — 2026-11-13
+
+Data review now includes listed-catalog coverage counts for Orders, mission sections, recipes, item image references, weapons, keys and locations. Empty recorded domains are explicit. The projection has a synthetic unit test; the current page change still needs a clean build and browser pass after the stale build lock is resolved.
+
+A Chromium smoke check served the updated Data review HTML, client module and new domain module from source over the retained `dist`: all seven coverage rows rendered for the official starter, with 0/24 recorded Orders pages and no page error. This checks the new view integration but is not a clean release build.
