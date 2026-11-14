@@ -197,7 +197,18 @@ try {
     localStorage.getItem("dmz:mission-audit:v1:official:mw4-dmz-starter"),
   );
   const importAudit = JSON.parse(savedAudit);
-  importAudit.entries[0].state = "needs-correction";
+  const beforeImported = structuredClone(importAudit.entries[0]);
+  importAudit.entries[0] = {
+    ...beforeImported,
+    state: "needs-correction",
+    revision: beforeImported.revision + 1,
+  };
+  importAudit.history.push({
+    id: beforeImported.id,
+    before: beforeImported,
+    after: importAudit.entries[0],
+    at: new Date().toISOString(),
+  });
   await page.locator("#mission-audit-import").setInputFiles({
     name: "reviewed-audit.json",
     mimeType: "application/json",
@@ -304,6 +315,12 @@ try {
     ),
     "needs-correction",
   );
+  assert.equal(await page.locator("#mission-audit-undo").isDisabled(), true);
+  await page.locator("#mission-audit-search").fill("page 1");
+  assert.equal(await page.locator("#mission-audit-undo").isDisabled(), true);
+  await page.reload();
+  await page.locator("#mission-audit-pages button").first().click();
+  assert.equal(await page.locator("#mission-audit-undo").isDisabled(), true);
   await context.close();
   const syntheticPack = JSON.parse(
     await readFile("dist/assets/content/packs/demo-training.json", "utf8"),
@@ -531,6 +548,55 @@ try {
     await tabB.locator("#mission-audit-note").inputValue(),
     "Save behind a held lock",
   );
+  const restoreFile = await tabB.evaluate(() => {
+    const value = JSON.parse(
+      localStorage.getItem("dmz:mission-audit:v1:official:mw4-dmz-starter"),
+    );
+    value.entries[0].state = "checked";
+    return JSON.stringify(value);
+  });
+  await tabB.locator("#mission-audit-import").setInputFiles({
+    name: "held-restore.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(restoreFile),
+  });
+  await tabB.locator("#mission-audit-restore").waitFor({ state: "visible" });
+  await tabA.evaluate(() => {
+    window.__auditLockHeld = false;
+    window.__auditLockWait = new Promise((resolve) => {
+      window.__releaseAuditLock = resolve;
+    });
+    navigator.locks.request(
+      "dmz:mission-audit:v1:official:mw4-dmz-starter",
+      async () => {
+        window.__auditLockHeld = true;
+        await window.__auditLockWait;
+      },
+    );
+  });
+  await tabA.waitForFunction(() => window.__auditLockHeld === true);
+  await tabB.locator("#mission-audit-restore").click();
+  await tabB
+    .locator("#save-status")
+    .filter({ hasText: "Saving audit" })
+    .waitFor();
+  assert.equal(
+    await tabB.locator("#mission-audit-import-cancel").isDisabled(),
+    true,
+  );
+  await tabB.evaluate(() =>
+    document.querySelector("#mission-audit-import-cancel").click(),
+  );
+  assert.doesNotMatch(
+    await tabB.locator("#mission-audit-import-preview").textContent(),
+    /Import cancelled/,
+  );
+  await tabA.evaluate(() => window.__releaseAuditLock());
+  await tabB
+    .locator("#mission-audit-import-preview")
+    .filter({ hasText: "Audit restored" })
+    .waitFor();
+  assert.equal(await tabB.locator("#mission-audit-undo").isDisabled(), true);
   await raceContext.close();
   console.log(
     "Mission audit coverage, draft filters, two-tab conflict, import recovery, keyboard and 390px/200% layout PASS",

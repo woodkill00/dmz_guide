@@ -14,6 +14,7 @@ import {
 } from "../domain/mission-audit.mjs";
 
 const key = (id) => `dmz:mission-audit:v1:${id}`;
+const undoKey = (id) => `dmz:mission-audit:undo:${id}`;
 let audit = null;
 let targets = [];
 let active = null;
@@ -34,6 +35,27 @@ const empty = (pack) => ({
   history: [],
 });
 const entryFor = (id) => audit.entries.find((entry) => entry.id === id);
+const readUndoReceipt = (id) => {
+  try {
+    const raw = sessionStorage.getItem(undoKey(id));
+    if (!raw || raw.length > 500) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+};
+const setUndoReceipt = (id, event) => {
+  try {
+    if (event)
+      sessionStorage.setItem(
+        undoKey(id),
+        JSON.stringify({ id: event.id, at: event.at }),
+      );
+    else sessionStorage.removeItem(undoKey(id));
+  } catch {
+    // A missing receipt only removes reloadable Undo; the saved audit is intact.
+  }
+};
 const report = (message) => {
   $("#save-status").textContent = message;
 };
@@ -135,8 +157,11 @@ function render() {
   if (!active || hiddenSpoiler) return;
   const saved = entryFor(active.id);
   const last = audit.history.at(-1);
+  const receipt = readUndoReceipt(state.pack.id);
   if (
     !previous &&
+    receipt?.id === last?.id &&
+    receipt?.at === last?.at &&
     last?.id === active.id &&
     JSON.stringify(last.after) === JSON.stringify(saved || null)
   )
@@ -195,6 +220,9 @@ async function write(candidate) {
     "#mission-audit-save",
     "#mission-audit-undo",
     "#mission-audit-restore",
+    "#mission-audit-import",
+    "#mission-audit-import-cancel",
+    "#mission-audit-export",
     "#mission-audit-state",
     "#mission-audit-note",
     "#mission-audit-reviewer",
@@ -265,6 +293,7 @@ async function save() {
   try {
     if (!(await write(candidate))) return;
     previous = { id: active.id, old, current: next };
+    setUndoReceipt(state.pack.id, candidate.history.at(-1));
     $("#mission-audit-undo").disabled = false;
   } catch (reason) {
     report(
@@ -293,6 +322,7 @@ async function undo() {
   try {
     if (!(await write(candidate))) return;
     previous = null;
+    setUndoReceipt(state.pack.id, null);
     $("#mission-audit-undo").disabled = true;
   } catch (reason) {
     report(`Undo not saved: ${reason.message}`);
@@ -334,6 +364,7 @@ $("#mission-audit-export").addEventListener("click", () => {
   );
 });
 $("#mission-audit-import").addEventListener("change", async (event) => {
+  if (writing) return;
   const revision = ++importRevision;
   importCandidate = null;
   $("#mission-audit-restore").hidden = true;
@@ -365,6 +396,9 @@ $("#mission-audit-restore").addEventListener("click", async () => {
     return;
   try {
     if (!(await write(importCandidate))) return;
+    previous = null;
+    setUndoReceipt(state.pack.id, null);
+    $("#mission-audit-undo").disabled = true;
     importCandidate = null;
     $("#mission-audit-restore").hidden = true;
     $("#mission-audit-import-preview").textContent =
@@ -374,6 +408,7 @@ $("#mission-audit-restore").addEventListener("click", async () => {
   }
 });
 $("#mission-audit-import-cancel").addEventListener("click", () => {
+  if (writing) return;
   importRevision += 1;
   importCandidate = null;
   $("#mission-audit-import").value = "";
