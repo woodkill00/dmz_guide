@@ -303,6 +303,11 @@ async function save() {
 }
 async function undo() {
   if (!active || !previous || previous.id !== active.id) return;
+  if (
+    dirty &&
+    !confirm("Discard unsaved audit edits and undo the last saved change?")
+  )
+    return;
   const candidate = {
     ...audit,
     entries: [

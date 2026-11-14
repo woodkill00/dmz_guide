@@ -163,3 +163,7 @@ Independent review on `26789da` found four reproducible audit issues: dirty filt
 ## Cycle 37 — restore lock and Undo receipt
 
 A second independent pass reproduced a stale Undo pointer after importing a valid audit history and a misleading Cancel action while Restore waited on a lock. Successful restore now clears in-memory Undo and its same-tab receipt; cross-reload Undo requires a receipt matching this tab's last saved event. Import and cancellation controls freeze during writes, and their handlers reject programmatic activation while queued. The updated browser journey uses a consistent imported event, confirms Undo stays unavailable after restore and reload, and tests Cancel under a held real Web Lock. The focused journey passes. Fresh independent re-review and CI are still required.
+
+## Cycle 38 — unsaved Undo guard
+
+Independent review found that Undo could silently discard a note edited after the previous save. Undo now asks before discarding unsaved audit edits; Cancel preserves the draft and saved summary. The browser journey exercises Cancel and Confirm before completing Undo. The 2,012-route build and focused audit browser journey passed. Independent re-review and final CI remain release gates.

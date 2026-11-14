@@ -119,6 +119,18 @@ try {
   await page.locator("#mission-audit-pages button").first().waitFor();
   await page.locator("#mission-audit-pages button").first().click();
   assert.equal(await page.locator("#mission-audit-undo").isDisabled(), false);
+  await page.locator("#mission-audit-note").fill("Unsaved note before Undo");
+  page.once("dialog", (dialog) => dialog.dismiss());
+  await page.locator("#mission-audit-undo").click();
+  assert.equal(
+    await page.locator("#mission-audit-note").inputValue(),
+    "Unsaved note before Undo",
+  );
+  assert.match(
+    await page.locator("#mission-audit-summary").textContent(),
+    /1 sections to fill later/,
+  );
+  page.once("dialog", (dialog) => dialog.accept());
   await page.locator("#mission-audit-undo").click();
   await page
     .locator("#mission-audit-summary")
