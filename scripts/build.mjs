@@ -186,6 +186,7 @@ async function generate(dist) {
     "run-plan-page",
     "data-review-page",
     "mission-audit-page",
+    "workspace-backup-page",
   ]) {
     const file = join(root, `src/ui/${moduleName}.mjs`);
     try {

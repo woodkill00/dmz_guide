@@ -168,6 +168,13 @@ const rows = [
     "/settings/",
     "Private profiles and backups",
   ],
+  [
+    "workspace-backup",
+    "Workspace backup",
+    "Manage",
+    "/workspace-backup/",
+    "Bundle private exports and inspect recovery modules",
+  ],
   ["editor", "Editor", "Manage", "/editor/", "Private record editor"],
   ["local", "Private reader", "Reference", "/local/", "Your private content"],
   [

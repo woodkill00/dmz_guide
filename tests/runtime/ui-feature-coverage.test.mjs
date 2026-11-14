@@ -47,7 +47,7 @@ test("Current static registry admission matches its captured inventory; browser 
   assert.equal(new Set(features.map((f) => f.id)).size, features.length);
   assert.equal(
     features.length,
-    85,
+    86,
     "Rebaseline the owning registry contract deliberately",
   );
   assert.equal(snapshot.count, 83, "Keep the 071 historical baseline intact");

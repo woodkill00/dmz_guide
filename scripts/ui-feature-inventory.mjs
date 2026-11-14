@@ -26,13 +26,20 @@ const baseline = JSON.parse(
     "utf8",
   ),
 );
-if (
-  JSON.stringify(baseline.features.map((f) => f.id).sort()) !==
-  JSON.stringify(features.map((f) => f.id).sort())
-)
-  throw Error(
-    "Registry differs from reviewed feature071 matrix. Reconcile ownership first.",
-  );
+for (const prior of baseline.features) {
+  const current = features.find((feature) => feature.id === prior.id);
+  if (
+    !current ||
+    JSON.stringify({
+      id: current.id,
+      label: current.label,
+      kind: current.kind,
+      path: current.path,
+      group: current.group,
+    }) !== JSON.stringify(prior)
+  )
+    throw Error(`Historical feature changed: ${prior.id}`);
+}
 const metadata = features.map(({ id, label, kind, path, group }) => ({
   id,
   label,

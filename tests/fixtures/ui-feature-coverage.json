@@ -1,12 +1,12 @@
 {
   "source": "src/ui/feature-registry.mjs",
-  "head": "638c853479eb467213f8b02aa78b81ded3f98026",
+  "head": "de71dd91f81f35c5a141f04736b00eecdae44c95",
   "hashes": {
-    "src/ui/feature-registry.mjs": "f032aab921d510527d125cf81828b9d794e72cffcf98f8ac7f470e1dd7ff38ae",
+    "src/ui/feature-registry.mjs": "65f74ab8fd547e46f3167243f3440ee714d9051ab152da2bcab2cfc1e051f563",
     "src/ui/map-destinations.json": "7eda40618c784083b520f1ad9c356fe3d284ce83a394389f9d6527beb7da85f0",
     "specs/071-ui-ux-implementation/feature-coverage.md": "3d4511eb0781dfc70cfddac5d2423913ec442a109c6dc84306e5e8f9e9b16add"
   },
-  "count": 85,
+  "count": 86,
   "features": [
     {
       "id": "field-desk",
@@ -230,6 +230,13 @@
       "label": "Settings",
       "kind": "guide",
       "path": "/settings/",
+      "group": "Manage"
+    },
+    {
+      "id": "workspace-backup",
+      "label": "Workspace backup",
+      "kind": "guide",
+      "path": "/workspace-backup/",
       "group": "Manage"
     },
     {

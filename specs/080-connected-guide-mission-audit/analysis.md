@@ -92,6 +92,14 @@ The existing Armory comparator already separates official launch, community Mult
 
 The Home cross-engine regression passed Chromium and Firefox. WebKit completed the feature/layout assertions but strict health recorded pack-JSON `due to access control checks` page errors during navigation. Waiting for network idle at two Home transitions did not remove them. This remains a T022/T023 finding and must be reproduced with page/phase diagnostics before relaxing any health gate. The mission source review also now indexes six COD Central Story Mission article candidates; none is admitted as a game objective without record-level reconciliation.
 
+## Cycle 25 — explicit multi-module recovery
+
+The prior profile backup excluded map, armory, run plans, audit and photo bytes. The new workspace manifest accepts only owner-selected JSON exports, binds each to a fixed owner origin and digest, and names every omitted module. It offers validated extraction and the owner's import page; it does not imply cross-origin atomic writes. A 36 MiB serialized cap and filename guard close oversized/unsafe bundle cases. Run plans now have a missing export/previewed restore path with revision-guarded save. Domain and Chromium round-trip/tamper tests pass. T014 closes for explicit manifest and per-module handoff; T015 remains open for old-bundle, quota and mid-apply outcome cases across owners.
+
+## Cycle 26 — map file fallback and recovery conflict
+
+Live run-plan transfer already bound nonce, expected origin and target window but had no file fallback. The Guide now downloads the same validated public-only handoff and the map accepts it through the existing file picker, requiring Accept or Decline. A file-import browser journey passes in Chromium, Firefox and WebKit, and map typecheck/build pass. A synthetic competing run-plan save during restore leaves the newer saved plan intact and reports failure. Changed map capture identity and wrong-origin/offline negative cases are not yet separately verified, so T013 remains open. The wider multi-owner recovery outcome gate T015 remains open as well.
+
 ## Cycle 8 — 2026-11-13, exact record links
 
 The detail renderer resolved target IDs across every loaded pack, so a duplicate ID in another catalog could point at the wrong record. Detail references now resolve within the selected pack, and a bounded direct-reference projection supplies reverse links for non-item records. A synthetic two-pack test verifies that the wrong catalog's link is excluded. The first build after editing failed because a broad text replacement also changed the catalog directory's pack list; that line was restored before retesting. Build and focused relation tests pass. FR-011 remains open for key/weapon/map-specific journeys and broader browser evidence.
