@@ -18,7 +18,7 @@
 
 ## Phase 3 — Connected preparation (P1, FR-010–FR-011)
 
-- [ ] T009 (FR-010) Extend the existing derived goal projection with one prioritized next-action list across unfinished missions/upgrades, shared stock/reserves, print/craft choices, key needs and known map locations; unit tests for shared ingredients, partial costs and no-location cases.
+- [x] T009 (FR-010) Extend the existing derived goal projection with one prioritized next-action list across unfinished missions/upgrades, shared stock/reserves, print/craft choices, key needs and known map locations; unit tests for shared ingredients, partial costs and no-location cases. Evidence: existing workbench math plus `connectedPreparation` recipe/key/area projection; 26 focused domain tests and the Collection workbench browser journey passed on 2026-11-14.
 - [ ] T010 (FR-011) Add exact bidirectional link projection for item/recipe/upgrade/mission/key/weapon/location records; prevent spoiler leakage and broken cross-pack links.
 - [ ] T011 (FR-010, FR-011) Add compact preparation view from Home/Planner with explanations and deep links; test complete synthetic mission→inventory→recipe→map journey.
 

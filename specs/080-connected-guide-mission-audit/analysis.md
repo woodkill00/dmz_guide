@@ -70,6 +70,10 @@ The named COD Central and DMZTracker pages agree on the first Hajin Orders page'
 
 The initial full runtime run found three stale test/canonical assumptions after the content version and Orders admission. Canonical serialization repaired first-save byte stability; the Orders baseline and pinned content-version assertions were updated. The focused affected suite passed 28/28, then full runtime passed 1,009/1,009. The first site-wide browser run found two old 24-unrecorded assertions, now updated to 23. Both focused journeys and a fresh full Chromium browser run passed. No task was closed merely from the new source rows; T008 still requires review of remaining pages and Story Missions.
 
+## Cycle 21 — next-action enrichment
+
+The shared Collection projection already accounts for unfinished roots, stock, reserves and recipe alternatives. The presentation list now adds up to three recorded output recipes, key identity and named map-area links for each top action; absent areas are labelled unknown. A synthetic test verifies the extra context leaves a known shortage unchanged and reports no location when none is recorded. Combined Collection/preparation tests passed 26/26 and the Collection browser journey passed. T009 is closed without a second stock calculation; T010/T011 still require complete exact-link and user-journey evidence.
+
 ## Cycle 8 — 2026-11-13, exact record links
 
 The detail renderer resolved target IDs across every loaded pack, so a duplicate ID in another catalog could point at the wrong record. Detail references now resolve within the selected pack, and a bounded direct-reference projection supplies reverse links for non-item records. A synthetic two-pack test verifies that the wrong catalog's link is excluded. The first build after editing failed because a broad text replacement also changed the catalog directory's pack list; that line was restored before retesting. Build and focused relation tests pass. FR-011 remains open for key/weapon/map-specific journeys and broader browser evidence.

@@ -148,7 +148,7 @@ function renderConnectedActions() {
         ? `At least ${esc(action.knownMissing)} ${esc(action.unit)} missing; total unknown`
         : "Amount unknown";
   const renderAction = (action) =>
-    `<li><a href="${esc(link(action.id))}">${esc(action.name)}</a> · ${amount(action)} · ${esc(action.cause)}${action.craft ? " · Crafting ingredient" : ""} <button type="button" data-next-why-item="${esc(action.id)}">Why needed / locations</button></li>`;
+    `<li><a href="${esc(link(action.id))}">${esc(action.name)}</a> · ${amount(action)} · ${esc(action.cause)}${action.key ? " · Key" : ""}${action.craft ? " · Crafting ingredient" : ""}${action.recipes.length ? ` · Recipes: ${action.recipes.map((recipe) => `<a href="${esc(link(recipe.id))}">${esc(recipe.name)}</a>${recipe.ready ? " (ready)" : " (review/collect first)"}`).join(", ")}` : ""}${action.areas.length ? ` · Areas: ${action.areas.map((area) => `<a href="${esc(area.referenceURL)}">${esc(area.name)}</a>`).join(", ")}` : " · Area unknown"} <button type="button" data-next-why-item="${esc(action.id)}">Why needed / locations</button></li>`;
   $("#connected-actions-list").innerHTML = result.actions.length
     ? `<ol class="collection-list">${result.actions.map(renderAction).join("")}</ol><p>${result.total} outstanding listed items${result.partial ? " · projection incomplete" : ""}. <a href="#shopping">See the full shopping list</a>.</p>`
     : "<p>No known outstanding item actions. Unrecorded requirements may still need review.</p>";
