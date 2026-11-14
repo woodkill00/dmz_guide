@@ -1,5 +1,6 @@
 import { refreshTrackerContext } from "./quick-tracker.mjs";
 import { hajinOrderSequence } from "../content/hajin-order-sequence.mjs";
+import { hajinPageIntel, missionSources } from "../content/mission-intel.mjs";
 import { fobUpgradeMaterials, parseUpgradeStock } from "./fob-upgrade-card.mjs";
 import { hydrateInventoryIcons } from "./inventory-icons.mjs";
 import { registerDraftGuard } from "./common.mjs";
@@ -176,7 +177,7 @@ function renderMissionDirectory() {
     hajinOrderSequence.pages
       .map(
         (row) =>
-          `<section id="hajin-page-${row.page}" class="mission-page-card" aria-label="Hajin page ${row.page}"><h4>Page ${row.page} <small>${esc(row.label)}</small></h4><p>${row.placement === "fixed" ? "Fixed page roster" : "Reported chapter sequence · page may vary"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><a href="${esc(auditHref(`page:${packId}:hajin-launch:${row.page}:roster`))}">Audit page ${row.page}</a></section>`,
+          `<section id="hajin-page-${row.page}" class="mission-page-card" aria-label="Hajin page ${row.page}"><h4>Page ${row.page} <small>${esc(row.label)}</small></h4><p>${row.placement === "fixed" ? "Fixed page roster" : "Reported chapter sequence · page may vary"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><details class="mission-rewards"><summary>Reported page rewards</summary><ul>${hajinPageIntel[row.page - 1].rewards.map((reward) => `<li>${esc(reward)}</li>`).join("")}</ul><p>Community report · reviewed ${esc(hajinPageIntel[row.page - 1].reviewedAt)} · current build unverified.</p>${hajinPageIntel[row.page - 1].notes ? `<p>${esc(hajinPageIntel[row.page - 1].notes)}</p>` : ""}<p class="mission-source-links">${hajinPageIntel[row.page - 1].sourceKeys.map((key) => `<a href="${esc(missionSources[key])}" target="_blank" rel="noopener noreferrer">${esc(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details><a href="${esc(auditHref(`page:${packId}:hajin-launch:${row.page}:roster`))}">Audit page ${row.page}</a></section>`,
       )
       .join("") +
     "</div>";
@@ -190,15 +191,18 @@ function renderMissionDirectory() {
       )
       .join("") +
     "</div>";
-  if (
-    !missionAnchorApplied &&
-    /^#(?:hajin|x01)-page-(?:[1-9]|1\d|2[0-4])$/.test(location.hash)
-  ) {
+  const requestedPage = new URLSearchParams(location.search).get("page");
+  const anchor = /^#(?:hajin|x01)-page-(?:[1-9]|1\d|2[0-4])$/.test(
+    location.hash,
+  )
+    ? location.hash.slice(1)
+    : /^(?:hajin|x01)-(?:[1-9]|1\d|2[0-4])$/.test(requestedPage || "")
+      ? requestedPage.replace(/^(hajin|x01)-/, "$1-page-")
+      : null;
+  if (!missionAnchorApplied && anchor) {
     missionAnchorApplied = true;
     requestAnimationFrame(() =>
-      document
-        .getElementById(location.hash.slice(1))
-        ?.scrollIntoView({ block: "start" }),
+      document.getElementById(anchor)?.scrollIntoView({ block: "start" }),
     );
   }
 }

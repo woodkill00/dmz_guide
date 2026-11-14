@@ -1603,6 +1603,40 @@ main :where(p, li, a, ul, ol, section, article, div) {
   margin-block: 0.18rem;
   overflow-wrap: anywhere;
 }
+.mission-rewards {
+  margin-block: 0.45rem 0.7rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border, #47505b);
+  border-radius: 0.45rem;
+}
+.mission-rewards summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+.mission-rewards ul {
+  margin-block: 0.4rem;
+  padding-left: 1.25rem;
+}
+.mission-rewards p {
+  margin-block: 0.4rem 0;
+  font-size: 0.85rem;
+}
+.mission-task-list {
+  display: grid;
+  gap: 0.45rem;
+  padding-left: 1.5rem;
+}
+.mission-task-list li {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border, #47505b);
+  border-radius: 0.4rem;
+  overflow-wrap: anywhere;
+}
+.mission-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
 .inventory-group {
   margin-block: 1rem;
 }
