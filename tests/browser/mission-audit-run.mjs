@@ -34,7 +34,7 @@ try {
   );
   assert.equal(
     await page.locator("#mission-audit-missions button").count(),
-    27,
+    81,
   );
   await page.locator("#mission-audit-pages button").first().click();
   const createLink = await page

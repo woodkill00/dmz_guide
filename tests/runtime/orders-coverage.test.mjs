@@ -37,7 +37,7 @@ test("story mission steps stay bounded and spoiler guarded in the workspace proj
   assert(row.sources.length > 0);
 });
 
-test("official starter admits only reported page-one Orders and no Story Mission", () => {
+test("official starter keeps 23 Orders pages unknown while reporting six distinct Story Missions", () => {
   const pack = loadFixturePack("official-starter");
   const pages = ordersPageCoverage(pack);
   assert.equal(pages.length, 24);
@@ -47,8 +47,20 @@ test("official starter admits only reported page-one Orders and no Story Mission
     true,
   );
   assert.equal(
-    pack.objectives.some((objective) => objective.track === "dmz-story"),
-    false,
+    pack.objectives.filter((objective) => objective.track === "dmz-story")
+      .length,
+    6,
+  );
+  assert(
+    pack.objectives
+      .filter((objective) => objective.track === "dmz-story")
+      .every(
+        (objective) =>
+          objective.status === "observed" &&
+          objective.spoiler &&
+          objective.effects.length === 0 &&
+          objective.orderPage === undefined,
+      ),
   );
   assert.equal(
     pack.objectives.some((objective) =>

@@ -123,3 +123,27 @@ After the user's explicit instruction to handle cleanup, automatic approval revi
 ## Cycle 27 — saved match evidence and combined recovery
 
 Analysis found that match stops disappeared after the preview and a generic quantity undo could leave objectives completed. The match receipt now persists plan ID/revision, player-reported stops and objective before/after states. The history directs match events to a guarded combined undo that refuses later stock or objective edits. A Chromium Field desk journey and focused domain tests pass. The test exposed that run-plan UUIDs do not fit catalog record-ID syntax; the bounded match validator now accepts the run-plan ID grammar, and the rebuilt browser journey passes. T012 closes on this evidence; map handoff, multi-module restore and source review gates remain open.
+
+## Cycle 28 — map transfer failure matrix
+
+A blocked popup still exposed a file fallback. The origin test used an actual foreign opener with the correct nonce; the map ignored it. A renamed synthetic source marker left an imported old area unpositioned, and analysis found the route button remained active even with zero resolved positions. It now disables until at least one registered position resolves. The changed-capture, Decline and three-engine file-import journeys, live handshake and TypeScript typecheck pass. T013 closes on these local transfer boundaries.
+
+## Cycle 29 — backup outcome matrix
+
+The bundle import had a valid round-trip/tamper journey but no explicit old-version or checked-module byte comparison. The browser journey now rejects version 0, confirms a downloaded module equals the selected profile, and retains no restore choices after malformed input. Existing Mission audit quota-denial and Run-plan competing-save journeys cover independent owner failure and “not saved” feedback. The bundle remains an explicit handoff, so there is no cross-origin commit to roll back. T015 closes on the documented separate-transaction contract.
+
+## Cycle 30 — durable source review and WebKit navigation
+
+The source claim preview lost Reject decisions on reload and treated a Studio link as the only apply path. The new bounded local log binds each decision to an exact candidate-file SHA-256 digest. A Studio-open receipt is verified only when the current selected catalog contains the proposed claim value/status after a rebuild. Synthetic domain and browser journeys pass reject reload, pending Studio and verified catalog match; the existing official weapon patch owner remains separate and linked. In the cross-engine Home regression, WebKit alone reported a cancelled directory icon catalog GET during quick native navigation. A bodyless `keepalive` GET for that secondary icon lookup passed the isolated strict WebKit navigation test; the broad three-engine gate still needs a rerun.
+
+## Cycle 31 — limited Story Mission admission
+
+The source audit had names staged but no Story records, despite two named providers agreeing on six identities. Individual DMZTracker pages were checked for three short objective labels each, with COD Central's walkthrough directory corroborating names. Six `observed`, spoiler-protected Story records were admitted with separate source records; disputed rewards, dependencies, item counts, map coordinates and current-build verification stayed out. No fixed Orders page was assigned because chapter choice can change order. The 23 unresolved Hajin page slots remain explicit. The canonical build emitted 1,886 routes, focused catalog/audit tests passed 26/26 and the audit browser journey passed. T008 closes as a bounded source audit, not complete mission coverage.
+
+## Cycle 32 — full runtime regression fixes
+
+The first full runtime gate after Story admission found two unrelated assertions: a pinned FOB fixture still expected the previous catalog content version, and the new Data review link pointed to `/weapon-updates/` instead of the registered `/armory/updates/` route. The fixture was updated for the deliberate content-version bump and the link was corrected. Focused FOB and generated-site topology checks then passed 10/10 with zero graph issues. A fresh full runtime rerun is in progress; neither failure is counted as a pass before that result.
+
+## Cycle 33 — implementation convergence and release evidence
+
+The corrected full guide runtime suite passed 1,022/1,022. Map runtime passed 243/243. The guide build produced 1,886 routes, and the map typecheck/build passed. The full guide browser run reached its final after-run review with no failure: responsive, search, save/recovery, 5,000-item collection, connected layout and source/plan journeys passed. The map browser suite passed its source, private workspace, X01, key, route and mobile cases with no runtime errors or external requests. Separate mission-audit, backup and Field desk browser journeys passed. Formatting and whitespace checks passed. A cross-check of FR-001–FR-018 against tasks T001–T023 found no unimplemented task within the documented bounded scope; the release audit records incomplete source coverage, independent visual/reviewer gates and absent real-game certification without turning them into fabricated passes. No implementation repair was needed in this final cycle.

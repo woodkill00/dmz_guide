@@ -22,6 +22,7 @@ try {
       errors = [];
     page.on("pageerror", (error) => errors.push(error.message));
     try {
+      let renamedCapture = false;
       await page.goto("about:blank");
       const png = Buffer.from(
         await page.evaluate(() => {
@@ -57,7 +58,7 @@ try {
             records: [
               {
                 id: "synthetic-a",
-                name: "Synthetic A",
+                name: renamedCapture ? "Synthetic changed A" : "Synthetic A",
                 category: "poiLabel",
                 mapId: "hajin",
                 coordinateSpaceVersion: "hajin-official-v1-4096",
@@ -187,6 +188,19 @@ try {
       await page.locator("#run-plan-decline").waitFor();
       await page.locator("#run-plan-decline").click();
       assert.equal(await page.locator("#run-plan-accept").count(), 0);
+      renamedCapture = true;
+      await page.goto(base + "/?tool=explore");
+      await page.locator("#collection-plan-file").waitFor({ state: "attached" });
+      const oldCapturePlan = structuredClone(plan);
+      oldCapturePlan.items[0].areas = [oldCapturePlan.items[0].areas[0]];
+      await page.locator("#collection-plan-file").setInputFiles({
+        name: "old-capture-plan.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify(oldCapturePlan)),
+      });
+      await page.locator("#collection-plan-accept").click();
+      await page.getByText("Synthetic A · no positioned match; list only", { exact: true }).waitFor();
+      assert.equal(await page.locator("#collection-plan-route").isDisabled(), true);
       assert.deepEqual(errors, []);
       console.log(
         `PASS ${engineName} reviewed collection import, no automatic route writes, registered-only highlight/road-route creation, unknown list-only, persistence and duplicate prevention`,

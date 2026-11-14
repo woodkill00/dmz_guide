@@ -330,6 +330,28 @@ export function createCollectionImport(h: Host) {
         list.append(row);
       }
       root.append(list);
+      const routeButton = button(
+        "Create new collection route",
+        async () => {
+          try {
+            if (!h.allowed()) return;
+            const records = [
+              ...new Map(
+                resolved().map((record) => [record.key, record]),
+              ).values(),
+            ];
+            if (!records.length || records.length > 32)
+              throw Error(
+                "Select 1–32 areas with registered positions. Unknown areas stay list-only.",
+              );
+            await h.createRoute(records);
+          } catch (error) {
+            h.error(error);
+          }
+        },
+        "collection-plan-route",
+      );
+      routeButton.disabled = resolved().length === 0;
       root.append(
         button(
           "Highlight selected areas",
@@ -338,27 +360,7 @@ export function createCollectionImport(h: Host) {
           },
           "collection-plan-highlight",
         ),
-        button(
-          "Create new collection route",
-          async () => {
-            try {
-              if (!h.allowed()) return;
-              const records = [
-                ...new Map(
-                  resolved().map((record) => [record.key, record]),
-                ).values(),
-              ];
-              if (!records.length || records.length > 32)
-                throw Error(
-                  "Select 1–32 areas with registered positions. Unknown areas stay list-only.",
-                );
-              await h.createRoute(records);
-            } catch (error) {
-              h.error(error);
-            }
-          },
-          "collection-plan-route",
-        ),
+        routeButton,
         button("Open routes", h.openRoutes),
         button("Clear this plan", () => {
           current = null;

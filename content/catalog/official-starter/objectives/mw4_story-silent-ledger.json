@@ -1,0 +1,22 @@
+{
+  "description": "Reported operation at the Heavenly Luck Casino. Secondary-source report; current DMZ build and rewards are not independently verified.",
+  "effects": [],
+  "id": "mw4:story-silent-ledger",
+  "name": "Operation Silent Ledger",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-story-20261114",
+    "source:dmztracker-story-silent-ledger-20261114"
+  ],
+  "spoiler": true,
+  "status": "observed",
+  "steps": [
+    "Enter the casino.",
+    "Breach the vault.",
+    "Secure the plates."
+  ],
+  "track": "dmz-story"
+}

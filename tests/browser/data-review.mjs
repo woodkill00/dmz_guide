@@ -113,6 +113,30 @@ try {
     await page.locator("#source-change-status").innerText(),
     /1 rejected/,
   );
+  await page.reload();
+  await page.waitForFunction(
+    () => document.querySelector("main")?.getAttribute("aria-busy") === "false",
+  );
+  await page.locator("#source-impact-file").setInputFiles({
+    name: "synthetic-candidate.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(candidate)),
+  });
+  await page.locator("#source-impact-check").click();
+  await page.waitForFunction(() =>
+    document
+      .querySelector("#source-impact-status")
+      ?.textContent?.includes("1 affected"),
+  );
+  assert.match(
+    await page.locator("#source-change-status").innerText(),
+    /1 rejected/,
+  );
+  await page.locator("#source-decision-history summary").click();
+  assert.match(
+    await page.locator("#source-decision-history").innerText(),
+    /Rejected/,
+  );
   const persisted = await page.evaluate(async () => {
     const { state } = await import("/assets/src/client/common.mjs");
     const { loadRunPlans } = await import("/assets/src/domain/run-plans.mjs");
@@ -123,6 +147,55 @@ try {
   });
   assert.equal(persisted.description, pack.objectives[0].description);
   assert.equal(persisted.planCount, 1);
+  const secondCandidate = structuredClone(candidate);
+  secondCandidate.objectives[0].description += " Second source review.";
+  await page.locator("#source-impact-file").setInputFiles({
+    name: "second-candidate.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(secondCandidate)),
+  });
+  await page.locator("#source-impact-check").click();
+  await page.locator("[data-open-claim]").waitFor();
+  await page.locator("[data-open-claim]").evaluate((link) => {
+    link.addEventListener("click", (event) => event.preventDefault(), {
+      once: true,
+    });
+    link.click();
+  });
+  await page.locator("#source-decision-history summary").click();
+  assert.match(
+    await page.locator("#source-decision-history").innerText(),
+    /Studio opened/,
+  );
+  await page.evaluate(async (nextValue) => {
+    const { readRecord, commitRecord } = await import(
+      "/assets/src/storage/store.mjs"
+    );
+    const current = await readRecord("content", nextValue.id);
+    const next = structuredClone(current.value);
+    next.pack.claims[0].value = nextValue.claims[0].value;
+    await commitRecord("content", nextValue.id, next, current.value.revision);
+  }, secondCandidate);
+  await page.reload();
+  await page.waitForFunction(
+    () => document.querySelector("main")?.getAttribute("aria-busy") === "false",
+  );
+  await page.locator("#source-decision-history summary").click();
+  assert.match(
+    await page.locator("#source-decision-history").innerText(),
+    /Verified in current catalog/,
+  );
+  await page.locator("#source-impact-file").setInputFiles({
+    name: "second-candidate.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(secondCandidate)),
+  });
+  await page.locator("#source-impact-check").click();
+  await page.waitForFunction(() =>
+    document
+      .querySelector("#source-impact-status")
+      ?.textContent?.includes("1 affected"),
+  );
   const planLink = page.locator("#source-impact-results a");
   assert.match(await planLink.getAttribute("href"), /plan=qa%3Asource-impact/);
   await planLink.click();

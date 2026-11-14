@@ -1,0 +1,22 @@
+{
+  "description": "Reported operation at Chang-san Air Base. Secondary-source report; current DMZ build and rewards are not independently verified.",
+  "effects": [],
+  "id": "mw4:story-iron-citadel",
+  "name": "Operation Iron Citadel",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-story-20261114",
+    "source:dmztracker-story-iron-citadel-20261114"
+  ],
+  "spoiler": true,
+  "status": "observed",
+  "steps": [
+    "Infiltrate the base.",
+    "Recon the armory ordnance.",
+    "Disrupt the operation."
+  ],
+  "track": "dmz-story"
+}

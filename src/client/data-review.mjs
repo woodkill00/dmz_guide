@@ -10,17 +10,76 @@ import {
 } from "../domain/mission-audit.mjs";
 import { contentHealth } from "../domain/content-health.mjs";
 import { sourceClaimChanges } from "../domain/source-change-review.mjs";
+import {
+  emptySourceReviewLog,
+  validateSourceReviewLog,
+  recordSourceDecision,
+  verifySourceDecisions,
+} from "../domain/source-review-log.mjs";
 
 const query = document.querySelector("#review-query");
 let renderedPack = null;
 let claimQueue = [];
-const rejectedClaims = new Set();
+let candidateDigest = null;
+let reviewLog = null;
+let reviewLogError = "";
+const reviewKey = (id) => `dmz:source-review:v1:${id}`;
+function loadReviewLog() {
+  try {
+    const raw = localStorage.getItem(reviewKey(state.pack.id));
+    const loaded = raw
+      ? validateSourceReviewLog(JSON.parse(raw), state.pack.id)
+      : emptySourceReviewLog(state.pack.id);
+    const verified = verifySourceDecisions(loaded, state.pack);
+    if (verified.changed)
+      localStorage.setItem(
+        reviewKey(state.pack.id),
+        JSON.stringify(verified.log),
+      );
+    reviewLog = verified.log;
+    reviewLogError = "";
+  } catch (reason) {
+    reviewLog = null;
+    reviewLogError = `Source decisions unavailable: ${reason.message}. Candidate catalog unchanged.`;
+  }
+}
+function decisionFor(row) {
+  return reviewLog?.entries.find(
+    (entry) =>
+      entry.candidateDigest === candidateDigest && entry.claimId === row.id,
+  );
+}
+function saveDecision(row, decision) {
+  if (!candidateDigest || !reviewLog)
+    throw Error(
+      "Review decisions unavailable; keep the candidate file and retry",
+    );
+  const entry = {
+    claimId: row.id,
+    candidateDigest,
+    decision,
+    at: new Date().toISOString(),
+    citation: row.citation,
+    sourceDate: row.sourceDate,
+    currentBuild: row.currentBuild,
+    candidateBuild: row.candidateBuild,
+    proposed: JSON.stringify({ value: row.newValue, status: row.newStatus }),
+    verifiedAt: null,
+  };
+  const next = recordSourceDecision(reviewLog, entry);
+  localStorage.setItem(reviewKey(state.pack.id), JSON.stringify(next));
+  reviewLog = next;
+  renderClaimQueue();
+}
 function renderClaimQueue() {
   const descriptor = state.catalogs.find((row) => row.id === state.pack.id);
   const packKey = descriptor?.path.match(/\/([a-z0-9-]+)\.json$/)?.[1];
-  const visible = claimQueue.filter((row) => !rejectedClaims.has(row.id));
+  const visible = claimQueue.filter(
+    (row) => decisionFor(row)?.decision !== "rejected",
+  );
+  const rejected = claimQueue.length - visible.length;
   document.querySelector("#source-change-status").textContent =
-    `${visible.length} proposed claim changes · ${rejectedClaims.size} rejected in this preview. Catalog and private progress unchanged.`;
+    `${visible.length} proposed claim changes · ${rejected} rejected for this candidate. ${reviewLogError || "Decisions saved only on this device. Catalog and private progress unchanged."}`;
   document.querySelector("#source-change-results").innerHTML = visible.length
     ? `<ul>${visible
         .map((row) => {
@@ -30,18 +89,37 @@ function renderClaimQueue() {
             packKey && row.state !== "added"
               ? `http://127.0.0.1:4174/?${new URLSearchParams({ packKey, packId: state.pack.id, id: row.id, intent: "edit" })}`
               : "http://127.0.0.1:4174/";
-          return `<li><strong>${esc(row.field)}</strong> · ${esc(row.state)} · ${esc(row.entityId)}<br>Current: ${esc(oldValue)} (${esc(row.oldStatus || "none")}) → proposed: ${esc(newValue)} (${esc(row.newStatus || "none")})<br>${esc(row.applicability)} · ${esc(row.sourceDate || "source date unknown")} ${row.citation ? `<a href="${esc(row.citation)}" target="_blank" rel="noopener noreferrer">Citation</a>` : "Citation unavailable"}<br><a href="${esc(edit)}" rel="noreferrer">Review and apply in Studio</a> <button type="button" data-reject-claim="${esc(row.id)}">Reject this proposal</button></li>`;
+          return `<li><strong>${esc(row.field)}</strong> · ${esc(row.state)} · ${esc(row.entityId)}<br>Current: ${esc(oldValue)} (${esc(row.oldStatus || "none")}) → proposed: ${esc(newValue)} (${esc(row.newStatus || "none")})<br>${esc(row.applicability)} · ${esc(row.sourceDate || "source date unknown")} ${row.citation ? `<a href="${esc(row.citation)}" target="_blank" rel="noopener noreferrer">Citation</a>` : "Citation unavailable"}<br>${decisionFor(row)?.decision === "opened-studio" ? "Studio opened; waiting for a rebuilt catalog to match this proposal. " : ""}<a href="${esc(edit)}" rel="noreferrer" data-open-claim="${esc(row.id)}">Review and apply in Studio</a> <button type="button" data-reject-claim="${esc(row.id)}">Reject this proposal</button></li>`;
         })
         .join("")}</ul>`
     : "<p>No pending claim changes in this preview.</p>";
+  const history = reviewLog?.entries.slice(-20).reverse() || [];
+  document.querySelector("#source-decision-history").innerHTML = history.length
+    ? `<details><summary>Saved source decisions (${reviewLog.entries.length})</summary><ul>${history.map((entry) => `<li>${esc(entry.claimId)} · ${esc(entry.decision === "verified-in-catalog" ? "Verified in current catalog" : entry.decision === "opened-studio" ? "Studio opened; awaiting rebuilt catalog" : "Rejected")} · ${esc(entry.candidateBuild)} · ${esc(new Date(entry.at).toLocaleDateString())}</li>`).join("")}</ul></details>`
+    : "";
 }
 document
   .querySelector("#source-change-results")
   .addEventListener("click", (event) => {
-    const button = event.target.closest("[data-reject-claim]");
+    const button = event.target.closest(
+      "[data-reject-claim],[data-open-claim]",
+    );
     if (!button) return;
-    rejectedClaims.add(button.dataset.rejectClaim);
-    renderClaimQueue();
+    const row = claimQueue.find(
+      (entry) =>
+        entry.id === (button.dataset.rejectClaim || button.dataset.openClaim),
+    );
+    if (!row) return;
+    try {
+      saveDecision(
+        row,
+        button.dataset.rejectClaim ? "rejected" : "opened-studio",
+      );
+    } catch (reason) {
+      document.querySelector("#source-change-status").textContent =
+        `${reason.message}. Decision not saved; catalog unchanged.`;
+      if (button.dataset.openClaim) event.preventDefault();
+    }
   });
 function render() {
   if (renderedPack !== state.pack?.id) {
@@ -50,7 +128,8 @@ function render() {
     document.querySelector("#source-impact-status").textContent = "";
     document.querySelector("#source-impact-results").replaceChildren();
     claimQueue = [];
-    rejectedClaims.clear();
+    candidateDigest = null;
+    loadReviewLog();
     renderClaimQueue();
   }
   const result = dataReviewIssues(state.pack);
@@ -117,7 +196,7 @@ document
     const selected = state.pack;
     results.replaceChildren();
     claimQueue = [];
-    rejectedClaims.clear();
+    candidateDigest = null;
     renderClaimQueue();
     try {
       const file = document.querySelector("#source-impact-file").files?.[0];
@@ -125,7 +204,8 @@ document
       if (file.size > LIMITS.packBytes)
         throw Error("Catalog file exceeds the 8 MiB preview limit.");
       status.textContent = "Checking candidate catalog locally…";
-      const candidate = parseBounded(await file.text(), LIMITS.packBytes);
+      const raw = await file.text();
+      const candidate = parseBounded(raw, LIMITS.packBytes);
       const schemaResponse = await fetch("/assets/schemas/pack.schema.json");
       if (!schemaResponse.ok) throw Error("Catalog schema unavailable.");
       validatePack(candidate, await schemaResponse.json());
@@ -136,6 +216,14 @@ document
         throw Error("Selected catalog changed; choose the file again.");
       const impact = previewSourceImpact(selected, candidate, plans);
       claimQueue = sourceClaimChanges(selected, candidate).changes;
+      candidateDigest = Array.from(
+        new Uint8Array(
+          await crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw)),
+        ),
+        (byte) => byte.toString(16).padStart(2, "0"),
+      ).join("");
+      if (state.pack !== selected)
+        throw Error("Selected catalog changed; choose the file again.");
       renderClaimQueue();
       const affected = impact.filter((row) => row.changes.length);
       status.textContent = `${plans.plans.length} saved plans checked · ${affected.length} affected. No catalog or plan was changed.`;

@@ -1,0 +1,22 @@
+{
+  "description": "Reported operation in The Grid. Secondary-source report; current DMZ build and rewards are not independently verified.",
+  "effects": [],
+  "id": "mw4:story-grid-assault",
+  "name": "Operation Grid Assault",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-story-20261114",
+    "source:dmztracker-story-grid-assault-20261114"
+  ],
+  "spoiler": true,
+  "status": "observed",
+  "steps": [
+    "Access the network.",
+    "Download network intel.",
+    "Upload the kill switch."
+  ],
+  "track": "dmz-story"
+}

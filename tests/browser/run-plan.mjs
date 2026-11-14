@@ -127,6 +127,15 @@ try {
   );
   assert.equal(mapPayload.kind, "dmz-run-plan-handoff");
   assert.equal(mapPayload.packId, "official:mw4-dmz-starter");
+  await page.evaluate(() => {
+    window.open = () => null;
+  });
+  await page.locator("[data-send-map]").click();
+  assert.match(
+    await page.locator("#error").innerText(),
+    /Map window blocked.*Download the plan/s,
+  );
+  assert.equal(await page.locator(".run-plan-card").count(), 1);
   await page.locator("#run-plan-import").setInputFiles(file);
   await page.locator("#run-plan-restore").waitFor({ state: "visible" });
   await page.evaluate(async () => {

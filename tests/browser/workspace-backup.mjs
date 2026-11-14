@@ -44,6 +44,30 @@ try {
     await page.locator("#workspace-modules").innerText(),
     /Guide profile/,
   );
+  const moduleEvent = page.waitForEvent("download");
+  await page.locator("#workspace-modules button").first().click();
+  const moduleDownload = await moduleEvent;
+  const moduleText = await (
+    await import("node:fs/promises")
+  ).readFile(await moduleDownload.path(), "utf8");
+  assert.deepEqual(JSON.parse(moduleText), profile);
+  assert.match(
+    await page.locator("#workspace-import-preview").innerText(),
+    /download requested/i,
+  );
+  const oldBundle = JSON.parse(bundle);
+  oldBundle.version = 0;
+  await page.locator("#workspace-import").setInputFiles({
+    name: "old-bundle.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(oldBundle)),
+  });
+  await page.waitForFunction(() =>
+    document
+      .querySelector("#workspace-import-preview")
+      ?.textContent.includes("Nothing restored"),
+  );
+  assert.equal(await page.locator("#workspace-modules h3").count(), 0);
   const damaged = JSON.parse(bundle);
   damaged.modules[0].bytes++;
   await page.locator("#workspace-import").setInputFiles({

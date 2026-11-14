@@ -13,7 +13,7 @@ Reviewed 2026-11-14. The owner previously authorized collection from these named
 
 Sources: [COD Central Orders guide](https://codcentral.net/blog/mw4-dmz-orders/) (updated 2026-11-13), [DMZTracker Orders directory](https://www.dmztracker.gg/orders/) and its [Gear Up](https://www.dmztracker.gg/orders/gear-up/), [Crackshot](https://www.dmztracker.gg/orders/crackshot/) and [First Op](https://www.dmztracker.gg/orders/first-op/) records (shown as launch-build reports, last verified 2026-10-22). These are secondary reports. The official starter continues to mark current DMZ build verification as unknown.
 
-The first page has three admitted Order records. The remaining 23 current Hajin page slots and every Story Mission remain unrecorded in the starter. X01 has its own reported page set; no X01 count is admitted into the current Hajin denominator. Imported records omit disputed rewards, effects and unsupported item quantities.
+The first page has three admitted Order records. The remaining 23 current Hajin page slots remain unrecorded in the starter. Six named Story Missions were later admitted as separately reported records without assigning them to a disputed Orders page. X01 has its own reported page set; no X01 count is admitted into the current Hajin denominator. Imported records omit disputed rewards, effects and unsupported item quantities.
 
 ## Wider source comparison staged for review
 
@@ -27,14 +27,14 @@ COD Central's [DMZ guide directory](https://codcentral.net/mw4-dmz/) currently l
 
 | Reported mission | Source | Current disposition |
 | --- | --- | --- |
-| Operation Critical Extraction | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-critical-extraction/) | Review steps, prerequisite chapter and reward conflict before admission. The article itself reports a promised cash payout differing from its observed payout. |
-| Operation Shopping Hacks | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-shopping-hacks/) | Review exact steps, item requirements and build. |
-| Operation Silent Ledger | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-silent-ledger/) | Review exact steps, key/code behavior and build. |
-| Operation Iron Citadel | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-iron-citadel/) | Review exact steps, access requirements and build. |
-| Operation Grid Assault | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-grid-assault/) | Review exact steps and build. |
-| Operation Fallen Ember | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-fallen-ember/) | Review exact steps, hazard requirements and build. |
+| Operation Critical Extraction | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-critical-extraction/) | Identity and short steps admitted; prerequisite chapter and conflicting cash payout remain unresolved. |
+| Operation Shopping Hacks | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-shopping-hacks/) | Identity and short steps admitted; item requirements and current build remain unresolved. |
+| Operation Silent Ledger | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-silent-ledger/) | Identity and short steps admitted; key/code behavior and current build remain unresolved. |
+| Operation Iron Citadel | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-iron-citadel/) | Identity and short steps admitted; access requirements and current build remain unresolved. |
+| Operation Grid Assault | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-grid-assault/) | Identity and short steps admitted; current build remains unresolved. |
+| Operation Fallen Ember | [Walkthrough](https://codcentral.net/blog/mw4-dmz-operation-fallen-ember/) | Identity and short steps admitted; hazard requirements and current build remain unresolved. |
 
-The related [DMZTracker mission directory](https://www.dmztracker.gg/missions/) offers another identity/check source. Until the individual records have been reconciled, the Story group remains an explicit catalog gap. The editorial audit must not convert an article title into a completed player objective.
+The related [DMZTracker mission directory](https://www.dmztracker.gg/missions/) offers another identity/check source. Six individual records were reconciled for identity and short objective labels on 2026-11-14. Rewards, prerequisites, item needs and current-build behavior remain explicit audit gaps. A source-reported mission record does not mark player progress complete.
 
 ## Complete reported Hajin roster staged, not published
 
@@ -67,4 +67,8 @@ The [COD Central 24-page table](https://codcentral.net/blog/mw4-dmz-orders/) rep
 | Page 23 | Rule of Three; Temp Job; No Time |
 | Page 24 | High Quality Loot; You Won't See Me; Upper Class |
 
-This is 72 article rows, including six chapter-ending Story Mission names also presented as Orders. [DMZTracker's Orders directory](https://www.dmztracker.gg/orders/) currently lists 66 linked rows and uses chapter labels for many of them. The six-row numerical difference is consistent with Story Mission rows appearing only in COD Central's Orders table, but that is an inference, not a reconciled identity match. No reward, prerequisite, item quantity, map position or current-build status has been inferred from this roster. The next admission pass needs each candidate's detail, steps and source date checked; names alone are insufficient.
+This is 72 article rows, including six chapter-ending Story Mission names also presented as Orders. [DMZTracker's Orders directory](https://www.dmztracker.gg/orders/) currently lists 66 linked rows and uses chapter labels for many of them. The six-row numerical difference is consistent with Story Mission rows appearing only in COD Central's Orders table, but that is an inference, not a reconciled identity match. No reward, prerequisite, item quantity, map position or current-build status has been inferred from this roster. The next Orders admission pass needs each candidate's detail, steps and source date checked; names alone are insufficient.
+
+## Story identity and short-step admission — 2026-11-14
+
+The six COD Central walkthrough titles were corroborated by individual DMZTracker Story Mission records: [Critical Extraction](https://www.dmztracker.gg/missions/critical-extraction/), [Shopping Hacks](https://www.dmztracker.gg/missions/shopping-hacks/), [Silent Ledger](https://www.dmztracker.gg/missions/silent-ledger/), [Iron Citadel](https://www.dmztracker.gg/missions/iron-citadel/), [Grid Assault](https://www.dmztracker.gg/missions/grid-assault/) and [Fallen Ember](https://www.dmztracker.gg/missions/fallen-ember/). Their three displayed objective labels were paraphrased into the observed catalog records. All six are spoiler-protected. No Orders page position, reward, unlock, prerequisite, item count or map coordinate was imported. DMZTracker lists launch or Season 1 verification dates that differ by mission; the current local game build has not been independently checked. The official starter now contains 119 objectives: three reported Orders, six reported Story Missions, and 110 pre-existing objective records. The 23 unrecorded Hajin Orders pages remain visible in the audit.

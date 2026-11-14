@@ -7,22 +7,22 @@ import {
 } from "../../src/domain/mission-audit.mjs";
 import { loadFixturePack } from "../helpers/catalog.mjs";
 
-test("official starter has three reported page-one Orders and 23 unrecorded Hajin pages", () => {
+test("official starter has three page-one Orders, six reported Story Missions and 23 unrecorded Hajin pages", () => {
   const pack = loadFixturePack("official-starter");
   assert.equal(pack.id, "official:mw4-dmz-starter");
-  assert.equal(pack.objectives.length, 113);
+  assert.equal(pack.objectives.length, 119);
   assert.equal(
     pack.objectives.filter((row) =>
       ["dmz-order", "dmz-story"].includes(row.track),
     ).length,
-    3,
+    9,
   );
   const targets = missionAuditTargets(pack);
   assert.equal(
     targets.filter((row) => row.kind === "page" && !row.recorded).length,
     23,
   );
-  assert.equal(targets.filter((row) => row.kind === "mission").length, 27);
+  assert.equal(targets.filter((row) => row.kind === "mission").length, 81);
   assert.equal(
     targets.filter((row) => row.kind === "page" && row.recorded).length,
     1,

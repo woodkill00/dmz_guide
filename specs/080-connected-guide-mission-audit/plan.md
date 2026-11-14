@@ -2,11 +2,11 @@
 
 **Branch**: `feature/080-connected-guide-mission-audit`
 **Spec**: `spec.md`
-**Status**: In progress; mission audit and selected connected views implemented, remaining slices tracked in `tasks.md`
+**Status**: In progress; connected views and source-backed mission audit implemented, release evidence tracked in `tasks.md`
 
 ## Summary
 
-Build one connected player journey while adding a separate editorial mission-coverage workbench. The mission audit is the first usable slice because it exposes the current zero-record Orders/Story gap without pretending the catalog is complete. Subsequent slices connect existing inventory, upgrade, mission, key, item, weapon and map services through stable IDs and explicit user actions. Recovery and source-review controls follow before release-polish gates.
+Build one connected player journey while adding a separate editorial mission-coverage workbench. The audit began with a zero-record Orders/Story gap; the current starter has three source-reported Orders and six source-reported Story Missions while 23 Hajin Orders pages remain unrecorded. Connected inventory, upgrade, mission, key, item, weapon and map views use stable IDs and explicit user actions. Recovery and source-review controls precede the final release gates.
 
 ## Technical context and constitution check
 
@@ -37,7 +37,7 @@ Build one connected player journey while adding a separate editorial mission-cov
 ## Mission audit page layout
 
 1. **Header**: selected pack and scoped page set; recorded/unrecorded page counts, known Story Mission count, and editorial work counts. Warn when the catalog lacks mission records.
-2. **Left list**: Orders pages 1–24 with recorded count and strongest unresolved state; Story Missions as a separate group; later X01/seasonal sets as separate labelled groups. Filters for Not checked, Needs correction, Fill later, Ready for review, Checked, Missing content, Stale and source conflict. Search names only after spoiler projection.
+2. **List**: Orders pages 1–24 with recorded/unrecorded state and Story Mission sections as a separate group. Later X01/seasonal sets stay separately scoped until their denominator is evidenced. Status filters and search use spoiler-safe labels; computed missing/stale warnings remain visible in detail. Source conflicts are reviewed in Data review.
 3. **Detail pane**: selected page or mission, compact section rows, computed presence/evidence badge, editable editorial state and note, last reviewed date, source/build signal, exact content/edit links. An unrecorded page shows only its roster task and a blank add-record path.
 4. **Footer/actions**: Save with truthful local status, Undo last audit change, Export audit, Preview restore, and a link to the current Missions player tracker. Bulk state changes require a scoped preview and do not mark content verified.
 
@@ -51,7 +51,7 @@ For player preparation: `selected goals + existing profile + catalog → one exp
 
 - **Put audit states in the player profile**: rejected because mission content review and gameplay completion are different identities and retention rules.
 - **Treat page number as mission identity**: rejected because chapter selection can change display order and seasons add new sets.
-- **Show 72 placeholder missions from third-party claims**: rejected until names/objectives are captured and reviewed. Empty page slots are honest and already supported.
+- **Show 72 placeholder missions from third-party claims**: rejected because chapter placement and individual steps remain unresolved. The names are staged in the editorial source review; only checked records are admitted, while empty page slots remain honest.
 - **One-click backup by reading every local origin**: rejected as a planning assumption; browser same-origin storage prevents direct reads. Explicit exports plus a manifest are the initial contract.
 - **New global database/backend**: unnecessary for the first local-first slices; revisit only after measured transfer or recovery limitations.
 
