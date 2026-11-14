@@ -119,3 +119,7 @@ The first Data review summary exposed mission roster counts but not the other li
 ## Cycle 12 — 2026-11-13, reversible recovery and clean recheck
 
 After the user's explicit instruction to handle cleanup, automatic approval review again rejected the narrow deletion as blocked by policy. A verified reversible move of the stopped candidate and lock into ignored `.local/build-recovery-080` was allowed; it preserved all bytes and did not touch current `dist`. A normal build then succeeded with 1,867 routes. The mission audit, Home and Data review checks passed against built files; the serialized runtime suite passed 1,002/1,002; and the full Chromium browser run passed. The build-state blocker is resolved. This cycle does not close unfinished functional tasks or reviewer-owned criteria.
+
+## Cycle 27 — saved match evidence and combined recovery
+
+Analysis found that match stops disappeared after the preview and a generic quantity undo could leave objectives completed. The match receipt now persists plan ID/revision, player-reported stops and objective before/after states. The history directs match events to a guarded combined undo that refuses later stock or objective edits. A Chromium Field desk journey and focused domain tests pass. The test exposed that run-plan UUIDs do not fit catalog record-ID syntax; the bounded match validator now accepts the run-plan ID grammar, and the rebuilt browser journey passes. T012 closes on this evidence; map handoff, multi-module restore and source review gates remain open.

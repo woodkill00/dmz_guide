@@ -126,6 +126,20 @@ try {
   await confirm();
   assert.equal((await profile()).inventory["mw4:bandage"], 9);
   assert.equal((await profile()).fieldOps.carried["mw4:bandage"], 3);
+  await page.goto(base + "/run-plan/?pack=" + encodeURIComponent(pack));
+  await ready();
+  await page.locator("#run-plan-name").fill("Synthetic prep plan");
+  await page.locator("#run-plan-create button").click();
+  await page.getByRole("heading", { name: "Synthetic prep plan" }).waitFor();
+  await page.goto(url);
+  await ready();
+  await page
+    .locator("#match-plan option")
+    .filter({ hasText: "Synthetic prep plan" })
+    .waitFor({ state: "attached" });
+  await page
+    .locator("#match-plan")
+    .selectOption({ label: "Synthetic prep plan" });
   await page.locator("#match-name").fill("Synthetic Hajin run");
   await page.locator("#match-start").click();
   const objectiveId = "mw4:order-gear-up";
@@ -146,20 +160,28 @@ try {
   assert.match(
     await page.locator("#field-review").innerText(),
     /Synthetic Hajin run/,
+    await page.locator("#field-status").innerText(),
   );
   await confirm();
   assert.equal((await profile()).inventory["mw4:bandage"], 13);
   assert.equal((await profile()).fieldOps.carried["mw4:bandage"], 2);
   assert.equal((await profile()).completion[objectiveId], "completed");
-  await page
-    .locator("#field-history details")
-    .first()
-    .locator("summary")
-    .click();
-  await page.locator("[data-undo-field]").first().click();
+  assert.equal((await profile()).fieldOps.matches[0].planRevision, 1);
+  assert.equal(
+    (await profile()).fieldOps.matches[0].stops[0],
+    "Synthetic safe stop",
+  );
+  await page.locator("#match-history > details > summary").click();
+  await page.locator("#match-history li details > summary").click();
+  assert.match(
+    await page.locator("#match-history").innerText(),
+    /Synthetic safe stop/,
+  );
+  await page.locator("[data-undo-match]").click();
   await confirm();
   assert.equal((await profile()).inventory["mw4:bandage"], 9);
   assert.equal((await profile()).fieldOps.carried["mw4:bandage"], 3);
+  assert.equal((await profile()).completion[objectiveId], "unknown");
   await page.selectOption("#discovery-item", "mw4:bandage");
   await page.locator("#discovery-place").fill("Synthetic warehouse");
   await page.locator("#discovery-container").fill("Synthetic locker");

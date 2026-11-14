@@ -22,11 +22,13 @@ export const emptyFieldOps = () => ({
   history: [],
   receipts: [],
   discoveries: [],
+  matches: [],
 });
 export function validateFieldOps(state) {
+  const names = ["version", "carried", "history", "receipts", "discoveries"];
+  if (Object.hasOwn(state || {}, "matches")) names.push("matches");
   assert(
-    keys(state, ["version", "carried", "history", "receipts", "discoveries"]) &&
-      state.version === 1,
+    keys(state, names) && state.version === 1,
     "Invalid field operations state",
   );
   assert(
@@ -134,6 +136,58 @@ export function validateFieldOps(state) {
       .size <= 32,
     "Photo limit reached; export a complete backup before adding more photos",
   );
+  if (state.matches) {
+    assert(
+      Array.isArray(state.matches) && state.matches.length <= 24,
+      "Match history limit exceeded",
+    );
+    for (const match of state.matches)
+      assert(
+        keys(match, [
+          "id",
+          "name",
+          "at",
+          "startedAt",
+          "planId",
+          "planRevision",
+          "stops",
+          "progress",
+          "stockEventId",
+          "undoneAt",
+        ]) &&
+          uuid(match.id) &&
+          text(match.name, 80) &&
+          match.name.trim() &&
+          timestamp(match.at) &&
+          timestamp(match.startedAt) &&
+          (match.planId === null ||
+            (typeof match.planId === "string" &&
+              /^[a-zA-Z0-9:._-]{1,100}$/.test(match.planId))) &&
+          (match.planRevision === null ||
+            (Number.isSafeInteger(match.planRevision) &&
+              match.planRevision >= 0)) &&
+          Array.isArray(match.stops) &&
+          match.stops.length <= 100 &&
+          match.stops.every((stop) => text(stop, 160)) &&
+          Array.isArray(match.progress) &&
+          match.progress.length <= 100 &&
+          match.progress.every(
+            (row) =>
+              keys(row, ["id", "before", "after"]) &&
+              id(row.id) &&
+              ["unknown", "completed"].includes(row.before) &&
+              ["unknown", "completed"].includes(row.after),
+          ) &&
+          (match.stockEventId === null || uuid(match.stockEventId)) &&
+          (match.undoneAt === null || timestamp(match.undoneAt)),
+        "Invalid saved match",
+      );
+    assert(
+      new Set(state.matches.map((match) => match.id)).size ===
+        state.matches.length,
+      "Duplicate match ID",
+    );
+  }
   return state;
 }
 export function journalInventory(previous, next, meta = {}) {
