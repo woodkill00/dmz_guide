@@ -84,6 +84,10 @@ export function featurePages(packs) {
     body: pages[0].body
       .replace("Progress without the spoilers.", "Your missions, in one place.")
       .replace(
+        "SEPARATE TRACKS / CLEAR CHOICES",
+        "HAJIN / X01 MISSION DIRECTORY",
+      )
+      .replace(
         "</header>",
         '</header><p><a href="/missions/audit/">Open mission and story content audit</a></p><section class="panel" aria-labelledby="mission-directory-title"><h2 id="mission-directory-title">All DMZ Orders by page</h2><p>Hajin shows a source-reported 24-page sequence. Chapter selection may change your actual page order; match the chapter and Order name in game. X01 is a separate five-page sequence. Each recorded name opens its individual mission page.</p><div id="mission-directory-hajin"></div><div id="mission-directory-x01"></div></section><section class="panel" aria-labelledby="orders-coverage-title"><h2 id="orders-coverage-title">Hajin page coverage</h2><p>Fixed page assignments and source-reported chapter positions are different evidence. Missing placements never count as completed.</p><div id="orders-coverage" class="orders-coverage"></div></section><section class="panel" aria-labelledby="story-workspace-title"><h2 id="story-workspace-title">Story mission workspace</h2><p>Open a recorded story mission below to inspect its sourced steps, requirements, linked records, evidence and your manual completion state. Missing steps remain unrecorded.</p><button type="button" id="show-story-missions">Show story missions</button></section>',
       )
@@ -96,8 +100,8 @@ export function featurePages(packs) {
         '<form data-focused-missions="true" id="progress-filters"',
       )
       .replace(
-        "DMZ Orders, upgrades and campaign are separate.",
-        "DMZ Orders and story missions are shown here. Upgrades and campaign remain separate.",
+        "DMZ Orders, upgrades and campaign are separate. Status-only corrections never consume stock. A separately confirmed purchase record deducts saved pre-purchase stock and tracks recorded usage; nothing triggers a game action.",
+        "Browse Hajin and X01 Orders by chapter. Open a mission for its tasks, reported rewards and sources; track completion in your private profile.",
       ),
   };
   return [...pages, focused, missions].map((page) => ({

@@ -4,6 +4,8 @@ import { itemOverview } from "./item-summary.mjs";
 import { isLootType, LOOT_TYPES_INDEX } from "../domain/loot-types.mjs";
 import { renderTcnoItemIntel } from "./tcno-item-intel.mjs";
 import { x01Printer, x01Uses } from "../content/x01-printer.mjs";
+import { hajinPageIntel, missionSources } from "../content/mission-intel.mjs";
+import { hajinOrderSequence } from "../content/hajin-order-sequence.mjs";
 import { buildTargetControl } from "./build-target-control.mjs";
 import {
   itemSection,
@@ -408,6 +410,28 @@ export function renderDetail(
             .join("")
         : "<p>No numeric statistics verified for this record. Missing values are unknown, not zero.</p>"
     }</section>`;
+  if (
+    record.recordType === "objective" &&
+    ["dmz-order", "dmz-story"].includes(record.track)
+  ) {
+    const roster =
+      pack.id === "official:mw4-dmz-starter"
+        ? hajinOrderSequence.pages.find((row) =>
+            row.objectiveIds.includes(record.id),
+          )
+        : null;
+    const x01 = record.orderSet === "x01";
+    const page = roster?.page || record.orderPage;
+    const intel = roster ? hajinPageIntel[roster.page - 1] : null;
+    const listPage =
+      Number.isSafeInteger(page) && (roster || x01)
+        ? `/missions/#${x01 ? "x01" : "hajin"}-page-${page}`
+        : "/missions/";
+    const pageLabel = Number.isSafeInteger(page)
+      ? `${roster?.placement === "reported-sequence" ? "REPORTED CHAPTER SLOT " : "PAGE "}${page}`
+      : "PAGE UNKNOWN";
+    detail += `<section class="panel mission-detail"><p class="eyebrow">${roster ? "HAJIN" : x01 ? "X01" : "DMZ"} / ${e(pageLabel)}</p><h2>Mission tasks</h2>${record.steps?.length ? `<ol class="mission-task-list">${record.steps.map((step) => `<li>${e(step)}</li>`).join("")}</ol>` : "<p>Steps need source review. Check your current game Orders screen.</p>"}<p class="mission-detail-actions"><a href="${e(listPage)}">${roster || x01 ? "All missions in this roster" : "All missions"}</a></p>${intel ? `<details class="mission-rewards"><summary>Reported page rewards</summary><ul>${intel.rewards.map((reward) => `<li>${e(reward)}</li>`).join("")}</ul><p>Page rewards are community reports and may differ in your current game. Reviewed ${e(intel.reviewedAt)}.</p>${intel.notes ? `<p>${e(intel.notes)}</p>` : ""}<p>${intel.sourceKeys.map((key) => `<a href="${e(missionSources[key])}" target="_blank" rel="noopener noreferrer">${e(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details>` : ""}</section>`;
+  }
   if (record.inputs || record.requirements)
     detail += `<section class="panel"><h2>${record.inputs ? "Ingredients & retained tools" : "Requirements"}</h2>${record.station ? `<p>Station: ${e(record.station)}. Eligible game inventory: ${e(record.eligibility)}.</p>` : ""}${record.output ? `<p>Output: ${e(record.output.quantity)} × ${ref(record.output.itemId)}</p>` : ""}<ul class="requirements">${(record.inputs || record.requirements).map((input) => `<li><span>${ref(input.itemId)}<small>${input.consumption === "unknown" ? "Consumption unknown" : input.consumption === "consumed" || input.consumed === true ? "Consumed material" : "Retained tool"} · ${e(find(input.itemId)?.unit || "unknown unit")}</small></span><strong>${e(input.quantity ?? "Unknown")}</strong></li>`).join("") || ((record.ingredientsKnown ?? record.requirementsKnown) ? "<li>No listed material requirements.</li>" : "<li>Unknown cost. Requirements have not been verified.</li>")}</ul><p>Requirement completeness: ${(record.ingredientsKnown ?? record.requirementsKnown) ? "Known for this scoped record" : "Unknown; do not assume complete"}.</p><h3>Prerequisites</h3><ul>${(record.prerequisites || []).map((id) => `<li>${ref(id)}</li>`).join("") || "<li>No listed prerequisites; completeness is not established unless explicitly sourced.</li>"}</ul>${showPlanner ? `<a class="button primary" href="/planner/?pack=${encodeURIComponent(pack.id)}&amp;goal=${encodeURIComponent(record.id)}">Open planner ↗</a>` : ""}</section>`;
   if (record.recordType === "location" || record.recordType === "map")

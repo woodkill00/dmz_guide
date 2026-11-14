@@ -32,6 +32,26 @@ try {
       .innerText(),
     /page may vary/i,
   );
+  const rewards = page.locator("#hajin-page-1 .mission-rewards");
+  assert.equal(await rewards.count(), 1);
+  assert.equal(await rewards.getAttribute("open"), null);
+  await rewards.locator("summary").focus();
+  await page.keyboard.press("Enter");
+  assert.notEqual(await rewards.getAttribute("open"), null);
+  assert.match(await rewards.innerText(), /Medkit/);
+  assert.match(await rewards.innerText(), /reviewed 2026-11-14/);
+  assert((await rewards.boundingBox()).width <= 390);
+  await page.locator('#hajin-page-1 a[href^="/objectives/"]').first().click();
+  assert.match(
+    await page.locator(".mission-detail").innerText(),
+    /Mission tasks/,
+  );
+  assert.match(await page.locator(".mission-task-list").innerText(), /Equip/);
+  await page.goto(`${server.base}/missions/?pack=official%3Amw4-dmz-starter`);
+  await page
+    .locator("#mission-directory-x01 .mission-page-card")
+    .first()
+    .waitFor();
   const sourceCode = page.locator(
     '#mission-directory-x01 a[href="/objectives/mw4--x01-order-source-code/"]',
   );
