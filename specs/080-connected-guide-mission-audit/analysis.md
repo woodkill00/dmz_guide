@@ -167,3 +167,7 @@ A second independent pass reproduced a stale Undo pointer after importing a vali
 ## Cycle 38 — unsaved Undo guard
 
 Independent review found that Undo could silently discard a note edited after the previous save. Undo now asks before discarding unsaved audit edits; Cancel preserves the draft and saved summary. The browser journey exercises Cancel and Confirm before completing Undo. The 2,012-route build and focused audit browser journey passed. Independent re-review and final CI remain release gates.
+
+## Cycle 39 — reviewer checklist reconciliation
+
+The reviewer found that the workspace backup manifest still marked named run plans as having no restore tool, while the run-plan page already has a guarded import/restore flow. The manifest now directs that module to `/run-plan/`; a focused manifest test confirms the inspected bundle returns the correct destination. This fixes misleading backup guidance without changing saved data or import behavior. A feature080 entry in the asset/rights register now records the authorized local factual collection, provider attribution, transformations, excluded media and public-license boundary; the reviewer-owned source-rights criterion remains subject to its evidence assessment.

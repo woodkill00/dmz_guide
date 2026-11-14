@@ -20,7 +20,7 @@ export const WORKSPACE_MODULES = Object.freeze({
   plans: {
     label: "Named run plans",
     origin: "http://127.0.0.1:4173",
-    restore: null,
+    restore: "/run-plan/",
   },
   map: {
     label: "Map private workspace",

@@ -140,3 +140,7 @@ The repair re-review then found two restore-specific paths: an imported audit wi
 ## Undo draft confirmation — 2026-11-14
 
 Independent review found that Undo could discard an unsaved note. Undo now confirms that discard. The focused browser journey verified Cancel retains the draft and Confirm performs Undo; the 2,012-route production build passed. Final independent re-review and CI remain pending.
+
+## Backup restore destination review — 2026-11-14
+
+Reviewer checklist assessment found that named run plans were incorrectly labelled as having no supported restore tool in a workspace bundle preview. The manifest now points to the existing guarded `/run-plan/` import page. The focused manifest regression passed 2/2. Final CI must run on this correction.

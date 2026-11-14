@@ -44,3 +44,14 @@ test("explicit profile export round-trips with digest and named omissions", asyn
     /omission/,
   );
 });
+
+test("named run-plan backup points to its guarded restore page", async () => {
+  const bundle = await createWorkspaceManifest([
+    {
+      name: "run-plans.json",
+      text: JSON.stringify({ kind: "dmz-run-plans", version: 1 }),
+    },
+  ]);
+  const preview = await inspectWorkspaceManifest(bundle);
+  assert.equal(preview.modules[0].restore, "/run-plan/");
+});
