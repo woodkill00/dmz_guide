@@ -1,0 +1,22 @@
+{
+  "description": "Reported in the Hornet’s Nest 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-navigate-with-care",
+  "name": "Navigate With Care",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-navigate-with-care-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Infil with a Polaris Dagor A1",
+    "Clear a North Korean convoy",
+    "Loot and extract the Chemical Components"
+  ],
+  "track": "dmz-order"
+}

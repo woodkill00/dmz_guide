@@ -1,0 +1,22 @@
+{
+  "description": "Reported in the Hornet’s Nest 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-click-boom",
+  "name": "Click, Boom",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-click-boom-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Print 5 C4",
+    "Kill 12 armored enemies with C4",
+    "Kill 5 enemies with a single C4 blast"
+  ],
+  "track": "dmz-order"
+}

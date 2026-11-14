@@ -1,0 +1,21 @@
+{
+  "description": "Reported on fixed Hajin Orders page 15. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-quiet",
+  "name": "Quiet",
+  "oneTime": true,
+  "orderPage": 15,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-quiet-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Loot 10 containers in The Grid without taking damage"
+  ],
+  "track": "dmz-order"
+}

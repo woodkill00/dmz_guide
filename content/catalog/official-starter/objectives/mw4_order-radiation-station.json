@@ -1,0 +1,23 @@
+{
+  "description": "Reported on fixed Hajin Orders page 7. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-radiation-station",
+  "name": "Radiation Station",
+  "oneTime": true,
+  "orderPage": 7,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-radiation-station-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Locate a Fire Station",
+    "Loot 3 Gas Masks or Radiation Pill Bottles",
+    "Search 5 containers while in radiation"
+  ],
+  "track": "dmz-order"
+}

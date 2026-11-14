@@ -1,0 +1,22 @@
+{
+  "description": "Reported as page 21 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-hard-carry",
+  "name": "Hard Carry",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-hard-carry-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Print or extract 2 Nylon Laminate",
+    "Extract 2 Structural Alloy",
+    "Print a Large Backpack"
+  ],
+  "track": "dmz-order"
+}

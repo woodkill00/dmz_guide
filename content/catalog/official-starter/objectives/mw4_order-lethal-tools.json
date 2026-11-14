@@ -1,0 +1,22 @@
+{
+  "description": "Reported on fixed Hajin Orders page 14. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-lethal-tools",
+  "name": "Lethal Tools",
+  "oneTime": true,
+  "orderPage": 14,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-lethal-tools-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Print 6 Lethals",
+    "Kill 13 enemy soldiers with Lethals"
+  ],
+  "track": "dmz-order"
+}

@@ -1,0 +1,22 @@
+{
+  "description": "Reported in The Grid 2/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-civil-service",
+  "name": "Civil Service",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-civil-service-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Enter NuriGO Mall",
+    "Locate City Hall",
+    "Extract the Financial Ledger Fragments"
+  ],
+  "track": "dmz-order"
+}

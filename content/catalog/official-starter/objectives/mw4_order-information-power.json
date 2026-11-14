@@ -1,0 +1,22 @@
+{
+  "description": "Reported on fixed Hajin Orders page 11. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-information-power",
+  "name": "Information Power",
+  "oneTime": true,
+  "orderPage": 11,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-information-power-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Purchase Lieutenant intel at the Boss Board",
+    "Kill a Lieutenant"
+  ],
+  "track": "dmz-order"
+}

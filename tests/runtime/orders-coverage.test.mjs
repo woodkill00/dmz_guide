@@ -37,14 +37,39 @@ test("story mission steps stay bounded and spoiler guarded in the workspace proj
   assert(row.sources.length > 0);
 });
 
-test("official starter keeps 23 Orders pages unknown while reporting six distinct Story Missions", () => {
+test("official starter records reviewed fixed Orders pages and leaves variable positions unassigned", () => {
   const pack = loadFixturePack("official-starter");
   const pages = ordersPageCoverage(pack);
   assert.equal(pages.length, 24);
   assert.equal(
-    pages.filter((page) => page.state === "unrecorded").length === 23 &&
+    pages.filter((page) => page.state === "unrecorded").length === 17 &&
       pages[0].objectiveIds.length === 3,
     true,
+  );
+  assert.equal(
+    pack.objectives.filter((row) => row.track === "dmz-order").length,
+    66,
+  );
+  assert.deepEqual(
+    pages.filter((page) => page.state === "recorded").map((page) => page.page),
+    [1, 4, 7, 10, 11, 14, 15],
+  );
+  assert.equal(
+    pack.objectives.filter(
+      (row) => row.track === "dmz-order" && row.orderPage === undefined,
+    ).length,
+    45,
+  );
+  const orders = pack.objectives.filter((row) => row.track === "dmz-order");
+  assert.equal(new Set(orders.map((row) => row.id)).size, 66);
+  assert.equal(orders.filter((row) => row.name === "Healer").length, 2);
+  assert.equal(orders.filter((row) => row.name === "No Time").length, 2);
+  assert.deepEqual(
+    orders
+      .filter((row) => row.steps.length === 0)
+      .map((row) => row.name)
+      .sort(),
+    ["Astronaut", "Stalking the Stalker"],
   );
   assert.equal(
     pack.objectives.filter((objective) => objective.track === "dmz-story")

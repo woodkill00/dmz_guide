@@ -1,0 +1,22 @@
+{
+  "description": "Reported as page 18 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-abandoned",
+  "name": "Abandoned",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-abandoned-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Enter the Underground below NuriGO Mall",
+    "Kill 10 K9 robot dogs",
+    "Extract 3 Pristine K9 Battery Cores"
+  ],
+  "track": "dmz-order"
+}

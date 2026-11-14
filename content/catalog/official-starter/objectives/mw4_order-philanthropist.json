@@ -1,0 +1,20 @@
+{
+  "description": "Reported as page 19 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-philanthropist",
+  "name": "Philanthropist",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-philanthropist-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Complete the Weekly Random Mission Deploy challenge"
+  ],
+  "track": "dmz-order"
+}

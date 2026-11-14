@@ -1,0 +1,22 @@
+{
+  "description": "Reported on fixed Hajin Orders page 10. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-crashed-crate",
+  "name": "Crashed Crate",
+  "oneTime": true,
+  "orderPage": 10,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-crashed-crate-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Retrieve 3 Lost Supply Drops",
+    "Complete a Loot Radio Tower Side Op"
+  ],
+  "track": "dmz-order"
+}

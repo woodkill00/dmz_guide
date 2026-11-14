@@ -1,0 +1,21 @@
+{
+  "description": "Reported in the Human Intel 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-no-one-left",
+  "name": "No One Left",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-no-one-left-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Clear a military compound",
+    "Pick up the Medical Extraction Intel"
+  ],
+  "track": "dmz-order"
+}

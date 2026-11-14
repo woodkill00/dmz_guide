@@ -1,0 +1,21 @@
+{
+  "description": "Reported in the Underground 2/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-dead-battery",
+  "name": "Dead Battery",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-dead-battery-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Print a DDOS Field Upgrade",
+    "Disable 3 enemy vehicles or drones with the DDOS"
+  ],
+  "track": "dmz-order"
+}

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `feature/080-connected-guide-mission-audit`
 **Created**: 2026-11-13
-**Status**: In progress; partial implementation and acceptance evidence recorded in `acceptance.md`
+**Status**: Implementation complete on feature branch; independent review and source verification limits recorded in `acceptance.md`
 **Input**: Connect the guide's existing inventory, upgrades, missions, weapons, keys, maps, match tools, search, backup, and home page; add a dedicated mission and story content-audit page with section-level follow-up states.
 
 ## User Scenarios & Testing
@@ -58,7 +58,7 @@ Home shows the player's next actions and recent work; search and links open exac
 
 ### Edge Cases
 
-- The current official starter has three source-reported page-one Orders and six source-reported Story Mission records; the audit must show 23 unrecorded Hajin page slots and separate Story Mission sections without fabricating disputed rewards, prerequisites or current-build proof. The original 24-slot empty baseline is retained in historical test/analysis evidence.
+- The current official starter has 66 source-reported Hajin Orders and six source-reported Story Mission records; the audit must show seven recorded fixed rosters and 17 unassigned Hajin page slots and separate Story Mission sections without fabricating disputed rewards, prerequisites or current-build proof. The original 24-slot empty baseline is retained in historical test/analysis evidence.
 - Orders page numbers may vary with chapter choices. Stable mission/chapter identity must survive a changed display page; ambiguous placement is flagged for review.
 - Official Season 1 notes add X01 Orders. Page coverage must be scoped by game build/map/season and support later page sets rather than treating 24 as a permanent complete-game denominator.
 - Editorial status, source verification, and player completion are independent dimensions. None implies another.

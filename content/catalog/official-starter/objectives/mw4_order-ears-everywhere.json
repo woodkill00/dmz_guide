@@ -1,0 +1,21 @@
+{
+  "description": "Reported as page 20 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-ears-everywhere",
+  "name": "Ears Everywhere",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-ears-everywhere-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Hack the broadcast system in the DBN TV building at Cheonwang Peak Array",
+    "Loot the Encrypted Voice Logs"
+  ],
+  "track": "dmz-order"
+}

@@ -1,0 +1,21 @@
+{
+  "description": "Reported on fixed Hajin Orders page 7. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-recognition",
+  "name": "Recognition",
+  "oneTime": true,
+  "orderPage": 7,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-recognition-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Kill 15 enemies with an unsuppressed weapon in a High threat level location"
+  ],
+  "track": "dmz-order"
+}

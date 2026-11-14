@@ -1,0 +1,21 @@
+{
+  "description": "Reported in the Counterfeit 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-robbery",
+  "name": "Robbery",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-robbery-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Open a Safe (often found in Compounds and locked spaces)",
+    "Extract 5,000 total backpack and loadout value"
+  ],
+  "track": "dmz-order"
+}

@@ -1,0 +1,22 @@
+{
+  "description": "Reported as page 20 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-massive-damage",
+  "name": "Massive Damage",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-massive-damage-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Disable the Tank's reactive armor with DDoS",
+    "Hit the Tank with a rocket",
+    "Destroy the Tank"
+  ],
+  "track": "dmz-order"
+}

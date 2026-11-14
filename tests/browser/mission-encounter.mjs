@@ -26,7 +26,7 @@ try {
   await page.waitForFunction(
     () => document.querySelector("main")?.getAttribute("aria-busy") === "false",
   );
-  assert.equal(await page.locator("#orders-coverage .unrecorded").count(), 23);
+  assert.equal(await page.locator("#orders-coverage .unrecorded").count(), 17);
   const pack = collectionFixture();
   const story = {
     ...structuredClone(pack.objectives[0]),

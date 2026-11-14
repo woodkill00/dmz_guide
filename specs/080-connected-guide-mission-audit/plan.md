@@ -2,11 +2,11 @@
 
 **Branch**: `feature/080-connected-guide-mission-audit`
 **Spec**: `spec.md`
-**Status**: In progress; connected views and source-backed mission audit implemented, release evidence tracked in `tasks.md`
+**Status**: Implementation complete on feature branch; independent review and release evidence tracked in `acceptance.md`
 
 ## Summary
 
-Build one connected player journey while adding a separate editorial mission-coverage workbench. The audit began with a zero-record Orders/Story gap; the current starter has three source-reported Orders and six source-reported Story Missions while 23 Hajin Orders pages remain unrecorded. Connected inventory, upgrade, mission, key, item, weapon and map views use stable IDs and explicit user actions. Recovery and source-review controls precede the final release gates.
+Build one connected player journey while adding a separate editorial mission-coverage workbench. The audit began with a zero-record Orders/Story gap; the current starter has 66 source-reported Hajin Orders and six source-reported Story Missions; seven fixed rosters are recorded and 17 variable page slots remain unassigned. Connected inventory, upgrade, mission, key, item, weapon and map views use stable IDs and explicit user actions. Recovery and source-review controls precede the final release gates.
 
 ## Technical context and constitution check
 

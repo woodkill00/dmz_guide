@@ -1,0 +1,22 @@
+{
+  "description": "Reported in the Underground 2/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-death-from-above",
+  "name": "Death From Above",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-death-from-above-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Trick a drone with a Decoy Grenade",
+    "Destroy 3 drones",
+    "Loot a Drone Motherboard from a destroyed drone"
+  ],
+  "track": "dmz-order"
+}

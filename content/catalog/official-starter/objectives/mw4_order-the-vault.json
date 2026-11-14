@@ -1,0 +1,22 @@
+{
+  "description": "Reported as page 20 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-the-vault",
+  "name": "The Vault",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-the-vault-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Enter a Hanex Bank branch.",
+    "Restore access to the vault.",
+    "Find a way inside the vault."
+  ],
+  "track": "dmz-order"
+}

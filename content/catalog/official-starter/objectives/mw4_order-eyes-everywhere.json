@@ -1,0 +1,21 @@
+{
+  "description": "Reported in the Counterfeit 2/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-eyes-everywhere",
+  "name": "Eyes Everywhere",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-eyes-everywhere-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Print a Recon Drone",
+    "Mark 10 enemies in the Heavenly Luck Casino with a Recon Drone"
+  ],
+  "track": "dmz-order"
+}
