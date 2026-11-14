@@ -33,7 +33,7 @@ test("all34 source costs and prerequisite edges imported exactly with stable ide
   const upgrades = p.objectives.filter((o) => o.track === "dmz-upgrade");
   assert.equal(upgrades.length, 34);
   assert.equal(p.items.length, 303);
-  assert.equal(p.contentVersion, "2026.11.14.3");
+  assert.equal(p.contentVersion, "2026.11.14.4");
   assert.equal(new Set(upgrades.map((o) => o.name)).size, 34);
   const bySource = new Map(
     facts.rows.map((f) => [

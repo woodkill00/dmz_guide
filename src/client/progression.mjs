@@ -1,4 +1,5 @@
 import { refreshTrackerContext } from "./quick-tracker.mjs";
+import { hajinOrderSequence } from "../content/hajin-order-sequence.mjs";
 import { fobUpgradeMaterials, parseUpgradeStock } from "./fob-upgrade-card.mjs";
 import { hydrateInventoryIcons } from "./inventory-icons.mjs";
 import { registerDraftGuard } from "./common.mjs";
@@ -59,6 +60,7 @@ let overview = null,
 let familyModel = null,
   openFamily = null,
   familyPage = 0;
+let missionAnchorApplied = false;
 let overviewPack = null,
   overviewProfile = null;
 const labelStatus = (value) =>
@@ -147,9 +149,63 @@ function summaryFor(row, guard) {
   const reasons = upgradeReadinessReasons(state.pack, state.profile, record);
   return `<span class="upgrade-manual">${!row.hidden ? `<label class="upgrade-completion-check"><input type="checkbox" data-complete-upgrade="${esc(row.id)}" aria-label="Completed: ${esc(row.name)}"${row.upgrade.completion === "completed" ? " checked" : ""}${state.profile.schemaVersion < 2 || state.profile.contentVersion !== state.pack.contentVersion ? " disabled data-upgrade-readonly" : ""}><span>Completed</span></label>` : ""}${row.upgrade.tierLabel ? `<small>${esc(guard.text(row.upgrade.tierLabel))}</small>` : ""}</span><span class="upgrade-requirements" data-upgrade-column="materials">${focusedUpgrades ? missingMarkup(state.pack, overview?.rows.get(row.id)) : `${row.requirements.filter((r) => !r.hidden).length} visible requirements`}</span><span class="upgrade-blocker" data-upgrade-column="readiness"><span class="upgrade-cell-label">Readiness</span>${row.disputed ? "Evidence conflict · " : ""}${unknownCost ? "Unknown price / consumption · " : ""}${row.upgrade.completion === "completed" ? "Manual report only" : reasons.length ? "Eligibility unknown / blocked" : "Readiness not certified"}</span>`;
 }
+const missionHref = (id) =>
+  `/objectives/${encodeURIComponent(id).replace(/%3A/gi, "--")}/`;
+const auditHref = (id) => `/missions/audit/?target=${encodeURIComponent(id)}`;
+function renderMissionDirectory() {
+  const hajin = $("#mission-directory-hajin");
+  const x01 = $("#mission-directory-x01");
+  if (!hajin || !x01) return;
+  if (state.pack.id !== "official:mw4-dmz-starter") {
+    hajin.innerHTML =
+      "<p>This catalog has no reviewed Hajin page sequence.</p>";
+    x01.replaceChildren();
+    return;
+  }
+  const byId = new Map(state.pack.objectives.map((row) => [row.id, row]));
+  const packId = encodeURIComponent(state.pack.id);
+  const rowHTML = (id) => {
+    const record = byId.get(id);
+    if (!record) return "<li>Record missing · review source</li>";
+    if (record.spoiler && !state.profile.spoilers)
+      return "<li>Story mission · hidden until spoilers are enabled</li>";
+    return `<li><a href="${esc(missionHref(id))}">${esc(record.name)}</a> <small>${record.status === "observed" ? "Source reported" : esc(record.status || "Unverified")}</small></li>`;
+  };
+  hajin.innerHTML =
+    '<h3>Hajin · pages 1–24</h3><div class="mission-page-grid">' +
+    hajinOrderSequence.pages
+      .map(
+        (row) =>
+          `<section id="hajin-page-${row.page}" class="mission-page-card" aria-label="Hajin page ${row.page}"><h4>Page ${row.page} <small>${esc(row.label)}</small></h4><p>${row.placement === "fixed" ? "Fixed page roster" : "Reported chapter sequence · page may vary"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><a href="${esc(auditHref(`page:${packId}:hajin-launch:${row.page}:roster`))}">Audit page ${row.page}</a></section>`,
+      )
+      .join("") +
+    "</div>";
+  const x01Pages = ordersPageCoverage(state.pack, 5, "x01");
+  x01.innerHTML =
+    '<h3>X01 · pages 1–5</h3><p>Community-reported tasks; confirm against your current Orders screen.</p><div class="mission-page-grid">' +
+    x01Pages
+      .map(
+        (row) =>
+          `<section id="x01-page-${row.page}" class="mission-page-card" aria-label="X01 page ${row.page}"><h4>Page ${row.page} <small>X01 ${row.page}/5</small></h4><p>${row.objectiveIds.length ? "Source-reported roster" : "No recorded Orders yet"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><a href="${esc(auditHref(`page:${packId}:x01-season1:${row.page}:roster`))}">Audit X01 page ${row.page}</a></section>`,
+      )
+      .join("") +
+    "</div>";
+  if (
+    !missionAnchorApplied &&
+    /^#(?:hajin|x01)-page-(?:[1-9]|1\d|2[0-4])$/.test(location.hash)
+  ) {
+    missionAnchorApplied = true;
+    requestAnimationFrame(() =>
+      document
+        .getElementById(location.hash.slice(1))
+        ?.scrollIntoView({ block: "start" }),
+    );
+  }
+}
 function render() {
   refreshTrackerContext();
   if (focusedMissions) {
+    renderMissionDirectory();
     const coverage = ordersPageCoverage(state.pack);
     if (
       selectedOrdersPage &&

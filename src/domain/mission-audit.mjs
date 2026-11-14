@@ -45,7 +45,7 @@ export function missionAuditTargets(
       (id) => sourceById.get(id) || { id, missing: true },
     ),
   });
-  const pages = ordersPageCoverage(pack, pageCount).map((row) => ({
+  const pages = ordersPageCoverage(pack, pageCount, "hajin").map((row) => ({
     id: `page:${scopedId(pack.id)}:${scopedId(pageSet)}:${row.page}:roster`,
     kind: "page",
     section: "roster",
@@ -57,6 +57,23 @@ export function missionAuditTargets(
       row.objectiveIds.map((id) => evidenceFor(objectiveById.get(id))),
     ),
   }));
+  const x01Pages = (pack.objectives || []).some(
+    (record) => record.track === "dmz-order" && record.orderSet === "x01",
+  )
+    ? ordersPageCoverage(pack, 5, "x01").map((row) => ({
+        id: `page:${scopedId(pack.id)}:x01-season1:${row.page}:roster`,
+        kind: "page",
+        orderSet: "x01",
+        section: "roster",
+        label: `X01 page ${row.page} · ${row.state}`,
+        page: row.page,
+        recorded: row.state === "recorded",
+        objectiveIds: row.objectiveIds,
+        sourceFingerprint: fingerprint(
+          row.objectiveIds.map((id) => evidenceFor(objectiveById.get(id))),
+        ),
+      }))
+    : [];
   const names = new Map();
   for (const record of pack.objectives || []) {
     if (record.track !== "dmz-order" || !record.name) continue;
@@ -73,7 +90,7 @@ export function missionAuditTargets(
       /^Reported as page (\d+)/,
     )?.[1];
     const qualifier = Number.isSafeInteger(record.orderPage)
-      ? `page ${record.orderPage}`
+      ? `${record.orderSet === "x01" ? "X01 " : ""}page ${record.orderPage}`
       : chapter || (reportedPage ? `reported page ${reportedPage}` : record.id);
     return `${name} · ${qualifier}`;
   };
@@ -92,6 +109,7 @@ export function missionAuditTargets(
         spoiler: Boolean(record.spoiler),
         sourceFingerprint: fingerprint(evidenceFor(record)),
         page: Number.isSafeInteger(record.orderPage) ? record.orderPage : null,
+        orderSet: record.orderSet || "hajin",
         warning:
           {
             steps: !record.steps?.length && "Steps not recorded",
@@ -113,7 +131,7 @@ export function missionAuditTargets(
           }[section] || null,
       })),
     );
-  return [...pages, ...missions];
+  return [...pages, ...x01Pages, ...missions];
 }
 
 export function validateMissionAudit(value, packId) {

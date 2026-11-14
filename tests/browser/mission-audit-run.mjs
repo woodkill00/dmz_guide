@@ -28,13 +28,17 @@ try {
   );
   await page.locator("#mission-audit-pages button").first().waitFor();
   assert.equal(await page.locator("#mission-audit-pages button").count(), 24);
+  assert.equal(
+    await page.locator("#mission-audit-x01-pages button").count(),
+    5,
+  );
   assert.match(
     await page.locator("#mission-audit-summary").textContent(),
     /17 unrecorded/,
   );
   assert.equal(
     await page.locator("#mission-audit-missions button").count(),
-    648,
+    783,
   );
   const missionRows = await page
     .locator("#mission-audit-missions")
@@ -48,7 +52,7 @@ try {
     assert(missionRows.includes(label), `Distinct audit label: ${label}`);
   await page.locator("#mission-audit-pages button").first().click();
   const createLink = await page
-    .locator("#mission-audit-links a")
+    .locator('#mission-audit-links a[href^="http://127.0.0.1:4174/"]')
     .first()
     .getAttribute("href");
   const createTarget = new URL(createLink);

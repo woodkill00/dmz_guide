@@ -1,0 +1,16 @@
+{
+  "id": "source:codcentral-x01-orders-20261114",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-14",
+    "kind": "web",
+    "lineageKey": "codcentral-x01-orders",
+    "observationKey": "codcentral-x01-orders-20261114"
+  },
+  "publishedAt": "updated 2026-11-13",
+  "reviewedAt": "2026-11-14",
+  "supports": "Community report of X01 five-page roster and task wording; current-build behavior and rewards not independently verified.",
+  "title": "COD Central: MW4 DMZ Orders, X01 pages 1–5",
+  "type": "community",
+  "url": "https://codcentral.net/blog/mw4-dmz-orders/"
+}

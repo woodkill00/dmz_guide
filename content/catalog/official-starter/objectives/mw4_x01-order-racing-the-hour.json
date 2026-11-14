@@ -1,0 +1,22 @@
+{
+  "description": "Reported X01 page 4 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
+  "effects": [],
+  "id": "mw4:x01-order-racing-the-hour",
+  "name": "Racing the Hour",
+  "oneTime": true,
+  "orderPage": 4,
+  "orderSet": "x01",
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-x01-orders-20261114",
+    "source:dmzcodex-x01-orders-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Override the bioweapon release procedure in the Bio Lab canister chamber."
+  ],
+  "track": "dmz-order"
+}

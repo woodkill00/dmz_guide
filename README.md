@@ -20,6 +20,7 @@ The upgrade-observations pack contains 28 reported FOB definitions, 75 recipe-un
 - **Editing repository JSON and media?** See the [Content Studio guide](docs/content-studio.md) and its explicit local-only scope.
 - **Reporting a wrong fact or contributing a guide?** Start with [contributing](CONTRIBUTING.md) and the [content guide](docs/content-contributing.md). Coding is not required to submit evidence.
 - **Understanding the direction?** Read the [roadmap](docs/roadmap.md), [decision summary](decision-summary.md), and [foundation specification](specs/001-guide-foundation/spec.md).
+- **Reviewing or editing missions?** Open the [mission directory and editing guide](docs/mission-directory.md) for Hajin/X01 page lists, individual records and audit links.
 - **Maintaining the repository?** Read the [maintainer runbook](docs/maintainer-runbook.md) and [Spec Kit lifecycle](docs/spec-kit-cycle.md).
 - **Reviewing the delivered improvements?** See the [roundtable delivery ledger](docs/roundtable-delivery.md) for accepted workpackages, exact test and merge evidence, conditional decisions and documented limits.
 - **Looking for something else?** Browse the [documentation index](docs/README.md).

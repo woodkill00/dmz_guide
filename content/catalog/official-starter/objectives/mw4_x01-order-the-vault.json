@@ -1,0 +1,23 @@
+{
+  "description": "Reported X01 page 4 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
+  "effects": [],
+  "id": "mw4:x01-order-the-vault",
+  "name": "The Vault",
+  "oneTime": true,
+  "orderPage": 4,
+  "orderSet": "x01",
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-x01-orders-20261114",
+    "source:dmzcodex-x01-orders-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Eliminate The Captain in X01.",
+    "Collect the Vault Access Keycard near The Captain."
+  ],
+  "track": "dmz-order"
+}

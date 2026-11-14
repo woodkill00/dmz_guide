@@ -1,0 +1,23 @@
+{
+  "description": "Reported X01 page 3 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
+  "effects": [],
+  "id": "mw4:x01-order-streaming-service-ep-3",
+  "name": "Streaming Service Ep. 3",
+  "oneTime": true,
+  "orderPage": 3,
+  "orderSet": "x01",
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-x01-orders-20261114",
+    "source:dmzcodex-x01-orders-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Use the Data Center console to extract the Ri video log.",
+    "Eliminate three Robot Dogs in X01."
+  ],
+  "track": "dmz-order"
+}

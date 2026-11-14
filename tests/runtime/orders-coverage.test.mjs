@@ -48,7 +48,7 @@ test("official starter records reviewed fixed Orders pages and leaves variable p
   );
   assert.equal(
     pack.objectives.filter((row) => row.track === "dmz-order").length,
-    66,
+    81,
   );
   assert.deepEqual(
     pages.filter((page) => page.state === "recorded").map((page) => page.page),
@@ -61,7 +61,7 @@ test("official starter records reviewed fixed Orders pages and leaves variable p
     45,
   );
   const orders = pack.objectives.filter((row) => row.track === "dmz-order");
-  assert.equal(new Set(orders.map((row) => row.id)).size, 66);
+  assert.equal(new Set(orders.map((row) => row.id)).size, 81);
   assert.equal(orders.filter((row) => row.name === "Healer").length, 2);
   assert.equal(orders.filter((row) => row.name === "No Time").length, 2);
   assert.deepEqual(

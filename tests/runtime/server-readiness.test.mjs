@@ -601,7 +601,9 @@ async function runEntry(entry, cwd, env) {
   let output = "";
   child.stdout.on("data", (chunk) => (output += chunk));
   child.stderr.on("data", (chunk) => (output += chunk));
-  const timer = setTimeout(() => child.kill("SIGKILL"), 19000);
+  // Windows module loading for the complete browser entrypoint can exceed 19s.
+  // The production readiness deadlines remain asserted inside the child.
+  const timer = setTimeout(() => child.kill("SIGKILL"), 45000);
   const [code] = await once(child, "exit");
   clearTimeout(timer);
   return { code, output };

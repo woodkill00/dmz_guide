@@ -12,6 +12,7 @@ import {
   missionAuditRestorePreview,
   validateMissionAudit,
 } from "../domain/mission-audit.mjs";
+import { missionPageHref } from "../domain/mission-links.mjs";
 
 const key = (id) => `dmz:mission-audit:v1:${id}`;
 const undoKey = (id) => `dmz:mission-audit:undo:${id}`;
@@ -61,6 +62,7 @@ const report = (message) => {
 };
 const isCurrent = (target) =>
   targets.some((candidate) => candidate.id === target.id);
+const selectedMissionHref = (id) => missionPageHref(state.pack.id, id);
 
 function load(pack) {
   importRevision += 1;
@@ -102,7 +104,14 @@ function renderList(rows, selector, emptyText) {
         .map((target) => {
           const saved = entryFor(target.id);
           const status = saved?.state || "not-checked";
-          return `<button type="button" class="mission-audit-row" data-audit-id="${esc(target.id)}" aria-pressed="${active?.id === target.id}"><span>${esc(target.label)}${target.kind === "mission" ? ` · ${esc(target.section)}` : ""}</span><small>${esc(labelState(status))}${target.warning ? " · evidence gap" : ""}</small></button>`;
+          const button = `<button type="button" class="mission-audit-row" data-audit-id="${esc(target.id)}" aria-pressed="${active?.id === target.id}"><span>${esc(target.label)}${target.kind === "mission" ? ` · ${esc(target.section)}` : ""}</span><small>${esc(labelState(status))}${target.warning ? " · evidence gap" : ""}</small></button>`;
+          if (
+            target.kind !== "mission" ||
+            target.section !== "identity" ||
+            (target.spoiler && !state.profile?.spoilers)
+          )
+            return button;
+          return `<div class="mission-audit-entry">${button}<a href="${esc(selectedMissionHref(target.objectiveId))}">Open mission page ↗</a></div>`;
         })
         .join("")}</div>`
     : `<p>${esc(emptyText)}</p>`;
@@ -119,7 +128,12 @@ function render() {
         }
       : null;
   targets = missionAuditTargets(state.pack);
-  const pages = targets.filter((target) => target.kind === "page");
+  const pages = targets.filter(
+    (target) => target.kind === "page" && target.orderSet !== "x01",
+  );
+  const x01Pages = targets.filter(
+    (target) => target.kind === "page" && target.orderSet === "x01",
+  );
   const missions = targets.filter((target) => target.kind === "mission");
   const incomplete = pages.filter((target) => !target.recorded).length;
   const later = audit.entries.filter(
@@ -132,11 +146,16 @@ function render() {
     return !target || entry.sourceFingerprint !== target.sourceFingerprint;
   }).length;
   $("#mission-audit-summary").textContent =
-    `${pages.length} scoped Orders pages · ${incomplete} unrecorded · ${missions.length / 9} recorded missions · ${later} sections to fill later${stale ? ` · ${stale} stale review entries` : ""}.`;
+    `${pages.length} Hajin pages · ${incomplete} unrecorded Hajin pages · ${x01Pages.length} X01 pages · ${missions.length / 9} recorded missions · ${later} sections to fill later${stale ? ` · ${stale} stale review entries` : ""}.`;
   renderList(
     pages,
     "#mission-audit-pages",
     "No Orders pages match this filter.",
+  );
+  renderList(
+    x01Pages,
+    "#mission-audit-x01-pages",
+    "No X01 pages match this filter.",
   );
   renderList(
     missions,
@@ -196,8 +215,22 @@ function render() {
       ? `/?${new URLSearchParams({ packKey, packId: state.pack.id, id: active.objectiveId, intent: "edit" })}`
       : `/?${new URLSearchParams({ create: "objectives", packKey, packId: state.pack.id })}`
     : null;
+  const pageLinks =
+    active.kind === "page"
+      ? `<a href="/missions/#${active.orderSet === "x01" ? "x01" : "hajin"}-page-${active.page}">Open page in Missions</a>${active.objectiveIds
+          .map((id) => state.pack.objectives.find((record) => record.id === id))
+          .filter(
+            (record) => record && (!record.spoiler || state.profile?.spoilers),
+          )
+          .map(
+            (record) =>
+              ` · <a href="${esc(selectedMissionHref(record.id))}">${esc(record.name)}</a>`,
+          )
+          .join("")} · `
+      : "";
   $("#mission-audit-links").innerHTML =
-    `${active.kind === "mission" ? `<a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(active.objectiveId)}">Open recorded mission</a> · ` : ""}` +
+    pageLinks +
+    `${active.kind === "mission" ? `<a href="${esc(selectedMissionHref(active.objectiveId))}">Open mission page</a> · ` : ""}` +
     (studio
       ? `<a href="${esc(`http://127.0.0.1:4174${studio}`)}" rel="noreferrer">${active.kind === "mission" ? "Edit this mission" : "Add mission in Content Studio"}</a> <small>Start the local Content Studio first. No record is created until you review and save it there.</small>`
       : "Repository authoring is unavailable for this private catalog; open its private editor from the catalog tools.");
@@ -428,6 +461,20 @@ init(() => {
   dirty = false;
   load(state.pack);
   render();
+  const requested = new URLSearchParams(location.search).get("target");
+  if (requested && requested.length <= 400) {
+    active = targets.find((target) => target.id === requested) || null;
+    if (active) {
+      render();
+      requestAnimationFrame(() => {
+        $(
+          active.spoiler && !state.profile?.spoilers
+            ? "#mission-audit-spoiler-notice"
+            : "#mission-audit-editor",
+        )?.scrollIntoView({ block: "nearest" });
+      });
+    }
+  }
 }).catch((reason) => {
   console.error(reason);
   error(reason);

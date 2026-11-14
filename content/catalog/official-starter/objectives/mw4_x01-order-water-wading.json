@@ -1,0 +1,23 @@
+{
+  "description": "Reported X01 page 5 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
+  "effects": [],
+  "id": "mw4:x01-order-water-wading",
+  "name": "Water Wading",
+  "oneTime": true,
+  "orderPage": 5,
+  "orderSet": "x01",
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-x01-orders-20261114",
+    "source:dmzcodex-x01-orders-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "After cutting power, enter the flooded barracks beneath Supply Depot.",
+    "Collect the Super User Data Access Keycard and extract."
+  ],
+  "track": "dmz-order"
+}
