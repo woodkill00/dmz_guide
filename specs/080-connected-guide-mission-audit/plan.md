@@ -2,7 +2,7 @@
 
 **Branch**: `feature/080-connected-guide-mission-audit`
 **Spec**: `spec.md`
-**Status**: Planning; no feature code or game data imported yet
+**Status**: In progress; mission audit and selected connected views implemented, remaining slices tracked in `tasks.md`
 
 ## Summary
 

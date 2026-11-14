@@ -10,6 +10,10 @@
 
 The shipped v1 entry stores `id` and `sourceFingerprint` in place of the planned nested `target`. The validator accepts older v1 audits without `history` or `revision`, normalizes them to an empty history and revision zero, and rejects malformed events. It limits the JSON payload to 2,000,000 UTF-8 bytes, 10,000 entries and 1,000 history events. Saving an entry whose fingerprint differs from current catalog content requires an explicit review checkbox; the successful save increments its revision and records a before/after event. Undo appends a reverse event. Missing target IDs remain in the saved audit and count as stale.
 
+Import preview compares current and proposed entries by stable ID and reports added, changed, removed and stale/missing bindings. Cancel leaves the saved audit intact. Restore writes one validated localStorage value only after explicit activation, and prompts before discarding unsaved form edits. A storage failure keeps the old saved value and the draft form visible. The browser file picker is not a backup receipt; export only reports that a download was requested.
+
+An import attempt carries a local revision token. Choosing another file, cancelling, or switching catalog invalidates pending file reads, so a late `File.text()` result cannot reopen a cancelled preview or restore into a different catalog.
+
 ## Connected player workflow (existing stores plus validated handoffs)
 
 `PreparationProjection` is derived from existing goal, stock, reserve, requirement, recipe and location records; it is not a second source of truth. Each action carries a stable target, input set, known/unknown explanation and deep link. `MatchSession` references a start snapshot and stages owner-reported deltas; apply uses existing inventory/progress transaction guards. The map receives only reviewed, explicit handoffs with source identity/version and no automatic retargeting.

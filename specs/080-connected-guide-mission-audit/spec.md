@@ -2,7 +2,7 @@
 
 **Feature Branch**: `feature/080-connected-guide-mission-audit`
 **Created**: 2026-11-13
-**Status**: Planned; implementation and acceptance pending
+**Status**: In progress; partial implementation and acceptance evidence recorded in `acceptance.md`
 **Input**: Connect the guide's existing inventory, upgrades, missions, weapons, keys, maps, match tools, search, backup, and home page; add a dedicated mission and story content-audit page with section-level follow-up states.
 
 ## User Scenarios & Testing

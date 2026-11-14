@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   missionAuditTargets,
+  missionAuditRestorePreview,
   validateMissionAudit,
 } from "../../src/domain/mission-audit.mjs";
 import { loadFixturePack } from "../helpers/catalog.mjs";
@@ -29,6 +30,19 @@ test("empty catalog creates 24 unrecorded page targets and no fictional missions
   assert.equal(targets.length, 24);
   assert.ok(
     targets.every((target) => target.kind === "page" && !target.recorded),
+  );
+});
+
+test("a later page set has separate target IDs without asserting real X01 coverage", () => {
+  const pack = { id: "synthetic:test", objectives: [] };
+  const hajin = missionAuditTargets(pack);
+  const future = missionAuditTargets(pack, {
+    pageSet: "synthetic-x01",
+    pageCount: 3,
+  });
+  assert.equal(future.length, 3);
+  assert.ok(
+    future.every((target) => !hajin.some((old) => old.id === target.id)),
   );
 });
 
@@ -73,6 +87,13 @@ test("recorded story and Order sections keep independent stable IDs", () => {
       .sourceFingerprint,
     moved.find((target) => target.objectiveId === "order-one")
       .sourceFingerprint,
+  );
+  assert.equal(
+    targets.find(
+      (target) =>
+        target.objectiveId === "order-one" && target.section === "rewards",
+    ).warning,
+    "No dedicated reward field in this catalog schema; inspect cited sources",
   );
 });
 
@@ -195,4 +216,29 @@ test("audit history rejects mismatched or invalid embedded entries", () => {
       "synthetic:test",
     ),
   );
+});
+
+test("restore preview distinguishes added, changed, removed and stale bindings", () => {
+  const targets = missionAuditTargets({ id: "synthetic:test", objectives: [] });
+  const [one, two, three] = targets;
+  const entry = (target, state = "checked") => ({
+    id: target.id,
+    state,
+    note: "",
+    reviewer: "",
+    reviewedAt: null,
+    sourceFingerprint: target.sourceFingerprint,
+    revision: 1,
+  });
+  const preview = missionAuditRestorePreview(
+    { entries: [entry(one), entry(two)] },
+    {
+      entries: [
+        entry(one, "fill-later"),
+        { ...entry(three), sourceFingerprint: "00000000" },
+      ],
+    },
+    targets,
+  );
+  assert.deepEqual(preview, { added: 1, changed: 1, removed: 1, stale: 1 });
 });

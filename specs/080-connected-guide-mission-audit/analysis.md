@@ -42,6 +42,14 @@ The Data review page previously counted catalog uncertainty but had no route to 
 
 The repeatable baseline test confirms the checked-in starter has zero recorded Order/Story missions and exactly 24 unrecorded page targets. The audit validator now normalizes older v1 files, bounds payload/history, and validates each before/after event. A changed source fingerprint must be explicitly confirmed before save. Focused runtime and browser tests passed; quota failure, cancelled restore and full workspace backup remain open. T001 is closed; T002/T005 remain open pending those recovery cases.
 
+## Cycle 14 — import recovery and page-set scope
+
+The first import UI named only entry counts, which obscured removed or stale reviews. A pure preview now reports added, changed, removed and stale/missing bindings before an explicit replace. Cancel is inert, and restoring over an unsaved form asks before discarding it. Browser checks cover cancelled import/restore, successful restore and simulated quota failure without changing saved bytes. A synthetic later page set confirms IDs are separate without inventing real X01 page coverage. T004 is closed; T002/T005 remain open for spoiler/export and broader restore cases. No critical or high contradiction was found in this slice.
+
+## Cycle 15 — delayed import cancellation
+
+A pending file read could outlive Cancel and reopen the restore preview. The client now invalidates pending reads on cancel, replacement and catalog switch. A browser reproduction held `File.text()`, cancelled the import, released the read and verified the preview remained cancelled. T005 is closed with this evidence; the complete workspace backup remains T014–T015. T002 still needs separate spoiler/export-contract review.
+
 ## Cycle 8 — 2026-11-13, exact record links
 
 The detail renderer resolved target IDs across every loaded pack, so a duplicate ID in another catalog could point at the wrong record. Detail references now resolve within the selected pack, and a bounded direct-reference projection supplies reverse links for non-item records. A synthetic two-pack test verifies that the wrong catalog's link is excluded. The first build after editing failed because a broad text replacement also changed the catalog directory's pack list; that line was restored before retesting. Build and focused relation tests pass. FR-011 remains open for key/weapon/map-specific journeys and broader browser evidence.

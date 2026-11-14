@@ -9,6 +9,7 @@ import {
 } from "./common.mjs";
 import {
   missionAuditTargets,
+  missionAuditRestorePreview,
   validateMissionAudit,
 } from "../domain/mission-audit.mjs";
 
@@ -18,6 +19,7 @@ let targets = [];
 let active = null;
 let previous = null;
 let importCandidate = null;
+let importRevision = 0;
 let dirty = false;
 let loadBlocked = false;
 const labelState = (value) => value.replaceAll("-", " ");
@@ -37,6 +39,9 @@ const isCurrent = (target) =>
   targets.some((candidate) => candidate.id === target.id);
 
 function load(pack) {
+  importRevision += 1;
+  importCandidate = null;
+  $("#mission-audit-restore").hidden = true;
   loadBlocked = false;
   try {
     const raw = localStorage.getItem(key(pack.id));
@@ -248,33 +253,52 @@ $("#mission-audit-export").addEventListener("click", () => {
   );
 });
 $("#mission-audit-import").addEventListener("change", async (event) => {
+  const revision = ++importRevision;
   importCandidate = null;
   $("#mission-audit-restore").hidden = true;
   try {
     const file = event.target.files?.[0];
     if (!file || file.size > 2_000_000)
       throw Error("Choose a JSON file under 2 MB.");
-    importCandidate = validateMissionAudit(
-      JSON.parse(await file.text()),
-      state.pack.id,
-    );
+    const parsed = JSON.parse(await file.text());
+    if (revision !== importRevision) return;
+    importCandidate = validateMissionAudit(parsed, state.pack.id);
+    const preview = missionAuditRestorePreview(audit, importCandidate, targets);
     $("#mission-audit-import-preview").textContent =
-      `${importCandidate.entries.length} entries for ${state.pack.id}. Restoring replaces the current local audit for this catalog. Current entries: ${audit.entries.length}.`;
+      `${preview.added} added, ${preview.changed} changed, ${preview.removed} removed, ${preview.stale} stale or missing source bindings. Restoring replaces the current local audit for ${state.pack.id}; your current entries remain until you confirm.`;
     $("#mission-audit-restore").hidden = false;
   } catch (reason) {
+    if (revision !== importRevision) return;
+    importCandidate = null;
+    $("#mission-audit-restore").hidden = true;
     $("#mission-audit-import-preview").textContent =
       `Import rejected: ${reason.message}`;
   }
 });
 $("#mission-audit-restore").addEventListener("click", () => {
   if (!importCandidate) return;
+  if (
+    dirty &&
+    !confirm("Discard unsaved section edits and restore the previewed audit?")
+  )
+    return;
   try {
     write(importCandidate);
     importCandidate = null;
     $("#mission-audit-restore").hidden = true;
+    $("#mission-audit-import-preview").textContent =
+      "Audit restored on this device.";
   } catch (reason) {
     report(`Restore failed: ${reason.message}. Original audit retained.`);
   }
+});
+$("#mission-audit-import-cancel").addEventListener("click", () => {
+  importRevision += 1;
+  importCandidate = null;
+  $("#mission-audit-import").value = "";
+  $("#mission-audit-restore").hidden = true;
+  $("#mission-audit-import-preview").textContent =
+    "Import cancelled. Current audit retained.";
 });
 registerDraftGuard({ isDirty: () => dirty });
 init(() => {

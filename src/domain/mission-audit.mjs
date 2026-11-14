@@ -157,3 +157,23 @@ export function validateMissionAudit(value, packId) {
     })),
   };
 }
+
+export function missionAuditRestorePreview(current, incoming, targets) {
+  const known = new Map(targets.map((target) => [target.id, target]));
+  const previous = new Map(current.entries.map((entry) => [entry.id, entry]));
+  const proposed = new Map(incoming.entries.map((entry) => [entry.id, entry]));
+  const changed = [...proposed.values()].filter(
+    (entry) =>
+      previous.has(entry.id) &&
+      JSON.stringify(entry) !== JSON.stringify(previous.get(entry.id)),
+  ).length;
+  return {
+    added: [...proposed.keys()].filter((id) => !previous.has(id)).length,
+    changed,
+    removed: [...previous.keys()].filter((id) => !proposed.has(id)).length,
+    stale: [...proposed.values()].filter((entry) => {
+      const target = known.get(entry.id);
+      return !target || entry.sourceFingerprint !== target.sourceFingerprint;
+    }).length,
+  };
+}

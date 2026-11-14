@@ -87,6 +87,10 @@ try {
     mimeType: "application/json",
     buffer: Buffer.from('{"version":999}'),
   });
+  await page
+    .locator("#mission-audit-import-preview")
+    .filter({ hasText: "Import rejected" })
+    .waitFor();
   assert.match(
     await page.locator("#mission-audit-import-preview").textContent(),
     /Import rejected/,
@@ -132,9 +136,112 @@ try {
     }),
     false,
   );
+  const savedAudit = await page.evaluate(() =>
+    localStorage.getItem("dmz:mission-audit:v1:official:mw4-dmz-starter"),
+  );
+  const importAudit = JSON.parse(savedAudit);
+  importAudit.entries[0].state = "needs-correction";
+  await page.locator("#mission-audit-import").setInputFiles({
+    name: "reviewed-audit.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(importAudit)),
+  });
+  await page
+    .locator("#mission-audit-import-preview")
+    .filter({ hasText: "1 changed" })
+    .waitFor();
+  assert.match(
+    await page.locator("#mission-audit-import-preview").textContent(),
+    /0 added, 1 changed, 0 removed, 0 stale/,
+  );
+  await page.locator("#mission-audit-import-cancel").click();
+  assert.equal(await page.locator("#mission-audit-restore").isVisible(), false);
+  assert.equal(
+    await page.evaluate(() =>
+      localStorage.getItem("dmz:mission-audit:v1:official:mw4-dmz-starter"),
+    ),
+    savedAudit,
+  );
+  await page.evaluate(() => {
+    window.__auditFileText = File.prototype.text;
+    File.prototype.text = function () {
+      window.__auditReadStarted = true;
+      return new Promise((resolve) => {
+        window.__auditResolveRead = resolve;
+      });
+    };
+  });
+  await page.locator("#mission-audit-import").setInputFiles({
+    name: "slow-audit.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(importAudit)),
+  });
+  await page.waitForFunction(() => window.__auditReadStarted === true);
+  await page.locator("#mission-audit-import-cancel").click();
+  await page.evaluate((value) => {
+    File.prototype.text = window.__auditFileText;
+    window.__auditResolveRead(value);
+  }, JSON.stringify(importAudit));
+  assert.equal(await page.locator("#mission-audit-restore").isVisible(), false);
+  assert.match(
+    await page.locator("#mission-audit-import-preview").textContent(),
+    /Import cancelled/,
+  );
+  await page
+    .locator("#mission-audit-note")
+    .fill("Keep this draft on failed save");
+  await page.evaluate(() => {
+    window.__auditOriginalSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function () {
+      throw new DOMException("Quota reached", "QuotaExceededError");
+    };
+  });
+  await page.locator("#mission-audit-save").click();
+  assert.match(
+    await page.locator("#save-status").textContent(),
+    /Audit not saved/,
+  );
+  assert.equal(
+    await page.locator("#mission-audit-note").inputValue(),
+    "Keep this draft on failed save",
+  );
+  await page.evaluate(() => {
+    Storage.prototype.setItem = window.__auditOriginalSetItem;
+  });
+  assert.equal(
+    await page.evaluate(() =>
+      localStorage.getItem("dmz:mission-audit:v1:official:mw4-dmz-starter"),
+    ),
+    savedAudit,
+  );
+  await page.locator("#mission-audit-import").setInputFiles({
+    name: "reviewed-audit.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(importAudit)),
+  });
+  await page.locator("#mission-audit-restore").waitFor({ state: "visible" });
+  page.once("dialog", (dialog) => dialog.dismiss());
+  await page.locator("#mission-audit-restore").click();
+  assert.equal(
+    await page.evaluate(() =>
+      localStorage.getItem("dmz:mission-audit:v1:official:mw4-dmz-starter"),
+    ),
+    savedAudit,
+  );
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.locator("#mission-audit-restore").click();
+  assert.equal(
+    await page.evaluate(
+      () =>
+        JSON.parse(
+          localStorage.getItem("dmz:mission-audit:v1:official:mw4-dmz-starter"),
+        ).entries[0].state,
+    ),
+    "needs-correction",
+  );
   await context.close();
   console.log(
-    "Mission audit coverage, persistence, undo, invalid import, stale review, filtering, keyboard and 390px/200% layout PASS",
+    "Mission audit coverage, persistence, undo, import preview/cancel/restore, storage failure, stale review, keyboard and 390px/200% layout PASS",
   );
 } finally {
   await browser.close();
