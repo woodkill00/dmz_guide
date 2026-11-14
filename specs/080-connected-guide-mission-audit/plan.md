@@ -26,6 +26,14 @@ Build one connected player journey while adding a separate editorial mission-cov
 | E — Content health | Existing `data-review`, source review, Studio and patch checker | Computed coverage, contradictions, pending updates, exact editor links; separate source claim from verification. |
 | F — UX/release | Shared navigation/home/search and browser suites | Compact next-action dashboard, predictable controls, task journeys, performance and accessibility evidence. |
 
+## Ownership review (2026-11-14)
+
+- Catalog record IDs are interpreted within a selected pack. Audit targets bind pack ID, page-set ID or objective ID, and section. The public catalog manifest carries the exact repository pack key for Content Studio; an unlisted private pack has no repository author link.
+- Guide inventory/progress/field operations share the versioned guide profile and its guarded save path. Match staging must preview and commit through that existing profile transaction; a separate match store must never impersonate a successful profile save.
+- Collection/run-plan handoffs already have bounded validators. Map and armory run at other local origins, so unavailable or wrong-origin transfers need explicit file fallback and no implicit storage reads.
+- The current profile backup explicitly excludes discovery photo bytes, map workspace/source captures, armory workspace and named run plans. FR-013 therefore needs a manifest of user-supplied module exports with an omission list and per-module outcomes; it cannot claim one browser-atomic restore.
+- Weapon patch proposals and map source updates have their own review paths. FR-014 needs a shared read-only finding projection and explicit source-specific decisions, without applying a proposed claim directly to the published catalog or private profile.
+
 ## Mission audit page layout
 
 1. **Header**: selected pack and scoped page set; recorded/unrecorded page counts, known Story Mission count, and editorial work counts. Warn when the catalog lacks mission records.

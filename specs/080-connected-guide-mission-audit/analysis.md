@@ -54,6 +54,14 @@ A pending file read could outlive Cancel and reopen the restore preview. The cli
 
 The export contract test now verifies private JSON retains the owner note while the audit list omits it. Focused tests also bound UTF-8 import size and retain an old fingerprint as stale review evidence. T002 is closed; T003 and the remaining cross-page tasks still require implementation and acceptance checks. The reviewer-owned checklist was not self-approved.
 
+## Cycle 17 — repository authoring ownership
+
+The audit previously linked recorded missions only to the private detail and gave unrecorded pages no authoring action. It now uses the published catalog manifest's exact pack key to build Content Studio links: recorded objectives select their existing record; unrecorded page slots open a blank objective form. Unknown private packs receive a truthful unavailable message. The first browser run found that `author-target.mjs` is intentionally excluded from public assets, so the public client now serializes the validated target fields locally while Studio parses them with its strict target contract. Build, focused author-target tests and audit browser journey passed. The ownership review in `plan.md` closes T003 and the tested navigation closes T006. T007 and source ingestion remain open.
+
+## Cycle 18 — populated audit and visual check
+
+A routed fictional training pack supplied one Order with an assigned page and one protected Story Mission. The browser journey verified 23 unrecorded page slots, separate Story sections, hidden protected name in the list/search, exact author link and a checked Rewards state that did not remove the evidence warning. The 390px screenshot showed row fills were too visually heavy; a neutral surface fill and selected border repaired that. The rebuilt page passed the browser journey, including keyboard and 200% text checks. T007 is closed; no fictional data was added to the catalog.
+
 ## Cycle 8 — 2026-11-13, exact record links
 
 The detail renderer resolved target IDs across every loaded pack, so a duplicate ID in another catalog could point at the wrong record. Detail references now resolve within the selected pack, and a bounded direct-reference projection supplies reverse links for non-item records. A synthetic two-pack test verifies that the wrong catalog's link is excluded. The first build after editing failed because a broad text replacement also changed the catalog directory's pack list; that line was restored before retesting. Build and focused relation tests pass. FR-011 remains open for key/weapon/map-specific journeys and broader browser evidence.

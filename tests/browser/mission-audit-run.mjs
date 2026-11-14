@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { chromium } from "playwright";
 import { startBrowserServer } from "./server.mjs";
 
@@ -13,6 +13,16 @@ try {
   const page = await context.newPage();
   const errors = [];
   page.on("pageerror", (reason) => errors.push(reason.message));
+  await page.goto(`${server.base}/missions/?pack=official%3Amw4-dmz-starter`);
+  await page
+    .locator('a[href="/missions/audit/"]')
+    .first()
+    .waitFor({ state: "attached" });
+  await page.goto(`${server.base}/sitemap/`);
+  await page
+    .locator('a[href="/missions/audit/"]')
+    .first()
+    .waitFor({ state: "attached" });
   await page.goto(
     `${server.base}/missions/audit/?pack=official%3Amw4-dmz-starter`,
   );
@@ -27,6 +37,14 @@ try {
     /No Order or Story Mission records/,
   );
   await page.locator("#mission-audit-pages button").first().click();
+  const createLink = await page
+    .locator("#mission-audit-links a")
+    .first()
+    .getAttribute("href");
+  const createTarget = new URL(createLink);
+  assert.equal(createTarget.origin, "http://127.0.0.1:4174");
+  assert.equal(createTarget.searchParams.get("create"), "objectives");
+  assert.equal(createTarget.searchParams.get("packKey"), "official-starter");
   await page.locator("#mission-audit-state").selectOption("fill-later");
   await page.locator("#mission-audit-note").fill("Check page roster later");
   await page.locator("#mission-audit-save").click();
@@ -252,8 +270,102 @@ try {
     "needs-correction",
   );
   await context.close();
+  const syntheticPack = JSON.parse(
+    await readFile("dist/assets/content/packs/demo-training.json", "utf8"),
+  );
+  const order = syntheticPack.objectives.find(
+    (objective) => objective.track === "dmz-order",
+  );
+  order.orderPage = 3;
+  syntheticPack.objectives.push({
+    ...structuredClone(order),
+    id: "demo:secret-story-audit-test",
+    name: "Hidden Story Name",
+    description: "Protected synthetic story steps",
+    track: "dmz-story",
+    spoiler: true,
+    orderPage: undefined,
+  });
+  const syntheticContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+  });
+  const syntheticPage = await syntheticContext.newPage();
+  const syntheticErrors = [];
+  syntheticPage.on("pageerror", (reason) =>
+    syntheticErrors.push(reason.message),
+  );
+  await syntheticPage.route(
+    "**/assets/content/packs/demo-training.json",
+    (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(syntheticPack),
+      }),
+  );
+  await syntheticPage.goto(
+    `${server.base}/missions/audit/?pack=demo%3Atraining-pack`,
+  );
+  await syntheticPage
+    .locator("#mission-audit-missions button")
+    .first()
+    .waitFor();
+  assert.equal(
+    await syntheticPage.locator("#mission-audit-missions button").count(),
+    18,
+  );
+  assert.match(
+    await syntheticPage.locator("#mission-audit-summary").textContent(),
+    /23 unrecorded/,
+  );
+  assert.doesNotMatch(
+    await syntheticPage.locator("#mission-audit-missions").textContent(),
+    /Hidden Story Name|Protected synthetic story steps/,
+  );
+  await syntheticPage
+    .locator("#mission-audit-search")
+    .fill("Hidden Story Name");
+  assert.equal(
+    await syntheticPage.locator("#mission-audit-missions button").count(),
+    0,
+  );
+  await syntheticPage.locator("#mission-audit-search").fill("");
+  await syntheticPage
+    .locator("#mission-audit-missions button")
+    .filter({ hasText: "Training delivery order · rewards" })
+    .click();
+  assert.match(
+    await syntheticPage.locator("#mission-audit-evidence").textContent(),
+    /No dedicated reward field/,
+  );
+  await syntheticPage.locator("#mission-audit-state").selectOption("checked");
+  await syntheticPage.locator("#mission-audit-save").click();
+  assert.match(
+    await syntheticPage.locator("#mission-audit-evidence").textContent(),
+    /No dedicated reward field/,
+  );
+  await syntheticPage
+    .locator("#mission-audit-missions button")
+    .filter({ hasText: "Spoiler-protected mission" })
+    .first()
+    .click();
+  assert.equal(
+    (
+      await syntheticPage
+        .locator("#mission-audit-links a")
+        .last()
+        .getAttribute("href")
+    ).includes("id=demo%3Asecret-story-audit-test"),
+    true,
+  );
+  assert.deepEqual(syntheticErrors, []);
+  await syntheticPage.screenshot({
+    path: "test-results/mission-audit-synthetic-mobile.png",
+    fullPage: true,
+  });
+  await syntheticContext.close();
   console.log(
-    "Mission audit coverage, persistence, undo, import preview/cancel/restore, storage failure, stale review, keyboard and 390px/200% layout PASS",
+    "Mission audit empty and synthetic Story/Order coverage, persistence, import recovery, stale review, keyboard and 390px/200% layout PASS",
   );
 } finally {
   await browser.close();

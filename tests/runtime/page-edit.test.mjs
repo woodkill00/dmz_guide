@@ -7,7 +7,29 @@ import {
   resolveAuthorTarget,
   previewPath,
   PUBLIC_GROUPS,
+  createPath,
+  parseCreateTarget,
+  resolveCreateTarget,
 } from "../../src/content/author-target.mjs";
+
+test("mission create destination selects the exact catalog and no record", () => {
+  const entry = fixtureCatalog.entries.find((row) => row.pack.objectives);
+  const before = structuredClone(entry);
+  const path = createPath({
+    create: "objectives",
+    packKey: entry.key,
+    packId: entry.pack.id,
+  });
+  const target = parseCreateTarget(new URL(path, "http://local").searchParams);
+  assert.equal(resolveCreateTarget([entry], target).entry, entry);
+  assert.deepEqual(entry, before);
+  assert.throws(() =>
+    resolveCreateTarget([entry], { ...target, packId: "missing:pack" }),
+  );
+  assert.throws(() =>
+    parseCreateTarget(new URLSearchParams(path.slice(2) + "&id=forged")),
+  );
+});
 
 test("010 FR-003: strict stable identity resolves all public groups without name/index fallback", () => {
   for (const entry of fixtureCatalog.entries)

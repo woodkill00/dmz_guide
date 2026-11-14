@@ -139,10 +139,18 @@ function render() {
   $("#mission-audit-note").value = saved?.note || "";
   $("#mission-audit-reviewer").value = saved?.reviewer || "";
   $("#mission-audit-undo").disabled = !previous || previous.id !== active.id;
+  const descriptor = state.catalogs.find((row) => row.id === state.pack.id);
+  const packKey = descriptor?.path.match(/\/([a-z0-9-]+)\.json$/)?.[1];
+  const studio = packKey
+    ? active.kind === "mission"
+      ? `/?${new URLSearchParams({ packKey, packId: state.pack.id, id: active.objectiveId, intent: "edit" })}`
+      : `/?${new URLSearchParams({ create: "objectives", packKey, packId: state.pack.id })}`
+    : null;
   $("#mission-audit-links").innerHTML =
-    active.kind === "mission"
-      ? `<a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(active.objectiveId)}">Open recorded mission</a>`
-      : "Unrecorded page: no mission record to open.";
+    `${active.kind === "mission" ? `<a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(active.objectiveId)}">Open recorded mission</a> · ` : ""}` +
+    (studio
+      ? `<a href="${esc(`http://127.0.0.1:4174${studio}`)}" rel="noreferrer">${active.kind === "mission" ? "Edit this mission" : "Add mission in Content Studio"}</a> <small>Start the local Content Studio first. No record is created until you review and save it there.</small>`
+      : "Repository authoring is unavailable for this private catalog; open its private editor from the catalog tools.");
 }
 function write(candidate) {
   if (loadBlocked)
