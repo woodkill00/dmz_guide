@@ -19,8 +19,8 @@
 ## Phase 3 — Connected preparation (P1, FR-010–FR-011)
 
 - [x] T009 (FR-010) Extend the existing derived goal projection with one prioritized next-action list across unfinished missions/upgrades, shared stock/reserves, print/craft choices, key needs and known map locations; unit tests for shared ingredients, partial costs and no-location cases. Evidence: existing workbench math plus `connectedPreparation` recipe/key/area projection; 26 focused domain tests and the Collection workbench browser journey passed on 2026-11-14.
-- [ ] T010 (FR-011) Add exact bidirectional link projection for item/recipe/upgrade/mission/key/weapon/location records; prevent spoiler leakage and broken cross-pack links.
-- [ ] T011 (FR-010, FR-011) Add compact preparation view from Home/Planner with explanations and deep links; test complete synthetic mission→inventory→recipe→map journey.
+- [x] T010 (FR-011) Add exact bidirectional link projection for item/recipe/upgrade/mission/key/weapon/location records; prevent spoiler leakage and broken cross-pack links. Evidence: `recordRelations` declared-ID graph tests and public detail guard tests, including selected-pack isolation and protected/missing ID masking.
+- [x] T011 (FR-010, FR-011) Add compact preparation view from Home/Planner with explanations and deep links; test complete synthetic mission→inventory→recipe→map journey. Evidence: Collection next actions and existing fictional mission/profile/recipe/route browser journey, with added named-area assertion, 2026-11-14.
 
 ## Phase 4 — Match lifecycle and recovery (P1, FR-012–FR-013)
 
@@ -31,14 +31,14 @@
 
 ## Phase 5 — Content health and reference quality (P2, FR-014–FR-016)
 
-- [ ] T016 (FR-014, FR-016) Extend `src/domain/data-review.mjs` into a scoped coverage dashboard for mission sections, recipes, icons, weapons, keys and map positions; show denominators only where a reviewed scope exists.
-- [ ] T017 (FR-014) Add source/patch change queue with old/new claim, citation, build applicability and explicit apply/reject; preserve conflicts and private-state independence.
-- [ ] T018 (FR-015) Add mode/patch/source qualifiers to weapon comparison and missing-stat review; never label WZ data as DMZ-tested without evidence.
-- [ ] T019 (FR-016) Add relationship integrity checks and exact Studio repair links for missing item, recipe, mission and map references; regression-test known valid catalogs.
+- [x] T016 (FR-014, FR-016) Extend `src/domain/data-review.mjs` into a scoped coverage dashboard for mission sections, recipes, icons, weapons, keys and map positions; show denominators only where a reviewed scope exists. Evidence: `contentHealth` listed-record projection, focused test and Data review Chromium journey; this does not claim complete-game coverage.
+- [ ] T017 (FR-014) Add source/patch change queue with old/new claim, citation, build applicability and explicit apply/reject; preserve conflicts and private-state independence. Partial: candidate claim preview and session Reject/Studio Apply link exist; durable decisions, actual apply receipt and patch proposal integration remain.
+- [x] T018 (FR-015) Add mode/patch/source qualifiers to weapon comparison and missing-stat review; never label WZ data as DMZ-tested without evidence. Evidence: existing separated Armory comparison modes, dated source/patch disclosures, CODMunity *WZ not-tested label, and new missing-stat/source issues in Data review; domain/browser regression coverage includes CODMunity and private DMZ comparison.
+- [x] T019 (FR-016) Add relationship integrity checks and exact Studio repair links for missing item, recipe, mission and map references; regression-test known valid catalogs. Evidence: generic owner-side reference check masks missing/protected targets, exact selected-catalog Studio edit URLs, focused domain test and Data review browser journey.
 
 ## Phase 6 — Home, UX and release evidence (P2, FR-017–FR-018)
 
-- [ ] T020 (FR-017) Add next-action and recent-work cards to Home using existing private projections, with empty/locked/unavailable states and direct task links.
+- [x] T020 (FR-017) Add next-action and recent-work cards to Home using existing private projections, with empty/locked/unavailable states and direct task links. Evidence: existing guarded Home next action and navigation recents; Home browser workflows check saved, unavailable, cross-catalog and interrupted reads.
 - [ ] T021 (FR-017, FR-018) Align repeated navigation, search, filters, save feedback and compact detail controls across affected guide/map pages; test consistent identification and keyboard order.
 - [ ] T022 (FR-018) Run end-to-end user journeys at desktop, 390px, keyboard and 200% text; performance checks on bounded large catalogs; fix actual overflow/focus/status failures.
 - [ ] T023 (FR-018) Run exact repository checks and a release-readiness audit for content coverage, source rights, private backup, links, accessibility and real-game evidence; record successes and gaps in `acceptance.md` without self-approving reviewer criteria.

@@ -9,15 +9,49 @@ import {
   validateMissionAudit,
 } from "../domain/mission-audit.mjs";
 import { contentHealth } from "../domain/content-health.mjs";
+import { sourceClaimChanges } from "../domain/source-change-review.mjs";
 
 const query = document.querySelector("#review-query");
 let renderedPack = null;
+let claimQueue = [];
+const rejectedClaims = new Set();
+function renderClaimQueue() {
+  const descriptor = state.catalogs.find((row) => row.id === state.pack.id);
+  const packKey = descriptor?.path.match(/\/([a-z0-9-]+)\.json$/)?.[1];
+  const visible = claimQueue.filter((row) => !rejectedClaims.has(row.id));
+  document.querySelector("#source-change-status").textContent =
+    `${visible.length} proposed claim changes · ${rejectedClaims.size} rejected in this preview. Catalog and private progress unchanged.`;
+  document.querySelector("#source-change-results").innerHTML = visible.length
+    ? `<ul>${visible
+        .map((row) => {
+          const oldValue = JSON.stringify(row.oldValue);
+          const newValue = JSON.stringify(row.newValue);
+          const edit =
+            packKey && row.state !== "added"
+              ? `http://127.0.0.1:4174/?${new URLSearchParams({ packKey, packId: state.pack.id, id: row.id, intent: "edit" })}`
+              : "http://127.0.0.1:4174/";
+          return `<li><strong>${esc(row.field)}</strong> · ${esc(row.state)} · ${esc(row.entityId)}<br>Current: ${esc(oldValue)} (${esc(row.oldStatus || "none")}) → proposed: ${esc(newValue)} (${esc(row.newStatus || "none")})<br>${esc(row.applicability)} · ${esc(row.sourceDate || "source date unknown")} ${row.citation ? `<a href="${esc(row.citation)}" target="_blank" rel="noopener noreferrer">Citation</a>` : "Citation unavailable"}<br><a href="${esc(edit)}" rel="noreferrer">Review and apply in Studio</a> <button type="button" data-reject-claim="${esc(row.id)}">Reject this proposal</button></li>`;
+        })
+        .join("")}</ul>`
+    : "<p>No pending claim changes in this preview.</p>";
+}
+document
+  .querySelector("#source-change-results")
+  .addEventListener("click", (event) => {
+    const button = event.target.closest("[data-reject-claim]");
+    if (!button) return;
+    rejectedClaims.add(button.dataset.rejectClaim);
+    renderClaimQueue();
+  });
 function render() {
   if (renderedPack !== state.pack?.id) {
     renderedPack = state.pack?.id;
     document.querySelector("#source-impact-file").value = "";
     document.querySelector("#source-impact-status").textContent = "";
     document.querySelector("#source-impact-results").replaceChildren();
+    claimQueue = [];
+    rejectedClaims.clear();
+    renderClaimQueue();
   }
   const result = dataReviewIssues(state.pack);
   const auditTargets = missionAuditTargets(state.pack);
@@ -64,8 +98,14 @@ function render() {
   );
   document.querySelector("#review-count").textContent =
     `${rows.length} visible issues${result.truncated ? " · first 500 catalog issues only" : ""}`;
+  const descriptor = state.catalogs.find((row) => row.id === state.pack.id);
+  const packKey = descriptor?.path.match(/\/([a-z0-9-]+)\.json$/)?.[1];
+  const edit = (row) =>
+    packKey && row.type !== "claim"
+      ? `<a href="${esc(`http://127.0.0.1:4174/?${new URLSearchParams({ packKey, packId: state.pack.id, id: row.id, intent: "edit" })}`)}" rel="noreferrer">Edit in Studio</a>`
+      : "";
   document.querySelector("#review-list").innerHTML = rows.length
-    ? `<ul>${rows.map((row) => `<li>${row.type === "claim" ? esc(row.name) : `<a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(row.id)}">${esc(row.name)}</a>`} · ${esc(row.reason)} · ${esc(row.type)}</li>`).join("")}</ul>`
+    ? `<ul>${rows.map((row) => `<li>${row.type === "claim" ? esc(row.name) : `<a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(row.id)}">${esc(row.name)}</a>`} · ${esc(row.reason)} · ${esc(row.type)} ${edit(row)}</li>`).join("")}</ul>`
     : "<p>No matching issues in this catalog. This does not certify complete game coverage.</p>";
 }
 query.addEventListener("input", render);
@@ -76,6 +116,9 @@ document
     const results = document.querySelector("#source-impact-results");
     const selected = state.pack;
     results.replaceChildren();
+    claimQueue = [];
+    rejectedClaims.clear();
+    renderClaimQueue();
     try {
       const file = document.querySelector("#source-impact-file").files?.[0];
       if (!file) throw Error("Choose a catalog JSON file first.");
@@ -92,6 +135,8 @@ document
       if (state.pack !== selected)
         throw Error("Selected catalog changed; choose the file again.");
       const impact = previewSourceImpact(selected, candidate, plans);
+      claimQueue = sourceClaimChanges(selected, candidate).changes;
+      renderClaimQueue();
       const affected = impact.filter((row) => row.changes.length);
       status.textContent = `${plans.plans.length} saved plans checked · ${affected.length} affected. No catalog or plan was changed.`;
       results.innerHTML = affected.length

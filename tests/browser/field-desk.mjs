@@ -126,6 +126,13 @@ try {
   await confirm();
   assert.equal((await profile()).inventory["mw4:bandage"], 9);
   assert.equal((await profile()).fieldOps.carried["mw4:bandage"], 3);
+  await page.locator("#match-name").fill("Synthetic Hajin run");
+  await page.locator("#match-start").click();
+  const objectiveId = "mw4:order-gear-up";
+  await page.selectOption("#match-objective", objectiveId);
+  await page.locator("#match-add-objective").click();
+  await page.locator("#match-stop").fill("Synthetic safe stop");
+  await page.locator("#match-add-stop").click();
   await page.selectOption("#run-item", "mw4:bandage");
   await page.selectOption("#run-pool", "carried");
   await page.selectOption("#run-action", "lost");
@@ -136,9 +143,14 @@ try {
   await page.locator("#run-quantity").fill("4");
   await page.locator("#run-form button").click();
   await page.locator("#run-preview").click();
+  assert.match(
+    await page.locator("#field-review").innerText(),
+    /Synthetic Hajin run/,
+  );
   await confirm();
   assert.equal((await profile()).inventory["mw4:bandage"], 13);
   assert.equal((await profile()).fieldOps.carried["mw4:bandage"], 2);
+  assert.equal((await profile()).completion[objectiveId], "completed");
   await page
     .locator("#field-history details")
     .first()

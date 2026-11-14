@@ -27,6 +27,10 @@ import { itemOverview } from "../ui/item-summary.mjs";
 import { validateCollectionHandoff } from "../domain/collection-handoff.mjs";
 import { parseBounded } from "../content/limits.mjs";
 import { createRunReviewQueue } from "./run-review-queue.mjs";
+import {
+  startMatchSession,
+  previewMatchSession,
+} from "../domain/match-session.mjs";
 import { validateProfile, previewProfile } from "../domain/profile.mjs";
 import {
   decodeStashImage,
@@ -51,6 +55,9 @@ let applying = false,
   cachedGuard = null;
 let scanRows = [],
   runRows = [],
+  matchSession = null,
+  matchObjectives = [],
+  matchStops = [],
   staged = null,
   dirty = false,
   recognizing = false,
@@ -125,6 +132,9 @@ function discard() {
   recognizing = false;
   scanRows = [];
   runRows = [];
+  matchSession = null;
+  matchObjectives = [];
+  matchStops = [];
   staged = null;
   editingDiscovery = null;
   dirty = false;
@@ -164,6 +174,9 @@ function renderScan() {
     : "";
 }
 function renderRun() {
+  $("#match-status").textContent = matchSession
+    ? `${matchSession.name} · started from profile revision ${matchSession.revision}. ${matchObjectives.length} objective reports · ${matchStops.length} stops.`
+    : "No match started.";
   $("#run-rows").innerHTML = runRows.length
     ? table(
         ["Item", "Pool", "Report", "Amount", ""],
@@ -174,7 +187,13 @@ function renderRun() {
           )
           .join(""),
       )
-    : "<p>No run adjustments staged.</p>";
+    : "<p>No finds staged.</p>";
+  if (matchObjectives.length || matchStops.length) {
+    $("#run-rows").insertAdjacentHTML(
+      "beforeend",
+      `<ul>${matchObjectives.map((row, index) => `<li>${esc(state.pack.objectives.find((o) => o.id === row.id)?.name || "Objective")} · ${esc(row.status)} <button type="button" data-remove-objective="${index}">Remove</button></li>`).join("")}${matchStops.map((stop, index) => `<li>Stop: ${esc(stop)} <button type="button" data-remove-stop="${index}">Remove</button></li>`).join("")}</ul>`,
+    );
+  }
 }
 function renderCarried() {
   const query = $("#field-query").value.trim().toLowerCase(),
@@ -285,6 +304,15 @@ function render() {
   releasePhotos();
   discard();
   $("#run-item").innerHTML = options();
+  $("#match-objective").innerHTML =
+    '<option value="">Choose objective…</option>' +
+    state.pack.objectives
+      .filter((objective) => !objective.spoiler || state.profile.spoilers)
+      .map(
+        (objective) =>
+          `<option value="${esc(objective.id)}">${esc(objective.name)}</option>`,
+      )
+      .join("");
   $("#discovery-item").innerHTML = options();
   $("#discovery-location").innerHTML =
     '<option value="">No linked location</option>' +
@@ -682,11 +710,67 @@ $("main").addEventListener("click", async (event) => {
       runRows.splice(Number(button.dataset.removeRun), 1);
       renderRun();
     }
-    if (button.id === "run-preview")
-      stage(previewRunChanges(state.profile, state.pack, runRows), {
-        label: "Post-run reconciliation",
-        kind: "run",
-      });
+    if (button.id === "match-start") {
+      if (runRows.length || matchObjectives.length || matchStops.length)
+        throw Error(
+          "Review or discard the current match reports before starting another match",
+        );
+      matchSession = startMatchSession(
+        state.pack,
+        state.profile,
+        $("#match-name").value,
+      );
+      dirty = true;
+      renderRun();
+    }
+    if (button.id === "match-add-objective") {
+      if (!matchSession) throw Error("Start a named match first");
+      const id = $("#match-objective").value;
+      if (!id || matchObjectives.some((row) => row.id === id))
+        throw Error("Choose an objective that is not already in this match");
+      matchObjectives.push({ id, status: $("#match-objective-status").value });
+      invalidateReview();
+      dirty = true;
+      renderRun();
+    }
+    if (button.id === "match-add-stop") {
+      if (!matchSession) throw Error("Start a named match first");
+      const stop = $("#match-stop").value.trim();
+      if (!stop || matchStops.length >= 100)
+        throw Error("Enter a stop of at most 160 characters");
+      matchStops.push(stop);
+      $("#match-stop").value = "";
+      invalidateReview();
+      dirty = true;
+      renderRun();
+    }
+    if (button.dataset.removeObjective !== undefined) {
+      matchObjectives.splice(Number(button.dataset.removeObjective), 1);
+      invalidateReview();
+      renderRun();
+    }
+    if (button.dataset.removeStop !== undefined) {
+      matchStops.splice(Number(button.dataset.removeStop), 1);
+      invalidateReview();
+      renderRun();
+    }
+    if (button.id === "run-preview") {
+      if (!matchSession) throw Error("Start a named match first");
+      const preview = previewMatchSession(
+        state.pack,
+        state.profile,
+        matchSession,
+        runRows,
+        matchObjectives,
+        matchStops,
+      );
+      stage(preview, { label: `Match: ${matchSession.name}`, kind: "run" });
+      if (preview.progress.length || preview.stops.length)
+        $("#field-review").insertAdjacentHTML(
+          "beforeend",
+          `<p>${preview.progress.length} objective result${preview.progress.length === 1 ? "" : "s"}: ${preview.progress.map((row) => `${esc(state.pack.objectives.find((objective) => objective.id === row.id)?.name || "Objective")} ${esc(row.before)} → ${esc(row.after)}`).join("; ")}. ${preview.stops.length} visited stop${preview.stops.length === 1 ? "" : "s"} in this preview only; copy them to your map plan if needed.</p>`,
+        );
+    }
     if (button.dataset.undoField) {
       const undo = previewFieldUndo(
         state.profile,
@@ -820,6 +904,7 @@ $("#run-form").addEventListener("submit", (event) => {
   event.preventDefault();
   if (state.loading || state.saving || applying) return;
   try {
+    if (!matchSession) throw Error("Start a named match first");
     const action = $("#run-action").value,
       quantity = Number($("#run-quantity").value),
       itemId = $("#run-item").value;

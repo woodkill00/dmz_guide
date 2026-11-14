@@ -308,9 +308,10 @@ export function renderDetail(
   const find = (id) => records.find((r) => r.id === id);
   const ref = (id) => {
     const r = find(id);
+    if (r?.spoiler && !record.spoiler) return "Spoiler-protected record";
     return r
       ? `<a href="${e(referenceURL(r))}">${e(publicTitle(r))}</a>`
-      : e(id) + " (unresolved reference)";
+      : "Unresolved reference";
   };
   const sources = pack.sources
     .filter((s) => (record.sourceIds || []).includes(s.id))

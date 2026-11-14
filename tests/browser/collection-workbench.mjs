@@ -82,6 +82,10 @@ export async function runWorkbenchTests({ browser, base }) {
     );
     assert.equal(await page.locator("#craft-undo").isDisabled(), true);
     assert.ok(await page.locator("#connected-actions-list li").count());
+    assert.match(
+      await page.locator("#connected-actions-list").textContent(),
+      /Areas:/,
+    );
     await page.locator("[data-next-why-item]").first().click();
     assert.equal(
       await page.locator("#collection-why").evaluate((node) => node.open),

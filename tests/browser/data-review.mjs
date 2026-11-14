@@ -19,6 +19,13 @@ try {
       ?.textContent?.includes("visible issues"),
   );
   assert.equal((await page.locator("#review-list li").count()) > 0, true);
+  const repairLink = page
+    .locator('#review-list a[href^="http://127.0.0.1:4174/"]')
+    .first();
+  assert.equal(await repairLink.count(), 1);
+  const repair = new URL(await repairLink.getAttribute("href"));
+  assert.equal(repair.searchParams.get("packId"), "official:mw4-dmz-starter");
+  assert.equal(repair.searchParams.get("intent"), "edit");
   await page
     .getByText("Browse records needing review", { exact: true })
     .click();
@@ -28,6 +35,17 @@ try {
     /No registered map position/i,
   );
   const pack = collectionFixture();
+  pack.claims = [
+    {
+      id: "claim:fictional-impact",
+      entityId: pack.objectives[0].id,
+      field: "requirements",
+      value: "Old synthetic claim",
+      status: "fictional",
+      sourceId: pack.sources[0].id,
+      locator: "Synthetic fixture",
+    },
+  ];
   await page.evaluate(async (candidate) => {
     const { validatePack } = await import("/assets/src/content/validate.mjs");
     validatePack(
@@ -64,6 +82,7 @@ try {
     await saveRunPlans(doc, 0);
     const next = structuredClone(state.pack);
     next.objectives[0].description += " Synthetic candidate change.";
+    next.claims[0].value = "New synthetic claim";
     return next;
   });
   await page.locator("#source-impact-file").setInputFiles({
@@ -84,6 +103,15 @@ try {
   assert.match(
     await page.locator("#source-impact-results").textContent(),
     /changed/,
+  );
+  assert.match(
+    await page.locator("#source-change-results").innerText(),
+    /Old synthetic claim.*New synthetic claim/s,
+  );
+  await page.locator('[data-reject-claim="claim:fictional-impact"]').click();
+  assert.match(
+    await page.locator("#source-change-status").innerText(),
+    /1 rejected/,
   );
   const persisted = await page.evaluate(async () => {
     const { state } = await import("/assets/src/client/common.mjs");
