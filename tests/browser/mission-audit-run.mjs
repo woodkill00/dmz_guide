@@ -30,11 +30,11 @@ try {
   assert.equal(await page.locator("#mission-audit-pages button").count(), 24);
   assert.match(
     await page.locator("#mission-audit-summary").textContent(),
-    /24 unrecorded/,
+    /23 unrecorded/,
   );
-  assert.match(
-    await page.locator("#mission-audit-missions").textContent(),
-    /No Order or Story Mission records/,
+  assert.equal(
+    await page.locator("#mission-audit-missions button").count(),
+    27,
   );
   await page.locator("#mission-audit-pages button").first().click();
   const createLink = await page

@@ -58,7 +58,7 @@ Home shows the player's next actions and recent work; search and links open exac
 
 ### Edge Cases
 
-- The current official starter has no recorded DMZ Orders or Story Missions; the audit must show 24 unrecorded launch-page slots and a separate empty Story Mission state, not fabricate 72 records.
+- The current official starter has three source-reported page-one Orders and no Story Missions; the audit must show 23 unrecorded Hajin page slots and a separate empty Story Mission state, not fabricate the remaining records. The original 24-slot empty baseline is retained in historical test/analysis evidence.
 - Orders page numbers may vary with chapter choices. Stable mission/chapter identity must survive a changed display page; ambiguous placement is flagged for review.
 - Official Season 1 notes add X01 Orders. Page coverage must be scoped by game build/map/season and support later page sets rather than treating 24 as a permanent complete-game denominator.
 - Editorial status, source verification, and player completion are independent dimensions. None implies another.

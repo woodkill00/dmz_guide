@@ -2,7 +2,7 @@
 
 ## First vertical slice — 2026-11-13
 
-Implemented a generated `/missions/audit/` page with 24 scoped Orders page targets, recorded Order/Story section targets, status filters, local editorial save/reload, source-change indication, bounded import preview/export, an undo event and links from Missions/Home/feature navigation. The local editorial state does not change the player's mission progress. The current official starter has zero recorded Order/Story missions, so the live page shows 24 unrecorded slots and an empty Story group.
+Implemented a generated `/missions/audit/` page with 24 scoped Orders page targets, recorded Order/Story section targets, status filters, local editorial save/reload, source-change indication, bounded import preview/export, an undo event and links from Missions/Home/feature navigation. The local editorial state does not change the player's mission progress. At this first-slice baseline, the official starter had zero recorded Order/Story missions, so the page showed 24 unrecorded slots and an empty Story group. The later page-one admission is recorded below.
 
 Verification:
 
@@ -16,7 +16,7 @@ The earlier 997/998 run overlapped a build that replaced `dist` while the site t
 
 ## Still open
 
-The mission audit still needs full history/restore tests, source-fingerprint migration and stale relink review, spoiler and import-failure browser tests, broader keyboard and text-zoom checks, and independent reviewer checklist approval. Source-backed mission records have not been imported. Connected preparation, match lifecycle, whole-workspace backup, source-change queue, weapon qualifier review, content health, Home refinements and the final cross-page release audit remain open in `tasks.md`. No complete-game mission coverage or full feature acceptance is claimed.
+At the first slice, the mission audit still needed full history/restore tests, source-fingerprint migration and stale relink review, spoiler and import-failure browser tests, broader keyboard and text-zoom checks, and independent reviewer checklist approval. Later sections record which checks closed. Connected preparation, match lifecycle, whole-workspace backup, source-change queue, weapon qualifier review, content health, Home refinements and the final cross-page release audit remain open in `tasks.md`. No complete-game mission coverage or full feature acceptance is claimed.
 
 ## Connected preparation increment — 2026-11-13
 
@@ -74,3 +74,9 @@ The focused domain suite passed 9/9 after adding import byte-limit and stale-bin
 The audit now links a recorded mission to its private detail and exact local Content Studio record, and an unrecorded page to the selected repository catalog's blank objective form. A catalog without a repository descriptor shows an unavailable authoring message. The browser journey verified the official starter's objective-create URL and the Missions/Site map entry links; focused author-target and inventory tests passed 17/17. A clean build again produced 1,867 routes. These checks close T003/T006, not the broader populated-Story browser journey or mission-source admission.
 
 The serialized runtime suite passed 1,009/1,009 and the full Chromium browser journey passed after the shared author-target change. A separate browser journey routed a fictional training pack with one Order and one spoiler-protected Story Mission; it verified 23 unrecorded slots, private labels absent from list/search, source warning independence, exact Studio link, status/reload, keyboard and 390px/200% layout. Screenshot review led to a neutral audit-row background, and the rebuilt journey passed. T007 is closed on this synthetic evidence; T008 still requires source-backed mission admission.
+
+## First source-reviewed Orders admission — 2026-11-14
+
+`mission-source-review.md` compares the named COD Central and DMZTracker sources. The three agreed page-one Hajin Order identities and paraphrased tasks were admitted as `observed` records with both source IDs. Disputed reward and unlock timing claims were not imported as effects. The official starter now contains 113 objectives: three reported Orders and no Story Missions. The 24-slot Hajin audit shows one recorded page and 23 unrecorded pages. `npm run build` passed with 1,873 routes, and the focused audit domain and browser journeys passed. T008 remains open for review of later pages and Story Missions; current-build gameplay has not been independently verified.
+
+The canonical catalog serializer rewrote only the three new objectives, two new source records and the changed starter pack metadata. The affected catalog/coverage/audit/FOB suite passed 28/28. The serialized full `npm test` rerun passed 1,009/1,009. The first full browser run found two historical 24-unrecorded assertions; after updating both to 23, the focused mission coverage and encounter journeys passed and a fresh full Chromium browser run passed through its final after-run review. `npm run build` again produced 1,873 routes from the canonical source tree. The broader T008 source admission and T009–T023 implementation remain open.

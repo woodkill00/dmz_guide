@@ -1,0 +1,16 @@
+{
+  "id": "source:codcentral-orders-20261113",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-14",
+    "kind": "web",
+    "lineageKey": "codcentral-orders",
+    "observationKey": "codcentral-orders-20261113"
+  },
+  "publishedAt": "2026-10-21; updated 2026-11-13",
+  "reviewedAt": "2026-11-14",
+  "supports": "Secondary report of Hajin DMZ Orders names, page-one tasks and page placement. Rewards, unlock timing, later chapter order and current-build status are not independently confirmed.",
+  "title": "COD Central: MW4 DMZ Orders guide",
+  "type": "community",
+  "url": "https://codcentral.net/blog/mw4-dmz-orders/"
+}

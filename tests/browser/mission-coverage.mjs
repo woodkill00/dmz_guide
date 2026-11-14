@@ -14,10 +14,10 @@ try {
     () => document.querySelector("main")?.getAttribute("aria-busy") === "false",
   );
   assert.equal(await page.locator("#orders-coverage .orders-page").count(), 24);
-  assert.equal(await page.locator("#orders-coverage .unrecorded").count(), 24);
+  assert.equal(await page.locator("#orders-coverage .unrecorded").count(), 23);
   assert.equal(
     await page.locator("#orders-coverage [data-orders-page]").count(),
-    0,
+    1,
   );
   assert.match(
     await page.locator("#orders-coverage-title").locator("..").textContent(),

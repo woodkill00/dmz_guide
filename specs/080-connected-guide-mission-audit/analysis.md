@@ -62,6 +62,14 @@ The audit previously linked recorded missions only to the private detail and gav
 
 A routed fictional training pack supplied one Order with an assigned page and one protected Story Mission. The browser journey verified 23 unrecorded page slots, separate Story sections, hidden protected name in the list/search, exact author link and a checked Rewards state that did not remove the evidence warning. The 390px screenshot showed row fills were too visually heavy; a neutral surface fill and selected border repaired that. The rebuilt page passed the browser journey, including keyboard and 200% text checks. T007 is closed; no fictional data was added to the catalog.
 
+## Cycle 19 — first real source admission
+
+The named COD Central and DMZTracker pages agree on the first Hajin Orders page's three identities and tasks but differ on reward and unlock timing. Three source-reported objective records were admitted with both citations, short paraphrased steps, no disputed effects and explicit current-build uncertainty. The official starter now has one recorded Hajin page, 23 unrecorded pages and no Story Mission records. Build and focused audit tests passed. T008 stays open for the remaining source review; the earlier empty baseline remains historical evidence, not the current catalog state.
+
+## Cycle 20 — catalog and browser convergence
+
+The initial full runtime run found three stale test/canonical assumptions after the content version and Orders admission. Canonical serialization repaired first-save byte stability; the Orders baseline and pinned content-version assertions were updated. The focused affected suite passed 28/28, then full runtime passed 1,009/1,009. The first site-wide browser run found two old 24-unrecorded assertions, now updated to 23. Both focused journeys and a fresh full Chromium browser run passed. No task was closed merely from the new source rows; T008 still requires review of remaining pages and Story Missions.
+
 ## Cycle 8 — 2026-11-13, exact record links
 
 The detail renderer resolved target IDs across every loaded pack, so a duplicate ID in another catalog could point at the wrong record. Detail references now resolve within the selected pack, and a bounded direct-reference projection supplies reverse links for non-item records. A synthetic two-pack test verifies that the wrong catalog's link is excluded. The first build after editing failed because a broad text replacement also changed the catalog directory's pack list; that line was restored before retesting. Build and focused relation tests pass. FR-011 remains open for key/weapon/map-specific journeys and broader browser evidence.

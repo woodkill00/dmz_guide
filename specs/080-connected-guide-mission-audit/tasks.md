@@ -4,7 +4,7 @@
 
 ## Phase 1 — Contracts and admission
 
-- [x] T001 (FR-001–FR-009) Record current mission/catalog/page-set baseline and source/build scope in `research.md`; verify 24-slot projection and zero current Order/Story records with a repeatable read-only test. Evidence: official starter baseline in `tests/runtime/mission-audit.test.mjs`, 2026-11-13.
+- [x] T001 (FR-001–FR-009) Record the initial mission/catalog/page-set baseline and source/build scope in `research.md`; verify 24-slot projection and the then-zero Order/Story records with a repeatable read-only test. Evidence: official starter baseline on 2026-11-13; the test now asserts the later three-record page-one admission.
 - [x] T002 (FR-004–FR-007) Finalize bounded audit schema, migration/stale binding, spoiler/export contract and restore preview in `data-model.md` and focused contract tests. Evidence: nine focused domain tests and audit browser export/restore journey on 2026-11-14; the private export retains notes while the list omits them.
 - [x] T003 (FR-010–FR-018) Review shared IDs, existing profile/field-desk transactions, map handoff, backup exclusions and source-update contracts; amend plan/tasks for discovered ownership conflicts. Evidence: ownership review in `plan.md` (2026-11-14); T012–T018 retain the separate-transaction and source-review gates.
 
@@ -14,7 +14,7 @@
 - [x] T005 (FR-004, FR-006, FR-007, FR-009) Add validated local audit persistence, bounded reviewer/date/note fields, status history/undo, stale-binding review and warned private export/preview-restore; tests for invalid data, quota and cancel/failure retention. Evidence: `tests/runtime/mission-audit.test.mjs` and `tests/browser/mission-audit-run.mjs`, including delayed-read cancellation and simulated quota failure. Broader workspace backup remains T014–T015.
 - [x] T006 (FR-001, FR-004, FR-008) Add generated `/missions/audit/` page and compact list/detail client with section selection, status menu, note, filters, links and truthful save status; add links from Missions, feature registry, Home and Site map. Evidence: audit browser journey and exact Content Studio create/edit target tests on 2026-11-14; unrecorded pages open a blank objective form without adding a mission automatically.
 - [x] T007 (FR-001–FR-009) Browser-test empty 24-page list, synthetic Story group, section status/reload, Fill later, source warning independence, spoiler hiding, keyboard, 390px and 200% text; visual review and repair cycle. Evidence: `tests/browser/mission-audit-run.mjs` and local synthetic mobile screenshot, 2026-11-14. This does not certify real mission catalog completeness.
-- [ ] T008 (FR-002, FR-003, FR-005, FR-008) Audit named mission sources from `research.md`; stage source claims with attribution/build/differences. Import only reviewed records and preserve the empty-slot view for unresolved pages. Record exact coverage without claiming a complete game catalog.
+- [ ] T008 (FR-002, FR-003, FR-005, FR-008) Audit named mission sources from `research.md`; stage source claims with attribution/build/differences. Import only reviewed records and preserve the empty-slot view for unresolved pages. Record exact coverage without claiming a complete game catalog. Partial evidence: `mission-source-review.md` and three observed page-one Hajin Orders; later pages, Story Missions and current-build checks remain open.
 
 ## Phase 3 — Connected preparation (P1, FR-010–FR-011)
 

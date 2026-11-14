@@ -7,22 +7,36 @@ import {
 } from "../../src/domain/mission-audit.mjs";
 import { loadFixturePack } from "../helpers/catalog.mjs";
 
-test("official starter baseline has 24 unrecorded scoped pages and no Order or Story records", () => {
+test("official starter has three reported page-one Orders and 23 unrecorded Hajin pages", () => {
   const pack = loadFixturePack("official-starter");
   assert.equal(pack.id, "official:mw4-dmz-starter");
-  assert.equal(pack.objectives.length, 110);
+  assert.equal(pack.objectives.length, 113);
   assert.equal(
     pack.objectives.filter((row) =>
       ["dmz-order", "dmz-story"].includes(row.track),
     ).length,
-    0,
+    3,
   );
   const targets = missionAuditTargets(pack);
   assert.equal(
     targets.filter((row) => row.kind === "page" && !row.recorded).length,
-    24,
+    23,
   );
-  assert.equal(targets.filter((row) => row.kind === "mission").length, 0);
+  assert.equal(targets.filter((row) => row.kind === "mission").length, 27);
+  assert.equal(
+    targets.filter((row) => row.kind === "page" && row.recorded).length,
+    1,
+  );
+  assert.ok(
+    pack.objectives
+      .filter((row) => row.track === "dmz-order")
+      .every(
+        (row) =>
+          row.status === "observed" &&
+          row.sourceIds.length === 2 &&
+          row.effects.length === 0,
+      ),
+  );
 });
 
 test("empty catalog creates 24 unrecorded page targets and no fictional missions", () => {

@@ -1,0 +1,23 @@
+{
+  "description": "Reported third Hajin onboarding Order. Story unlock timing and page reward are not recorded as effects.",
+  "effects": [],
+  "id": "mw4:order-first-op",
+  "name": "First Op",
+  "oneTime": true,
+  "orderPage": 1,
+  "prerequisites": [
+    "mw4:order-crackshot"
+  ],
+  "requirements": [],
+  "requirementsKnown": true,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-orders-20261022"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Deploy into DMZ through Dynamic Ops."
+  ],
+  "track": "dmz-order"
+}

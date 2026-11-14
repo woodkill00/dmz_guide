@@ -37,13 +37,18 @@ test("story mission steps stay bounded and spoiler guarded in the workspace proj
   assert(row.sources.length > 0);
 });
 
-test("official starter keeps unverified Orders and story steps unrecorded", () => {
+test("official starter admits only reported page-one Orders and no Story Mission", () => {
   const pack = loadFixturePack("official-starter");
   const pages = ordersPageCoverage(pack);
   assert.equal(pages.length, 24);
   assert.equal(
-    pages.every((page) => page.state === "unrecorded"),
+    pages.filter((page) => page.state === "unrecorded").length === 23 &&
+      pages[0].objectiveIds.length === 3,
     true,
+  );
+  assert.equal(
+    pack.objectives.some((objective) => objective.track === "dmz-story"),
+    false,
   );
   assert.equal(
     pack.objectives.some((objective) =>

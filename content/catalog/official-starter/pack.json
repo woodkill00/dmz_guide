@@ -358,6 +358,9 @@
       "mw4:hajin"
     ],
     "objectives": [
+      "mw4:order-gear-up",
+      "mw4:order-crackshot",
+      "mw4:order-first-op",
       "mw4:printer-access",
       "mw4:upgrade-dog-tag-case-upgrade-ii",
       "mw4:upgrade-stash-weapon-upgrade-i",
@@ -567,6 +570,8 @@
       "mw4:print-volatile-explosives"
     ],
     "sources": [
+      "source:codcentral-orders-20261113",
+      "source:dmztracker-orders-20261022",
       "source:fob",
       "source:progression",
       "source:weapons",
@@ -591,14 +596,14 @@
     ]
   },
   "pack": {
-    "contentVersion": "2026.11.10.4",
+    "contentVersion": "2026.11.14.1",
     "coverage": {
       "expectedTotal": null,
-      "note": "All33 official launch weapon identities/basic observations; current DMZ combat stats and full non-weapon coverage remain unverified. Other starter records retained. Includes the 29 ingredients listed by GameRant (2026-10-28), with reported rarities and acquisition hints; complete-game item coverage remains unknown. Includes 34 TroubleChute-listed upgrade definitions and the GameBoost printer tables: 95 printable recipes. FOB costs and prerequisite chains follow the TroubleChute snapshot dated2026-11-10; consumption and current-build verification remain unresolved where not independently confirmed. Separate X01 in-raid printer reference: nine reported recipes, requiring carried materials; excluded from FOB craft forecasts. Owner-reported Field upgrades roster: 21 item identities; newly listed boxes have no invented recipes, rarities or effects. Item-reference capture reviewed 2026-11-10: 256 TroubleChute item identities, 157 reported unlock references and reported loot-container types where listed; provider coverage only, not complete-game verification."
+      "note": "All 33 official launch weapon identities/basic observations; current DMZ combat stats and full non-weapon coverage remain unverified. Other starter records retained. Includes the 29 ingredients listed by GameRant (2026-10-28), with reported rarities and acquisition hints; complete-game item coverage remains unknown. Includes 34 TroubleChute-listed upgrade definitions and the GameBoost printer tables: 95 printable recipes. FOB costs and prerequisite chains follow the TroubleChute snapshot dated 2026-11-10; consumption and current-build verification remain unresolved where not independently confirmed. Separate X01 in-raid printer reference: nine reported recipes, requiring carried materials; excluded from FOB craft forecasts. Owner-reported Field upgrades roster: 21 item identities; newly listed boxes have no invented recipes, rarities or effects. Item-reference capture reviewed 2026-11-10: 256 TroubleChute item identities, 157 reported unlock references and reported loot-container types where listed; provider coverage only, not complete-game verification. Three Hajin page-one Orders are secondary-source reports; 23 Hajin pages and all Story Missions remain unrecorded."
     },
     "description": "Source-backed reference with official facts, reported upgrade costs and printer recipes. Coverage and current-build validation remain incomplete; no third-party artwork included.",
     "game": {
-      "build": "official-prelaunch-intel-2026-10; live-build-unverified",
+      "build": "mixed-source-reports-2026-11; live-build-unverified",
       "id": "mw4",
       "mode": "dmz"
     },
