@@ -23,6 +23,31 @@ test("official starter audits 66 reported Orders and six Story Missions without 
     17,
   );
   assert.equal(targets.filter((row) => row.kind === "mission").length, 648);
+  assert.deepEqual(
+    [
+      ...new Set(
+        targets
+          .filter(
+            (row) =>
+              row.kind === "mission" && row.label.startsWith("No Time ·"),
+          )
+          .map((row) => row.label),
+      ),
+    ].sort(),
+    ["No Time · The Grid 1/2", "No Time · reported page 23"],
+  );
+  assert.deepEqual(
+    [
+      ...new Set(
+        targets
+          .filter(
+            (row) => row.kind === "mission" && row.label.startsWith("Healer ·"),
+          )
+          .map((row) => row.label),
+      ),
+    ].sort(),
+    ["Healer · page 10", "Healer · page 7"],
+  );
   assert.equal(
     targets.filter((row) => row.kind === "page" && row.recorded).length,
     7,
@@ -109,6 +134,36 @@ test("recorded story and Order sections keep independent stable IDs", () => {
     ).warning,
     "No dedicated reward field in this catalog schema; inspect cited sources",
   );
+});
+
+test("a cited source edit makes mission and page reviews stale without changing target IDs", () => {
+  const pack = {
+    id: "synthetic:source-review",
+    objectives: [
+      {
+        id: "synthetic:order",
+        name: "Synthetic Order",
+        track: "dmz-order",
+        orderPage: 1,
+        sourceIds: ["source:one"],
+      },
+    ],
+    sources: [{ id: "source:one", supports: "First reported claim" }],
+  };
+  const before = missionAuditTargets(pack);
+  const after = missionAuditTargets({
+    ...pack,
+    sources: [{ id: "source:one", supports: "Corrected reported claim" }],
+  });
+  for (const id of [
+    before[0].id,
+    before.find((row) => row.section === "sources").id,
+  ]) {
+    assert.notEqual(
+      before.find((row) => row.id === id).sourceFingerprint,
+      after.find((row) => row.id === id).sourceFingerprint,
+    );
+  }
 });
 
 test("audit import rejects duplicates and unsupported states", () => {

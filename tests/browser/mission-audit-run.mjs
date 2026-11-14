@@ -36,6 +36,16 @@ try {
     await page.locator("#mission-audit-missions button").count(),
     648,
   );
+  const missionRows = await page
+    .locator("#mission-audit-missions")
+    .textContent();
+  for (const label of [
+    "Healer · page 7",
+    "Healer · page 10",
+    "No Time · The Grid 1/2",
+    "No Time · reported page 23",
+  ])
+    assert(missionRows.includes(label), `Distinct audit label: ${label}`);
   await page.locator("#mission-audit-pages button").first().click();
   const createLink = await page
     .locator("#mission-audit-links a")
@@ -48,6 +58,10 @@ try {
   await page.locator("#mission-audit-state").selectOption("fill-later");
   await page.locator("#mission-audit-note").fill("Check page roster later");
   await page.locator("#mission-audit-save").click();
+  await page
+    .locator("#save-status")
+    .filter({ hasText: "saved on this device" })
+    .waitFor();
   assert.match(
     await page.locator("#save-status").textContent(),
     /saved on this device/,
@@ -106,6 +120,11 @@ try {
   await page.locator("#mission-audit-pages button").first().click();
   assert.equal(await page.locator("#mission-audit-undo").isDisabled(), false);
   await page.locator("#mission-audit-undo").click();
+  await page
+    .locator("#mission-audit-summary")
+    .filter({ hasText: "0 sections to fill later" })
+    .waitFor();
+  assert.equal(await page.locator("#mission-audit-undo").isDisabled(), true);
   await page.reload();
   await page.locator("#mission-audit-pages button").first().waitFor();
   assert.match(
@@ -133,6 +152,10 @@ try {
   await page.locator("#mission-audit-pages button").first().click();
   await page.locator("#mission-audit-state").selectOption("fill-later");
   await page.locator("#mission-audit-save").click();
+  await page
+    .locator("#save-status")
+    .filter({ hasText: "saved on this device" })
+    .waitFor();
   await page.evaluate(() => {
     const key = "dmz:mission-audit:v1:official:mw4-dmz-starter";
     const audit = JSON.parse(localStorage.getItem(key));
@@ -153,6 +176,10 @@ try {
   );
   await page.locator("#mission-audit-stale-review").check();
   await page.locator("#mission-audit-save").click();
+  await page
+    .locator("#save-status")
+    .filter({ hasText: "saved on this device" })
+    .waitFor();
   assert.equal(
     await page.locator("#mission-audit-stale-review-label").isVisible(),
     false,
@@ -227,6 +254,10 @@ try {
     };
   });
   await page.locator("#mission-audit-save").click();
+  await page
+    .locator("#save-status")
+    .filter({ hasText: "Audit not saved" })
+    .waitFor();
   assert.match(
     await page.locator("#save-status").textContent(),
     /Audit not saved/,
@@ -260,6 +291,10 @@ try {
   );
   page.once("dialog", (dialog) => dialog.accept());
   await page.locator("#mission-audit-restore").click();
+  await page
+    .locator("#mission-audit-import-preview")
+    .filter({ hasText: "Audit restored" })
+    .waitFor();
   assert.equal(
     await page.evaluate(
       () =>
@@ -350,6 +385,25 @@ try {
     .first()
     .click();
   assert.equal(
+    await syntheticPage.locator("#mission-audit-editor").isVisible(),
+    false,
+  );
+  assert.equal(
+    await syntheticPage.locator("#mission-audit-spoiler-notice").isVisible(),
+    true,
+  );
+  await syntheticPage.evaluate(async () => {
+    const { state } = await import("/assets/src/client/common.mjs");
+    state.profile.spoilers = true;
+    document
+      .querySelector("#mission-audit-filter")
+      .dispatchEvent(new Event("input"));
+  });
+  assert.equal(
+    await syntheticPage.locator("#mission-audit-editor").isVisible(),
+    true,
+  );
+  assert.equal(
     (
       await syntheticPage
         .locator("#mission-audit-links a")
@@ -358,14 +412,128 @@ try {
     ).includes("id=demo%3Asecret-story-audit-test"),
     true,
   );
+  await syntheticPage
+    .locator("#mission-audit-note")
+    .fill("Protected private note");
+  await syntheticPage.locator("#mission-audit-save").click();
+  await syntheticPage
+    .locator("#save-status")
+    .filter({ hasText: "saved on this device" })
+    .waitFor();
+  await syntheticPage.evaluate(async () => {
+    const { state } = await import("/assets/src/client/common.mjs");
+    state.profile.spoilers = false;
+    document
+      .querySelector("#mission-audit-filter")
+      .dispatchEvent(new Event("input"));
+  });
+  assert.equal(
+    await syntheticPage.locator("#mission-audit-editor").isVisible(),
+    false,
+  );
+  assert.equal(
+    await syntheticPage.locator("#mission-audit-note").inputValue(),
+    "",
+  );
+  assert.equal(
+    await syntheticPage.locator("#mission-audit-links").textContent(),
+    "",
+  );
+  assert.doesNotMatch(
+    await syntheticPage.locator("#mission-audit-spoiler-notice").textContent(),
+    /Protected private note/,
+  );
   assert.deepEqual(syntheticErrors, []);
   await syntheticPage.screenshot({
     path: "test-results/mission-audit-synthetic-mobile.png",
     fullPage: true,
   });
   await syntheticContext.close();
+  const raceContext = await browser.newContext();
+  const tabA = await raceContext.newPage();
+  const tabB = await raceContext.newPage();
+  const auditUrl = `${server.base}/missions/audit/?pack=official%3Amw4-dmz-starter`;
+  await Promise.all([tabA.goto(auditUrl), tabB.goto(auditUrl)]);
+  await Promise.all([
+    tabA.locator("#mission-audit-pages button").first().waitFor(),
+    tabB.locator("#mission-audit-pages button").first().waitFor(),
+  ]);
+  await tabA.locator("#mission-audit-pages button").nth(1).click();
+  await tabA
+    .locator("#mission-audit-note")
+    .fill("Page two draft stays visible");
+  await tabA.locator("#mission-audit-search").fill("page 2");
+  assert.equal(
+    await tabA.locator("#mission-audit-note").inputValue(),
+    "Page two draft stays visible",
+  );
+  await tabA.locator("#mission-audit-filter").selectOption("checked");
+  assert.equal(
+    await tabA.locator("#mission-audit-note").inputValue(),
+    "Page two draft stays visible",
+  );
+  await tabA.locator("#mission-audit-save").click();
+  await tabA
+    .locator("#save-status")
+    .filter({ hasText: "saved on this device" })
+    .waitFor();
+  await tabB.locator("#mission-audit-pages button").nth(2).click();
+  await tabB.locator("#mission-audit-note").fill("Page three unsaved conflict");
+  await tabB.locator("#mission-audit-save").click();
+  await tabB
+    .locator("#save-status")
+    .filter({ hasText: "Another tab changed" })
+    .waitFor();
+  assert.equal(
+    await tabB.locator("#mission-audit-note").inputValue(),
+    "Page three unsaved conflict",
+  );
+  await tabB.reload();
+  await tabB.locator("#mission-audit-pages button").nth(1).click();
+  assert.equal(
+    await tabB.locator("#mission-audit-note").inputValue(),
+    "Page two draft stays visible",
+  );
+  await tabA.evaluate(() => {
+    window.__auditLockWait = new Promise((resolve) => {
+      window.__releaseAuditLock = resolve;
+    });
+    navigator.locks.request(
+      "dmz:mission-audit:v1:official:mw4-dmz-starter",
+      async () => {
+        window.__auditLockHeld = true;
+        await window.__auditLockWait;
+      },
+    );
+  });
+  await tabA.waitForFunction(() => window.__auditLockHeld === true);
+  await tabB.locator("#mission-audit-pages button").nth(2).click();
+  await tabB.locator("#mission-audit-note").fill("Save behind a held lock");
+  await tabB.locator("#mission-audit-save").click();
+  await tabB
+    .locator("#save-status")
+    .filter({ hasText: "Saving audit" })
+    .waitFor();
+  for (const selector of [
+    "#mission-audit-note",
+    "#mission-audit-state",
+    "#mission-audit-search",
+    "#mission-audit-filter",
+    "#pack-select",
+  ])
+    assert.equal(await tabB.locator(selector).isDisabled(), true, selector);
+  await tabA.evaluate(() => window.__releaseAuditLock());
+  await tabB
+    .locator("#save-status")
+    .filter({ hasText: "saved on this device" })
+    .waitFor();
+  assert.equal(
+    await tabB.locator("#mission-audit-note").inputValue(),
+    "Save behind a held lock",
+  );
+  await raceContext.close();
   console.log(
-    "Mission audit empty and synthetic Story/Order coverage, persistence, import recovery, stale review, keyboard and 390px/200% layout PASS",
+    "Mission audit coverage, draft filters, two-tab conflict, import recovery, keyboard and 390px/200% layout PASS",
   );
 } finally {
   await browser.close();

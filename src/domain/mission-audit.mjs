@@ -33,6 +33,18 @@ export function missionAuditTargets(
   { pageSet = "hajin-launch", pageCount = 24 } = {},
 ) {
   if (!pack || typeof pack.id !== "string") throw Error("Audit pack required");
+  const objectiveById = new Map(
+    (pack.objectives || []).map((record) => [record.id, record]),
+  );
+  const sourceById = new Map(
+    (pack.sources || []).map((source) => [source.id, source]),
+  );
+  const evidenceFor = (record) => ({
+    record,
+    sources: (record?.sourceIds || []).map(
+      (id) => sourceById.get(id) || { id, missing: true },
+    ),
+  });
   const pages = ordersPageCoverage(pack, pageCount).map((row) => ({
     id: `page:${scopedId(pack.id)}:${scopedId(pageSet)}:${row.page}:roster`,
     kind: "page",
@@ -41,8 +53,30 @@ export function missionAuditTargets(
     page: row.page,
     recorded: row.state === "recorded",
     objectiveIds: row.objectiveIds,
-    sourceFingerprint: fingerprint(row.objectiveIds),
+    sourceFingerprint: fingerprint(
+      row.objectiveIds.map((id) => evidenceFor(objectiveById.get(id))),
+    ),
   }));
+  const names = new Map();
+  for (const record of pack.objectives || []) {
+    if (record.track !== "dmz-order" || !record.name) continue;
+    names.set(record.name, (names.get(record.name) || 0) + 1);
+  }
+  const missionLabel = (record) => {
+    if (record.spoiler) return "Spoiler-protected mission";
+    const name = record.name || record.title || record.id;
+    if (record.track !== "dmz-order" || names.get(record.name) < 2) return name;
+    const chapter = record.description?.match(
+      /^Reported in (?:the )?(.+?) chapter;/,
+    )?.[1];
+    const reportedPage = record.description?.match(
+      /^Reported as page (\d+)/,
+    )?.[1];
+    const qualifier = Number.isSafeInteger(record.orderPage)
+      ? `page ${record.orderPage}`
+      : chapter || (reportedPage ? `reported page ${reportedPage}` : record.id);
+    return `${name} · ${qualifier}`;
+  };
   const missions = (pack.objectives || [])
     .filter(
       (record) => record.track === "dmz-order" || record.track === "dmz-story",
@@ -54,11 +88,9 @@ export function missionAuditTargets(
         track: record.track,
         objectiveId: record.id,
         section,
-        label: record.spoiler
-          ? "Spoiler-protected mission"
-          : record.name || record.title || record.id,
+        label: missionLabel(record),
         spoiler: Boolean(record.spoiler),
-        sourceFingerprint: fingerprint(record),
+        sourceFingerprint: fingerprint(evidenceFor(record)),
         page: Number.isSafeInteger(record.orderPage) ? record.orderPage : null,
         warning:
           {
