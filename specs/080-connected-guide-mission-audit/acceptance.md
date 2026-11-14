@@ -68,3 +68,5 @@ On 2026-11-14 the audit import preview gained added/changed/removed/stale counts
 The serialized `npm test` run passed 1,007/1,007 on 2026-11-14 after these changes. `npm run build` produced 1,867 independent routes. The focused audit browser journey passed against that build. The wider T008–T023 work and reviewer-owned checklist remain open.
 
 A subsequent browser regression simulated a delayed file read, cancelled it, then released the read; the preview stayed cancelled and restore remained unavailable. The clean build and focused browser journey passed after this guard. T005 is closed on this scoped evidence; the broader multi-module backup is still T014–T015.
+
+The focused domain suite passed 9/9 after adding import byte-limit and stale-binding retention checks. The browser journey downloaded the private audit JSON and confirmed its note was retained while the audit list omitted that note. T002 is closed on the scoped contract evidence. A full runtime rerun after this test-only addition has not been recorded; the earlier 1,007/1,007 result remains the last full gate.

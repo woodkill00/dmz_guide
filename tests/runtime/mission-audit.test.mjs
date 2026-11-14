@@ -242,3 +242,44 @@ test("restore preview distinguishes added, changed, removed and stale bindings",
   );
   assert.deepEqual(preview, { added: 1, changed: 1, removed: 1, stale: 1 });
 });
+
+test("audit validator bounds import bytes and preserves a changed binding for review", () => {
+  const packId = "synthetic:test";
+  const base = {
+    version: 1,
+    packId,
+    contentVersion: "test.1",
+    pageSet: "hajin-launch",
+    entries: [
+      {
+        id: "page:synthetic:1",
+        state: "checked",
+        note: "reviewed",
+        reviewer: "owner",
+        reviewedAt: null,
+        sourceFingerprint: "00000000",
+        revision: 1,
+      },
+    ],
+    history: [],
+  };
+  assert.equal(
+    validateMissionAudit(base, packId).entries[0].sourceFingerprint,
+    "00000000",
+  );
+  assert.throws(() =>
+    validateMissionAudit(
+      { ...base, contentVersion: "".padEnd(201, "x") },
+      packId,
+    ),
+  );
+  assert.throws(() =>
+    validateMissionAudit(
+      {
+        ...base,
+        entries: [{ ...base.entries[0], note: "🧭".repeat(500_001) }],
+      },
+      packId,
+    ),
+  );
+});

@@ -50,6 +50,10 @@ The first import UI named only entry counts, which obscured removed or stale rev
 
 A pending file read could outlive Cancel and reopen the restore preview. The client now invalidates pending reads on cancel, replacement and catalog switch. A browser reproduction held `File.text()`, cancelled the import, released the read and verified the preview remained cancelled. T005 is closed with this evidence; the complete workspace backup remains T014–T015. T002 still needs separate spoiler/export-contract review.
 
+## Cycle 16 — audit contract convergence
+
+The export contract test now verifies private JSON retains the owner note while the audit list omits it. Focused tests also bound UTF-8 import size and retain an old fingerprint as stale review evidence. T002 is closed; T003 and the remaining cross-page tasks still require implementation and acceptance checks. The reviewer-owned checklist was not self-approved.
+
 ## Cycle 8 — 2026-11-13, exact record links
 
 The detail renderer resolved target IDs across every loaded pack, so a duplicate ID in another catalog could point at the wrong record. Detail references now resolve within the selected pack, and a bounded direct-reference projection supplies reverse links for non-item records. A synthetic two-pack test verifies that the wrong catalog's link is excluded. The first build after editing failed because a broad text replacement also changed the catalog directory's pack list; that line was restored before retesting. Build and focused relation tests pass. FR-011 remains open for key/weapon/map-specific journeys and broader browser evidence.

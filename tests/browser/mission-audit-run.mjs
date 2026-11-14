@@ -34,6 +34,18 @@ try {
     await page.locator("#save-status").textContent(),
     /saved on this device/,
   );
+  assert.doesNotMatch(
+    await page.locator("#mission-audit-pages").textContent(),
+    /Check page roster later/,
+  );
+  const [auditDownload] = await Promise.all([
+    page.waitForEvent("download"),
+    page.locator("#mission-audit-export").click(),
+  ]);
+  let exported = "";
+  for await (const chunk of await auditDownload.createReadStream())
+    exported += chunk.toString();
+  assert.equal(JSON.parse(exported).entries[0].note, "Check page roster later");
   await page.reload();
   await page.locator("#mission-audit-pages button").first().waitFor();
   assert.match(
