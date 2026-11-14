@@ -108,6 +108,28 @@ try {
     return state.profile;
   });
   assert.deepEqual(profile.inventory, {});
+  // A real opener at a different origin cannot transfer even with the right nonce.
+  const foreign = await context.newPage();
+  await foreign.goto("http://127.0.0.1:5281/?tool=explore");
+  const foreignNonce = "11111111-1111-4111-8111-111111111111";
+  const foreignPopup = foreign.waitForEvent("popup");
+  await foreign.evaluate((nonce) => {
+    window.__foreignMap = window.open(`http://127.0.0.1:5175/?tool=explore&collection=${nonce}`, "_blank");
+  }, foreignNonce);
+  const foreignMap = await foreignPopup;
+  await foreignMap.locator("#collection-plan-file").waitFor({ state: "attached" });
+  await foreign.evaluate((nonce) => {
+    window.__foreignMap?.postMessage({ type: "dmz-collection-plan", nonce, plan: {
+      kind: "dmz-collection-plan", version: 1, packId: "test:catalog",
+      contentVersion: "synthetic.1", createdAt: new Date().toISOString(),
+      scope: "unfinished", items: [{ itemId: "test:item", name: "Synthetic item",
+        needed: 1, minimum: false, areas: [{ id: "test:area", name: "Chang-san Air Base" }] }],
+    } }, "http://127.0.0.1:5175");
+  }, foreignNonce);
+  await foreignMap.waitForTimeout(300);
+  assert.equal(await foreignMap.locator("#collection-plan-accept").count(), 0);
+  await foreignMap.close();
+  await foreign.close();
   console.log(
     "PASS real Field desk → map nonce/origin/source handshake, reviewed single-item plan, explicit highlights and unchanged guide inventory",
   );

@@ -1,0 +1,21 @@
+{
+  "description": "Reported on fixed Hajin Orders page 11. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-friendly-face",
+  "name": "Friendly Face",
+  "oneTime": true,
+  "orderPage": 11,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-friendly-face-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Request a truce with the Ping Wheel"
+  ],
+  "track": "dmz-order"
+}

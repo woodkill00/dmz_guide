@@ -1,0 +1,16 @@
+{
+  "id": "source:dmztracker-order-surprise-me-20261114",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-14",
+    "kind": "web",
+    "lineageKey": "dmztracker-order-surprise-me",
+    "observationKey": "dmztracker-order-surprise-me-20261114"
+  },
+  "publishedAt": "Date not recorded",
+  "reviewedAt": "2026-11-14",
+  "supports": "Community-reported Surprise Me Order identity and short objective labels; compared with COD Central on 2026-11-14. Rewards, prerequisites, exact item requirements and current-build applicability are not independently verified.",
+  "title": "DMZTracker: Surprise Me Order",
+  "type": "community",
+  "url": "https://www.dmztracker.gg/orders/surprise-me/"
+}

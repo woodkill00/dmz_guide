@@ -185,6 +185,7 @@ export async function runNavigationDirectoryTests({
           .querySelector("#catalog-count")
           .textContent.includes("matching"),
       );
+      await page.waitForLoadState("networkidle");
       await page.locator("#catalog-sort").focus();
       await page.selectOption("#catalog-sort", "type");
       assert.equal(

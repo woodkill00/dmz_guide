@@ -1,0 +1,23 @@
+{
+  "description": "Reported on fixed Hajin Orders page 4. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-operation-rewards",
+  "name": "Operation Rewards",
+  "oneTime": true,
+  "orderPage": 4,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-operation-rewards-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Collect a Dynamic Op phone in Cheongun Village",
+    "Complete a Dynamic Op",
+    "Loot a Dynamic Op crate"
+  ],
+  "track": "dmz-order"
+}

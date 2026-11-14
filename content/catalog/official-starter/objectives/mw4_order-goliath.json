@@ -1,0 +1,21 @@
+{
+  "description": "Reported in the Hornet’s Nest 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-goliath",
+  "name": "Goliath",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-goliath-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Hit the Colossus with a Thermite or a Drill Charge",
+    "Hit the Colossus with a Shock Stick"
+  ],
+  "track": "dmz-order"
+}

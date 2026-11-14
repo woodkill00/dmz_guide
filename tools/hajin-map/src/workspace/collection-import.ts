@@ -1,4 +1,7 @@
-import { validateCollectionHandoff, validateRunPlanHandoff } from "../../../../src/domain/collection-handoff.mjs";
+import {
+  validateCollectionHandoff,
+  validateRunPlanHandoff,
+} from "../../../../src/domain/collection-handoff.mjs";
 import { el, button, note, field, input } from "./dom.ts";
 import { matchingItemAreas } from "../map/item-area-highlight.ts";
 import type { ExplorerRecord } from "./explorer-index.ts";
@@ -17,7 +20,17 @@ interface Plan {
     areas: { id: string; name: string }[];
   }[];
 }
-interface RunPlanHandoff { kind: "dmz-run-plan-handoff"; version: 1; packId: string; contentVersion: string; planId: string; name: string; createdAt: string; objectiveIds: string[]; stops: { id: string; name: string }[] }
+interface RunPlanHandoff {
+  kind: "dmz-run-plan-handoff";
+  version: 1;
+  packId: string;
+  contentVersion: string;
+  planId: string;
+  name: string;
+  createdAt: string;
+  objectiveIds: string[];
+  stops: { id: string; name: string }[];
+}
 interface Host {
   records: () => ExplorerRecord[];
   allowed: () => boolean;
@@ -41,7 +54,10 @@ export function createCollectionImport(h: Host) {
       nonces.length === 1 && /^[a-f0-9-]{36}$/i.test(nonces[0])
         ? nonces[0]
         : null,
-    runNonce = runNonces.length === 1 && /^[a-f0-9-]{36}$/i.test(runNonces[0]) ? runNonces[0] : null;
+    runNonce =
+      runNonces.length === 1 && /^[a-f0-9-]{36}$/i.test(runNonces[0])
+        ? runNonces[0]
+        : null;
   const ready = () => {
     if (
       (nonce || runNonce) &&
@@ -50,12 +66,18 @@ export function createCollectionImport(h: Host) {
       window.opener &&
       !window.opener.closed
     )
-      window.opener?.postMessage(runNonce ? { type: "dmz-run-plan-ready", nonce: runNonce } : { type: "dmz-collection-ready", nonce }, "*");
+      window.opener?.postMessage(
+        runNonce
+          ? { type: "dmz-run-plan-ready", nonce: runNonce }
+          : { type: "dmz-collection-ready", nonce },
+        "*",
+      );
   };
   const timer = nonce || runNonce ? setInterval(ready, 500) : undefined;
-  const deadline = nonce || runNonce
-    ? setTimeout(() => clearInterval(timer), 15000)
-    : undefined;
+  const deadline =
+    nonce || runNonce
+      ? setTimeout(() => clearInterval(timer), 15000)
+      : undefined;
   function receive(value: unknown) {
     if (!h.allowed())
       throw Error(
@@ -72,17 +94,29 @@ export function createCollectionImport(h: Host) {
       !["http://127.0.0.1:4173", "http://localhost:4173"].includes(
         event.origin,
       ) ||
-      !((nonce && event.data?.type === "dmz-collection-plan" && event.data?.nonce === nonce) || (runNonce && event.data?.type === "dmz-run-plan" && event.data?.nonce === runNonce))
+      !(
+        (nonce &&
+          event.data?.type === "dmz-collection-plan" &&
+          event.data?.nonce === nonce) ||
+        (runNonce &&
+          event.data?.type === "dmz-run-plan" &&
+          event.data?.nonce === runNonce)
+      )
     )
       return;
     try {
       if (runNonce) {
-        if (!h.allowed()) throw Error("Save or cancel the current map draft before reviewing a run plan.");
+        if (!h.allowed())
+          throw Error(
+            "Save or cancel the current map draft before reviewing a run plan.",
+          );
         pendingRun = validateRunPlanHandoff(event.data.plan) as RunPlanHandoff;
         h.changed();
       } else receive(event.data.plan);
       event.source?.postMessage(
-        runNonce ? { type: "dmz-run-plan-received", nonce: runNonce } : { type: "dmz-collection-received", nonce },
+        runNonce
+          ? { type: "dmz-run-plan-received", nonce: runNonce }
+          : { type: "dmz-collection-received", nonce },
         { targetOrigin: event.origin },
       );
       clearInterval(timer);
@@ -120,23 +154,86 @@ export function createCollectionImport(h: Host) {
     root.append(el("summary", "Import collection plan / guide shortages"));
     if (pendingRun) {
       const incoming = pendingRun;
-      root.append(note(`Review next-run plan: ${incoming.name} · ${incoming.objectiveIds.length} public objectives · ${incoming.stops.length} named stops. Private stock was not transferred.`));
+      root.append(
+        note(
+          `Review next-run plan: ${incoming.name} · ${incoming.objectiveIds.length} public objectives · ${incoming.stops.length} named stops. Private stock was not transferred.`,
+        ),
+      );
       const list = el("ul");
       for (const stop of incoming.stops) list.append(el("li", stop.name));
-      root.append(list, button("Accept run-plan context", () => { if (!h.allowed()) return; currentRun = incoming; pendingRun = null; h.changed(); }, "run-plan-accept"), button("Decline run-plan context", () => { pendingRun = null; h.changed(); }, "run-plan-decline"));
+      root.append(
+        list,
+        button(
+          "Accept run-plan context",
+          () => {
+            if (!h.allowed()) return;
+            currentRun = incoming;
+            pendingRun = null;
+            h.changed();
+          },
+          "run-plan-accept",
+        ),
+        button(
+          "Decline run-plan context",
+          () => {
+            pendingRun = null;
+            h.changed();
+          },
+          "run-plan-decline",
+        ),
+      );
     }
     if (currentRun) {
       const active = currentRun;
-      root.append(note(`Reviewed run plan: ${active.name} · ${active.objectiveIds.length} objective IDs. Named stops without registered positions stay list-only.`));
+      root.append(
+        note(
+          `Reviewed run plan: ${active.name} · ${active.objectiveIds.length} objective IDs. Named stops without registered positions stay list-only.`,
+        ),
+      );
       const list = el("ul");
       for (const stop of active.stops) {
         const matches = matchingItemAreas(stop.name, h.records());
-        list.append(el("li", `${stop.name} · ${matches.length ? "registered match available" : "no positioned match"}`));
+        list.append(
+          el(
+            "li",
+            `${stop.name} · ${matches.length ? "registered match available" : "no positioned match"}`,
+          ),
+        );
       }
-      root.append(list, button("Highlight run-plan stops", () => {
-        if (!h.allowed()) return;
-        h.highlight(active.stops.flatMap((stop) => matchingItemAreas(stop.name, h.records()).slice(0, 1)));
-      }, "run-plan-highlight"), button("Return to Guide plan", () => { window.open("http://127.0.0.1:4173/run-plan/", "_blank", "noopener"); }, "run-plan-return"), button("Clear run-plan context", () => { currentRun = null; h.changed(); }, "run-plan-clear"));
+      root.append(
+        list,
+        button(
+          "Highlight run-plan stops",
+          () => {
+            if (!h.allowed()) return;
+            h.highlight(
+              active.stops.flatMap((stop) =>
+                matchingItemAreas(stop.name, h.records()).slice(0, 1),
+              ),
+            );
+          },
+          "run-plan-highlight",
+        ),
+        button(
+          "Return to Guide plan",
+          () => {
+            window.open(
+              "http://127.0.0.1:4173/run-plan/",
+              "_blank",
+              "noopener",
+            );
+          },
+          "run-plan-return",
+        ),
+        button(
+          "Clear run-plan context",
+          () => {
+            currentRun = null;
+            h.changed();
+          },
+          "run-plan-clear",
+        ),
+      );
     }
     const file = input("", "file");
     file.id = "collection-plan-file";
@@ -147,12 +244,25 @@ export function createCollectionImport(h: Host) {
         const chosen = file.files?.[0];
         if (!chosen) return;
         if (chosen.size > 200000) throw Error("Collection plan exceeds 200 KB");
-        receive(JSON.parse(await chosen.text()));
+        const data = JSON.parse(await chosen.text());
+        if (data?.kind === "dmz-run-plan-handoff") {
+          if (!h.allowed())
+            throw Error(
+              "Save or cancel the current map draft before reviewing a run plan.",
+            );
+          pendingRun = validateRunPlanHandoff(data) as RunPlanHandoff;
+          h.changed();
+        } else receive(data);
       } catch (error) {
         h.error(error);
       }
     });
-    root.append(field("Choose a plan downloaded from Field desk", file));
+    root.append(
+      field(
+        "Choose a plan downloaded from Field desk or Guide run plans",
+        file,
+      ),
+    );
     if (pending) {
       const incoming = pending;
       root.append(
@@ -220,6 +330,28 @@ export function createCollectionImport(h: Host) {
         list.append(row);
       }
       root.append(list);
+      const routeButton = button(
+        "Create new collection route",
+        async () => {
+          try {
+            if (!h.allowed()) return;
+            const records = [
+              ...new Map(
+                resolved().map((record) => [record.key, record]),
+              ).values(),
+            ];
+            if (!records.length || records.length > 32)
+              throw Error(
+                "Select 1–32 areas with registered positions. Unknown areas stay list-only.",
+              );
+            await h.createRoute(records);
+          } catch (error) {
+            h.error(error);
+          }
+        },
+        "collection-plan-route",
+      );
+      routeButton.disabled = resolved().length === 0;
       root.append(
         button(
           "Highlight selected areas",
@@ -228,27 +360,7 @@ export function createCollectionImport(h: Host) {
           },
           "collection-plan-highlight",
         ),
-        button(
-          "Create new collection route",
-          async () => {
-            try {
-              if (!h.allowed()) return;
-              const records = [
-                ...new Map(
-                  resolved().map((record) => [record.key, record]),
-                ).values(),
-              ];
-              if (!records.length || records.length > 32)
-                throw Error(
-                  "Select 1–32 areas with registered positions. Unknown areas stay list-only.",
-                );
-              await h.createRoute(records);
-            } catch (error) {
-              h.error(error);
-            }
-          },
-          "collection-plan-route",
-        ),
+        routeButton,
         button("Open routes", h.openRoutes),
         button("Clear this plan", () => {
           current = null;

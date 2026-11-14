@@ -70,12 +70,17 @@ export function previewPath({ packKey, id }) {
 // A create destination selects a catalog and the existing Add item form only.
 // It never creates a record or falls back to another catalog.
 export function parseItemCreateTarget(params) {
+  const target = parseCreateTarget(params);
+  assert(target.create === "items", invalid);
+  return target;
+}
+export function parseCreateTarget(params) {
   assert(
     [...params.keys()].sort().join(",") === "create,packId,packKey",
     invalid,
   );
   const target = Object.fromEntries(params);
-  assert(target.create === "items", invalid);
+  assert(["items", "objectives"].includes(target.create), invalid);
   parseAuthorTarget(
     new URLSearchParams({
       packKey: target.packKey,
@@ -88,6 +93,10 @@ export function parseItemCreateTarget(params) {
 }
 export function resolveItemCreateTarget(entries, target) {
   parseItemCreateTarget(new URLSearchParams(target));
+  return resolveCreateTarget(entries, target);
+}
+export function resolveCreateTarget(entries, target) {
+  parseCreateTarget(new URLSearchParams(target));
   const matches = entries.filter(
     (entry) => entry.key === target.packKey && entry.pack.id === target.packId,
   );
@@ -98,7 +107,10 @@ export function resolveItemCreateTarget(entries, target) {
   return { entry: matches[0] };
 }
 export function itemCreatePath({ packKey, packId }) {
-  const params = new URLSearchParams({ create: "items", packKey, packId });
-  parseItemCreateTarget(params);
+  return createPath({ create: "items", packKey, packId });
+}
+export function createPath({ create, packKey, packId }) {
+  const params = new URLSearchParams({ create, packKey, packId });
+  parseCreateTarget(params);
   return "/?" + params;
 }

@@ -123,6 +123,13 @@ const rows = [
     "DMZ Orders and story progress",
   ],
   [
+    "mission-audit",
+    "Mission audit",
+    "Manage",
+    "/missions/audit/",
+    "Review Orders and Story Mission content sections",
+  ],
+  [
     "progression",
     "Progress",
     "Track",
@@ -160,6 +167,13 @@ const rows = [
     "Manage",
     "/settings/",
     "Private profiles and backups",
+  ],
+  [
+    "workspace-backup",
+    "Workspace backup",
+    "Manage",
+    "/workspace-backup/",
+    "Bundle private exports and inspect recovery modules",
   ],
   ["editor", "Editor", "Manage", "/editor/", "Private record editor"],
   ["local", "Private reader", "Reference", "/local/", "Your private content"],

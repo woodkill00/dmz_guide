@@ -1,0 +1,22 @@
+{
+  "description": "Reported as page 19 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-avionics",
+  "name": "Avionics",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-avionics-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Print or extract 5 Electronic Sensors",
+    "Extract 1 Structural Alloy",
+    "Print a UAV"
+  ],
+  "track": "dmz-order"
+}

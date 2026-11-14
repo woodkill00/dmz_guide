@@ -1,0 +1,20 @@
+{
+  "description": "Reported in The Grid 2/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-opulent",
+  "name": "Opulent",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-opulent-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Complete 6 Side Ops in a single deployment"
+  ],
+  "track": "dmz-order"
+}

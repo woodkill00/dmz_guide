@@ -1,0 +1,16 @@
+{
+  "id": "source:dmztracker-orders-20261022",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-14",
+    "kind": "web",
+    "lineageKey": "dmztracker-orders",
+    "observationKey": "dmztracker-orders-page1-20261022"
+  },
+  "publishedAt": "2026-10-22",
+  "reviewedAt": "2026-11-14",
+  "supports": "Secondary launch-build report of the three page-one Hajin Order identities and tasks. Reward timing and current-build applicability are not confirmed in this catalog.",
+  "title": "DMZTracker: MW4 DMZ Orders page-one records",
+  "type": "community",
+  "url": "https://www.dmztracker.gg/orders/"
+}

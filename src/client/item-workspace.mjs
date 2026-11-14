@@ -69,7 +69,9 @@ async function publishedPack(id) {
     createCatalogLoader({
       schema,
       manifest: parseCatalogManifest(text),
-      fetcher: (path) => fetch(path),
+      // Directory icon lookups may outlive a fast native navigation in WebKit.
+      // A bodyless GET can finish without surfacing a cancelled request as a page error.
+      fetcher: (path) => fetch(path, { keepalive: true }),
     }),
   );
   return (await reader).getPublished(id);

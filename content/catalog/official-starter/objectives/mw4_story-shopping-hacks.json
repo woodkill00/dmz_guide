@@ -1,0 +1,22 @@
+{
+  "description": "Reported operation at NuriGO Mall. Secondary-source report; current DMZ build and rewards are not independently verified.",
+  "effects": [],
+  "id": "mw4:story-shopping-hacks",
+  "name": "Operation Shopping Hacks",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-story-20261114",
+    "source:dmztracker-story-shopping-hacks-20261114"
+  ],
+  "spoiler": true,
+  "status": "observed",
+  "steps": [
+    "Hack the network.",
+    "Reprogram the protocol.",
+    "Secure evidence."
+  ],
+  "track": "dmz-story"
+}

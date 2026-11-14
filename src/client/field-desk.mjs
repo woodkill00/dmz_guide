@@ -27,6 +27,12 @@ import { itemOverview } from "../ui/item-summary.mjs";
 import { validateCollectionHandoff } from "../domain/collection-handoff.mjs";
 import { parseBounded } from "../content/limits.mjs";
 import { createRunReviewQueue } from "./run-review-queue.mjs";
+import {
+  startMatchSession,
+  previewMatchSession,
+  previewMatchUndo,
+} from "../domain/match-session.mjs";
+import { loadRunPlans } from "../domain/run-plans.mjs";
 import { validateProfile, previewProfile } from "../domain/profile.mjs";
 import {
   decodeStashImage,
@@ -51,6 +57,10 @@ let applying = false,
   cachedGuard = null;
 let scanRows = [],
   runRows = [],
+  matchSession = null,
+  matchObjectives = [],
+  matchStops = [],
+  matchPlans = null,
   staged = null,
   dirty = false,
   recognizing = false,
@@ -125,6 +135,9 @@ function discard() {
   recognizing = false;
   scanRows = [];
   runRows = [];
+  matchSession = null;
+  matchObjectives = [];
+  matchStops = [];
   staged = null;
   editingDiscovery = null;
   dirty = false;
@@ -164,6 +177,20 @@ function renderScan() {
     : "";
 }
 function renderRun() {
+  $("#match-status").textContent = matchSession
+    ? `${matchSession.name} · profile revision ${matchSession.revision}${matchSession.planId ? ` · preparation plan ${matchPlans?.plans.find((row) => row.id === matchSession.planId)?.name || matchSession.planId} at plan revision ${matchSession.planRevision}` : ""}. ${matchObjectives.length} objective reports · ${matchStops.length} stops.`
+    : "No match started.";
+  const matches = state.profile?.fieldOps?.matches || [];
+  $("#match-history").innerHTML = matches.length
+    ? `<details><summary>Saved matches (${matches.length})</summary><ul>${matches
+        .slice()
+        .reverse()
+        .map(
+          (match) =>
+            `<li><strong>${esc(match.name)}</strong> · ${esc(new Date(match.at).toLocaleString())}${match.planId ? ` · plan ${esc(match.planId)} at revision ${match.planRevision}` : ""} · ${match.progress.length} objectives · ${match.stops.length} stops${match.undoneAt ? " · undone" : ` <button type="button" data-undo-match="${esc(match.id)}">Preview undo</button>`}${match.stops.length ? `<details><summary>Visited stops</summary><ul>${match.stops.map((stop) => `<li>${esc(stop)}</li>`).join("")}</ul></details>` : ""}</li>`,
+        )
+        .join("")}</ul></details>`
+    : "";
   $("#run-rows").innerHTML = runRows.length
     ? table(
         ["Item", "Pool", "Report", "Amount", ""],
@@ -174,7 +201,13 @@ function renderRun() {
           )
           .join(""),
       )
-    : "<p>No run adjustments staged.</p>";
+    : "<p>No finds staged.</p>";
+  if (matchObjectives.length || matchStops.length) {
+    $("#run-rows").insertAdjacentHTML(
+      "beforeend",
+      `<ul>${matchObjectives.map((row, index) => `<li>${esc(state.pack.objectives.find((o) => o.id === row.id)?.name || "Objective")} · ${esc(row.status)} <button type="button" data-remove-objective="${index}">Remove</button></li>`).join("")}${matchStops.map((stop, index) => `<li>Stop: ${esc(stop)} <button type="button" data-remove-stop="${index}">Remove</button></li>`).join("")}</ul>`,
+    );
+  }
 }
 function renderCarried() {
   const query = $("#field-query").value.trim().toLowerCase(),
@@ -250,7 +283,7 @@ function renderHistory() {
         .reverse()
         .map(
           (event) =>
-            `<details class="field-history-entry"><summary>${esc(safeText(event.label))} · ${esc(new Date(event.at).toLocaleString())} · ${event.changes.length} changes</summary>${table(["Item", "Pool", "Before", "After"], event.changes.map((change) => `<tr><td>${esc(name(change.itemId))}</td><td>${esc(change.pool)}</td><td>${n(change.before)}</td><td>${n(change.after)}</td></tr>`).join(""))}<button type="button" data-undo-field="${esc(event.id)}">Preview undo</button></details>`,
+            `<details class="field-history-entry"><summary>${esc(safeText(event.label))} · ${esc(new Date(event.at).toLocaleString())} · ${event.changes.length} changes</summary>${table(["Item", "Pool", "Before", "After"], event.changes.map((change) => `<tr><td>${esc(name(change.itemId))}</td><td>${esc(change.pool)}</td><td>${n(change.before)}</td><td>${n(change.after)}</td></tr>`).join(""))}${state.profile.fieldOps?.matches?.some((match) => match.id === event.id) ? "<p>Use Saved matches above to undo stock and objectives together.</p>" : `<button type="button" data-undo-field="${esc(event.id)}">Preview undo</button>`}</details>`,
         )
         .join("")
     : "<p>No recorded quantity changes yet.</p>";
@@ -284,7 +317,18 @@ function render() {
   generation++;
   releasePhotos();
   discard();
+  matchPlans = null;
+  $("#match-plan").innerHTML = '<option value="">Loading saved plans…</option>';
   $("#run-item").innerHTML = options();
+  $("#match-objective").innerHTML =
+    '<option value="">Choose objective…</option>' +
+    state.pack.objectives
+      .filter((objective) => !objective.spoiler || state.profile.spoilers)
+      .map(
+        (objective) =>
+          `<option value="${esc(objective.id)}">${esc(objective.name)}</option>`,
+      )
+      .join("");
   $("#discovery-item").innerHTML = options();
   $("#discovery-location").innerHTML =
     '<option value="">No linked location</option>' +
@@ -305,6 +349,25 @@ function render() {
   renderCarried();
   renderPlan();
   renderHistory();
+  const planToken = generation;
+  loadRunPlans(state.pack)
+    .then((doc) => {
+      if (planToken !== generation || doc.packId !== state.pack.id) return;
+      matchPlans = doc;
+      $("#match-plan").innerHTML =
+        '<option value="">No saved plan</option>' +
+        doc.plans
+          .map(
+            (plan) =>
+              `<option value="${esc(plan.id)}">${esc(plan.name)}</option>`,
+          )
+          .join("");
+    })
+    .catch(() => {
+      if (planToken === generation)
+        $("#match-plan").innerHTML =
+          '<option value="">Saved plans unavailable</option>';
+    });
   void renderDiscoveries();
   void reviewQueue.load();
 }
@@ -682,11 +745,86 @@ $("main").addEventListener("click", async (event) => {
       runRows.splice(Number(button.dataset.removeRun), 1);
       renderRun();
     }
-    if (button.id === "run-preview")
-      stage(previewRunChanges(state.profile, state.pack, runRows), {
-        label: "Post-run reconciliation",
+    if (button.id === "match-start") {
+      if (runRows.length || matchObjectives.length || matchStops.length)
+        throw Error(
+          "Review or discard the current match reports before starting another match",
+        );
+      matchSession = startMatchSession(
+        state.pack,
+        state.profile,
+        $("#match-name").value,
+        matchPlans?.plans.find((plan) => plan.id === $("#match-plan").value) ||
+          null,
+        $("#match-plan").value ? matchPlans?.revision : null,
+      );
+      dirty = true;
+      renderRun();
+    }
+    if (button.id === "match-add-objective") {
+      if (!matchSession) throw Error("Start a named match first");
+      const id = $("#match-objective").value;
+      if (!id || matchObjectives.some((row) => row.id === id))
+        throw Error("Choose an objective that is not already in this match");
+      matchObjectives.push({ id, status: $("#match-objective-status").value });
+      invalidateReview();
+      dirty = true;
+      renderRun();
+    }
+    if (button.id === "match-add-stop") {
+      if (!matchSession) throw Error("Start a named match first");
+      const stop = $("#match-stop").value.trim();
+      if (!stop || matchStops.length >= 100)
+        throw Error("Enter a stop of at most 160 characters");
+      matchStops.push(stop);
+      $("#match-stop").value = "";
+      invalidateReview();
+      dirty = true;
+      renderRun();
+    }
+    if (button.dataset.removeObjective !== undefined) {
+      matchObjectives.splice(Number(button.dataset.removeObjective), 1);
+      invalidateReview();
+      renderRun();
+    }
+    if (button.dataset.removeStop !== undefined) {
+      matchStops.splice(Number(button.dataset.removeStop), 1);
+      invalidateReview();
+      renderRun();
+    }
+    if (button.id === "run-preview") {
+      if (!matchSession) throw Error("Start a named match first");
+      const preview = previewMatchSession(
+        state.pack,
+        state.profile,
+        matchSession,
+        runRows,
+        matchObjectives,
+        matchStops,
+      );
+      stage(preview, {
+        label: `Match: ${matchSession.name}`,
         kind: "run",
+        entryId: matchSession.id,
       });
+      if (preview.progress.length || preview.stops.length)
+        $("#field-review").insertAdjacentHTML(
+          "beforeend",
+          `<p>${preview.progress.length} objective result${preview.progress.length === 1 ? "" : "s"}: ${preview.progress.map((row) => `${esc(state.pack.objectives.find((objective) => objective.id === row.id)?.name || "Objective")} ${esc(row.before)} → ${esc(row.after)}`).join("; ")}. ${preview.stops.length} visited stop${preview.stops.length === 1 ? "" : "s"} will be saved as player-reported match evidence.</p>`,
+        );
+    }
+    if (button.dataset.undoMatch) {
+      const undo = previewMatchUndo(
+        state.pack,
+        state.profile,
+        button.dataset.undoMatch,
+      );
+      stage(undo, { label: "Undo match", kind: "undo", undoOf: undo.undoOf });
+      $("#field-review").insertAdjacentHTML(
+        "beforeend",
+        `<p>${undo.progress.length} objective results will be restored. Match evidence remains in history, marked undone.</p>`,
+      );
+    }
     if (button.dataset.undoField) {
       const undo = previewFieldUndo(
         state.profile,
@@ -820,6 +958,7 @@ $("#run-form").addEventListener("submit", (event) => {
   event.preventDefault();
   if (state.loading || state.saving || applying) return;
   try {
+    if (!matchSession) throw Error("Start a named match first");
     const action = $("#run-action").value,
       quantity = Number($("#run-quantity").value),
       itemId = $("#run-item").value;

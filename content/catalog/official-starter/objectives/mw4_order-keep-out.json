@@ -1,0 +1,22 @@
+{
+  "description": "Reported in the Hornet’s Nest 2/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-keep-out",
+  "name": "Keep Out",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-keep-out-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Kill 3 Lieutenants",
+    "Loot a Lieutenant's key",
+    "Loot the Lieutenant's gun from their room"
+  ],
+  "track": "dmz-order"
+}

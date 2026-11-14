@@ -1,0 +1,16 @@
+{
+  "id": "source:dmztracker-story-iron-citadel-20261114",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-14",
+    "kind": "web",
+    "lineageKey": "dmztracker-story-iron-citadel",
+    "observationKey": "dmztracker-story-iron-citadel-20261114"
+  },
+  "publishedAt": "Date not recorded",
+  "reviewedAt": "2026-11-14",
+  "supports": "Community-reported Operation Iron Citadel identity and three short objective labels; provider lists last verified 2026-11-06 for Season 1 (6 Nov 2026). Rewards, prerequisites, exact item quantities and current build applicability are not admitted.",
+  "title": "DMZTracker: Operation Iron Citadel",
+  "type": "community",
+  "url": "https://www.dmztracker.gg/missions/iron-citadel/"
+}

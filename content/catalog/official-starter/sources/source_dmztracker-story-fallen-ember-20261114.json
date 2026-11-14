@@ -1,0 +1,16 @@
+{
+  "id": "source:dmztracker-story-fallen-ember-20261114",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-14",
+    "kind": "web",
+    "lineageKey": "dmztracker-story-fallen-ember",
+    "observationKey": "dmztracker-story-fallen-ember-20261114"
+  },
+  "publishedAt": "Date not recorded",
+  "reviewedAt": "2026-11-14",
+  "supports": "Community-reported Operation Fallen Ember identity and three short objective labels; provider lists last verified 2026-11-08 for Season 1 (7 Nov 2026). Rewards, prerequisites, exact item quantities and current build applicability are not admitted.",
+  "title": "DMZTracker: Operation Fallen Ember",
+  "type": "community",
+  "url": "https://www.dmztracker.gg/missions/fallen-ember/"
+}

@@ -1,0 +1,22 @@
+{
+  "description": "Reported operation at Haneul Nuclear Reactor. Secondary-source report; current DMZ build and rewards are not independently verified.",
+  "effects": [],
+  "id": "mw4:story-fallen-ember",
+  "name": "Operation Fallen Ember",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-story-20261114",
+    "source:dmztracker-story-fallen-ember-20261114"
+  ],
+  "spoiler": true,
+  "status": "observed",
+  "steps": [
+    "Breach the reactor.",
+    "Secure the fuel rods.",
+    "Extract decontaminated rods."
+  ],
+  "track": "dmz-story"
+}

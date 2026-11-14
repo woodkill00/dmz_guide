@@ -1,0 +1,22 @@
+{
+  "description": "Reported as page 19 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-multi-talented",
+  "name": "Multi-Talented",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-multi-talented-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Capture 6 SAM Sites",
+    "Open 12 Supply Drops",
+    "Clear 4 Compounds"
+  ],
+  "track": "dmz-order"
+}

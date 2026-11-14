@@ -4,17 +4,169 @@ import { previewSourceImpact } from "../domain/source-impact.mjs";
 import { loadRunPlans } from "../domain/run-plans.mjs";
 import { parseBounded, LIMITS } from "../content/limits.mjs";
 import { validatePack } from "../content/validate.mjs";
+import {
+  missionAuditTargets,
+  validateMissionAudit,
+} from "../domain/mission-audit.mjs";
+import { contentHealth } from "../domain/content-health.mjs";
+import { sourceClaimChanges } from "../domain/source-change-review.mjs";
+import {
+  emptySourceReviewLog,
+  validateSourceReviewLog,
+  recordSourceDecision,
+  verifySourceDecisions,
+} from "../domain/source-review-log.mjs";
 
 const query = document.querySelector("#review-query");
 let renderedPack = null;
+let claimQueue = [];
+let candidateDigest = null;
+let reviewLog = null;
+let reviewLogError = "";
+const reviewKey = (id) => `dmz:source-review:v1:${id}`;
+function loadReviewLog() {
+  try {
+    const raw = localStorage.getItem(reviewKey(state.pack.id));
+    const loaded = raw
+      ? validateSourceReviewLog(JSON.parse(raw), state.pack.id)
+      : emptySourceReviewLog(state.pack.id);
+    const verified = verifySourceDecisions(loaded, state.pack);
+    if (verified.changed)
+      localStorage.setItem(
+        reviewKey(state.pack.id),
+        JSON.stringify(verified.log),
+      );
+    reviewLog = verified.log;
+    reviewLogError = "";
+  } catch (reason) {
+    reviewLog = null;
+    reviewLogError = `Source decisions unavailable: ${reason.message}. Candidate catalog unchanged.`;
+  }
+}
+function decisionFor(row) {
+  return reviewLog?.entries.find(
+    (entry) =>
+      entry.candidateDigest === candidateDigest && entry.claimId === row.id,
+  );
+}
+function saveDecision(row, decision) {
+  if (!candidateDigest || !reviewLog)
+    throw Error(
+      "Review decisions unavailable; keep the candidate file and retry",
+    );
+  const entry = {
+    claimId: row.id,
+    candidateDigest,
+    decision,
+    at: new Date().toISOString(),
+    citation: row.citation,
+    sourceDate: row.sourceDate,
+    currentBuild: row.currentBuild,
+    candidateBuild: row.candidateBuild,
+    proposed: JSON.stringify({ value: row.newValue, status: row.newStatus }),
+    verifiedAt: null,
+  };
+  const next = recordSourceDecision(reviewLog, entry);
+  localStorage.setItem(reviewKey(state.pack.id), JSON.stringify(next));
+  reviewLog = next;
+  renderClaimQueue();
+}
+function renderClaimQueue() {
+  const descriptor = state.catalogs.find((row) => row.id === state.pack.id);
+  const packKey = descriptor?.path.match(/\/([a-z0-9-]+)\.json$/)?.[1];
+  const visible = claimQueue.filter(
+    (row) => decisionFor(row)?.decision !== "rejected",
+  );
+  const rejected = claimQueue.length - visible.length;
+  document.querySelector("#source-change-status").textContent =
+    `${visible.length} proposed claim changes · ${rejected} rejected for this candidate. ${reviewLogError || "Decisions saved only on this device. Catalog and private progress unchanged."}`;
+  document.querySelector("#source-change-results").innerHTML = visible.length
+    ? `<ul>${visible
+        .map((row) => {
+          const oldValue = JSON.stringify(row.oldValue);
+          const newValue = JSON.stringify(row.newValue);
+          const edit =
+            packKey && row.state !== "added"
+              ? `http://127.0.0.1:4174/?${new URLSearchParams({ packKey, packId: state.pack.id, id: row.id, intent: "edit" })}`
+              : "http://127.0.0.1:4174/";
+          return `<li><strong>${esc(row.field)}</strong> · ${esc(row.state)} · ${esc(row.entityId)}<br>Current: ${esc(oldValue)} (${esc(row.oldStatus || "none")}) → proposed: ${esc(newValue)} (${esc(row.newStatus || "none")})<br>${esc(row.applicability)} · ${esc(row.sourceDate || "source date unknown")} ${row.citation ? `<a href="${esc(row.citation)}" target="_blank" rel="noopener noreferrer">Citation</a>` : "Citation unavailable"}<br>${decisionFor(row)?.decision === "opened-studio" ? "Studio opened; waiting for a rebuilt catalog to match this proposal. " : ""}<a href="${esc(edit)}" rel="noreferrer" data-open-claim="${esc(row.id)}">Review and apply in Studio</a> <button type="button" data-reject-claim="${esc(row.id)}">Reject this proposal</button></li>`;
+        })
+        .join("")}</ul>`
+    : "<p>No pending claim changes in this preview.</p>";
+  const history = reviewLog?.entries.slice(-20).reverse() || [];
+  document.querySelector("#source-decision-history").innerHTML = history.length
+    ? `<details><summary>Saved source decisions (${reviewLog.entries.length})</summary><ul>${history.map((entry) => `<li>${esc(entry.claimId)} · ${esc(entry.decision === "verified-in-catalog" ? "Verified in current catalog" : entry.decision === "opened-studio" ? "Studio opened; awaiting rebuilt catalog" : "Rejected")} · ${esc(entry.candidateBuild)} · ${esc(new Date(entry.at).toLocaleDateString())}</li>`).join("")}</ul></details>`
+    : "";
+}
+document
+  .querySelector("#source-change-results")
+  .addEventListener("click", (event) => {
+    const button = event.target.closest(
+      "[data-reject-claim],[data-open-claim]",
+    );
+    if (!button) return;
+    const row = claimQueue.find(
+      (entry) =>
+        entry.id === (button.dataset.rejectClaim || button.dataset.openClaim),
+    );
+    if (!row) return;
+    try {
+      saveDecision(
+        row,
+        button.dataset.rejectClaim ? "rejected" : "opened-studio",
+      );
+    } catch (reason) {
+      document.querySelector("#source-change-status").textContent =
+        `${reason.message}. Decision not saved; catalog unchanged.`;
+      if (button.dataset.openClaim) event.preventDefault();
+    }
+  });
 function render() {
   if (renderedPack !== state.pack?.id) {
     renderedPack = state.pack?.id;
     document.querySelector("#source-impact-file").value = "";
     document.querySelector("#source-impact-status").textContent = "";
     document.querySelector("#source-impact-results").replaceChildren();
+    claimQueue = [];
+    candidateDigest = null;
+    loadReviewLog();
+    renderClaimQueue();
   }
   const result = dataReviewIssues(state.pack);
+  const auditTargets = missionAuditTargets(state.pack);
+  const unrecorded = auditTargets.filter(
+    (target) => target.kind === "page" && !target.recorded,
+  ).length;
+  let auditText = `${unrecorded} of 24 scoped Orders pages unrecorded · ${auditTargets.filter((target) => target.kind === "mission").length / 9} recorded mission/story entries.`;
+  let auditDoc = null;
+  try {
+    const raw = localStorage.getItem(`dmz:mission-audit:v1:${state.pack.id}`);
+    if (raw) {
+      const saved = validateMissionAudit(JSON.parse(raw), state.pack.id);
+      auditDoc = saved;
+      const current = new Map(
+        auditTargets.map((target) => [target.id, target]),
+      );
+      const pending = saved.entries.filter(
+        (entry) => entry.state === "fill-later" && current.has(entry.id),
+      ).length;
+      const stale = saved.entries.filter(
+        (entry) =>
+          current.get(entry.id)?.sourceFingerprint !== entry.sourceFingerprint,
+      ).length;
+      auditText += ` ${pending} sections marked Fill later · ${stale} stale review entries.`;
+    } else auditText += " No local section review saved.";
+  } catch {
+    auditText += " Local audit unavailable; saved data was not changed.";
+  }
+  document.querySelector("#mission-audit-health").textContent = auditText;
+  document.querySelector("#content-health-rows").innerHTML =
+    `<ul>${contentHealth(state.pack, auditDoc)
+      .map(
+        (row) =>
+          `<li>${esc(row.label)}: ${row.listed ? `<strong>${row.covered} / ${row.listed}</strong> listed · ${row.missing} not covered within listed records` : "None recorded in this catalog"}</li>`,
+      )
+      .join("")}</ul>`;
   const needle = query.value.trim().toLocaleLowerCase();
   const rows = result.issues.filter(
     (row) =>
@@ -25,8 +177,14 @@ function render() {
   );
   document.querySelector("#review-count").textContent =
     `${rows.length} visible issues${result.truncated ? " · first 500 catalog issues only" : ""}`;
+  const descriptor = state.catalogs.find((row) => row.id === state.pack.id);
+  const packKey = descriptor?.path.match(/\/([a-z0-9-]+)\.json$/)?.[1];
+  const edit = (row) =>
+    packKey && row.type !== "claim"
+      ? `<a href="${esc(`http://127.0.0.1:4174/?${new URLSearchParams({ packKey, packId: state.pack.id, id: row.id, intent: "edit" })}`)}" rel="noreferrer">Edit in Studio</a>`
+      : "";
   document.querySelector("#review-list").innerHTML = rows.length
-    ? `<ul>${rows.map((row) => `<li>${row.type === "claim" ? esc(row.name) : `<a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(row.id)}">${esc(row.name)}</a>`} · ${esc(row.reason)} · ${esc(row.type)}</li>`).join("")}</ul>`
+    ? `<ul>${rows.map((row) => `<li>${row.type === "claim" ? esc(row.name) : `<a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(row.id)}">${esc(row.name)}</a>`} · ${esc(row.reason)} · ${esc(row.type)} ${edit(row)}</li>`).join("")}</ul>`
     : "<p>No matching issues in this catalog. This does not certify complete game coverage.</p>";
 }
 query.addEventListener("input", render);
@@ -37,13 +195,17 @@ document
     const results = document.querySelector("#source-impact-results");
     const selected = state.pack;
     results.replaceChildren();
+    claimQueue = [];
+    candidateDigest = null;
+    renderClaimQueue();
     try {
       const file = document.querySelector("#source-impact-file").files?.[0];
       if (!file) throw Error("Choose a catalog JSON file first.");
       if (file.size > LIMITS.packBytes)
         throw Error("Catalog file exceeds the 8 MiB preview limit.");
       status.textContent = "Checking candidate catalog locally…";
-      const candidate = parseBounded(await file.text(), LIMITS.packBytes);
+      const raw = await file.text();
+      const candidate = parseBounded(raw, LIMITS.packBytes);
       const schemaResponse = await fetch("/assets/schemas/pack.schema.json");
       if (!schemaResponse.ok) throw Error("Catalog schema unavailable.");
       validatePack(candidate, await schemaResponse.json());
@@ -53,6 +215,16 @@ document
       if (state.pack !== selected)
         throw Error("Selected catalog changed; choose the file again.");
       const impact = previewSourceImpact(selected, candidate, plans);
+      claimQueue = sourceClaimChanges(selected, candidate).changes;
+      candidateDigest = Array.from(
+        new Uint8Array(
+          await crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw)),
+        ),
+        (byte) => byte.toString(16).padStart(2, "0"),
+      ).join("");
+      if (state.pack !== selected)
+        throw Error("Selected catalog changed; choose the file again.");
+      renderClaimQueue();
       const affected = impact.filter((row) => row.changes.length);
       status.textContent = `${plans.plans.length} saved plans checked · ${affected.length} affected. No catalog or plan was changed.`;
       results.innerHTML = affected.length

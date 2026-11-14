@@ -92,6 +92,80 @@ try {
     await page.locator(".run-plan-card").textContent(),
     /No supplies reserved yet/,
   );
+  const exportEvent = page.waitForEvent("download");
+  await page.locator("#run-plan-export").click();
+  const exported = await exportEvent;
+  const backupBytes = await (
+    await import("node:fs/promises")
+  ).readFile(await exported.path());
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.locator("[data-remove-plan]").click();
+  await page.locator(".run-plan-card").waitFor({ state: "detached" });
+  const file = {
+    name: "run-plans.json",
+    mimeType: "application/json",
+    buffer: backupBytes,
+  };
+  await page.locator("#run-plan-import").setInputFiles(file);
+  await page.locator("#run-plan-restore").waitFor({ state: "visible" });
+  await page.locator("#run-plan-cancel").click();
+  assert.equal(await page.locator(".run-plan-card").count(), 0);
+  await page.locator("#run-plan-import").setInputFiles(file);
+  await page.locator("#run-plan-restore").click();
+  await page.locator(".run-plan-card").waitFor();
+  assert.match(
+    await page.locator(".run-plan-card h2").textContent(),
+    /Hajin materials revised/,
+  );
+  const mapExport = page.waitForEvent("download");
+  await page.locator("[data-export-map]").click();
+  const mapFile = await mapExport;
+  const mapPayload = JSON.parse(
+    await (
+      await import("node:fs/promises")
+    ).readFile(await mapFile.path(), "utf8"),
+  );
+  assert.equal(mapPayload.kind, "dmz-run-plan-handoff");
+  assert.equal(mapPayload.packId, "official:mw4-dmz-starter");
+  await page.evaluate(() => {
+    window.open = () => null;
+  });
+  await page.locator("[data-send-map]").click();
+  assert.match(
+    await page.locator("#error").innerText(),
+    /Map window blocked.*Download the plan/s,
+  );
+  assert.equal(await page.locator(".run-plan-card").count(), 1);
+  await page.locator("#run-plan-import").setInputFiles(file);
+  await page.locator("#run-plan-restore").waitFor({ state: "visible" });
+  await page.evaluate(async () => {
+    const { state } = await import("/assets/src/client/common.mjs");
+    const { loadRunPlans, saveRunPlans } = await import(
+      "/assets/src/domain/run-plans.mjs"
+    );
+    const stored = await loadRunPlans(state.pack);
+    const candidate = structuredClone(stored);
+    candidate.plans[0].name = "Competing saved plan";
+    await saveRunPlans(candidate, stored.revision);
+  });
+  await page.locator("#run-plan-restore").click();
+  await page.waitForFunction(() =>
+    /not saved/i.test(
+      document.querySelector("#run-plan-import-status")?.textContent || "",
+    ),
+  );
+  assert.match(
+    await page.locator("#run-plan-import-status").innerText(),
+    /not saved/i,
+  );
+  const retainedName = await page.evaluate(async () => {
+    const { state } = await import("/assets/src/client/common.mjs");
+    const { loadRunPlans } = await import("/assets/src/domain/run-plans.mjs");
+    return (await loadRunPlans(state.pack)).plans[0].name;
+  });
+  assert.equal(retainedName, "Competing saved plan");
+  await page.reload();
+  await page.locator(".run-plan-card").waitFor();
   for (const [width, height] of [
     [320, 640],
     [390, 844],

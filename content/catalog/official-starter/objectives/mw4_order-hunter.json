@@ -1,0 +1,21 @@
+{
+  "description": "Reported in the Human Intel 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-hunter",
+  "name": "Hunter",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-hunter-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Climb a Hunt Lieutenant Tower",
+    "Use the terminal at the top"
+  ],
+  "track": "dmz-order"
+}

@@ -1,0 +1,21 @@
+{
+  "description": "Reported in The Grid 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-worth-every-penny",
+  "name": "Worth Every Penny",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-worth-every-penny-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Buy a weapon from the DMZ Vendor",
+    "Kill 50 enemies with a Rare or better weapon"
+  ],
+  "track": "dmz-order"
+}

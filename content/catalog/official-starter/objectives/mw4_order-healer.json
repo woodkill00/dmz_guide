@@ -1,0 +1,22 @@
+{
+  "description": "Reported on fixed Hajin Orders page 7. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-healer",
+  "name": "Healer",
+  "oneTime": true,
+  "orderPage": 7,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-healer-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Track the Medkit recipe in the 3D Printer",
+    "Print a Medkit"
+  ],
+  "track": "dmz-order"
+}

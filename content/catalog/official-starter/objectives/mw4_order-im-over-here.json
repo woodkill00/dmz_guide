@@ -1,0 +1,22 @@
+{
+  "description": "Reported in The Grid 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-im-over-here",
+  "name": "I'm Over Here",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-im-over-here-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Distract a drone with an Inflatable Decoy",
+    "Destroy 8 Combat Drones",
+    "Destroy 3 Heavy Combat Drones"
+  ],
+  "track": "dmz-order"
+}

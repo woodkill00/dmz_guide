@@ -20,6 +20,7 @@ import { renderMainNavigation } from "./site-navigation.mjs";
 import { imageDescription } from "../content/image-description.mjs";
 import { bundledAssetURL } from "../content/bundled-assets.mjs";
 import { spoilerGuard, projectSpoilerValue } from "../domain/progression.mjs";
+import { recordRelations } from "../domain/record-relations.mjs";
 /** Pure HTML rendering. Content text is always escaped; only authored UI is markup. */
 export const escapeHTML = (value) =>
   String(value ?? "").replace(
@@ -303,13 +304,14 @@ export function renderDetail(
   if (!record.spoiler && pack.id === x01Printer.packId && x01Uses(record.id))
     authorActions +=
       '<aside class="notice"><a href="/recipes/x01/">X01 printer recipes and uses</a> · Requires materials carried in X01; separate from FOB printing.</aside>';
-  const records = allRecords(packs);
+  const records = allRecords([pack]);
   const find = (id) => records.find((r) => r.id === id);
   const ref = (id) => {
     const r = find(id);
+    if (r?.spoiler && !record.spoiler) return "Spoiler-protected record";
     return r
       ? `<a href="${e(referenceURL(r))}">${e(publicTitle(r))}</a>`
-      : e(id) + " (unresolved reference)";
+      : "Unresolved reference";
   };
   const sources = pack.sources
     .filter((s) => (record.sourceIds || []).includes(s.id))
@@ -414,6 +416,13 @@ export function renderDetail(
     detail += `<section class="panel"><h2>Recorded effects</h2><ul>${record.effects.map((effect) => `<li>${e(effect.type)} · ${e(effect.target)}: ${e(effect.value)}</li>`).join("")}</ul><p>Recorded effects are reference data, not proof of current player access.</p></section>`;
   if (record.relatedIds?.length)
     detail += `<section class="panel"><h2>${isLootType(record.id) ? "Items reported in this loot type" : record.id === LOOT_TYPES_INDEX ? "Browse loot source types" : "Related records"}</h2><ul class="${record.id === LOOT_TYPES_INDEX ? "loot-type-buttons" : ""}">${record.relatedIds.map((id) => `<li>${ref(id)}</li>`).join("")}</ul></section>`;
+  if (!record.spoiler && record.recordType !== "item") {
+    const incoming = recordRelations(pack, record.id).incoming.filter(
+      (row) => !row.spoiler,
+    );
+    if (incoming.length)
+      detail += `<section class="panel"><h2>Records linking here</h2><ul>${incoming.map((row) => `<li>${ref(row.id)}</li>`).join("")}</ul><p>Only declared links in this catalog are shown.</p></section>`;
+  }
   const claimMarkup = claims.length
     ? `<section class="panel"><h2>Claims &amp; conflicts</h2><p>Conflicting claims are preserved, not silently resolved.</p>${claims
         .map(

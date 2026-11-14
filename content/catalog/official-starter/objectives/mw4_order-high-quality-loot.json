@@ -1,0 +1,22 @@
+{
+  "description": "Reported as page 24 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-high-quality-loot",
+  "name": "High Quality Loot",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-high-quality-loot-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Extract 2 Weapon Manuals",
+    "Extract 4 Recipes",
+    "Extract an Ultra weapon"
+  ],
+  "track": "dmz-order"
+}

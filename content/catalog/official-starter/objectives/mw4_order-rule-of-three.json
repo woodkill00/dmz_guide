@@ -1,0 +1,22 @@
+{
+  "description": "Reported as page 23 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-rule-of-three",
+  "name": "Rule of Three",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-rule-of-three-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Print or extract 2 Ballistic Fabric",
+    "Extract 5 Nylon Cloth",
+    "Print a 3-Plate Carrier"
+  ],
+  "track": "dmz-order"
+}

@@ -105,7 +105,17 @@ export async function runHomeWorkflowTests({ browser, base }) {
     await page.waitForFunction(() =>
       document.querySelector("#hub-progress").textContent.includes("1/28"),
     );
+    await page.locator("#hub-next-action a").waitFor();
+    assert.match(
+      await page.locator("#hub-next-action a").getAttribute("href"),
+      /pack=observed%3Aupgrade-review-20261026/,
+    );
+    assert.match(
+      await page.locator("#hub-next-action").innerText(),
+      /collection|need/i,
+    );
     assert.match(await page.locator("#hub-continue").innerText(), /Upgrades/);
+    await page.waitForLoadState("networkidle");
     // Mission workflow deliberately uses the established clearly labeled fictional training catalog.
     await page.goto(base + "/missions/?pack=demo%3Atraining-pack");
     await ready();
@@ -153,6 +163,7 @@ export async function runHomeWorkflowTests({ browser, base }) {
     await page.waitForFunction(() =>
       document.querySelector("#hub-progress").textContent.includes("1/1"),
     );
+    await page.waitForLoadState("networkidle");
     // Search, record return and key/map journey.
     await page.locator("#hub-query").fill("Hospital Chemical Lockers");
     await page.locator(".hub-search button").click();

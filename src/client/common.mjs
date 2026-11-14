@@ -30,6 +30,7 @@ export const state = {
   profile: null,
   revision: 0,
   packs: [],
+  catalogs: [],
   loading: true,
   saving: false,
 };
@@ -297,6 +298,7 @@ export async function init(
     schema,
     fetcher: (path) => fetch(path, { signal: catalogReadController.signal }),
   });
+  state.catalogs = catalogLoader.catalogs;
   state.packs = [];
   const choices = [...catalogLoader.catalogs].sort(
     (a, b) =>

@@ -1,0 +1,22 @@
+{
+  "description": "Reported on fixed Hajin Orders page 15. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-fire-insurance",
+  "name": "Fire Insurance",
+  "oneTime": true,
+  "orderPage": 15,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-fire-insurance-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Print 5 Thermite",
+    "Stick 5 enemy vehicles with Thermite"
+  ],
+  "track": "dmz-order"
+}

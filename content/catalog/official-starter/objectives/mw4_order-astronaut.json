@@ -1,0 +1,18 @@
+{
+  "description": "Reported as page 22 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified. Objective steps are disputed between providers and need review.",
+  "effects": [],
+  "id": "mw4:order-astronaut",
+  "name": "Astronaut",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-astronaut-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [],
+  "track": "dmz-order"
+}

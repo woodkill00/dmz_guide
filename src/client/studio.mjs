@@ -1,7 +1,7 @@
 import { parseRecoveryDraft } from "../content/studio-recovery.mjs";
 import {
-  parseItemCreateTarget,
-  resolveItemCreateTarget,
+  parseCreateTarget,
+  resolveCreateTarget,
   parseAuthorTarget,
   resolveAuthorTarget,
   previewPath,
@@ -710,7 +710,7 @@ async function loadCatalog() {
     initialTarget && !initialTargetApplied
       ? resolveAuthorTarget(entries, initialTarget)
       : initialCreateTarget && !initialTargetApplied
-        ? resolveItemCreateTarget(entries, initialCreateTarget)
+        ? resolveCreateTarget(entries, initialCreateTarget)
         : null;
   loadEntry(
     target?.entry ||
@@ -720,17 +720,19 @@ async function loadCatalog() {
   );
   if (target) {
     if (initialCreateTarget) {
-      $("#editor-section").value = "items";
+      $("#editor-section").value = initialCreateTarget.create;
       guided.renderRecords();
       $("#new-record-name").focus();
     } else selectRecord(target.group, target.index);
     const context = $("#entry-context");
     context.hidden = false;
     $("#entry-identity").textContent = initialCreateTarget
-      ? `Add item to ${target.entry.pack.id}`
+      ? `Add ${initialCreateTarget.create === "objectives" ? "objective" : "item"} to ${target.entry.pack.id}`
       : `${target.entry.pack.id} · ${target.record.id}`;
     $("#return-record").href = initialCreateTarget
-      ? "http://127.0.0.1:4173/items/manage/"
+      ? initialCreateTarget.create === "objectives"
+        ? "http://127.0.0.1:4173/missions/audit/"
+        : "http://127.0.0.1:4173/items/manage/"
       : previewPath(initialTarget);
     initialTargetApplied = true;
   }
@@ -746,7 +748,7 @@ async function loadCatalog() {
 async function start() {
   const destination = new URLSearchParams(location.search);
   if (destination.has("create"))
-    initialCreateTarget = parseItemCreateTarget(destination);
+    initialCreateTarget = parseCreateTarget(destination);
   else initialTarget = parseAuthorTarget(destination);
   $("#pack-select").addEventListener("change", () => {
     if (

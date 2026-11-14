@@ -1,0 +1,21 @@
+{
+  "description": "Reported in the Human Intel 2/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-payment-due",
+  "name": "Payment Due",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-payment-due-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Collect a Dynamic Op phone",
+    "Earn 11,500 cash from completing Dynamic Ops"
+  ],
+  "track": "dmz-order"
+}

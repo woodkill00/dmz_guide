@@ -1,0 +1,22 @@
+{
+  "description": "Reported as page 18 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-how-bulletproof",
+  "name": "How Bulletproof?",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-how-bulletproof-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Kill 30 enemy soldiers",
+    "Kill 15 armored soldiers",
+    "Kill 5 Lieutenants"
+  ],
+  "track": "dmz-order"
+}

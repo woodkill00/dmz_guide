@@ -1,0 +1,22 @@
+{
+  "description": "Reach Mirae General Hospital and find General Kang. Secondary-source report; current DMZ build and rewards are not independently verified.",
+  "effects": [],
+  "id": "mw4:story-critical-extraction",
+  "name": "Operation Critical Extraction",
+  "oneTime": true,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-story-20261114",
+    "source:dmztracker-story-critical-extraction-20261114"
+  ],
+  "spoiler": true,
+  "status": "observed",
+  "steps": [
+    "Approach Mirae General Hospital.",
+    "Find General Kang.",
+    "Move General Kang to safety."
+  ],
+  "track": "dmz-story"
+}

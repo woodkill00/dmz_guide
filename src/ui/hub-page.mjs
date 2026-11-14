@@ -95,6 +95,7 @@ function renderModernDashboard() {
   return `<header class="hub-heading"><div><p class="eyebrow">YOUR FIELD DESK</p><h1>A clear path to your next run.</h1><p>Prepare, explore and track your own progress.</p></div><div class="actions"><a class="button primary" href="http://127.0.0.1:5175/" data-feature-id="hajin-map" target="_blank" rel="noopener noreferrer">Open map ↗</a><a class="button secondary" id="hub-continue" href="/run-plan/">Prepare next run</a></div></header><form action="/search/" method="get" class="hub-search"><label for="hub-query">Search public reference</label><div class="actions"><input id="hub-query" name="q" type="search" maxlength="200" placeholder="Keys, upgrades, missions, weapons or tools…"><button>Search</button></div></form><section class="ui-home-hubs" aria-label="Main workspaces">${hubs.map((f, i) => `<article class="ui-home-hub" data-feature-card data-search="${e(f.label.toLowerCase())}"><span class="eyebrow">0${i + 1} / WORKSPACE</span><h2><a href="${e(featureURL(f))}" data-feature-id="${f.id}"${f.kind !== "guide" ? ' target="_blank" rel="noopener noreferrer"' : ""}>${e(f.id === "hajin-map" ? "Map" : f.label)}${f.kind !== "guide" ? " ↗" : ""}</a></h2><p>${e(f.description)}</p><button type="button" data-pin-feature="${f.id}" aria-label="Pin ${e(f.label)}" aria-pressed="false" hidden>☆</button></article>`).join("")}</section><div class="ui-home-quick" aria-label="Quick tools">${[
     "upgrades",
     "missions",
+    "mission-audit",
     "keys",
     "safe-runs",
   ]

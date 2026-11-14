@@ -1,0 +1,16 @@
+{
+  "id": "source:dmztracker-order-no-one-left-20261114",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-14",
+    "kind": "web",
+    "lineageKey": "dmztracker-order-no-one-left",
+    "observationKey": "dmztracker-order-no-one-left-20261114"
+  },
+  "publishedAt": "Date not recorded",
+  "reviewedAt": "2026-11-14",
+  "supports": "Community-reported No One Left Order identity and short objective labels; compared with COD Central on 2026-11-14. Rewards, prerequisites, exact item requirements and current-build applicability are not independently verified.",
+  "title": "DMZTracker: No One Left Order",
+  "type": "community",
+  "url": "https://www.dmztracker.gg/orders/no-one-left/"
+}

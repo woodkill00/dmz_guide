@@ -1,0 +1,22 @@
+{
+  "description": "Reported on fixed Hajin Orders page 14. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-nothing-is-secure",
+  "name": "Nothing Is Secure",
+  "oneTime": true,
+  "orderPage": 14,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-nothing-is-secure-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Open 4 safes",
+    "Extract 20,000 total backpack and loadout value"
+  ],
+  "track": "dmz-order"
+}

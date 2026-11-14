@@ -1,0 +1,21 @@
+{
+  "description": "Reported on fixed Hajin Orders page 14. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-committed",
+  "name": "Committed",
+  "oneTime": true,
+  "orderPage": 14,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-committed-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Exfil after the radiation has started spreading"
+  ],
+  "track": "dmz-order"
+}

@@ -1,0 +1,21 @@
+{
+  "description": "Reported first Hajin Order on the onboarding page. Current-build behavior has not been checked in game.",
+  "effects": [],
+  "id": "mw4:order-gear-up",
+  "name": "Gear Up",
+  "oneTime": true,
+  "orderPage": 1,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-orders-20261022"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Equip a weapon, backpack, armor vest and Medkit from the FOB stash."
+  ],
+  "track": "dmz-order"
+}

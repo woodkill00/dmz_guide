@@ -1,0 +1,22 @@
+{
+  "description": "Reported on fixed Hajin Orders page 4. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-preparation",
+  "name": "Preparation",
+  "oneTime": true,
+  "orderPage": 4,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-preparation-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Print a Medium Backpack",
+    "Print a 2-Plate Armor Vest"
+  ],
+  "track": "dmz-order"
+}

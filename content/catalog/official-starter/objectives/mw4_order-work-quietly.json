@@ -1,0 +1,23 @@
+{
+  "description": "Reported on fixed Hajin Orders page 4. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-work-quietly",
+  "name": "Work Quietly",
+  "oneTime": true,
+  "orderPage": 4,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-work-quietly-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Gunsmith a suppressor onto a weapon",
+    "Print a Throwing Knife",
+    "Kill 8 enemies in a row without being damaged"
+  ],
+  "track": "dmz-order"
+}

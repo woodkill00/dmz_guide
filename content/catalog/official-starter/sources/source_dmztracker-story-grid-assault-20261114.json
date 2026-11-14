@@ -1,0 +1,16 @@
+{
+  "id": "source:dmztracker-story-grid-assault-20261114",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-14",
+    "kind": "web",
+    "lineageKey": "dmztracker-story-grid-assault",
+    "observationKey": "dmztracker-story-grid-assault-20261114"
+  },
+  "publishedAt": "Date not recorded",
+  "reviewedAt": "2026-11-14",
+  "supports": "Community-reported Operation Grid Assault identity and three short objective labels; provider lists last verified 2026-10-25 for Launch (20 Oct 2026). Rewards, prerequisites, exact item quantities and current build applicability are not admitted.",
+  "title": "DMZTracker: Operation Grid Assault",
+  "type": "community",
+  "url": "https://www.dmztracker.gg/missions/grid-assault/"
+}

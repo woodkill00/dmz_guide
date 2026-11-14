@@ -1,0 +1,22 @@
+{
+  "description": "Reported on fixed Hajin Orders page 15. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-mechanic",
+  "name": "Mechanic",
+  "oneTime": true,
+  "orderPage": 15,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-mechanic-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Repair a Radar Truck",
+    "Kill 19 enemies pinged by the Radar Truck"
+  ],
+  "track": "dmz-order"
+}

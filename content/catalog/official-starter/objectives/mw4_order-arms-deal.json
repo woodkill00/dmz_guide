@@ -1,0 +1,22 @@
+{
+  "description": "Reported on fixed Hajin Orders page 11. Secondary-source report; current DMZ build is unverified.",
+  "effects": [],
+  "id": "mw4:order-arms-deal",
+  "name": "Arms Deal",
+  "oneTime": true,
+  "orderPage": 11,
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-orders-20261113",
+    "source:dmztracker-order-arms-deal-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Buy a gun at the Gunsmith",
+    "Equip a weapon with at least 3 attachments"
+  ],
+  "track": "dmz-order"
+}
