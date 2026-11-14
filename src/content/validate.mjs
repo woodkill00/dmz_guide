@@ -196,6 +196,16 @@ export function validatePack(pack, schema, { profile = "portable" } = {}) {
       );
   }
   for (const r of [...pack.recipes, ...pack.objectives]) {
+    if (r.orderSet === "x01")
+      assert(
+        r.track === "dmz-order" &&
+          Number.isSafeInteger(r.orderPage) &&
+          r.orderPage >= 1 &&
+          r.orderPage <= 5,
+        `Invalid X01 Orders placement ${r.id}`,
+      );
+    if (r.orderSet === "hajin")
+      assert(r.track === "dmz-order", `Invalid Hajin Orders placement ${r.id}`);
     for (const c of r.inputs || r.requirements || []) {
       ref(c.itemId, "items", r, true);
       for (const id of c.sourceIds || []) ref(id, "sources", r);

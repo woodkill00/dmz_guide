@@ -1,0 +1,23 @@
+{
+  "description": "Reported X01 page 3 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
+  "effects": [],
+  "id": "mw4:x01-order-streaming-service-ep-2",
+  "name": "Streaming Service Ep. 2",
+  "oneTime": true,
+  "orderPage": 3,
+  "orderSet": "x01",
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-x01-orders-20261114",
+    "source:dmzcodex-x01-orders-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Intercept the Ri feed in the Medical Wing.",
+    "Loot ten healing items inside the Medical Wing."
+  ],
+  "track": "dmz-order"
+}

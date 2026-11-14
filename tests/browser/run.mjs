@@ -478,6 +478,7 @@ for (const script of [
   "location-timeline.mjs",
   "verified-backup.mjs",
   "mission-coverage.mjs",
+  "mission-directory.mjs",
   "mission-encounter.mjs",
   "run-review.mjs",
 ])

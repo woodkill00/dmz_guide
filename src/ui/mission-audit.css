@@ -5,6 +5,17 @@
   max-height: min(56vh, 38rem);
   overflow: auto;
 }
+.mission-audit-entry {
+  min-width: 0;
+}
+.mission-audit-entry .mission-audit-row {
+  width: 100%;
+}
+.mission-audit-entry > a {
+  display: inline-block;
+  margin: 0.25rem 0 0.4rem 0.3rem;
+  font-size: 0.82rem;
+}
 .mission-audit-row {
   display: flex;
   align-items: center;

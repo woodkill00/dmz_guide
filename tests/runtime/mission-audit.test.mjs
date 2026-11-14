@@ -7,22 +7,33 @@ import {
 } from "../../src/domain/mission-audit.mjs";
 import { loadFixturePack } from "../helpers/catalog.mjs";
 
-test("official starter audits 66 reported Orders and six Story Missions without fixing variable pages", () => {
+test("official starter audits Hajin and X01 separately without fixing variable Hajin pages", () => {
   const pack = loadFixturePack("official-starter");
   assert.equal(pack.id, "official:mw4-dmz-starter");
-  assert.equal(pack.objectives.length, 182);
+  assert.equal(pack.objectives.length, 197);
   assert.equal(
     pack.objectives.filter((row) =>
       ["dmz-order", "dmz-story"].includes(row.track),
     ).length,
-    72,
+    87,
   );
   const targets = missionAuditTargets(pack);
   assert.equal(
     targets.filter((row) => row.kind === "page" && !row.recorded).length,
     17,
   );
-  assert.equal(targets.filter((row) => row.kind === "mission").length, 648);
+  assert.equal(targets.filter((row) => row.kind === "mission").length, 783);
+  assert.equal(
+    targets.filter((row) => row.kind === "page" && row.orderSet === "x01")
+      .length,
+    5,
+  );
+  assert.equal(
+    targets.filter(
+      (row) => row.kind === "page" && row.orderSet === "x01" && row.recorded,
+    ).length,
+    5,
+  );
   assert.deepEqual(
     [
       ...new Set(
@@ -50,7 +61,7 @@ test("official starter audits 66 reported Orders and six Story Missions without 
   );
   assert.equal(
     targets.filter((row) => row.kind === "page" && row.recorded).length,
-    7,
+    12,
   );
   assert.ok(
     pack.objectives

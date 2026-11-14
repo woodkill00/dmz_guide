@@ -1,0 +1,24 @@
+{
+  "description": "Reported X01 page 4 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
+  "effects": [],
+  "id": "mw4:x01-order-complete-defusal",
+  "name": "Complete Defusal",
+  "oneTime": true,
+  "orderPage": 4,
+  "orderSet": "x01",
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-x01-orders-20261114",
+    "source:dmzcodex-x01-orders-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Enter the Deep Vault gate.",
+    "Neutralize the bioweapon in the Deep Vault core room.",
+    "Eliminate Blix in the Deep Vault."
+  ],
+  "track": "dmz-order"
+}

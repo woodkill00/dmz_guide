@@ -21,7 +21,7 @@ try {
   );
   assert.match(
     await page.locator("#orders-coverage-title").locator("..").textContent(),
-    /Chapter page numbers may differ/,
+    /Fixed page assignments and source-reported chapter positions/,
   );
   const pack = collectionFixture();
   const story = {

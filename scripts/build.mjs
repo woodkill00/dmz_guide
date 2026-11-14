@@ -1,7 +1,9 @@
 import { quickTrackerPage } from "../src/ui/quick-tracker.mjs";
+import { authorPath } from "../src/content/author-target.mjs";
 import { renderItemMaintenance } from "../src/ui/item-maintenance.mjs";
 import { buildSiteTopology } from "../src/domain/site-topology.mjs";
 import { buildUnifiedIndex } from "../src/content/unified-index.mjs";
+import { missionAuditHref } from "../src/domain/mission-links.mjs";
 import {
   captureBuildSources,
   createBuildIdentity,
@@ -132,6 +134,12 @@ async function generate(dist) {
       (entry) => entry.pack.id === record.pack.id,
     );
     const guidance = guidancePath(entry.key, record.id);
+    const mission =
+      record.recordType === "objective" &&
+      ["dmz-order", "dmz-story"].includes(record.track);
+    const missionActions = mission
+      ? `<nav class="record-author-actions" aria-label="Mission actions"><a class="button primary" href="${e(`http://127.0.0.1:4174${authorPath({ packKey: entry.key, packId: record.pack.id, id: record.id, intent: "edit" })}`)}" rel="noreferrer">Edit mission content in Content Studio ↗</a><a class="button" href="${e(missionAuditHref(record.pack.id, record.id))}">Audit this mission</a><a href="${e(guidance)}#edit">Editor setup</a></nav>`
+      : "";
     pages.push({
       path: recordUrl(record),
       fixture: isFixture(record.pack),
@@ -145,12 +153,13 @@ async function generate(dist) {
           : undefined,
       title: publicTitle(record),
       packId: record.pack.id,
-      body: renderDetail(record, packs, {
-        authorActions: renderAuthorActions(record, {
-          edit: guidance + "#edit",
-          images: guidance + "#images",
-        }),
-      }),
+      body:
+        renderDetail(record, packs, {
+          authorActions: renderAuthorActions(record, {
+            edit: guidance + "#edit",
+            images: guidance + "#images",
+          }),
+        }) + missionActions,
       page:
         { item: "items", recipe: "recipes", guide: "guides" }[
           record.recordType

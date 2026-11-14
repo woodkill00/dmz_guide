@@ -12,13 +12,15 @@ const recordGroups = [
 ];
 const recordsOf = (pack) => recordGroups.flatMap((group) => pack[group] || []);
 export const progressStates = ["unknown", "locked", "unlocked", "completed"];
-export function ordersPageCoverage(pack, count = 24) {
+export function ordersPageCoverage(pack, count = 24, orderSet = "hajin") {
   if (!Number.isSafeInteger(count) || count < 1 || count > 100)
     throw Error("Invalid Orders page count");
+  if (!["hajin", "x01"].includes(orderSet)) throw Error("Invalid Orders set");
   const pages = new Map();
   for (const objective of pack.objectives || []) {
     if (
       objective.track !== "dmz-order" ||
+      (objective.orderSet || "hajin") !== orderSet ||
       !Number.isSafeInteger(objective.orderPage) ||
       objective.orderPage < 1 ||
       objective.orderPage > count

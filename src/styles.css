@@ -1571,6 +1571,38 @@ main :where(p, li, a, ul, ol, section, article, div) {
   }
 }
 /* Compact inventory and focused progression: view-only, no storage semantics. */
+.mission-page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 0.65rem;
+  margin-block: 0.75rem 1.5rem;
+}
+.mission-page-card {
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--border, #47505b);
+  border-radius: 0.65rem;
+  background: var(--surface, rgba(25, 30, 36, 0.7));
+}
+.mission-page-card h4 {
+  margin: 0 0 0.3rem;
+}
+.mission-page-card h4 small {
+  font-weight: normal;
+  opacity: 0.8;
+}
+.mission-page-card p {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+}
+.mission-page-card ol {
+  margin: 0 0 0.65rem;
+  padding-left: 1.4rem;
+}
+.mission-page-card li {
+  margin-block: 0.18rem;
+  overflow-wrap: anywhere;
+}
 .inventory-group {
   margin-block: 1rem;
 }

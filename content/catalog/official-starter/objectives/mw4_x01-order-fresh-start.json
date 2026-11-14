@@ -1,0 +1,22 @@
+{
+  "description": "Reported X01 page 1 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
+  "effects": [],
+  "id": "mw4:x01-order-fresh-start",
+  "name": "Fresh Start",
+  "oneTime": true,
+  "orderPage": 1,
+  "orderSet": "x01",
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-x01-orders-20261114",
+    "source:dmzcodex-x01-orders-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Enter X01 by an available deployment or transfer route."
+  ],
+  "track": "dmz-order"
+}

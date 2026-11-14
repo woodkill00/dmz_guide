@@ -1,0 +1,23 @@
+{
+  "description": "Reported X01 page 5 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
+  "effects": [],
+  "id": "mw4:x01-order-door-opener",
+  "name": "Door Opener",
+  "oneTime": true,
+  "orderPage": 5,
+  "orderSet": "x01",
+  "prerequisites": [],
+  "requirements": [],
+  "requirementsKnown": false,
+  "sourceIds": [
+    "source:codcentral-x01-orders-20261114",
+    "source:dmzcodex-x01-orders-20261114"
+  ],
+  "spoiler": false,
+  "status": "observed",
+  "steps": [
+    "Destroy the Wheelson in the Logistics Tunnel.",
+    "Cut power in the Power Generators."
+  ],
+  "track": "dmz-order"
+}

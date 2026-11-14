@@ -1,0 +1,16 @@
+{
+  "id": "source:dmzcodex-x01-orders-20261114",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-14",
+    "kind": "web",
+    "lineageKey": "dmzcodex-x01-orders",
+    "observationKey": "dmzcodex-x01-orders-20261114"
+  },
+  "publishedAt": "updated 2026-11-10",
+  "reviewedAt": "2026-11-14",
+  "supports": "Independent community report of five X01 page rosters and task overview; current-build behavior not independently verified.",
+  "title": "DMZ Codex: X01 Orders guide",
+  "type": "community",
+  "url": "https://dmzcodex.com/guides/x01-orders-guide/"
+}
