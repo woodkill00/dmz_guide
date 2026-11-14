@@ -24,7 +24,7 @@ test("mission pages render their recorded steps and page rewards", () => {
   assert(html.includes("Mission tasks"));
   assert(html.includes(gearUp.steps[0]));
   assert(html.includes("Reported page rewards"));
-  assert(html.includes("/missions/#hajin-page-1"));
+  assert(html.includes("/missions/?page=hajin-1"));
   const x01 = records.find((row) => row.orderSet === "x01");
   assert(x01);
   const x01Html = renderDetail(x01, [pack]);

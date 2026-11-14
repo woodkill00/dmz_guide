@@ -191,15 +191,18 @@ function renderMissionDirectory() {
       )
       .join("") +
     "</div>";
-  if (
-    !missionAnchorApplied &&
-    /^#(?:hajin|x01)-page-(?:[1-9]|1\d|2[0-4])$/.test(location.hash)
-  ) {
+  const requestedPage = new URLSearchParams(location.search).get("page");
+  const anchor = /^#(?:hajin|x01)-page-(?:[1-9]|1\d|2[0-4])$/.test(
+    location.hash,
+  )
+    ? location.hash.slice(1)
+    : /^(?:hajin|x01)-(?:[1-9]|1\d|2[0-4])$/.test(requestedPage || "")
+      ? requestedPage.replace(/^(hajin|x01)-/, "$1-page-")
+      : null;
+  if (!missionAnchorApplied && anchor) {
     missionAnchorApplied = true;
     requestAnimationFrame(() =>
-      document
-        .getElementById(location.hash.slice(1))
-        ?.scrollIntoView({ block: "start" }),
+      document.getElementById(anchor)?.scrollIntoView({ block: "start" }),
     );
   }
 }

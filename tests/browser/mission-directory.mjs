@@ -47,6 +47,14 @@ try {
     /Mission tasks/,
   );
   assert.match(await page.locator(".mission-task-list").innerText(), /Equip/);
+  await page.getByRole("link", { name: "All missions in this roster" }).click();
+  await page.waitForURL(/\/missions\/\?page=hajin-1/);
+  await page.locator("#hajin-page-1").waitFor();
+  await page.waitForFunction(
+    () =>
+      document.querySelector("#hajin-page-1")?.getBoundingClientRect().top <
+      150,
+  );
   await page.goto(`${server.base}/missions/?pack=official%3Amw4-dmz-starter`);
   await page
     .locator("#mission-directory-x01 .mission-page-card")

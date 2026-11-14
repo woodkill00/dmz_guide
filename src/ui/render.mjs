@@ -425,7 +425,7 @@ export function renderDetail(
     const intel = roster ? hajinPageIntel[roster.page - 1] : null;
     const listPage =
       Number.isSafeInteger(page) && (roster || x01)
-        ? `/missions/#${x01 ? "x01" : "hajin"}-page-${page}`
+        ? `/missions/?page=${x01 ? "x01" : "hajin"}-${page}`
         : "/missions/";
     const pageLabel = Number.isSafeInteger(page)
       ? `${roster?.placement === "reported-sequence" ? "REPORTED CHAPTER SLOT " : "PAGE "}${page}`
