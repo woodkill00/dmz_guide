@@ -269,6 +269,16 @@ function render() {
     renderBudgetSummary(state, budget);
     $("#upgrade-catalog-summary").textContent =
       `${overview.completed} recorded completed / ${overview.total} visible upgrades in this catalog; ${overview.total - overview.completed} not marked complete. Coverage is incomplete; these are not game-wide totals.`;
+    const editStatus = $("#upgrade-edit-status");
+    const settingsHref = `/settings/?pack=${encodeURIComponent(state.pack.id)}`;
+    if (state.profile.schemaVersion < 2) {
+      editStatus.innerHTML = `Upgrade checkboxes are unavailable for this older profile. <a href="${esc(settingsHref)}">Preview upgrade progress migration in Settings</a> to enable editing while preserving your saved progress.`;
+    } else if (state.profile.contentVersion !== state.pack.contentVersion) {
+      editStatus.innerHTML = `Upgrade checkboxes are unavailable until this profile is linked to the current catalog. <a href="${esc(settingsHref)}">Preview current content binding in Settings</a> to review the change.`;
+    } else {
+      editStatus.textContent =
+        "Select an upgrade checkbox, then confirm the change in the dialog to save it.";
+    }
     if (
       undoProgress &&
       (undoProgress.packId !== state.pack.id ||

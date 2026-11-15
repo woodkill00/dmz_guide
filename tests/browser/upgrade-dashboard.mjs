@@ -30,6 +30,10 @@ export async function runUpgradeDashboardTests({ browser, base }) {
       `${base}/upgrades/?pack=observed%3Aupgrade-review-20261026`,
     );
     await ready();
+    assert.match(
+      await page.locator("#upgrade-edit-status").textContent(),
+      /Select an upgrade checkbox, then confirm/,
+    );
     await page.locator("#upgrade-layout").selectOption("flat");
     assert(
       (await page.locator("#upgrade-catalog-summary").textContent()).includes(
@@ -315,6 +319,19 @@ export async function runUpgradeDashboardTests({ browser, base }) {
       true,
       "legacy upgrade profile remains read-only",
     );
+    assert.match(
+      await page.locator("#upgrade-edit-status").textContent(),
+      /older profile/,
+    );
+    assert.equal(await page.locator("#upgrade-edit-status").isVisible(), true);
+    assert.equal(
+      await page.locator("#upgrade-edit-status a").isVisible(),
+      true,
+    );
+    assert.match(
+      await page.locator("#upgrade-edit-status a").getAttribute("href"),
+      /^\/settings\/\?pack=demo%3Atraining-pack$/,
+    );
     // Saved feedback must disappear immediately when its upgrade becomes hidden.
     await page
       .locator("#pack-select")
@@ -325,6 +342,41 @@ export async function runUpgradeDashboardTests({ browser, base }) {
           "observed:upgrade-review-20261026" &&
         document.querySelector("main")?.getAttribute("aria-busy") === "false",
     );
+    await page.evaluate(async () => {
+      const { state } = await import("/assets/src/client/common.mjs");
+      const { saveProfile } = await import("/assets/src/storage/store.mjs");
+      const profile = structuredClone(state.profile);
+      profile.contentVersion = "previous-test-catalog";
+      await saveProfile(profile, state.revision);
+    });
+    await page.reload();
+    await ready();
+    assert.equal(
+      await page.locator("[data-complete-upgrade]").first().isDisabled(),
+      true,
+    );
+    assert.match(
+      await page.locator("#upgrade-edit-status").textContent(),
+      /linked to the current catalog/,
+    );
+    assert.equal(await page.locator("#upgrade-edit-status").isVisible(), true);
+    assert.equal(
+      await page.locator("#upgrade-edit-status a").isVisible(),
+      true,
+    );
+    assert.match(
+      await page.locator("#upgrade-edit-status a").getAttribute("href"),
+      /^\/settings\/\?pack=observed%3Aupgrade-review-20261026$/,
+    );
+    await page.evaluate(async () => {
+      const { state } = await import("/assets/src/client/common.mjs");
+      const { saveProfile } = await import("/assets/src/storage/store.mjs");
+      const profile = structuredClone(state.profile);
+      profile.contentVersion = state.pack.contentVersion;
+      await saveProfile(profile, state.revision);
+    });
+    await page.reload();
+    await ready();
     const secretName = await page.evaluate(async () => {
       const { state } = await import("/assets/src/client/common.mjs");
       const pack = structuredClone(state.pack),
