@@ -529,7 +529,10 @@ export async function runReaderFlowTests({
       await page.locator("#location-map").getAttribute("viewBox"),
       "0 0 100 100",
     );
-    assert.match(await page.locator(".nav-more summary").textContent(), /Maps/);
+    assert.match(
+      await page.locator(".nav-more > summary").textContent(),
+      /Maps/,
+    );
     await page.goto(`${base}/catalog/`);
     const detailRoute = await page
       .locator("[data-record-card]:visible h3 a")

@@ -280,7 +280,7 @@ export async function runNavigationDirectoryTests({
     for (const width of [390, 320]) {
       await page.setViewportSize({ width, height: 844 });
       await page.addStyleTag({ url: base + "/__test-text-zoom.css" });
-      await page.locator(".nav-more summary").focus();
+      await page.locator(".nav-more > summary").focus();
       await page.keyboard.press("Enter");
       assert(await page.locator(".nav-more").evaluate((n) => n.open));
       assert(
@@ -288,7 +288,7 @@ export async function runNavigationDirectoryTests({
           () => document.documentElement.scrollWidth <= innerWidth + 1,
         ),
       );
-      await page.locator(".nav-more summary").press("Enter");
+      await page.locator(".nav-more > summary").press("Enter");
       if (captureScreenshots)
         await page.screenshot({
           path: `test-results/${browser.browserType().name()}-items-${width}.png`,

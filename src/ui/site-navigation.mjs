@@ -33,7 +33,7 @@ export function renderMainNavigation({
   const labels = {
     "hajin-map": "Map",
     planner: "Prepare",
-    missions: "Track",
+    missions: "Orders",
     catalog: "Reference",
     settings: "Manage",
     search: "Search",

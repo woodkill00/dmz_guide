@@ -5,6 +5,7 @@ export const primaryHubs = Object.freeze([
   "dmz-guide",
   "dmz-fob",
   "dmz-weapons",
+  "missions",
 ]);
 export function featureHub(feature) {
   const id = typeof feature === "string" ? feature : feature?.id;
@@ -71,7 +72,7 @@ export function featureHub(feature) {
 }
 const labels = {
   "hajin-map": "Map",
-  missions: "Missions & story",
+  missions: "Orders",
   "tool-missions": "Map mission tracker",
   settings: "Guide profiles & backups",
   "tool-settings": "Map settings",

@@ -42,7 +42,7 @@ export async function runReflowTests({ browser, base }) {
         bodyBefore * 2,
         "Actual body text doubles",
       );
-      await page.locator(".nav-more summary").focus();
+      await page.locator(".nav-more > summary").focus();
       await page.keyboard.press("Enter");
       assert(await page.locator(".nav-more").evaluate((n) => n.open));
       assert(
@@ -134,7 +134,7 @@ export async function runReflowTests({ browser, base }) {
     }
   await page.setViewportSize({ width: 844, height: 390 });
   await page.goto(base + "/maps/");
-  await page.locator(".nav-more summary").click();
+  await page.locator(".nav-more > summary").click();
   await page.screenshot({
     path: "test-results/maps-landscape-nav.png",
     fullPage: true,

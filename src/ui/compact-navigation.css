@@ -44,6 +44,26 @@
   padding: 0.375rem 0.5rem;
   border-radius: 0.375rem;
 }
+.site-nav .nav-orders-group {
+  border-block-start: 1px solid currentColor;
+  margin-block-start: 0.5rem;
+  padding-block-start: 0.5rem;
+}
+.site-nav .nav-orders-pages > summary {
+  cursor: pointer;
+  min-block-size: var(--ui-control);
+  padding: 0.375rem 0.5rem;
+}
+.site-nav .nav-orders-pages > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.25rem, 1fr));
+  gap: 0.25rem;
+  max-block-size: min(13rem, 35dvh);
+  overflow-y: auto;
+}
+.site-nav .nav-orders-pages a {
+  font-size: 0.875rem;
+}
 @media (max-width: 600px) {
   .site-nav:not([data-navigation-surface="map"]):not(
       [data-navigation-surface="help"]
