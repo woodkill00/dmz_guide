@@ -1,4 +1,5 @@
 import { runHomeWorkflowTests } from "./home-workflows.mjs";
+import { runOrdersNavigationTests } from "./orders-navigation.mjs";
 import { runKeyWorkspaceTests } from "./key-workspace.mjs";
 import { runKeysTests } from "./keys.mjs";
 import { runCodmunityTests } from "./codmunity.mjs";
@@ -42,6 +43,7 @@ try {
   await runGunsmithTests({ browser, base });
   await runCodmunityTests({ browser, base });
   await runHomeWorkflowTests({ browser, base });
+  await runOrdersNavigationTests({ browser, base });
   await runKeysTests({ browser, base });
   await runKeyWorkspaceTests({ browser, base });
   await runArmoryWorkbenchTests({ browser, base });

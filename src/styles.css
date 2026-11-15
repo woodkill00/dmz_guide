@@ -1258,7 +1258,7 @@ textarea {
 .nav-more {
   position: relative;
 }
-.nav-more summary {
+.nav-more > summary {
   padding: 0.8rem 1rem;
   min-height: 44px;
   cursor: pointer;
@@ -1279,7 +1279,7 @@ textarea {
   display: block;
   white-space: normal;
 }
-.nav-more[open] summary {
+.nav-more[open] > summary {
   color: var(--accent);
 }
 @media (max-width: 30rem) {
@@ -1287,7 +1287,7 @@ textarea {
     gap: 0;
   }
   .site-nav > a,
-  .nav-more summary {
+  .nav-more > summary {
     padding: 0.75rem 0.6rem;
   }
 }

@@ -5,7 +5,7 @@ export function featurePages() {
       title: "Mission and story audit",
       page: "mission-audit",
       body: `<header class="page-heading"><p class="eyebrow">CONTENT WORKSPACE</p><h1>Mission and story audit</h1><p>Track what has been checked, what needs correction and what you will fill later. This editorial checklist does not change your game progress.</p></header>
-<p class="actions"><a href="/missions/">Missions</a><a href="/guides/">Field manual</a><a href="/data-review/">Content review</a></p>
+<p class="actions"><a href="/missions/">Orders</a><a href="/guides/">Field manual</a><a href="/data-review/">Content review</a></p>
 <label>Catalog <select id="pack-select"><option>Loading…</option></select></label><p id="pack-note" class="notice"></p><p id="save-status" role="status" aria-live="polite"></p><p id="error" role="alert" tabindex="-1" hidden></p>
 <section class="panel"><h2>Coverage</h2><p id="mission-audit-summary" role="status"></p><p>Hajin has 24 page slots and X01 has five separate slots when recorded in this catalog. Reported chapter order may vary in game. Unrecorded or unassigned placement is a content gap, not a completed mission.</p></section>
 <div class="filter-bar"><label>Find page or mission<input id="mission-audit-search" type="search" maxlength="120"></label><label>Show status<select id="mission-audit-filter"><option value="">All</option><option value="not-checked">Not checked</option><option value="needs-correction">Needs correction</option><option value="fill-later">Fill later</option><option value="ready-for-review">Ready for review</option><option value="checked">Checked</option></select></label></div>

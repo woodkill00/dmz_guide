@@ -39,7 +39,10 @@ export async function runCompactUITests({ browser, base }) {
               panel.x >= -1 && panel.x + panel.width <= width + 1,
               "menu fits viewport",
             );
-            assert.equal(await menu.locator(".nav-menu-group").count(), 5);
+            assert.equal(
+              await menu.locator(":scope > div > .nav-menu-group").count(),
+              5,
+            );
             const last = menu.getByRole("link").last();
             await last.scrollIntoViewIfNeeded();
             await last.focus();

@@ -173,7 +173,7 @@ function renderMissionDirectory() {
     return `<li><a href="${esc(missionHref(id))}">${esc(record.name)}</a> <small>${record.status === "observed" ? "Source reported" : esc(record.status || "Unverified")}</small></li>`;
   };
   hajin.innerHTML =
-    '<h3>Hajin · pages 1–24</h3><div class="mission-page-grid">' +
+    '<h3 id="hajin-orders">Hajin · pages 1–24</h3><div class="mission-page-grid">' +
     hajinOrderSequence.pages
       .map(
         (row) =>
@@ -183,7 +183,7 @@ function renderMissionDirectory() {
     "</div>";
   const x01Pages = ordersPageCoverage(state.pack, 5, "x01");
   x01.innerHTML =
-    '<h3>X01 · pages 1–5</h3><p>Community-reported tasks; confirm against your current Orders screen.</p><div class="mission-page-grid">' +
+    '<h3 id="x01-orders">X01 · pages 1–5</h3><p>Community-reported tasks; confirm against your current Orders screen.</p><div class="mission-page-grid">' +
     x01Pages
       .map(
         (row) =>
@@ -192,13 +192,14 @@ function renderMissionDirectory() {
       .join("") +
     "</div>";
   const requestedPage = new URLSearchParams(location.search).get("page");
-  const anchor = /^#(?:hajin|x01)-page-(?:[1-9]|1\d|2[0-4])$/.test(
-    location.hash,
-  )
-    ? location.hash.slice(1)
-    : /^(?:hajin|x01)-(?:[1-9]|1\d|2[0-4])$/.test(requestedPage || "")
-      ? requestedPage.replace(/^(hajin|x01)-/, "$1-page-")
-      : null;
+  const anchor =
+    /^#(?:mission-directory-hajin|mission-directory-x01|hajin-page-(?:[1-9]|1\d|2[0-4])|x01-page-[1-5])$/.test(
+      location.hash,
+    )
+      ? location.hash.slice(1)
+      : /^(?:hajin|x01)-(?:[1-9]|1\d|2[0-4])$/.test(requestedPage || "")
+        ? requestedPage.replace(/^(hajin|x01)-/, "$1-page-")
+        : null;
   if (!missionAnchorApplied && anchor) {
     missionAnchorApplied = true;
     requestAnimationFrame(() =>

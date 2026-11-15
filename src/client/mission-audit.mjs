@@ -217,7 +217,7 @@ function render() {
     : null;
   const pageLinks =
     active.kind === "page"
-      ? `<a href="/missions/#${active.orderSet === "x01" ? "x01" : "hajin"}-page-${active.page}">Open page in Missions</a>${active.objectiveIds
+      ? `<a href="/missions/#${active.orderSet === "x01" ? "x01" : "hajin"}-page-${active.page}">Open page in Orders</a>${active.objectiveIds
           .map((id) => state.pack.objectives.find((record) => record.id === id))
           .filter(
             (record) => record && (!record.spoiler || state.profile?.spoilers),

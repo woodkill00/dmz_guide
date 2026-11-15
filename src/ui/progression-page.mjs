@@ -79,17 +79,17 @@ export function featurePages(packs) {
   const missions = {
     ...pages[0],
     path: "/missions/",
-    title: "Missions",
+    title: "Orders",
     page: "missions",
     body: pages[0].body
-      .replace("Progress without the spoilers.", "Your missions, in one place.")
+      .replace("Progress without the spoilers.", "Orders")
       .replace(
         "SEPARATE TRACKS / CLEAR CHOICES",
-        "HAJIN / X01 MISSION DIRECTORY",
+        "HAJIN / X01 ORDERS DIRECTORY",
       )
       .replace(
         "</header>",
-        '</header><p><a href="/missions/audit/">Open mission and story content audit</a></p><section class="panel" aria-labelledby="mission-directory-title"><h2 id="mission-directory-title">All DMZ Orders by page</h2><p>Hajin shows a source-reported 24-page sequence. Chapter selection may change your actual page order; match the chapter and Order name in game. X01 is a separate five-page sequence. Each recorded name opens its individual mission page.</p><div id="mission-directory-hajin"></div><div id="mission-directory-x01"></div></section><section class="panel" aria-labelledby="orders-coverage-title"><h2 id="orders-coverage-title">Hajin page coverage</h2><p>Fixed page assignments and source-reported chapter positions are different evidence. Missing placements never count as completed.</p><div id="orders-coverage" class="orders-coverage"></div></section><section class="panel" aria-labelledby="story-workspace-title"><h2 id="story-workspace-title">Story mission workspace</h2><p>Open a recorded story mission below to inspect its sourced steps, requirements, linked records, evidence and your manual completion state. Missing steps remain unrecorded.</p><button type="button" id="show-story-missions">Show story missions</button></section>',
+        '</header><nav class="actions" aria-label="Orders sections"><a href="#mission-directory-hajin">Hajin pages 1–24</a><a href="#mission-directory-x01">X01 pages 1–5</a><a href="#story-workspace-title">Story missions</a><a href="/missions/audit/">Content audit</a></nav><section class="panel" aria-labelledby="mission-directory-title"><h2 id="mission-directory-title">All DMZ Orders by page</h2><p>Hajin shows a source-reported 24-page sequence. Chapter selection may change your actual page order; match the chapter and Order name in game. X01 is a separate five-page sequence. Each recorded name opens its individual mission page.</p><div id="mission-directory-hajin"></div><div id="mission-directory-x01"></div></section><section class="panel" aria-labelledby="orders-coverage-title"><h2 id="orders-coverage-title">Hajin page coverage</h2><p>Fixed page assignments and source-reported chapter positions are different evidence. Missing placements never count as completed.</p><div id="orders-coverage" class="orders-coverage"></div></section><section class="panel" aria-labelledby="story-workspace-title"><h2 id="story-workspace-title">Story mission workspace</h2><p>Open a recorded story mission below to inspect its sourced steps, requirements, linked records, evidence and your manual completion state. Missing steps remain unrecorded.</p><button type="button" id="show-story-missions">Show story missions</button></section>',
       )
       .replace(
         "<noscript>",
