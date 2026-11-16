@@ -41,6 +41,17 @@ try {
   assert.match(await rewards.innerText(), /Medkit/);
   assert.match(await rewards.innerText(), /reviewed 2026-11-14/);
   assert((await rewards.boundingBox()).width <= 390);
+  const x01Rewards = page.locator("#x01-page-1 .mission-rewards");
+  assert.equal(await x01Rewards.count(), 1);
+  assert.equal(await x01Rewards.getAttribute("open"), null);
+  await x01Rewards.locator("summary").focus();
+  await page.keyboard.press("Enter");
+  assert.notEqual(await x01Rewards.getAttribute("open"), null);
+  assert.match(await x01Rewards.innerText(), /Encodable Blank Keycard/);
+  assert.match(
+    await x01Rewards.locator("a").getAttribute("href"),
+    /#x01-page-1$/,
+  );
   await page.locator('#hajin-page-1 a[href^="/objectives/"]').first().click();
   assert.match(
     await page.locator(".mission-detail").innerText(),
@@ -66,6 +77,16 @@ try {
   assert.equal(await sourceCode.count(), 1);
   await sourceCode.click();
   assert.match(await page.locator("main").innerText(), /Source Code/);
+  assert.equal(
+    await page.locator(".mission-detail .mission-rewards").count(),
+    1,
+  );
+  assert.match(
+    await page
+      .locator(".mission-detail-actions a[target='_blank']")
+      .getAttribute("href"),
+    /#x01-page-5$/,
+  );
   const editor = page.locator('a[href^="http://127.0.0.1:4174/"]', {
     hasText: "Edit mission content",
   });

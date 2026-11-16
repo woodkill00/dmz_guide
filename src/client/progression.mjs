@@ -1,6 +1,10 @@
 import { refreshTrackerContext } from "./quick-tracker.mjs";
 import { hajinOrderSequence } from "../content/hajin-order-sequence.mjs";
-import { hajinPageIntel, missionSources } from "../content/mission-intel.mjs";
+import {
+  hajinPageIntel,
+  x01PageIntel,
+  missionSources,
+} from "../content/mission-intel.mjs";
 import { fobUpgradeMaterials, parseUpgradeStock } from "./fob-upgrade-card.mjs";
 import { hydrateInventoryIcons } from "./inventory-icons.mjs";
 import { registerDraftGuard } from "./common.mjs";
@@ -187,7 +191,7 @@ function renderMissionDirectory() {
     x01Pages
       .map(
         (row) =>
-          `<section id="x01-page-${row.page}" class="mission-page-card" aria-label="X01 page ${row.page}"><h4>Page ${row.page} <small>X01 ${row.page}/5</small></h4><p>${row.objectiveIds.length ? "Source-reported roster" : "No recorded Orders yet"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><a href="${esc(auditHref(`page:${packId}:x01-season1:${row.page}:roster`))}">Audit X01 page ${row.page}</a></section>`,
+          `<section id="x01-page-${row.page}" class="mission-page-card" aria-label="X01 page ${row.page}"><h4>Page ${row.page} <small>X01 ${row.page}/5</small></h4><p>${row.objectiveIds.length ? "Source-reported roster" : "No recorded Orders yet"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><details class="mission-rewards"><summary>Reported page rewards</summary><ul>${x01PageIntel[row.page - 1].rewards.map((reward) => `<li>${esc(reward)}</li>`).join("")}</ul><p>COD Central report · reviewed ${esc(x01PageIntel[row.page - 1].reviewedAt)} · current build unverified.</p><a href="${esc(x01PageIntel[row.page - 1].sourceUrl)}" target="_blank" rel="noopener noreferrer">Tips and screenshots at COD Central ↗</a></details><a href="${esc(auditHref(`page:${packId}:x01-season1:${row.page}:roster`))}">Audit X01 page ${row.page}</a></section>`,
       )
       .join("") +
     "</div>";
