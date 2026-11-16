@@ -3,7 +3,10 @@ import assert from "node:assert/strict";
 import { loadFixturePack } from "../helpers/catalog.mjs";
 import { allRecords, renderDetail } from "../../src/ui/render.mjs";
 import { hajinOrderSequence } from "../../src/content/hajin-order-sequence.mjs";
-import { hajinPageIntel } from "../../src/content/mission-intel.mjs";
+import {
+  hajinPageIntel,
+  x01PageIntel,
+} from "../../src/content/mission-intel.mjs";
 
 const pack = loadFixturePack("official-starter");
 
@@ -14,6 +17,38 @@ test("all 24 reported Hajin rosters have page-level rewards", () => {
     assert.equal(intel.page, roster.page);
     assert(intel.rewards.length >= 2);
     assert(intel.sourceKeys.includes("radar"));
+  }
+});
+
+test("all five X01 rosters have attributed chapter rewards", () => {
+  assert.equal(x01PageIntel.length, 5);
+  for (const [index, intel] of x01PageIntel.entries()) {
+    assert.equal(intel.page, index + 1);
+    assert(intel.rewards.length >= 3);
+    assert(intel.sourceUrl.endsWith(`#x01-page-${index + 1}`));
+  }
+});
+
+test("all 87 reported mission entries retain identities and task text", () => {
+  const records = allRecords([pack]);
+  const byId = new Map(records.map((record) => [record.id, record]));
+  const hajinIds = hajinOrderSequence.pages.flatMap(
+    (page) => page.objectiveIds,
+  );
+  const x01 = records.filter((record) => record.orderSet === "x01");
+  assert.equal(hajinIds.length, 72);
+  assert.equal(x01.length, 15);
+  for (const id of hajinIds) {
+    const record = byId.get(id);
+    assert(record, id);
+    assert(record.steps?.length, id);
+  }
+  for (const record of x01) {
+    assert(record.orderPage >= 1 && record.orderPage <= 5, record.id);
+    assert(record.steps?.length, record.id);
+    const detail = renderDetail(record, [pack]);
+    assert(detail.includes("Reported page rewards"), record.id);
+    assert(detail.includes(`#x01-page-${record.orderPage}`), record.id);
   }
 });
 
@@ -29,7 +64,18 @@ test("mission pages render their recorded steps and page rewards", () => {
   assert(x01);
   const x01Html = renderDetail(x01, [pack]);
   assert(x01Html.includes("Mission tasks"));
-  assert(!x01Html.includes("Reported page rewards"));
+  assert(x01Html.includes("Reported page rewards"));
+  assert(x01Html.includes("COD Central tips and screenshots"));
+  assert(x01Html.includes("#x01-page-1"));
+  const unrelatedPack = {
+    ...pack,
+    id: "private:other-catalog",
+  };
+  const unrelatedHtml = renderDetail({ ...x01, pack: unrelatedPack }, [
+    unrelatedPack,
+  ]);
+  assert(!unrelatedHtml.includes("Reported page rewards"));
+  assert(!unrelatedHtml.includes("COD Central tips and screenshots"));
   for (const id of [
     "mw4:order-hunter",
     "mw4:order-astronaut",
@@ -50,12 +96,14 @@ test("mission pages render their recorded steps and page rewards", () => {
   assert(!localOnly.includes("#hajin-page-"));
 });
 
-test("unrecorded task steps do not appear as a completed mission", () => {
+test("formerly disputed task steps show attributed source wording without completing progress", () => {
   const record = allRecords([pack]).find(
     (row) => row.id === "mw4:order-astronaut",
   );
   const html = renderDetail(record, [pack]);
-  assert(html.includes("Steps need source review"));
+  assert(html.includes("21 containers"));
+  assert(html.includes("providers disagree"));
+  assert(!html.includes("Mission completed"));
 });
 
 test("conflicting Underground reward is disclosed without granting it", () => {

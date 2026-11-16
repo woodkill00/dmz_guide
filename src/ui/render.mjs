@@ -4,7 +4,12 @@ import { itemOverview } from "./item-summary.mjs";
 import { isLootType, LOOT_TYPES_INDEX } from "../domain/loot-types.mjs";
 import { renderTcnoItemIntel } from "./tcno-item-intel.mjs";
 import { x01Printer, x01Uses } from "../content/x01-printer.mjs";
-import { hajinPageIntel, missionSources } from "../content/mission-intel.mjs";
+import {
+  hajinPageIntel,
+  x01PageIntel,
+  orderLocationNotes,
+  missionSources,
+} from "../content/mission-intel.mjs";
 import { hajinOrderSequence } from "../content/hajin-order-sequence.mjs";
 import { buildTargetControl } from "./build-target-control.mjs";
 import {
@@ -421,8 +426,21 @@ export function renderDetail(
           )
         : null;
     const x01 = record.orderSet === "x01";
+    const officialX01 =
+      x01 &&
+      pack.id === "official:mw4-dmz-starter" &&
+      record.sourceIds?.includes("source:codcentral-x01-orders-20261114");
     const page = roster?.page || record.orderPage;
-    const intel = roster ? hajinPageIntel[roster.page - 1] : null;
+    const intel = roster
+      ? hajinPageIntel[roster.page - 1]
+      : officialX01 && Number.isInteger(page) && page >= 1 && page <= 5
+        ? x01PageIntel[page - 1]
+        : null;
+    const sourcePage = roster
+      ? `${missionSources.codcentral}#${roster.page === 2 ? "human-intel-1" : roster.page === 3 ? "human-intel-2" : roster.page === 5 ? "counterfeit-1" : roster.page === 6 ? "counterfeit-2" : roster.page === 8 ? "underground-1" : roster.page === 9 ? "underground-2" : roster.page === 12 ? "the-grid-1" : roster.page === 13 ? "the-grid-2" : roster.page === 16 ? "hornets-nest-1" : roster.page === 17 ? "hornets-nest-2" : `page-${roster.page}`}`
+      : officialX01
+        ? intel?.sourceUrl
+        : null;
     const listPage =
       Number.isSafeInteger(page) && (roster || x01)
         ? `/missions/?page=${x01 ? "x01" : "hajin"}-${page}`
@@ -430,7 +448,7 @@ export function renderDetail(
     const pageLabel = Number.isSafeInteger(page)
       ? `${roster?.placement === "reported-sequence" ? "REPORTED CHAPTER SLOT " : "PAGE "}${page}`
       : "PAGE UNKNOWN";
-    detail += `<section class="panel mission-detail"><p class="eyebrow">${roster ? "HAJIN" : x01 ? "X01" : "DMZ"} / ${e(pageLabel)}</p><h2>Mission tasks</h2>${record.steps?.length ? `<ol class="mission-task-list">${record.steps.map((step) => `<li>${e(step)}</li>`).join("")}</ol>` : "<p>Steps need source review. Check your current game Orders screen.</p>"}<p class="mission-detail-actions"><a href="${e(listPage)}">${roster || x01 ? "All missions in this roster" : "All missions"}</a></p>${intel ? `<details class="mission-rewards"><summary>Reported page rewards</summary><ul>${intel.rewards.map((reward) => `<li>${e(reward)}</li>`).join("")}</ul><p>Page rewards are community reports and may differ in your current game. Reviewed ${e(intel.reviewedAt)}.</p>${intel.notes ? `<p>${e(intel.notes)}</p>` : ""}<p>${intel.sourceKeys.map((key) => `<a href="${e(missionSources[key])}" target="_blank" rel="noopener noreferrer">${e(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details>` : ""}</section>`;
+    detail += `<section class="panel mission-detail"><p class="eyebrow">${roster ? "HAJIN" : x01 ? "X01" : "DMZ"} / ${e(pageLabel)}</p><h2>Mission tasks</h2>${record.steps?.length ? `<ol class="mission-task-list">${record.steps.map((step) => `<li>${e(step)}</li>`).join("")}</ol>` : "<p>Steps need source review. Check your current game Orders screen.</p>"}${(roster || officialX01) && orderLocationNotes[record.id] ? `<p><strong>Reported location:</strong> ${e(orderLocationNotes[record.id])}</p>` : ""}<p class="mission-detail-actions"><a href="${e(listPage)}">${roster || x01 ? "All missions in this roster" : "All missions"}</a>${sourcePage ? ` · <a href="${e(sourcePage)}" target="_blank" rel="noopener noreferrer">COD Central tips and screenshots ↗</a>` : ""}</p>${intel ? `<details class="mission-rewards"><summary>Reported page rewards</summary><ul>${intel.rewards.map((reward) => `<li>${e(reward)}</li>`).join("")}</ul><p>Page rewards are community reports and may differ in your current game. Reviewed ${e(intel.reviewedAt)}.</p>${intel.notes ? `<p>${e(intel.notes)}</p>` : ""}<p>${intel.sourceKeys.map((key) => `<a href="${e(missionSources[key])}" target="_blank" rel="noopener noreferrer">${e(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details>` : ""}</section>`;
   }
   if (record.inputs || record.requirements)
     detail += `<section class="panel"><h2>${record.inputs ? "Ingredients & retained tools" : "Requirements"}</h2>${record.station ? `<p>Station: ${e(record.station)}. Eligible game inventory: ${e(record.eligibility)}.</p>` : ""}${record.output ? `<p>Output: ${e(record.output.quantity)} × ${ref(record.output.itemId)}</p>` : ""}<ul class="requirements">${(record.inputs || record.requirements).map((input) => `<li><span>${ref(input.itemId)}<small>${input.consumption === "unknown" ? "Consumption unknown" : input.consumption === "consumed" || input.consumed === true ? "Consumed material" : "Retained tool"} · ${e(find(input.itemId)?.unit || "unknown unit")}</small></span><strong>${e(input.quantity ?? "Unknown")}</strong></li>`).join("") || ((record.ingredientsKnown ?? record.requirementsKnown) ? "<li>No listed material requirements.</li>" : "<li>Unknown cost. Requirements have not been verified.</li>")}</ul><p>Requirement completeness: ${(record.ingredientsKnown ?? record.requirementsKnown) ? "Known for this scoped record" : "Unknown; do not assume complete"}.</p><h3>Prerequisites</h3><ul>${(record.prerequisites || []).map((id) => `<li>${ref(id)}</li>`).join("") || "<li>No listed prerequisites; completeness is not established unless explicitly sourced.</li>"}</ul>${showPlanner ? `<a class="button primary" href="/planner/?pack=${encodeURIComponent(pack.id)}&amp;goal=${encodeURIComponent(record.id)}">Open planner ↗</a>` : ""}</section>`;

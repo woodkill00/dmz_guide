@@ -1,5 +1,5 @@
 {
-  "description": "Reported as page 22 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified. Objective steps are disputed between providers and need review.",
+  "description": "Reported as page 22 in one provider sequence; later page positions may vary. These tasks follow COD Central's 2026-11-13 report; providers disagree, so confirm against your current Orders screen.",
   "effects": [],
   "id": "mw4:order-astronaut",
   "name": "Astronaut",
@@ -13,6 +13,9 @@
   ],
   "spoiler": false,
   "status": "observed",
-  "steps": [],
+  "steps": [
+    "Open 21 containers while inside radiation without taking radiation damage.",
+    "Extract aboard the white final-exfil helicopter three times."
+  ],
   "track": "dmz-order"
 }

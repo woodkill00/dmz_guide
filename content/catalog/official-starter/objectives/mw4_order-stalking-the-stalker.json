@@ -1,5 +1,5 @@
 {
-  "description": "Reported as page 21 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified. Objective steps are disputed between providers and need review.",
+  "description": "Reported as page 21 in one provider sequence; later page positions may vary. These tasks follow COD Central's 2026-11-13 report; providers disagree, so confirm against your current Orders screen.",
   "effects": [],
   "id": "mw4:order-stalking-the-stalker",
   "name": "Stalking the Stalker",
@@ -13,6 +13,10 @@
   ],
   "spoiler": false,
   "status": "observed",
-  "steps": [],
+  "steps": [
+    "Destroy three Deathstalkers with a SAM site.",
+    "Destroy one Deathstalker with a launcher.",
+    "Use DDOS on a Deathstalker."
+  ],
   "track": "dmz-order"
 }

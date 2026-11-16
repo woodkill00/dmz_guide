@@ -64,13 +64,11 @@ test("official starter records reviewed fixed Orders pages and leaves variable p
   assert.equal(new Set(orders.map((row) => row.id)).size, 81);
   assert.equal(orders.filter((row) => row.name === "Healer").length, 2);
   assert.equal(orders.filter((row) => row.name === "No Time").length, 2);
-  assert.deepEqual(
-    orders
-      .filter((row) => row.steps.length === 0)
-      .map((row) => row.name)
-      .sort(),
-    ["Astronaut", "Stalking the Stalker"],
-  );
+  assert(orders.every((row) => row.steps.length > 0));
+  for (const name of ["Astronaut", "Stalking the Stalker"]) {
+    const row = orders.find((candidate) => candidate.name === name);
+    assert(row.description.includes("providers disagree"), name);
+  }
   assert.equal(
     pack.objectives.filter((objective) => objective.track === "dmz-story")
       .length,
