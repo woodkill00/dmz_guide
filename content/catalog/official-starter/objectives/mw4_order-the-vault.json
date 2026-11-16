@@ -1,7 +1,15 @@
 {
+  "assetId": "codcentral:order-shot-18",
   "description": "Reported as page 20 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-the-vault",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-18",
+      "decorative": false,
+      "text": "Hanex Bank branches and vault clues on the Hajin map."
+    }
+  ],
   "name": "The Vault",
   "oneTime": true,
   "prerequisites": [],

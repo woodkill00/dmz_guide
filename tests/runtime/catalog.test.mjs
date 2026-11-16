@@ -363,7 +363,13 @@ test("explicit migration previews exact ordered equivalence and preserves proven
     (await readCatalog({ root, schema })).packs,
     fixtureCatalog.packs,
   );
-  assert.equal(bundledSources(plan.entries).size, 2);
+  assert.equal(
+    bundledSources(plan.entries).size,
+    fixtureCatalog.entries.reduce(
+      (count, entry) => count + entry.pack.assets.length,
+      0,
+    ),
+  );
 });
 test("migration refuses unknown legacy files rather than deleting them", async (t) => {
   const root = await temp(t);

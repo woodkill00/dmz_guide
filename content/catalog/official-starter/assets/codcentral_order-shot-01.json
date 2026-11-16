@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 120958,
+    "height": 570,
+    "id": "codcentral:order-shot-01",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-01.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "9007d7c57f2197baf2205c538ab40f5423f3958ad817b7cd466aa879c69703bf",
+    "sourceUrl": "https://codcentral.net/assets/map-poi-clinic-deadtown-b7.DpBHgXdO_26XSRO.webp",
+    "width": 760
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-01/original.webp"
+}

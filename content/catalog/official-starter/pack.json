@@ -1,6 +1,33 @@
 {
   "order": {
-    "assets": [],
+    "assets": [
+      "codcentral:order-shot-01",
+      "codcentral:order-shot-02",
+      "codcentral:order-shot-03",
+      "codcentral:order-shot-04",
+      "codcentral:order-shot-05",
+      "codcentral:order-shot-06",
+      "codcentral:order-shot-07",
+      "codcentral:order-shot-08",
+      "codcentral:order-shot-09",
+      "codcentral:order-shot-10",
+      "codcentral:order-shot-11",
+      "codcentral:order-shot-12",
+      "codcentral:order-shot-13",
+      "codcentral:order-shot-14",
+      "codcentral:order-shot-15",
+      "codcentral:order-shot-16",
+      "codcentral:order-shot-17",
+      "codcentral:order-shot-18",
+      "codcentral:order-shot-19",
+      "codcentral:order-shot-20",
+      "codcentral:order-shot-21",
+      "codcentral:order-shot-22",
+      "codcentral:order-shot-23",
+      "codcentral:order-shot-24",
+      "codcentral:order-shot-25",
+      "codcentral:order-shot-26"
+    ],
     "claims": [
       "claim:printer-level-fob",
       "claim:printer-level-progression"
@@ -755,9 +782,9 @@
     "contentVersion": "2026.11.14.4",
     "coverage": {
       "expectedTotal": null,
-      "note": "All 33 official launch weapon identities/basic observations; current DMZ combat stats and full non-weapon coverage remain unverified. Other starter records retained. Includes the 29 ingredients listed by GameRant (2026-10-28), with reported rarities and acquisition hints; complete-game item coverage remains unknown. Includes 34 TroubleChute-listed upgrade definitions and the GameBoost printer tables: 95 printable recipes. FOB costs and prerequisite chains follow the TroubleChute snapshot dated 2026-11-10; consumption and current-build verification remain unresolved where not independently confirmed. Separate X01 in-raid printer reference: nine reported recipes, requiring carried materials; excluded from FOB craft forecasts. Owner-reported Field upgrades roster: 21 item identities; newly listed boxes have no invented recipes, rarities or effects. Item-reference capture reviewed 2026-11-10: 256 TroubleChute item identities, 157 reported unlock references and reported loot-container types where listed; provider coverage only, not complete-game verification. Sixty-six reported Hajin Orders identities and six named Story Missions are secondary-source reports. Fixed pages 1, 4, 7, 10, 11, 14 and 15 have recorded rosters; chapter-choice and later-page placements remain unassigned. Two disputed Order step lists remain empty. Current-build verification, rewards, prerequisites and complete-game mission coverage remain unresolved. Fifteen X01 Orders across five reported pages were added from two community guides on 2026-11-14; current-build behavior, rewards, item costs and player completion remain unverified."
+      "note": "All 33 official launch weapon identities/basic observations; current DMZ combat stats and full non-weapon coverage remain unverified. Other starter records retained. Includes the 29 ingredients listed by GameRant (2026-10-28), with reported rarities and acquisition hints; complete-game item coverage remains unknown. Includes 34 TroubleChute-listed upgrade definitions and the GameBoost printer tables: 95 printable recipes. FOB costs and prerequisite chains follow the TroubleChute snapshot dated 2026-11-10; consumption and current-build verification remain unresolved where not independently confirmed. Separate X01 in-raid printer reference: nine reported recipes, requiring carried materials; excluded from FOB craft forecasts. Owner-reported Field upgrades roster: 21 item identities; newly listed boxes have no invented recipes, rarities or effects. Item-reference capture reviewed 2026-11-10: 256 TroubleChute item identities, 157 reported unlock references and reported loot-container types where listed; provider coverage only, not complete-game verification. Sixty-six reported Hajin Orders identities and six named Story Missions are secondary-source reports. Fixed pages 1, 4, 7, 10, 11, 14 and 15 have recorded rosters; chapter-choice and later-page placements remain unassigned. All 87 reported mission entries have task text; two disputed lists follow COD Central and still require game confirmation. Current-build verification, rewards, prerequisites and complete-game mission coverage remain unresolved. Fifteen X01 Orders across five reported pages were added from two community guides on 2026-11-14; current-build behavior, reported rewards, item costs and player completion remain unverified."
     },
-    "description": "Source-backed reference with official facts, reported upgrade costs and printer recipes. Coverage and current-build validation remain incomplete; no third-party artwork included.",
+    "description": "Source-backed reference with official facts, reported upgrade costs and printer recipes. Includes 26 COD Central guide screenshots under redistribution permission asserted by the project owner. Coverage and current-build validation remain incomplete.",
     "game": {
       "build": "mixed-source-reports-2026-11; live-build-unverified",
       "id": "mw4",

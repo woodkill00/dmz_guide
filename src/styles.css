@@ -1637,6 +1637,34 @@ main :where(p, li, a, ul, ol, section, article, div) {
   flex-wrap: wrap;
   gap: 0.75rem;
 }
+.mission-picture-gallery {
+  margin-block: 1rem;
+  min-width: 0;
+}
+.mission-picture-gallery > h2 {
+  margin-block: 0 0.35rem;
+}
+.mission-picture-gallery > p {
+  margin-block: 0 0.8rem;
+}
+.mission-picture-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 0.75rem;
+}
+.mission-picture-grid figure {
+  min-width: 0;
+  margin: 0;
+}
+.mission-picture-grid .local-raster {
+  width: 100%;
+  max-height: 22rem;
+  margin-block: 0 0.5rem;
+}
+.mission-picture-grid figcaption {
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
 .inventory-group {
   margin-block: 1rem;
 }

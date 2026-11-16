@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 38444,
+    "height": 570,
+    "id": "codcentral:order-shot-02",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-02.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "3a1f8f7460c99655fce40f3cb65cd217bc3ea86f4683ddb168bc29fc753e974e",
+    "sourceUrl": "https://codcentral.net/assets/map-poi-compound-wolves-stadium-g7.CscqVmfK_x2hUc.webp",
+    "width": 760
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-02/original.webp"
+}

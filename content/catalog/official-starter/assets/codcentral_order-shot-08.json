@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 42188,
+    "height": 570,
+    "id": "codcentral:order-shot-08",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-08.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "ebbd2c9a857cbe2b8c6e353e7b615cf4a06675d79c5bc51d20841a9aa597d6ab",
+    "sourceUrl": "https://codcentral.net/assets/map-poi-fire-station-hanrim-village-c2.D-o9YCL1_YzJSN.webp",
+    "width": 760
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-08/original.webp"
+}

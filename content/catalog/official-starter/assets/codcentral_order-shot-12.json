@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 46370,
+    "height": 450,
+    "id": "codcentral:order-shot-12",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-12.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "672b7f85cf33e53a928cfd91b0b8d8dbd9127d76126106c46ad9851268941aba",
+    "sourceUrl": "https://codcentral.net/assets/side-op-loot-radio-tower-tac-map-ping-d8.DXX0pOVL_1tQFFh.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-12/original.webp"
+}

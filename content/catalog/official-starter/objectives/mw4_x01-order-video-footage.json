@@ -1,7 +1,15 @@
 {
+  "assetId": "codcentral:order-shot-22",
   "description": "Reported X01 page 2 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
   "effects": [],
   "id": "mw4:x01-order-video-footage",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-22",
+      "decorative": false,
+      "text": "X01 Admin Offices surveillance room marked at C4."
+    }
+  ],
   "name": "Video Footage",
   "oneTime": true,
   "orderPage": 2,

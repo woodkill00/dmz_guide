@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 33834,
+    "height": 350,
+    "id": "codcentral:order-shot-22",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-22.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "8390b75b9ed4e06be892a4b3b43d73090018132f50970bab3eb9fff3178776b0",
+    "sourceUrl": "https://codcentral.net/assets/x01-surveillance-room-location.DVZ_JEEG_Z2fpNdh.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-22/original.webp"
+}

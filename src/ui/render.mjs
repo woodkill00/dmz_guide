@@ -345,7 +345,21 @@ export function renderDetail(
         const caption = record.spoiler
           ? asset.attribution
           : guardFor(pack).text(asset.attribution);
-        return `<figure class="panel"><img data-public-image class="local-raster" loading="${e(imageLoading)}" decoding="async" src="${e(url)}" width="${asset.width}" height="${asset.height}" alt="${e(imageDescription(record, assetId, publicTitle(record)))}"><figcaption>${e(caption)} · ${e(asset.license)}. Image availability does not verify game facts.</figcaption></figure>`;
+        const description = imageDescription(
+          record,
+          assetId,
+          publicTitle(record),
+        );
+        const codcentralOrderImage =
+          pack.id === "official:mw4-dmz-starter" &&
+          asset.id.startsWith("codcentral:order-shot-") &&
+          asset.sourceUrl.startsWith("https://codcentral.net/assets/");
+        const image = `<img data-public-image class="local-raster" loading="${e(imageLoading)}" decoding="async" src="${e(url)}" width="${asset.width}" height="${asset.height}" alt="${e(description)}">`;
+        const linkedImage =
+          record.track === "dmz-order"
+            ? `<a href="${e(url)}" target="_blank" rel="noopener noreferrer">${image}</a>`
+            : image;
+        return `<figure class="panel">${linkedImage}<figcaption>${codcentralOrderImage ? `${e(description)} <a href="${e(asset.sourceUrl)}" target="_blank" rel="noopener noreferrer">COD Central source ↗</a>` : `${e(caption)} · ${e(asset.license)}. Image availability does not verify game facts.`}</figcaption></figure>`;
       })
       .join("");
   }
@@ -449,6 +463,8 @@ export function renderDetail(
       ? `${roster?.placement === "reported-sequence" ? "REPORTED CHAPTER SLOT " : "PAGE "}${page}`
       : "PAGE UNKNOWN";
     detail += `<section class="panel mission-detail"><p class="eyebrow">${roster ? "HAJIN" : x01 ? "X01" : "DMZ"} / ${e(pageLabel)}</p><h2>Mission tasks</h2>${record.steps?.length ? `<ol class="mission-task-list">${record.steps.map((step) => `<li>${e(step)}</li>`).join("")}</ol>` : "<p>Steps need source review. Check your current game Orders screen.</p>"}${(roster || officialX01) && orderLocationNotes[record.id] ? `<p><strong>Reported location:</strong> ${e(orderLocationNotes[record.id])}</p>` : ""}<p class="mission-detail-actions"><a href="${e(listPage)}">${roster || x01 ? "All missions in this roster" : "All missions"}</a>${sourcePage ? ` · <a href="${e(sourcePage)}" target="_blank" rel="noopener noreferrer">COD Central tips and screenshots ↗</a>` : ""}</p>${intel ? `<details class="mission-rewards"><summary>Reported page rewards</summary><ul>${intel.rewards.map((reward) => `<li>${e(reward)}</li>`).join("")}</ul><p>Page rewards are community reports and may differ in your current game. Reviewed ${e(intel.reviewedAt)}.</p>${intel.notes ? `<p>${e(intel.notes)}</p>` : ""}<p>${intel.sourceKeys.map((key) => `<a href="${e(missionSources[key])}" target="_blank" rel="noopener noreferrer">${e(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details>` : ""}</section>`;
+    if (picture)
+      detail += `<section class="mission-picture-gallery" aria-labelledby="mission-pictures-heading"><h2 id="mission-pictures-heading">Guide pictures (${pictureIds.length})</h2><p>Open a picture for a larger view. Screenshots are source reports; check the current game for changes.</p><div class="mission-picture-grid">${picture}</div>${pack.id === "official:mw4-dmz-starter" && pictureIds.some((id) => id.startsWith("codcentral:order-shot-")) ? '<p class="mission-picture-rights">COD Central screenshots. Public redistribution permission was asserted by the project owner; underlying game imagery remains with its rights holders.</p>' : ""}</section>`;
   }
   if (record.inputs || record.requirements)
     detail += `<section class="panel"><h2>${record.inputs ? "Ingredients & retained tools" : "Requirements"}</h2>${record.station ? `<p>Station: ${e(record.station)}. Eligible game inventory: ${e(record.eligibility)}.</p>` : ""}${record.output ? `<p>Output: ${e(record.output.quantity)} × ${ref(record.output.itemId)}</p>` : ""}<ul class="requirements">${(record.inputs || record.requirements).map((input) => `<li><span>${ref(input.itemId)}<small>${input.consumption === "unknown" ? "Consumption unknown" : input.consumption === "consumed" || input.consumed === true ? "Consumed material" : "Retained tool"} · ${e(find(input.itemId)?.unit || "unknown unit")}</small></span><strong>${e(input.quantity ?? "Unknown")}</strong></li>`).join("") || ((record.ingredientsKnown ?? record.requirementsKnown) ? "<li>No listed material requirements.</li>" : "<li>Unknown cost. Requirements have not been verified.</li>")}</ul><p>Requirement completeness: ${(record.ingredientsKnown ?? record.requirementsKnown) ? "Known for this scoped record" : "Unknown; do not assume complete"}.</p><h3>Prerequisites</h3><ul>${(record.prerequisites || []).map((id) => `<li>${ref(id)}</li>`).join("") || "<li>No listed prerequisites; completeness is not established unless explicitly sourced.</li>"}</ul>${showPlanner ? `<a class="button primary" href="/planner/?pack=${encodeURIComponent(pack.id)}&amp;goal=${encodeURIComponent(record.id)}">Open planner ↗</a>` : ""}</section>`;
@@ -511,5 +527,5 @@ export function renderDetail(
           .map((line) => `<p>${e(line)}</p>`)
           .join("")}</div>`
       : ""
-  }${picture}<div class="detail-grid${overview ? " item-detail-layout" : ""}"><div>${detail}${claimMarkup}</div>${evidence}</div>${record.spoiler ? "</details>" : ""}`;
+  }${["dmz-order", "dmz-story"].includes(record.track) ? "" : picture}<div class="detail-grid${overview ? " item-detail-layout" : ""}"><div>${detail}${claimMarkup}</div>${evidence}</div>${record.spoiler ? "</details>" : ""}`;
 }

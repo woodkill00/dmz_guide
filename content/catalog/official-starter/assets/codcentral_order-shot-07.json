@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 71812,
+    "height": 570,
+    "id": "codcentral:order-shot-07",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-07.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "76033567be282397608eac78c52d3f1c0dc998ef6e1ada4e7405cea053bb8298",
+    "sourceUrl": "https://codcentral.net/assets/map-poi-uav-tower-deadtown-c7.CDz6qGAK_2s0aFx.webp",
+    "width": 760
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-07/original.webp"
+}

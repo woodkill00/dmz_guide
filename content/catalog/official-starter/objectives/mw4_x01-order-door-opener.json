@@ -1,7 +1,29 @@
 {
+  "assetId": "codcentral:order-shot-23",
+  "assetIds": [
+    "codcentral:order-shot-24",
+    "codcentral:order-shot-25"
+  ],
   "description": "Reported X01 page 5 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
   "effects": [],
   "id": "mw4:x01-order-door-opener",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-23",
+      "decorative": false,
+      "text": "X01 Logistics Tunnel Wheelson location marked near E4."
+    },
+    {
+      "assetId": "codcentral:order-shot-24",
+      "decorative": false,
+      "text": "X01 Power Generators local console and its Data Center floor position."
+    },
+    {
+      "assetId": "codcentral:order-shot-25",
+      "decorative": false,
+      "text": "X01 Power Generators power supply terminal marked at H3."
+    }
+  ],
   "name": "Door Opener",
   "oneTime": true,
   "orderPage": 5,

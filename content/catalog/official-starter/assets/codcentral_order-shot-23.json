@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 29374,
+    "height": 350,
+    "id": "codcentral:order-shot-23",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-23.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "b5ebc991bd60f675df5970c9b9a0ab414dd5235caf990f06585d39b3bf70b120",
+    "sourceUrl": "https://codcentral.net/assets/x01-wheelson-location.Cg4SXDYo_VAodW.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-23/original.webp"
+}

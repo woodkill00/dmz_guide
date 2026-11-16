@@ -1,7 +1,23 @@
 {
+  "assetId": "codcentral:order-shot-09",
+  "assetIds": [
+    "codcentral:order-shot-10"
+  ],
   "description": "Reported in the Underground 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-triangulation",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-09",
+      "decorative": false,
+      "text": "Radio transmitter placement prompt at a Lieutenant Hunt Tower."
+    },
+    {
+      "assetId": "codcentral:order-shot-10",
+      "decorative": false,
+      "text": "La Grande Vie marked at I7 by Songdo Wharf."
+    }
+  ],
   "name": "Triangulation",
   "oneTime": true,
   "prerequisites": [],

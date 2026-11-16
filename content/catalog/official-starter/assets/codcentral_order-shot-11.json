@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 197050,
+    "height": 902,
+    "id": "codcentral:order-shot-11",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-11.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "82af0ce0a3015e77537fa83b78400efd053f4269d0da37d18b41189c12a8af17",
+    "sourceUrl": "https://codcentral.net/assets/map-lost-supply-drops-hajin.fD4OFrRf_1o1NRG.webp",
+    "width": 1200
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-11/original.webp"
+}

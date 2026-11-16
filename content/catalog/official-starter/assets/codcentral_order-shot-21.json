@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 28288,
+    "height": 350,
+    "id": "codcentral:order-shot-21",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-21.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "878c13398ff852b9027f7ad47c0355b5063584f165848b9a2824488bb73f8da2",
+    "sourceUrl": "https://codcentral.net/assets/x01-keycard-encoder-location.CuXFP2-4_ZEnrbg.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-21/original.webp"
+}

@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 83436,
+    "height": 570,
+    "id": "codcentral:order-shot-06",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-06.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "b5c94862459085298fa96d18d4f628c3c2cd444e8f7fa2c45ac276ba01fec331",
+    "sourceUrl": "https://codcentral.net/assets/map-poi-re-education-center-deadtown-b7.Y-50FQt9_2h0hJY.webp",
+    "width": 760
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-06/original.webp"
+}

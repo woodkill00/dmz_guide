@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 26480,
+    "height": 350,
+    "id": "codcentral:order-shot-20",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-20.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "5dce2dc5f9d8731fe779c3271c2729eeae4197a1def577bbf1c0ccf4f3100a82",
+    "sourceUrl": "https://codcentral.net/assets/x01-3d-printer-location.DlYpvOUk_1qsmHw.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-20/original.webp"
+}

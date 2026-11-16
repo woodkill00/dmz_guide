@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 37908,
+    "height": 450,
+    "id": "codcentral:order-shot-09",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-09.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "b679ca124411bc3b4438f21b16efb66ffaa6051be555a502529eae0365f026cf",
+    "sourceUrl": "https://codcentral.net/assets/orders-pg8-place-radio-transmitter-tong-il-village.C0FdRbqw_Z2fjVD7.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-09/original.webp"
+}

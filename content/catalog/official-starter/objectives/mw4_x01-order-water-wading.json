@@ -1,7 +1,15 @@
 {
+  "assetId": "codcentral:order-shot-26",
   "description": "Reported X01 page 5 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
   "effects": [],
   "id": "mw4:x01-order-water-wading",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-26",
+      "decorative": false,
+      "text": "X01 flooded barracks corridor with tripwires below Supply Depot."
+    }
+  ],
   "name": "Water Wading",
   "oneTime": true,
   "orderPage": 5,

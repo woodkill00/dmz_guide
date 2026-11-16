@@ -1,7 +1,23 @@
 {
+  "assetId": "codcentral:order-shot-16",
+  "assetIds": [
+    "codcentral:order-shot-17"
+  ],
   "description": "Reported in The Grid 2/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-civil-service",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-16",
+      "decorative": false,
+      "text": "City Hall location marked at H6 for the Financial Ledger Fragments."
+    },
+    {
+      "assetId": "codcentral:order-shot-17",
+      "decorative": false,
+      "text": "Exterior view of City Hall near NuriGO Mall."
+    }
+  ],
   "name": "Civil Service",
   "oneTime": true,
   "prerequisites": [],

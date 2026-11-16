@@ -1,7 +1,23 @@
 {
+  "assetId": "codcentral:order-shot-03",
+  "assetIds": [
+    "codcentral:order-shot-04"
+  ],
   "description": "Reported in the Counterfeit 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-hostile-force",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-03",
+      "decorative": false,
+      "text": "Police station beside NuriGO Mall marked at H5."
+    },
+    {
+      "assetId": "codcentral:order-shot-04",
+      "decorative": false,
+      "text": "Police station near Wolves Stadium marked at G7."
+    }
+  ],
   "name": "Hostile Force",
   "oneTime": true,
   "prerequisites": [],

@@ -1,7 +1,15 @@
 {
+  "assetId": "codcentral:order-shot-15",
   "description": "Reported in The Grid 2/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-opulent",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-15",
+      "decorative": false,
+      "text": "Six crashed drone locations marked across Hajin."
+    }
+  ],
   "name": "Opulent",
   "oneTime": true,
   "prerequisites": [],

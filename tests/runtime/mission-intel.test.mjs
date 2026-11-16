@@ -52,6 +52,63 @@ test("all 87 reported mission entries retain identities and task text", () => {
   }
 });
 
+test("COD Central screenshots attach only to their matching Orders", () => {
+  const records = allRecords([pack]);
+  const byId = new Map(records.map((record) => [record.id, record]));
+  const shots = pack.assets.filter((asset) =>
+    asset.sourceUrl.startsWith("https://codcentral.net/assets/"),
+  );
+  assert.equal(shots.length, 26);
+  assert(
+    shots.every(
+      (asset) => asset.redistributionAllowed && asset.mime === "image/webp",
+    ),
+  );
+  const withShots = records.filter((record) => record.assetId);
+  assert.equal(withShots.length, 17);
+  assert(byId.get("mw4:order-triage-protocol").assetId);
+  assert(byId.get("mw4:order-no-one-left").assetId);
+  assert(!byId.get("mw4:order-no-one-left").assetIds?.length);
+  assert.equal(byId.get("mw4:x01-order-door-opener").assetIds.length, 2);
+  assert(byId.get("mw4:x01-order-water-wading").assetId);
+  assert(!byId.get("mw4:x01-order-source-code").assetId);
+  assert(byId.get("mw4:order-the-vault").assetId);
+  assert(!byId.get("mw4:x01-order-the-vault").assetId);
+  for (const record of withShots) {
+    const ids = [record.assetId, ...(record.assetIds || [])];
+    assert(
+      ids.every((id) => shots.some((asset) => asset.id === id)),
+      record.id,
+    );
+    assert.equal(record.imageDescriptions.length, ids.length);
+  }
+});
+
+test("custom Order pictures retain their own attribution", () => {
+  const customPack = structuredClone(pack);
+  customPack.id = "private:custom-images";
+  customPack.assets.push({
+    id: "custom:order-photo",
+    attribution: "Player screenshot",
+    license: "Player permission",
+    sourceUrl: "https://example.com/photo.webp",
+    width: 800,
+    height: 600,
+  });
+  const order = customPack.objectives.find(
+    (row) => row.id === "mw4:order-gear-up",
+  );
+  order.assetId = "custom:order-photo";
+  const record = allRecords([customPack]).find((row) => row.id === order.id);
+  const html = renderDetail(record, [customPack], {
+    imageURL: () => "/image.webp",
+  });
+  assert(html.includes("Player screenshot"));
+  assert(html.includes("Player permission"));
+  assert(!html.includes("COD Central source ↗"));
+  assert(!html.includes("COD Central screenshots."));
+});
+
 test("mission pages render their recorded steps and page rewards", () => {
   const records = allRecords([pack]);
   const gearUp = records.find((row) => row.id === "mw4:order-gear-up");
