@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 209768,
+    "height": 912,
+    "id": "codcentral:order-shot-05",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-05.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "294a728ac93f9b0fbf16d024f5f7850f96543e0be1a29eb633a1c22f7430e5ec",
+    "sourceUrl": "https://codcentral.net/assets/map-safe-locations-hajin.Ctm2pubX_1BN012.webp",
+    "width": 1200
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-05/original.webp"
+}

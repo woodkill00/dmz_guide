@@ -1,7 +1,15 @@
 {
+  "assetId": "codcentral:order-shot-05",
   "description": "Reported in the Counterfeit 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-robbery",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-05",
+      "decorative": false,
+      "text": "Hajin safe locations grouped by access type on a numbered map."
+    }
+  ],
   "name": "Robbery",
   "oneTime": true,
   "prerequisites": [],

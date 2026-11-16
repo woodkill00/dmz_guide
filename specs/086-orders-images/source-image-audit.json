@@ -1,0 +1,190 @@
+{
+  "sourcePage": "https://codcentral.net/blog/mw4-dmz-orders/",
+  "reviewedAt": "2026-11-16",
+  "scope": "26 unique Order-task screenshots; display-size duplicates removed; intro illustrations and reward icons excluded",
+  "entries": [
+    {
+      "chapter": "human-intel-1",
+      "objectiveId": "mw4:order-triage-protocol",
+      "sourceUrl": "https://codcentral.net/assets/map-poi-clinic-deadtown-b7.DpBHgXdO_26XSRO.webp",
+      "description": "Deadtown clinic marked at B7 on the tactical map.",
+      "assetId": "codcentral:order-shot-01"
+    },
+    {
+      "chapter": "human-intel-1",
+      "objectiveId": "mw4:order-no-one-left",
+      "sourceUrl": "https://codcentral.net/assets/map-poi-compound-wolves-stadium-g7.CscqVmfK_x2hUc.webp",
+      "description": "Wolves Stadium compound marked near G7.",
+      "assetId": "codcentral:order-shot-02"
+    },
+    {
+      "chapter": "counterfeit-1",
+      "objectiveId": "mw4:order-hostile-force",
+      "sourceUrl": "https://codcentral.net/assets/map-poi-police-station-nurigo-mall-h5.C_M7XbS__1KVpIt.webp",
+      "description": "Police station beside NuriGO Mall marked at H5.",
+      "assetId": "codcentral:order-shot-03"
+    },
+    {
+      "chapter": "counterfeit-1",
+      "objectiveId": "mw4:order-hostile-force",
+      "sourceUrl": "https://codcentral.net/assets/map-poi-police-station-wolves-stadium-g7.C-CO8A0F_UwEFQ.webp",
+      "description": "Police station near Wolves Stadium marked at G7.",
+      "assetId": "codcentral:order-shot-04"
+    },
+    {
+      "chapter": "counterfeit-1",
+      "objectiveId": "mw4:order-robbery",
+      "sourceUrl": "https://codcentral.net/assets/map-safe-locations-hajin.Ctm2pubX_1BN012.webp",
+      "description": "Hajin safe locations grouped by access type on a numbered map.",
+      "assetId": "codcentral:order-shot-05"
+    },
+    {
+      "chapter": "counterfeit-1",
+      "objectiveId": "mw4:order-execute-intel",
+      "sourceUrl": "https://codcentral.net/assets/map-poi-re-education-center-deadtown-b7.Y-50FQt9_2h0hJY.webp",
+      "description": "Deadtown Re-Education Center marked at B7.",
+      "assetId": "codcentral:order-shot-06"
+    },
+    {
+      "chapter": "counterfeit-1",
+      "objectiveId": "mw4:order-execute-intel",
+      "sourceUrl": "https://codcentral.net/assets/map-poi-uav-tower-deadtown-c7.CDz6qGAK_2s0aFx.webp",
+      "description": "Deadtown UAV tower marked at C7.",
+      "assetId": "codcentral:order-shot-07"
+    },
+    {
+      "chapter": "page-7",
+      "objectiveId": "mw4:order-radiation-station",
+      "sourceUrl": "https://codcentral.net/assets/map-poi-fire-station-hanrim-village-c2.D-o9YCL1_YzJSN.webp",
+      "description": "Hanrim Village fire station marked at C2.",
+      "assetId": "codcentral:order-shot-08"
+    },
+    {
+      "chapter": "underground-1",
+      "objectiveId": "mw4:order-triangulation",
+      "sourceUrl": "https://codcentral.net/assets/orders-pg8-place-radio-transmitter-tong-il-village.C0FdRbqw_Z2fjVD7.webp",
+      "description": "Radio transmitter placement prompt at a Lieutenant Hunt Tower.",
+      "assetId": "codcentral:order-shot-09"
+    },
+    {
+      "chapter": "underground-1",
+      "objectiveId": "mw4:order-triangulation",
+      "sourceUrl": "https://codcentral.net/assets/map-poi-la-grande-vie-songdo-wharf-h7.CzrRmhpA_1eHMkI.webp",
+      "description": "La Grande Vie marked at I7 by Songdo Wharf.",
+      "assetId": "codcentral:order-shot-10"
+    },
+    {
+      "chapter": "page-10",
+      "objectiveId": "mw4:order-crashed-crate",
+      "sourceUrl": "https://codcentral.net/assets/map-lost-supply-drops-hajin.fD4OFrRf_1o1NRG.webp",
+      "description": "Numbered Lost Supply Drop locations across Hajin.",
+      "assetId": "codcentral:order-shot-11"
+    },
+    {
+      "chapter": "page-10",
+      "objectiveId": "mw4:order-crashed-crate",
+      "sourceUrl": "https://codcentral.net/assets/side-op-loot-radio-tower-tac-map-ping-d8.DXX0pOVL_1tQFFh.webp",
+      "description": "Loot Radio Tower side operation marked near D8.",
+      "assetId": "codcentral:order-shot-12"
+    },
+    {
+      "chapter": "page-10",
+      "objectiveId": "mw4:order-crashed-crate",
+      "sourceUrl": "https://codcentral.net/assets/side-op-loot-radio-tower-tower-drop-crate.z0e8s7iM_1tAcIq.webp",
+      "description": "Tower Drop crate visible atop a radio tower.",
+      "assetId": "codcentral:order-shot-13"
+    },
+    {
+      "chapter": "page-11",
+      "objectiveId": "mw4:order-friendly-face",
+      "sourceUrl": "https://codcentral.net/assets/orders-pg11-friendly-face-request-truce-ping-wheel.rBNx7Vlh_Z1SHYmf.webp",
+      "description": "Request Truce choice on the in-game ping wheel.",
+      "assetId": "codcentral:order-shot-14"
+    },
+    {
+      "chapter": "the-grid-2",
+      "objectiveId": "mw4:order-opulent",
+      "sourceUrl": "https://codcentral.net/assets/map-crashed-drone-locations-hajin.DekcodBm_EYhG.webp",
+      "description": "Six crashed drone locations marked across Hajin.",
+      "assetId": "codcentral:order-shot-15"
+    },
+    {
+      "chapter": "the-grid-2",
+      "objectiveId": "mw4:order-civil-service",
+      "sourceUrl": "https://codcentral.net/assets/map-city-hall-h6-player-marker.BWxIRRWg_DLQ0A.webp",
+      "description": "City Hall location marked at H6 for the Financial Ledger Fragments.",
+      "assetId": "codcentral:order-shot-16"
+    },
+    {
+      "chapter": "the-grid-2",
+      "objectiveId": "mw4:order-civil-service",
+      "sourceUrl": "https://codcentral.net/assets/orders-pg13-civil-service-city-hall-exterior.BMFcut2Y_Z1GBSWk.webp",
+      "description": "Exterior view of City Hall near NuriGO Mall.",
+      "assetId": "codcentral:order-shot-17"
+    },
+    {
+      "chapter": "page-20",
+      "objectiveId": "mw4:order-the-vault",
+      "sourceUrl": "https://codcentral.net/assets/map-hanex-bank-vaults-hajin.BMuk_gr6_Z23cUm2.webp",
+      "description": "Hanex Bank branches and vault clues on the Hajin map.",
+      "assetId": "codcentral:order-shot-18"
+    },
+    {
+      "chapter": "x01-page-2",
+      "objectiveId": "mw4:x01-order-explorer",
+      "sourceUrl": "https://codcentral.net/assets/x01-hidden-stash-location.ALQcNWzA_1bOfV7.webp",
+      "description": "X01 Production Assembly hidden stash marked at F5, with its cabinet.",
+      "assetId": "codcentral:order-shot-19"
+    },
+    {
+      "chapter": "x01-page-2",
+      "objectiveId": "mw4:x01-order-crafting-material",
+      "sourceUrl": "https://codcentral.net/assets/x01-3d-printer-location.DlYpvOUk_1qsmHw.webp",
+      "description": "X01 Production Assembly 3D Printer marked at E5.",
+      "assetId": "codcentral:order-shot-20"
+    },
+    {
+      "chapter": "x01-page-2",
+      "objectiveId": "mw4:x01-order-crafting-material",
+      "sourceUrl": "https://codcentral.net/assets/x01-keycard-encoder-location.CuXFP2-4_ZEnrbg.webp",
+      "description": "X01 Supply Depot keycard encoder marked at F2.",
+      "assetId": "codcentral:order-shot-21"
+    },
+    {
+      "chapter": "x01-page-2",
+      "objectiveId": "mw4:x01-order-video-footage",
+      "sourceUrl": "https://codcentral.net/assets/x01-surveillance-room-location.DVZ_JEEG_Z2fpNdh.webp",
+      "description": "X01 Admin Offices surveillance room marked at C4.",
+      "assetId": "codcentral:order-shot-22"
+    },
+    {
+      "chapter": "x01-page-5",
+      "objectiveId": "mw4:x01-order-door-opener",
+      "sourceUrl": "https://codcentral.net/assets/x01-wheelson-location.Cg4SXDYo_VAodW.webp",
+      "description": "X01 Logistics Tunnel Wheelson location marked near E4.",
+      "assetId": "codcentral:order-shot-23"
+    },
+    {
+      "chapter": "x01-page-5",
+      "objectiveId": "mw4:x01-order-door-opener",
+      "sourceUrl": "https://codcentral.net/assets/x01-local-console-location.DBpBBcET_1tMBQW.webp",
+      "description": "X01 Power Generators local console and its Data Center floor position.",
+      "assetId": "codcentral:order-shot-24"
+    },
+    {
+      "chapter": "x01-page-5",
+      "objectiveId": "mw4:x01-order-door-opener",
+      "sourceUrl": "https://codcentral.net/assets/x01-power-supply-location.DhgZdS2E_1Et4BV.webp",
+      "description": "X01 Power Generators power supply terminal marked at H3.",
+      "assetId": "codcentral:order-shot-25"
+    },
+    {
+      "chapter": "x01-page-5",
+      "objectiveId": "mw4:x01-order-water-wading",
+      "sourceUrl": "https://codcentral.net/assets/x01-flooded-barracks-location.Cp66AQe__EYp6h.webp",
+      "description": "X01 flooded barracks corridor with tripwires below Supply Depot.",
+      "assetId": "codcentral:order-shot-26"
+    }
+  ],
+  "mappingReview": "2026-11-16: manually aligned each screenshot with its described mission task; nearby article DOM position alone is not ownership."
+}

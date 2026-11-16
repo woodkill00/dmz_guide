@@ -1,7 +1,29 @@
 {
+  "assetId": "codcentral:order-shot-11",
+  "assetIds": [
+    "codcentral:order-shot-12",
+    "codcentral:order-shot-13"
+  ],
   "description": "Reported on fixed Hajin Orders page 10. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-crashed-crate",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-11",
+      "decorative": false,
+      "text": "Numbered Lost Supply Drop locations across Hajin."
+    },
+    {
+      "assetId": "codcentral:order-shot-12",
+      "decorative": false,
+      "text": "Loot Radio Tower side operation marked near D8."
+    },
+    {
+      "assetId": "codcentral:order-shot-13",
+      "decorative": false,
+      "text": "Tower Drop crate visible atop a radio tower."
+    }
+  ],
   "name": "Crashed Crate",
   "oneTime": true,
   "orderPage": 10,

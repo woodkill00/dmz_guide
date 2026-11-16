@@ -1,7 +1,23 @@
 {
+  "assetId": "codcentral:order-shot-20",
+  "assetIds": [
+    "codcentral:order-shot-21"
+  ],
   "description": "Reported X01 page 2 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
   "effects": [],
   "id": "mw4:x01-order-crafting-material",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-20",
+      "decorative": false,
+      "text": "X01 Production Assembly 3D Printer marked at E5."
+    },
+    {
+      "assetId": "codcentral:order-shot-21",
+      "decorative": false,
+      "text": "X01 Supply Depot keycard encoder marked at F2."
+    }
+  ],
   "name": "Crafting Material",
   "oneTime": true,
   "orderPage": 2,

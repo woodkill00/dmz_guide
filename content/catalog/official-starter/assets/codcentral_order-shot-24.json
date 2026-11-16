@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 36960,
+    "height": 350,
+    "id": "codcentral:order-shot-24",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-24.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "39eaaf369dcf05ffde812714d87a331498a49d447b52cfde0f7cd35fd83124a0",
+    "sourceUrl": "https://codcentral.net/assets/x01-local-console-location.DBpBBcET_1tMBQW.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-24/original.webp"
+}

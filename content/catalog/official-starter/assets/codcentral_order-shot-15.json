@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 185340,
+    "height": 902,
+    "id": "codcentral:order-shot-15",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-15.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "6a388c0ebcee4132d0155939138a7bce99cb52689a5a2c9684e7961e27e00f3f",
+    "sourceUrl": "https://codcentral.net/assets/map-crashed-drone-locations-hajin.DekcodBm_EYhG.webp",
+    "width": 1200
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-15/original.webp"
+}

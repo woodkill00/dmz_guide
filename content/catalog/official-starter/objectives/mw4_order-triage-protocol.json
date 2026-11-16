@@ -1,7 +1,15 @@
 {
+  "assetId": "codcentral:order-shot-01",
   "description": "Reported in the Human Intel 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-triage-protocol",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-01",
+      "decorative": false,
+      "text": "Deadtown clinic marked at B7 on the tactical map."
+    }
+  ],
   "name": "Triage Protocol",
   "oneTime": true,
   "prerequisites": [],

@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 76930,
+    "height": 570,
+    "id": "codcentral:order-shot-03",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-03.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "aa89a52c263ea9d2eba4919ac30d3d22a0e9dc0a2770480d68c599e51c819f7d",
+    "sourceUrl": "https://codcentral.net/assets/map-poi-police-station-nurigo-mall-h5.C_M7XbS__1KVpIt.webp",
+    "width": 760
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-03/original.webp"
+}

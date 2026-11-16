@@ -1,7 +1,23 @@
 {
+  "assetId": "codcentral:order-shot-06",
+  "assetIds": [
+    "codcentral:order-shot-07"
+  ],
   "description": "Reported in the Counterfeit 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-execute-intel",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-06",
+      "decorative": false,
+      "text": "Deadtown Re-Education Center marked at B7."
+    },
+    {
+      "assetId": "codcentral:order-shot-07",
+      "decorative": false,
+      "text": "Deadtown UAV tower marked at C7."
+    }
+  ],
   "name": "Execute Intel",
   "oneTime": true,
   "prerequisites": [],

@@ -1,7 +1,15 @@
 {
+  "assetId": "codcentral:order-shot-02",
   "description": "Reported in the Human Intel 1/2 chapter; the displayed page depends on chapter selection. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-no-one-left",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-02",
+      "decorative": false,
+      "text": "Wolves Stadium compound marked near G7."
+    }
+  ],
   "name": "No One Left",
   "oneTime": true,
   "prerequisites": [],

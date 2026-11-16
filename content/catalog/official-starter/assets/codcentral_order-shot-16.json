@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 92122,
+    "height": 600,
+    "id": "codcentral:order-shot-16",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-16.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "a170e54b92be8d17b35e826dc7c829719f394495d5f5dac69dc1e3e2a172c249",
+    "sourceUrl": "https://codcentral.net/assets/map-city-hall-h6-player-marker.BWxIRRWg_DLQ0A.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-16/original.webp"
+}

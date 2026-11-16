@@ -1,7 +1,15 @@
 {
+  "assetId": "codcentral:order-shot-19",
   "description": "Reported X01 page 2 Order. Current-build behavior, rewards and item needs are not independently confirmed.",
   "effects": [],
   "id": "mw4:x01-order-explorer",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-19",
+      "decorative": false,
+      "text": "X01 Production Assembly hidden stash marked at F5, with its cabinet."
+    }
+  ],
   "name": "Explorer",
   "oneTime": true,
   "orderPage": 2,

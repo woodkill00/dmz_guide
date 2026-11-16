@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 141544,
+    "height": 822,
+    "id": "codcentral:order-shot-18",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-18.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "b2e54ddf7b195f831272a5ef5f9a4084544f6437ceef9d2db366fcbf3a32c62f",
+    "sourceUrl": "https://codcentral.net/assets/map-hanex-bank-vaults-hajin.BMuk_gr6_Z23cUm2.webp",
+    "width": 1200
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-18/original.webp"
+}

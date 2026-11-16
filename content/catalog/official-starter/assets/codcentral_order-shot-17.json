@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 55638,
+    "height": 450,
+    "id": "codcentral:order-shot-17",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-17.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "eab843cafe1d9af481240c05ee4a0c64cc7b6383fed583c9b473a83b8e7cf844",
+    "sourceUrl": "https://codcentral.net/assets/orders-pg13-civil-service-city-hall-exterior.BMFcut2Y_Z1GBSWk.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-17/original.webp"
+}

@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 66098,
+    "height": 570,
+    "id": "codcentral:order-shot-10",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-10.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "d574d4bbc51e24d265d3f72f803f18d42e9332ef12a94801c46425c6feec5d08",
+    "sourceUrl": "https://codcentral.net/assets/map-poi-la-grande-vie-songdo-wharf-h7.CzrRmhpA_1eHMkI.webp",
+    "width": 760
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-10/original.webp"
+}

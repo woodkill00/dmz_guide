@@ -77,6 +77,27 @@ try {
   assert.equal(await sourceCode.count(), 1);
   await sourceCode.click();
   assert.match(await page.locator("main").innerText(), /Source Code/);
+  assert.equal(await page.locator(".mission-picture-grid img").count(), 0);
+  await page.goto(`${server.base}/objectives/mw4--x01-order-door-opener/`);
+  const guidePictures = page.locator(".mission-picture-grid img");
+  assert.equal(await guidePictures.count(), 3);
+  for (const picture of await guidePictures.all()) {
+    await picture.scrollIntoViewIfNeeded();
+    await picture.evaluate((image) => image.decode());
+    assert((await picture.evaluate((image) => image.naturalWidth)) > 0);
+    assert.match(await picture.getAttribute("src"), /^\/assets\/bundled\//);
+    assert((await picture.getAttribute("alt")).length > 20);
+  }
+  assert.equal(
+    await page.locator(".mission-picture-grid figcaption a").count(),
+    3,
+  );
+  assert(
+    (await page.locator(".mission-picture-gallery").boundingBox()).width <= 390,
+  );
+  await page.goto(`${server.base}/objectives/mw4--x01-order-water-wading/`);
+  assert.equal(await page.locator(".mission-picture-grid img").count(), 1);
+  await page.goto(`${server.base}/objectives/mw4--x01-order-source-code/`);
   assert.equal(
     await page.locator(".mission-detail .mission-rewards").count(),
     1,

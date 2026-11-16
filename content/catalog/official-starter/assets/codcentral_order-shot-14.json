@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 57284,
+    "height": 450,
+    "id": "codcentral:order-shot-14",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-14.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "69887798eb8aa9b403cd4facf3588e3cb2c5e9eec519bd5584e5965eaba36d1c",
+    "sourceUrl": "https://codcentral.net/assets/orders-pg11-friendly-face-request-truce-ping-wheel.rBNx7Vlh_Z1SHYmf.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-14/original.webp"
+}

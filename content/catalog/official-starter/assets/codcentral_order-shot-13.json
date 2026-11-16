@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 77442,
+    "height": 450,
+    "id": "codcentral:order-shot-13",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-13.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "deece978a348bf09b1448da6fce919f932010e72391799b56390350209df6359",
+    "sourceUrl": "https://codcentral.net/assets/side-op-loot-radio-tower-tower-drop-crate.z0e8s7iM_1tAcIq.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-13/original.webp"
+}

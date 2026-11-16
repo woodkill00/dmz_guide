@@ -1,7 +1,15 @@
 {
+  "assetId": "codcentral:order-shot-08",
   "description": "Reported on fixed Hajin Orders page 7. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-radiation-station",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-08",
+      "decorative": false,
+      "text": "Hanrim Village fire station marked at C2."
+    }
+  ],
   "name": "Radiation Station",
   "oneTime": true,
   "orderPage": 7,

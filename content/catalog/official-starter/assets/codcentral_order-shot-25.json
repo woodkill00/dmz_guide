@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 27596,
+    "height": 350,
+    "id": "codcentral:order-shot-25",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-25.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "0e6a41667aeae70b61ef8c697b0f81bd45e53e1d07c70c990c609b4d9276a56b",
+    "sourceUrl": "https://codcentral.net/assets/x01-power-supply-location.DhgZdS2E_1Et4BV.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-25/original.webp"
+}

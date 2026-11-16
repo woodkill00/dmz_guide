@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 22732,
+    "height": 350,
+    "id": "codcentral:order-shot-26",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-26.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "2dc19230cc76a13fa28c19301005dcd124a9d5638da0e03acf10620702c87a58",
+    "sourceUrl": "https://codcentral.net/assets/x01-flooded-barracks-location.Cp66AQe__EYp6h.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-26/original.webp"
+}

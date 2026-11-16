@@ -1,7 +1,15 @@
 {
+  "assetId": "codcentral:order-shot-14",
   "description": "Reported on fixed Hajin Orders page 11. Secondary-source report; current DMZ build is unverified.",
   "effects": [],
   "id": "mw4:order-friendly-face",
+  "imageDescriptions": [
+    {
+      "assetId": "codcentral:order-shot-14",
+      "decorative": false,
+      "text": "Request Truce choice on the in-game ping wheel."
+    }
+  ],
   "name": "Friendly Face",
   "oneTime": true,
   "orderPage": 11,

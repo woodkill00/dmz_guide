@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 81366,
+    "height": 570,
+    "id": "codcentral:order-shot-04",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-04.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "bc5aa890a4c43e10b84d69cda936a0c50d666fc971b2cc3c92a7ffa3d13d991e",
+    "sourceUrl": "https://codcentral.net/assets/map-poi-police-station-wolves-stadium-g7.C-CO8A0F_UwEFQ.webp",
+    "width": 760
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-04/original.webp"
+}

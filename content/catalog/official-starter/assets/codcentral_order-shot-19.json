@@ -1,0 +1,18 @@
+{
+  "asset": {
+    "attribution": "COD Central Orders guide screenshot; redistribution permission asserted by project owner on 2026-11-16.",
+    "bytes": 30662,
+    "height": 350,
+    "id": "codcentral:order-shot-19",
+    "license": "Public repository redistribution permission asserted by project owner on 2026-11-16",
+    "mime": "image/webp",
+    "path": "assets/order-shot-19.webp",
+    "redistributionAllowed": true,
+    "rightsHolder": "COD Central",
+    "sha256": "8211001dfeb533c873b54c93503454259d1978e21ea05101e0445088d0f6097e",
+    "sourceUrl": "https://codcentral.net/assets/x01-hidden-stash-location.ALQcNWzA_1bOfV7.webp",
+    "width": 800
+  },
+  "category": "objectives",
+  "sourcePath": "media/official-starter/objectives/codcentral_order-shot-19/original.webp"
+}
