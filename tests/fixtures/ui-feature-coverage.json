@@ -1,12 +1,12 @@
 {
   "source": "src/ui/feature-registry.mjs",
-  "head": "de71dd91f81f35c5a141f04736b00eecdae44c95",
+  "head": "191332cbdddbb2be95914662599944809621ebdf",
   "hashes": {
-    "src/ui/feature-registry.mjs": "65f74ab8fd547e46f3167243f3440ee714d9051ab152da2bcab2cfc1e051f563",
+    "src/ui/feature-registry.mjs": "fe52ee94975fbf0a237a966d01cc0eee0f4339f646146d45055f50ab7cd565d3",
     "src/ui/map-destinations.json": "7eda40618c784083b520f1ad9c356fe3d284ce83a394389f9d6527beb7da85f0",
     "specs/071-ui-ux-implementation/feature-coverage.md": "3d4511eb0781dfc70cfddac5d2423913ec442a109c6dc84306e5e8f9e9b16add"
   },
-  "count": 86,
+  "count": 87,
   "features": [
     {
       "id": "field-desk",
@@ -210,6 +210,13 @@
       "kind": "guide",
       "path": "/armory/workbench/",
       "group": "Prepare"
+    },
+    {
+      "id": "weapon-acquisition",
+      "label": "Weapon blueprints & acquisition",
+      "kind": "guide",
+      "path": "/armory/acquisition/",
+      "group": "Track"
     },
     {
       "id": "guides",

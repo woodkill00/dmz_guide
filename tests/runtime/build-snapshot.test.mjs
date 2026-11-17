@@ -153,6 +153,11 @@ async function fixture(t, { build = false } = {}) {
     );
     await put(
       root,
+      "content/weapon-acquisition.json",
+      await readFile(join(source, "content/weapon-acquisition.json")),
+    );
+    await put(
+      root,
       "content/site.json",
       await readFile(join(source, "content/site.json")),
     );

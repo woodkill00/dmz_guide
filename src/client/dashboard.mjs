@@ -116,8 +116,7 @@ export async function mountDashboard() {
     }
   }
   const contextHref = (id) =>
-    dashboardLink(dashboardDestinations[id], $("#hub-pack").value) +
-    (id === "weapons" ? "#acquisition" : "");
+    dashboardLink(dashboardDestinations[id], $("#hub-pack").value);
   const panelFor = (id) => $(`[data-dash-detail="${id}"]`);
   function clearPanels() {
     for (const id of dashboardSections) {
@@ -218,14 +217,14 @@ export async function mountDashboard() {
     }
     const weaponRoot = $('[data-dash-content="weapons"]');
     if (armoryState !== "ready")
-      weaponRoot.innerHTML = `<p>${armoryState === "loading" ? "Reading existing armory…" : armoryState === "absent" ? "No saved armory yet." : "Armory unavailable. Other records remain available."}</p><a href="/armory/workbench/#acquisition">Open acquisition tracker</a>`;
+      weaponRoot.innerHTML = `<p>${armoryState === "loading" ? "Reading existing armory…" : armoryState === "absent" ? "No saved armory yet." : "Armory unavailable. Other records remain available."}</p><a href="/armory/acquisition/">Open acquisition tracker</a>`;
     else {
       const list = weaponDashboard(armory.acquisition, weapons);
       weaponRoot.innerHTML = `<p>${list.length} recorded weapons · ${list.reduce((n, r) => n + r.blueprints.length, 0)} blueprint names owned. Full missing-blueprint coverage is unknown.</p><ul class="dash-progress-list">${list
         .slice(0, expanded.weapons ? 50 : 5)
         .map(
           (r) =>
-            `<li><div>${r.resolved ? `<a href="/armory/${encodeURIComponent(r.id)}/">${e(r.name)}</a>` : e(r.name)}<p>${r.blueprints.length ? e(r.blueprints.join(", ")) : "No blueprint names recorded"}</p></div><span>${r.manual ? "Manual found" : "Manual not marked"} · ${r.attachments} attachments recorded</span></li>`,
+            `<li><div>${r.resolved ? `<a href="/armory/acquisition/?weapon=${encodeURIComponent(r.id)}#weapon-${encodeURIComponent(r.id)}">${e(r.name)}</a>` : e(r.name)}<p>${r.blueprints.length ? e(r.blueprints.join(", ")) : "No blueprint names recorded"}</p></div><span>${r.manual ? "Manual found" : "Manual not marked"} · ${r.manualExtractions == null ? "Extractions not recorded" : `${r.manualExtractions} / 3 manual extractions`} · ${r.attachments} attachments recorded</span></li>`,
         )
         .join("")}</ul>${list.length > 5 ? expandButton("weapons") : ""}`;
     }

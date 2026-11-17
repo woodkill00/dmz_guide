@@ -1,0 +1,809 @@
+{
+  "observedAt": "2026-11-17",
+  "scope": "Research snapshot of named obtainable/reward blueprints found; not a complete live game inventory or current-store availability assertion.",
+  "notes": [
+    "date is research observation date, not release date.",
+    "Weapon slugs match existing content/weapon-intel.json except proposed new csg-35/cronen-osprey.",
+    "BlackCell is an explicit ownership distinction, not an invented exact in-game suffix.",
+    "Official S1 store highlights are announcements; current sale availability was not verified.",
+    "Official prestige source overrides MW4.GG: Calm Resolve/Trench Fiend are Prestige 2, not 5; Ghosts Legend spelling follows official prose.",
+    "Excluded 51 unnamed MW4.GG internal variants, Unknown Logitech (no confirmed name), and Master Circuit (unverified potential duplicate of Inner Circuit).",
+    "No LT looted/named weapon variants treated as permanently owned blueprints.",
+    "Creator claims remain reported; Monster primary confirms names but pairing/counts here are creator-reported and region-dependent.",
+    "FinalExfil blueprints page timed out; catalog coverage is explicitly incomplete.",
+    "Manual unlock, extracted-manual count, blueprint ownership and one-time DMZ craft must be separate fields."
+  ],
+  "sources": {
+    "vault": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-preorder-benefits-game-editions-details",
+    "prestige": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+    "s1": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+    "creator": "https://mw4.gg/blueprints/",
+    "valor": "https://www.callofduty.com/valor",
+    "beta": "https://www.callofduty.com/blog/2026/08/call-of-duty-modern-warfare-4-next-early-access-beta-weekend-one",
+    "preorder": "https://www.callofduty.com/ca/en/blog/2026/09/call-of-duty-modern-warfare-4-preorder-bonus-inner-circuit-m4-blueprint",
+    "monster": "https://callofduty.monsterenergy.com/en-gb/"
+  },
+  "groups": {
+    "vault": [
+      {
+        "name": "Voltspine",
+        "weapon": "kastov-762",
+        "variant": null,
+        "method": "Vault Edition Signature Weapon Collection",
+        "url": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-preorder-benefits-game-editions-details",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "La Sombra Venenosa",
+        "weapon": "iso-nightshade",
+        "variant": null,
+        "method": "Vault Edition Signature Weapon Collection",
+        "url": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-preorder-benefits-game-editions-details",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Shattered Code",
+        "weapon": "rezi-12",
+        "variant": null,
+        "method": "Vault Edition Signature Weapon Collection",
+        "url": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-preorder-benefits-game-editions-details",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Volt-Edge",
+        "weapon": "oris-8-6",
+        "variant": null,
+        "method": "Vault Edition Signature Weapon Collection",
+        "url": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-preorder-benefits-game-editions-details",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Sombra Besada",
+        "weapon": "fss-carbon-edge-1095",
+        "variant": null,
+        "method": "Vault Edition Signature Weapon Collection",
+        "url": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-preorder-benefits-game-editions-details",
+        "date": "2026-11-17",
+        "status": "official"
+      }
+    ],
+    "prestige": [
+      {
+        "name": "The Vet",
+        "weapon": "mosin-nagant",
+        "variant": null,
+        "method": "Regular Prestige 1 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "The Vet Prime",
+        "weapon": "mosin-nagant",
+        "variant": null,
+        "method": "Classic Prestige 1 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Calm Resolve",
+        "weapon": "ppsh-41",
+        "variant": null,
+        "method": "Regular Prestige 2 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Trench Fiend",
+        "weapon": "ppsh-41",
+        "variant": null,
+        "method": "Classic Prestige 2 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Terminal",
+        "weapon": "finn-lmg",
+        "variant": null,
+        "method": "Regular Prestige 4 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Torn Up",
+        "weapon": "finn-lmg",
+        "variant": null,
+        "method": "Classic Prestige 4 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Ghosts Legend",
+        "weapon": "axion",
+        "variant": null,
+        "method": "Regular Prestige 6 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Ghosts Legend Prime",
+        "weapon": "axion",
+        "variant": null,
+        "method": "Classic Prestige 6 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "141",
+        "weapon": "m4",
+        "variant": null,
+        "method": "Regular Prestige 8 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "141 Prime",
+        "weapon": "m4",
+        "variant": null,
+        "method": "Classic Prestige 8 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Boksu",
+        "weapon": "sang-9mm",
+        "variant": null,
+        "method": "Regular Prestige 10 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Boksu Prime",
+        "weapon": "sang-9mm",
+        "variant": null,
+        "method": "Classic Prestige 10 final reward",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Master Renegade",
+        "weapon": "han-86",
+        "variant": null,
+        "method": "Prestige Master Level 90",
+        "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+        "date": "2026-11-17",
+        "status": "official"
+      }
+    ],
+    "season1-battlepass": [
+      {
+        "name": "Arachnivox",
+        "weapon": "rezi-12",
+        "variant": null,
+        "method": "S1 BP:4",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Guardian Best",
+        "weapon": "kastov-762",
+        "variant": null,
+        "method": "S1 BP:5",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Guardian Best",
+        "weapon": "kastov-762",
+        "variant": "BlackCell",
+        "method": "S1 BlackCell:5",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Cobweb",
+        "weapon": "type-73",
+        "variant": null,
+        "method": "S1 BP:8",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Chelicerae",
+        "weapon": "fss-carbon-edge-1095",
+        "variant": null,
+        "method": "S1 BP:17",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Demon Watch",
+        "weapon": "patriot-xmr",
+        "variant": null,
+        "method": "S1 BP:21",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Special Delivery",
+        "weapon": "astaroth-57",
+        "variant": null,
+        "method": "S1 BP:25",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Prime Echo",
+        "weapon": "axion",
+        "variant": null,
+        "method": "S1 BP:29",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Prime Echo",
+        "weapon": "axion",
+        "variant": "BlackCell",
+        "method": "S1 BlackCell:29",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Cold Resin",
+        "weapon": "sang-9mm",
+        "variant": null,
+        "method": "S1 BP:38",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Pointman",
+        "weapon": "wz-55-striga",
+        "variant": null,
+        "method": "S1 BP:40",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Brass Tax",
+        "weapon": "apoc-338",
+        "variant": null,
+        "method": "S1 BP:41",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Vengeance",
+        "weapon": "signal-50",
+        "variant": null,
+        "method": "S1 BP:47",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Highkeep",
+        "weapon": "kg-7-vulcan",
+        "variant": null,
+        "method": "S1 BP:50",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Highkeep",
+        "weapon": "kg-7-vulcan",
+        "variant": "BlackCell",
+        "method": "S1 BlackCell:50",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Competitive Spirit",
+        "weapon": "han-86",
+        "variant": null,
+        "method": "S1 BP:55",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Fabled Beast",
+        "weapon": "50-gs",
+        "variant": null,
+        "method": "S1 BP:63",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Ruin Fang",
+        "weapon": "iso-nightshade",
+        "variant": null,
+        "method": "S1 BP:66",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Ruin Fang",
+        "weapon": "iso-nightshade",
+        "variant": "BlackCell",
+        "method": "S1 BlackCell:66",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Devil’s Due",
+        "weapon": "warlord",
+        "variant": null,
+        "method": "S1 BP:69",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Deathgrip",
+        "weapon": "csg-35",
+        "variant": null,
+        "method": "S1 BP:73",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Deathgrip",
+        "weapon": "csg-35",
+        "variant": "BlackCell",
+        "method": "S1 BlackCell:73",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Dirty Work",
+        "weapon": "mar-9",
+        "variant": null,
+        "method": "S1 BP:76",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Marked Ops",
+        "weapon": "cronen-squall",
+        "variant": null,
+        "method": "S1 BP:83",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Kill Order",
+        "weapon": "cronen-osprey",
+        "variant": null,
+        "method": "S1 BP:87",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Kill Order",
+        "weapon": "cronen-osprey",
+        "variant": "BlackCell",
+        "method": "S1 BlackCell:87",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Final Say",
+        "weapon": "oris-8-6",
+        "variant": null,
+        "method": "S1 BP:91",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Snakeskin",
+        "weapon": "ppsh-41",
+        "variant": null,
+        "method": "S1 BP:96",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Bellum",
+        "weapon": "mosin-nagant",
+        "variant": null,
+        "method": "S1 BP:100",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Bellum",
+        "weapon": "mosin-nagant",
+        "variant": "BlackCell",
+        "method": "S1 BlackCell:100",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      }
+    ],
+    "season1-rewards": [
+      {
+        "name": "Fortune’s Favor",
+        "weapon": "finn-lmg",
+        "variant": null,
+        "method": "S1 BP instant",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Perimeter Lance",
+        "weapon": "m4",
+        "variant": null,
+        "method": "S1 BlackCell instant",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Occultus",
+        "weapon": "m4",
+        "variant": null,
+        "method": "BlackCell 3000 points; DMZ kill=2",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Exitium",
+        "weapon": "m4",
+        "variant": null,
+        "method": "BlackCell 100 points; DMZ exfil=20",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Blue Viper",
+        "weapon": "hyeon-burst",
+        "variant": null,
+        "method": "S1 paid BP completion",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      }
+    ],
+    "season1-announced-store": [
+      {
+        "name": "Vanish",
+        "weapon": "cronen-osprey",
+        "variant": null,
+        "method": "Hollow Hunter Adaptive Camo",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Low Profile",
+        "weapon": "kg-7-vulcan",
+        "variant": null,
+        "method": "Hollow Hunter Adaptive Camo",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Regalis",
+        "weapon": "patriot-xmr",
+        "variant": null,
+        "method": "Bone Chiller II",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Aurum",
+        "weapon": "hyeon-burst",
+        "variant": null,
+        "method": "Bone Chiller II",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Auric",
+        "weapon": "finn-lmg",
+        "variant": null,
+        "method": "Bone Chiller II",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Wings of Reckoning",
+        "weapon": "csg-35",
+        "variant": null,
+        "method": "The Valkyrie",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Skyfall",
+        "weapon": "m4",
+        "variant": null,
+        "method": "The Valkyrie",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Digital Drifter",
+        "weapon": "cronen-osprey",
+        "variant": null,
+        "method": "Glitched State",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Unplugger",
+        "weapon": "apoc-338",
+        "variant": null,
+        "method": "Glitched State",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Priced Out",
+        "weapon": "iso-nightshade",
+        "variant": null,
+        "method": "The Captain",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Priceless",
+        "weapon": "mar-9",
+        "variant": null,
+        "method": "The Captain",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Siegefire",
+        "weapon": "cronen-squall",
+        "variant": null,
+        "method": "Into the Fight",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Counter Stand",
+        "weapon": "signal-50",
+        "variant": null,
+        "method": "Into the Fight",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Mire Hunter",
+        "weapon": "type-73",
+        "variant": null,
+        "method": "Deltabeast",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Coilfang",
+        "weapon": "iso-nightshade",
+        "variant": null,
+        "method": "Deltabeast",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Saja Fire",
+        "weapon": "hyeon-burst",
+        "variant": null,
+        "method": "Elite Squad: Gaksuli",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Soulmark",
+        "weapon": "type-73",
+        "variant": null,
+        "method": "Elite Squad: Gaksuli",
+        "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+        "date": "2026-11-17",
+        "status": "official"
+      }
+    ],
+    "valor": [
+      {
+        "name": "Forged Resolve",
+        "weapon": "m4",
+        "variant": null,
+        "method": "C.O.D.E. Valor Pack",
+        "url": "https://www.callofduty.com/valor",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Still Standing",
+        "weapon": "rezi-12",
+        "variant": null,
+        "method": "C.O.D.E. Valor Pack",
+        "url": "https://www.callofduty.com/valor",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Worth Fighting For",
+        "weapon": "fss-carbon-edge-1095",
+        "variant": null,
+        "method": "C.O.D.E. Valor Pack",
+        "url": "https://www.callofduty.com/valor",
+        "date": "2026-11-17",
+        "status": "official"
+      }
+    ],
+    "promotions": [
+      {
+        "name": "Beta Forged",
+        "weapon": "han-86",
+        "variant": null,
+        "method": "Beta Level 30; historical",
+        "url": "https://www.callofduty.com/blog/2026/08/call-of-duty-modern-warfare-4-next-early-access-beta-weekend-one",
+        "date": "2026-11-17",
+        "status": "official"
+      },
+      {
+        "name": "Inner Circuit",
+        "weapon": "m4",
+        "variant": null,
+        "method": "Digital preorder; Xbox visual treatment is same build",
+        "url": "https://www.callofduty.com/ca/en/blog/2026/09/call-of-duty-modern-warfare-4-preorder-bonus-inner-circuit-m4-blueprint",
+        "date": "2026-11-17",
+        "status": "official"
+      }
+    ],
+    "creator-reported": [
+      {
+        "name": "Ira Prima",
+        "weapon": "ppsh-41",
+        "variant": null,
+        "method": "Share Beta Combat Record; historical",
+        "url": "https://mw4.gg/blueprints/",
+        "date": "2026-11-17",
+        "status": "reported"
+      },
+      {
+        "name": "Code Blurple",
+        "weapon": "signal-50",
+        "variant": null,
+        "method": "Discord Nitro code; eligibility applies",
+        "url": "https://mw4.gg/blueprints/",
+        "date": "2026-11-17",
+        "status": "reported"
+      },
+      {
+        "name": "Green Light",
+        "weapon": "axion",
+        "variant": null,
+        "method": "Monster regional code promotion; count unverified",
+        "url": "https://mw4.gg/blueprints/",
+        "date": "2026-11-17",
+        "status": "reported"
+      },
+      {
+        "name": "Canned",
+        "weapon": "signal-50",
+        "variant": null,
+        "method": "Monster regional code promotion; count unverified",
+        "url": "https://mw4.gg/blueprints/",
+        "date": "2026-11-17",
+        "status": "reported"
+      },
+      {
+        "name": "F.N.G",
+        "weapon": "m4",
+        "variant": null,
+        "method": "Complete Boot Camp; historical; end-date conflict",
+        "url": "https://mw4.gg/blueprints/",
+        "date": "2026-11-17",
+        "status": "reported"
+      },
+      {
+        "name": "Collector",
+        "weapon": "x-58-nyx",
+        "variant": null,
+        "method": "100 Lieutenant kills",
+        "url": "https://mw4.gg/blueprints/",
+        "date": "2026-11-17",
+        "status": "reported"
+      },
+      {
+        "name": "Hajin Hunter",
+        "weapon": "oris-8-6",
+        "variant": null,
+        "method": "20 DMZ Operator prestiges",
+        "url": "https://mw4.gg/blueprints/",
+        "date": "2026-11-17",
+        "status": "reported"
+      },
+      {
+        "name": "Infernum",
+        "weapon": "signal-50",
+        "variant": null,
+        "method": "Steadfast bundle",
+        "url": "https://mw4.gg/blueprints/",
+        "date": "2026-11-17",
+        "status": "reported"
+      },
+      {
+        "name": "Glaive",
+        "weapon": "hyeon-burst",
+        "variant": null,
+        "method": "Steadfast bundle",
+        "url": "https://mw4.gg/blueprints/",
+        "date": "2026-11-17",
+        "status": "reported"
+      },
+      {
+        "name": "DRC Prototype",
+        "weapon": "vel-46",
+        "variant": null,
+        "method": "Warzone Zodiac Trackline rooftop drone orange-crate secret; author firsthand report",
+        "url": "https://www.windowscentral.com/gaming/call-of-duty/call-of-duty-warzones-new-zodiac-map-secret-challenges-calling-cards-weapon-blueprints-and-how-to-get-them",
+        "date": "2026-11-17",
+        "status": "reported"
+      }
+    ]
+  }
+}

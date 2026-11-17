@@ -124,7 +124,7 @@ if payload['dist/assets/build-identity.json'] != identity_bytes:
 actual_output = {name.removeprefix('dist/'): hashlib.sha256(data).hexdigest() for name, data in payload.items() if name != 'dist/assets/build-identity.json'}
 if actual_output != identity.get('outputFiles'):
     raise SystemExit('Build output missing, extra or changed; rebuild before packaging.')
-source_paths = [root / name for name in ('content/site.json', 'content/weapon-intel.json', 'package.json', 'package-lock.json')]
+source_paths = [root / name for name in ('content/site.json', 'content/weapon-intel.json', 'content/weapon-acquisition.json', 'package.json', 'package-lock.json')]
 if (root / 'content/codmunity-stats.json').is_file():
     source_paths.append(root / 'content/codmunity-stats.json')
 for name in ('src', 'schemas', 'scripts'):

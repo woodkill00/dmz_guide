@@ -55,3 +55,5 @@ The older planning documents describe proposals at their recorded date. The cons
 The [visual site map](site-map.md) inventories all built pages, companion destinations and their connections, with a separate runtime menu/tab audit.
 
 - [TroubleChute item reference](tcno-item-reference.md): sourced item details, loot sources, unlock references and local refresh/preview commands.
+
+- [Weapon acquisition checklist](../specs/088-weapon-acquisition/quickstart.md): researched weapons/blueprints, recorded manual extractions, source coverage and private backup recovery.

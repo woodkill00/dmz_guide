@@ -91,7 +91,7 @@ export function featurePages() {
           "loadouts",
           "Loadouts and tracking",
           "Build, compare and track your loadout in the existing workbench.",
-          ["armory-workbench"],
+          ["weapon-acquisition", "armory-workbench"],
         ) +
         section(
           "updates",

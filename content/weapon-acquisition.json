@@ -1,0 +1,1204 @@
+{
+  "version": 1,
+  "updatedAt": "2026-11-17",
+  "coverage": "35 released weapon identities (33 launch + 2 Season 1); 85 researched blueprint ownership entries. Named blueprint coverage is incomplete; announced bundles are not verified currently for sale. BlackCell labels distinguish documented variants, not an invented in-game name. Checked dates are research dates. Manual/camo applicability is unverified for melee. No looted LT loadout is treated as a permanent blueprint.",
+  "sources": [
+    {
+      "id": "source-1",
+      "title": "Official launch roster",
+      "url": "https://www.callofduty.com/patchnotes/2026/10/call-of-duty-modern-warfare-4-launch-patch-notes",
+      "date": "2026-11-17",
+      "status": "official"
+    },
+    {
+      "id": "source-2",
+      "title": "Official Season 1 Battle Pass, BlackCell and announced bundles",
+      "url": "https://www.callofduty.com/blog/2026/11/call-of-duty-modern-warfare-4-season-1-battle-pass-blackcell-store-bundles",
+      "date": "2026-11-17",
+      "status": "official"
+    },
+    {
+      "id": "source-3",
+      "title": "www.callofduty.com · acquisition reference",
+      "url": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-preorder-benefits-game-editions-details",
+      "date": "2026-11-17",
+      "status": "official"
+    },
+    {
+      "id": "source-4",
+      "title": "www.callofduty.com · acquisition reference",
+      "url": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-ready-for-launch-progression-prestige",
+      "date": "2026-11-17",
+      "status": "official"
+    },
+    {
+      "id": "source-5",
+      "title": "www.callofduty.com · acquisition reference",
+      "url": "https://www.callofduty.com/valor",
+      "date": "2026-11-17",
+      "status": "official"
+    },
+    {
+      "id": "source-6",
+      "title": "www.callofduty.com · acquisition reference",
+      "url": "https://www.callofduty.com/blog/2026/08/call-of-duty-modern-warfare-4-next-early-access-beta-weekend-one",
+      "date": "2026-11-17",
+      "status": "official"
+    },
+    {
+      "id": "source-7",
+      "title": "www.callofduty.com · acquisition reference",
+      "url": "https://www.callofduty.com/ca/en/blog/2026/09/call-of-duty-modern-warfare-4-preorder-bonus-inner-circuit-m4-blueprint",
+      "date": "2026-11-17",
+      "status": "official"
+    },
+    {
+      "id": "source-8",
+      "title": "mw4.gg · acquisition reference",
+      "url": "https://mw4.gg/blueprints/",
+      "date": "2026-11-17",
+      "status": "reported"
+    },
+    {
+      "id": "source-9",
+      "title": "www.windowscentral.com · acquisition reference",
+      "url": "https://www.windowscentral.com/gaming/call-of-duty/call-of-duty-warzones-new-zodiac-map-secret-challenges-calling-cards-weapon-blueprints-and-how-to-get-them",
+      "date": "2026-11-17",
+      "status": "reported"
+    }
+  ],
+  "weapons": [
+    {
+      "id": "han-86",
+      "name": "Han 86",
+      "category": "assault-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "m4",
+      "name": "M4",
+      "category": "assault-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "hyeon-burst",
+      "name": "Hyeon Burst",
+      "category": "assault-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "patriot-xmr",
+      "name": "Patriot XMR",
+      "category": "assault-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "kastov-762",
+      "name": "Kastov 762",
+      "category": "assault-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "oden",
+      "name": "Oden",
+      "category": "assault-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "axion",
+      "name": "Axion",
+      "category": "assault-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "cronen-squall",
+      "name": "Cronen Squall",
+      "category": "assault-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "iso-nightshade",
+      "name": "ISO Nightshade",
+      "category": "smg",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "vel-46",
+      "name": "VEL 46",
+      "category": "smg",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "wz-55-striga",
+      "name": "Wz.55 Striga",
+      "category": "smg",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "ppsh-41",
+      "name": "PPSh-41",
+      "category": "smg",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "x-58-nyx",
+      "name": "X-58 Nyx",
+      "category": "smg",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "rezi-12",
+      "name": "Rezi 12",
+      "category": "shotgun",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "warlord",
+      "name": "Warlord",
+      "category": "shotgun",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "finn-lmg",
+      "name": "FiNN LMG",
+      "category": "lmg",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "type-73",
+      "name": "Type 73",
+      "category": "lmg",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "apoc-338",
+      "name": "APOC-338",
+      "category": "lmg",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "mar-9",
+      "name": "MAR-9",
+      "category": "marksman-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "oris-8-6",
+      "name": "Oris 8.6",
+      "category": "marksman-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "mosin-nagant",
+      "name": "Mosin-Nagant",
+      "category": "marksman-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "kg-7-vulcan",
+      "name": "KG-7 Vulcan",
+      "category": "sniper-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "astaroth-57",
+      "name": "Astaroth .57",
+      "category": "sniper-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "signal-50",
+      "name": "Signal 50",
+      "category": "sniper-rifle",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "sang-9mm",
+      "name": "SANG 9mm",
+      "category": "pistol",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "krait-p68",
+      "name": "Krait P68",
+      "category": "pistol",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "50-gs",
+      "name": ".50 GS",
+      "category": "pistol",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "mojave-357",
+      "name": "Mojave .357",
+      "category": "pistol",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "pila",
+      "name": "PILA",
+      "category": "launcher",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "rpg-8",
+      "name": "RPG-8",
+      "category": "launcher",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "jokr",
+      "name": "JOKR",
+      "category": "launcher",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "pm-40-anvil",
+      "name": "PM-40 Anvil",
+      "category": "launcher",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "fss-carbon-edge-1095",
+      "name": "FSS Carbon Edge 1095",
+      "category": "melee",
+      "sourceIds": [
+        "source-1"
+      ]
+    },
+    {
+      "id": "cronen-osprey",
+      "name": "Cronen Osprey",
+      "category": "assault-rifle",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "csg-35",
+      "name": "CSG-35",
+      "category": "smg",
+      "sourceIds": [
+        "source-2"
+      ]
+    }
+  ],
+  "blueprints": [
+    {
+      "id": "blueprint-1",
+      "weapon": "kastov-762",
+      "name": "Voltspine",
+      "variant": "",
+      "method": "Vault Edition Signature Weapon Collection",
+      "sourceIds": [
+        "source-3"
+      ]
+    },
+    {
+      "id": "blueprint-2",
+      "weapon": "iso-nightshade",
+      "name": "La Sombra Venenosa",
+      "variant": "",
+      "method": "Vault Edition Signature Weapon Collection",
+      "sourceIds": [
+        "source-3"
+      ]
+    },
+    {
+      "id": "blueprint-3",
+      "weapon": "rezi-12",
+      "name": "Shattered Code",
+      "variant": "",
+      "method": "Vault Edition Signature Weapon Collection",
+      "sourceIds": [
+        "source-3"
+      ]
+    },
+    {
+      "id": "blueprint-4",
+      "weapon": "oris-8-6",
+      "name": "Volt-Edge",
+      "variant": "",
+      "method": "Vault Edition Signature Weapon Collection",
+      "sourceIds": [
+        "source-3"
+      ]
+    },
+    {
+      "id": "blueprint-5",
+      "weapon": "fss-carbon-edge-1095",
+      "name": "Sombra Besada",
+      "variant": "",
+      "method": "Vault Edition Signature Weapon Collection",
+      "sourceIds": [
+        "source-3"
+      ]
+    },
+    {
+      "id": "blueprint-6",
+      "weapon": "mosin-nagant",
+      "name": "The Vet",
+      "variant": "",
+      "method": "Regular Prestige 1 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-7",
+      "weapon": "mosin-nagant",
+      "name": "The Vet Prime",
+      "variant": "",
+      "method": "Classic Prestige 1 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-8",
+      "weapon": "ppsh-41",
+      "name": "Calm Resolve",
+      "variant": "",
+      "method": "Regular Prestige 2 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-9",
+      "weapon": "ppsh-41",
+      "name": "Trench Fiend",
+      "variant": "",
+      "method": "Classic Prestige 2 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-10",
+      "weapon": "finn-lmg",
+      "name": "Terminal",
+      "variant": "",
+      "method": "Regular Prestige 4 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-11",
+      "weapon": "finn-lmg",
+      "name": "Torn Up",
+      "variant": "",
+      "method": "Classic Prestige 4 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-12",
+      "weapon": "axion",
+      "name": "Ghosts Legend",
+      "variant": "",
+      "method": "Regular Prestige 6 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-13",
+      "weapon": "axion",
+      "name": "Ghosts Legend Prime",
+      "variant": "",
+      "method": "Classic Prestige 6 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-14",
+      "weapon": "m4",
+      "name": "141",
+      "variant": "",
+      "method": "Regular Prestige 8 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-15",
+      "weapon": "m4",
+      "name": "141 Prime",
+      "variant": "",
+      "method": "Classic Prestige 8 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-16",
+      "weapon": "sang-9mm",
+      "name": "Boksu",
+      "variant": "",
+      "method": "Regular Prestige 10 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-17",
+      "weapon": "sang-9mm",
+      "name": "Boksu Prime",
+      "variant": "",
+      "method": "Classic Prestige 10 final reward",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-18",
+      "weapon": "han-86",
+      "name": "Master Renegade",
+      "variant": "",
+      "method": "Prestige Master Level 90",
+      "sourceIds": [
+        "source-4"
+      ]
+    },
+    {
+      "id": "blueprint-19",
+      "weapon": "rezi-12",
+      "name": "Arachnivox",
+      "variant": "",
+      "method": "S1 BP:4",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-20",
+      "weapon": "kastov-762",
+      "name": "Guardian Best",
+      "variant": "",
+      "method": "S1 BP:5",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-21",
+      "weapon": "kastov-762",
+      "name": "Guardian Best",
+      "variant": "BlackCell",
+      "method": "S1 BlackCell:5",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-22",
+      "weapon": "type-73",
+      "name": "Cobweb",
+      "variant": "",
+      "method": "S1 BP:8",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-23",
+      "weapon": "fss-carbon-edge-1095",
+      "name": "Chelicerae",
+      "variant": "",
+      "method": "S1 BP:17",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-24",
+      "weapon": "patriot-xmr",
+      "name": "Demon Watch",
+      "variant": "",
+      "method": "S1 BP:21",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-25",
+      "weapon": "astaroth-57",
+      "name": "Special Delivery",
+      "variant": "",
+      "method": "S1 BP:25",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-26",
+      "weapon": "axion",
+      "name": "Prime Echo",
+      "variant": "",
+      "method": "S1 BP:29",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-27",
+      "weapon": "axion",
+      "name": "Prime Echo",
+      "variant": "BlackCell",
+      "method": "S1 BlackCell:29",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-28",
+      "weapon": "sang-9mm",
+      "name": "Cold Resin",
+      "variant": "",
+      "method": "S1 BP:38",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-29",
+      "weapon": "wz-55-striga",
+      "name": "Pointman",
+      "variant": "",
+      "method": "S1 BP:40",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-30",
+      "weapon": "apoc-338",
+      "name": "Brass Tax",
+      "variant": "",
+      "method": "S1 BP:41",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-31",
+      "weapon": "signal-50",
+      "name": "Vengeance",
+      "variant": "",
+      "method": "S1 BP:47",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-32",
+      "weapon": "kg-7-vulcan",
+      "name": "Highkeep",
+      "variant": "",
+      "method": "S1 BP:50",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-33",
+      "weapon": "kg-7-vulcan",
+      "name": "Highkeep",
+      "variant": "BlackCell",
+      "method": "S1 BlackCell:50",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-34",
+      "weapon": "han-86",
+      "name": "Competitive Spirit",
+      "variant": "",
+      "method": "S1 BP:55",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-35",
+      "weapon": "50-gs",
+      "name": "Fabled Beast",
+      "variant": "",
+      "method": "S1 BP:63",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-36",
+      "weapon": "iso-nightshade",
+      "name": "Ruin Fang",
+      "variant": "",
+      "method": "S1 BP:66",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-37",
+      "weapon": "iso-nightshade",
+      "name": "Ruin Fang",
+      "variant": "BlackCell",
+      "method": "S1 BlackCell:66",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-38",
+      "weapon": "warlord",
+      "name": "Devil’s Due",
+      "variant": "",
+      "method": "S1 BP:69",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-39",
+      "weapon": "csg-35",
+      "name": "Deathgrip",
+      "variant": "",
+      "method": "S1 BP:73",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-40",
+      "weapon": "csg-35",
+      "name": "Deathgrip",
+      "variant": "BlackCell",
+      "method": "S1 BlackCell:73",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-41",
+      "weapon": "mar-9",
+      "name": "Dirty Work",
+      "variant": "",
+      "method": "S1 BP:76",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-42",
+      "weapon": "cronen-squall",
+      "name": "Marked Ops",
+      "variant": "",
+      "method": "S1 BP:83",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-43",
+      "weapon": "cronen-osprey",
+      "name": "Kill Order",
+      "variant": "",
+      "method": "S1 BP:87",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-44",
+      "weapon": "cronen-osprey",
+      "name": "Kill Order",
+      "variant": "BlackCell",
+      "method": "S1 BlackCell:87",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-45",
+      "weapon": "oris-8-6",
+      "name": "Final Say",
+      "variant": "",
+      "method": "S1 BP:91",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-46",
+      "weapon": "ppsh-41",
+      "name": "Snakeskin",
+      "variant": "",
+      "method": "S1 BP:96",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-47",
+      "weapon": "mosin-nagant",
+      "name": "Bellum",
+      "variant": "",
+      "method": "S1 BP:100",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-48",
+      "weapon": "mosin-nagant",
+      "name": "Bellum",
+      "variant": "BlackCell",
+      "method": "S1 BlackCell:100",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-49",
+      "weapon": "finn-lmg",
+      "name": "Fortune’s Favor",
+      "variant": "",
+      "method": "S1 BP instant",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-50",
+      "weapon": "m4",
+      "name": "Perimeter Lance",
+      "variant": "",
+      "method": "S1 BlackCell instant",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-51",
+      "weapon": "m4",
+      "name": "Occultus",
+      "variant": "",
+      "method": "BlackCell challenge: 3,000 points; each DMZ enemy/operator kill awards 2 points",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-52",
+      "weapon": "m4",
+      "name": "Exitium",
+      "variant": "",
+      "method": "BlackCell challenge: 100 points; each successful DMZ exfil awards 20 points",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-53",
+      "weapon": "hyeon-burst",
+      "name": "Blue Viper",
+      "variant": "",
+      "method": "S1 paid BP completion",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-54",
+      "weapon": "cronen-osprey",
+      "name": "Vanish",
+      "variant": "",
+      "method": "Hollow Hunter Adaptive Camo",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-55",
+      "weapon": "kg-7-vulcan",
+      "name": "Low Profile",
+      "variant": "",
+      "method": "Hollow Hunter Adaptive Camo",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-56",
+      "weapon": "patriot-xmr",
+      "name": "Regalis",
+      "variant": "",
+      "method": "Bone Chiller II",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-57",
+      "weapon": "hyeon-burst",
+      "name": "Aurum",
+      "variant": "",
+      "method": "Bone Chiller II",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-58",
+      "weapon": "finn-lmg",
+      "name": "Auric",
+      "variant": "",
+      "method": "Bone Chiller II",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-59",
+      "weapon": "csg-35",
+      "name": "Wings of Reckoning",
+      "variant": "",
+      "method": "The Valkyrie",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-60",
+      "weapon": "m4",
+      "name": "Skyfall",
+      "variant": "",
+      "method": "The Valkyrie",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-61",
+      "weapon": "cronen-osprey",
+      "name": "Digital Drifter",
+      "variant": "",
+      "method": "Glitched State",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-62",
+      "weapon": "apoc-338",
+      "name": "Unplugger",
+      "variant": "",
+      "method": "Glitched State",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-63",
+      "weapon": "iso-nightshade",
+      "name": "Priced Out",
+      "variant": "",
+      "method": "The Captain",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-64",
+      "weapon": "mar-9",
+      "name": "Priceless",
+      "variant": "",
+      "method": "The Captain",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-65",
+      "weapon": "cronen-squall",
+      "name": "Siegefire",
+      "variant": "",
+      "method": "Into the Fight",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-66",
+      "weapon": "signal-50",
+      "name": "Counter Stand",
+      "variant": "",
+      "method": "Into the Fight",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-67",
+      "weapon": "type-73",
+      "name": "Mire Hunter",
+      "variant": "",
+      "method": "Deltabeast",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-68",
+      "weapon": "iso-nightshade",
+      "name": "Coilfang",
+      "variant": "",
+      "method": "Deltabeast",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-69",
+      "weapon": "hyeon-burst",
+      "name": "Saja Fire",
+      "variant": "",
+      "method": "Elite Squad: Gaksuli",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-70",
+      "weapon": "type-73",
+      "name": "Soulmark",
+      "variant": "",
+      "method": "Elite Squad: Gaksuli",
+      "sourceIds": [
+        "source-2"
+      ]
+    },
+    {
+      "id": "blueprint-71",
+      "weapon": "m4",
+      "name": "Forged Resolve",
+      "variant": "",
+      "method": "C.O.D.E. Valor Pack",
+      "sourceIds": [
+        "source-5"
+      ]
+    },
+    {
+      "id": "blueprint-72",
+      "weapon": "rezi-12",
+      "name": "Still Standing",
+      "variant": "",
+      "method": "C.O.D.E. Valor Pack",
+      "sourceIds": [
+        "source-5"
+      ]
+    },
+    {
+      "id": "blueprint-73",
+      "weapon": "fss-carbon-edge-1095",
+      "name": "Worth Fighting For",
+      "variant": "",
+      "method": "C.O.D.E. Valor Pack",
+      "sourceIds": [
+        "source-5"
+      ]
+    },
+    {
+      "id": "blueprint-74",
+      "weapon": "han-86",
+      "name": "Beta Forged",
+      "variant": "",
+      "method": "Beta Level 30; historical",
+      "sourceIds": [
+        "source-6"
+      ]
+    },
+    {
+      "id": "blueprint-75",
+      "weapon": "m4",
+      "name": "Inner Circuit",
+      "variant": "",
+      "method": "Digital preorder; Xbox visual treatment is same build",
+      "sourceIds": [
+        "source-7"
+      ]
+    },
+    {
+      "id": "blueprint-76",
+      "weapon": "ppsh-41",
+      "name": "Ira Prima",
+      "variant": "",
+      "method": "Share Beta Combat Record; historical",
+      "sourceIds": [
+        "source-8"
+      ]
+    },
+    {
+      "id": "blueprint-77",
+      "weapon": "signal-50",
+      "name": "Code Blurple",
+      "variant": "",
+      "method": "Discord Nitro code; eligibility applies",
+      "sourceIds": [
+        "source-8"
+      ]
+    },
+    {
+      "id": "blueprint-78",
+      "weapon": "axion",
+      "name": "Green Light",
+      "variant": "",
+      "method": "Monster regional code promotion; count unverified",
+      "sourceIds": [
+        "source-8"
+      ]
+    },
+    {
+      "id": "blueprint-79",
+      "weapon": "signal-50",
+      "name": "Canned",
+      "variant": "",
+      "method": "Monster regional code promotion; count unverified",
+      "sourceIds": [
+        "source-8"
+      ]
+    },
+    {
+      "id": "blueprint-80",
+      "weapon": "m4",
+      "name": "F.N.G",
+      "variant": "",
+      "method": "Complete Boot Camp; historical; end-date conflict",
+      "sourceIds": [
+        "source-8"
+      ]
+    },
+    {
+      "id": "blueprint-81",
+      "weapon": "x-58-nyx",
+      "name": "Collector",
+      "variant": "",
+      "method": "100 Lieutenant kills",
+      "sourceIds": [
+        "source-8"
+      ]
+    },
+    {
+      "id": "blueprint-82",
+      "weapon": "oris-8-6",
+      "name": "Hajin Hunter",
+      "variant": "",
+      "method": "20 DMZ Operator prestiges",
+      "sourceIds": [
+        "source-8"
+      ]
+    },
+    {
+      "id": "blueprint-83",
+      "weapon": "signal-50",
+      "name": "Infernum",
+      "variant": "",
+      "method": "Steadfast bundle",
+      "sourceIds": [
+        "source-8"
+      ]
+    },
+    {
+      "id": "blueprint-84",
+      "weapon": "hyeon-burst",
+      "name": "Glaive",
+      "variant": "",
+      "method": "Steadfast bundle",
+      "sourceIds": [
+        "source-8"
+      ]
+    },
+    {
+      "id": "blueprint-85",
+      "weapon": "vel-46",
+      "name": "DRC Prototype",
+      "variant": "",
+      "method": "Warzone Zodiac Trackline rooftop drone orange-crate secret; author firsthand report",
+      "sourceIds": [
+        "source-9"
+      ]
+    }
+  ]
+}

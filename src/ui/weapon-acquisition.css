@@ -1,0 +1,184 @@
+#weapon-acquisition {
+  --acq-gap: clamp(0.4rem, calc(0.3rem + 0.3vw), 0.7rem);
+  font-size: 0.9rem;
+  min-width: 0;
+}
+.acq-toolbar,
+.acq-record,
+.acq-count-form,
+.acq-recovery,
+.acq-custom form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--acq-gap);
+  margin-block: 0.6rem;
+}
+.acq-toolbar label {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+.acq-toolbar label:first-child {
+  flex-basis: 16rem;
+}
+#weapon-acquisition input,
+#weapon-acquisition select {
+  max-width: 100%;
+  min-width: 0;
+}
+.acq-toolbar input,
+.acq-toolbar select {
+  width: 100%;
+}
+.acq-group {
+  margin-block: 1rem;
+}
+.acq-group h2 {
+  font-size: 1.05rem;
+}
+.acq-weapon {
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  margin-block: 0.3rem;
+  overflow-wrap: anywhere;
+}
+.acq-weapon > summary {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(8rem, 1fr) minmax(9rem, 1fr) minmax(
+      8rem,
+      1fr
+    );
+  align-items: center;
+  gap: var(--acq-gap);
+  padding: 0.5rem;
+  cursor: pointer;
+  list-style: disclosure-closed;
+}
+.acq-weapon > summary::before {
+  content: "▸";
+  position: absolute;
+}
+.acq-weapon[open] > summary::before {
+  content: "▾";
+}
+.acq-art {
+  height: 2rem;
+  min-width: 0;
+  margin-inline-start: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.acq-art svg {
+  width: 100%;
+  height: 2rem;
+}
+.acq-art .gs-art-missing,
+.acq-art .gs-art-error {
+  font-size: 0.68rem;
+  text-align: center;
+}
+.acq-weapon > summary small,
+.acq-hint {
+  font-size: 0.78rem;
+}
+.acq-weapon-body {
+  padding: 0 0.65rem 0.5rem;
+}
+.acq-weapon fieldset {
+  min-width: 0;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+}
+.acq-record {
+  align-items: center;
+  justify-content: space-between;
+}
+.acq-record label,
+.acq-blueprint label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.acq-counter {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+#weapon-acquisition .acq-counter button {
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0.15rem 0.5rem;
+}
+.acq-counter output {
+  min-width: 7.2rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.acq-count-form label {
+  flex: 0 1 12rem;
+  min-width: 0;
+}
+.acq-count-form input {
+  width: 100%;
+}
+.acq-blueprint {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.7fr) minmax(0, 1fr);
+  gap: 0.5rem;
+  padding-block: 0.45rem;
+  border-top: 1px solid var(--line);
+}
+.acq-blueprint span {
+  font-size: 0.8rem;
+}
+.acq-recovery {
+  font-size: 0.8rem;
+}
+#weapon-acquisition button {
+  min-height: 2.75rem;
+  padding: 0.35rem 0.65rem;
+}
+#weapon-acquisition [hidden] {
+  display: none !important;
+}
+.acq-weapon[data-reached="true"] [data-acq-counter],
+.acq-weapon[data-reached="true"] [data-acq-goal] {
+  color: var(--lime);
+}
+.acq-help {
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  margin-block: 0.5rem;
+}
+.acq-custom {
+  margin-block: 0.6rem;
+}
+.acq-custom ul {
+  padding-inline-start: 1.3rem;
+}
+.acq-custom li {
+  padding-block: 0.3rem;
+}
+@media (max-width: 680px) {
+  .acq-weapon > summary {
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+  }
+  .acq-weapon > summary > span[data-acq-summary],
+  .acq-weapon > summary > small {
+    grid-column: 2;
+  }
+  .acq-blueprint {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .acq-record {
+    justify-content: start;
+  }
+  .acq-count-form > * {
+    flex: 1 1 8rem;
+  }
+  .acq-counter {
+    flex-wrap: wrap;
+  }
+}

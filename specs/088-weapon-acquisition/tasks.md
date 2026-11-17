@@ -1,0 +1,31 @@
+# Tasks — Weapon acquisition
+
+## Foundations
+- [x] T001 Validate sourced public acquisition catalog in src/content/weapon-acquisition.mjs and content/weapon-acquisition.json; research/record exact released identities, named variants, methods and evidence. tests/runtime/weapon-acquisition.test.mjs. FR-002,FR-005,FR-011.
+- [x] T002 Extend optional private manualExtractions validation in src/domain/armory-workspace.mjs; pure immutable mutation/projection in src/domain/weapon-acquisition.mjs with legacy, malformed/bounds, duplicate and preservation tests. FR-004,FR-006,FR-007.
+
+## US1 — Extraction checklist
+- [x] T003 Render focused page/class groups/independent details, counts, source notes and stable controls in src/ui/weapon-acquisition-page.mjs and src/ui/weapon-acquisition.css. Register scripts/build.mjs. FR-001,FR-003,FR-004,FR-005,FR-010.
+- [x] T004 Implement source-free read/CAS edits/counter correction/pending serialization and retained candidate export/retry/reload in src/client/weapon-acquisition.mjs. Respect draft and lifecycle ownership. tests/browser/weapon-acquisition.mjs. FR-004,FR-007,FR-008.
+
+## US2 — Blueprint catalog
+- [x] T005 Wire sourced blueprint ownership checkboxes/custom names/counts/search/filters, canonical normalized matching with distinct variants and existing name preservation. Domain/UI/controller files above. FR-002,FR-003,FR-006.
+- [x] T006 Test blueprint matching, manual count independence, private unknown/archived preservation and backup round trip in tests/runtime/weapon-acquisition.test.mjs and tests/browser/weapon-acquisition.mjs. FR-004,FR-005,FR-006,FR-007.
+
+## US3 — Integration and acceptance
+- [x] T007 Link focused route from feature-registry/main weapons hub/armory detail/dashboard; publish acquisition roster identities without inventing combat stats. Preserve old workbench mutation fields and show recorded counter on dashboard in src/domain/dashboard.mjs and src/client/dashboard.mjs. FR-001,FR-009.
+- [x] T008 Test tracker→workbench→dashboard persistence, dashboard return, actual save/reload, stale/quota/denied/invalid data, rapid interactions, expanded rows/scroll/focus/drafts and private backup recovery in tests/browser/weapon-acquisition.mjs. Integrate browser/engine runners. FR-007,FR-008,FR-009,SC-001–003.
+- [x] T009 Responsive320/390/768/1280/1920 and200%text, keyboard and dark/light axe; classic+modern and3engines; existing affected workbench/dashboard/navigation regressions. FR-003,FR-010,SC-004.
+- [x] T010 Full repository/runtime/build/format gates; docs/quickstart.md/docs/README.md usage/coverage/backup; acceptance.md exact receipts. FR-011,SC-005.
+- [x] T011 Independent analysis→artifact repair→analysis before implementation; reviewer-owned checklist. Final independent implementation/convergence→append gaps→fix/retest until no blockers. Prepare feature commit/PR with explicit087 dependency. All FR/SC.
+
+Dependencies: T001→T002→T003→T004, T005 integrates sourced list, T006 verifies both; T007 after contracts, then T008→T009→T010→T011 final. Serial integration; independent source research and review only. No concurrent production edits. First usable slice is persisted counters/manual list; complete blueprint integration and gates before claiming completion.
+
+Planning repair ownership: T001 includes scalar/aggregate bounds and adversarial rejected catalogs; T002/T006 include collision of final persisted blueprint keys (not merely name/variant tuples). T008 distinguishes confirmed storage commit from repaint failure and uses absolute retained candidate rather than replaying any increment. Selected known ownership writes cannot drop custom names.
+T007/T008 explicitly own Season1 focused deep-link fallback and real navigation tests: dashboard rows resolve to `/armory/acquisition/?weapon=<id>` and open validated row; no `/armory/<seasonal>/` dead links or invented combat pages. Invalid query ignored. Workbench treats unknown combat IDs as archived while preserving acquisition count/names.
+
+## Convergence additions
+- [x] T012 Register dashboard identity JSON through build emit (not untracked writeFile), add acquisition catalog to both JS build-source and Python package-source inventories, update source fixtures and verify actual packaging/reproducibility. scripts/build.mjs,scripts/build-identity.mjs,scripts/package-release.py,tests/runtime/build-identity.test.mjs,tests/test_release_reproducibility.py,tests/test_release_server.py. FR-011,SC-005. Actual package gate found inherited087 omitted generated output.
+- [x] T013 Pin quality/focus browser Linux runners to supported Ubuntu24.04 while preserving existing check names. .github/workflows/quality.yml,.github/workflows/focus-diagnostics.yml. Pinned Playwright1.58.2 explicitly rejects ubuntu26.04-x64 in current PR39 logs. No dependency/settings changes or skipped tests. FR-011,SC-005.
+- [x] T014 Reconcile new registry identity with current feature inventory (87), preserve historical071baseline83, assign DMZWeapons hub, and add required acquisition-source file to real-build snapshot fixtures. src/ui/workspace-shell.mjs,tests/runtime/ui-feature-coverage.test.mjs,tests/fixtures/ui-feature-coverage.json,tests/runtime/build-snapshot.test.mjs. FR-001,FR-011. Actual fullruntime caught omitted newdependency and deliberate registry admission.
+- [x] T015 Preserve newer focused search/filter intent on held success/failure and restore visible search when deleting a custom blueprint hides its row/removes the old button. Add browser reproductions and rerun all engines. Explicit UTF8-byte/node overflow fixtures complement scalar/semantic public admission. src/client/weapon-acquisition.mjs,tests/browser/weapon-acquisition.mjs,tests/runtime/weapon-acquisition.test.mjs. FR-008,FR-010,FR-011.

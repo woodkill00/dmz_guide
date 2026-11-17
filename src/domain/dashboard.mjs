@@ -215,6 +215,7 @@ export function weaponDashboard(acquisition, weapons) {
     name: known.get(id)?.name || "Unresolved weapon reference",
     resolved: known.has(id),
     manual: record.manual,
+    manualExtractions: record.manualExtractions ?? null,
     blueprints: [...record.blueprints],
     attachments: record.attachments.length,
   }));

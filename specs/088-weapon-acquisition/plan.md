@@ -1,0 +1,26 @@
+# Implementation plan — Weapon acquisition
+
+## Technical context
+Existing static ESM guide, Node22/24, no new packages/services. Feature088 is stacked on committed087 (`191332c`, PR39); do not drop pending dashboard work or alter its review receipts. Main private store remains `dmz-armory-local/workspace/main`. Focused route `/armory/acquisition/` avoids the comparison/evidence workbench dominating the checklist. Existing workbench stays available for backup and attachments.
+
+## Constitution check
+Player task first; local-only progress; keyboard/mobile/dark/light; no invented game facts or completeness; source facts separated from manual/private observations. No credentials, asset downloads, account connection, new dependencies or public write API. Existing image safety, private bounds and revision transactions retained. No exception.
+
+## Phase0 — Research
+Use official launch patchnotes for33 launch identities and official Season1 announcement for2 released identities. Named blueprint facts prefer publisher BattlePass/Vault/beta/rewards articles; add direct creator observations only as source-reported. Record snapshot coverage and excluded future/looted-only variants. WarSpoils goal is a reported manual-extraction challenge; source disagreement total3 versus3more remains visible. Purchases/manual ownership never infer extraction count. See research.md.
+
+## Phase1 — Architecture and contracts
+- `content/weapon-acquisition.json`: versioned static source facts; max256 weapons/512 named blueprints, source references/date/method, no remotely rendered artwork. Validated at build by `src/content/weapon-acquisition.mjs` and emitted as inert HTML payload. No runtime source network.
+- `src/domain/weapon-acquisition.mjs`: normalize named identity, project ownership/count/camo states and produce cloned validated edits. Optional private `manualExtractions` integer0..9999 on each acquisition entry. Absent means unknown; legacy values otherwise untouched. Existing `manual attachments blueprints` retained, no new store/schema version or implicit migration. Older strict clients reject expanded fields instead of silently deleting them.
+- `src/ui/weapon-acquisition-page.mjs` + dedicated CSS: static source-backed class lists, independent details, blueprint checkboxes, number correction and +/- buttons. Use existing local weapon figures only. No-JS retains sourced list/reference links.
+- `src/client/weapon-acquisition.mjs`: bounded existing-store reads then explicit saveArmory CAS, single pending edit, failed candidate export/retry/reload, clean-focus refresh with generation guards. Preserve existing row nodes, open state, focus, scroll and independent input drafts. Workbench `tracker-manual` spread edits already preserve optional metadata; confirm all mutation paths.
+- dashboard/build: publish acquisition roster IDs (incl Season1) in dashboard identities, optional recorded-count text, acquisition deep links. Shared feature registry/main weapons hub/weapon detail discoverability; native linked route.
+
+## Risks and alternatives
+A separate extraction store would fragment backup/parity; rejected. Do not auto-convert checked ownership into1 extraction because purchases exist. Do not populate combatdb Season1 statistics from acquisition-only facts. Use independent acquisition roster with own source identity; existing workbench may call those references archived but retains them until combat roster grows. Use canonical name+documented variant label ownership keys for explicit variants; no fuzzy weapon merging. Failed write retry remains original revision; stale state requires export/reload rather than overwrite. No automatic delta replay following a confirmed commit.
+
+## Verification
+Unit tests validate real catalog, duplicate identities/provenance, unsupported fields/bounds, legacy unknown, counter sequence and immutable edits, preserved builds/observations/custom/archive. Browser fixtures cover saved reload/workbench/dashboard parity, search/classes/expand, case-normalized checkbox ownership, correction/decrement, keyboard, stable click/scroll, stale/quota/denied/invalid stores, returning focus and drafts. Run320/390/768/1280/1920 +200%text, all3 engines, dark/light axe, classic/modern build, checker/full runtime/format and affected workbench/dashboard/nav regressions. Independent planning analysis before implementation and convergence review after; append found gaps to tasks.
+
+## Convergence adjustments
+Actual package validation revealed087 dashboard identityJSON was written outside the emitted-output inventory; use emit and add088 catalog to both source-inventory implementations. Packaging/reproducibility are required beyond a successful localbuild. Current GitHub ubuntu-latest image is26.04 and pinnedPlaywright1.58.2 refuses it; pin existing quality/focus jobs to24.04 with unchanged checklabels, rather than change packages or skip browser tests. T012–T013 own these concrete delivery blockers and matching evidence.

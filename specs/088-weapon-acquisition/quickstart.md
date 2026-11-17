@@ -1,0 +1,6 @@
+# Quickstart
+Open `/armory/acquisition/`. Search a weapon or blueprint; choose a class/status. Expand a weapon to see known blueprint checkboxes and add an unlisted owned name. Mark Manual owned separately from the manual-extraction counter. Use +/- or enter and Save a corrected count. Three means the recorded camo goal is reached; this is no game-account verification. Unknown stays Not recorded until you enter a number.
+
+Changes use the existing private armory. Workbench Backups exports/restores all counters, names, builds and private evidence. Export before changing browser/origin. Failed writes retain a candidate for Export/Retry; stale revisions require Reload saved after exporting. There is no automatic game sync or source fetch. A blueprint source is a snapshot acquisition reference, not a current store-availability guarantee.
+
+Maintainers update `content/weapon-acquisition.json` with exact weapon IDs, distinct named variants, method, source URL/date and review coverage. Build validates data before publishing. Do not infer combat stats or import looted LT instances as permanent blueprints. Re-run acquisition validator/runtime/browser regressions and reviewer convergence after changes.

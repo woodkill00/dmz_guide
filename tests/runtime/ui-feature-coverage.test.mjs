@@ -47,7 +47,7 @@ test("Current static registry admission matches its captured inventory; browser 
   assert.equal(new Set(features.map((f) => f.id)).size, features.length);
   assert.equal(
     features.length,
-    86,
+    87,
     "Rebaseline the owning registry contract deliberately",
   );
   assert.equal(snapshot.count, 83, "Keep the 071 historical baseline intact");
@@ -97,7 +97,12 @@ test("071 canonical hub and ambiguous feature labels preserve distinct owners", 
     "field-desk",
   ])
     assert.equal(featureHub(id), "DMZ FOB", id);
-  for (const id of ["armory", "armory-workbench", "weapon-updates"])
+  for (const id of [
+    "armory",
+    "armory-workbench",
+    "weapon-updates",
+    "weapon-acquisition",
+  ])
     assert.equal(featureHub(id), "DMZ Weapons", id);
   const lookup = (id) => features.find((f) => f.id === id);
   assert.notEqual(

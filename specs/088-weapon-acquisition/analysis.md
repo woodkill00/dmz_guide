@@ -1,0 +1,10 @@
+# Analysis — Weapon acquisition
+
+Read-only consistency review2026-11-17:11FR/5SC mapped to T001–T011, no orphan story or task. Independent planning identified ACQ01 scalar/aggregate bounds,ACQ02 final-key collisions andACQ03 missingSeason1 combat destinations. Owning data-model/contracts/tasks repaired; rereview found no remaining blocking design inconsistency. Source admission remained a gate until independent research85named ownership rows and source metadata were delivered; no inaccessible FinalExfil data is admitted. See reviewer-owned checklist for final disposition.
+
+FR001:T003,T007; FR002:T001,T005; FR003:T003,T005,T009; FR004:T002,T004,T006; FR005:T001,T003,T006; FR006:T002,T005,T006; FR007:T002,T004,T006,T008; FR008:T004,T008; FR009:T007,T008; FR010:T003,T009; FR011:T001,T010. SC001:T001,T003,T005,T008; SC002:T002,T006,T008; SC003:T004,T006,T008; SC004:T009; SC005:T010,T011.
+
+No constitution exception. Plan distinguishes source facts, recorded ownership and extracted counts. Independent review is evidence quality, not approval of every current storefront offer. Scope includes focused acquisition destination and preserved workbench/dashboard parity; no statistics expansion.
+
+## Final convergence
+All11 functional requirements and5 success criteria have implemented/tested owners across15 completed tasks. T012 repairs measured output/source inventory; T013 pins supported Linux images without changing checklabels or skipping steps; T014 explicitly admits registry87 while preserving historical071 baseline83; T015 covers newer focus intent, filtered removal, WebKit action origin and bounded adverse data. No further unbuilt task identified after these repairs. Independent reviewer closed the scoped local implementation checklist with no remaining P1/P2, distinguishing directly inspected logs/source/visuals from parent-run engine/build/package receipts. No constitution exception. Remote CI on the pushed feature head, pending087 integration and merge remain separate gates.

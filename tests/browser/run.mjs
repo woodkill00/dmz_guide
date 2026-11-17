@@ -482,6 +482,7 @@ for (const script of [
   "mission-coverage.mjs",
   "mission-directory.mjs",
   "dashboard-run.mjs",
+  "weapon-acquisition-run.mjs",
   "mission-encounter.mjs",
   "run-review.mjs",
 ])

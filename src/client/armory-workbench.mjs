@@ -1,4 +1,5 @@
 import "./quick-tracker.mjs";
+import { ownsBlueprint } from "../domain/weapon-acquisition.mjs";
 import {
   emptyArmory,
   validateArmory,
@@ -797,10 +798,7 @@ $("#blueprint-form").addEventListener("submit", async (event) => {
   try {
     await mutate((v) => {
       const entry = structuredClone(tracked());
-      if (
-        !entry.blueprints.some((b) => b.toLowerCase() === value.toLowerCase())
-      )
-        entry.blueprints.push(value);
+      if (!ownsBlueprint(entry, value)) entry.blueprints.push(value);
       v.acquisition[weapon] = entry;
     });
     input.value = "";

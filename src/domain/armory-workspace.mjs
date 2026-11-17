@@ -212,7 +212,18 @@ export function validateArmory(workspace) {
   );
   for (const [weapon, v] of Object.entries(workspace.acquisition)) {
     id(weapon);
-    exact(v, "manual attachments blueprints");
+    exact(
+      v,
+      "manual attachments blueprints" +
+        (Object.hasOwn(v, "manualExtractions") ? " manualExtractions" : ""),
+    );
+    if (Object.hasOwn(v, "manualExtractions"))
+      assert(
+        Number.isSafeInteger(v.manualExtractions) &&
+          v.manualExtractions >= 0 &&
+          v.manualExtractions <= 9999,
+        "Invalid manual extraction count",
+      );
     assert(typeof v.manual === "boolean", "Invalid manual tracker");
     list(v.attachments, 2000);
     v.attachments.forEach(id);

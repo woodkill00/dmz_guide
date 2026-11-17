@@ -90,3 +90,10 @@ The existing focused planner on a **legacy v1 content pack** retains its histori
 
 
 For grouped stock editing, direct recipe/mission/upgrade links and the focused Upgrades page, see [Inventory and upgrades](inventory-and-upgrades.md).
+
+## Weapon acquisition and War Spoils
+Open [Weapon blueprints & acquisition](http://127.0.0.1:4173/armory/acquisition/) from DMZ Weapons, the dashboard or All features. Expand a weapon to mark **Manual owned**, record **manual extractions** with +/− or a corrected count, and check named blueprints. The roster includes 35 released identities and 85 researched blueprint entries as of 2026-11-17; blueprint/store coverage is incomplete and reported references are labelled. Source methods may describe historical or announced rewards.
+
+War Spoils uses a **reported three-Weapon-Manual extraction goal**, not three extracted copies of the gun. Ownership and counters remain separate: a purchased unlock does not record an extraction, and an old checked manual has an unknown count until you enter it. Three records the goal in this tracker; it does not verify the game award. Knife applicability remains unverified. Custom owned names stay available for unlisted blueprints; matching ignores case, repeated spaces and typographic apostrophes.
+
+Progress uses the existing private armory. Export it here or use **Armory backups & recovery** to preview/restore it with the workbench. A stale/quota save retains an exact unsaved candidate for export/retry; export before reload if needed. Counts, names, builds and evidence survive the same armory backup. Browser/origin changes do not synchronize automatically. Maintainer sources and update rules are in [feature088 quickstart](../specs/088-weapon-acquisition/quickstart.md).

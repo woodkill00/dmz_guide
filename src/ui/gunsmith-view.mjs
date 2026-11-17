@@ -14,7 +14,7 @@ function rail() {
     ["/armory/", "Weapon roster", "≡"],
     ["/armory/workbench/#builder", "Loadout builder", "⌘"],
     ["/armory/workbench/#compare", "Compare weapons", "⇄"],
-    ["/armory/workbench/#acquisition", "Acquisition tracker", "✓"],
+    ["/armory/acquisition/", "Acquisition tracker", "✓"],
     ["/armory/updates/", "Weapon updates", "↻"],
   ]
     .map(

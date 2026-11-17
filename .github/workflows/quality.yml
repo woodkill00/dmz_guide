@@ -16,7 +16,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+        include:
+          - os: ubuntu-latest
+            runner: ubuntu-24.04
+          - os: windows-latest
+            runner: windows-latest
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -49,7 +54,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+        include:
+          - os: ubuntu-latest
+            runner: ubuntu-24.04
+          - os: windows-latest
+            runner: windows-latest
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -133,7 +143,7 @@ jobs:
 
   runtime-compatibility:
     name: runtime-compatibility (Ubuntu, Node 24)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -152,7 +162,7 @@ jobs:
 
   browser-engines:
     name: Firefox and WebKit smoke (Ubuntu)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 55
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1

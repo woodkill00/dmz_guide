@@ -153,6 +153,13 @@ const rows = [
     "/armory/workbench/",
     "Compare and save weapon builds",
   ],
+  [
+    "weapon-acquisition",
+    "Weapon blueprints & acquisition",
+    "Track",
+    "/armory/acquisition/",
+    "Manual ownership, extracted-manual camo progress and sourced blueprint checklists",
+  ],
   ["guides", "Guides", "Reference", "/guides/", "Field manual"],
   [
     "weapon-updates",

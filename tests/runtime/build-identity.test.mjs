@@ -37,6 +37,7 @@ test("static source changes are detected and missing Git is honestly unknown", a
     for (const name of [
       "content/site.json",
       "content/weapon-intel.json",
+      "content/weapon-acquisition.json",
       "package.json",
       "package-lock.json",
       "schemas/pack.schema.json",
@@ -47,6 +48,11 @@ test("static source changes are detected and missing Git is honestly unknown", a
     await writeFile(join(root, "src/test.mjs"), "changed");
     const after = await captureBuildSources(root);
     assert.notDeepEqual(first, after);
+    await writeFile(
+      join(root, "content/weapon-acquisition.json"),
+      '{"changed":true}',
+    );
+    assert.notDeepEqual(after, await captureBuildSources(root));
     assert.deepEqual(await describeGit(root), {
       revision: null,
       dirty: "unknown",
@@ -63,6 +69,7 @@ test("generated Python caches are excluded from source evidence", async () => {
     for (const name of [
       "content/site.json",
       "content/weapon-intel.json",
+      "content/weapon-acquisition.json",
       "package.json",
       "package-lock.json",
       "schemas/pack.schema.json",

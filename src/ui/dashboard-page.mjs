@@ -20,7 +20,7 @@ export const dashboardDestinations = {
   needed: "/quick-collect/",
   upgrades: "/upgrades/",
   orders: "/missions/",
-  weapons: "/armory/workbench/",
+  weapons: "/armory/acquisition/",
   recipes: "/inventory/",
 };
 export function dashboardFacts(row) {
