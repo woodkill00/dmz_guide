@@ -191,6 +191,8 @@ export async function runWeaponAcquisitionTests({
       await count(page, id, 3);
     }
     await page.goto(base + "/");
+    await page.locator('[data-dash-more="weapons"]').waitFor();
+    await page.locator('[data-dash-more="weapons"]').click();
     await page.waitForFunction(() =>
       document
         .querySelector("#dashboard-weapons")
@@ -198,13 +200,15 @@ export async function runWeaponAcquisitionTests({
     );
     assert.match(
       await page.locator("#dashboard-weapons").innerText(),
-      /3 \/ 3 manual extractions/,
+      /3 \/ 3 recorded/,
     );
     for (const id of ["csg-35", "cronen-osprey"]) {
       await page.locator(`#dashboard-weapons a[href*="weapon=${id}"]`).click();
       await ready(page);
       assert(await page.locator("#weapon-" + id).evaluate((el) => el.open));
       await page.goto(base + "/");
+      await page.locator('[data-dash-more="weapons"]').waitFor();
+      await page.locator('[data-dash-more="weapons"]').click();
       await page.waitForFunction(() =>
         document
           .querySelector("#dashboard-weapons")

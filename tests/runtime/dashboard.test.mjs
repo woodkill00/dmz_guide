@@ -114,8 +114,68 @@ test("087 blueprint ownership follows printing upgrades; weapon names do not inv
     [{ id: "m4", name: "M4" }],
   );
   assert.equal(rows[0].name, "M4");
-  assert.equal(rows[1].resolved, false);
-  assert(!("missing" in rows[0]));
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].manualExtractions, null);
+  assert.equal(rows[0].remaining, 3);
+  assert.equal(rows[0].unrecorded, true);
+  assert(!("blueprints" in rows[0]));
+});
+
+test("088 dashboard manual goals include unsaved weapons, preserve unknowns and exclude only completed goals", () => {
+  const acquired = {
+    one: {
+      manual: false,
+      manualExtractions: 1,
+      blueprints: ["Private name"],
+      attachments: [],
+    },
+    done: {
+      manual: true,
+      manualExtractions: 4,
+      blueprints: [],
+      attachments: [],
+    },
+    legacy: { manual: true, blueprints: [], attachments: [] },
+    zero: {
+      manual: true,
+      manualExtractions: 0,
+      blueprints: [],
+      attachments: [],
+    },
+    unchecked: {
+      manual: false,
+      manualExtractions: 3,
+      blueprints: [],
+      attachments: [],
+    },
+    retired: {
+      manual: false,
+      manualExtractions: 0,
+      blueprints: [],
+      attachments: [],
+    },
+  };
+  const original = JSON.stringify(acquired),
+    weapons = ["one", "done", "legacy", "zero", "unchecked", "unsaved"].map(
+      (id) => ({ id, name: id }),
+    );
+  const rows = weaponDashboard(acquired, weapons),
+    byId = Object.fromEntries(rows.map((r) => [r.id, r]));
+  assert.equal(byId.one.remaining, 2);
+  assert.equal(byId.done.remaining, 0);
+  assert.equal(byId.done.outstanding, false);
+  assert.equal(byId.legacy.unrecorded, true);
+  assert.equal(byId.legacy.outstanding, true);
+  assert.equal(byId.zero.remaining, 3);
+  assert.equal(byId.zero.unrecorded, false);
+  assert.equal(byId.unchecked.remaining, 0);
+  assert.equal(byId.unchecked.outstanding, true);
+  assert.equal(byId.unsaved.remaining, 3);
+  assert.equal(byId.unsaved.unrecorded, true);
+  assert(!byId.retired);
+  assert.equal(JSON.stringify(acquired), original);
+  assert.equal(weaponDashboard(undefined, weapons).length, 6);
+  assert.deepEqual(weaponDashboard(acquired, []), []);
 });
 test("087 successful commit followed by failed verification never permits delta replay", async () => {
   const p = newProfile(pack),

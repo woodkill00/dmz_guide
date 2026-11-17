@@ -24,7 +24,7 @@ export const dashboardTitles = {
   needed: "Other outstanding items",
   upgrades: "Upgrades",
   orders: "Orders · Hajin & X01",
-  weapons: "Weapon blueprints & acquisition",
+  weapons: "Weapons",
   recipes: "Item recipes & blueprints",
 };
 export const dashboardLink = (path, packId) =>
@@ -209,14 +209,23 @@ export function buildWindow(model, { expanded = false, page = 0 } = {}) {
 }
 
 export function weaponDashboard(acquisition, weapons) {
-  const known = new Map(weapons.map((w) => [w.id, w]));
-  return Object.entries(acquisition || {}).map(([id, record]) => ({
-    id,
-    name: known.get(id)?.name || "Unresolved weapon reference",
-    resolved: known.has(id),
-    manual: record.manual,
-    manualExtractions: record.manualExtractions ?? null,
-    blueprints: [...record.blueprints],
-    attachments: record.attachments.length,
-  }));
+  return weapons
+    .map(({ id, name }) => {
+      const record = acquisition?.[id],
+        count = record?.manualExtractions ?? null;
+      const manual = record?.manual ?? false;
+      return {
+        id,
+        name,
+        manual,
+        manualExtractions: count,
+        remaining: Math.max(0, 3 - (count ?? 0)),
+        unrecorded: count === null,
+        outstanding: !manual || count === null || count < 3,
+      };
+    })
+    .sort(
+      (a, b) =>
+        Number(a.manual) - Number(b.manual) || a.name.localeCompare(b.name),
+    );
 }

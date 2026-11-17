@@ -237,6 +237,7 @@ export async function runDashboardTests({
         manual: true,
         attachments: [],
         blueprints: ["Synthetic saved blueprint"],
+        manualExtractions: 1,
       },
     };
     await saveArmory(armory, 0);
@@ -250,10 +251,17 @@ export async function runDashboardTests({
         ?.textContent.includes("revision " + revision),
     parity.revision,
   );
+  await page.locator('#dashboard-weapons [data-dash-more="weapons"]').waitFor();
+  await page.locator('[data-dash-more="weapons"]').click();
   await page
-    .locator("#dashboard-weapons")
-    .filter({ hasText: "Synthetic saved blueprint" })
+    .locator('[data-dashboard-manual="m4"]')
+    .filter({ hasText: "2 more manual extractions" })
     .waitFor();
+  assert(
+    !(await page.locator("#dashboard-weapons").innerText()).includes(
+      "Synthetic saved blueprint",
+    ),
+  );
   assert.match(await page.locator("#dashboard-orders").innerText(), /1\/66/);
   assert.match(await page.locator("#dashboard-recipes").innerText(), /1\/116/);
   const upgradeLink = page
@@ -325,6 +333,153 @@ export async function runDashboardTests({
   await runDashboardStartupTests({ browser, base });
   await runDashboardOverlayTests({ browser, base });
   await runDashboardModuleFailureTests({ browser, base });
+  await runDashboardManualTests({ browser, base });
+}
+
+async function runDashboardManualTests({ browser, base }) {
+  const context = await browser.newContext(),
+    page = await context.newPage();
+  try {
+    await page.goto(base + "/");
+    await page.locator("[data-dashboard-manual]").first().waitFor();
+    const heading = page.locator("#dashboard-weapons h2 a");
+    assert.equal(await heading.innerText(), "Weapons");
+    assert.equal(await heading.getAttribute("href"), "/dmz-weapons/");
+    await heading.click();
+    await page.waitForURL("**/dmz-weapons/");
+    await page
+      .getByRole("heading", { name: "DMZ Weapons", level: 1 })
+      .waitFor({ state: "visible" });
+    await page.goto(base + "/");
+    await page.locator("[data-dashboard-manual]").first().waitFor();
+    assert.match(
+      await page.locator("#dashboard-weapons").innerText(),
+      /3 to record/,
+    );
+    await page.evaluate(async () => {
+      const { emptyArmory } = await import(
+        "/assets/src/domain/armory-workspace.mjs"
+      );
+      const { saveArmory } = await import(
+        "/assets/src/storage/armory-store.mjs"
+      );
+      const weapons = await (
+          await fetch("/assets/content/dashboard-weapons.json")
+        ).json(),
+        value = emptyArmory();
+      for (const w of weapons)
+        value.acquisition[w.id] = {
+          manual: true,
+          manualExtractions: 3,
+          blueprints: ["Synthetic must not show"],
+          attachments: [],
+        };
+      value.acquisition.m4.manual = false;
+      value.acquisition.m4.manualExtractions = 1;
+      value.acquisition["han-86"].manualExtractions = 2;
+      delete value.acquisition["csg-35"].manualExtractions;
+      value.acquisition["cronen-osprey"].manual = false;
+      value.acquisition.retired = {
+        manual: false,
+        manualExtractions: 0,
+        blueprints: [],
+        attachments: [],
+      };
+      await saveArmory(value, 0);
+    });
+    await page.locator("#hub-refresh").click();
+    await page.waitForFunction(
+      () => document.querySelectorAll("[data-dashboard-manual]").length === 4,
+    );
+    assert.match(
+      await page.locator('[data-dashboard-manual="m4"]').innerText(),
+      /2 more manual extractions/,
+    );
+    assert.match(
+      await page.locator('[data-dashboard-manual="han-86"]').innerText(),
+      /1 more manual extraction/,
+    );
+    assert.match(
+      await page.locator('[data-dashboard-manual="csg-35"]').innerText(),
+      /3 to record.*not entered/,
+    );
+    assert.match(
+      await page.locator('[data-dashboard-manual="cronen-osprey"]').innerText(),
+      /0 more manual extractions/,
+    );
+    assert.equal(
+      await page
+        .locator(
+          '[data-dashboard-manual="axion"],[data-dashboard-manual="retired"]',
+        )
+        .count(),
+      0,
+    );
+    assert(
+      !(await page.locator("#dashboard-weapons").innerText()).includes(
+        "Synthetic must not show",
+      ),
+    );
+    await page.evaluate(async () => {
+      const { readArmory, saveArmory } = await import(
+        "/assets/src/storage/armory-store.mjs"
+      );
+      const { value } = await readArmory();
+      for (const id of ["m4", "han-86", "csg-35", "cronen-osprey"]) {
+        value.acquisition[id].manual = true;
+        value.acquisition[id].manualExtractions = 3;
+      }
+      await saveArmory(value, value.revision);
+    });
+    await page.locator("#hub-refresh").click();
+    await page
+      .locator("#dashboard-weapons")
+      .filter({ hasText: "All listed manuals marked collected" })
+      .waitFor();
+    assert.equal(await page.locator("[data-dashboard-manual]").count(), 0);
+    console.log(
+      "088 Weapons dashboard: missing/legacy/remaining/complete/absent and heading navigation PASS",
+    );
+  } finally {
+    await context.close();
+  }
+  const empty = await browser.newContext(),
+    emptyPage = await empty.newPage();
+  try {
+    await empty.route("**/assets/content/dashboard-weapons.json", (r) =>
+      r.fulfill({ contentType: "application/json", body: "[]" }),
+    );
+    await emptyPage.goto(base + "/");
+    await emptyPage
+      .locator("#dashboard-weapons")
+      .filter({ hasText: "Weapon list unavailable" })
+      .waitFor();
+    assert(
+      !(await emptyPage.locator("#dashboard-weapons").innerText()).includes(
+        "All listed manuals",
+      ),
+    );
+  } finally {
+    await empty.close();
+  }
+  const denied = await browser.newContext();
+  await denied.addInitScript(() =>
+    Object.defineProperty(window, "indexedDB", { value: undefined }),
+  );
+  const deniedPage = await denied.newPage();
+  try {
+    await deniedPage.goto(base + "/");
+    await deniedPage
+      .locator("#dashboard-weapons")
+      .filter({ hasText: "Armory unavailable" })
+      .waitFor();
+    assert.equal(
+      await deniedPage.locator("[data-dashboard-manual]").count(),
+      0,
+    );
+  } finally {
+    await denied.close();
+  }
 }
 
 async function runDashboardModuleFailureTests({ browser, base }) {

@@ -216,15 +216,19 @@ export async function mountDashboard() {
       }
     }
     const weaponRoot = $('[data-dash-content="weapons"]');
-    if (armoryState !== "ready")
-      weaponRoot.innerHTML = `<p>${armoryState === "loading" ? "Reading existing armory…" : armoryState === "absent" ? "No saved armory yet." : "Armory unavailable. Other records remain available."}</p><a href="/armory/acquisition/">Open acquisition tracker</a>`;
+    if (!["ready", "absent"].includes(armoryState))
+      weaponRoot.innerHTML = `<p>${armoryState === "loading" ? "Reading existing armory…" : "Armory unavailable. Other records remain available."}</p><a href="/armory/acquisition/">Open manual tracker</a>`;
+    else if (!weapons.length)
+      weaponRoot.innerHTML =
+        '<p>Weapon list unavailable. Open the manual tracker to review your records.</p><a href="/armory/acquisition/">Open manual tracker</a>';
     else {
-      const list = weaponDashboard(armory.acquisition, weapons);
-      weaponRoot.innerHTML = `<p>${list.length} recorded weapons · ${list.reduce((n, r) => n + r.blueprints.length, 0)} blueprint names owned. Full missing-blueprint coverage is unknown.</p><ul class="dash-progress-list">${list
+      const roster = weaponDashboard(armory?.acquisition, weapons);
+      const list = roster.filter((r) => r.outstanding);
+      weaponRoot.innerHTML = `<p>${list.length ? `${roster.filter((r) => !r.manual).length} manuals not marked collected · ${list.length} weapon manual goals to track` : "All listed manuals marked collected with 3+ extractions recorded."}</p><ul class="dash-progress-list">${list
         .slice(0, expanded.weapons ? 50 : 5)
         .map(
           (r) =>
-            `<li><div>${r.resolved ? `<a href="/armory/acquisition/?weapon=${encodeURIComponent(r.id)}#weapon-${encodeURIComponent(r.id)}">${e(r.name)}</a>` : e(r.name)}<p>${r.blueprints.length ? e(r.blueprints.join(", ")) : "No blueprint names recorded"}</p></div><span>${r.manual ? "Manual found" : "Manual not marked"} · ${r.manualExtractions == null ? "Extractions not recorded" : `${r.manualExtractions} / 3 manual extractions`} · ${r.attachments} attachments recorded</span></li>`,
+            `<li data-dashboard-manual="${e(r.id)}"><div><a href="/armory/acquisition/?weapon=${encodeURIComponent(r.id)}#weapon-${encodeURIComponent(r.id)}">${e(r.name)}</a><p>${r.manual ? "Manual collected" : "Manual not marked collected"}</p></div><span>${r.unrecorded ? "<strong>3</strong> to record · extraction count not entered" : `<strong>${r.remaining}</strong> more manual extraction${r.remaining === 1 ? "" : "s"} · ${r.manualExtractions} / 3 recorded`}</span></li>`,
         )
         .join("")}</ul>${list.length > 5 ? expandButton("weapons") : ""}`;
     }
