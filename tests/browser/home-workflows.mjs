@@ -37,8 +37,9 @@ export async function runHomeWorkflowTests({ browser, base }) {
       );
     });
     assert.equal(empty, undefined);
+    await page.goto(base + "/features/");
     await page.locator('[data-pin-feature="upgrades"]').click();
-    await page.reload();
+    await page.goto(base + "/");
     await page.locator('#hub-pins a[href="/upgrades/"]').waitFor();
     await page.locator('#hub-pins a[href="/upgrades/"]').click();
     await ready();
@@ -105,14 +106,13 @@ export async function runHomeWorkflowTests({ browser, base }) {
     await page.waitForFunction(() =>
       document.querySelector("#hub-progress").textContent.includes("1/28"),
     );
-    await page.locator("#hub-next-action a").waitFor();
+    await page.locator('[data-dash-view-all="needed"]').waitFor();
     assert.match(
-      await page.locator("#hub-next-action a").getAttribute("href"),
+      await page.locator('[data-dash-view-all="needed"]').getAttribute("href"),
       /pack=observed%3Aupgrade-review-20261026/,
     );
-    assert.match(
-      await page.locator("#hub-next-action").innerText(),
-      /collection|need/i,
+    assert(
+      (await page.locator("#dashboard-needed [data-dash-item]").count()) > 0,
     );
     assert.match(await page.locator("#hub-continue").innerText(), /Upgrades/);
     await page.waitForLoadState("networkidle");

@@ -1,0 +1,336 @@
+.dash-toolbar,
+.dash-section-links,
+.dash-summary,
+.dash-section-footer,
+.dash-section > header,
+.dash-detail-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+.dash-quick-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin-block: 0.3rem 0.65rem;
+  font-size: 0.8rem;
+}
+.dash-quick-tools a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0.2rem 0.3rem;
+}
+.dash-toolbar label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1 1 18rem;
+  /* Safari's native select can retain its wide internal text box after resize. */
+  overflow: hidden;
+  padding: 0.25rem;
+}
+.dash-toolbar select {
+  width: min(100%, 28rem);
+  min-width: 0;
+}
+.dash-summary {
+  margin-block: 0.7rem;
+}
+.dash-summary a {
+  border: 1px solid var(--line);
+  padding: 0.45rem 0.7rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.dash-section-links {
+  margin-block: 0.65rem;
+  font-size: 0.8rem;
+}
+.dash-section-links a {
+  padding: 0.25rem 0.4rem;
+}
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  align-items: start;
+}
+.dash-section {
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 0.7rem;
+  padding: clamp(0.6rem, calc(0.4rem + 0.5vw), 1rem);
+}
+.dash-section > header {
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+}
+.dash-section h2 {
+  font-size: 1.02rem;
+  margin: 0;
+}
+.dash-section p {
+  font-size: 0.85rem;
+  margin-block: 0.4rem;
+}
+.dash-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 8rem), 1fr));
+  gap: 0.4rem;
+}
+.dash-tile {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 0.25rem 0.4rem;
+  align-items: center;
+  text-align: left;
+  padding: 0.5rem;
+  min-height: 5rem;
+  position: relative;
+  border-radius: 0.5rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+.dash-tile [data-inventory-icon] {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  grid-row: span 2;
+}
+.dash-tile img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.dash-tile-name {
+  font-size: 0.8rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+#dashboard button.dash-tile {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+#dashboard .dash-section > header button {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: 0.2rem 0.45rem;
+  font-size: 0.75rem;
+}
+.dash-section h3 {
+  font-size: 0.95rem;
+}
+.dash-tile strong {
+  grid-column: 1 / -1;
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+.dash-progress-list [data-inventory-icon] {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+}
+.dash-progress-list [data-inventory-icon] img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.dash-progress-list .dash-row-main {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.dash-progress-list .dash-row-main > div {
+  min-width: 0;
+}
+.dash-progress-list .dash-row-main p {
+  font-size: 0.73rem;
+}
+html[data-theme="light"] #dashboard .dash-tile[data-state="short"] strong {
+  color: #9b1717;
+}
+html[data-theme="light"] #dashboard .dash-tile[data-state="covered"] strong {
+  color: #186333;
+}
+html[data-theme="light"] #dashboard .dash-tile[data-state="alternative"] strong,
+html[data-theme="light"] #dashboard .dash-tile[data-state="review"] strong {
+  color: #785300;
+}
+.dash-tile strong {
+  font-size: 1.05rem;
+}
+.dash-tile small {
+  grid-column: 1/-1;
+  font-size: 0.65rem;
+  overflow-wrap: anywhere;
+}
+.dash-tile[data-state="short"] strong {
+  color: #ff8d8d;
+}
+.dash-tile[data-state="covered"] strong {
+  color: #90dca7;
+}
+.dash-tile[data-state="alternative"] strong,
+.dash-tile[data-state="review"] strong {
+  color: #eacb77;
+}
+.dash-tile[aria-expanded="true"] {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.dash-section button,
+.dash-section summary {
+  min-height: 24px;
+}
+.dash-detail button,
+.dash-toolbar button {
+  min-height: 44px;
+}
+.dash-section-footer {
+  justify-content: space-between;
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+}
+.dash-section-footer details button {
+  font-size: 0.75rem;
+  margin: 0.2rem;
+}
+.dash-detail {
+  margin-block: 0.6rem;
+  padding: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+}
+.dash-detail-heading {
+  justify-content: space-between;
+}
+.dash-detail h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+.dash-detail form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: end;
+  flex-wrap: wrap;
+}
+.dash-detail input {
+  width: 7rem;
+  max-width: 100%;
+}
+.dash-detail label {
+  font-size: 0.8rem;
+}
+.dash-detail p,
+.dash-detail a {
+  font-size: 0.8rem;
+}
+.dash-detail [role="alert"]:empty {
+  display: none;
+}
+.dash-progress-list {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.4rem;
+}
+.dash-progress-list li {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.4rem;
+  font-size: 0.82rem;
+  margin: 0;
+}
+.dash-progress-list span {
+  font-size: 0.72rem;
+}
+.dash-group {
+  margin-block: 0.5rem;
+}
+.dash-group h3 {
+  font-size: 0.85rem;
+  margin-block: 0.4rem;
+}
+.dash-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+}
+.dash-inline-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.8rem;
+}
+.dash-more {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+body[data-page="home"] .hub-heading {
+  padding-block: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+body[data-page="home"] .hub-heading h1 {
+  font-size: clamp(1.5rem, calc(1.1rem + 1.5vw), 2.4rem);
+}
+body[data-page="home"] .hub-search {
+  margin-bottom: 0.65rem;
+  padding: 0.6rem;
+}
+#dashboard-action-status {
+  min-height: 1.25rem;
+}
+body[data-page="home"] .hub-personal {
+  margin-top: 1rem;
+}
+@media (max-width: 760px) {
+  .dash-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dash-toolbar select {
+    width: 100%;
+  }
+  .dash-tile {
+    min-height: 5.3rem;
+  }
+  .dash-section > header button {
+    min-height: 36px;
+  }
+  .dash-section-links {
+    gap: 0.2rem;
+  }
+}
+@media (prefers-color-scheme: light) {
+  [data-theme="light"] .dash-tile[data-state="short"] strong {
+    color: #9b1717;
+  }
+  [data-theme="light"] .dash-tile[data-state="covered"] strong {
+    color: #186333;
+  }
+  [data-theme="light"] .dash-tile[data-state="alternative"] strong,
+  [data-theme="light"] .dash-tile[data-state="review"] strong {
+    color: #785300;
+  }
+}

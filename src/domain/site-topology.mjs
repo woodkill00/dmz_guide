@@ -1,6 +1,7 @@
 import { features, featureURL } from "../ui/feature-registry.mjs";
 import { parseBounded } from "../content/limits.mjs";
-export const TOPOLOGY_JSON_NODES = 300000;
+import { TOPOLOGY_JSON_NODES } from "../content/site-topology-limits.mjs";
+export { TOPOLOGY_JSON_NODES } from "../content/site-topology-limits.mjs";
 const guideOrigin = "http://127.0.0.1:4173";
 const companionOrigins = new Set([
   "http://127.0.0.1:5175",

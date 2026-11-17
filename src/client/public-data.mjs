@@ -1,12 +1,18 @@
 import { parseBounded } from "../content/limits.mjs";
+import { TOPOLOGY_JSON_NODES } from "../content/site-topology-limits.mjs";
 export async function readPublicJSON(
   path,
   maxBytes = 2097152,
   signal,
   options = {},
 ) {
+  if (signal?.aborted) throw Error("Local data read cancelled");
   const nodeLimit = options.nodes ?? 150000;
-  if (!Number.isSafeInteger(nodeLimit) || nodeLimit < 1 || nodeLimit > 300000)
+  const maximum =
+    path === "/assets/content/site-topology.json"
+      ? TOPOLOGY_JSON_NODES
+      : 300000;
+  if (!Number.isSafeInteger(nodeLimit) || nodeLimit < 1 || nodeLimit > maximum)
     throw Error("Invalid public data node budget");
   const controller = new AbortController(),
     timer = setTimeout(() => controller.abort(), 3000),

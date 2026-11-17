@@ -7,6 +7,7 @@ import {
   TRANSFER_LIMITS,
 } from "../content/portable.mjs";
 import { readRecord } from "../storage/store.mjs";
+import { readExistingRecord } from "../storage/summary-read.mjs";
 let suspended = false;
 let resumePack = null;
 let activePack = null,
@@ -36,7 +37,13 @@ export function releaseInventoryIcons({ revoke = true } = {}) {
 }
 export async function hydrateInventoryIcons(
   pack,
-  { root = document, retain = false, visibleOnly = false } = {},
+  {
+    root = document,
+    retain = false,
+    visibleOnly = false,
+    readOnly = typeof document !== "undefined" &&
+      !!document.querySelector("#dashboard"),
+  } = {},
 ) {
   if (suspended) return;
   if (activePack !== pack) {
@@ -78,7 +85,11 @@ export async function hydrateInventoryIcons(
   if (!pending.size) return;
   let saved;
   try {
-    saved = await readRecord("content", pack.id);
+    saved = readOnly
+      ? await readExistingRecord("dmz-guide-local", "content", pack.id, {
+          signal,
+        })
+      : await readRecord("content", pack.id);
   } catch {
     saved = null;
   }
@@ -179,7 +190,7 @@ export async function hydrateInventoryIcons(
               img.naturalHeight !== job.asset.height
             )
               throw Error("Icon dimensions mismatch");
-            if (job.asset.sourcePage) {
+            if (job.asset.sourcePage && !cell.closest("button")) {
               const link = document.createElement("a");
               link.href = job.asset.sourcePage;
               link.target = "_blank";

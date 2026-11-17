@@ -275,7 +275,7 @@ test("six existing recipe IDs are retained, rare ingredients are not fabricated 
   );
 });
 test("expanded recipe topology fits its bounded value budget while graph and byte admission remain constrained", () => {
-  assert.equal(TOPOLOGY_JSON_NODES, 300000);
+  assert.equal(TOPOLOGY_JSON_NODES, 350000);
   const pages = Array.from({ length: 900 }, (_, i) => ({
     path: i === 0 ? "/" : "/capacity-" + i + "/",
     title: "Synthetic capacity " + i,
@@ -301,21 +301,26 @@ test("expanded topology reader has an explicit bounded override; ordinary JSON r
     await assert.rejects(readPublicJSON("/synthetic"), /node limit/);
     assert.equal(
       (
-        await readPublicJSON("/synthetic", 2097152, undefined, {
-          nodes: TOPOLOGY_JSON_NODES,
-        })
+        await readPublicJSON(
+          "/assets/content/site-topology.json",
+          2097152,
+          undefined,
+          {
+            nodes: TOPOLOGY_JSON_NODES,
+          },
+        )
       ).length,
       150001,
     );
     await assert.rejects(
-      readPublicJSON("/synthetic", 2097152, undefined, {
+      readPublicJSON("/assets/content/site-topology.json", 2097152, undefined, {
         nodes: TOPOLOGY_JSON_NODES + 1,
       }),
       /node budget/,
     );
-    payload = "[" + "0,".repeat(300000) + "0]";
+    payload = "[" + "0,".repeat(TOPOLOGY_JSON_NODES) + "0]";
     await assert.rejects(
-      readPublicJSON("/synthetic", 2097152, undefined, {
+      readPublicJSON("/assets/content/site-topology.json", 2097152, undefined, {
         nodes: TOPOLOGY_JSON_NODES,
       }),
       /node limit/,

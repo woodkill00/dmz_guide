@@ -1,19 +1,34 @@
-import { summarizeHomeProgress } from "../domain/home-progress.mjs";
-import { collectionWorkbench } from "../domain/collection-workbench.mjs";
-import { connectedPreparation } from "../domain/connected-preparation.mjs";
 import { features, featureURL } from "../ui/feature-registry.mjs";
 import { getNavigation, toggleFeaturePin } from "./navigation-state.mjs";
-import { readPublicJSON } from "./public-data.mjs";
-import { readExistingRecord } from "../storage/summary-read.mjs";
-import { validateProfile } from "../domain/profile.mjs";
-import { validateKeyWorkspace } from "../domain/key-workspace.mjs";
 const $ = (id) => document.getElementById(id);
 let controller = new AbortController();
+let dashboardMounted = false;
+let dashboardLoading = false;
+async function startDashboard() {
+  if (!$("hub-pack") || dashboardMounted || dashboardLoading) return;
+  dashboardLoading = true;
+  try {
+    const { mountDashboard } = await import("./dashboard.mjs");
+    if (controller.signal.aborted) return;
+    dashboardMounted = true;
+    await mountDashboard();
+  } catch {
+    if (!controller.signal.aborted) {
+      const status = $("dashboard-action-status");
+      if (status)
+        status.textContent =
+          "Dashboard unavailable. Reload to retry; feature links remain available.";
+    }
+  } finally {
+    dashboardLoading = false;
+  }
+}
 window.addEventListener("pagehide", () => controller.abort());
 window.addEventListener("pageshow", (event) => {
   if (event.persisted) {
     controller = new AbortController();
     paint();
+    void startDashboard();
     document.dispatchEvent(new Event("hub-resume"));
   }
 });
@@ -49,7 +64,7 @@ function paint() {
       if (!list.length)
         box.textContent =
           field === "pins"
-            ? "Pin tools from the cards below or All features."
+            ? "Choose tools to pin from All features."
             : "Your recently visited workspaces will appear here.";
       else list.forEach((f) => box.append(link(f)));
     }
@@ -87,146 +102,7 @@ $("feature-query")?.addEventListener("input", () => {
   $("feature-count").textContent = count + " matching features";
 });
 if ($("hub-pack")) {
-  const nextAction = document.createElement("p");
-  nextAction.id = "hub-next-action";
-  nextAction.setAttribute("role", "status");
-  $("hub-progress").insertAdjacentElement("afterend", nextAction);
-  const nextMessage = (
-    message,
-    href = "/collection/",
-    label = "Open collection",
-  ) => {
-    nextAction.replaceChildren();
-    nextAction.append(message, " ");
-    const anchor = document.createElement("a");
-    anchor.href = `${href}?pack=${encodeURIComponent($("hub-pack").value)}`;
-    anchor.textContent = label;
-    nextAction.append(anchor);
-  };
-  let catalogs = [],
-    generation = 0;
-  async function summary() {
-    const token = ++generation,
-      selected = $("hub-pack").value;
-    const c = catalogs.find((c) => c.id === selected);
-    if (!c) return;
-    $("hub-progress").textContent = "Reading saved progress…";
-    nextMessage("Checking next collection action…");
-    $("hub-key-summary").textContent = "Reading key stash…";
-    const active = () =>
-      !controller.signal.aborted &&
-      token === generation &&
-      $("hub-pack").value === selected;
-    readExistingRecord("dmz-guide-local", "profiles", selected, {
-      signal: controller.signal,
-    })
-      .then(async (r) => {
-        if (!active()) return;
-        if (r === undefined) {
-          $("hub-progress").textContent =
-            "No saved profile for this catalog. Open Upgrades or Missions to begin.";
-          nextMessage("No saved collection action yet.");
-          return;
-        }
-        const p = validateProfile(r.value);
-        if (p.packId !== selected) throw Error("Mismatched profile");
-        const pack = await readPublicJSON(c.path, 8388608, controller.signal);
-        if (!active()) return;
-        if (p.contentVersion !== pack.contentVersion) {
-          $("hub-progress").textContent =
-            "Saved profile uses an older catalog version. Review it in Settings before interpreting progress.";
-          nextMessage(
-            "Saved profile needs a catalog review before calculating next actions.",
-            "/settings/",
-            "Open settings",
-          );
-          return;
-        }
-        const summary = summarizeHomeProgress(pack, p);
-        $("hub-progress").textContent = summary.limited
-          ? "Progress scope is protected or exceeds the safe spoiler projection. Open Upgrades or Missions to review it."
-          : `Saved revision ${p.revision}: ${summary.upgrades ? `${summary.upgradesDone}/${summary.upgrades} safely visible listed upgrades recorded complete` : "No safely visible upgrade definitions in this catalog (coverage unknown)"}; ${summary.missions ? `${summary.missionsDone}/${summary.missions} safely visible listed missions recorded complete` : "No safely visible mission definitions in this catalog (coverage unknown)"}. Missing records and unknown states are not completed.`;
-        try {
-          const next = connectedPreparation(collectionWorkbench(pack, p), 1)
-            .actions[0];
-          nextMessage(
-            next
-              ? `Next listed need: ${next.name} · ${next.missing === null ? "amount unknown" : `${next.missing} ${next.unit} missing`} · ${next.cause}.`
-              : "No known outstanding collection items; unrecorded requirements may remain.",
-          );
-        } catch {
-          nextMessage(
-            "Next collection action unavailable; inspect the detailed workbench.",
-          );
-        }
-      })
-      .catch(() => {
-        if (active())
-          $("hub-progress").textContent =
-            "Saved progress unavailable, blocked, timed out or invalid. Open Settings to inspect; nothing was changed.";
-        if (active())
-          nextMessage(
-            "Next collection action unavailable; inspect your saved profile.",
-            "/settings/",
-            "Open settings",
-          );
-      });
-    readExistingRecord("dmz-keys-local", "workspace", "main", {
-      signal: controller.signal,
-    })
-      .then((r) => {
-        if (!active()) return;
-        if (r === undefined) {
-          $("hub-key-summary").textContent = "No saved key stash yet.";
-          return;
-        }
-        const s = validateKeyWorkspace(r.value);
-        $("hub-key-summary").textContent =
-          `Key stash revision ${s.revision}: ${Object.values(s.stock).reduce((n, s) => n + s.quantity, 0)} owned copies recorded · ${s.targetUseIds.length} trip targets.`;
-      })
-      .catch(() => {
-        if (active())
-          $("hub-key-summary").textContent =
-            "Key stash unavailable or needs recovery. Open Keys; nothing was changed.";
-      });
-  }
-  let manifestGeneration = 0;
-  function loadCatalogs() {
-    const signal = controller.signal,
-      token = ++manifestGeneration;
-    return readPublicJSON("/assets/content/manifest.json", 65536, signal)
-      .then((v) => {
-        if (signal.aborted || token !== manifestGeneration) return;
-        catalogs = v.catalogs.filter((c) =>
-          /^\/assets\/content\/packs\/[a-zA-Z0-9_-]+\.json$/.test(c.path),
-        );
-        $("hub-pack").replaceChildren(
-          ...catalogs.map((c) => {
-            const o = document.createElement("option");
-            o.value = c.id;
-            o.textContent = c.title;
-            return o;
-          }),
-        );
-        const chosen =
-          new URL(location.href).searchParams.get("pack") ||
-          "official:mw4-dmz-starter";
-        if (catalogs.some((c) => c.id === chosen)) $("hub-pack").value = chosen;
-        void summary();
-      })
-      .catch(() => {
-        if (signal.aborted || token !== manifestGeneration) return;
-        $("hub-progress").textContent =
-          "Catalog list unavailable. Public feature links remain available.";
-      });
-  }
-  void loadCatalogs();
-  document.addEventListener("hub-resume", () => {
-    if (catalogs.length) void summary();
-    else void loadCatalogs();
-  });
-  $("hub-pack").addEventListener("change", summary);
-  $("hub-refresh").addEventListener("click", summary);
+  void startDashboard();
   $("hub-service-check").addEventListener("click", async () => {
     const b = $("hub-service-check");
     b.disabled = true;

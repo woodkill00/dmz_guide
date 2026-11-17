@@ -1,3 +1,4 @@
+import { runDashboardTests } from "./dashboard.mjs";
 import { runHomeWorkflowTests } from "./home-workflows.mjs";
 import { runKeyWorkspaceTests } from "./key-workspace.mjs";
 import { runKeysTests } from "./keys.mjs";
@@ -36,6 +37,12 @@ try {
       await runGunsmithTests({ browser, base });
       await runCodmunityTests({ browser, base });
       await runHomeWorkflowTests({ browser, base });
+      await runDashboardTests({
+        browser,
+        base,
+        name,
+        captureScreenshots: name !== "webkit",
+      });
       await runKeysTests({ browser, base });
       await runKeyWorkspaceTests({ browser, base });
       await runArmoryWorkbenchTests({ browser, base });

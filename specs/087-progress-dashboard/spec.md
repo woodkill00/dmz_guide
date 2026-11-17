@@ -1,6 +1,6 @@
 # Progress dashboard
 
-Feature: 087-progress-dashboard. Date: 2026-11-17. Status: planning; implementation awaits this feature's tasks.
+Feature: 087-progress-dashboard. Date: 2026-11-17. Status: implemented; local acceptance receipts are recorded in acceptance.md.
 
 ## Outcome
 Home becomes the player's compact preparation dashboard, showing useful collection buttons and unfinished progression before the full feature directory. Existing destinations remain accessible. All summaries use the selected catalog and the actual saved records on this browser origin.

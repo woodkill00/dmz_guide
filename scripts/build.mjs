@@ -48,6 +48,7 @@ import {
 } from "../src/ui/navigation-page.mjs";
 import { readCatalog, bundledSources, catalogJSON } from "./catalog.mjs";
 import { prepareBundledAssets, writeBundledAssets } from "./bundled-assets.mjs";
+import { readWeaponIntel } from "../src/content/weapon-intel.mjs";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 async function generate(dist) {
@@ -302,6 +303,13 @@ async function generate(dist) {
     });
   }
   await mkdir(join(dist, "assets/content/packs"), { recursive: true });
+  const dashboardWeapons = (await readWeaponIntel()).weapons.map(
+    ({ id, name }) => ({ id, name }),
+  );
+  await writeFile(
+    join(dist, "assets/content/dashboard-weapons.json"),
+    JSON.stringify(dashboardWeapons),
+  );
   await emit(
     join(dist, "assets/content/site-topology.json"),
     JSON.stringify(buildSiteTopology([...pages, notFoundPage], renderedPages)),

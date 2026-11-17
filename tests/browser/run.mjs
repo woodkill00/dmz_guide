@@ -481,6 +481,7 @@ for (const script of [
   "verified-backup.mjs",
   "mission-coverage.mjs",
   "mission-directory.mjs",
+  "dashboard-run.mjs",
   "mission-encounter.mjs",
   "run-review.mjs",
 ])

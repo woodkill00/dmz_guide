@@ -1,18 +1,18 @@
 import { validateProfile } from "./profile.mjs";
 import { spoilerGuard } from "./progression.mjs";
 import { upgradeProgressFor } from "./upgrade-progress.mjs";
-export function summarizeHomeProgress(pack, profile) {
+export function summarizeHomeProgress(pack, profile, { reveal = false } = {}) {
   validateProfile(profile);
   if (
     profile.packId !== pack.id ||
     profile.contentVersion !== pack.contentVersion
   )
     throw Error("Saved profile needs catalog review");
-  const guard = spoilerGuard(pack, false);
+  const guard = spoilerGuard(pack, reveal);
   if (guard.limited) return { limited: true, revision: profile.revision };
   const safe = pack.objectives.filter(
     (r) =>
-      !r.spoiler &&
+      (reveal || !r.spoiler) &&
       ![r.id, r.name, r.description].some((x) => guard.contains(x || "")),
   );
   const upgrades = safe.filter((r) => r.track === "dmz-upgrade"),

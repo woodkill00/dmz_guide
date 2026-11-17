@@ -1,5 +1,6 @@
 import { init, state, esc, error, persist } from "./common.mjs";
-import { quickCollect, addFound } from "../domain/quick-collect.mjs";
+import { quickCollect } from "../domain/quick-collect.mjs";
+import { createFoundOperation } from "./collection-action.mjs";
 import { upgradeBudget } from "../domain/upgrade-budget.mjs";
 import {
   installBudgetSetup,
@@ -188,7 +189,7 @@ $("main").addEventListener("submit", async (event) => {
     y = scrollY;
   let change;
   try {
-    change = addFound(state.pack, state.profile, id, raw);
+    change = createFoundOperation(state.pack, state.profile, id, raw);
   } catch (reason) {
     const input = event.target.querySelector("input");
     input.setCustomValidity(reason.message || String(reason));
@@ -198,7 +199,13 @@ $("main").addEventListener("submit", async (event) => {
   }
   lock(true);
   try {
-    if (await persist(change.candidate)) {
+    if (
+      await persist(change.candidate, {
+        entryId: change.id,
+        label: "Quick collect · found items",
+        kind: "inventory",
+      })
+    ) {
       undo = {
         id,
         before: change.before,

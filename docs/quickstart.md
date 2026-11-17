@@ -16,6 +16,14 @@ Open http://127.0.0.1:4173 and keep the terminal running; stop with Ctrl+C. Do n
 
 The **Private editor** saves private content overlays in this browser at this exact origin. Inventory and goals also stay private in browser storage. It does not edit repository files or publish anything. Export backups before clearing browser data. Changing hostname or port gives a different storage origin, not a migration of your data.
 
+## Use the progress dashboard
+
+Home shows **Want to build · ingredients**, **Other outstanding items**, **Upgrades**, **Orders**, **Weapon blueprints & acquisition**, and **Item recipes & blueprints** for your selected catalog. Item buttons include pictures when available, names and missing amounts. Select a button to inspect its owned/required/missing quantities and explicitly **Add found** to Inventory. Build targets request additional items even if you already own that item; shared totals count available stock once. Separate build estimates and upgrade/mission needs are not a combined shopping total.
+
+Unknown stock is labelled **Not entered** and any shortage that assumes zero is an estimate. **Include crafting alternatives** matches Quick collect's optional crafting view. Recipe ownership includes your recorded blueprints and ingredient-printing upgrades. Weapon blueprint names come from your separate armory record; there is no claim of a complete missing-blueprint roster.
+
+Use section **Collapse**, **Show more**, and **Section options → Move up / Move down** to arrange the dashboard. **Reset layout** resets only these layout settings. Changes made in the owning trackers refresh when you return; an unsaved amount stays in its panel until reviewed. If a stock save succeeds but confirmation fails, use **Verify saved update** rather than adding the same amount again. A stale or unavailable profile links to Settings for review/recovery. Opening Home does not create a player profile; begin tracking from Inventory or Upgrades when none exists.
+
 ## Edit repository content
 
 Use a source checkout, not the reader ZIP:

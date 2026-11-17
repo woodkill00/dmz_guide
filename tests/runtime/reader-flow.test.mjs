@@ -403,15 +403,18 @@ test("expiry fixture ages only its token without rewinding existing context cloc
   );
 });
 
-test("058 home offers map, unified search and all task groups without fictional terrain decoration", () => {
+test("087 home offers map, search, dashboard sections and the full feature directory without fictional terrain decoration", () => {
   const markup = renderHome([]);
   assert.match(markup, /action="\/search\/"/);
   assert.match(markup, /Open map/);
   for (const label of [
-    "Prepare",
-    "Track",
-    "Reference",
-    "Manage",
+    "Want to build",
+    "Other outstanding items",
+    "Upgrades",
+    "Orders",
+    "Weapon blueprints",
+    "Item recipes",
+    "All features",
     "Pinned tools",
     "Recent work",
   ])

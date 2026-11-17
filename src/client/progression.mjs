@@ -56,6 +56,7 @@ let resetTarget = null,
   visibleRows = new Map(),
   saving = false,
   offset = 0;
+let dashboardUpgradeApplied = false;
 let budget = null;
 const stockDrafts = new Map();
 let overview = null,
@@ -211,6 +212,28 @@ function renderMissionDirectory() {
     );
   }
 }
+function dashboardUpgradeQuery() {
+  if (focusedUpgrades && !dashboardUpgradeApplied) {
+    const url = new URL(location.href);
+    if (url.searchParams.get("pack") === state.pack.id) {
+      const id = url.searchParams.get("upgrade");
+      const guard = spoilerGuard(state.pack, state.profile.spoilers);
+      const row = state.pack.objectives.find(
+        (r) => r.id === id && r.track === "dmz-upgrade",
+      );
+      if (
+        row &&
+        (state.profile.spoilers || !row.spoiler) &&
+        !guard.limited &&
+        !guard.contains(row.id) &&
+        !guard.contains(row.name)
+      )
+        $("#progress-query").value = row.name;
+      dashboardUpgradeApplied = true;
+    }
+  }
+  return $("#progress-query").value;
+}
 function render() {
   refreshTrackerContext();
   if (focusedMissions) {
@@ -324,7 +347,7 @@ function render() {
     $("#progress-source").value = view.source;
   const options = {
     track: $("#progress-track").value,
-    query: $("#progress-query").value,
+    query: dashboardUpgradeQuery(),
     source: $("#progress-source").value,
     status: $("#progress-status").value,
     progress: $("#progress-state").value,

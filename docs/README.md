@@ -1,5 +1,7 @@
 # Documentation
 
+- [Progress dashboard](quickstart.md#use-the-progress-dashboard): compact collection buttons, upgrades, Hajin/X01 Orders, recipe and weapon ownership, layout controls and safe Add found.
+
 - [Activision access inquiry (parked draft)](activision-access/README.md): official contact routes, a ready-to-personalize request and the separate personal-data export option. Nothing has been sent.
 
 - [CODMunity baseline and DMZ checks](codmunity-baseline.md): preferred damage/stats, \*WZ labels, reviewed updates and six-hour local monitoring.

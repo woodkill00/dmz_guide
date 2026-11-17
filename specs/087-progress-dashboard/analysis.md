@@ -34,7 +34,22 @@ FR-013 and operation contract/model distinguish committed-unverified from failed
 | SC-004 | T015,T017 |
 | SC-005 | T004,T007,T015,T016,T017 |
 
-15/15 functional requirements and 5/5 success criteria mapped. 19 implementation tasks. No orphan task or constitution exception. No unresolved requirement-quality duplication identified in implementer review; independent final disposition is in checklists/requirements.md.
+15/15 functional requirements and 5/5 success criteria mapped. 19 original implementation tasks, plus T020–T022 appended during implementation convergence. No orphan task or constitution exception. No unresolved requirement-quality duplication identified in implementer review; independent final disposition is in checklists/requirements.md.
 
-## Cycle 2
+## Cycle 2 — historical preimplementation review
 Independent re-review resolved DASH-01, DASH-02 and DASH-03 with no remaining blocking planning finding. Reviewer-owned checklist is complete. Implementation stays unstarted; actual atomic history adapter feasibility must be demonstrated in T003 before dependent writes. Unexpected protocol/schema changes require artifact repair and review before code continues.
+
+## Implementation review cycles
+The early implementation review found overlapping verification reads, unrelated same-item panel draft clearing, and stale manually adjusted detail figures. Repaired with single-flight verification bound to operation/generation/pack/version, submitted-panel-only draft clearing, and canonical row reconciliation while preserving input nodes. Browser tests cover failed confirmation, held verification through focus/visibility/pagehide and independent same-item drafts.
+
+A second review found aborted initial catalog loading did not restart and canceled pagination advanced internal state. Repaired with restartable catalog/schema loading and guards before any pagination state change. The 100-target fixture exercises replacement windows and canceled paging.
+
+A third review identified missing private catalog precedence. Repaired by read-only validated overlay resolution and overlay revision checks before stock writes, preserving parity with Inventory/Quick collect. Same-ID/version private recipe/name/currency-bound fixtures exercise the owning reader too. These are tracked implementation findings; final acceptance evidence remains pending.
+
+## Aggregate convergence repairs
+The legacy Home regression caught a dropped direct Safe Run link; restored compact quick tools and kept pinning in All features. Modern topology measured 321111 JSON values / 8035093 bytes, exceeding the previous 300000-value bound. A shared 350000-value allowance applies only to the exact topology endpoint; default and other custom JSON bounds, bytes, graph size, depth and string limits remain intact. Existing capacity/overflow contracts and new wrong-endpoint tests cover this measured adjustment.
+
+Rapid browser navigation also exposed an unhandled dynamic dashboard import rejection. The hub now catches it, preserves static feature navigation and reports explicit reload recovery. A held import rejected after persisted return tests this fallback; automatic retry of a rejected module import is not claimed. T020–T022 own these convergence repairs.
+
+## Final convergence
+All 15 functional requirements and five success criteria retain task/test owners. All 22 implementation tasks are complete. The independent reviewer closed the implementation checklist after source, terminal-log and visual review, with parent-run browser receipts identified separately. No unresolved actionable P1/P2 finding remains. See acceptance.md for runtime1047/1047, classic/modern three-engine journeys, accessibility, Home regressions and bounded-parser evidence. Cross-platform CI and merge remain separate delivery gates.
