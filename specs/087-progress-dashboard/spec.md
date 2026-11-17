@@ -1,0 +1,64 @@
+# Progress dashboard
+
+Feature: 087-progress-dashboard. Date: 2026-11-17. Status: planning; implementation awaits this feature's tasks.
+
+## Outcome
+Home becomes the player's compact preparation dashboard, showing useful collection buttons and unfinished progression before the full feature directory. Existing destinations remain accessible. All summaries use the selected catalog and the actual saved records on this browser origin.
+
+## User stories
+
+### US1 — See what to collect next (P1)
+Show build ingredients grouped by the item the player wants to make, followed by other outstanding upgrade/mission materials. Each button shows image, name, rarity and a clearly labelled missing count. Selecting it reveals an inline detail panel with owned/required/missing amounts and an Add found action.
+Acceptance: selecting two builds that share an ingredient shows separate build estimates and a shared total that counts stock once; adding stock updates the dashboard and Inventory after a successful save. Owning the finished target does not reduce additional build targets.
+
+### US2 — Continue progression (P1)
+Show current upgrade tiers and Hajin/X01 Orders separately, with completed/visible listed counts and direct links to their existing workspaces and individual records.
+Acceptance: the next upgrade tier is the lowest unfinished tier in its family; page labels follow the source roster with variable-placement wording. Hidden story content does not appear in any summary. Progress actions open the existing destination rather than duplicate its completion workflow.
+
+### US3 — Find missing blueprints and recipes (P2)
+Show weapon acquisition/blueprints as recorded in the armory, and item recipe ownership in the selected profile. Separate recorded ownership, unmarked ownership and unknown requirements. Link to their exact owning workspace for editing.
+Acceptance: arbitrary user blueprint names are treated as recorded owned names, not a complete blueprint catalog; no fabricated total of missing gun blueprints is shown. Item recipe counts follow the existing effective ownership/unlock rules, including printing upgrades.
+
+### US4 — Keep a compact, dependable home (P1)
+A compact header, section links and at-a-glance strip precede the dashboard grid. Build ingredients and other needed items are initially visible. Upgrades, Orders, weapons and crafting have compact previews and independent expandable sections. Search, map/FOB/guide/weapons hubs, pins and recent work remain easy to reach.
+Acceptance: keyboard and touch users can inspect and collect without hover; at 320px and 200% text zoom the page has no horizontal overflow or obscured controls; saving an amount preserves focus, expanded groups and scroll position.
+
+## Functional requirements
+
+- **FR-001 (US4):** Replace both classic and modern home bodies with the same section hierarchy and capabilities at `/`; retain existing navigation, search, service links and direct feature access. No new competing dashboard URL.
+- **FR-002 (US1):** Reuse build-target and Quick collect calculations. Build targets mean additional output, ingredients include required/missing/held, ambiguous recipes expose a choose-recipe link, and no-recipe/unknown costs remain explicit. Group-specific estimates are not additive; shared totals allocate inventory once. Other needs use Quick collect's existing scope (unfinished upgrades and supported unfinished mission requirements); totals from independent sections must not be summed into a new grand total.
+- **FR-003 (US1):** Item buttons display name, safe local/fallback icon, rarity, missing quantity, and textual state. Green means known covered, red means known shortage, yellow means indirect crafting/conditional needs; unknown/minimum is labelled and never displayed as exact zero. Detail shows full requirement and provenance links. Hover is optional; click, Enter and Space expose equivalent details inline without blocking another section.
+- **FR-004 (US1):** Add found accepts positive integers within item/currency bounds and uses the existing profile save/revision contract and inventory quantity history pathway. Serialize saves; prevent repeat activation while pending. On conflict/quota failure preserve the draft, keep saved totals unchanged and offer retry/reload. Reread after successful write; dashboard navigation must never create/reset a profile automatically. No inventory decrement, craft execution or automatic completion.
+- **FR-005 (US2):** Show upgrade families with lowest unfinished level, known remaining requirements and existing completion state. All-complete families are visibly complete. Link to Upgrades at the selected family; completing/uncompleting stays in the existing owning page.
+- **FR-006 (US2):** Show separate Hajin (24 reported rosters) and X01 (5) summaries for the official catalog, linking to `/missions/` chapter/individual destinations. Count visible listed entries only, use persisted completion, and preserve variable chapter positions and spoiler preference. Do not infer current game page from completion or conflate editorial audit status with gameplay completion.
+- **FR-007 (US3):** Item recipe/blueprint overview uses profile ownership and upgrade-derived effective access from existing modules; distinguish not marked owned from unavailable/unknown. Weapon overview reads the existing independent armory acquisition data using its weapon IDs. Blueprint names without a public roster show recorded owned names/count only; unknown or missing identity links stay unresolved. Neither source implies in-game detection.
+- **FR-008 (US4):** Load existing stores without creating them. A missing profile has a setup link; stale content requires existing review/rebind; invalid/blocked storage shows recovery; partial independent service/store failure affects only its section. Catalog switching clears previous cards/drafts before loading. Guard async responses by selected catalog, version and request generation. Refresh on explicit action, focus/visible return and bfcache restore; detect stale edits before saving.
+- **FR-009 (US4):** Persist only validated catalog choice, section order/collapse and display preferences in an additive, bounded, namespaced setting. Use in-memory defaults when denied. Do not rewrite player stores for layout changes. Default to a real catalog; honor a valid `pack` query choice and safely ignore invalid choices. Switching catalog with an unsaved amount draft uses the existing dirty-draft navigation pattern.
+- **FR-010 (US4):** Default desktop grid: build ingredients and other needed items, then upgrades/Orders, then weapons/recipes. On mobile preserve this order in one column. Above the fold at 1280x900 show header, section links, summary strip and collection content, without an intervening all-features directory. Compact controls keep minimum 24px clickable targets, visible focus and at least 44px primary touch actions. No automatic scroll/recenter or page-covering popups.
+- **FR-011 (US4):** Bound initial rendering to 12 tiles per collection section and 5 rows per progress preview, with true total counts and View all links. Expanding a collection section pages 50 items at a time; a build group shows up to 12 ingredients before its own expansion. Avoid loading full-size weapon pictures or private observation screenshots. Icons lazy load with fallback; missing icons do not collapse button dimensions.
+- **FR-012 (all):** Shared models and revision-aware refresh keep displayed known counts equal to the owning workspaces for the same catalog/profile/options. Pack-qualified links preserve selection. No data scraping, account linking, new catalog facts or remote synchronization is introduced.
+
+## Edge cases
+No catalog; no saved profile; all upgrades done; target already owned; shared ingredients; reserve stock; unknown count; conflicting source; multiple recipes; retained tools; X01 versus FOB crafting; partial armory failure; unknown armory weapon IDs; protected story missions; stale catalog; late async responses; lost/quota-limited storage; repeated clicks; dirty draft on return/catalog switch; thousands of items; broken/missing images.
+
+## Success criteria
+- **SC-001:** Every required section has a working pack-qualified link and honest loaded/empty/unavailable state.
+- **SC-002:** Deterministic fixture comparisons show equal collection counts, next-tier states and completion totals on dashboard and owning pages; shared stock is never applied twice in shared totals.
+- **SC-003:** Add found persists exactly once, is reflected on Inventory/Quick collect after return, and preserves drafts without optimistic success on conflict or quota failure.
+- **SC-004:** Mobile/desktop/200% zoom, keyboard, rapid activation, scroll/focus stability and configured accessibility checks pass in the repository's browser gates.
+- **SC-005:** Dashboard load makes no player-store writes. No private data enters HTML build output, logs, screenshots committed to Git, or external requests.
+
+## Clarifications resolved from repo and prior user decisions
+No user questions needed. Builds remain additional quantities; missing counts account for stock/reserves; unfinished mission and upgrade needs retain existing scope. Use existing stores and effective blueprint rules. Progress editing stays at its owning page; collection has explicit guarded Add found. Weapon blueprint completeness is unknown because existing entries are user-recorded names. This turn delivers the reviewed feature plan and tasks; implementation is a separate next phase.
+
+## Boundaries
+No player schema migration without a separately documented need, no shared mutable duplicate inventory, no scraping work, no copied dashboard from another provider, and no claim that every item is missing when its information is unknown.
+
+## Section customization detail
+FR-009 includes labelled Move up/Move down controls in section options for keyboard/touch reordering, live reorder feedback and focus preservation. Reset layout restores only layout preferences. Selected pack is validated against the public manifest; unknown values cannot create a private profile.
+
+## Resolved analysis requirements — 2026-11-17
+
+- **FR-013 (US1):** Add found captures a unique operation ID, expected profile revision, catalog version and item delta before dispatch. States are editing, submitting, committed-unverified, confirmed and failed-before-commit. Only a proven failed-before-commit may replay the delta after explicit revision reconciliation. Commit success followed by reread/ack failure enters committed-unverified and offers Verify saved update, never Add again. Verification checks durable revision/history evidence from the existing transaction; if ownership/commit outcome cannot be proven, keep the operation unresolved and require reload/review, without issuing another delta. Page departure cannot convert an uncertain commit into a failed operation. A late acknowledgement may reconcile its captured context but never paint a different selected catalog. Do not introduce a second write to stamp an operation after the stock commit: T003 must bind evidence atomically using the existing transaction/history or document a compatible protocol before T006.
+- **FR-014 (US1):** Other needed items defaults to quickCollect(pack, profile, {crafting:false}); a labelled Include crafting alternatives toggle changes it to crafting:true, and parity comparisons use the identical option. Build ingredients always use buildTargetNeeds and their existing selected recipe options. Preserve assumedZero and minimum qualifiers: unknown held quantity is shown as Not entered (assumed 0 for estimate), distinct from explicitly recorded zero. An estimate is not an exact measured shortage. Changing the crafting toggle affects no saved quantities or target definitions.
+- **FR-015 (US4):** Builds initially mount at most three group headers and 12 ingredient tiles total. Expanded Builds uses replacement pages of at most five groups and 50 ingredient tiles total, shared across visible groups and shared totals; each group is also capped at 12 before drill-down. Other needed items mounts 12 initially and at most 50 when expanded. These sections together therefore mount at most 100 collection tiles and one open detail panel each, regardless of target count or accumulated navigation. Group/item pagination replaces previous nodes; totals/View all remain truthful. Existing group expansion preferences are remembered without keeping off-page DOM mounted. Read-existing calls retain the existing 1500ms deadline and signal cancellation/transaction abort/connection-close behavior. Cancel pending reads on pagehide/catalog change; a late open closes its connection and cannot paint stale state. Cancelling a read does not imply cancelling an already-dispatched write.
