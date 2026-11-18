@@ -246,6 +246,36 @@ async function main(browser, base, name) {
         Math.abs(boxes[0].y - boxes[3].y) < 2 && boxes[4].y > boxes[0].y,
         "Military2x4 " + width,
       );
+      const previews = await p
+        .locator('[data-camo-view-panel="progression"] .camo-tile-image')
+        .evaluateAll((nodes) =>
+          nodes.map((n) => n.getBoundingClientRect().width),
+        );
+      assert(
+        previews.every((size) => size > 0 && size <= 128),
+        name + " preview exceeds native128px at " + width,
+      );
+      if (width >= 1280)
+        assert(
+          Math.max(...previews) - Math.min(...previews) <= 1,
+          name + " desktop tiers have inconsistent preview sizes",
+        );
+      await p.locator('[data-camo-view="mastery"]').click();
+      const mastery = await p
+        .locator('[data-camo-view-panel="mastery"] .camo-tile-image')
+        .evaluateAll((nodes) =>
+          nodes.map((n) => n.getBoundingClientRect().width),
+        );
+      assert(
+        mastery.every((size) => size > 0 && size <= 128),
+        name + " mastery preview exceeds native128px at " + width,
+      );
+      if (width >= 1280)
+        assert(
+          Math.abs(mastery[0] - previews[0]) <= 1,
+          name + " mastery desktop size differs",
+        );
+      await p.locator('[data-camo-view="progression"]').click();
       if (width === 320) {
         await p.screenshot({
           path: `test-results/camo-grid-${name}-${variant}-320.png`,

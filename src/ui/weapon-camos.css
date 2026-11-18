@@ -218,7 +218,7 @@
 }
 .camo-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 120px));
   list-style: none;
   padding: 0;
   margin: 0;
@@ -226,7 +226,7 @@
 }
 .camo-grid-special,
 .camo-grid-modeMastery {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 120px));
 }
 .camo-grid li {
   min-width: 0;
