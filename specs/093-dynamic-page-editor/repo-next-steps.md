@@ -1,0 +1,18 @@
+# Wider repository priorities
+
+These are proposed follow-up workstreams, not claims that existing features are absent or newly verified bugs. The repo already has inventory, planning, Quick collect, maps/routes, Orders/audit, weapon acquisition/camos, source staging and several editors. Improve cohesion and reliability before adding another parallel tracker.
+
+| Priority | Workstream | Build on | Concrete next outcome |
+| --- | --- | --- | --- |
+| 1 | Unified page editing (093) | Studio, private editor, mission audit | One exact-record Edit journey with section/photo composition and canonical data integrity. |
+| 2 | Backup and recovery center | Existing profile/armory/map/editor exports | One inventory of each workspace's browser/origin, last confirmed backup, included data/pictures and restore drill. Never describe cross-store backup as atomic without verified coordination. Provide repository content backup separately from player data. |
+| 3 | Cross-feature consistency | Inventory/Needed/Quick collect/upgrades/Orders/printer | Shared identity/provenance resolution and regression journeys show exactly why an item is needed and which unfinished goal contributes it. Confirm edits/source updates invalidate derived summaries correctly. |
+| 4 | Content-quality overview | Mission audit and source review | Extend coverage to items, recipes, upgrades, weapons and locations: missing pictures, unknown costs, broken references, stale sources, conflicting reports, deferred review; direct links to exact field editor. Unknown remains a fact state, not an automatic error to erase. |
+| 5 | Saved navigation and search state | Existing global search/navigation/map links | Consistent back/return paths and retained filters/scroll/selected floor/source across the main journeys. Search results link to exact record/section/map area and clearly distinguish similarly named records. |
+| 6 | Map-to-guide roundtrip | Existing Hajin/X01/safe/loot maps and location links | Item→possible loot areas→selected POI→key/access requirements→return to item; verify popup stability, mobile panels and route state after returning. Source coverage/duplicates remain inspectable. |
+| 7 | Source-change review | Current source staging/update tools | One view of last successful check, changed fields/assets, failed-provider status, local overrides and accepted diffs. No silent factual overwrite or duplicate identity insertion. |
+| 8 | Consistent compact UI | Existing modern layout and recent tracker | Audit shared table headers, row density, popovers, touch targets, narrow layouts, image fit, empty/error states and saved menu placement rather than introducing page-specific styles repeatedly. |
+| 9 | Release confidence | Existing runtime/browser/build/package checks | Required critical-journey matrix across supported Node/OS/browser combinations, visual diffs with review, payload budgets and post-build link checks. Surface exact tested revision/variant and unresolved limitations. |
+| 10 | Maintainable product map | Feature registry, sitemap/mindmap and long feature history | Refresh a current capability/status ledger and architecture docs so planned, local-only, merged and deployed work cannot be confused; consolidate duplicate editors only after parity and recovery proof. |
+
+Suggested sequence:093 exact-page editing slice → backup/recovery drill → planner consistency + content-quality links → navigation/map roundtrip → source maintenance and release polish. Each broad follow-up needs its own measured scope and Spec Kit cycle. Approved-account public authoring stays a separate later backend/security feature; current local server must not be exposed to make it accessible remotely.

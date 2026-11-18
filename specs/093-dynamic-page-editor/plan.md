@@ -1,0 +1,17 @@
+# Implementation plan: dynamic page editor
+
+Branch feat/093-dynamic-page-editor · 2026-11-18 · planning only
+
+Extend the existing vanilla ESM static reader and Node local Content Studio. Repository writes remain in the current author server; no public backend or framework migration. One editor shell, one validated block renderer and registered adapters cover differing record schemas. Use a separate versioned page-document manifest so existing pack-v1 data and private profile formats are unchanged.
+
+Phase1: inventory routes, schemas, edit capabilities and source owners; prototype responsive workbench and safe block types without writes. Phase2: schema/domain/renderer and managed catalog storage integration. Phase3: item/recipe/location/guide end-to-end with media, exact target deep links, preview and atomic repository save. Phase4: upgrade/Order/story adapters, canonical requirements, dependency impact and existing version-rebind flows. Phase5: specialized weapon/key/boss/camo adapter parity or accurate read-only destination; draft/media recovery, source-update comparisons and page bundles. Phase6: three-engine visual/behavioral and full repository/release regressions, independent review and documentation.
+
+Do not advertise all-page completion until adapter coverage is exhaustive. Generic record fields, typed facts and custom presentation are separate contracts; every implementation phase must leave the previous reader/editor usable. Existing private editor and mission audit remain distinct tools with clear links, not competing sources of truth.
+
+Risks/mitigation: no guessed record IDs; typed projections prevent copied requirement drift; sidecar documents preserve old packs; stable block IDs support diffs/links; retained transactions and recovery include prepared pixels; current limits remain bounded. Cross-source refresh requires comparisons, never silent overwrite. Two-column layouts stack and all drag actions have click/keyboard alternatives. Review scope/asset rights independently of schema validity.
+
+Constitution check: local/private progress protected; evidence/unknowns preserved; keyboard/mobile first; inputs bounded/inert; no account/public-write deployment. No exception proposed. Broad site improvements are a separate prioritized roadmap, not implied implementation in093.
+
+Verification: target/adapter and schema unit tests, malicious imports/path/URL and image bounds, author transaction/receipt/recovery tests, canonical quantity+planner regressions, source merge conflicts, bundle roundtrips, all adapter journeys, Chromium/Firefox/WebKit screenshots/axe and actual geometry, standard runtime/build/format/repository/package gates. Acceptance remains unexecuted until implementation; independent planning review owns its checklist.
+
+Independent planning fixes pin exact sidecar/manifest/block/target schemas and hash-derived paths in contracts/document-format.md; operation identity, durable receipts/cancellation tombstones and async generation/ownership in contracts/save-recovery.md. These supersede generic descriptions elsewhere. T002 still inventories actual source ownership and measured capacity; it does not defer core storage/save admission. Implementing operation receipts is a prerequisite to the new editor's Save, not an assumption about the current service.
