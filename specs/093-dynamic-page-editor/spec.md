@@ -38,3 +38,5 @@ SC05: Three browser engines pass pointer/keyboard/mobile/light-dark/visual tests
 ## Clarifications and limits
 
 Repository save is the explicit user-selected default. Recovery drafts are local to that browser/origin and are not a backup or sync. First implementation keeps existing nine distinct pictures per record (primary plus eight additional), 2MiB/2048px per picture and current shared catalog/transaction/portable-bundle ceilings. The same asset may be placed in several sections. Higher capacity needs a measured follow-up, not a silent limit increase. Fully customizable means ordered safe content blocks and responsive templates, not unrestricted HTML/CSS or changes to application navigation/authorization.
+
+Rollout clarification2026-11-18: user selected Orders first, then items and upgrades. The first complete editing journey covers Hajin and X01 Orders, with photos between task steps and correct audit links. Shared save/recovery/validation prerequisites remain required before that rollout.
