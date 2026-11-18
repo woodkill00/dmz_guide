@@ -1,14 +1,24 @@
-# Weapon camo reference
+# Weapon camos and completion
 
 Open **Weapons → Weapon camos** at `/armory/camos/`. Search or select a class, then choose a weapon. Every existing gun information page and acquisition row links its camo page. Season1 guns have camo/acquisition pages even where combat statistics are not yet catalogued.
 
-The 18 November2026 snapshot captures CODCentral's35 released guns and25 core entries each (875 source rows). Military, Special, Completionist and Weapon Prestige are grouped separately from MP/DMZ mastery. Shared camo associations are repeated for browsing; they are not separate player goals. The official progression panel explains level gates and the published33-weapon thresholds without changing the source reports. This page records no private camo ownership and never changes inventory, manuals or blueprints. Warzone/BlackCell/event/WarSpoils paths are separately referenced, with coverage gaps labelled.
+The 18 November2026 snapshot captures CODCentral's35 released guns and25 core entries each (875 source rows). Military, Special, Completionist and Weapon Prestige are grouped separately from MP/DMZ mastery. Shared camo associations are repeated for browsing; they are not separate player goals. The official progression panel explains level gates and the published33-weapon thresholds without changing the source reports. Completion ticks are stored privately in the existing armory; they do not grant in-game rewards or change inventory, manuals or blueprints. Warzone/BlackCell/event/WarSpoils paths are separately referenced, with coverage gaps labelled.
+
+## Track a camo
+
+The progression view has four tiers: Military (two rows of four), Special (three), Completionist (four), and Prestige (four). Mode mastery is a separate view. Click a picture to expand its details; click it again or Close details to retract it. Other tiers stay open.
+
+Green means marked Completed; red means Remaining; yellow means Next to track. Military advances to the first unfinished camo. Once all eight are marked, every unfinished Special turns yellow together. Gold turns yellow only after all three Specials are marked. Later completionist recommendations include their reported class/33-weapon requirements. Prestige is independent. Yellow is your planning convention; source weapon-level conditions still apply. You can backfill or undo any checkbox without automatically checking or erasing other camos.
+
+Divergence and mode-mastery completion are shared across weapon pages. Other ticks belong to the selected gun. Save confirmation appears after the private transaction completes. Failed saves retain an exportable candidate with Retry/Reload saved controls; conflicts require reviewing and reloading the newer record.
+
+Use **Backups → Export private workspace** to include camo ticks with your existing armory data. Restore preview shows the camo-record count and explains replacement: a legacy backup without camo records clears current ticks when you confirm restoring it. Use the current app version to restore backups with camo progress.
 
 ## Local pictures
 
 Run `node scripts/collect-camo-images.mjs` explicitly in the repository. It checks the fixed `src/ui/weapon-camos.json` image registry and downloads matching swatches only into ignored `.local/camo-images/`. Normal build, test and reader startup never download provider assets. Changed image hashes fail rather than overwrite a valid cached picture. Restart `npm start` after installing this feature, then refresh the browser at the same original address to retain private browser data.
 
-Click a swatch to view its128px source size; the source-picture link opens the provider's original. Missing/corrupt/local-excluded images leave a labelled placeholder. Public static release archives intentionally exclude these rendered game-art files. CODCentral describes the swatches as renders, not verified in-game screenshots. Existing screenshot redistribution permission has not been extrapolated into a public render license.
+Click a camo picture button to open its requirements and Completed checkbox. The View swatch link in that panel opens the128px source size; Source picture opens the provider original. Missing/corrupt/local-excluded images leave a labelled placeholder. Public static release archives intentionally exclude these rendered game-art files. CODCentral describes the swatches as renders, not verified in-game screenshots. Existing screenshot redistribution permission has not been extrapolated into a public render license.
 
 ## Source maintenance
 

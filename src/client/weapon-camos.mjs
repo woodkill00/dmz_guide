@@ -23,10 +23,12 @@ if (query) filter();
 function fail(image) {
   image.hidden = true;
   const fallback = image
-    .closest(".camo-swatch")
+    .closest(".camo-swatch, .camo-tile-image")
     ?.querySelector(".camo-image-fallback");
   if (fallback) fallback.textContent = "Image unavailable locally";
-  image.closest(".camo-swatch")?.classList.add("camo-art-missing");
+  image
+    .closest(".camo-swatch, .camo-tile-image")
+    ?.classList.add("camo-art-missing");
 }
 document.addEventListener(
   "error",

@@ -1,3 +1,4 @@
-// Modern navigation's complete generated snapshot measured 321,111 JSON values
-// on 2026-11-17. This dedicated ceiling does not widen generic catalog reads.
-export const TOPOLOGY_JSON_NODES = 350000;
+// Camo grids add public controls across35 weapon pages: legacy measures328,809
+// values and modern exceeds350,000. Keep this ceiling specific to the complete
+// topology; generic JSON, graph entity/edge, depth and byte limits stay intact.
+export const TOPOLOGY_JSON_NODES = 400000;

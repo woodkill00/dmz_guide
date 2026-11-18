@@ -101,7 +101,7 @@
   border: 1px solid var(--border, #4a554b);
   border-radius: 0.35rem;
   overflow: hidden;
-  background: var(--panel, #202821);
+  background: var(--surface, #202821);
 }
 .camo-swatch img {
   position: absolute;
@@ -147,4 +147,194 @@
   display: inline;
   font-size: 1rem;
   margin: 0;
+}
+
+/* Four-tier Gunsmith presentation. Source swatches remain local-only. */
+#camo-tracker {
+  max-inline-size: calc(44rem + 2vw);
+}
+.camo-legend,
+.camo-tracker-toolbar,
+.camo-view-buttons,
+.camo-recovery,
+.camo-detail-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(0.35rem + 0.3vw);
+}
+.camo-legend,
+.camo-tracking-note {
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.camo-legend span {
+  white-space: nowrap;
+}
+.camo-tracker-toolbar {
+  font-size: 0.8rem;
+  margin-block: 0.5rem;
+}
+#camo-save-status {
+  flex: 1 1 16rem;
+  min-block-size: 3em;
+  margin: 0;
+}
+.camo-view-buttons {
+  margin-block: 0.7rem;
+}
+.camo-view-buttons button[aria-pressed="true"] {
+  box-shadow: inset 0 -3px var(--accent, #d6bf75);
+  font-weight: 700;
+}
+.camo-view-buttons button[aria-pressed="false"] {
+  background: transparent;
+  color: var(--text, #e7ece1);
+  border: 1px solid var(--border, #4a554b);
+}
+.camo-view-buttons button {
+  flex: 1 1 10rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+#camo-tracker .camo-group {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin-block: calc(0.7rem + 0.4vw);
+}
+#camo-tracker .camo-group h2 {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 0 0.4rem;
+  border-bottom: 1px solid var(--border, #4a554b);
+  padding-block: 0.3rem;
+}
+[data-camo-group-count] {
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  display: inline-block;
+  min-inline-size: 5ch;
+}
+.camo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: calc(0.3rem + 0.25vw);
+}
+.camo-grid-special,
+.camo-grid-modeMastery {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.camo-grid li {
+  min-width: 0;
+}
+#camo-tracker .camo-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.2rem;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 0.2rem;
+  border: 3px solid #7a8480;
+  border-radius: 0.25rem;
+  text-align: left;
+  white-space: normal;
+  background: var(--surface, #202821);
+  color: var(--text, #e7ece1);
+  overflow-wrap: anywhere;
+}
+#camo-tracker .camo-tile[data-state="remaining"] {
+  border-color: #d45a64;
+}
+#camo-tracker .camo-tile[data-state="completed"] {
+  border-color: #65bb6c;
+}
+#camo-tracker .camo-tile[data-state="next"] {
+  border-color: #e5bd4c;
+}
+[data-theme="light"] #camo-tracker .camo-tile[data-state="remaining"] {
+  border-color: #a92838;
+}
+[data-theme="light"] #camo-tracker .camo-tile[data-state="completed"] {
+  border-color: #267a35;
+}
+[data-theme="light"] #camo-tracker .camo-tile[data-state="next"] {
+  border-color: #936700;
+}
+#camo-tracker .camo-tile[aria-expanded="true"] {
+  box-shadow: inset 0 0 0 2px var(--text, #eef1e7);
+}
+.camo-tile-image {
+  display: grid;
+  place-items: center;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--surface, #202821);
+}
+.camo-tile-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+}
+.camo-tile-image img[hidden] {
+  display: none;
+}
+.camo-tile strong {
+  font-size: clamp(0.7rem, calc(0.65rem + 0.25vw), 0.9rem);
+  line-height: 1.3;
+  min-block-size: 2.6em;
+}
+[data-camo-tile-status] {
+  font-size: 0.7rem;
+  line-height: 1.2;
+  min-block-size: 3.6em;
+}
+.camo-detail-panel {
+  border: 1px solid var(--border, #4a554b);
+  padding: calc(0.5rem + 0.3vw);
+  margin-block: 0.5rem;
+  border-radius: 0.3rem;
+}
+.camo-detail-panel[hidden],
+.camo-detail-panel article[hidden],
+[data-camo-view-panel][hidden],
+.camo-recovery[hidden] {
+  display: none;
+}
+.camo-detail-heading {
+  justify-content: space-between;
+}
+.camo-detail-heading h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+.camo-detail-panel p {
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+  margin-block: 0.5rem;
+}
+.camo-complete-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+.camo-detail-links,
+.camo-detail-panel small {
+  font-size: 0.75rem;
+}
+#camo-save-error {
+  max-inline-size: 85ch;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
 }

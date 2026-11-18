@@ -190,7 +190,29 @@ export function validateArmory(workspace) {
     nodes: 20000,
     string: Math.ceil((2 * 1024 * 1024) / 3) * 4,
   });
-  exact(workspace, "version revision builds observations acquisition");
+  exact(
+    workspace,
+    "version revision builds observations acquisition" +
+      (Object.hasOwn(workspace, "camoCompletions") ? " camoCompletions" : ""),
+  );
+  if (Object.hasOwn(workspace, "camoCompletions")) {
+    list(workspace.camoCompletions, 2048);
+    unique(workspace.camoCompletions);
+    for (const key of workspace.camoCompletions) {
+      text(key, 209, 1);
+      assert(
+        /^(?:weapon:[a-z0-9]+(?:-[a-z0-9]+)*:|shared:)[a-z0-9]+(?:-[a-z0-9]+)*$/.test(
+          key,
+        ),
+        "Invalid camo completion key",
+      );
+      for (const part of key.split(":").slice(1))
+        assert(
+          part.length <= 100 && !["constructor", "prototype"].includes(part),
+          "Invalid camo completion identity",
+        );
+    }
+  }
   assert(
     workspace.version === 1 &&
       Number.isSafeInteger(workspace.revision) &&

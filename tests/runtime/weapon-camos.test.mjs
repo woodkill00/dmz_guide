@@ -120,11 +120,15 @@ test("089 published guidance retains correct non-linear gates and reported label
   assert.match(progressionGuide(), /33 Harmonic Break/);
   assert.match(progressionGuide(), /automatic Prestige Master transition/);
   assert.match(html, /Prestige Master Level 73/);
-  assert.match(html, /Multiplayer · shared/);
-  assert.match(html, /DMZ · shared/);
+  assert.match(html, /Multiplayer mastery/);
+  assert.match(html, /DMZ mastery/);
   assert.match(html, /Warzone/);
   assert.match(html, /Spinal Verge/);
-  assert(!html.includes("<script"));
+  assert.equal((html.match(/<script /g) || []).length, 1);
+  assert.match(
+    html,
+    /<script type="application\/json" id="camo-progress-data">/,
+  );
 });
 test("089 every route and native gun/acquisition linkage is present without combat inventions", async () => {
   const pages = await featurePages();

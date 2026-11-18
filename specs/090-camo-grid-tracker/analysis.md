@@ -1,0 +1,23 @@
+# Independent read-only consistency analysis
+
+2026-11-18. Reviewed spec,plan,research,data-model,contracts/interaction,quickstart,tasks and reviewer checklist. No production edits or implementation approval.
+
+## Findings
+
+- **CAMOGRID-01 · P2 · plan.md Architecture vs research.md Reviewed class Gold thresholds:** plan permits parsing known Platinum prose or a single-Gold exception, while research requires an explicit reviewed class mapping and says not to parse arbitrary prose into gameplay rules. Pin one deterministic contract: reviewed9-class mapping8/5/2/3/3/3/4/4/1 validated against every relevant captured requirement, mismatch fails admission, metadata uses validated values. T003 must exercise all source classes and mismatch rejection; current Gold plus global counts remain distinct.
+- **CAMOGRID-02 · P2 · data-model.md completion grammar and research.md canonical identity paragraph:** research asks to document semantically misplaced imported keys, but model only says shared keys are used for known shared definitions. Specify whether syntactically valid weapon:han-86:divergence/shared:gold are rejected or retained as archived and ignored by current canonical state/counts. Do not silently canonicalize/duplicate or erase them. T003/T006 need this import/roundtrip/count oracle.
+- **CAMOGRID-03 · P2 · FR006, plan Architecture and T004/T006:** readable no-JS requirements must survive replacing rows with buttons and normally hidden inline panels. Pin a static/native or noscript fallback exposing all25 requirements/source references without executable buttons, including mastery, and add actual JavaScript-disabled acceptance to T006. General reference preservation does not currently supply a specific no-JS oracle for this redesign.
+
+## Coverage and assessment
+
+Six functional requirements/four success criteria have owners across T001–T008; zero orphan functional requirements. US1→T004/T006,US2→T003/T004/T006,US3→T003/T005/T006. Custom next-to-track semantics are clearly distinguished from source game-level eligibility.35x18 weapon identities plus7 shared =637; no duplicated35-way shared completion is planned.2048 optional keys remain additionally constrained by whole-workspace bounds. All existing armory writers/exports/previous snapshots/mixed backup and source/public separation are reviewed in research. No new provider collection or art rights expansion is requested.
+
+Planning gate remains open for the three contract/task repairs. CHK2/CHK3 checked for definition coverage, not executed safety/accessibility proof. CHK1/CHK4 pending owning-artifact fixes; final implementation review is separate. No additional private progress, automatic unlocks or migration is proposed by this review.
+## Reanalysis and closure — 2026-11-18
+
+CAMOGRID-01 closed: plan/data model now pin reviewed9-class Gold mapping8/5/2/3/3/3/4/4/1; build golden-checks every source Platinum condition and fails mismatch, without runtime prose inference. CAMOGRID-02 closed: syntactically valid misplaced imported keys are explicitly preserved as archived, ignored by current canonical states/counts and never silently rewritten. CAMOGRID-03 closed: interaction contract supplies visible noscript25-record fallback including six masteries, requirements/source/local image links; default checkboxes disabled and T006 explicitly requires JavaScript-disabled/no-provider/no-store browser oracle.
+
+Reread current plan/data-model/interaction/tasks: sixFR/fourSC have owners across eight tasks. No unresolved actionable planning blocker or contradiction identified. All four reviewer requirements criteria checked for definition readiness; historical pending-gate statements above are superseded. Implementation may proceed within this bounded plan. No actual code, schema behavior, lifecycle, screenshot geometry or runtime proof is approved by this planning gate. Independent implementation review must remain separate from planning checklist completion. Only reviewer-owned checklist/analysis edited.
+
+## Independent implementation convergence — 2026-11-18
+Final local implementation review PASS in final-review.md. CAMOTRACK01 deferred resume and02 no-JS local links are repaired with final regression evidence; narrow transaction-current validation, topology-only ceiling and theme surface fixes reviewed. SixFR/fourSC retain owning tasks/evidence, including convergence T009/T010. Direct log/source/visual/targeted-test inspection is distinguished from parent-run matrix/build/package receipts. No remaining actionable P1/P2 identified; T008 intended local commit/delivery remains implementer-owned, no remote CI/merge/public-artwork approval.

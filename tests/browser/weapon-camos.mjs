@@ -88,13 +88,20 @@ export async function runWeaponCamoTests({ browser, base, name = "chromium" }) {
     assert.equal(await page.locator(".camo-group").count(), 5);
     await page.locator(".camo-guidance").first().locator("summary").click();
     assert.match(await page.locator("main").innerText(), /33 Platinum/);
-    assert.match(await page.locator("#gold").innerText(), /100 Enemy Kills/);
-    const firstGroup = page.locator(".camo-group").first();
-    await firstGroup.locator("summary").focus();
+    await page.locator('[data-camo-tile="gold"]').click();
+    assert.match(
+      await page.locator('[data-camo-detail="gold"]').innerText(),
+      /100 Enemy Kills/,
+    );
+    const firstTile = page.locator('[data-camo-tile="military-camo-1"]');
+    await firstTile.focus();
     await page.keyboard.press("Enter");
-    assert.equal(await page.locator(".camo-group[open]").count(), 4);
-    await page.keyboard.press("Enter");
-    assert.equal(await page.locator(".camo-group[open]").count(), 5);
+    assert.equal(await firstTile.getAttribute("aria-expanded"), "true");
+    await page
+      .locator('[data-camo-tier="special"] [data-camo-tile]')
+      .first()
+      .click();
+    assert.equal(await firstTile.getAttribute("aria-expanded"), "true");
     if (localArtwork)
       await page.waitForFunction(() => {
         const img = document.querySelector("[data-camo-image]");
@@ -103,7 +110,7 @@ export async function runWeaponCamoTests({ browser, base, name = "chromium" }) {
     else
       await page.waitForFunction(() =>
         document
-          .querySelector(".camo-swatch")
+          .querySelector(".camo-tile-image")
           .classList.contains("camo-art-missing"),
       );
     if (
@@ -162,15 +169,6 @@ export async function runWeaponCamoTests({ browser, base, name = "chromium" }) {
     );
     await page.evaluate(() => (document.documentElement.style.fontSize = ""));
     await page.setViewportSize({ width: 1280, height: 900 });
-    const military = page.locator(".camo-group").nth(0),
-      special = page.locator(".camo-group").nth(1);
-    await military.locator("summary").focus();
-    await page.keyboard.press("Enter");
-    assert(
-      !(await military.getAttribute("open")) &&
-        (await special.getAttribute("open")) !== null,
-    );
-    await page.keyboard.press("Enter");
     const cached =
       (await readFile(
         new URL(
@@ -243,13 +241,13 @@ export async function runWeaponCamoTests({ browser, base, name = "chromium" }) {
     );
     await page.reload();
     await page
-      .locator(".camo-swatch")
+      .locator(".camo-tile-image")
       .first()
       .scrollIntoViewIfNeeded()
       .catch(() => {});
     await page.waitForFunction(() =>
       document
-        .querySelector(".camo-swatch")
+        .querySelector(".camo-tile-image")
         .classList.contains("camo-art-missing"),
     );
     assert(await page.locator(".camo-image-fallback").first().isVisible());

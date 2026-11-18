@@ -46,7 +46,11 @@ export async function readArmory() {
     r.onerror = () => reject(r.error);
   });
 }
-export async function saveArmory(candidate, expectedRevision) {
+export async function saveArmory(
+  candidate,
+  expectedRevision,
+  { requireValidCurrent = false } = {},
+) {
   validateArmory(candidate);
   const db = await database();
   return new Promise((resolve, reject) => {
@@ -56,11 +60,22 @@ export async function saveArmory(candidate, expectedRevision) {
     let result, error;
     r.onsuccess = () => {
       try {
-        const current = r.result?.value || emptyArmory();
+        const current =
+          r.result === undefined ? emptyArmory() : r.result?.value;
+        if (
+          !current ||
+          typeof current !== "object" ||
+          !Number.isSafeInteger(current.revision) ||
+          current.revision < 0
+        )
+          throw new Error(
+            "Invalid private armory envelope. Saved data retained; use backups/recovery.",
+          );
         if (current.revision !== expectedRevision)
           throw new Error(
             "Another tab saved newer armory data. Export your unsaved work, then reload.",
           );
+        if (requireValidCurrent) validateArmory(current);
         result = structuredClone(candidate);
         result.revision = expectedRevision + 1;
         validateArmory(result);

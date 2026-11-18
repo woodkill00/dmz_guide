@@ -1,0 +1,3 @@
+# Validation
+Build/start locally andopen /armory/camos/han-86/. Clicktile, readobjective, checkcompleted andverifygreen/count/reload. Mark8Military; allthreeunfinishedSpecialyellow; Gold staysreduntilallthreeSpecialdone. Undoearlierwithoutdeletinglaterchecks. Visitothergun:perweaponrecordsindependent,sharedDivergence/masterysame. TestMode mastery, keyboard/disclosure/tab switch and smallscreens.
+Exportarmoryfromworkbench,previewrestoreincludingcamocount, confirmandverify. Useisolatedbrowsercontextsforquota/stale/denied/corrupt. Runfocusedruntime/browseranddocumentedrepositorygates; recordactualreceiptsinacceptance.md, not assumedpass.

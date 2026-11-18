@@ -183,7 +183,7 @@ async function prepareRestore(candidate) {
     restorePreview = { candidate, revision, token };
     $("#workspace-preview").hidden = false;
     $("#workspace-preview").textContent =
-      `Review restore: ${candidate.builds.length} builds, ${candidate.observations.length} observations, ${Object.keys(candidate.acquisition).length} tracked weapons. This replaces this private workspace; its previous snapshot is retained. Captured revision ${revision}.`;
+      `Review restore: ${candidate.builds.length} builds, ${candidate.observations.length} observations, ${Object.keys(candidate.acquisition).length} tracked weapons, ${(candidate.camoCompletions || []).length} camo records (including archived). A legacy backup without camo records clears current camo ticks. This replaces this private workspace; its previous snapshot is retained. Captured revision ${revision}.`;
     $("#workspace-import-apply").hidden = false;
     status("Backup validated. Review the counts and apply explicitly.");
   } finally {

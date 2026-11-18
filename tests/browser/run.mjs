@@ -484,6 +484,7 @@ for (const script of [
   "dashboard-run.mjs",
   "weapon-acquisition-run.mjs",
   "weapon-camos.mjs",
+  "camo-tracker.mjs",
   "mission-encounter.mjs",
   "run-review.mjs",
 ])
