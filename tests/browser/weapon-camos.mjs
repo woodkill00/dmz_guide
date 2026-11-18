@@ -49,7 +49,10 @@ export async function runWeaponCamoTests({ browser, base, name = "chromium" }) {
         document.querySelector("[data-camo-count]").textContent ===
         "35 weapons",
     );
-    assert.equal(await page.locator("[data-camo-weapon]:visible").count(), 35);
+    assert.equal(await page.locator("[data-camo-weapon]").count(), 35);
+    await page
+      .locator('[data-overview-class="assault-rifle"] > summary')
+      .click();
     const saved = await page.evaluate(async () => {
       localStorage.setItem(
         "camo-preservation-fixture",

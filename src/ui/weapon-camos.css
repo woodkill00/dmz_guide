@@ -338,3 +338,274 @@
   font-size: 0.85rem;
   overflow-wrap: anywhere;
 }
+
+/* Compact class tracker: small native-resolution previews and inline details. */
+#camo-overview {
+  max-inline-size: 960px;
+  --camo-cyan: #65dbe5;
+  --border: var(--line, #394147);
+}
+.camo-class {
+  border: 1px solid var(--border, #394147);
+  border-radius: 0.6rem;
+  background: var(--surface, #192126);
+  margin-block: 0.65rem;
+  overflow: clip;
+}
+.camo-class > summary {
+  display: flex;
+  align-items: center;
+  gap: calc(0.5rem + 0.5vw);
+  padding: calc(0.65rem + 0.2vw);
+  cursor: pointer;
+  list-style: none;
+}
+.camo-class > summary::after {
+  content: "+";
+  font-size: 1.3rem;
+}
+.camo-class[open] > summary::after {
+  content: "−";
+}
+.camo-class-title {
+  flex: 1 1 9rem;
+  min-width: 0;
+}
+.camo-class-title strong,
+.camo-class-title small {
+  display: block;
+}
+.camo-class-title small {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.camo-class-medals,
+.camo-summary-medals {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: calc(0.3rem + 0.6vw);
+}
+.camo-summary-medals {
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  padding: calc(0.65rem + 0.5vw);
+  margin-block: 0.8rem;
+}
+.camo-medal {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 0.2rem;
+  text-align: center;
+  min-width: 0;
+  font-size: 0.75rem;
+}
+.camo-medal strong {
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+.camo-medal small {
+  font-size: 0.65rem;
+}
+.camo-medal-art {
+  display: grid;
+  place-items: center;
+  position: relative;
+  inline-size: 48px;
+  block-size: 48px;
+  border-radius: 50%;
+  padding: 3px;
+  background: conic-gradient(
+    var(--camo-cyan) var(--camo-progress, 0%),
+    var(--border) 0
+  );
+}
+.camo-medal-art img {
+  position: absolute;
+  inset: 4px;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0;
+}
+.camo-medal-art > span {
+  font-size: 0.85rem;
+}
+.camo-class-medals .camo-medal-art {
+  width: 30px;
+  height: 30px;
+}
+.camo-class-medals .camo-medal strong {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.camo-class-weapons {
+  border-top: 1px solid var(--border);
+  padding-inline: calc(0.5rem + 0.4vw);
+}
+.camo-overview-weapon {
+  padding-block: 0.65rem;
+  border-bottom: 1px solid var(--border);
+}
+.camo-overview-weapon:last-child {
+  border-bottom: 0;
+}
+.camo-overview-weapon > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+  margin-bottom: 0.45rem;
+}
+.camo-overview-weapon header a {
+  text-decoration: none;
+}
+[data-overview-weapon-count] {
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+}
+.camo-overview-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-block: 0.4rem;
+}
+.camo-overview-group-label {
+  flex: 0 0 7rem;
+  font-size: 0.75rem;
+}
+#camo-overview .camo-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+#camo-overview .camo-dot,
+#camo-tracker .camo-tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 48px;
+  block-size: 48px;
+  min-width: 0;
+  min-height: 0;
+  border: 3px solid #7a8480;
+  border-radius: 50%;
+  padding: 3px;
+  background: var(--surface, #192126);
+  color: var(--text);
+}
+#camo-overview .camo-dot .camo-tile-image,
+#camo-tracker .camo-tile-image {
+  border-radius: 50%;
+  width: 100%;
+}
+#camo-overview .camo-dot[data-state="remaining"] {
+  border-color: #d45a64;
+}
+#camo-overview .camo-dot[data-state="completed"] {
+  border-color: #65bb6c;
+}
+#camo-overview .camo-dot[data-state="next"] {
+  border-color: #e5bd4c;
+}
+[data-theme="light"] #camo-overview .camo-dot[data-state="remaining"] {
+  border-color: #a92838;
+}
+[data-theme="light"] #camo-overview .camo-dot[data-state="completed"] {
+  border-color: #267a35;
+}
+[data-theme="light"] #camo-overview .camo-dot[data-state="next"] {
+  border-color: #936700;
+}
+#camo-overview .camo-dot[aria-expanded="true"] {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+#camo-overview .camo-dot-mark,
+#camo-tracker .camo-dot-mark {
+  position: absolute;
+  inset-inline-end: -3px;
+  inset-block-end: -3px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.75rem;
+  border-radius: 50%;
+  line-height: 1;
+}
+#camo-overview .camo-dot .camo-image-fallback {
+  padding: 0;
+  font-size: 0.6rem;
+}
+#camo-overview .camo-view-buttons button {
+  flex: 0 1 auto;
+  min-block-size: 2.5rem;
+}
+#camo-overview .camo-view-buttons button[aria-pressed="true"] {
+  background: #65dbe5;
+  color: #10242a;
+  border-color: #65dbe5;
+  box-shadow: none;
+}
+#camo-overview #camo-save-status {
+  min-block-size: 1.5em;
+}
+#camo-overview .camo-detail-panel > button {
+  margin-inline-start: 0.7rem;
+}
+.camo-grid {
+  grid-template-columns: repeat(4, minmax(0, 48px));
+}
+.camo-grid-special,
+.camo-grid-modeMastery {
+  grid-template-columns: repeat(3, minmax(0, 48px));
+}
+#camo-tracker .camo-tile strong,
+#camo-tracker [data-camo-tile-status] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-block-size: 0;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+#camo-overview [hidden] {
+  display: none;
+}
+@media (max-width: 500px) {
+  .camo-class > summary {
+    flex-wrap: wrap;
+  }
+  .camo-class-medals {
+    order: 3;
+    flex: 1 1 100%;
+  }
+  .camo-overview-group-label {
+    flex-basis: 100%;
+  }
+  .camo-class-medals .camo-medal strong {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip-path: none;
+  }
+}
+
+#camo-overview {
+  margin-inline: auto;
+}
+.camo-overview-weapon header h2 {
+  font-size: 1rem;
+  margin: 0;
+}

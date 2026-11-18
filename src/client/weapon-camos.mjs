@@ -1,4 +1,6 @@
-const query = document.querySelector("[data-camo-query]"),
+const query = document.querySelector("#camo-overview")
+    ? null
+    : document.querySelector("[data-camo-query]"),
   category = document.querySelector("[data-camo-class]");
 function filter() {
   let visible = 0;
@@ -14,7 +16,7 @@ function filter() {
   document.querySelector("[data-camo-empty]").hidden = visible > 0;
 }
 query?.addEventListener("input", filter);
-category?.addEventListener("change", filter);
+if (query) category?.addEventListener("change", filter);
 query?.form?.addEventListener("submit", (event) => event.preventDefault());
 query?.form?.addEventListener("reset", () => setTimeout(filter, 0));
 // A fast native navigation can expose the input before this module finishes.

@@ -57,6 +57,39 @@ async function main(browser, base, name) {
     await p.goto(base + path);
     await ready(p);
     assert.equal(await p.locator("[data-camo-tier]:visible").count(), 4);
+    const geometry = await tile(p, "military-camo-1").evaluate((n) => {
+      const b = n.getBoundingClientRect(),
+        image = n.querySelector(".camo-tile-image").getBoundingClientRect(),
+        mark = n.querySelector("[data-camo-mark]");
+      return {
+        contains:
+          image.left >= b.left &&
+          image.right <= b.right &&
+          image.top >= b.top &&
+          image.bottom <= b.bottom,
+        absolute: getComputedStyle(mark).position,
+        visible: mark.getClientRects().length > 0,
+      };
+    });
+    assert(
+      geometry.contains,
+      "Swatch must stay inside its circular hit target",
+    );
+    assert.equal(geometry.absolute, "absolute");
+    assert(geometry.visible);
+
+    assert.equal(
+      await tile(p, "military-camo-1")
+        .locator("[data-camo-mark]")
+        .textContent(),
+      "●",
+    );
+    assert.equal(
+      await tile(p, "military-camo-2")
+        .locator("[data-camo-mark]")
+        .textContent(),
+      "○",
+    );
     assert.equal(await p.locator("[data-camo-tile]:visible").count(), 19);
     const databases = await p.evaluate(async () =>
       typeof indexedDB.databases === "function"

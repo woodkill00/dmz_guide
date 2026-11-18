@@ -1,3 +1,4 @@
+import { renderCamoOverview } from "./camo-overview-view.mjs";
 import { readWeaponCamos } from "../content/weapon-camos.mjs";
 import { readWeaponIntel } from "../content/weapon-intel.mjs";
 import { renderCamoGrid } from "./camo-grid-view.mjs";
@@ -28,7 +29,7 @@ export function renderWeaponCamos(
   const coverage = `<p class="camo-coverage">COD Central · reported ${e(catalog.provider.date)} · checked ${e(catalog.checkedAt)}. ${weapon ? "25 captured core entries" : "35 weapons · 875 source rows"}. <a href="#camo-sources">Coverage &amp; sources</a></p>`;
   const main = weapon
     ? renderCamoGrid(catalog, weapon) + progressionGuide()
-    : `<form class="camo-search" role="search"><label>Find weapon<input type="search" maxlength="100" data-camo-query></label><label>Weapon class<select data-camo-class><option value="">All classes</option>${[...new Set(catalog.weapons.map((w) => w.category))].map((c) => `<option value="${e(c)}">${e(className(c))}</option>`).join("")}</select></label><button type="reset">Reset</button><output data-camo-count aria-live="polite">35 weapons</output></form><div class="camo-directory">${catalog.weapons.map((w) => `<a class="camo-weapon-link" data-camo-weapon="${e(w.id)}" data-search="${e(w.name.toLowerCase())}" data-class="${e(w.category)}" href="/armory/camos/${w.id}/"><strong>${e(w.name)}</strong><small>${e(className(w.category))} ·25 entries</small><span aria-hidden="true">→</span></a>`).join("")}</div><p data-camo-empty hidden>No weapons match. Clear the search or choose All classes.</p>`;
+    : renderCamoOverview(catalog);
   return (
     head +
     nav +
@@ -49,7 +50,9 @@ export async function featurePages() {
     styles: ["/assets/src/ui/weapon-camos.css"],
     scripts: [
       "/assets/src/client/weapon-camos.mjs",
-      ...(w ? ["/assets/src/client/camo-tracker.mjs"] : []),
+      ...(w
+        ? ["/assets/src/client/camo-tracker.mjs"]
+        : ["/assets/src/client/camo-overview.mjs"]),
     ],
   }));
 }

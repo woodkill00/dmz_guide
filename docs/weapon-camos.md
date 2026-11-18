@@ -2,6 +2,10 @@
 
 Open **Weapons → Weapon camos** at `/armory/camos/`. Search or select a class, then choose a weapon. Every existing gun information page and acquisition row links its camo page. Season1 guns have camo/acquisition pages even where combat statistics are not yet catalogued.
 
+The compact tracker overview groups guns into expandable classes, inspired by [WZStats' public tracker layout](https://wzstats.gg/mw4/camo-tracker). Challenges shows Military, Special and Completionist circles; Prestige and Mode mastery have separate views. Select a circle to read and tick its challenge inline, or open the weapon name for its dedicated page. Search temporarily opens matching classes and restores your previous open classes when cleared. Progress totals always use the full catalog: 35 known guns, with Divergence counted once as a shared unlock. The published 33-unlock requirements stay separate from this coverage count.
+
+Small local swatches avoid enlarging the 128px source images. Borders and symbols indicate status together: ✓ completed, ● next to track, ○ remaining. Missing catalog data leaves weapon links available and completion editing disabled; reload to retry. Existing saved progress and backup recovery are shared between the overview and dedicated pages.
+
 The 18 November2026 snapshot captures CODCentral's35 released guns and25 core entries each (875 source rows). Military, Special, Completionist and Weapon Prestige are grouped separately from MP/DMZ mastery. Shared camo associations are repeated for browsing; they are not separate player goals. The official progression panel explains level gates and the published33-weapon thresholds without changing the source reports. Completion ticks are stored privately in the existing armory; they do not grant in-game rewards or change inventory, manuals or blueprints. Warzone/BlackCell/event/WarSpoils paths are separately referenced, with coverage gaps labelled.
 
 ## Track a camo
