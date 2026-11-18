@@ -57,3 +57,5 @@ The [visual site map](site-map.md) inventories all built pages, companion destin
 - [TroubleChute item reference](tcno-item-reference.md): sourced item details, loot sources, unlock references and local refresh/preview commands.
 
 - [Weapon acquisition checklist](../specs/088-weapon-acquisition/quickstart.md): researched weapons/blueprints, recorded manual extractions, source coverage and private backup recovery.
+
+- [Weapon camo reference](weapon-camos.md): per-gun requirements, unlock order, local swatches and source maintenance.

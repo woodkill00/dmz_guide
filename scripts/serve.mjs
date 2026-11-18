@@ -19,6 +19,20 @@ async function keyImage(raw) {
   }
 }
 let weaponArtReader;
+let camoImageReader;
+async function camoImage(raw) {
+  try {
+    camoImageReader ||= import("./camo-images.mjs").then(
+      ({ createCamoImageReader }) =>
+        createCamoImageReader({ root: resolve(root, "..") }),
+    );
+    return await (
+      await camoImageReader
+    )(raw);
+  } catch {
+    return { status: 404 };
+  }
+}
 async function weaponArt(raw) {
   weaponArtReader ||= import("./weapon-art.mjs").then(
     ({ createWeaponArtReader }) =>
@@ -177,6 +191,19 @@ const server = createServer(async (req, res) => {
         req.method === "HEAD"
           ? undefined
           : image.bytes || "Screenshot unavailable locally",
+      );
+    }
+    if (req.url?.startsWith("/local-camo-images/")) {
+      const art = await camoImage(req.url);
+      res.writeHead(art.status, {
+        "Content-Type": art.type || "text/plain",
+        "Cache-Control": "no-store",
+        "X-Content-Type-Options": "nosniff",
+      });
+      return res.end(
+        req.method === "HEAD"
+          ? undefined
+          : art.bytes || "Camo artwork unavailable locally",
       );
     }
     if (req.url?.startsWith("/local-weapon-art/")) {

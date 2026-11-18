@@ -1,0 +1,150 @@
+.camo-links,
+.camo-search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: calc(0.5rem + 0.2vw);
+}
+.camo-coverage,
+.camo-reference-note {
+  font-size: 0.85rem;
+  color: var(--muted, #aeb8b0);
+  max-width: 90ch;
+}
+.camo-search label {
+  display: grid;
+  gap: 0.25rem;
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+.camo-search input,
+.camo-search select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+.camo-directory {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 0.5rem;
+  margin-block: 1rem;
+}
+.camo-weapon-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.25rem 0.5rem;
+  padding: 0.7rem;
+  border: 1px solid var(--border, #4a554b);
+  border-radius: 0.4rem;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.camo-weapon-link small {
+  grid-column: 1;
+  font-size: 0.75rem;
+}
+.camo-weapon-link > span {
+  grid-column: 2;
+  grid-row: 1/3;
+  align-self: center;
+}
+.camo-weapon-link[hidden] {
+  display: none;
+}
+.camo-guidance,
+.camo-group {
+  border: 1px solid var(--border, #4a554b);
+  border-radius: 0.4rem;
+  padding: calc(0.5rem + 0.2vw);
+  margin-block: 0.75rem;
+}
+.camo-guidance summary,
+.camo-group summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 2rem;
+  line-height: 2;
+  overflow-wrap: anywhere;
+}
+.camo-guidance p,
+.camo-guidance li {
+  max-width: 95ch;
+  overflow-wrap: anywhere;
+}
+.camo-guidance li {
+  margin-block: 0.4rem;
+}
+.camo-group summary span {
+  font-weight: 400;
+  margin-left: 0.5rem;
+}
+.camo-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.camo-row {
+  display: grid;
+  grid-template-columns: calc(5rem + 1vw) minmax(0, 1fr);
+  align-items: center;
+  gap: calc(0.5rem + 0.5vw);
+  padding-block: 0.65rem;
+  border-top: 1px solid var(--border, #4a554b);
+  scroll-margin-top: 5rem;
+}
+.camo-swatch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--border, #4a554b);
+  border-radius: 0.35rem;
+  overflow: hidden;
+  background: var(--panel, #202821);
+}
+.camo-swatch img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+}
+.camo-swatch img[hidden] {
+  display: none;
+}
+.camo-image-fallback {
+  font-size: 0.7rem;
+  text-align: center;
+  line-height: 1.2;
+  padding: 0.3rem;
+  overflow-wrap: anywhere;
+  color: var(--text, #e5eadf);
+}
+.camo-objective {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.camo-objective h3 {
+  font-size: 1rem;
+  margin: 0.15rem 0;
+}
+.camo-objective p {
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
+}
+.camo-objective small {
+  font-size: 0.75rem;
+}
+@media (max-width: 420px) {
+  .camo-row {
+    grid-template-columns: 4rem minmax(0, 1fr);
+  }
+}
+
+.camo-group summary h2 {
+  display: inline;
+  font-size: 1rem;
+  margin: 0;
+}

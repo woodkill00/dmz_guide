@@ -160,6 +160,13 @@ const rows = [
     "/armory/acquisition/",
     "Manual ownership, extracted-manual camo progress and sourced blueprint checklists",
   ],
+  [
+    "weapon-camos",
+    "Weapon camos",
+    "Reference",
+    "/armory/camos/",
+    "Per-weapon camo pictures, requirements and unlock order",
+  ],
   ["guides", "Guides", "Reference", "/guides/", "Field manual"],
   [
     "weapon-updates",

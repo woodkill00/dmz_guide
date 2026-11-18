@@ -52,6 +52,7 @@ export function featureHub(feature) {
       "armory",
       "armory-workbench",
       "weapon-acquisition",
+      "weapon-camos",
       "weapon-updates",
     ].includes(id)
   )

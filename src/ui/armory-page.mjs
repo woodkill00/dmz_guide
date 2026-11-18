@@ -32,7 +32,7 @@ export function renderArmory(
   const weapon = weaponId ? db.weapons.find((w) => w.id === weaponId) : null;
   const count = db.attachments.filter((a) => a.kind === "standard").length;
   const header = gunsmithHeader(weapon);
-  const intro = `<div class="armory-links"><a href="/armory/">All weapons</a><a href="/armory/#attachments">Attachment directory</a><a href="/armory/#patch-history">Official patch history</a><a href="/weapons/">Catalog records</a><a href="/armory/updates/">Check for updates</a><a href="/armory/workbench/">Compare / build / track</a></div>${disclosure}`;
+  const intro = `<div class="armory-links"><a href="${weapon ? `/armory/camos/${weapon.id}/` : "/armory/camos/"}">Camo challenges</a><a href="/armory/">All weapons</a><a href="/armory/#attachments">Attachment directory</a><a href="/armory/#patch-history">Official patch history</a><a href="/weapons/">Catalog records</a><a href="/armory/updates/">Check for updates</a><a href="/armory/workbench/">Compare / build / track</a></div>${disclosure}`;
   const metrics = new Map(db.metrics.map((m) => [m.id, m]));
   const patches = db.patches
     .filter((p) => !weapon || p.weapon === weapon.id)

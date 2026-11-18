@@ -191,6 +191,7 @@ async function generate(dist) {
     "armory-page",
     "armory-workbench-page",
     "weapon-acquisition-page",
+    "weapon-camos-page",
     "keys-page",
     "hub-page",
     "main-hubs",

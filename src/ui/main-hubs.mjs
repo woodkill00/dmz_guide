@@ -85,7 +85,7 @@ export function featurePages() {
           "database",
           "Weapons and attachments",
           "Source reports retain their own mode, date and verification limits.",
-          ["armory", "weapons"],
+          ["armory", "weapons", "weapon-camos"],
         ) +
         section(
           "loadouts",

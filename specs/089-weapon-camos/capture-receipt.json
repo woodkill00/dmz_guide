@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-11-18",
+  "sourceURL": "https://codcentral.net/blog/mw4-dmz-camo-challenges/",
+  "sourceUpdatedAt": "2026-11-10",
+  "rawCaptureSHA256": "740ac6201877ff64628e1a06af028e1e6cc669a9cb0aec47b6dae22847a81a3c",
+  "catalogSHA256": "85c12a652c2ce0158b33b471aeccca0c4613e5cb324f4ee93dc4beeb5b95c707",
+  "weapons": 35,
+  "rows": 875,
+  "verifiedLocalSwatches": 875,
+  "localImageBytes": 3409942,
+  "localOnly": true,
+  "providerScriptsExecuted": false,
+  "publicArtworkBundled": false
+}

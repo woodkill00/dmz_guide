@@ -120,6 +120,9 @@ def verify_release():
                     if tag in ('img', 'a') and re.fullmatch(r'local-key-images/(?:icon-)?[a-z0-9]+(?:-[a-z0-9]+)*\.webp', path):
                         # Reviewed key imagery stays in the owner's local checkout; the page cites its source.
                         continue
+                    if tag in ('img', 'a') and re.fullmatch(r'local-camo-images/[a-z0-9]+(?:-[a-z0-9]+)*/[a-z0-9]+(?:-[a-z0-9]+)*\.webp', path):
+                        # Optional private camo swatches retain a labelled fallback and source link.
+                        continue
                     if tag == 'a' and path == 'local-site-audit/':
                         # This route exists only after the owner runs a local site audit.
                         continue
