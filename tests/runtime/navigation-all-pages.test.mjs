@@ -48,7 +48,7 @@ test("033 coverage repair: companion navigation is static, current and query-fre
     });
     assert.match(
       nav,
-      /href="http:\/\/127\.0\.0\.1:4173\/items\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/,
+      /href="\/local-services\/guide\/\?destination=%2Fitems%2F"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/,
     );
     assert.doesNotMatch(nav, /private:|pack=|<script|onclick/);
     assert.equal((nav.match(/aria-current="page"/g) || []).length, 1);

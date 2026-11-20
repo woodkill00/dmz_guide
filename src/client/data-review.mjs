@@ -1,3 +1,4 @@
+import { servicePath } from "../domain/local-services.mjs";
 import { init, state, esc, error } from "./common.mjs";
 import { dataReviewIssues } from "../domain/data-review.mjs";
 import { previewSourceImpact } from "../domain/source-impact.mjs";
@@ -87,8 +88,11 @@ function renderClaimQueue() {
           const newValue = JSON.stringify(row.newValue);
           const edit =
             packKey && row.state !== "added"
-              ? `http://127.0.0.1:4174/?${new URLSearchParams({ packKey, packId: state.pack.id, id: row.id, intent: "edit" })}`
-              : "http://127.0.0.1:4174/";
+              ? servicePath(
+                  "author",
+                  `/?${new URLSearchParams({ packKey, packId: state.pack.id, id: row.id, intent: "edit" })}`,
+                )
+              : servicePath("author", "/");
           return `<li><strong>${esc(row.field)}</strong> · ${esc(row.state)} · ${esc(row.entityId)}<br>Current: ${esc(oldValue)} (${esc(row.oldStatus || "none")}) → proposed: ${esc(newValue)} (${esc(row.newStatus || "none")})<br>${esc(row.applicability)} · ${esc(row.sourceDate || "source date unknown")} ${row.citation ? `<a href="${esc(row.citation)}" target="_blank" rel="noopener noreferrer">Citation</a>` : "Citation unavailable"}<br>${decisionFor(row)?.decision === "opened-studio" ? "Studio opened; waiting for a rebuilt catalog to match this proposal. " : ""}<a href="${esc(edit)}" rel="noreferrer" data-open-claim="${esc(row.id)}">Review and apply in Studio</a> <button type="button" data-reject-claim="${esc(row.id)}">Reject this proposal</button></li>`;
         })
         .join("")}</ul>`
@@ -181,7 +185,7 @@ function render() {
   const packKey = descriptor?.path.match(/\/([a-z0-9-]+)\.json$/)?.[1];
   const edit = (row) =>
     packKey && row.type !== "claim"
-      ? `<a href="${esc(`http://127.0.0.1:4174/?${new URLSearchParams({ packKey, packId: state.pack.id, id: row.id, intent: "edit" })}`)}" rel="noreferrer">Edit in Studio</a>`
+      ? `<a href="${esc(servicePath("author", `/?${new URLSearchParams({ packKey, packId: state.pack.id, id: row.id, intent: "edit" })}`))}" rel="noreferrer">Edit in Studio</a>`
       : "";
   document.querySelector("#review-list").innerHTML = rows.length
     ? `<ul>${rows.map((row) => `<li>${row.type === "claim" ? esc(row.name) : `<a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(row.id)}">${esc(row.name)}</a>`} · ${esc(row.reason)} · ${esc(row.type)} ${edit(row)}</li>`).join("")}</ul>`

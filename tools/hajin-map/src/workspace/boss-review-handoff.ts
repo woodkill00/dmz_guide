@@ -1,4 +1,4 @@
-import {guideOrigin,unifiedSite} from '../site-paths.ts';
+import {guideOrigin,guideOrigins} from '../site-paths.ts';
 import { el, button, note } from './dom.ts';
 import { recordKill, recordAttempt, recordDogTag, realDate } from './checklist.ts';
 import type { FieldGuide } from './field-guide.ts';
@@ -19,7 +19,7 @@ export function createBossReviewHandoff(h:Host){
  const timer=nonce?setInterval(ready,500):undefined;
  const deadline=nonce?setTimeout(()=>clearInterval(timer),30000):undefined;
  const onMessage=(event:MessageEvent)=>{
-  if(disposed||!nonce||event.source!==window.opener||!(unifiedSite?[location.origin]:['http://127.0.0.1:4173','http://localhost:4173']).includes(event.origin)||event.data?.type!=='dmz-boss-review-report'||event.data?.nonce!==nonce)return;
+  if(disposed||!nonce||event.source!==window.opener||!guideOrigins().includes(event.origin)||event.data?.type!=='dmz-boss-review-report'||event.data?.nonce!==nonce)return;
   try{
    if(!h.allowed())throw Error('Save or cancel the current map draft before reviewing this boss report.');
    const value=event.data.payload;

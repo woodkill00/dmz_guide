@@ -1,4 +1,4 @@
-import { mapMarkup, mapURL } from '../site-paths.ts';
+import {mapMarkup,mapURL,guideURL} from '../site-paths.ts';
 import {mountSafeRunLayout} from './layout.ts';
 import { mountSidebarSections } from "../map/sidebar-sections.ts";
 import L from "leaflet";
@@ -161,7 +161,7 @@ function accessInfo(s: Stop, details = false) {
     );
   for (const k of info.keys) {
     const link = el("a", "Key guide: " + k.name);
-    link.href = mapURL("http://127.0.0.1:4173/keys/" + encodeURIComponent(k.id) + "/");
+    link.href = guideURL('/keys/'+encodeURIComponent(k.id)+'/');
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.dataset.safeKey = k.id;

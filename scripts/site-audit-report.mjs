@@ -1,3 +1,4 @@
+import { servicePath, serviceOrigin } from "../src/domain/local-services.mjs";
 import { features, featureURL } from "../src/ui/feature-registry.mjs";
 import { parseBounded } from "../src/content/limits.mjs";
 import { e, renderLayout } from "../src/ui/render.mjs";
@@ -6,15 +7,48 @@ const targets = new Map([
   ...features
     .filter((f) => f.kind === "map" || f.kind === "studio")
     .map((f) => [f.id, featureURL(f)]),
-  ["weapon-manager", "http://127.0.0.1:4176/"],
+  ["weapon-manager", servicePath("manager")],
 ]);
+function admittedHref(target) {
+  const expected = targets.get(target.id);
+  if (target.href === expected) return true;
+  if (typeof target.href !== "string" || target.href.length > 4096)
+    return false;
+  try {
+    const url = new URL(target.href);
+    if (
+      url.protocol !== "http:" ||
+      !["127.0.0.1", "localhost"].includes(url.hostname) ||
+      url.username ||
+      url.password
+    )
+      return false;
+    if (url.pathname + url.search + url.hash === expected) return true;
+    const feature = features.find((f) => f.id === target.id);
+    const service =
+      target.id === "weapon-manager"
+        ? "manager"
+        : feature?.kind === "studio"
+          ? "author"
+          : "legacyMap";
+    return (
+      target.href ===
+      new URL(
+        feature?.path || "/",
+        serviceOrigin(service, "http://" + url.hostname),
+      ).href
+    );
+  } catch {
+    return false;
+  }
+}
 export function validateSiteAudit(value) {
   if (
     !value ||
     value.format !== "dmz-site-topology-audit" ||
     value.version !== 1 ||
     !Array.isArray(value.targets) ||
-    value.targets.length > 60 ||
+    value.targets.length > targets.size ||
     typeof value.checkedAt !== "string" ||
     value.checkedAt.length > 40
   )
@@ -27,7 +61,7 @@ export function validateSiteAudit(value) {
         !t ||
         seen.has(t.id) ||
         !targets.has(t.id) ||
-        t.href !== targets.get(t.id) ||
+        !admittedHref(t) ||
         typeof t.label !== "string" ||
         t.label.length > 180 ||
         !["passed", "failed", "unavailable", "unsupported"].includes(t.status)
@@ -52,7 +86,7 @@ export function validateSiteAudit(value) {
       return {
         id: t.id,
         label: t.label,
-        href: t.href,
+        href: targets.get(t.id),
         status: t.status,
         tabs: rows("tabs", 200),
         controls: rows("controls", 400),

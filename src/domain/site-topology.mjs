@@ -1,13 +1,18 @@
+import {
+  servicePath,
+  serviceOrigin,
+  LOCAL_SERVICE_PORTS,
+} from "./local-services.mjs";
 import { features, featureURL } from "../ui/feature-registry.mjs";
 import { parseBounded } from "../content/limits.mjs";
 import { TOPOLOGY_JSON_NODES } from "../content/site-topology-limits.mjs";
 export { TOPOLOGY_JSON_NODES } from "../content/site-topology-limits.mjs";
-const guideOrigin = "http://127.0.0.1:4173";
-const companionOrigins = new Set([
-  "http://127.0.0.1:4173",
-  "http://127.0.0.1:4174",
-  "http://127.0.0.1:4176",
-]);
+const guideOrigin = serviceOrigin("guide", "http://127.0.0.1");
+const companionOrigins = new Set(
+  Object.keys(LOCAL_SERVICE_PORTS).map((service) =>
+    serviceOrigin(service, "http://127.0.0.1"),
+  ),
+);
 export const decodeHTML = (s) =>
   String(s).replace(/&(#x[0-9a-f]+|#\d+|amp|quot|apos|lt|gt);/gi, (m, k) => {
     if (k[0] === "#") {
@@ -229,7 +234,7 @@ export function buildSiteTopology(pages, renderedPages) {
   nodes.push({
     id: "service:weapon-manager",
     label: "Weapon update manager",
-    href: "http://127.0.0.1:4176/",
+    href: servicePath("manager"),
     kind: "companion",
     group: "Manage",
     family: "manager",
@@ -265,14 +270,16 @@ export function buildSiteTopology(pages, renderedPages) {
       if (companionOrigins.has(u.origin)) {
         const target =
           nodes.find(
-            (n) => n.kind === "companion" && new URL(n.href,guideOrigin).href === u.href,
+            (n) =>
+              n.kind === "companion" &&
+              new URL(n.href, guideOrigin).href === u.href,
           ) ||
           nodes.find(
             (n) =>
               n.kind === "companion" &&
-              new URL(n.href,guideOrigin).origin === u.origin &&
-              new URL(n.href,guideOrigin).pathname === u.pathname &&
-              !new URL(n.href,guideOrigin).search,
+              new URL(n.href, guideOrigin).origin === u.origin &&
+              new URL(n.href, guideOrigin).pathname === u.pathname &&
+              !new URL(n.href, guideOrigin).search,
           );
         if (target) edge(from.id, target.id, kind, link.href, link.label);
         else
@@ -289,7 +296,28 @@ export function buildSiteTopology(pages, renderedPages) {
         });
       return;
     }
-    const target = byPath.get(u.pathname) || nodes.find(n=>n.kind==='companion' && new URL(n.href,guideOrigin).href===u.href) || nodes.find(n=>n.family==='map' && new URL(n.href,guideOrigin).pathname===u.pathname && !new URL(n.href,guideOrigin).search);
+    const directoryTarget =
+      /^\/local-services\/(author|manager|guide|legacyMap)\/$/.test(u.pathname)
+        ? nodes.find(
+            (n) =>
+              n.kind === "companion" &&
+              new URL(n.href, guideOrigin).pathname === u.pathname,
+          )
+        : null;
+    const target =
+      directoryTarget ||
+      byPath.get(u.pathname) ||
+      nodes.find(
+        (n) =>
+          n.kind === "companion" &&
+          new URL(n.href, guideOrigin).href === u.href,
+      ) ||
+      nodes.find(
+        (n) =>
+          n.family === "map" &&
+          new URL(n.href, guideOrigin).pathname === u.pathname &&
+          !new URL(n.href, guideOrigin).search,
+      );
     if (!target) {
       if (!/\.[a-z0-9]+$/i.test(u.pathname))
         issues.push({ kind: "missing-route", from: from.id, href: link.href });

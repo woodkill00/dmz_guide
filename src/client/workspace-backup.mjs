@@ -35,7 +35,7 @@ function showInspection(bundle, projection) {
     heading.textContent = `${row.label} · ${row.bytes.toLocaleString()} bytes`;
     const note = document.createElement("p");
     note.textContent = row.restore
-      ? `Download this checked module, then import it at its owner tool. Origin: ${row.origin}. No restore has occurred.`
+      ? `Download this checked module, then import it at its owner tool. Origin: ${row.origin}. Restore tools open at the current site address. No restore has occurred.`
       : "This module has no supported import tool yet. Retain the original export; no restore is offered.";
     section.append(heading, note);
     const button = document.createElement("button");
@@ -52,7 +52,7 @@ function showInspection(bundle, projection) {
     section.append(button);
     if (row.restore) {
       const link = document.createElement("a");
-      link.href = row.origin + row.restore;
+      link.href = row.restore;
       link.textContent = "Open restore page";
       if (new URL(link.href).origin !== location.origin) {
         link.target = "_blank";

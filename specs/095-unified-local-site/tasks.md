@@ -14,3 +14,5 @@
 Dependencies T001→T002→T003→T004/T005→T006/T007→T008→T009→T010; edits serial. FR01 T004/005/008/009; FR02 T003/005/009; FR03 T003/006/009; FR04 T008/009; FR05–06 T007/009; FR07 T004/005/009; FR08 T005/009; FR09 T004/005/008/009; FR10 T004/005/008/009; FR11 all verification/review. Preserve staged088/093/094 and distinguish historical acceptance.
 
 - [x] T011 [FR05,06,11] Convergence repair: portable versioned X01 photo storage bytes with legacy Blob reads, immutable snapshot/revision, bounded decode and unchanged backup/CAS; regress WebKit uploaded photo save and complete existing three-engine X01 owner workflow.
+
+- [x] T012 [FR02,03,04,06,08,10,11] Repair all fixed local navigation, including generated editor/preview and audit links; central finite service directory/config/startup defaults, safe current-site restore links, raw Host liveness, source/output guards and alternate-port/editor/backup/handoff browser proof. Exact evidence in link-repair.md.

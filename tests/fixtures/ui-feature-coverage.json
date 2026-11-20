@@ -1,8 +1,8 @@
 {
   "source": "src/ui/feature-registry.mjs",
-  "head": "1ee41ba0280b1b8bb289313ac530bf8e05fe34b8",
+  "head": "256be760a1ec5d894c07faa429d0a96497c741db",
   "hashes": {
-    "src/ui/feature-registry.mjs": "195baaec3de9ed9a8ad5a5e04382d1573260172885781b742204a3a332d683e1",
+    "src/ui/feature-registry.mjs": "177bfefbf2485954d8013b8a9ca0dca481b8c3d1747b86035487f6d9f5741e3a",
     "src/ui/map-destinations.json": "7eda40618c784083b520f1ad9c356fe3d284ce83a394389f9d6527beb7da85f0",
     "specs/071-ui-ux-implementation/feature-coverage.md": "3d4511eb0781dfc70cfddac5d2423913ec442a109c6dc84306e5e8f9e9b16add"
   },

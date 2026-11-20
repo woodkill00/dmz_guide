@@ -1,3 +1,4 @@
+import { servicePath } from "../../src/domain/local-services.mjs";
 import assert from "node:assert/strict";
 import { chromium, firefox, webkit } from "playwright";
 import { startBrowserServer } from "./server.mjs";
@@ -23,6 +24,15 @@ samples.push(
   records.find((r) => r.recordType === "item" && r.kind === "weapon"),
 );
 const server = await startBrowserServer();
+function readURL(value, base = server.base) {
+  const link = new globalThis.URL(value, base);
+  if (link.pathname === "/local-services/author/") {
+    assert.equal(link.origin, new globalThis.URL(server.base).origin);
+    assert.equal(link.searchParams.getAll("destination").length, 1);
+    return new globalThis.URL(link.searchParams.get("destination"), base);
+  }
+  return link;
+}
 async function revealEditing(page) {
   const action = page.locator("[data-compose-record]");
   await action.waitFor({ state: "attached" });
@@ -44,7 +54,7 @@ try {
         );
         await page.goto(server.base + recordUrl(record));
         const published = await revealEditing(page);
-        const target = new URL(await published.getAttribute("href"));
+        const target = readURL(await published.getAttribute("href"));
         assert.equal(target.searchParams.get("id"), record.id);
         assert.equal(target.searchParams.get("packKey"), entry.key);
         assert.equal(target.searchParams.get("intent"), "compose");
@@ -58,9 +68,9 @@ try {
           await page
             .locator("#local-records [data-compose-record]")
             .getAttribute("href"),
-          target.href,
+          servicePath("author", target.pathname + target.search + target.hash),
         );
-        const privateLink = new URL(
+        const privateLink = readURL(
           await page.locator("[data-private-edit]").getAttribute("href"),
           server.base,
         );
@@ -70,7 +80,7 @@ try {
         if (!(await reference.isVisible()))
           await page.locator(".item-edit-actions > summary").click();
         await reference.click();
-        assert.equal(new URL(page.url()).pathname, recordUrl(record));
+        assert.equal(readURL(page.url()).pathname, recordUrl(record));
         assert(await page.locator("[data-compose-record]").count());
       }
       await page.goto(server.base + "/items/manage/");
@@ -80,14 +90,14 @@ try {
           if (p.tagName === "DETAILS") p.open = true;
       });
       const maintenanceDetail = await row.locator("th a").getAttribute("href"),
-        maintenanceEdit = new URL(
+        maintenanceEdit = readURL(
           await row.locator("[data-edit-item]").getAttribute("href"),
         );
       assert.equal(maintenanceEdit.searchParams.get("intent"), "compose");
       await row.locator("th a").click();
-      assert.equal(new URL(page.url()).pathname, maintenanceDetail);
+      assert.equal(readURL(page.url()).pathname, maintenanceDetail);
       assert.equal(
-        new URL(
+        readURL(
           await page.locator("[data-compose-record]").getAttribute("href"),
         ).searchParams.get("id"),
         maintenanceEdit.searchParams.get("id"),
@@ -97,14 +107,14 @@ try {
       );
       const upgrade = page.locator("[data-full-record]").first();
       await upgrade.waitFor();
-      const upgradeTarget = new URL(
+      const upgradeTarget = readURL(
         await upgrade.getAttribute("href"),
         server.base,
       );
       await upgrade.click();
       const upgradeEditor = await revealEditing(page);
       assert.equal(
-        new URL(await upgradeEditor.getAttribute("href")).searchParams.get(
+        readURL(await upgradeEditor.getAttribute("href")).searchParams.get(
           "id",
         ),
         upgradeTarget.searchParams.get("id"),
@@ -117,7 +127,7 @@ try {
         await page.goto(server.base + path);
         const action = page.locator(`[data-compose-source="${adapter}"]`);
         assert.equal(
-          new URL(await action.getAttribute("href")).searchParams.get(
+          readURL(await action.getAttribute("href")).searchParams.get(
             "adapter",
           ),
           adapter,

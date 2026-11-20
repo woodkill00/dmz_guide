@@ -1,3 +1,4 @@
+import { servicePath } from "../../src/domain/local-services.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import destinations from "../../src/ui/map-destinations.json" with { type: "json" };
@@ -21,10 +22,11 @@ test("058 every shared surface exposes boss in Track and every authored map dest
     });
     assert.equal((html.match(/aria-label="Main navigation"/g) || []).length, 1);
     for (const [id] of all) {
-      const prefix = ["map", "help"].includes(surface)
-        ? ""
-        : "/map";
-      const href = prefix + "/?tool=" + id;
+      const prefix = ["map", "help"].includes(surface) ? "" : "/map";
+      const href =
+        surface === "studio"
+          ? servicePath("guide", "/map/?tool=" + id)
+          : prefix + "/?tool=" + id;
       assert.equal(
         html.split('href="' + href + '"').length - 1,
         1,

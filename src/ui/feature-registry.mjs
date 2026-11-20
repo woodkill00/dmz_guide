@@ -1,5 +1,6 @@
 import destinations from "./map-destinations.json" with { type: "json" };
 import { mapPath } from "../domain/map-routes.mjs";
+import { servicePath } from "../domain/local-services.mjs";
 export const featureGroups = ["Map", "Prepare", "Track", "Reference", "Manage"];
 const rows = [
   [
@@ -277,11 +278,23 @@ export const features = Object.freeze([
     kind: "map",
   })),
 ]);
-export function featureURL(feature, surface = "guide", { mapBase = ["map", "help"].includes(surface) ? "/" : "/map/" } = {}) {
-  if (feature.kind === "studio") return "http://127.0.0.1:4174" + feature.path;
+export function featureURL(
+  feature,
+  surface = "guide",
+  { mapBase = ["map", "help"].includes(surface) ? "/" : "/map/" } = {},
+) {
+  if (feature.kind === "studio")
+    return surface === "studio"
+      ? feature.path
+      : servicePath("author", feature.path);
   if (feature.kind === "map")
-    return mapPath(feature.path, { standalone: mapBase === "/" });
-  return (surface === "guide" || (["map","help"].includes(surface) && mapBase === "/map/") ? "" : "http://127.0.0.1:4173") + feature.path;
+    return ["studio", "manager"].includes(surface)
+      ? servicePath("guide", mapPath(feature.path))
+      : mapPath(feature.path, { standalone: mapBase === "/" });
+  return surface === "guide" ||
+    (["map", "help"].includes(surface) && mapBase === "/map/")
+    ? feature.path
+    : servicePath("guide", feature.path);
 }
 export function featureForPage(page) {
   return (

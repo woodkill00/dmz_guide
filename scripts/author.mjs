@@ -1,3 +1,4 @@
+import { LOCAL_SERVICE_PORTS } from "../src/domain/local-services.mjs";
 import { parseSpecialTarget, registerSpecialTarget } from "./page-adapters.mjs";
 import { renderPageEditor } from "../src/ui/page-editor-page.mjs";
 import { createPageEditorStore } from "./page-editor-store.mjs";
@@ -10,6 +11,8 @@ import {
   resolveAuthorTarget,
 } from "../src/content/author-target.mjs";
 import { createServer } from "node:http";
+import { createServiceLinkHandler } from "./local-service-links.mjs";
+const serviceLinks = createServiceLinkHandler({ service: "author" });
 import { readFile } from "node:fs/promises";
 import { resolve, dirname, join, extname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -57,6 +60,9 @@ const staticFiles = new Set([
   "src/client/navigation.mjs",
   "src/client/navigation-state.mjs",
   "src/domain/navigation-hub.mjs",
+  "src/domain/map-routes.mjs",
+  "src/domain/local-services.mjs",
+  "src/domain/local-services.json",
   "src/ui/feature-registry.mjs",
   "src/ui/map-destinations.json",
   "src/client/navigation-menu.mjs",
@@ -167,7 +173,7 @@ async function readJSON(request) {
 }
 export async function createAuthorServer({
   root = sourceRoot,
-  port = 4174,
+  port = LOCAL_SERVICE_PORTS.author,
   sessionMs = 12 * 60 * 60 * 1000,
   editorToolsOptions = {},
 } = {}) {
@@ -250,6 +256,7 @@ export async function createAuthorServer({
           req.url.length > 2048
         )
           throw new AuthorError("INVALID_REQUEST", "Invalid request URL", 400);
+        if (serviceLinks(req, res)) return;
         const url = new URL(req.url, origin);
         if (
           /%(?:2f|5c|00|2e)/i.test(url.pathname) ||
@@ -645,10 +652,10 @@ async function main() {
       );
     return;
   }
-  let port = 4174;
+  let port = LOCAL_SERVICE_PORTS.author;
   if (args.length) {
     if (args.length !== 2 || args[0] !== "--port" || !/^\d+$/.test(args[1]))
-      throw new Error("Usage: npm run author -- [--port 4174]");
+      throw new Error("Usage: npm run author -- [--port NUMBER]");
     port = Number(args[1]);
     if (port < 1 || port > 65535) throw new Error("Port must be 1 to 65535");
   }

@@ -139,7 +139,8 @@ export async function inspectWorkspaceManifest(bundle) {
       !row ||
       !WORKSPACE_MODULES[row.id] ||
       seen.has(row.id) ||
-        (row.origin !== WORKSPACE_MODULES[row.id].origin && !(row.id==='map'&&row.origin==='http://127.0.0.1:5175')) ||
+      (row.origin !== WORKSPACE_MODULES[row.id].origin &&
+        !(row.id === "map" && row.origin === "http://127.0.0.1:5175")) ||
       typeof row.name !== "string" ||
       !row.name ||
       row.name.length > 120 ||

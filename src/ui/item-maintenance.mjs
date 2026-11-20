@@ -1,3 +1,4 @@
+import { servicePath } from "../domain/local-services.mjs";
 import {
   escapeHTML as e,
   isFixture,
@@ -23,7 +24,7 @@ export function renderItemMaintenance(entries) {
         if (!groups.has(category)) groups.set(category, []);
         groups.get(category).push(item);
       }
-      return `<section class="panel"><h2>${e(pack.title)}</h2><p>${e(pack.coverage.note)}</p><p>${pack.items.length} item definitions · ${pack.items.filter((i) => !i.rarity).length} without recorded rarity</p><p><a class="button" data-add-item href="${e("http://127.0.0.1:4174" + itemCreatePath({ packKey: key, packId: pack.id }))}" rel="noreferrer">Add item to this catalog ↗</a> <a href="/inventory/?pack=${encodeURIComponent(pack.id)}">Open its inventory</a></p>${[...groups].map(([category, items]) => `<details><summary>${e(category)} (${items.length})</summary><div class="table-scroll"><table><thead><tr><th scope="col">Item</th><th scope="col">Rarity</th><th scope="col">Edit</th></tr></thead><tbody>${items.map((i) => `<tr><th scope="row"><a href="${e(recordUrl({ ...i, recordType: "item" }))}">${e(i.name)}</a></th><td>${e(itemRarity(i))}</td><td><a data-edit-item href="${e("http://127.0.0.1:4174" + authorPath({ packKey: key, packId: pack.id, id: i.id, intent: "compose" }))}">Edit<span class="sr-only"> ${e(i.name)}</span></a></td></tr>`).join("")}</tbody></table></div></details>`).join("")}</section>`;
+      return `<section class="panel"><h2>${e(pack.title)}</h2><p>${e(pack.coverage.note)}</p><p>${pack.items.length} item definitions · ${pack.items.filter((i) => !i.rarity).length} without recorded rarity</p><p><a class="button" data-add-item href="${e(servicePath("author", itemCreatePath({ packKey: key, packId: pack.id })))}" rel="noreferrer">Add item to this catalog ↗</a> <a href="/inventory/?pack=${encodeURIComponent(pack.id)}">Open its inventory</a></p>${[...groups].map(([category, items]) => `<details><summary>${e(category)} (${items.length})</summary><div class="table-scroll"><table><thead><tr><th scope="col">Item</th><th scope="col">Rarity</th><th scope="col">Edit</th></tr></thead><tbody>${items.map((i) => `<tr><th scope="row"><a href="${e(recordUrl({ ...i, recordType: "item" }))}">${e(i.name)}</a></th><td>${e(itemRarity(i))}</td><td><a data-edit-item href="${e(servicePath("author", authorPath({ packKey: key, packId: pack.id, id: i.id, intent: "compose" })))}">Edit<span class="sr-only"> ${e(i.name)}</span></a></td></tr>`).join("")}</tbody></table></div></details>`).join("")}</section>`;
     })
     .join("")}`;
 }

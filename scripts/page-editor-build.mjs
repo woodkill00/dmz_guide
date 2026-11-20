@@ -1,3 +1,4 @@
+import { servicePath } from "../src/domain/local-services.mjs";
 import { assertSafePath, readCatalogFile } from "./catalog.mjs";
 import {
   SOURCE_ADAPTERS,
@@ -75,7 +76,7 @@ export async function attachSpecialEditors({
       const compose = saved
         ? `<aside class="notice">This source includes local edits. Original source references do not independently verify those edits.</aside>${renderPageComposition(saved.document, { projections: specialProjections(saved.record), imageURL: (id) => bundledAssetURL(saved.entry.pack, id, bundled.manifest), referenceURL: (t) => referenceRoutes[stableJSON(t)] || null })}`
         : "";
-      const action = `${correctionTable}<p class="record-author-actions"><a class="button" href="http://127.0.0.1:4174${e(specialEditorURL(target))}" data-compose-source="${adapter}">Edit ${adapter === "weapon-acquisition" ? e(record.name) + " reference" : "page"}</a><small>Local repository editor · private player progress stays separate. Start with <code>npm run author</code> if the editor is offline.</small></p>${chapter ? "" : compose}`;
+      const action = `${correctionTable}<p class="record-author-actions"><a class="button" href="${e(servicePath("author", specialEditorURL(target)))}" data-compose-source="${adapter}">Edit ${adapter === "weapon-acquisition" ? e(record.name) + " reference" : "page"}</a><small>Local repository editor · private player progress stays separate. Start with <code>npm run author</code> if the editor is offline.</small></p>${chapter ? "" : compose}`;
       if (chapter && saved)
         page.body = page.body.replace(
           /<div data-chapter-report>[\s\S]*?<\/div>/,

@@ -85,10 +85,7 @@ function mapHandoff(plan) {
 function sendPlanToMap(plan) {
   const payload = mapHandoff(plan);
   const nonce = crypto.randomUUID();
-  const target = window.open(
-    `/map/?tool=explore&run-plan=${nonce}`,
-    "_blank",
-  );
+  const target = window.open(`/map/?tool=explore&run-plan=${nonce}`, "_blank");
   if (!target)
     throw Error(
       "Map window blocked. Download the plan and import it on the local map.",

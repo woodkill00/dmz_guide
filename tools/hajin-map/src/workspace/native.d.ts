@@ -37,6 +37,10 @@ declare module "*/content/portable.mjs" {
   export function bytesFromBase64(text: string): Uint8Array;
 }
 
+declare module "*/domain/local-services.mjs" {
+ export function servicePath(service:string,path?:string):string;
+ export function serviceOrigin(service:string,origin:string):string;
+}
 declare module "*/domain/map-preferences.mjs" {
  export function exportPreferences(storage: Storage, origin: string): any;
  export function parsePreferences(text: string): any;

@@ -26,8 +26,13 @@ try {
     page.on("pageerror", (e) => errors.push(e.message));
     // Preserve the published Edit href and actual click, redirect transport only
     // into this disposable author checkout; never save into the owner's repo.
-    await page.route("http://127.0.0.1:4174/**", (route) => {
-      const url = new URL(route.request().url());
+    await page.route("**/local-services/author/**", async (route) => {
+      // Verify the real directory response, then keep authoring inside the
+      // disposable fixture instead of following a redirect to an owner tool.
+      const response = await route.fetch({ maxRedirects: 0 });
+      assert.equal(response.status(), 302);
+      const url = new URL(response.headers().location);
+      assert.equal(url.hostname, "127.0.0.1");
       const destination = (f.app.url + url.pathname + url.search)
         .replaceAll("&", "&amp;")
         .replaceAll('"', "&quot;");
@@ -72,7 +77,13 @@ try {
         );
         const edit = page.locator('[data-compose-source="mission-chapter"]');
         assert.equal(
-          new URL(await edit.getAttribute("href")).searchParams.get("id"),
+          new URL(
+            new URL(
+              await edit.getAttribute("href"),
+              page.url(),
+            ).searchParams.get("destination"),
+            page.url(),
+          ).searchParams.get("id"),
           `${set}-1`,
         );
         await page.screenshot({
@@ -134,8 +145,14 @@ try {
         new URL(page.url()).pathname,
         "/objectives/mw4--order-gear-up/",
       );
-      const missionEdit = new URL(
+      const missionBridge = new URL(
         await page.locator("[data-compose-record]").getAttribute("href"),
+        page.url(),
+      );
+      assert.equal(missionBridge.pathname, "/local-services/author/");
+      const missionEdit = new URL(
+        missionBridge.searchParams.get("destination"),
+        page.url(),
       );
       assert.equal(missionEdit.searchParams.get("id"), "mw4:order-gear-up");
       assert.equal(

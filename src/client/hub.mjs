@@ -1,3 +1,4 @@
+import { serviceOrigin } from "../domain/local-services.mjs";
 import { features, featureURL } from "../ui/feature-registry.mjs";
 import { getNavigation, toggleFeaturePin } from "./navigation-state.mjs";
 const $ = (id) => document.getElementById(id);
@@ -110,11 +111,11 @@ if ($("hub-pack")) {
     box.replaceChildren();
     await Promise.all(
       [
-        [4173, "Guide"],
-        [5175, "Map"],
-        [4174, "Content Studio"],
-        [4176, "Update manager"],
-      ].map(async ([port, name]) => {
+        ["guide", "Guide"],
+        ["map", "Map"],
+        ["author", "Content Studio"],
+        ["manager", "Update manager"],
+      ].map(async ([service, name]) => {
         const li = document.createElement("li");
         li.textContent = name + ": checking…";
         box.append(li);
@@ -123,13 +124,30 @@ if ($("hub-pack")) {
           cancel = () => abort.abort();
         controller.signal.addEventListener("abort", cancel, { once: true });
         try {
-          await fetch("http://127.0.0.1:" + port + "/", {
-            mode: "no-cors",
-            redirect: "error",
-            signal: abort.signal,
-          });
+          const response = await fetch(
+            service === "map"
+              ? "/local-site/status.json"
+              : service === "guide"
+                ? "/"
+                : serviceOrigin(service, location.origin) + "/",
+            {
+              mode: ["guide", "map"].includes(service)
+                ? "same-origin"
+                : "no-cors",
+              redirect: "error",
+              signal: abort.signal,
+            },
+          );
+          if (service === "map" && !(await response.json()).maps)
+            throw Error("Map service not ready");
+          if (["map", "guide"].includes(service) && !response.ok)
+            throw Error("Service not ready");
           if (!controller.signal.aborted)
-            li.textContent = name + ": reachable (transport only)";
+            li.textContent =
+              name +
+              (["map", "guide"].includes(service)
+                ? ": ready"
+                : ": reachable (transport only)");
         } catch {
           if (!controller.signal.aborted)
             li.textContent = name + ": unavailable or blocked by this browser";

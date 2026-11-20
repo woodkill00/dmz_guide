@@ -20,3 +20,9 @@ For old map data, run `npm run local:legacy-map`, open http://127.0.0.1:5175/ in
 Imports compare all selected target values before writing. Changing a file, selection or page expires the review; competing writes require a new review. Failed writes roll back only unchanged bytes written by that operation. An uncertain rollback preserves other writers and asks you to keep the export and inspect before retrying. No guide inventory, account credentials, source-update jobs or backup receipts are transferred.
 
 Map artifacts stay under ignored `.local/unified-map/`; provider resources stay in the existing local map public directories. Neither is copied into the public guide build or static archive. Source updates retain their existing local request/token protections; opt in with `DMZ_ENABLE_SOURCE_UPDATES=1` when starting the unified service. Build promotion uses separate last-good boundaries for guide and map; it is not an atomic joint release.
+
+## Navigation configuration
+
+Guide and map navigation uses paths on the current site address. Optional tool links go through the same site's finite `/local-services/` directory, which resolves the configured companion service without starting it. Defaults for the reader, author tool, weapon manager and legacy map are centralized in `src/domain/local-services.json`; their launchers read the same configuration. Existing API origin/token restrictions still apply. Portable guide-only archives show setup instructions for these optional tools.
+
+The navigation regression gate checks UI/client/map modules and page generators for embedded loopback URLs, audits generated guide/map pages, and exercises actual menu navigation on another port in Chromium, Firefox and WebKit. The runtime audit accepts `DMZ_SITE_URL` to select a different loopback reader origin. Old recorded origins in backup metadata remain provenance; restore links open the current site's owner tools.

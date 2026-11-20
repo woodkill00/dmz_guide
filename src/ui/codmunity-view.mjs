@@ -1,3 +1,4 @@
+import { servicePath } from "../domain/local-services.mjs";
 import { e } from "./render.mjs";
 import {
   COD_LEGEND,
@@ -12,7 +13,7 @@ const cell = (value, mode) =>
     : `${e(Number(value.toFixed(3)))}${mode === "mw4" ? ' <abbr class="cod-badge" title="CODMunity MW4 Multiplayer; not tested in DMZ">*WZ</abbr>' : " · DMZ report"}`;
 export function renderCodmunity(db, data, weapon = null) {
   const snapshots = data?.modes || {};
-  return `<section id="codmunity-data" class="section"><h2>CODMunity baseline <span class="cod-badge">*WZ</span></h2><p class="notice">${e(COD_LEGEND)} Official launch and older community reports remain separately labelled below.</p><p><a href="${COD_URLS.mw4}" target="_blank" rel="noopener noreferrer">Preferred MW4 comparator ↗</a> · <a href="${COD_URLS.dmz}" target="_blank" rel="noopener noreferrer">DMZ comparator ↗</a> · <a href="http://127.0.0.1:4176/" target="_blank" rel="noopener noreferrer">Check / review updates ↗</a></p>${[
+  return `<section id="codmunity-data" class="section"><h2>CODMunity baseline <span class="cod-badge">*WZ</span></h2><p class="notice">${e(COD_LEGEND)} Official launch and older community reports remain separately labelled below.</p><p><a href="${COD_URLS.mw4}" target="_blank" rel="noopener noreferrer">Preferred MW4 comparator ↗</a> · <a href="${COD_URLS.dmz}" target="_blank" rel="noopener noreferrer">DMZ comparator ↗</a> · <a href="${servicePath("manager", "/")}" target="_blank" rel="noopener noreferrer">Check / review updates ↗</a></p>${[
     "mw4",
     "dmz",
   ]

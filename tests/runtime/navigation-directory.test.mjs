@@ -140,10 +140,7 @@ test("033 FR-004: intermediary navigation carries only a bounded pack to same-or
     "utf8",
   ).replace(/^import .*?;\r?\n/gms, "");
   const run = (search, owningPack = "") => {
-    const anchors = [
-      { href: "https://guide.test/items/" },
-      { href: "/map/" },
-    ];
+    const anchors = [{ href: "https://guide.test/items/" }, { href: "/map/" }];
     vm.runInNewContext(source, {
       ID,
       // This VM isolates catalog propagation. Real DOM dismissal is exercised

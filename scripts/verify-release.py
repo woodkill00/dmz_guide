@@ -114,6 +114,9 @@ def verify_release():
                     if name not in ('href', 'src') or not value or not value.startswith('/'):
                         continue
                     path = unquote(urlsplit(value).path).lstrip('/')
+                    if tag == 'a' and path in ('local-services/guide/', 'local-services/author/', 'local-services/manager/', 'local-services/legacyMap/'):
+                        # Finite optional local service navigation has setup instructions in a guide-only archive.
+                        continue
                     if tag == 'a' and path in ('map/', 'map/x01/', 'map/safes/', 'map/loot/', 'map/migrate/', 'map/index.html', 'map/help.html', 'map/safes.html', 'map/loot.html', 'map/x01.html', 'map/x01-dmzhub.html', 'map/x01-workspace.html', 'map/migration.html'):
                         # Finite optional local map entries have an explicit setup response in guide-only releases.
                         continue

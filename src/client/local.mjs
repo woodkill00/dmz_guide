@@ -1,3 +1,4 @@
+import { servicePath } from "../domain/local-services.mjs";
 import { enhanceItemWorkspace } from "./item-workspace.mjs";
 import { repositoryEditTarget } from "../domain/repository-edit-target.mjs";
 import { adviceMarkup } from "./upgrade-advice-view.mjs";
@@ -112,7 +113,7 @@ async function render() {
     const detailMarkup = renderDetail(chosen, [state.pack], {
       authorActions:
         !chosen.spoiler || state.profile.spoilers
-          ? `<aside class="record-author-actions" aria-label="Page editing">${repositoryTarget ? `<a class="button primary" data-compose-record href="${esc("http://127.0.0.1:4174/?" + new URLSearchParams(repositoryTarget))}">Edit page</a><a class="button" data-repository-reference href="${esc(recordUrl(chosen))}">${focusedItem ? "Repository item &amp; photo actions" : "Repository reference page"}</a>` : "<p>Private-only record · no repository editor target.</p>"}<a class="button" data-private-edit href="/editor/?pack=${encodeURIComponent(state.pack.id)}&amp;record=${encodeURIComponent(chosen.id)}">${focusedItem ? "Edit private item &amp; pictures" : "Edit private copy"}</a><small>${repositoryTarget ? "Edit page saves repository content through the local author service. " : ""}Private-copy edits and player progress stay separate.</small></aside>`
+          ? `<aside class="record-author-actions" aria-label="Page editing">${repositoryTarget ? `<a class="button primary" data-compose-record href="${esc(servicePath("author", "/?" + new URLSearchParams(repositoryTarget)))}">Edit page</a><a class="button" data-repository-reference href="${esc(recordUrl(chosen))}">${focusedItem ? "Repository item &amp; photo actions" : "Repository reference page"}</a>` : "<p>Private-only record · no repository editor target.</p>"}<a class="button" data-private-edit href="/editor/?pack=${encodeURIComponent(state.pack.id)}&amp;record=${encodeURIComponent(chosen.id)}">${focusedItem ? "Edit private item &amp; pictures" : "Edit private copy"}</a><small>${repositoryTarget ? "Edit page saves repository content through the local author service. " : ""}Private-copy edits and player progress stay separate.</small></aside>`
           : "",
     });
     markup +=

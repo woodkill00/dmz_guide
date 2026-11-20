@@ -1,3 +1,4 @@
+import { servicePath } from "../domain/local-services.mjs";
 import {
   renderPageComposition,
   pageProjectionParts,
@@ -312,12 +313,14 @@ export function renderDetail(
     readerBase = "",
   } = {},
 ) {
+  const readerHref = (path) =>
+    typeof readerBase === "function" ? readerBase(path) : readerBase + path;
   record = displayRecord(record);
   const pack = record.pack;
   const overview =
     record.recordType === "item" ? itemOverview(record, pack) : null;
   if (!record.spoiler && pack.id === x01Printer.packId && x01Uses(record.id))
-    authorActions += `<aside class="notice"><a href="${e(readerBase)}/recipes/x01/">X01 printer recipes and uses</a> · Requires materials carried in X01; separate from FOB printing.</aside>`;
+    authorActions += `<aside class="notice"><a href="${e(readerHref("/recipes/x01/"))}">X01 printer recipes and uses</a> · Requires materials carried in X01; separate from FOB printing.</aside>`;
   const records = allRecords([pack]);
   const find = (id) => records.find((r) => r.id === id);
   const ref = (id) => {
@@ -411,7 +414,7 @@ export function renderDetail(
         "Recipes making this item",
         produces.filter((r) => !r.spoiler),
       ) || "<p>No crafting recipe recorded.</p>"
-    }${list("Used to craft", crafting)}</section><section id="item-uses" tabindex="-1" class="panel item-uses"><h2>Item uses</h2>${list("Missions", missions)}${list("Upgrades", upgrades)}${list("Mapped locations", actualLocations)}${!uses.length && !produces.length ? "<p>No crafting or mission uses recorded.</p>" : ""}<p><a href="${e(readerBase)}/local/?pack=${encodeURIComponent(pack.id)}&amp;id=${encodeURIComponent(record.id)}">Track inventory and upgrade progress</a></p></section>`;
+    }${list("Used to craft", crafting)}</section><section id="item-uses" tabindex="-1" class="panel item-uses"><h2>Item uses</h2>${list("Missions", missions)}${list("Upgrades", upgrades)}${list("Mapped locations", actualLocations)}${!uses.length && !produces.length ? "<p>No crafting or mission uses recorded.</p>" : ""}<p><a href="${e(readerHref(`/local/?pack=${encodeURIComponent(pack.id)}&id=${encodeURIComponent(record.id)}`))}">Track inventory and upgrade progress</a></p></section>`;
   }
 
   if (record.stats && (record.recordType !== "item" || record.stats.length))
@@ -474,7 +477,7 @@ export function renderDetail(
     const pageLabel = Number.isSafeInteger(page)
       ? `${roster?.placement === "reported-sequence" ? "REPORTED CHAPTER SLOT " : "PAGE "}${page}`
       : "PAGE UNKNOWN";
-    detail += `<section class="panel mission-detail"><p class="eyebrow">${roster ? "HAJIN" : x01 ? "X01" : "DMZ"} / ${e(pageLabel)}</p><h2>Mission tasks</h2>${record.steps?.length ? `<ol class="mission-task-list">${record.steps.map((step) => `<li>${e(step)}</li>`).join("")}</ol>` : "<p>Steps need source review. Check your current game Orders screen.</p>"}${(roster || officialX01) && orderLocationNotes[record.id] ? `<p><strong>Reported location:</strong> ${e(orderLocationNotes[record.id])}</p>` : ""}<p class="mission-detail-actions"><a href="${e(readerBase + listPage)}">${roster || x01 ? "All missions in this roster" : "All missions"}</a>${sourcePage ? ` · <a href="${e(sourcePage)}" target="_blank" rel="noopener noreferrer">COD Central tips and screenshots ↗</a>` : ""}</p>${intel ? `<details class="mission-rewards"><summary>Reported page rewards</summary><ul>${intel.rewards.map((reward) => `<li>${e(reward)}</li>`).join("")}</ul><p>Page rewards are community reports and may differ in your current game. Reviewed ${e(intel.reviewedAt)}.</p>${`<p><a href="http://127.0.0.1:4174/?adapter=mission-chapter&amp;catalogId=mission-chapters&amp;id=${x01 ? "x01" : "hajin"}-${page}&amp;intent=compose">Edit this chapter report</a></p>`}${intel.notes ? `<p>${e(intel.notes)}</p>` : ""}<p>${intel.sourceKeys.map((key) => `<a href="${e(missionSources[key])}" target="_blank" rel="noopener noreferrer">${e(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details>` : ""}</section>`;
+    detail += `<section class="panel mission-detail"><p class="eyebrow">${roster ? "HAJIN" : x01 ? "X01" : "DMZ"} / ${e(pageLabel)}</p><h2>Mission tasks</h2>${record.steps?.length ? `<ol class="mission-task-list">${record.steps.map((step) => `<li>${e(step)}</li>`).join("")}</ol>` : "<p>Steps need source review. Check your current game Orders screen.</p>"}${(roster || officialX01) && orderLocationNotes[record.id] ? `<p><strong>Reported location:</strong> ${e(orderLocationNotes[record.id])}</p>` : ""}<p class="mission-detail-actions"><a href="${e(readerHref(listPage))}">${roster || x01 ? "All missions in this roster" : "All missions"}</a>${sourcePage ? ` · <a href="${e(sourcePage)}" target="_blank" rel="noopener noreferrer">COD Central tips and screenshots ↗</a>` : ""}</p>${intel ? `<details class="mission-rewards"><summary>Reported page rewards</summary><ul>${intel.rewards.map((reward) => `<li>${e(reward)}</li>`).join("")}</ul><p>Page rewards are community reports and may differ in your current game. Reviewed ${e(intel.reviewedAt)}.</p>${`<p><a href="${e(servicePath("author", `/?adapter=mission-chapter&catalogId=mission-chapters&id=${x01 ? "x01" : "hajin"}-${page}&intent=compose`))}">Edit this chapter report</a></p>`}${intel.notes ? `<p>${e(intel.notes)}</p>` : ""}<p>${intel.sourceKeys.map((key) => `<a href="${e(missionSources[key])}" target="_blank" rel="noopener noreferrer">${e(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details>` : ""}</section>`;
     if (picture)
       detail += `<section class="mission-picture-gallery" aria-labelledby="mission-pictures-heading"><h2 id="mission-pictures-heading">Guide pictures (${pictureIds.length})</h2><p>Open a picture for a larger view. Screenshots are source reports; check the current game for changes.</p><div class="mission-picture-grid">${picture}</div>${pack.id === "official:mw4-dmz-starter" && pictureIds.some((id) => id.startsWith("codcentral:order-shot-")) ? '<p class="mission-picture-rights">COD Central screenshots. Public redistribution permission was asserted by the project owner; underlying game imagery remains with its rights holders.</p>' : ""}</section>`;
   }

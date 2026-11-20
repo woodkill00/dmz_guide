@@ -28,6 +28,8 @@ export function renderItemWorkspace({
   catalogURL = "/items/",
   readerBase = "",
 }) {
+  const readerHref = (path) =>
+    typeof readerBase === "function" ? readerBase(path) : readerBase + path;
   const pack = encodeURIComponent(record.pack.id),
     id = encodeURIComponent(record.id);
   const category = itemSection(record);
@@ -53,6 +55,6 @@ export function renderItemWorkspace({
       )
       .map(([key, label]) => `<a href="#item-${key}">${label}</a>`)
       .join("")}</nav>
-    <div class="item-workspace-grid"><aside class="item-action-card panel" aria-label="Your item tracking"><h2>Your collection</h2><div data-item-collection><p>Keep quantities and blueprint ownership in your saved inventory.</p></div><a class="button primary" href="${e(readerBase)}/inventory/?pack=${pack}&amp;item=${id}">Inventory &amp; blueprint</a>${target}<a class="button" href="${e(readerBase)}/quick-collect/?pack=${pack}">Quick collect</a><a class="button" href="${e(readerBase)}/field-desk/?pack=${pack}&amp;item=${id}">Field desk &amp; discoveries</a>${primaryEdit ? `<p class="item-primary-edit">${primaryEdit}</p>` : ""}${secondaryActions ? `<details class="item-edit-actions"><summary>Edit &amp; photos</summary>${secondaryActions}</details>` : ""}</aside>
+    <div class="item-workspace-grid"><aside class="item-action-card panel" aria-label="Your item tracking"><h2>Your collection</h2><div data-item-collection><p>Keep quantities and blueprint ownership in your saved inventory.</p></div><a class="button primary" href="${e(readerHref(`/inventory/?pack=${pack}&item=${id}`))}">Inventory &amp; blueprint</a>${target}<a class="button" href="${e(readerHref(`/quick-collect/?pack=${pack}`))}">Quick collect</a><a class="button" href="${e(readerHref(`/field-desk/?pack=${pack}&item=${id}`))}">Field desk &amp; discoveries</a>${primaryEdit ? `<p class="item-primary-edit">${primaryEdit}</p>` : ""}${secondaryActions ? `<details class="item-edit-actions"><summary>Edit &amp; photos</summary>${secondaryActions}</details>` : ""}</aside>
     <div class="item-workspace-content">${detail}${picture ? `<details class="panel item-pictures"><summary>Item photos</summary>${picture}</details>` : ""}<div id="item-private-picture-slot"></div><section id="item-sources" class="item-evidence" tabindex="-1">${evidence}</section></div></div></article>`;
 }

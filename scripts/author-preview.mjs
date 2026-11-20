@@ -1,3 +1,4 @@
+import { servicePath } from "../src/domain/local-services.mjs";
 import { renderMainNavigation } from "../src/ui/site-navigation.mjs";
 import { authorPath } from "../src/content/author-target.mjs";
 import { renderAuthorActions } from "../src/ui/author-actions.mjs";
@@ -56,7 +57,7 @@ export function renderSavedPreview(
         referenceURL,
         catalogURL: "/",
         showPlanner: false,
-        readerBase: "http://127.0.0.1:4173",
+        readerBase: (path) => servicePath("guide", path),
         imageLoading: "eager",
         authorActions: renderAuthorActions(record, {
           compose: authorPath({

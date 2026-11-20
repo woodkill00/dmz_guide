@@ -1,3 +1,4 @@
+import { servicePath } from "../src/domain/local-services.mjs";
 import { chapterOverrides } from "./page-adapters.mjs";
 import { missionChapterPages } from "../src/ui/mission-chapter-page.mjs";
 import { attachSpecialEditors } from "./page-editor-build.mjs";
@@ -148,7 +149,7 @@ async function generate(dist) {
       record.recordType === "objective" &&
       ["dmz-order", "dmz-story"].includes(record.track);
     const missionActions = mission
-      ? `<nav class="record-author-actions" aria-label="Mission actions"><a class="button primary" href="${e(`http://127.0.0.1:4174${authorPath({ packKey: entry.key, packId: record.pack.id, id: record.id, intent: "edit" })}`)}" rel="noreferrer">Edit mission content in Content Studio ↗</a><a class="button" href="${e(missionAuditHref(record.pack.id, record.id))}">Audit this mission</a><a href="${e(guidance)}#edit">Editor setup</a></nav>`
+      ? `<nav class="record-author-actions" aria-label="Mission actions"><a class="button primary" href="${e(servicePath("author", authorPath({ packKey: entry.key, packId: record.pack.id, id: record.id, intent: "edit" })))}" rel="noreferrer">Edit mission content in Content Studio ↗</a><a class="button" href="${e(missionAuditHref(record.pack.id, record.id))}">Audit this mission</a><a href="${e(guidance)}#edit">Editor setup</a></nav>`
       : "";
     pages.push({
       path: recordUrl(record),
@@ -174,7 +175,15 @@ async function generate(dist) {
             }),
           )?.document,
           authorActions: renderAuthorActions(record, {
-            compose: `http://127.0.0.1:4174${authorPath({ packKey: entry.key, packId: record.pack.id, id: record.id, intent: "compose" })}`,
+            compose: servicePath(
+              "author",
+              authorPath({
+                packKey: entry.key,
+                packId: record.pack.id,
+                id: record.id,
+                intent: "compose",
+              }),
+            ),
             edit: guidance + "#edit",
             images: guidance + "#images",
           }),

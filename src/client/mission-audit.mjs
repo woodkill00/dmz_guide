@@ -1,3 +1,4 @@
+import { servicePath } from "../domain/local-services.mjs";
 import {
   init,
   state,
@@ -232,7 +233,7 @@ function render() {
     pageLinks +
     `${active.kind === "mission" ? `<a href="${esc(selectedMissionHref(active.objectiveId))}">Open mission page</a> · ` : ""}` +
     (studio
-      ? `<a href="${esc(`http://127.0.0.1:4174${studio}`)}" rel="noreferrer">${active.kind === "mission" ? "Edit this mission" : "Add mission in Content Studio"}</a> <small>Start the local Content Studio first. No record is created until you review and save it there.</small>`
+      ? `<a href="${esc(servicePath("author", `${studio}`))}" rel="noreferrer">${active.kind === "mission" ? "Edit this mission" : "Add mission in Content Studio"}</a> <small>Start the local Content Studio first. No record is created until you review and save it there.</small>`
       : "Repository authoring is unavailable for this private catalog; open its private editor from the catalog tools.");
 }
 async function write(candidate) {

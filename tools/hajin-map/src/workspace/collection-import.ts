@@ -1,4 +1,4 @@
-import { mapURL,guideOrigin,unifiedSite } from '../site-paths.ts';
+import {guideURL,guideOrigins} from '../site-paths.ts';
 import {
   validateCollectionHandoff,
   validateRunPlanHandoff,
@@ -67,7 +67,7 @@ export function createCollectionImport(h: Host) {
       window.opener &&
       !window.opener.closed
     )
-      for(const targetOrigin of (unifiedSite?[guideOrigin()]:["http://127.0.0.1:4173","http://localhost:4173"])) window.opener?.postMessage(
+      for(const targetOrigin of guideOrigins()) window.opener?.postMessage(
         runNonce
           ? { type: "dmz-run-plan-ready", nonce: runNonce }
           : { type: "dmz-collection-ready", nonce },
@@ -92,7 +92,7 @@ export function createCollectionImport(h: Host) {
       disposed ||
       (!nonce && !runNonce) ||
       event.source !== window.opener ||
-      !(unifiedSite?[location.origin]:["http://127.0.0.1:4173", "http://localhost:4173"]).includes(
+      !guideOrigins().includes(
         event.origin,
       ) ||
       !(
@@ -219,7 +219,7 @@ export function createCollectionImport(h: Host) {
           "Return to Guide plan",
           () => {
             window.open(
-              mapURL("http://127.0.0.1:4173/run-plan/"),
+              guideURL('/run-plan/'),
               "_blank",
               "noopener",
             );

@@ -1,5 +1,8 @@
+import { LOCAL_SERVICE_PORTS } from "../src/domain/local-services.mjs";
 import { resolvePresentation } from "../src/ui/presentation-config.mjs";
 import { createServer } from "node:http";
+import { createServiceLinkHandler } from "./local-service-links.mjs";
+const serviceLinks = createServiceLinkHandler({ service: "manager" });
 import { spawn } from "node:child_process";
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { readFile, mkdir, open, rename, unlink } from "node:fs/promises";
@@ -174,7 +177,7 @@ export function runWeaponJob(root, action, fields = {}) {
 }
 export async function createWeaponManager({
   root = sourceRoot,
-  port = 4176,
+  port = LOCAL_SERVICE_PORTS.manager,
   sessionMs = 12 * 60 * 60 * 1000,
   runner = runWeaponJob,
   monitor = false,
@@ -266,6 +269,7 @@ export async function createWeaponManager({
             !topNavigation)
         )
           reject("Cross-origin manager access refused", 403);
+        if (serviceLinks(req, res)) return;
         if (
           !req.url?.startsWith("/") ||
           req.url.startsWith("//") ||
@@ -480,7 +484,7 @@ if (
   process.argv[1] &&
   resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 ) {
-  let port = 4176;
+  let port = LOCAL_SERVICE_PORTS.manager;
   const args = process.argv.slice(2);
   if (args.length) {
     if (

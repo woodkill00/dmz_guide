@@ -1,3 +1,4 @@
+import { servicePath } from "../domain/local-services.mjs";
 import { parseRecoveryDraft } from "../content/studio-recovery.mjs";
 import {
   parseCreateTarget,
@@ -731,8 +732,8 @@ async function loadCatalog() {
       : `${target.entry.pack.id} · ${target.record.id}`;
     $("#return-record").href = initialCreateTarget
       ? initialCreateTarget.create === "objectives"
-        ? "http://127.0.0.1:4173/missions/audit/"
-        : "http://127.0.0.1:4173/items/manage/"
+        ? servicePath("guide", "/missions/audit/")
+        : servicePath("guide", "/items/manage/")
       : previewPath(initialTarget);
     initialTargetApplied = true;
   }

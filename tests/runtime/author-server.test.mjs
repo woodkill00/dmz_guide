@@ -434,3 +434,15 @@ test("Studio image semantics module is available through real author HTTP allowl
   assert.match(response.headers.get("content-type"), /javascript/);
   assert.match(await response.text(), /export function imageDescription/);
 });
+test("095 Studio serves every shared navigation dependency with its correct MIME type", async (t) => {
+  const { app } = await fixture(t);
+  for (const [path, type] of [
+    ["map-routes.mjs", "javascript"],
+    ["local-services.mjs", "javascript"],
+    ["local-services.json", "json"],
+  ]) {
+    const response = await fetch(app.url + "/assets/src/domain/" + path);
+    assert.equal(response.status, 200, path);
+    assert.match(response.headers.get("content-type"), new RegExp(type));
+  }
+});
