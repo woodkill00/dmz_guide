@@ -145,9 +145,16 @@ export function hydrationPins(scripts) {
 export async function withInertParser(work, signal) {
   signal?.throwIfAborted();
   const browser = await chromium.launch({
+    headless: true,
     timeout: 10000,
     chromiumSandbox: true,
-    ...(process.env.CI ? { channel: "chrome" } : {}),
+    // Windows headless-shell is a console executable and flashes a window per
+    // source. Full bundled Chromium has a GUI subsystem but still runs headless.
+    ...(process.env.CI
+      ? { channel: "chrome" }
+      : process.platform === "win32"
+        ? { channel: "chromium" }
+        : {}),
   });
   const abort = () => {
     void browser.close();
@@ -433,7 +440,19 @@ export async function normalizedCapture({
       x,
       y,
     };
-    if(id==='mapgenie'&&row.allowReference&&[x,y].some(v=>v<0||v>1)){Object.assign(r,{x:null,y:null,placement:'reference',sourceX:row.x,sourceY:row.y});}
+    if (
+      id === "mapgenie" &&
+      row.allowReference &&
+      [x, y].some((v) => v < 0 || v > 1)
+    ) {
+      Object.assign(r, {
+        x: null,
+        y: null,
+        placement: "reference",
+        sourceX: row.x,
+        sourceY: row.y,
+      });
+    }
     if (row.notes != null && row.notes !== "")
       r.notes = String(row.notes).slice(0, 3500);
     if (row.floor != null) r.floor = row.floor;
