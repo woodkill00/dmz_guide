@@ -12,6 +12,7 @@ import {
   validateBundle,
 } from "./unified-map-bundle.mjs";
 import { createConnection } from "node:net";
+import { mapUpdateSetting } from "./local-map-settings.mjs";
 const root = resolve(fileURLToPath(new URL("..", import.meta.url))),
   port = LOCAL_SERVICE_PORTS.guide,
   base = serviceOrigin("guide", "http://127.0.0.1"),
@@ -48,6 +49,7 @@ const valid = (s) =>
   s.mapBase === "/map/" &&
   /^[a-f0-9]{64}$/.test(s.bundleId);
 async function main() {
+  const updateSetting = await mapUpdateSetting(root);
   const existing = await probe();
   if (valid(existing)) {
     const own = await validateBundle(bundleRoot(root), {
@@ -57,6 +59,15 @@ async function main() {
       throw Error(
         "Running service belongs to a different or stale build. Stop that service explicitly before restarting.",
       );
+    {
+      const capability = await fetch(base + "/map/__map-updates/capabilities", {
+        signal: AbortSignal.timeout(2500),
+      }).then((response) => response.json());
+      if ((capability.enabled === true) !== (updateSetting === "1"))
+        throw Error(
+          "The running site's map update capability does not match the owner setting. Restart the local service to apply the setting; if still unavailable, review the local source authorization. No process was stopped.",
+        );
+    }
     console.log("Unified site already running: " + base + "/");
     return;
   }
@@ -97,7 +108,12 @@ async function main() {
       ["scripts/serve.mjs", "--maps", "--port", String(port)],
       {
         cwd: root,
-        env: { ...process.env, HOST: "127.0.0.1", PORT: String(port) },
+        env: {
+          ...process.env,
+          DMZ_ENABLE_SOURCE_UPDATES: updateSetting,
+          HOST: "127.0.0.1",
+          PORT: String(port),
+        },
         detached: true,
         windowsHide: true,
         stdio: ["ignore", out.fd, err.fd],

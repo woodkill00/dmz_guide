@@ -117,3 +117,17 @@ PASS; no remaining actionable blocker in inspected amendment. UNIFY-07 is closed
 Directly read latest post-format095-dynamic-browser.log2117pages/112992hrefs and all-three actual menus/four maps remain on alternate52743;095-links-mission-nav.log all-three29chapter/editor/notes-layout save/reload PASS;095-links-final-runtime.log36/36 PASS;095-links-live-studio.log catalog loaded/map directory resolves/no edits/no errors. Earlier affected generator13/owner25/all-page three-engine/backup/run-plan proof remains recorded above. Final full format receipt passes. These are parent-executed logs independently inspected, not a new broad reviewer-run suite.
 
 Current-byte packaging45844 remains a separate delivery step still running at review; earlier2417 verification describes its prior snapshot and is not labelled fresh completion here. Parent must record terminal package and reconcile final acceptance before claiming current delivery. Earlier1113/244/Python/release evidence stays historical where affected bytes changed; no second broad aggregate or remote CI/merge approval inferred. Only reviewer-owned final-review.md edited.
+
+## Map update startup amendment review —2026-11-20
+
+Inspected mapUpdateSetting and launcher wiring: only existing owner flag is read, explicit process environment wins including0, missing flag/file defaults disabled, unrelated dotenv values are not forwarded, and new owned child receives normalized flag. Existing API token/Origin/authorization checks are unchanged. No collection/activation performed by reviewer.
+
+### UNIFY-08 / P2 — existing enabled service ignores explicit disable
+
+scripts/local.mjs existing-service branch checks capabilities only when desired setting is1. If service was started enabled and owner now explicitly sets DMZ_ENABLE_SOURCE_UPDATES=0, launcher reports already-running success without noticing capability still enabled. This bypasses stated explicit-environment precedence for reused services. Compare desired/current capability in both directions; on mismatch require explicit restart without terminating another process. Test desired0/currentenabled and desired1/currentdisabled, retaining unrelated listener/authorization protections. New-child flag helper is correct; existing-service opt-out is not yet covered. Runtime/live capability receipts and final disposition remain pending. Reviewer note only.
+
+## Map update startup repair final bounded disposition —2026-11-20
+
+PASS; UNIFY-08 closed. Existing-service reuse now unconditionally compares effective capability to desired normalized owner flag, so explicit disable as well as enable mismatch requests restart without stopping a process. New child still receives explicit-env-preferred/file-fallback flag only; missing remains disabled. No authorization files or source collection/activation behavior changed.
+
+Directly read095-update-disabled-repro.log desired1/currentdisabled refusal,095-update-disable-override.log desired0/currentenabled refusal, and095-update-ui.log Chromium/Firefox/WebKit live enabled button/old warning absent/no collection-or-activation POST PASS. Focused startup/directory4/4 and source-update20/20 pass; structural0. These are parent-run receipts independently inspected, not reviewer-triggered source operations. No remaining actionable blocker in bounded amendment; original broader095 results stay historical rather than an invented new aggregate. Parent retains final documentation/restart delivery responsibility. Only reviewer-owned final-review.md edited; no merge/publication approval.

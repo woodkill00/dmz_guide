@@ -23,6 +23,8 @@ Map artifacts stay under ignored `.local/unified-map/`; provider resources stay 
 
 ## Navigation configuration
 
+`npm run local` and `scripts/start-local.ps1` preserve the existing map owner opt-in from `tools/hajin-map/.env.development.local` (`DMZ_ENABLE_SOURCE_UPDATES=1`). An explicitly set process environment value takes precedence, including `0` to disable it. Only this setting is loaded; reviewed source authorization is still required. Restart an already running service after changing the setting. Static archives keep updates disabled.
+
 Guide and map navigation uses paths on the current site address. Optional tool links go through the same site's finite `/local-services/` directory, which resolves the configured companion service without starting it. Defaults for the reader, author tool, weapon manager and legacy map are centralized in `src/domain/local-services.json`; their launchers read the same configuration. Existing API origin/token restrictions still apply. Portable guide-only archives show setup instructions for these optional tools.
 
 The navigation regression gate checks UI/client/map modules and page generators for embedded loopback URLs, audits generated guide/map pages, and exercises actual menu navigation on another port in Chromium, Firefox and WebKit. The runtime audit accepts `DMZ_SITE_URL` to select a different loopback reader origin. Old recorded origins in backup metadata remain provenance; restore links open the current site's owner tools.
