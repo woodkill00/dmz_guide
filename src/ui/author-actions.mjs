@@ -4,8 +4,11 @@ import { escapeHTML as e, publicTitle, recordUrl } from "./render.mjs";
 
 export const guidancePath = (key, id) =>
   `/contribute/${encodeURIComponent(key)}/${encodeURIComponent(id).replace(/%3A/gi, "--")}/`;
-export function renderAuthorActions(record, { edit, images }) {
-  return `<aside class="record-author-actions" aria-label="Repository editing"><a class="button" data-edit-record href="${e(edit)}">${isLootType(record.id) ? "Edit loot type" : record.recordType === "item" ? "Edit this item" : "Edit this record"}</a><a class="button" data-edit-images href="${e(images)}">${isLootType(record.id) ? "Add photos" : "Add/change image"}</a><p>Local Content Studio · review and save to your repository, not your private player profile.</p></aside>`;
+export function renderAuthorActions(record, { edit, images, compose = null }) {
+  const setup = compose
+    ? "<small>Editor offline? Run <code>npm run author</code> in this checkout · port4174. No automatic service startup.</small>"
+    : "";
+  return `<aside class="record-author-actions" aria-label="Repository editing">${compose ? `<a class="button primary" data-compose-record href="${e(compose)}">Edit page</a>` : ""}<a class="button" data-edit-record href="${e(edit)}">${isLootType(record.id) ? "Edit loot type" : record.recordType === "item" ? "Edit this item" : "Edit this record"}</a><a class="button" data-edit-images href="${e(images)}">${isLootType(record.id) ? "Add photos" : "Add/change image"}</a><p>Local Content Studio · review and save to your repository, not your private player profile.</p>${setup}</aside>`;
 }
 export function renderAuthorGuidance(record, packKey) {
   const target = { packKey, packId: record.pack.id, id: record.id };

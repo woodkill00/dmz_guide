@@ -1,4 +1,4 @@
-param([switch]$SkipBuild)
+param([switch]$SkipBuild, [switch]$Author)
 
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
@@ -66,3 +66,12 @@ if (-not (Test-Page 'http://127.0.0.1:5175/x01-workspace.html')) {
 Write-Host 'Guide: http://127.0.0.1:4173/'
 Write-Host 'Hajin map: http://127.0.0.1:5175/'
 Write-Host 'X01 map: http://127.0.0.1:5175/x01-workspace.html'
+
+if ($Author) {
+    if (-not (Test-Page 'http://127.0.0.1:4174/')) {
+        $authorProcess = Start-Process -FilePath $node -ArgumentList @('scripts/author.mjs') -WorkingDirectory $repo -WindowStyle Hidden -RedirectStandardOutput (Join-Path $logs 'author.out.log') -RedirectStandardError (Join-Path $logs 'author.err.log') -PassThru
+        Wait-Page 'http://127.0.0.1:4174/' 'Local page editor'
+        Write-Host "Local page editor started (PID $($authorProcess.Id))."
+    }
+    Write-Host 'Editor: http://127.0.0.1:4174/ (Edit page opens the exact record)'
+}

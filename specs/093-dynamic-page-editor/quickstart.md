@@ -1,6 +1,6 @@
-# Planned acceptance journeys
+# Acceptance journeys
 
-Not implemented yet. Retain the existing working site while planning.
+Implemented local author workbench; see [usage](../../docs/page-editor.md) and acceptance.md for executed checks and limits. Run npm run author explicitly; normal reader updates require npm run build.
 
 1. Start the local author service explicitly. From a Hajin or X01 Order page choose Edit; verify exact catalog/record identity and destination. Missing server shows startup help without data changes.
 2. Add a section, place a picture between paragraphs, move it with drag and then Move controls, preview and Save to repository. Reopen saved preview; rebuild and compare the reader. No inventory/progress changes.

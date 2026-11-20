@@ -72,6 +72,12 @@ export async function captureBuildSources(root) {
   ])
     await walk(relative);
   try {
+    await lstat(join(root, "content/mission-chapter-overrides.json"));
+    await walk("content/mission-chapter-overrides.json");
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  try {
     await lstat(join(root, "content/codmunity-stats.json"));
     await walk("content/codmunity-stats.json");
   } catch (error) {

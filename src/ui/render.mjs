@@ -1,3 +1,7 @@
+import {
+  renderPageComposition,
+  pageProjectionParts,
+} from "./page-composition.mjs";
 import { renderItemMapAreas } from "./item-map-areas.mjs";
 import { itemIcon, renderItemWorkspace } from "./item-workspace.mjs";
 import { itemOverview } from "./item-summary.mjs";
@@ -276,7 +280,7 @@ export function renderCatalog(
 export function renderItemRow(record, target) {
   record = displayRecord(record);
   const title = publicTitle(record);
-  return `<article class="item-row" data-record-card data-search="${e(recordSearchText(record))}" data-name="${e(title.toLowerCase())}" data-fixture="${isFixture(record.pack)}" data-category="${e(record.spoiler ? "Spoiler-protected" : itemSection(record))}" data-rarity="${e(record.spoiler ? "99:protected" : rarityKey(record))}" data-type="${e(record.kind)}" data-status="${e(statusLabel(record))}" data-pack="${e(record.pack.id)}">${itemIcon(record)}<div class="item-identity"><h3><a href="${e(recordUrl(record))}" tabindex="0">${e(title)}</a></h3><p>${e(record.kind)} · ${e(record.spoiler ? "Spoiler-protected" : itemSection(record))} · ${e(record.spoiler ? "Spoiler-protected" : itemRarity(record))}</p></div>${!record.spoiler ? `<details class="item-row-build"><summary>Build / get</summary>${buildTargetControl(record.pack, record.id, null, { auto: true })}</details>` : ""}<div class="item-row-actions" aria-label="Actions for ${e(title)}"><a href="${e(recordUrl(record))}" tabindex="0">Details</a>${target ? `<a data-directory-edit href="${e(target + "#edit")}" tabindex="0">Edit<span class="sr-only"> ${e(title)}</span></a><a data-directory-remove href="${e(target + "#remove")}" tabindex="0">Remove<span class="sr-only"> ${e(title)}</span></a>` : ""}</div></article>`;
+  return `<article class="item-row" data-record-card data-search="${e(recordSearchText(record))}" data-name="${e(title.toLowerCase())}" data-fixture="${isFixture(record.pack)}" data-category="${e(record.spoiler ? "Spoiler-protected" : itemSection(record))}" data-rarity="${e(record.spoiler ? "99:protected" : rarityKey(record))}" data-type="${e(record.kind)}" data-status="${e(statusLabel(record))}" data-pack="${e(record.pack.id)}">${itemIcon(record)}<div class="item-identity"><h3><a href="${e(recordUrl(record))}" tabindex="0">${e(title)}</a></h3><p data-reference-facts>${e(record.kind)} · ${e(record.spoiler ? "Spoiler-protected" : itemSection(record))} · ${e(record.spoiler ? "Spoiler-protected" : itemRarity(record))}</p></div>${!record.spoiler ? `<details class="item-row-build"><summary>Build / get</summary>${buildTargetControl(record.pack, record.id, null, { auto: true })}</details>` : ""}<div class="item-row-actions" aria-label="Actions for ${e(title)}"><a href="${e(recordUrl(record))}" tabindex="0">Details</a>${target ? `<a data-directory-edit href="${e(target + "#edit")}" tabindex="0">Edit<span class="sr-only"> ${e(title)}</span></a><a data-directory-remove href="${e(target + "#remove")}" tabindex="0">Remove<span class="sr-only"> ${e(title)}</span></a>` : ""}</div></article>`;
 }
 
 function sourceMarkup(source) {
@@ -302,6 +306,10 @@ export function renderDetail(
     showPlanner = true,
     authorActions = "",
     imageLoading = "lazy",
+    pageDocument = null,
+    capturePage = null,
+    chapterIntel = {},
+    readerBase = "",
   } = {},
 ) {
   record = displayRecord(record);
@@ -309,8 +317,7 @@ export function renderDetail(
   const overview =
     record.recordType === "item" ? itemOverview(record, pack) : null;
   if (!record.spoiler && pack.id === x01Printer.packId && x01Uses(record.id))
-    authorActions +=
-      '<aside class="notice"><a href="/recipes/x01/">X01 printer recipes and uses</a> · Requires materials carried in X01; separate from FOB printing.</aside>';
+    authorActions += `<aside class="notice"><a href="${e(readerBase)}/recipes/x01/">X01 printer recipes and uses</a> · Requires materials carried in X01; separate from FOB printing.</aside>`;
   const records = allRecords([pack]);
   const find = (id) => records.find((r) => r.id === id);
   const ref = (id) => {
@@ -404,7 +411,7 @@ export function renderDetail(
         "Recipes making this item",
         produces.filter((r) => !r.spoiler),
       ) || "<p>No crafting recipe recorded.</p>"
-    }${list("Used to craft", crafting)}</section><section id="item-uses" tabindex="-1" class="panel item-uses"><h2>Item uses</h2>${list("Missions", missions)}${list("Upgrades", upgrades)}${list("Mapped locations", actualLocations)}${!uses.length && !produces.length ? "<p>No crafting or mission uses recorded.</p>" : ""}<p><a href="/local/?pack=${encodeURIComponent(pack.id)}&amp;id=${encodeURIComponent(record.id)}">Track inventory and upgrade progress</a></p></section>`;
+    }${list("Used to craft", crafting)}</section><section id="item-uses" tabindex="-1" class="panel item-uses"><h2>Item uses</h2>${list("Missions", missions)}${list("Upgrades", upgrades)}${list("Mapped locations", actualLocations)}${!uses.length && !produces.length ? "<p>No crafting or mission uses recorded.</p>" : ""}<p><a href="${e(readerBase)}/local/?pack=${encodeURIComponent(pack.id)}&amp;id=${encodeURIComponent(record.id)}">Track inventory and upgrade progress</a></p></section>`;
   }
 
   if (record.stats && (record.recordType !== "item" || record.stats.length))
@@ -445,11 +452,16 @@ export function renderDetail(
       pack.id === "official:mw4-dmz-starter" &&
       record.sourceIds?.includes("source:codcentral-x01-orders-20261114");
     const page = roster?.page || record.orderPage;
-    const intel = roster
+    const inheritedIntel = roster
       ? hajinPageIntel[roster.page - 1]
       : officialX01 && Number.isInteger(page) && page >= 1 && page <= 5
         ? x01PageIntel[page - 1]
         : null;
+    const override = chapterIntel[`${x01 ? "x01" : "hajin"}-${page}`];
+    const intel =
+      inheritedIntel && override
+        ? { ...inheritedIntel, ...override }
+        : inheritedIntel;
     const sourcePage = roster
       ? `${missionSources.codcentral}#${roster.page === 2 ? "human-intel-1" : roster.page === 3 ? "human-intel-2" : roster.page === 5 ? "counterfeit-1" : roster.page === 6 ? "counterfeit-2" : roster.page === 8 ? "underground-1" : roster.page === 9 ? "underground-2" : roster.page === 12 ? "the-grid-1" : roster.page === 13 ? "the-grid-2" : roster.page === 16 ? "hornets-nest-1" : roster.page === 17 ? "hornets-nest-2" : `page-${roster.page}`}`
       : officialX01
@@ -462,7 +474,7 @@ export function renderDetail(
     const pageLabel = Number.isSafeInteger(page)
       ? `${roster?.placement === "reported-sequence" ? "REPORTED CHAPTER SLOT " : "PAGE "}${page}`
       : "PAGE UNKNOWN";
-    detail += `<section class="panel mission-detail"><p class="eyebrow">${roster ? "HAJIN" : x01 ? "X01" : "DMZ"} / ${e(pageLabel)}</p><h2>Mission tasks</h2>${record.steps?.length ? `<ol class="mission-task-list">${record.steps.map((step) => `<li>${e(step)}</li>`).join("")}</ol>` : "<p>Steps need source review. Check your current game Orders screen.</p>"}${(roster || officialX01) && orderLocationNotes[record.id] ? `<p><strong>Reported location:</strong> ${e(orderLocationNotes[record.id])}</p>` : ""}<p class="mission-detail-actions"><a href="${e(listPage)}">${roster || x01 ? "All missions in this roster" : "All missions"}</a>${sourcePage ? ` · <a href="${e(sourcePage)}" target="_blank" rel="noopener noreferrer">COD Central tips and screenshots ↗</a>` : ""}</p>${intel ? `<details class="mission-rewards"><summary>Reported page rewards</summary><ul>${intel.rewards.map((reward) => `<li>${e(reward)}</li>`).join("")}</ul><p>Page rewards are community reports and may differ in your current game. Reviewed ${e(intel.reviewedAt)}.</p>${intel.notes ? `<p>${e(intel.notes)}</p>` : ""}<p>${intel.sourceKeys.map((key) => `<a href="${e(missionSources[key])}" target="_blank" rel="noopener noreferrer">${e(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details>` : ""}</section>`;
+    detail += `<section class="panel mission-detail"><p class="eyebrow">${roster ? "HAJIN" : x01 ? "X01" : "DMZ"} / ${e(pageLabel)}</p><h2>Mission tasks</h2>${record.steps?.length ? `<ol class="mission-task-list">${record.steps.map((step) => `<li>${e(step)}</li>`).join("")}</ol>` : "<p>Steps need source review. Check your current game Orders screen.</p>"}${(roster || officialX01) && orderLocationNotes[record.id] ? `<p><strong>Reported location:</strong> ${e(orderLocationNotes[record.id])}</p>` : ""}<p class="mission-detail-actions"><a href="${e(readerBase + listPage)}">${roster || x01 ? "All missions in this roster" : "All missions"}</a>${sourcePage ? ` · <a href="${e(sourcePage)}" target="_blank" rel="noopener noreferrer">COD Central tips and screenshots ↗</a>` : ""}</p>${intel ? `<details class="mission-rewards"><summary>Reported page rewards</summary><ul>${intel.rewards.map((reward) => `<li>${e(reward)}</li>`).join("")}</ul><p>Page rewards are community reports and may differ in your current game. Reviewed ${e(intel.reviewedAt)}.</p>${`<p><a href="http://127.0.0.1:4174/?adapter=mission-chapter&amp;catalogId=mission-chapters&amp;id=${x01 ? "x01" : "hajin"}-${page}&amp;intent=compose">Edit this chapter report</a></p>`}${intel.notes ? `<p>${e(intel.notes)}</p>` : ""}<p>${intel.sourceKeys.map((key) => `<a href="${e(missionSources[key])}" target="_blank" rel="noopener noreferrer">${e(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details>` : ""}</section>`;
     if (picture)
       detail += `<section class="mission-picture-gallery" aria-labelledby="mission-pictures-heading"><h2 id="mission-pictures-heading">Guide pictures (${pictureIds.length})</h2><p>Open a picture for a larger view. Screenshots are source reports; check the current game for changes.</p><div class="mission-picture-grid">${picture}</div>${pack.id === "official:mw4-dmz-starter" && pictureIds.some((id) => id.startsWith("codcentral:order-shot-")) ? '<p class="mission-picture-rights">COD Central screenshots. Public redistribution permission was asserted by the project owner; underlying game imagery remains with its rights holders.</p>' : ""}</section>`;
   }
@@ -504,6 +516,68 @@ export function renderDetail(
       .at(-1) || "Unknown",
   )}</dd><dt>Record ID</dt><dd>${e(record.id)}</dd><dt>Pack</dt><dd>${e(pack.title)}</dd></dl><h3>Sources</h3><ul class="source-list">${sources.map((source) => sourceMarkup(record.spoiler ? source : maskedValue(source, guardFor(pack)))).join("") || "<li>No sources recorded. Treat this as unverified.</li>"}</ul><p class="muted">Verification applies only to the stated claim and scope, not every mechanic or the current live build.</p>${overview ? "</details>" : ""}</aside>`;
 
+  const projections = {
+    details: { title: "Details", html: detail + claimMarkup },
+    summary: {
+      title: "Summary",
+      html: `<p>${e(record.description || record.body || "")}</p>`,
+    },
+    pictures: { title: "Pictures", html: picture },
+    sources: { title: "Sources", html: evidence },
+    ...pageProjectionParts(detail + claimMarkup),
+  };
+  if (projections["detail:mission-tasks"] && record.steps?.length)
+    projections["detail:mission-context"] = {
+      title: "Mission links and page rewards",
+      html: projections["detail:mission-tasks"].html
+        .replace(/<ol class="mission-task-list">[\s\S]*?<\/ol>/, "")
+        .replace(
+          /<h2[^>]*>Mission tasks<\/h2>/,
+          "<h3>Mission links and reported rewards</h3>",
+        ),
+    };
+  for (const [index, step] of (record.steps || []).entries())
+    projections[`step:${index}`] = {
+      title: `Step ${index + 1}`,
+      html: `<p>${e(step)}</p>`,
+    };
+  capturePage?.({ projections, record });
+  if (pageDocument) {
+    const composed = renderPageComposition(pageDocument, {
+      projections,
+      imageURL: (assetId) =>
+        imageURL
+          ? imageURL(pack, assetId)
+          : bundledAssetURL(pack, assetId, bundledManifest),
+      referenceURL: (target) => {
+        const r =
+          target.adapter === "catalog"
+            ? allRecords(packs).find(
+                (r) =>
+                  r.pack.id === target.scope.packId && r.id === target.recordId,
+              )
+            : null;
+        return r && (!r.spoiler || record.spoiler) ? referenceURL(r) : null;
+      },
+    });
+    if (overview && !record.spoiler)
+      return renderItemWorkspace({
+        record,
+        title: publicTitle(record),
+        overview,
+        rarity: itemRarity(record),
+        status: statusLabel(record),
+        fixture: isFixture(pack),
+        detail: composed,
+        picture: "",
+        evidence,
+        actions: authorActions,
+        target: itemTarget,
+        catalogURL: catalogURL === "/catalog/" ? "/items/" : catalogURL,
+        readerBase,
+      });
+    return `${isFixture(pack) ? '<aside class="notice fixture-notice"><strong>FICTIONAL FIXTURE · NOT GAME DATA</strong></aside>' : ""}${pageHeading(record.recordType, publicTitle(record), record.spoiler ? "" : record.description || "")}<p class="evidence-caveat">${e(statusLabel(record))} · Source support is not current-build verification.</p>${authorActions}${record.spoiler ? '<details class="spoiler-content"><summary>Reveal spoiler content</summary>' : ""}${composed}${evidence}${record.spoiler ? "</details>" : ""}`;
+  }
   if (overview && !record.spoiler) {
     return renderItemWorkspace({
       record,
@@ -518,6 +592,7 @@ export function renderDetail(
       actions: authorActions,
       target: itemTarget,
       catalogURL: catalogURL === "/catalog/" ? "/items/" : catalogURL,
+      readerBase,
     });
   }
   return `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${e(catalogURL)}">Catalog</a><span aria-hidden="true">/</span><span>${e(record.recordType)}</span></nav>${isFixture(pack) ? '<aside class="notice fixture-notice"><strong>FICTIONAL FIXTURE · NOT GAME DATA</strong><p>This synthetic record demonstrates the guide’s behavior. Do not use it as gameplay advice.</p></aside>' : ""}${pageHeading(overview ? `${record.kind || "item"} reference` : `${record.kind || record.recordType} / ${record.category || record.track || "REFERENCE"}`, publicTitle(record), record.spoiler ? "" : overview?.summary || record.description || "")}<aside class="notice evidence-caveat"><strong>${e(statusLabel(record))}</strong>${overview ? " · Current-build verification varies." : "<p>Source support is not current-build verification. Unknown mechanics and conflicting claims remain uncertain.</p>"}</aside>${authorActions}${record.spoiler ? '<details class="spoiler-content"><summary>Reveal spoiler content</summary><h2>' + e(record.name || record.title) + "</h2>" + (record.description ? '<p class="lede">' + e(record.description) + "</p>" : "") : ""}${

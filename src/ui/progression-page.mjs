@@ -1,7 +1,7 @@
 import { escapeHTML as esc } from "./render.mjs";
 const option = (value, label = value) =>
   `<option value="${esc(value)}">${esc(label)}</option>`;
-export function featurePages(packs) {
+export function featurePages(packs, { chapterIntel = {} } = {}) {
   const pages = [
     {
       path: "/progression/",
@@ -104,6 +104,7 @@ export function featurePages(packs) {
         "Browse Hajin and X01 Orders by chapter. Open a mission for its tasks, reported rewards and sources; track completion in your private profile.",
       ),
   };
+  missions.body += `<script type="application/json" id="mission-chapter-reports">${JSON.stringify(chapterIntel).replaceAll("<", "\\u003c")}</script>`;
   return [...pages, focused, missions].map((page) => ({
     ...page,
     body: page.body.replace(

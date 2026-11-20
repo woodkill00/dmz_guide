@@ -8,7 +8,13 @@ import {
 } from "../src/ui/render.mjs";
 
 /** Render only validated saved source, with no browser profile or build mutation. */
-export function renderSavedPreview(snapshot, packKey, id) {
+export function renderSavedPreview(
+  snapshot,
+  packKey,
+  id,
+  pageDocument = null,
+  chapterIntel = {},
+) {
   const entry = snapshot.entries.find((candidate) => candidate.key === packKey);
   if (!entry) return null;
   const packs = snapshot.entries.map((candidate) => candidate.pack);
@@ -45,11 +51,20 @@ export function renderSavedPreview(snapshot, packKey, id) {
   const body = record
     ? renderDetail(record, packs, {
         imageURL,
+        pageDocument,
+        chapterIntel,
         referenceURL,
         catalogURL: "/",
         showPlanner: false,
+        readerBase: "http://127.0.0.1:4173",
         imageLoading: "eager",
         authorActions: renderAuthorActions(record, {
+          compose: authorPath({
+            packKey,
+            packId: pack.id,
+            id,
+            intent: "compose",
+          }),
           edit: authorPath({ packKey, packId: pack.id, id, intent: "edit" }),
           images: authorPath({
             packKey,
@@ -60,5 +75,5 @@ export function renderSavedPreview(snapshot, packKey, id) {
         }),
       })
     : `<a class="button" href="${e(authorPath({ packKey, packId: pack.id, id, intent: "edit" }))}">Edit this supporting record</a><h1>${e(title)}</h1><p>This supporting record has no public detail route.</p><pre class="panel">${e(JSON.stringify(auxiliary, null, 2))}</pre>`;
-  return `<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/assets/src/favicon.svg" type="image/svg+xml"><title>${e(title)} · Saved repository preview</title><link rel="stylesheet" href="/assets/src/styles.css"><link rel="stylesheet" href="/assets/src/ui/companion-navigation.css"></head><body>${renderMainNavigation({ surface: "studio", page: "studio" })}<main id="main"><aside class="notice"><strong>Saved repository preview</strong><p>Content version: ${e(pack.contentVersion)}. Saved revision: <span data-saved-revision>${e(snapshot.revision)}</span>.</p><p>Unsaved Studio drafts and private player profiles are not shown. Reload after saving to see the latest source. The public build is unchanged until you run its build command.</p><a href="/">Return to Content Studio</a></aside>${body}</main></body></html>`;
+  return `<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/assets/src/favicon.svg" type="image/svg+xml"><title>${e(title)} · Saved repository preview</title><link rel="stylesheet" href="/assets/src/styles.css"><link rel="stylesheet" href="/assets/src/ui/page-composition.css"><link rel="stylesheet" href="/assets/src/ui/companion-navigation.css"></head><body>${renderMainNavigation({ surface: "studio", page: "studio" })}<main id="main"><aside class="notice"><strong>Saved repository preview</strong><p>Content version: ${e(pack.contentVersion)}. Saved revision: <span data-saved-revision>${e(snapshot.revision)}</span>.</p><p>Unsaved Studio drafts and private player profiles are not shown. Reload after saving to see the latest source. The public build is unchanged until you run its build command.</p><a href="/">Return to Content Studio</a></aside>${body}</main></body></html>`;
 }

@@ -85,6 +85,14 @@ function sync() {
           ? "No extracted-manual count entered"
           : `${3 - data.count} more recorded extractions to goal`;
     row.dataset.reached = String(data.reached);
+    row.dataset.manualProgress =
+      data.count === null
+        ? "unrecorded"
+        : data.reached
+          ? "complete"
+          : data.count > 0 || data.entry.manual
+            ? "progress"
+            : "missing";
     row.querySelector("[data-acq-summary]").textContent =
       `${data.entry.manual ? "Manual owned" : "Manual not marked"} · ${data.count === null ? "Extractions not recorded" : data.count + " / 3 extractions"}`;
     row.querySelector("[data-acq-blueprint-summary]").textContent =

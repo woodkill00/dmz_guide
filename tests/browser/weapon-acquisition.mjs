@@ -24,6 +24,37 @@ const count = async (page, id, n) => {
     { id, n },
   );
 };
+const nameState = async (row, state) => {
+  assert.equal(await row.getAttribute("data-manual-progress"), state);
+  const colors = {
+    dark: {
+      missing: "rgb(255, 133, 133)",
+      progress: "rgb(242, 206, 102)",
+      complete: "rgb(159, 221, 143)",
+    },
+    light: {
+      missing: "rgb(180, 35, 50)",
+      progress: "rgb(128, 89, 0)",
+      complete: "rgb(40, 107, 50)",
+    },
+  };
+  for (const theme of ["dark", "light"]) {
+    await row.evaluate(
+      (_, theme) => (document.documentElement.dataset.theme = theme),
+      theme,
+    );
+    const actual = await row
+      .locator(":scope > summary > strong")
+      .evaluate((el) => getComputedStyle(el).color);
+    assert.equal(
+      actual,
+      colors[theme][state] ||
+        (await row.evaluate((el) => getComputedStyle(el).color)),
+      `${theme} ${state} weapon name`,
+    );
+  }
+  await row.evaluate(() => (document.documentElement.dataset.theme = "dark"));
+};
 export async function runWeaponAcquisitionTests({
   browser,
   base,
@@ -41,6 +72,7 @@ export async function runWeaponAcquisitionTests({
     await ready(page);
     assert.equal(await page.locator("[data-acquisition-weapon]").count(), 35);
     assert.equal(await page.locator("[data-known-blueprint]").count(), 85);
+    await nameState(page.locator("#weapon-m4"), "unrecorded");
     const dbs = await page.evaluate(async () =>
       typeof indexedDB.databases === "function"
         ? (await indexedDB.databases()).map((d) => d.name)
@@ -64,6 +96,18 @@ export async function runWeaponAcquisitionTests({
         "/assets/src/storage/armory-store.mjs"
       );
       const v = emptyArmory();
+      v.acquisition["han-86"] = {
+        manual: false,
+        manualExtractions: 0,
+        attachments: [],
+        blueprints: [],
+      };
+      v.acquisition["hyeon-burst"] = {
+        manual: false,
+        manualExtractions: 1,
+        attachments: [],
+        blueprints: [],
+      };
       v.acquisition.m4 = {
         manual: true,
         attachments: ["archived-attachment"],
@@ -98,10 +142,28 @@ export async function runWeaponAcquisitionTests({
     await input.fill("0");
     await m4.locator("[data-count-form] button").first().click();
     await count(page, "m4", 0);
+    await nameState(m4, "progress");
+    await m4.locator("[data-manual]").uncheck();
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#weapon-m4").dataset.manualProgress ===
+          "missing" &&
+        document.querySelector("#weapon-acquisition").dataset.busy === "false",
+    );
+    await nameState(m4, "missing");
+    await m4.locator("[data-manual]").check();
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#weapon-m4").dataset.manualProgress ===
+          "progress" &&
+        document.querySelector("#weapon-acquisition").dataset.busy === "false",
+    );
+    await nameState(m4, "progress");
     const plus = m4.locator('[data-count-step="1"]');
     for (let n = 1; n <= 3; n++) {
       await plus.click();
       await count(page, "m4", n);
+      await nameState(m4, n < 3 ? "progress" : "complete");
     }
     await m4.scrollIntoViewIfNeeded();
     await plus.focus();
@@ -109,11 +171,13 @@ export async function runWeaponAcquisitionTests({
       y = await page.evaluate(() => scrollY);
     await page.keyboard.press("Enter");
     await count(page, "m4", 4);
+    await nameState(m4, "complete");
     assert(await plus.evaluate((el) => document.activeElement === el));
     assert(Math.abs((await plus.boundingBox()).y - before.y) <= 2);
     assert(Math.abs((await page.evaluate(() => scrollY)) - y) <= 2);
     await m4.locator('[data-count-step="-1"]').click();
     await count(page, "m4", 3);
+    await nameState(m4, "complete");
     await page.reload();
     await ready(page);
     await m4.locator("summary").first().click();
@@ -125,6 +189,7 @@ export async function runWeaponAcquisitionTests({
     await input.fill("2");
     await m4.locator("[data-count-form] button").first().click();
     await count(page, "m4", 2);
+    await nameState(m4, "progress");
     await plus.click();
     await count(page, "m4", 3);
     const existing = await stock(page);
@@ -275,6 +340,9 @@ export async function runWeaponAcquisitionTests({
     );
     await page.evaluate(() => (document.documentElement.style.fontSize = ""));
     if (process.argv.includes("--a11y")) {
+      await nameState(page.locator("#weapon-han-86"), "missing");
+      await nameState(page.locator("#weapon-hyeon-burst"), "progress");
+      await nameState(m4, "complete");
       const { default: AxeBuilder } = await import(
         "../../tools/hajin-map/node_modules/@axe-core/playwright/dist/index.mjs"
       );

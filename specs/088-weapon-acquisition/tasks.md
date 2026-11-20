@@ -1,6 +1,10 @@
 # Tasks — Weapon acquisition
 
 ## Foundations
+
+- [x] T018 [US1,FR-003,FR-004,FR-010] Owner correction2026-11-20 supersedes T017's neutral owned-zero interpretation: Manual owned with explicit0/3 is yellow. Keep unchecked0 red,1–2 yellow,3+ green and unrecorded neutral. Repair transient classification and real ownership-toggle color assertions; rebuild and run acquisition three-engine/dark-light/axe regression plus source checks. No saved-data or schema change.
+
+- [x] T017 [US1,FR-003,FR-004,FR-010] Owner name-color amendment: assess and implement derived red(no manual,explicit0)/yellow(1–2)/green(3+) weapon-name styling, retaining neutral absent counts and owned-zero, textual status, live updates and stored values. Verify real transitions/reload/dark-light/mobile/axe with existing acquisition suites; build/check local reader and independent scoped review. Prior acceptance remains historical before this display amendment.
 - [x] T001 Validate sourced public acquisition catalog in src/content/weapon-acquisition.mjs and content/weapon-acquisition.json; research/record exact released identities, named variants, methods and evidence. tests/runtime/weapon-acquisition.test.mjs. FR-002,FR-005,FR-011.
 - [x] T002 Extend optional private manualExtractions validation in src/domain/armory-workspace.mjs; pure immutable mutation/projection in src/domain/weapon-acquisition.mjs with legacy, malformed/bounds, duplicate and preservation tests. FR-004,FR-006,FR-007.
 

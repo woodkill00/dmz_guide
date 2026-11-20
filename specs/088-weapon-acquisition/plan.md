@@ -4,6 +4,8 @@
 Existing static ESM guide, Node22/24, no new packages/services. Feature088 is stacked on committed087 (`191332c`, PR39); do not drop pending dashboard work or alter its review receipts. Main private store remains `dmz-armory-local/workspace/main`. Focused route `/armory/acquisition/` avoids the comparison/evidence workbench dominating the checklist. Existing workbench stays available for backup and attachments.
 
 ## Constitution check
+
+Name-color amendment: derive a transient `data-manual-progress` state during the existing client sync from explicit count/ownership, style only the summary's weapon-name strong element. No private-store writes on load or data changes for styling. Theme-specific red/yellow/green colors; preserve textual summaries and neutral unknown cases and yellow owned-zero cases (owner clarification2026-11-20). Extend existing real counter/checkbox/reload browser journey to verify colors, including reverse transitions,3+ and both themes; run existing acquisition runtime/browser suites and static build/checks.
 Player task first; local-only progress; keyboard/mobile/dark/light; no invented game facts or completeness; source facts separated from manual/private observations. No credentials, asset downloads, account connection, new dependencies or public write API. Existing image safety, private bounds and revision transactions retained. No exception.
 
 ## Phase0 — Research

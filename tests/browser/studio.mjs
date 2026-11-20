@@ -1459,6 +1459,7 @@ export async function runStudioTests({
     activePage = stalePage;
     const initialChanges = stalePage.waitForResponse(
       (response) => new URL(response.url()).pathname === "/api/changes",
+      { timeout: STUDIO_API_FUNCTIONAL_DEADLINE_MS },
     );
     await stalePage.goto(author.url);
     const initialChangeResult = await initialChanges;

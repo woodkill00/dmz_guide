@@ -111,6 +111,8 @@ Legacy reviewed JPEG/WebP sources retain their original source metadata and exis
 
 ## Testing and boundaries
 
+For section/photo layout editing from a record's **Edit page** action, see the [visual page editor guide](page-editor.md). It shares this local save/recovery boundary and preserves private progress.
+
 See [feature acceptance](../specs/009-repository-content-studio/acceptance.md) for exact tested commits, CI runs, screenshots and remaining limitations. Browser checks are not physical-device testing or formal accessibility certification. This is not a multi-user hosted database, cloud sync, an account system or automatic public deployment.
 
 ## Navigation, version review and recovery drafts

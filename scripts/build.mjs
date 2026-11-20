@@ -1,3 +1,8 @@
+import { chapterOverrides } from "./page-adapters.mjs";
+import { missionChapterPages } from "../src/ui/mission-chapter-page.mjs";
+import { attachSpecialEditors } from "./page-editor-build.mjs";
+import { readPageDocuments } from "./page-documents.mjs";
+import { pageKey } from "../src/domain/page-document.mjs";
 import { quickTrackerPage } from "../src/ui/quick-tracker.mjs";
 import { authorPath } from "../src/content/author-target.mjs";
 import { renderItemMaintenance } from "../src/ui/item-maintenance.mjs";
@@ -73,7 +78,7 @@ async function generate(dist) {
   const schema = JSON.parse(
     await readFile(join(root, "schemas/pack.schema.json"), "utf8"),
   );
-  const { catalog, bundled } = await withRepositorySnapshot(
+  const { catalog, bundled, pageDocuments } = await withRepositorySnapshot(
     { root },
     async () => {
       const catalog = await readCatalog({ root, schema });
@@ -84,10 +89,14 @@ async function generate(dist) {
         assetSources: bundledSources(catalog.entries),
         sourceFiles: catalog.files,
       });
-      return { catalog, bundled };
+      const pageDocuments = await readPageDocuments(root, catalog);
+      for (const [path, bytes] of pageDocuments.files)
+        if (bytes) catalog.files.set(path, bytes);
+      return { catalog, bundled, pageDocuments };
     },
   );
   const packs = catalog.packs;
+  const chapterIntel = await chapterOverrides(root);
   setBundledAssets(bundled.manifest);
   const pages = [
     {
@@ -156,11 +165,21 @@ async function generate(dist) {
       packId: record.pack.id,
       body:
         renderDetail(record, packs, {
+          chapterIntel,
+          pageDocument: pageDocuments.documents.get(
+            await pageKey({
+              adapter: "catalog",
+              scope: { packKey: entry.key, packId: record.pack.id },
+              recordId: record.id,
+            }),
+          )?.document,
           authorActions: renderAuthorActions(record, {
+            compose: `http://127.0.0.1:4174${authorPath({ packKey: entry.key, packId: record.pack.id, id: record.id, intent: "compose" })}`,
             edit: guidance + "#edit",
             images: guidance + "#images",
           }),
         }) + missionActions,
+      styles: ["/assets/src/ui/page-composition.css"],
       page:
         { item: "items", recipe: "recipes", guide: "guides" }[
           record.recordType
@@ -207,7 +226,7 @@ async function generate(dist) {
       continue;
     }
     const module = await import(pathToFileURL(file));
-    const extensions = await module.featurePages(packs);
+    const extensions = await module.featurePages(packs, { chapterIntel });
     for (const page of extensions)
       pages.push({
         ...quickTrackerPage(page),
@@ -226,6 +245,7 @@ async function generate(dist) {
           "This workspace is not available in this build. Your existing browser data has not been changed.",
         ),
       });
+  pages.push(...missionChapterPages(packs, chapterIntel));
   pages.push({
     path: "/map-workspace/",
     title: "Local map workspace",
@@ -251,6 +271,13 @@ async function generate(dist) {
       ) +
       '<a class="button primary" href="/catalog/">Return to the catalog</a>',
   };
+  await attachSpecialEditors({
+    root,
+    pages,
+    documents: pageDocuments,
+    bundled,
+    catalog,
+  });
   const siteMapPage = pages.find((page) => page.path === "/sitemap/");
   const routeFamilies = new Map();
   for (const page of [...pages, notFoundPage]) {
@@ -289,6 +316,13 @@ async function generate(dist) {
     "src/client/studio-media.mjs",
     "src/ui/studio-page.mjs",
     "src/ui/studio.css",
+    "src/client/page-editor.mjs",
+    "src/client/page-editor-media.mjs",
+    "src/client/page-editor-experience.mjs",
+    "src/domain/editor-experience.mjs",
+    "src/domain/page-editor-utils.mjs",
+    "src/ui/page-editor-page.mjs",
+    "src/ui/page-editor.css",
   ]);
   const copyFilter = (path) =>
     !authorOnly.has(relative(root, path).replaceAll("\\", "/")) &&

@@ -1,4 +1,5 @@
 import { enhanceItemWorkspace } from "./item-workspace.mjs";
+import { repositoryEditTarget } from "../domain/repository-edit-target.mjs";
 import { adviceMarkup } from "./upgrade-advice-view.mjs";
 import { saveWatchPin } from "./watch-pin.mjs";
 import { createReaderContext } from "../domain/reader-flow.mjs";
@@ -85,15 +86,20 @@ async function render() {
     `/local/?pack=${encodeURIComponent(state.pack.id)}&id=${encodeURIComponent(r.id)}`;
   let markup = `<p class="local-record-links"><a href="/editor/?pack=${encodeURIComponent(state.pack.id)}">Edit this private pack</a> · <a href="/local/?pack=${encodeURIComponent(state.pack.id)}">All local records</a></p>`;
   const focusedItem = chosen?.recordType === "item" && !chosen.spoiler;
-  let repositoryItem = false;
-  if (focusedItem) {
+  let repositoryTarget = null;
+  if (chosen && (!chosen.spoiler || state.profile.spoilers)) {
     try {
       const published = await getCatalog(state.pack.id, {
         publishedOnly: true,
       });
-      repositoryItem = published.items.some((item) => item.id === chosen.id);
+      repositoryTarget = repositoryEditTarget(
+        state.catalogs,
+        published,
+        chosen,
+        { reveal: Boolean(state.profile.spoilers) },
+      );
     } catch {
-      /* A private-only catalog has no repository detail destination. */
+      /* Private-only records have no repository edit destination. */
     }
     if (token !== generation) return;
   }
@@ -104,9 +110,10 @@ async function render() {
     markup = `<p class="item-local-context">Saved catalog view · <a href="/local/?pack=${encodeURIComponent(state.pack.id)}">All local records</a></p>`;
   if (chosen) {
     const detailMarkup = renderDetail(chosen, [state.pack], {
-      authorActions: focusedItem
-        ? `<p>Private record · repository pages remain unchanged.</p><a class="button" href="/editor/?pack=${encodeURIComponent(state.pack.id)}&amp;record=${encodeURIComponent(chosen.id)}">Edit private item &amp; pictures</a>${repositoryItem ? `<p>Repository changes use separate Content Studio actions.</p><a class="button" data-repository-reference href="${esc(recordUrl(chosen))}">Repository item &amp; photo actions</a>` : ""}`
-        : "",
+      authorActions:
+        !chosen.spoiler || state.profile.spoilers
+          ? `<aside class="record-author-actions" aria-label="Page editing">${repositoryTarget ? `<a class="button primary" data-compose-record href="${esc("http://127.0.0.1:4174/?" + new URLSearchParams(repositoryTarget))}">Edit page</a><a class="button" data-repository-reference href="${esc(recordUrl(chosen))}">${focusedItem ? "Repository item &amp; photo actions" : "Repository reference page"}</a>` : "<p>Private-only record · no repository editor target.</p>"}<a class="button" data-private-edit href="/editor/?pack=${encodeURIComponent(state.pack.id)}&amp;record=${encodeURIComponent(chosen.id)}">${focusedItem ? "Edit private item &amp; pictures" : "Edit private copy"}</a><small>${repositoryTarget ? "Edit page saves repository content through the local author service. " : ""}Private-copy edits and player progress stay separate.</small></aside>`
+          : "",
     });
     markup +=
       `${focusedItem ? "" : `<p class="notice">PRIVATE PACK PREVIEW · ${esc(state.pack.contentVersion)}. This is not the published snapshot.</p>`}<div id="private-picture"></div>` +

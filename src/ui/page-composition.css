@@ -1,0 +1,188 @@
+.page-composition {
+  min-width: 0;
+  max-width: 100%;
+}
+.page-section {
+  border: 1px solid var(--line, #485044);
+  border-radius: 0.5rem;
+  padding: calc(0.6rem + 0.3vw);
+  margin-block: 0.75rem;
+  overflow-wrap: anywhere;
+}
+.page-section > h2 {
+  font-size: 1.05rem;
+  margin-block: 0.15rem 0.65rem;
+}
+.page-section > summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 2.5rem;
+}
+.page-section h2 {
+  scroll-margin-top: 5rem;
+}
+.page-two-column,
+.page-section-two-column,
+.page-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(0.5rem + 0.4vw);
+  align-items: start;
+}
+.page-section .panel {
+  margin-block: 0.5rem;
+}
+.page-photo {
+  margin: 0.5rem 0;
+  min-width: 0;
+}
+.page-photo img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 30rem;
+  border-radius: 0.4rem;
+}
+.page-fit-cover img {
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+.page-fit-contain img {
+  object-fit: contain;
+}
+.page-focus-0-0 img {
+  object-position: left top;
+}
+.page-focus-4-4 img {
+  object-position: right bottom;
+}
+.page-photo figcaption,
+.page-authored-note {
+  font-size: 0.78rem;
+  color: var(--muted, #bec5b8);
+}
+.page-prose {
+  white-space: pre-wrap;
+}
+.page-callout {
+  border-inline-start: 3px solid var(--accent, #e0bd72);
+  padding: 0.75rem;
+  background: var(--raised, #212720);
+}
+.page-table {
+  max-width: 100%;
+  overflow: auto;
+}
+.page-table table {
+  width: 100%;
+  min-width: 24rem;
+}
+.page-table th {
+  position: sticky;
+  top: 0;
+  background: var(--surface, #191e1a);
+}
+.page-table td,
+.page-table th {
+  padding: 0.45rem;
+  text-align: left;
+  border-bottom: 1px solid var(--line, #485044);
+}
+.page-retired-anchor {
+  display: none;
+}
+.page-retired-anchor:target {
+  display: block;
+  padding: 0.6rem;
+}
+.page-missing-image {
+  display: block;
+  padding: 1rem;
+  border: 1px dashed var(--line, #485044);
+}
+@media (max-width: 700px) {
+  .page-two-column,
+  .page-section-two-column {
+    grid-template-columns: 1fr;
+  }
+  .page-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  }
+}
+
+.page-focus-0-0 img {
+  object-position: 0% 0%;
+}
+.page-focus-0-1 img {
+  object-position: 0% 25%;
+}
+.page-focus-0-2 img {
+  object-position: 0% 50%;
+}
+.page-focus-0-3 img {
+  object-position: 0% 75%;
+}
+.page-focus-0-4 img {
+  object-position: 0% 100%;
+}
+.page-focus-1-0 img {
+  object-position: 25% 0%;
+}
+.page-focus-1-1 img {
+  object-position: 25% 25%;
+}
+.page-focus-1-2 img {
+  object-position: 25% 50%;
+}
+.page-focus-1-3 img {
+  object-position: 25% 75%;
+}
+.page-focus-1-4 img {
+  object-position: 25% 100%;
+}
+.page-focus-2-0 img {
+  object-position: 50% 0%;
+}
+.page-focus-2-1 img {
+  object-position: 50% 25%;
+}
+.page-focus-2-2 img {
+  object-position: 50% 50%;
+}
+.page-focus-2-3 img {
+  object-position: 50% 75%;
+}
+.page-focus-2-4 img {
+  object-position: 50% 100%;
+}
+.page-focus-3-0 img {
+  object-position: 75% 0%;
+}
+.page-focus-3-1 img {
+  object-position: 75% 25%;
+}
+.page-focus-3-2 img {
+  object-position: 75% 50%;
+}
+.page-focus-3-3 img {
+  object-position: 75% 75%;
+}
+.page-focus-3-4 img {
+  object-position: 75% 100%;
+}
+.page-focus-4-0 img {
+  object-position: 100% 0%;
+}
+.page-focus-4-1 img {
+  object-position: 100% 25%;
+}
+.page-focus-4-2 img {
+  object-position: 100% 50%;
+}
+.page-focus-4-3 img {
+  object-position: 100% 75%;
+}
+.page-focus-4-4 img {
+  object-position: 100% 100%;
+}

@@ -1,10 +1,23 @@
 import { refreshTrackerContext } from "./quick-tracker.mjs";
 import { hajinOrderSequence } from "../content/hajin-order-sequence.mjs";
+import { chapterReaderPath } from "../domain/mission-chapter.mjs";
+import { renderMissionObjectives } from "../ui/mission-objectives.mjs";
 import {
-  hajinPageIntel,
-  x01PageIntel,
+  hajinPageIntel as baseHajinPageIntel,
+  x01PageIntel as baseX01PageIntel,
   missionSources,
 } from "../content/mission-intel.mjs";
+const chapterReports = JSON.parse(
+  document.querySelector("#mission-chapter-reports")?.textContent || "{}",
+);
+const chapterReport = (base, set) =>
+  base.map((row) => ({
+    ...row,
+    ...chapterReports[`${set}-${row.page}`],
+    localAuthored: Object.hasOwn(chapterReports, `${set}-${row.page}`),
+  }));
+const hajinPageIntel = chapterReport(baseHajinPageIntel, "hajin");
+const x01PageIntel = chapterReport(baseX01PageIntel, "x01");
 import { fobUpgradeMaterials, parseUpgradeStock } from "./fob-upgrade-card.mjs";
 import { hydrateInventoryIcons } from "./inventory-icons.mjs";
 import { registerDraftGuard } from "./common.mjs";
@@ -175,14 +188,14 @@ function renderMissionDirectory() {
     if (!record) return "<li>Record missing · review source</li>";
     if (record.spoiler && !state.profile.spoilers)
       return "<li>Story mission · hidden until spoilers are enabled</li>";
-    return `<li><a href="${esc(missionHref(id))}">${esc(record.name)}</a> <small>${record.status === "observed" ? "Source reported" : esc(record.status || "Unverified")}</small></li>`;
+    return `<li><a href="${esc(missionHref(id))}">${esc(record.name)}</a> <small>${record.status === "observed" ? "Source reported" : esc(record.status || "Unverified")}</small>${renderMissionObjectives(record)}</li>`;
   };
   hajin.innerHTML =
     '<h3 id="hajin-orders">Hajin · pages 1–24</h3><div class="mission-page-grid">' +
     hajinOrderSequence.pages
       .map(
         (row) =>
-          `<section id="hajin-page-${row.page}" class="mission-page-card" aria-label="Hajin page ${row.page}"><h4>Page ${row.page} <small>${esc(row.label)}</small></h4><p>${row.placement === "fixed" ? "Fixed page roster" : "Reported chapter sequence · page may vary"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><details class="mission-rewards"><summary>Reported page rewards</summary><ul>${hajinPageIntel[row.page - 1].rewards.map((reward) => `<li>${esc(reward)}</li>`).join("")}</ul><p>Community report · reviewed ${esc(hajinPageIntel[row.page - 1].reviewedAt)} · current build unverified.</p>${hajinPageIntel[row.page - 1].notes ? `<p>${esc(hajinPageIntel[row.page - 1].notes)}</p>` : ""}<p class="mission-source-links">${hajinPageIntel[row.page - 1].sourceKeys.map((key) => `<a href="${esc(missionSources[key])}" target="_blank" rel="noopener noreferrer">${esc(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details><a href="${esc(auditHref(`page:${packId}:hajin-launch:${row.page}:roster`))}">Audit page ${row.page}</a></section>`,
+          `<section id="hajin-page-${row.page}" class="mission-page-card" aria-label="Hajin page ${row.page}"><h4><a href="${esc(chapterReaderPath(`hajin-${row.page}`))}">Page ${row.page}</a> <small>${esc(row.label)}</small></h4><p>${row.placement === "fixed" ? "Fixed page roster" : "Reported chapter sequence · page may vary"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><details class="mission-rewards"><summary>Reported page rewards</summary><ul>${hajinPageIntel[row.page - 1].rewards.map((reward) => `<li>${esc(reward)}</li>`).join("")}</ul><p>${hajinPageIntel[row.page - 1].localAuthored ? "Local authored report; original sources do not verify local edits" : "Community report"} · reviewed ${esc(hajinPageIntel[row.page - 1].reviewedAt)} · current build unverified.</p>${hajinPageIntel[row.page - 1].notes ? `<p>${esc(hajinPageIntel[row.page - 1].notes)}</p>` : ""}<p class="mission-source-links">${hajinPageIntel[row.page - 1].sourceKeys.map((key) => `<a href="${esc(missionSources[key])}" target="_blank" rel="noopener noreferrer">${esc(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details><a href="${esc(auditHref(`page:${packId}:hajin-launch:${row.page}:roster`))}">Audit page ${row.page}</a></section>`,
       )
       .join("") +
     "</div>";
@@ -192,7 +205,7 @@ function renderMissionDirectory() {
     x01Pages
       .map(
         (row) =>
-          `<section id="x01-page-${row.page}" class="mission-page-card" aria-label="X01 page ${row.page}"><h4>Page ${row.page} <small>X01 ${row.page}/5</small></h4><p>${row.objectiveIds.length ? "Source-reported roster" : "No recorded Orders yet"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><details class="mission-rewards"><summary>Reported page rewards</summary><ul>${x01PageIntel[row.page - 1].rewards.map((reward) => `<li>${esc(reward)}</li>`).join("")}</ul><p>COD Central report · reviewed ${esc(x01PageIntel[row.page - 1].reviewedAt)} · current build unverified.</p><a href="${esc(x01PageIntel[row.page - 1].sourceUrl)}" target="_blank" rel="noopener noreferrer">Tips and screenshots at COD Central ↗</a></details><a href="${esc(auditHref(`page:${packId}:x01-season1:${row.page}:roster`))}">Audit X01 page ${row.page}</a></section>`,
+          `<section id="x01-page-${row.page}" class="mission-page-card" aria-label="X01 page ${row.page}"><h4><a href="${esc(chapterReaderPath(`x01-${row.page}`))}">Page ${row.page}</a> <small>X01 ${row.page}/5</small></h4><p>${row.objectiveIds.length ? "Source-reported roster" : "No recorded Orders yet"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><details class="mission-rewards"><summary>Reported page rewards</summary><ul>${x01PageIntel[row.page - 1].rewards.map((reward) => `<li>${esc(reward)}</li>`).join("")}</ul><p>${x01PageIntel[row.page - 1].localAuthored ? "Local authored report; original source does not verify local edits" : "COD Central report"} · reviewed ${esc(x01PageIntel[row.page - 1].reviewedAt)} · current build unverified.</p>${x01PageIntel[row.page - 1].notes ? `<p>${esc(x01PageIntel[row.page - 1].notes)}</p>` : ""}<a href="${esc(x01PageIntel[row.page - 1].sourceUrl)}" target="_blank" rel="noopener noreferrer">Tips and screenshots at COD Central ↗</a></details><a href="${esc(auditHref(`page:${packId}:x01-season1:${row.page}:roster`))}">Audit X01 page ${row.page}</a></section>`,
       )
       .join("") +
     "</div>";
@@ -428,7 +441,7 @@ function render() {
     ? "This large spoiler dictionary exceeds the protected-display budget. Text is conservatively hidden; reveal spoilers or use a smaller pack to inspect it."
     : "The source chooser shows its first 500 choices. Narrow the track to reduce this list.";
   const baseRowMarkup = (r) =>
-    `<article class="panel compact-progress${r.upgrade?.completion === "completed" ? " upgrade-is-completed" : ""}"><div class="upgrade-summary"><div><${groupedUpgrades ? "h3" : "h2"}>${r.url && !r.hidden ? `<a href="${esc(r.url)}" ${focusedUpgrades ? `data-open-upgrade="${esc(r.id)}" aria-expanded="${openIds.has(r.id)}" aria-controls="progress-detail-${esc(r.id)}"` : ""} tabindex="0">${esc(r.name)}</a>` : esc(r.name)}</${groupedUpgrades ? "h3" : "h2"}><small data-upgrade-column="evidence">${focusedUpgrades ? "" : `${esc(r.track)} / `}${esc(labelStatus(r.status))}</small>${r.upgrade?.completion === "completed" ? "<small>Recorded completed</small>" : ""}${focusedUpgrades && familyModel.records.get(r.id)?.completed && !familyModel.records.get(r.id)?.ownCompleted ? "<small>Equivalent source identity recorded completed</small>" : ""}${focusedUpgrades && !r.hidden && (r.disputed || r.upgrade?.reviewRequired || overview?.rows.get(r.id)?.unknown) ? `<small class="upgrade-critical">${r.disputed ? "Evidence conflict. " : ""}${r.upgrade?.reviewRequired ? "Progress needs review. " : ""}${overview?.rows.get(r.id)?.unknown ? "Costs / stock unknown or partial." : ""}</small>` : ""}</div>${summaryFor(r, guard)}${r.upgrade && !r.hidden ? `<button type="button" data-track-upgrade="${esc(r.id)}" ${state.profile.goals.some((g) => g.id === r.id) ? "disabled" : ""}>${state.profile.goals.some((g) => g.id === r.id) ? "Tracked" : "Track"}</button>` : ""}</div><details ${r.hidden ? "" : `id="progress-detail-${esc(r.id)}"`} data-progress-detail="${r.hidden ? "protected" : esc(r.id)}" ${openIds.has(r.id) ? "open" : ""}><summary>Details / progress${r.upgrade?.reviewRequired ? " · Review required" : ""}</summary>${
+    `<article class="panel compact-progress${r.upgrade?.completion === "completed" ? " upgrade-is-completed" : ""}"><div class="upgrade-summary"><div><${groupedUpgrades ? "h3" : "h2"}>${r.url && !r.hidden ? `<a href="${esc(r.url)}" ${focusedUpgrades ? `data-open-upgrade="${esc(r.id)}" aria-expanded="${openIds.has(r.id)}" aria-controls="progress-detail-${esc(r.id)}"` : ""} tabindex="0">${esc(r.name)}</a>` : esc(r.name)}</${groupedUpgrades ? "h3" : "h2"}>${r.upgrade && !r.hidden && r.url ? `<a data-full-record href="${esc(r.url)}">Open page / edit</a>` : ""}<small data-upgrade-column="evidence">${focusedUpgrades ? "" : `${esc(r.track)} / `}${esc(labelStatus(r.status))}</small>${r.upgrade?.completion === "completed" ? "<small>Recorded completed</small>" : ""}${focusedUpgrades && familyModel.records.get(r.id)?.completed && !familyModel.records.get(r.id)?.ownCompleted ? "<small>Equivalent source identity recorded completed</small>" : ""}${focusedUpgrades && !r.hidden && (r.disputed || r.upgrade?.reviewRequired || overview?.rows.get(r.id)?.unknown) ? `<small class="upgrade-critical">${r.disputed ? "Evidence conflict. " : ""}${r.upgrade?.reviewRequired ? "Progress needs review. " : ""}${overview?.rows.get(r.id)?.unknown ? "Costs / stock unknown or partial." : ""}</small>` : ""}</div>${summaryFor(r, guard)}${r.upgrade && !r.hidden ? `<button type="button" data-track-upgrade="${esc(r.id)}" ${state.profile.goals.some((g) => g.id === r.id) ? "disabled" : ""}>${state.profile.goals.some((g) => g.id === r.id) ? "Tracked" : "Track"}</button>` : ""}</div><details ${r.hidden ? "" : `id="progress-detail-${esc(r.id)}"`} data-progress-detail="${r.hidden ? "protected" : esc(r.id)}" ${openIds.has(r.id) ? "open" : ""}><summary>Details / progress${r.upgrade?.reviewRequired ? " · Review required" : ""}</summary>${
       r.hidden
         ? "<p>Reveal spoilers to inspect or track this record.</p>"
         : `
@@ -445,7 +458,7 @@ ${r.detailsTruncated ? '<p class="notice">This is a bounded preview of a large d
 ${r.related.length ? `<h3>Related records</h3><ul>${r.related.map((ref) => `<li>${reference(ref)}</li>`).join("")}</ul>` : ""}
 <dl><dt>Scope</dt><dd>${esc(r.scope)}</dd><dt>Content version</dt><dd>${esc(r.contentVersion)}</dd></dl>
 <h3>Evidence &amp; sources</h3><ul class="source-list">${r.sources.map((s) => `<li>${s.url ? `<a href="${esc(s.url)}" rel="noreferrer noopener">${esc(s.title)}</a>` : esc(s.title)}<p>${esc(s.supports)}</p><p>${esc(s.type)} · Published ${esc(s.publishedAt)} · Reviewed ${esc(s.reviewedAt)}</p>${provenance(s)}</li>`).join("") || "<li>No sources recorded. Treat this as unverified.</li>"}</ul>
-${r.url ? `<p><a href="${esc(r.url)}">Open selected private record</a></p>` : ""}`
+${r.url ? `<p><a href="${esc(r.url)}">Open full page &amp; edit</a></p>` : ""}`
     }</details></article>`;
   const rowMarkup = (r) => {
     const html = baseRowMarkup(r);

@@ -1,7 +1,24 @@
 #weapon-acquisition {
+  --acq-manual-missing: #ff8585;
+  --acq-manual-progress: #f2ce66;
+  --acq-manual-complete: #9fdd8f;
   --acq-gap: clamp(0.4rem, calc(0.3rem + 0.3vw), 0.7rem);
   font-size: 0.9rem;
   min-width: 0;
+}
+:root[data-theme="light"] #weapon-acquisition {
+  --acq-manual-missing: #b42332;
+  --acq-manual-progress: #805900;
+  --acq-manual-complete: #286b32;
+}
+.acq-weapon[data-manual-progress="missing"] > summary > strong {
+  color: var(--acq-manual-missing);
+}
+.acq-weapon[data-manual-progress="progress"] > summary > strong {
+  color: var(--acq-manual-progress);
+}
+.acq-weapon[data-manual-progress="complete"] > summary > strong {
+  color: var(--acq-manual-complete);
 }
 .acq-toolbar,
 .acq-record,

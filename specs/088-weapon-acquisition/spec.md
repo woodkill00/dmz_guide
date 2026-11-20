@@ -7,6 +7,8 @@
 
 ## User Scenarios & Testing
 
+2026-11-19 owner display amendment: color each weapon name on `/armory/acquisition/` red when manual ownership is unchecked and the recorded extraction count is0; yellow for recorded1–2 or an owned manual with recorded0; green for3or more. Unrecorded counts remain unrecorded/neutral, with no count inferred from ownership alone. Owner clarification2026-11-20 explicitly makes owned-manual/0 yellow. Keep existing count/ownership text as non-color status. Update immediately after successful counter/ownership changes and after reload, with readable dark/light colors and no storage/schema migration.
+
 ### US1 — Track manuals and extraction progress (P1)
 Players open a compact class-grouped weapon checklist, mark manual ownership and increase/decrease recorded Weapon Manual extractions toward a three-extraction War Spoils goal. Each weapon opens its own checklist/detail section and retains the same state after returning.
 Acceptance: an old owned-manual record shows extraction count Not recorded, never an invented one or three. Purchased unlocks do not increment extracted counts. Zero, one, two and three have distinct text, with three labelled tracked goal reached rather than game-verified reward ownership. Counter correction cannot remove other saved data. All sourced released weapons are present; upcoming weapons remain excluded.

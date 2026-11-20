@@ -330,11 +330,15 @@ function mountModernCatalog(form) {
     const pages = Math.max(1, Math.ceil(matches.length / size));
     page = Math.min(Math.max(0, page), pages - 1);
     const selected = new Set(matches.slice(page * size, (page + 1) * size));
+    // Preserve editable nodes and values without forcing every input row onto
+    // the screen. An actively edited row stays visible until focus moves.
+    const visible = new Set(selected);
     let retained = 0;
     for (const card of ordered)
       if (editable(card)) {
         if (!selected.has(card)) retained++;
         selected.add(card);
+        if (card.contains(before)) visible.add(card);
       }
     for (const [parent, rows] of orderedGroups) {
       const wanted = rows.filter((card) => selected.has(card));
@@ -351,9 +355,9 @@ function mountModernCatalog(form) {
           cursor = node.nextSibling;
         }
       }
-      for (const node of wanted) node.hidden = false;
+      for (const node of wanted) node.hidden = !visible.has(node);
       const section = parent.closest("[data-catalog-section]");
-      if (section) section.hidden = !wanted.length;
+      if (section) section.hidden = !wanted.some((node) => !node.hidden);
     }
     saveView();
     const message = `${matches.length} matching record${matches.length === 1 ? "" : "s"}. Coverage not established. Showing ${matches.length ? page * size + 1 : 0}–${Math.min(matches.length, (page + 1) * size)}; page ${page + 1} of ${pages}.${retained ? ` ${retained} editable rows retained outside this page/filter; their values are unchanged.` : ""}${sessionOnly ? " View context is session-only; existing navigation data was kept." : ""}`;

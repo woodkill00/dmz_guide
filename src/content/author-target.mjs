@@ -30,7 +30,10 @@ export function parseAuthorTarget(params) {
     ),
     invalid,
   );
-  assert(["edit", "images", "remove"].includes(target.intent), invalid);
+  assert(
+    ["edit", "images", "remove", "compose"].includes(target.intent),
+    invalid,
+  );
   return target;
 }
 export function resolveAuthorTarget(entries, target) {

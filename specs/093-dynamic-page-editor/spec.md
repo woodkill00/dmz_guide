@@ -1,12 +1,14 @@
 # Dynamic page editor
 
-Status: proposed feature, planning only. 2026-11-18.
+Status: implementation authorized2026-11-18 after planning analysis/fix cycle. Final verification tracked in acceptance.md.
 
 User: improve the full repository and plan editing items, upgrades, missions and other pages directly from Edit, with arbitrary section/photo placement. Clarification: Save writes to the local repository through Content Studio. Public editing later requires approved accounts; it is not enabled by this feature.
 
 ## User stories
 
 - US1/P1: Open Edit on a specific record and immediately see that exact page, with its fields and sections ready to edit.
+
+  Navigation acceptance clarified by the owner's Page1 report: every Orders page-group heading links to its own Hajin/X01 group detail, with a chapter Edit page action. Each non-spoiler mission name links to its individual detail and exact mission Edit page action. Group rewards/notes/layout and individual mission tasks remain in their existing distinct source owners.
 - US2/P1: Add a section, place text and pictures between steps or beside one another, reorder content, preview and save it to the repository.
 - US3/P1: Edit structured requirements or mission steps without breaking inventory, collection calculations, links or saved completion.
 - US4/P1: Recover unfinished changes and pictures after a refresh, failed save, conflict or interrupted author transaction.

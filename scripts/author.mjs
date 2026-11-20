@@ -1,3 +1,7 @@
+import { parseSpecialTarget, registerSpecialTarget } from "./page-adapters.mjs";
+import { renderPageEditor } from "../src/ui/page-editor-page.mjs";
+import { createPageEditorStore } from "./page-editor-store.mjs";
+import { createPageEditorTools } from "./page-editor-tools.mjs";
 import { resolvePresentation } from "../src/ui/presentation-config.mjs";
 import {
   parseItemCreateTarget,
@@ -22,6 +26,24 @@ import { renderStudioPage } from "../src/ui/studio-page.mjs";
 
 const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const staticFiles = new Set([
+  "src/client/page-editor.mjs",
+  "src/client/page-editor-media.mjs",
+  "src/client/page-editor-experience.mjs",
+  "src/domain/editor-experience.mjs",
+  "src/domain/page-editor-utils.mjs",
+  "src/domain/page-document.mjs",
+  "src/domain/page-bundle.mjs",
+  "src/domain/page-recovery.mjs",
+  "src/domain/page-source-edits.mjs",
+  "src/ui/page-composition.mjs",
+  "src/ui/page-composition.css",
+  "src/ui/page-editor.css",
+  "src/client/page-editor.mjs",
+  "src/client/page-editor-media.mjs",
+  "src/domain/page-document.mjs",
+  "src/ui/page-composition.mjs",
+  "src/ui/page-composition.css",
+  "src/ui/page-editor.css",
   "src/ui/workspace-shell.css",
   "src/ui/directory-view.css",
   "src/ui/directory-view.mjs",
@@ -147,16 +169,25 @@ export async function createAuthorServer({
   root = sourceRoot,
   port = 4174,
   sessionMs = 12 * 60 * 60 * 1000,
+  editorToolsOptions = {},
 } = {}) {
   resolvePresentation("studio");
   if (!Number.isInteger(port) || port < 0 || port > 65535)
     throw new Error("Port must be an integer from 0 to 65535");
   root = resolve(root);
   const store = await createAuthorStore({ root });
+  const pageStore = createPageEditorStore({ root, store });
+  const editorTools = createPageEditorTools({
+    root,
+    pageStore,
+    ...editorToolsOptions,
+  });
   const token = randomBytes(32).toString("hex"),
     expiresAt = Date.now() + sessionMs;
   let origin,
-    activeWrites = 0;
+    activeWrites = 0,
+    activeRequests = 0;
+  const drains = [];
   const server = createServer(
     {
       maxHeaderSize: 8192,
@@ -165,6 +196,7 @@ export async function createAuthorServer({
       keepAliveTimeout: 5000,
     },
     async (req, res) => {
+      activeRequests++;
       res.setHeader("Cache-Control", "no-store");
       res.setHeader("X-Content-Type-Options", "nosniff");
       res.setHeader("Referrer-Policy", "no-referrer");
@@ -235,7 +267,10 @@ export async function createAuthorServer({
               );
             if (url.search) {
               try {
-                if (url.searchParams.has("create")) {
+                if (url.searchParams.has("adapter")) {
+                  const target = parseSpecialTarget(url.searchParams);
+                  await pageStore.read(target);
+                } else if (url.searchParams.has("create")) {
                   const target = parseItemCreateTarget(url.searchParams);
                   resolveItemCreateTarget((await store.read()).entries, target);
                 } else {
@@ -250,7 +285,9 @@ export async function createAuthorServer({
             return respond(
               res,
               200,
-              renderStudioPage(),
+              url.searchParams.get("intent") === "compose"
+                ? renderPageEditor()
+                : renderStudioPage(),
               "text/html; charset=utf-8",
               head,
             );
@@ -263,6 +300,20 @@ export async function createAuthorServer({
               "text/plain; charset=utf-8",
               head,
             );
+          if (url.pathname === "/page-preview") {
+            const { renderSpecialPagePreview } = await import(
+              "./page-editor-preview.mjs"
+            );
+            return respond(
+              res,
+              200,
+              renderSpecialPagePreview(
+                await pageStore.read(parseSpecialTarget(url.searchParams)),
+              ),
+              "text/html; charset=utf-8",
+              head,
+            );
+          }
           if (url.pathname === "/preview") {
             if ([...url.searchParams.keys()].sort().join(",") !== "id,packKey")
               throw new AuthorError(
@@ -271,10 +322,40 @@ export async function createAuthorServer({
                 400,
               );
             const { renderSavedPreview } = await import("./author-preview.mjs");
+            const savedSnapshot = await store.read();
+            const selectedEntry = savedSnapshot.entries.find(
+              (e) => e.key === url.searchParams.get("packKey"),
+            );
+            let custom = null;
+            if (selectedEntry) {
+              const { readPageDocuments } = await import(
+                "./page-documents.mjs"
+              );
+              const { pageKey } = await import(
+                "../src/domain/page-document.mjs"
+              );
+              const pages = await readPageDocuments(root, savedSnapshot, {
+                checkBase: false,
+              });
+              custom = pages.documents.get(
+                await pageKey({
+                  adapter: "catalog",
+                  scope: {
+                    packKey: selectedEntry.key,
+                    packId: selectedEntry.pack.id,
+                  },
+                  recordId: url.searchParams.get("id"),
+                }),
+              )?.document;
+            }
             const page = renderSavedPreview(
-              await store.read(),
+              savedSnapshot,
               url.searchParams.get("packKey"),
               url.searchParams.get("id"),
+              custom,
+              await (
+                await import("./page-adapters.mjs")
+              ).chapterOverrides(root),
             );
             if (!page)
               throw new AuthorError("NOT_FOUND", "Saved record not found", 404);
@@ -300,6 +381,73 @@ export async function createAuthorServer({
               "API requests require GET",
               405,
             );
+          if (url.pathname.startsWith("/api/page-edits/")) {
+            if (
+              !tokenMatches(req.headers["x-author-token"], token) ||
+              Date.now() >= expiresAt
+            )
+              throw new AuthorError(
+                "FORBIDDEN",
+                "Current local author session required",
+                403,
+              );
+            if (url.pathname === "/api/page-edits/tools") {
+              const keys = [...url.searchParams.keys()];
+              if (
+                keys.some((k) => !["action", "target", "id"].includes(k)) ||
+                new Set(keys).size !== keys.length
+              )
+                throw new AuthorError(
+                  "INVALID_REQUEST",
+                  "Unknown editor tool query",
+                  400,
+                );
+              const target = url.searchParams.has("target")
+                ? parseBounded(url.searchParams.get("target"), 2048, {
+                    depth: 4,
+                    nodes: 30,
+                    string: 200,
+                  })
+                : undefined;
+              return respond(
+                res,
+                200,
+                await editorTools.get(
+                  url.searchParams.get("action"),
+                  target,
+                  url.searchParams.get("id"),
+                ),
+              );
+            }
+            if (url.pathname === "/api/page-edits/record") {
+              if (url.searchParams.has("adapter"))
+                return respond(
+                  res,
+                  200,
+                  await pageStore.read(parseSpecialTarget(url.searchParams)),
+                );
+              const t = parseAuthorTarget(url.searchParams);
+              return respond(
+                res,
+                200,
+                await pageStore.read({
+                  adapter: "catalog",
+                  scope: { packKey: t.packKey, packId: t.packId },
+                  recordId: t.id,
+                }),
+              );
+            }
+            const op = /^\/api\/page-edits\/operations\/([a-f0-9]{32})$/.exec(
+              url.pathname,
+            );
+            if (op && !url.search)
+              return respond(res, 200, await pageStore.status(op[1]));
+            throw new AuthorError(
+              "NOT_FOUND",
+              "Unknown page editor route",
+              404,
+            );
+          }
           if (url.pathname === "/api/session" && !url.search)
             return respond(res, 200, {
               token,
@@ -330,7 +478,16 @@ export async function createAuthorServer({
           }
           throw new AuthorError("NOT_FOUND", "Not found", 404);
         }
-        if (req.method !== "POST" || url.pathname !== "/api/save" || url.search)
+        if (
+          req.method !== "POST" ||
+          !(
+            url.pathname === "/api/save" ||
+            /^\/api\/page-edits\/(?:preview|commit|tools|operations\/[a-f0-9]{32}\/cancel)$/.test(
+              url.pathname,
+            )
+          ) ||
+          url.search
+        )
           throw new AuthorError(
             "METHOD_NOT_ALLOWED",
             "Only explicit repository saves are supported",
@@ -360,6 +517,34 @@ export async function createAuthorServer({
           );
         activeWrites++;
         try {
+          if (url.pathname === "/api/page-edits/tools")
+            return respond(
+              res,
+              200,
+              await editorTools.post(await readJSON(req)),
+            );
+          if (url.pathname === "/api/page-edits/preview")
+            return respond(
+              res,
+              200,
+              await pageStore.preview(await readJSON(req)),
+            );
+          if (url.pathname === "/api/page-edits/commit")
+            return respond(
+              res,
+              200,
+              await pageStore.commit(await readJSON(req)),
+            );
+          const cancel =
+            /^\/api\/page-edits\/operations\/([a-f0-9]{32})\/cancel$/.exec(
+              url.pathname,
+            );
+          if (cancel) {
+            const body = await readJSON(req);
+            if (Object.keys(body).length)
+              throw new Error("Unexpected cancellation fields");
+            return respond(res, 200, await pageStore.cancel(cancel[1]));
+          }
           return respond(res, 200, await store.save(await readJSON(req)));
         } finally {
           activeWrites--;
@@ -392,6 +577,9 @@ export async function createAuthorServer({
             ? "A required repository file is unavailable"
             : message.slice(0, 500),
         });
+      } finally {
+        activeRequests--;
+        if (!activeRequests) for (const done of drains.splice(0)) done();
       }
     },
   );
@@ -414,7 +602,20 @@ export async function createAuthorServer({
         server.close((e) => (e ? reject(e) : resolveClose())),
       );
       server.closeAllConnections();
+      await editorTools.close();
       await stopped;
+      if (activeRequests)
+        await new Promise((resolve, reject) => {
+          const timer = setTimeout(
+            () =>
+              reject(Error("Author operations still active; source retained")),
+            30000,
+          );
+          drains.push(() => {
+            clearTimeout(timer);
+            resolve();
+          });
+        });
     },
   };
 }

@@ -22,7 +22,14 @@ class RepositoryTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name) / 'repo'
-        shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('.git', '__pycache__', '.venv'))
+        # Validate the source checkout, without repeatedly copying installed
+        # browsers/dependencies, generated releases or private recovery data.
+        # All authored inputs, provenance manifests and assertions stay intact.
+        shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns(
+            '.git', '__pycache__', '.venv', 'node_modules', 'dist', 'release',
+            'coverage', 'test-results', '.author-state', '.build-state',
+            '.playwright-mcp', '.local',
+        ))
 
     def test_repository_passes(self):
         self.assertEqual(validator.check(self.root), [])

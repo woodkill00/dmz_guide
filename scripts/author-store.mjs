@@ -34,6 +34,11 @@ const groups =
 const categories =
   "items|weapons|recipes|objectives|guides|maps|locations|other";
 const paths = [
+  /^(?:content\/(?:weapon-intel|weapon-acquisition|mission-chapter-overrides)\.json|src\/ui\/(?:weapon-camos|keys|key-supplemental)\.json)$/,
+  /^content\/page-documents\/manifest\.json$/,
+  /^content\/page-documents\/[a-f0-9]{2}\/[a-f0-9]{64}\.json$/,
+  /^\.author-state\/page-operations\/(?:[a-f0-9]{32}|active)\.json$/,
+  /^\.author-state\/page-history\/[a-f0-9]{64}\/[a-f0-9]{32}\.json$/,
   /^content\/catalog\/manifest\.json$/,
   new RegExp(`^content/catalog/${slug}/pack\\.json$`),
   new RegExp(`^content/catalog/${slug}/(?:${groups})/${id}\\.json$`),
@@ -350,6 +355,8 @@ function validatePlan(before, after, markerPath) {
       (a.afterHash === null) - (b.afterHash === null) ||
       Number(!a.path.startsWith("media/")) -
         Number(!b.path.startsWith("media/")) ||
+      Number(a.path.startsWith(".author-state/page-operations/")) -
+        Number(b.path.startsWith(".author-state/page-operations/")) ||
       a.path.localeCompare(b.path),
   );
   return changed;
@@ -401,6 +408,7 @@ async function applyPlanLocked({
   after,
   markerPath = "content/catalog/manifest.json",
   failpoint,
+  transactionId: suppliedTransactionId,
 }) {
   check(
     !(await bytesAt(root, JOURNAL)),
@@ -408,6 +416,19 @@ async function applyPlanLocked({
     "RECOVERY_REQUIRED",
     409,
   );
+  const activePage = await bytesAt(
+    root,
+    ".author-state/page-operations/active.json",
+  );
+  if (activePage)
+    check(
+      before.has(".author-state/page-operations/active.json") &&
+        digest(before.get(".author-state/page-operations/active.json")) ===
+          digest(activePage),
+      "Resolve the pending page operation before another mutation",
+      "PAGE_OPERATION_UNRESOLVED",
+      409,
+    );
   const entries = validatePlan(before, after, markerPath);
   // Verify the complete supplied snapshot, including unchanged files.
   for (const [path, bytes] of before) {
@@ -415,7 +436,9 @@ async function applyPlanLocked({
     await verifyExpected(root, { path }, digest(bytes));
   }
   if (!entries.length) return { transactionId: null, paths: [] };
-  const transactionId = randomBytes(16).toString("hex");
+  const transactionId =
+    suppliedTransactionId || randomBytes(16).toString("hex");
+  check(/^[a-f0-9]{32}$/.test(transactionId), "Invalid transaction identity");
   for (const [i, e] of entries.entries()) {
     if (e.beforeHash !== null)
       await durableCreate(
@@ -799,7 +822,7 @@ export async function createAuthorStore({ root, schema }) {
       );
       return { bytes, mime: asset.mime };
     },
-    async save(input) {
+    async save(input, extendPlan = null) {
       return withLock(root, async () => {
         check(
           input &&
@@ -814,6 +837,13 @@ export async function createAuthorStore({ root, schema }) {
             input.packKey.length <= 80,
           "Invalid catalog key",
         );
+        if (!extendPlan)
+          check(
+            !(await bytesAt(root, ".author-state/page-operations/active.json")),
+            "Resolve the pending page save before another repository mutation",
+            "PAGE_OPERATION_UNRESOLVED",
+            409,
+          );
         const current = await snapshot();
         check(
           typeof input.expectedRevision === "string" &&
@@ -967,7 +997,21 @@ export async function createAuthorStore({ root, schema }) {
           if (!before.has(path)) before.set(path, null);
         for (const path of before.keys())
           if (!after.has(path)) after.set(path, null);
-        const result = await applyPlanLocked({ root, before, after });
+        const extended = extendPlan
+          ? await extendPlan({ before, after, current, pack })
+          : null;
+        const { readPageDocuments } = await import("./page-documents.mjs");
+        await readPageDocuments(
+          root,
+          { entries, files: after },
+          { overlay: after },
+        );
+        const result = await applyPlanLocked({
+          root,
+          before,
+          after,
+          transactionId: extended?.transactionId,
+        });
         const saved = await snapshot();
         return {
           ok: true,
