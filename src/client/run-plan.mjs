@@ -86,7 +86,7 @@ function sendPlanToMap(plan) {
   const payload = mapHandoff(plan);
   const nonce = crypto.randomUUID();
   const target = window.open(
-    `http://127.0.0.1:5175/?tool=explore&run-plan=${nonce}`,
+    `/map/?tool=explore&run-plan=${nonce}`,
     "_blank",
   );
   if (!target)
@@ -95,7 +95,7 @@ function sendPlanToMap(plan) {
     );
   const handler = (event) => {
     if (
-      event.origin !== "http://127.0.0.1:5175" ||
+      event.origin !== location.origin ||
       event.source !== target ||
       event.data?.nonce !== nonce
     )
@@ -223,7 +223,7 @@ function draw() {
             : 0;
         const mapLink =
           row && !hidden && row.name.length <= 120
-            ? ` <a href="http://127.0.0.1:5175/?tool=explore&amp;area=${encodeURIComponent(row.name)}" target="_blank" rel="noopener noreferrer">Check area on map ↗</a>`
+            ? ` <a href="/map/?tool=explore&amp;area=${encodeURIComponent(row.name)}" target="_blank" rel="noopener noreferrer">Check area on map ↗</a>`
             : "";
         return `<li>${esc(label)}${row ? "" : " · unavailable in selected catalog"}${keyedRooms ? ` · ${keyedRooms} recorded keyed room${keyedRooms === 1 ? "" : "s"}; choose the exact room above` : ""} · floor / road access unconfirmed until checked on map${mapLink} <button type="button" data-remove-stop="${esc(id)}" aria-label="Remove stop">Remove</button></li>`;
       })

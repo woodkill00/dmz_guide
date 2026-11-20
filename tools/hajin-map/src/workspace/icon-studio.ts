@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import { el, input, select, field, note, button, download, errorText } from './dom.ts';
 import { iconTemplates, iconFrames, iconSymbols, validateIconDesign, iconSVG, iconSVGURL, type IconDesign } from './icon-design.ts';
 import { stageDesignedIcon } from './icons.ts';
@@ -6,7 +7,7 @@ import type { UIServices } from './ui-context.ts';
 
 const filename=(name:string)=>name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'map-icon';
 export function downloadIconPNG(icon:IconAsset){
-  const link=el('a');link.href=`data:image/png;base64,${icon.base64}`;link.download=filename(icon.description)+'.png';link.click();
+  const link=el('a');link.href=mapURL(`data:image/png;base64,${icon.base64}`);link.download=filename(icon.description)+'.png';link.click();
 }
 export function downloadIconSVG(design:IconDesign,description:string){download(filename(description)+'.svg',iconSVG(design,description),'image/svg+xml');}
 
@@ -76,7 +77,7 @@ export function createIconStudio(h:Pick<UIServices,'process'|'error'|'notice'> &
   actions.append(save,svg,png);
   const preview=()=>{
     if(disposed)return;
-    try{const v=read(),url=iconSVGURL(v.design,v.description);for(const image of images){image.src=url;image.alt=v.description;}status.textContent='Preview ready · transparent outside the frame';for(const b of [save,svg,png])b.disabled=saving;}
+    try{const v=read(),url=iconSVGURL(v.design,v.description);for(const image of images){image.src=mapURL(url);image.alt=v.description;}status.textContent='Preview ready · transparent outside the frame';for(const b of [save,svg,png])b.disabled=saving;}
     catch(error){status.textContent=errorText(error);for(const image of images){image.removeAttribute('src');image.alt='Invalid design: preview unavailable';}for(const b of [save,svg,png])b.disabled=true;}
   };
   const historyControls=[description,frame,symbol,label,background,foreground,border,borderWidth,size,rotation];
@@ -91,7 +92,7 @@ export function createIconStudio(h:Pick<UIServices,'process'|'error'|'notice'> &
     if(saving)throw new Error('Wait for the current icon save before replacing its design.');
     const d=validateIconDesign(value);description.value=name;frame.value=d.frame;symbol.value=d.symbol;label.value=d.label;background.value=d.background;foreground.value=d.foreground;border.value=d.border;borderWidth.value=String(d.borderWidth);size.value=String(d.symbolSize);rotation.value=String(d.rotation);preview();if(record)remember();else{history=[snapshot()];cursor=0;historyState();}
   };
-  for(const template of iconTemplates){const b=button(template.name,()=>{if(disposed||saving)return;load(template.design,template.name+' marker',true);h.dirty();});b.dataset.iconTemplate=template.id;const img=el('img');img.src=iconSVGURL(template.design,template.name);img.alt='';img.width=img.height=32;b.prepend(img);starters.append(b);}
+  for(const template of iconTemplates){const b=button(template.name,()=>{if(disposed||saving)return;load(template.design,template.name+' marker',true);h.dirty();});b.dataset.iconTemplate=template.id;const img=el('img');img.src=mapURL(iconSVGURL(template.design,template.name));img.alt='';img.width=img.height=32;b.prepend(img);starters.append(b);}
   controls.addEventListener('input',()=>{if(disposed||saving)return;h.dirty();preview();remember();},{signal:listeners.signal});controls.addEventListener('change',()=>{if(disposed||saving)return;h.dirty();preview();remember();},{signal:listeners.signal});
   const savedStarters=el('details');savedStarters.append(el('summary','My saved design starters'));
   for(const starter of h.starters??[])savedStarters.append(button(starter.description,()=>{if(disposed||saving)return;load(starter.design,starter.description,true);h.dirty();}));

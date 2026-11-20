@@ -30,7 +30,7 @@ test("033 coverage repair: every layout type has one shared navigation landmark"
     assert.match(html, /href="\/collection\/\?pack=community%3Asynthetic"/);
     assert.match(
       html,
-      /href="http:\/\/127\.0\.0\.1:5175\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/,
+      /href="\/map\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/,
     );
     assert.doesNotMatch(html, /5175\/[^" ]*\?pack=/);
   }

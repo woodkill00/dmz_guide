@@ -1,3 +1,4 @@
+import { mapMarkup, mapURL } from '../site-paths.ts';
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./style.css";
@@ -76,7 +77,7 @@ const refreshAlignment = () => {
 };
 refreshAlignment();
 const app = document.querySelector<HTMLElement>("#app")!;
-app.innerHTML = `<main class="x01-workbench"><header class="wb-head"><div><p class="x01-eyebrow">DMZ FIELD GUIDE · X01</p><h1>X01 planning workbench</h1><p>Compare sources · mark discoveries · plan schematic routes</p></div><nav aria-label="X01 views"><a href="/x01-dmzhub.html">DMZHub source map</a><a href="/x01.html">COD Central source map</a><a href="/">Hajin map</a></nav></header><div class="wb-grid"><aside id="workbench-controls" class="wb-panel" aria-label="X01 source and location controls"><h2>Explore</h2><div class="wb-row" role="group" aria-label="Floor"><label><input type="radio" name="wb-floor" value="1" checked>First floor</label><label><input type="radio" name="wb-floor" value="2">Second floor</label></div><div class="wb-row" role="group" aria-label="Visible sources"><label><input id="wb-show-hub" type="checkbox" checked>DMZHub</label><label><input id="wb-show-cod" type="checkbox" checked>COD Central</label><label><input id="wb-show-custom" type="checkbox" checked>Mine</label></div><div class="wb-row"><label><input id="wb-compare" type="checkbox">Side-by-side source maps</label></div><label>Find a place or marker<input id="wb-search" type="search" maxlength="100" placeholder="safe, printer, room"></label><p id="wb-count" class="wb-stats" role="status"></p><div id="wb-nearby" class="wb-nearby" hidden><strong>Markers here</strong><div id="wb-nearby-list" class="wb-list"></div><button id="wb-nearby-close" type="button">Close list</button></div><div id="wb-results" class="wb-list" aria-label="X01 locations"></div><details id="wb-review-panel"><summary>Source review</summary><p id="wb-alignment" class="wb-stats"></p><p>Matching names and positions are candidates only. Choose Same or Separate to record your review.</p><div id="wb-candidates"></div></details></aside><section class="wb-map-panel" aria-label="X01 workbench maps"><div class="wb-mapbar"><button id="wb-zoom-in" type="button" aria-label="Zoom in">+</button><button id="wb-zoom-out" type="button" aria-label="Zoom out">−</button><button id="wb-fit" type="button">Fit</button><button id="wb-add" type="button">Add my POI</button><span id="wb-map-status"></span></div><div id="wb-maps" class="wb-maps"><div id="wb-map" role="region" aria-label="X01 DMZHub floor with optional calibrated COD Central markers" tabindex="0"></div><div id="wb-cod-map" role="region" aria-label="COD Central X01 floor comparison" tabindex="0"></div></div><p class="wb-caption">COD Central overlay uses a measured display alignment. Dashed route legs are schematic; access and travel time are unverified. Right-click to add your own point.</p></section><aside class="wb-panel" aria-label="X01 planning tools"><h2>Selected location</h2><div id="wb-detail">Choose a map marker or result.</div><p id="wb-message" class="wb-status" role="status"></p><details id="wb-custom-panel"><summary>My POI</summary><form id="wb-point-form" class="wb-form"><input id="wb-point-id" type="hidden"><label>Name<input id="wb-point-name" maxlength="100" required></label><label>Type<input id="wb-point-kind" maxlength="50" value="Place"></label><div class="wb-inline"><label>Floor<select id="wb-point-floor"><option value="1">First</option><option value="2">Second</option></select></label><label>Photo (PNG/JPEG/WebP, ≤2 MiB)<input id="wb-point-photo" type="file" accept="image/png,image/jpeg,image/webp"></label></div><div class="wb-inline"><label>X (0–1)<input id="wb-point-x" type="number" min="0" max="1" step="0.000001" required></label><label>Y (0–1)<input id="wb-point-y" type="number" min="0" max="1" step="0.000001" required></label></div><label>Notes<textarea id="wb-point-notes" maxlength="2000"></textarea></label><div class="wb-row"><button type="submit">Save POI</button><button id="wb-point-delete" type="button">Delete POI</button><button id="wb-point-clear" type="button">New</button></div></form></details><details id="wb-route-panel"><summary>Waypoints and route</summary><p class="wb-stats">Select a marker, then Add waypoint. Move stops with buttons. Lines are straight schematic segments through possible floor connectors inferred from nearby markers.</p><div class="wb-row"><button id="wb-route-add" type="button">Add selected</button><button id="wb-route-clear" type="button">Clear route</button></div><div id="wb-route-list"></div><div id="wb-route-legs"></div></details><details id="wb-observe-panel"><summary>Gameplay observations</summary><form id="wb-observe-form" class="wb-form"><p id="wb-observe-target">Select a location first.</p><label>Date<input id="wb-observe-date" type="date" required></label><label>Game build<input id="wb-observe-build" maxlength="80" placeholder="e.g. Season 1 build"></label><label>Outcome<select id="wb-observe-outcome"><option value="confirmed">Confirmed in my match</option><option value="absent">Absent in my match</option><option value="uncertain">Uncertain</option></select></label><label>Notes<textarea id="wb-observe-notes" maxlength="2000"></textarea></label><button type="submit">Save observation</button></form><div id="wb-observations"></div></details><details id="wb-update-panel"><summary>Review source update</summary><p>Capture a source snapshot locally, then choose its JSON draft. Nothing is applied until you review the diff.</p><label>Source<select id="wb-update-source"><option value="hub">DMZHub</option><option value="cod">COD Central</option></select></label><label>Snapshot JSON<input id="wb-update-file" type="file" accept="application/json,.json"></label><button id="wb-update-review" type="button">Review file</button><div id="wb-update-preview"></div><button id="wb-update-apply" type="button" disabled>Apply reviewed update</button></details><details id="wb-backup-panel"><summary>Backup and restore</summary><button id="wb-export" type="button">Download private backup</button><label>Backup JSON<input id="wb-import-file" type="file" accept="application/json,.json"></label><button id="wb-import-review" type="button">Preview restore</button><div id="wb-import-preview"></div><button id="wb-import-apply" type="button" disabled>Replace private workspace</button></details></aside></div></main>`;
+app.innerHTML = mapMarkup(`<main class="x01-workbench"><header class="wb-head"><div><p class="x01-eyebrow">DMZ FIELD GUIDE · X01</p><h1>X01 planning workbench</h1><p>Compare sources · mark discoveries · plan schematic routes</p></div><nav aria-label="X01 views"><a href="/x01-dmzhub.html">DMZHub source map</a><a href="/x01.html">COD Central source map</a><a href="/">Hajin map</a></nav></header><div class="wb-grid"><aside id="workbench-controls" class="wb-panel" aria-label="X01 source and location controls"><h2>Explore</h2><div class="wb-row" role="group" aria-label="Floor"><label><input type="radio" name="wb-floor" value="1" checked>First floor</label><label><input type="radio" name="wb-floor" value="2">Second floor</label></div><div class="wb-row" role="group" aria-label="Visible sources"><label><input id="wb-show-hub" type="checkbox" checked>DMZHub</label><label><input id="wb-show-cod" type="checkbox" checked>COD Central</label><label><input id="wb-show-custom" type="checkbox" checked>Mine</label></div><div class="wb-row"><label><input id="wb-compare" type="checkbox">Side-by-side source maps</label></div><label>Find a place or marker<input id="wb-search" type="search" maxlength="100" placeholder="safe, printer, room"></label><p id="wb-count" class="wb-stats" role="status"></p><div id="wb-nearby" class="wb-nearby" hidden><strong>Markers here</strong><div id="wb-nearby-list" class="wb-list"></div><button id="wb-nearby-close" type="button">Close list</button></div><div id="wb-results" class="wb-list" aria-label="X01 locations"></div><details id="wb-review-panel"><summary>Source review</summary><p id="wb-alignment" class="wb-stats"></p><p>Matching names and positions are candidates only. Choose Same or Separate to record your review.</p><div id="wb-candidates"></div></details></aside><section class="wb-map-panel" aria-label="X01 workbench maps"><div class="wb-mapbar"><button id="wb-zoom-in" type="button" aria-label="Zoom in">+</button><button id="wb-zoom-out" type="button" aria-label="Zoom out">−</button><button id="wb-fit" type="button">Fit</button><button id="wb-add" type="button">Add my POI</button><span id="wb-map-status"></span></div><div id="wb-maps" class="wb-maps"><div id="wb-map" role="region" aria-label="X01 DMZHub floor with optional calibrated COD Central markers" tabindex="0"></div><div id="wb-cod-map" role="region" aria-label="COD Central X01 floor comparison" tabindex="0"></div></div><p class="wb-caption">COD Central overlay uses a measured display alignment. Dashed route legs are schematic; access and travel time are unverified. Right-click to add your own point.</p></section><aside class="wb-panel" aria-label="X01 planning tools"><h2>Selected location</h2><div id="wb-detail">Choose a map marker or result.</div><p id="wb-message" class="wb-status" role="status"></p><details id="wb-custom-panel"><summary>My POI</summary><form id="wb-point-form" class="wb-form"><input id="wb-point-id" type="hidden"><label>Name<input id="wb-point-name" maxlength="100" required></label><label>Type<input id="wb-point-kind" maxlength="50" value="Place"></label><div class="wb-inline"><label>Floor<select id="wb-point-floor"><option value="1">First</option><option value="2">Second</option></select></label><label>Photo (PNG/JPEG/WebP, ≤2 MiB)<input id="wb-point-photo" type="file" accept="image/png,image/jpeg,image/webp"></label></div><div class="wb-inline"><label>X (0–1)<input id="wb-point-x" type="number" min="0" max="1" step="0.000001" required></label><label>Y (0–1)<input id="wb-point-y" type="number" min="0" max="1" step="0.000001" required></label></div><label>Notes<textarea id="wb-point-notes" maxlength="2000"></textarea></label><div class="wb-row"><button type="submit">Save POI</button><button id="wb-point-delete" type="button">Delete POI</button><button id="wb-point-clear" type="button">New</button></div></form></details><details id="wb-route-panel"><summary>Waypoints and route</summary><p class="wb-stats">Select a marker, then Add waypoint. Move stops with buttons. Lines are straight schematic segments through possible floor connectors inferred from nearby markers.</p><div class="wb-row"><button id="wb-route-add" type="button">Add selected</button><button id="wb-route-clear" type="button">Clear route</button></div><div id="wb-route-list"></div><div id="wb-route-legs"></div></details><details id="wb-observe-panel"><summary>Gameplay observations</summary><form id="wb-observe-form" class="wb-form"><p id="wb-observe-target">Select a location first.</p><label>Date<input id="wb-observe-date" type="date" required></label><label>Game build<input id="wb-observe-build" maxlength="80" placeholder="e.g. Season 1 build"></label><label>Outcome<select id="wb-observe-outcome"><option value="confirmed">Confirmed in my match</option><option value="absent">Absent in my match</option><option value="uncertain">Uncertain</option></select></label><label>Notes<textarea id="wb-observe-notes" maxlength="2000"></textarea></label><button type="submit">Save observation</button></form><div id="wb-observations"></div></details><details id="wb-update-panel"><summary>Review source update</summary><p>Capture a source snapshot locally, then choose its JSON draft. Nothing is applied until you review the diff.</p><label>Source<select id="wb-update-source"><option value="hub">DMZHub</option><option value="cod">COD Central</option></select></label><label>Snapshot JSON<input id="wb-update-file" type="file" accept="application/json,.json"></label><button id="wb-update-review" type="button">Review file</button><div id="wb-update-preview"></div><button id="wb-update-apply" type="button" disabled>Apply reviewed update</button></details><details id="wb-backup-panel"><summary>Backup and restore</summary><button id="wb-export" type="button">Download private backup</button><label>Backup JSON<input id="wb-import-file" type="file" accept="application/json,.json"></label><button id="wb-import-review" type="button">Preview restore</button><div id="wb-import-preview"></div><button id="wb-import-apply" type="button" disabled>Replace private workspace</button></details></aside></div></main>`);
 const $ = <T extends Element = HTMLElement>(selector: string) =>
   document.querySelector<T>(selector)!;
 const message = (value: string, error = false) => {
@@ -231,7 +232,7 @@ function showImages() {
   for (let y = 0; y < 4; y++)
     for (let x = 0; x < 4; x++)
       L.imageOverlay(
-        `/maps/x01/dmzhub/tiles/${slug}/2/${x}/${y}.webp`,
+        mapURL(`/maps/x01/dmzhub/tiles/${slug}/2/${x}/${y}.webp`),
         [
           [4096 - (y + 1) * 1024, x * 1024],
           [4096 - y * 1024, (x + 1) * 1024],
@@ -243,7 +244,7 @@ function showImages() {
   hubBase = group.addTo(map);
   group.eachLayer((layer) => (layer as L.ImageOverlay).bringToBack());
   codBase = L.imageOverlay(
-    `/maps/x01/codcentral/floor-${floor}.webp`,
+    mapURL(`/maps/x01/codcentral/floor-${floor}.webp`),
     codBounds,
     { interactive: false, alt: "" },
   )
@@ -270,7 +271,7 @@ function makeIcon(row: Visible) {
   }
   if (icon) {
     const image = document.createElement("img");
-    image.src = icon;
+    image.src = mapURL(icon);
     image.alt = "";
     image.onerror = () => {
       image.remove();
@@ -292,7 +293,7 @@ function makeIcon(row: Visible) {
       row.source === "cod"
         ? `wb-cod-pin${selectedId === row.id ? " wb-selected" : ""}${reviewed ? " is-reviewed" : ""}`
         : `wb-mark${selectedId === row.id ? " wb-selected" : ""}`,
-    html: span,
+    html: mapMarkup(span),
     iconSize: row.source === "cod" ? [18, 18] : [30, 30],
     iconAnchor: row.source === "cod" ? [9, 9] : [15, 15],
   });
@@ -333,7 +334,7 @@ function renderMarkers() {
     const marker = L.marker(codPoint(row), {
       icon: L.divIcon({
         className: "wb-cod-pin",
-        html: span,
+        html: mapMarkup(span),
         iconSize: [18, 18],
         iconAnchor: [9, 9],
       }),
@@ -379,10 +380,12 @@ function select(id: string) {
 }
 function setFloor(next: Floor) {
   floor = next;
+  if (selectedId && allStops().get(selectedId)?.floor !== floor) selectedId = "";
   refreshAlignment();
   showImages();
   render();
   const nextURL = new URL(location.href);
+  if (!selectedId) nextURL.searchParams.delete("marker");
   nextURL.searchParams.set("floor", String(floor));
   history.replaceState(null, "", nextURL);
 }
@@ -540,7 +543,7 @@ function renderDetails() {
       image.className = "wb-photo";
       image.alt = photo.name;
       const url = URL.createObjectURL(photo.blob);
-      image.src = url;
+      image.src = mapURL(url);
       image.onload = () => URL.revokeObjectURL(url);
       host.append(image);
     }
@@ -552,7 +555,7 @@ function renderDetails() {
       host.append(node("p", hubCategory(hub, hubRow.categoryId).name));
   }
   const link = document.createElement("a");
-  link.href = `/x01-workspace.html?floor=${stop.floor}&marker=${encodeURIComponent(stop.id)}`;
+  link.href = mapURL(`/x01-workspace.html?floor=${stop.floor}&marker=${encodeURIComponent(stop.id)}`);
   link.textContent = "Link to this marker";
   host.append(link);
 }
@@ -860,7 +863,7 @@ function snapshotChanges(
 async function verifyCodFloorImages(snapshot: X01Snapshot) {
   for (const row of snapshot.floors) {
     if (cod.floors[row.id - 1].sha256 === row.sha256) continue;
-    const response = await fetch(`/maps/x01/codcentral/floor-${row.id}.webp`, {
+    const response = await fetch(mapURL(`/maps/x01/codcentral/floor-${row.id}.webp`), {
       cache: "no-store",
     });
     const bytes = await boundedBytes(response, 8_000_000);
@@ -1012,7 +1015,7 @@ $("#wb-export").addEventListener("click", async () => {
       blob = new Blob([JSON.stringify(data)], { type: "application/json" }),
       url = URL.createObjectURL(blob),
       link = document.createElement("a");
-    link.href = url;
+    link.href = mapURL(url);
     link.download = "x01-private-backup.json";
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);

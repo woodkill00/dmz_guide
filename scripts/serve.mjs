@@ -120,6 +120,7 @@ const types = {
   ".wasm": "application/wasm",
   ".gz": "application/gzip",
 };
+let mapHandler;
 const server = createServer(async (req, res) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "no-referrer");
@@ -130,8 +131,13 @@ const server = createServer(async (req, res) => {
       req.url?.startsWith("/assets/src/vendor/ocr/")
         ? " 'wasm-unsafe-eval'"
         : "") +
-      "; worker-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' http://127.0.0.1:4173 http://127.0.0.1:4174 http://127.0.0.1:4176 http://127.0.0.1:5175; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "; worker-src 'self' blob:; style-src 'self'" + (args.includes("--maps") && req.url?.startsWith("/map/") ? " 'unsafe-inline'" : "") + "; img-src 'self' data: blob:; connect-src 'self' http://127.0.0.1:4173 http://127.0.0.1:4174 http://127.0.0.1:4176 http://127.0.0.1:5175; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
   );
+  if (mapHandler && await mapHandler(req,res)) return;
+  if (!mapHandler && ["/map/","/map/x01/","/map/safes/","/map/loot/","/map/migrate/","/map/help.html","/map/index.html","/map/safes.html","/map/loot.html","/map/x01.html","/map/x01-dmzhub.html","/map/x01-workspace.html","/map/migration.html"].includes((req.url||"").split("?")[0])) {
+    res.writeHead(503,{"Content-Type":"text/html; charset=utf-8"});
+    return res.end(req.method==="HEAD"?undefined:'<!doctype html><title>Local maps</title><h1>Local maps</h1><p>In the source checkout, run npm run local to start the guide and maps together. Your old map workspace remains in its original browser at port 5175.</p>');
+  }
   if (!["GET", "HEAD"].includes(req.method)) {
     res.writeHead(405, { Allow: "GET, HEAD" });
     return res.end("Method not allowed");
@@ -260,6 +266,10 @@ const server = createServer(async (req, res) => {
     res.end(req.method === "HEAD" ? undefined : body);
   }
 });
+if(args.includes("--maps")){
+ const {createMapHandler}=await import("./unified-map-server.mjs");
+ mapHandler=createMapHandler({root:resolve(root,".."),server,enabled:true,updates:process.env.DMZ_ENABLE_SOURCE_UPDATES==="1"});
+}
 server.on("error", (error) => {
   console.error(
     error.code === "EADDRINUSE"

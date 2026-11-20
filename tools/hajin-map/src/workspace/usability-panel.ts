@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import {markerPopup} from '../map/marker-popup.ts';
 import {createSearchPanel} from './search-panel.ts';
 import type {SearchOrigin} from './search.ts';
@@ -121,7 +122,7 @@ export function createUsabilityUI(h: UsabilityHost) {
     const r = h.records().find((x) => x.key === record.key) ?? record,
       node = el("section");
     node.id = "location-details";
-    if(r.kind==='custom'){const point=h.state().annotations.find(a=>a.id===r.id);for(const asset of point?.attachments??[]){const image=el('img');image.src='data:image/png;base64,'+asset.base64;image.alt=asset.caption;image.className='workspace-image-preview';const entry=el('details');entry.append(el('summary',asset.caption),image);node.append(entry);}}
+    if(r.kind==='custom'){const point=h.state().annotations.find(a=>a.id===r.id);for(const asset of point?.attachments??[]){const image=el('img');image.src=mapURL('data:image/png;base64,'+asset.base64);image.alt=asset.caption;image.className='workspace-image-preview';const entry=el('details');entry.append(el('summary',asset.caption),image);node.append(entry);}}
     node.append(
       el("h3", r.title),
       note(`${r.sourceName} · ${r.category}`),
@@ -138,7 +139,7 @@ export function createUsabilityUI(h: UsabilityHost) {
     if (r.capturedAt) node.append(note("Capture / update: " + r.capturedAt));
     if (r.url) {
       const link = el("a", "Open source website ↗");
-      link.href = r.url;
+      link.href = mapURL(r.url);
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       node.append(link);

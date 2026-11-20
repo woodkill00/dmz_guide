@@ -6,7 +6,7 @@ import { renderMainNavigation } from "../../src/ui/site-navigation.mjs";
 import { buildHomeHierarchy } from "../../src/domain/home-mindmap.mjs";
 test("063 safe-run entry is reachable through shared menus and Home → Map hierarchy", async () => {
   const feature = features.find((f) => f.id === "safe-runs");
-  assert.equal(featureURL(feature), "http://127.0.0.1:5175/safes.html");
+  assert.equal(featureURL(feature), "/map/safes/");
   assert.equal(featureURL(feature, "map"), "/safes.html");
   for (const surface of ["guide", "map", "help"])
     assert.match(
@@ -18,7 +18,7 @@ test("063 safe-run entry is reachable through shared menus and Home → Map hier
   );
   const tree = buildHomeHierarchy(topology),
     node = tree.nodes.get("feature:safe-runs");
-  assert.equal(node.href, "http://127.0.0.1:5175/safes.html");
+  assert.equal(node.href, "/map/safes/");
   assert.equal(node.parent, "feature:hajin-map");
   assert.equal(tree.nodes.get(node.parent).parent, "route:/");
 });

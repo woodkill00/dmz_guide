@@ -50,8 +50,8 @@ test("IP-8 Ballistic Fabric links source-mentioned catalog areas without inventi
   assert(areas.some((area) => area.name === "Chang-san Air Base"));
   assert(areas.some((area) => area.name === "Songdo Wharf"));
   for (const area of areas) {
-    assert.equal(new URL(area.mapURL).searchParams.get("area"), area.name);
-    assert.equal(new URL(area.mapURL).searchParams.get("tool"), "explore");
+    assert.equal(new URL(area.mapURL,"http://127.0.0.1:4173").searchParams.get("area"), area.name);
+    assert.equal(new URL(area.mapURL,"http://127.0.0.1:4173").searchParams.get("tool"), "explore");
     assert(!Object.hasOwn(area, "coordinates"));
     assert.match(area.basis, /mentioned/);
   }

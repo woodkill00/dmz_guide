@@ -93,7 +93,7 @@ export function featurePages(packs, { chapterIntel = {} } = {}) {
       )
       .replace(
         "<noscript>",
-        `<p class="actions"><a href="http://127.0.0.1:5175/?tool=missions" target="_blank" rel="noopener noreferrer">Open map mission tracker ↗</a><a href="/collection/">Review collection needs</a></p><noscript>`,
+        `<p class="actions"><a href="/map/?tool=missions" target="_blank" rel="noopener noreferrer">Open map mission tracker ↗</a><a href="/collection/">Review collection needs</a></p><noscript>`,
       )
       .replace(
         '<form id="progress-filters"',

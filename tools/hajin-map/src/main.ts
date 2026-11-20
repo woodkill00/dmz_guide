@@ -1,3 +1,4 @@
+import { mapMarkup } from './site-paths.ts';
 import {mountSelectionDiagnostics} from './map/selection-diagnostics.ts';
 import {mountMapWorkspaceLayout} from './map/workspace-layout.ts';
 import {mountSidebarSections} from './map/sidebar-sections.ts';
@@ -50,7 +51,7 @@ const sourceInfo = `
   <p class="independent">An independent fan project. Not affiliated with Activision or Infinity Ward.</p>`;
 
 const modernKey = document.documentElement.dataset.uiVariant === 'modern';
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
+document.querySelector<HTMLDivElement>('#app')!.innerHTML = mapMarkup(`
   <a class="skip-link" href="#map">Skip to map</a>
   <header class="app-header">
     <a class="brand" href="/" aria-label="Hajin Field Guide home"><span class="brand-mark">${icon('cross')}</span><span>FIELD GUIDE<span class="brand-sub">MODERN WARFARE · DMZ</span></span></a>
@@ -88,7 +89,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     </section>
   </main>
   <dialog id="info-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><span id="dialog-title">FIELD NOTES</span><button id="close-info" aria-label="Close map information">Close <span aria-hidden="true">×</span></button></div><div class="dialog-content">${sourceInfo}</div></dialog>
-  <dialog id="layers-dialog" aria-labelledby="layers-title"><div class="dialog-top"><span id="layers-title">SOURCES & LAYERS</span><button id="close-layers" aria-label="Close map layers">Close <span aria-hidden="true">×</span></button></div><div class="layers-explanation">Choose a website, then pick the categories you want to see. Your choices are saved in this browser.</div><div id="source-controls" class="dialog-content"></div></dialog>`;
+  <dialog id="layers-dialog" aria-labelledby="layers-title"><div class="dialog-top"><span id="layers-title">SOURCES & LAYERS</span><button id="close-layers" aria-label="Close map layers">Close <span aria-hidden="true">×</span></button></div><div class="layers-explanation">Choose a website, then pick the categories you want to see. Your choices are saved in this browser.</div><div id="source-controls" class="dialog-content"></div></dialog>`);
 
 const keyBreakpoint = window.matchMedia('(max-width: 760px)');
 // Keep the server-rendered menu outside map event handling, below its header.

@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import { sourcePolicies, authorizeLocalCapture } from "../workspace/policy.ts";
 import type { MarkerSource } from "./marker-sources.ts";
 import { boundedBytes } from "./bounded-input.ts";
@@ -50,7 +51,7 @@ export async function loadCurrentCaptureSelection(): Promise<{
   const controller = new AbortController(),
     timer = setTimeout(() => controller.abort(), 5000);
   try {
-    const response = await fetch("/maps/hajin/current-captures.local.json", {
+    const response = await fetch(mapURL("/maps/hajin/current-captures.local.json"), {
       signal: controller.signal,
       cache: "no-store",
     });

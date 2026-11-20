@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import {boundedBytes} from '../map/bounded-input.ts';
 
 export type SharedKind='exfil'|'ammo'|'safe'|'bounty'|'spawn'|'key';
@@ -23,7 +24,7 @@ function validCapture(input:unknown,id:string):Capture|null{
   return row.snapshot===base+'markers.json'&&row.iconDirectory===base+'icons/'?row:null;
 }
 async function readJson(path:string,limit:number,fetcher:typeof fetch):Promise<any>{
-  const response=await fetcher(path,{cache:'no-store',signal:AbortSignal.timeout(4000)});
+  const response=await fetcher(mapURL(path),{cache:'no-store',signal:AbortSignal.timeout(4000)});
   if(!response.ok)throw Error(`Local icon source ${response.status}`);
   return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(await boundedBytes(response,limit)));
 }
@@ -49,6 +50,6 @@ export async function loadSharedHajinIcons(fetcher:typeof fetch=fetch):Promise<S
   }catch{return {};}
 }
 export function sharedPin(url:string,fallback:{url?:string;text:string}){
-  const pin=document.createElement('span');pin.className='x01-shared-pin';const image=document.createElement('img');image.src=url;image.alt='';image.width=20;image.height=20;image.onerror=()=>{if(fallback.url&&image.src!==new URL(fallback.url,location.href).href){image.src=fallback.url;return;}image.hidden=true;pin.textContent=fallback.text;};pin.append(image);return pin;
+  const pin=document.createElement('span');pin.className='x01-shared-pin';const image=document.createElement('img');image.src=mapURL(url);image.alt='';image.width=20;image.height=20;image.onerror=()=>{if(fallback.url&&image.src!==new URL(fallback.url,location.href).href){image.src=mapURL(fallback.url);return;}image.hidden=true;pin.textContent=fallback.text;};pin.append(image);return pin;
 }
-export function sharedKeyIcon(url:string,fallbackUrl?:string){const image=document.createElement('img');image.src=url;image.alt='';image.className='x01-shared-key-icon';image.width=20;image.height=20;image.onerror=()=>{if(fallbackUrl&&image.src!==new URL(fallbackUrl,location.href).href){image.src=fallbackUrl;return;}image.remove();};return image;}
+export function sharedKeyIcon(url:string,fallbackUrl?:string){const image=document.createElement('img');image.src=mapURL(url);image.alt='';image.className='x01-shared-key-icon';image.width=20;image.height=20;image.onerror=()=>{if(fallbackUrl&&image.src!==new URL(fallbackUrl,location.href).href){image.src=mapURL(fallbackUrl);return;}image.remove();};return image;}

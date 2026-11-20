@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 export function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   text?: string,
@@ -73,7 +74,7 @@ export function download(
 ) {
   const url = URL.createObjectURL(new Blob([text], { type }));
   const link = el("a");
-  link.href = url;
+  link.href = mapURL(url);
   link.download = name;
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);

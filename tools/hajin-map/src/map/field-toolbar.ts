@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import L from "leaflet";
 import type { ToolTarget } from "../tool-links.ts";
 export function mountFieldToolbar(
@@ -38,7 +39,7 @@ export function mountFieldToolbar(
   );
   const safeRun = document.createElement("a");
   safeRun.className = "field-tool-link";
-  safeRun.href = "/safes.html";
+  safeRun.href = mapURL("/safes.html");
   safeRun.target = "_blank";
   safeRun.rel = "noopener noreferrer";
   safeRun.textContent = "Safe Run map";
@@ -46,7 +47,7 @@ export function mountFieldToolbar(
   toolbar.append(safeRun);
   const lootRun = document.createElement("a");
   lootRun.className = "field-tool-link";
-  lootRun.href = "/loot.html";
+  lootRun.href = mapURL("/loot.html");
   lootRun.target = "_blank";
   lootRun.rel = "noopener noreferrer";
   lootRun.textContent = "Loot Run map";

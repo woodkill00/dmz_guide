@@ -4,7 +4,7 @@ import { TOPOLOGY_JSON_NODES } from "../content/site-topology-limits.mjs";
 export { TOPOLOGY_JSON_NODES } from "../content/site-topology-limits.mjs";
 const guideOrigin = "http://127.0.0.1:4173";
 const companionOrigins = new Set([
-  "http://127.0.0.1:5175",
+  "http://127.0.0.1:4173",
   "http://127.0.0.1:4174",
   "http://127.0.0.1:4176",
 ]);
@@ -265,14 +265,14 @@ export function buildSiteTopology(pages, renderedPages) {
       if (companionOrigins.has(u.origin)) {
         const target =
           nodes.find(
-            (n) => n.kind === "companion" && new URL(n.href).href === u.href,
+            (n) => n.kind === "companion" && new URL(n.href,guideOrigin).href === u.href,
           ) ||
           nodes.find(
             (n) =>
               n.kind === "companion" &&
-              new URL(n.href).origin === u.origin &&
-              new URL(n.href).pathname === u.pathname &&
-              !new URL(n.href).search,
+              new URL(n.href,guideOrigin).origin === u.origin &&
+              new URL(n.href,guideOrigin).pathname === u.pathname &&
+              !new URL(n.href,guideOrigin).search,
           );
         if (target) edge(from.id, target.id, kind, link.href, link.label);
         else
@@ -289,7 +289,7 @@ export function buildSiteTopology(pages, renderedPages) {
         });
       return;
     }
-    const target = byPath.get(u.pathname);
+    const target = byPath.get(u.pathname) || nodes.find(n=>n.kind==='companion' && new URL(n.href,guideOrigin).href===u.href) || nodes.find(n=>n.family==='map' && new URL(n.href,guideOrigin).pathname===u.pathname && !new URL(n.href,guideOrigin).search);
     if (!target) {
       if (!/\.[a-z0-9]+$/i.test(u.pathname))
         issues.push({ kind: "missing-route", from: from.id, href: link.href });

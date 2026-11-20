@@ -12,6 +12,8 @@ The upgrade-observations pack contains 28 reported FOB definitions, 75 recipe-un
 
 ## Start here
 
+- **Guide and maps at one local address:** run `npm run local`, then open http://127.0.0.1:4173/. Hajin, X01, Safe Run and Loot Run use `/map/` routes on that same server. See [unified local startup and saved-data transfer](docs/unified-local-site.md). The standalone viewer below remains available for development and old-data recovery.
+
 - **Using the optional local Hajin viewer?** See the [local map workspace](docs/local-map-workspace.md). Run `npm run map:install`, then `npm run map:dev`. It retains the separate interactive key/source-layer viewer without replacing the native guide; downloaded game assets are not bundled.
 
 - **Reading or editing content?** Use the short [reader/author quickstart](docs/quickstart.md); it explains private browser editing versus repository files.

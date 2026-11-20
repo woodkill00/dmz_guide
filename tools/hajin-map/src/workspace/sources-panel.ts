@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import {fieldGuideIdentities} from './field-guide.ts';
 import {parseIdentity} from './usability.ts';
 import type { UIServices } from "./ui-context.ts";
@@ -28,7 +29,7 @@ export function sourcePanel(services: UIServices) {
     const card = el("section", undefined, "workspace-card");
     card.dataset.provider = policy.id;
     const link = el("a", `Open ${policy.name} ↗`);
-    link.href = policy.page;
+    link.href = mapURL(policy.page);
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     card.append(
@@ -465,7 +466,7 @@ export function sourcePanel(services: UIServices) {
             url = URL.createObjectURL(staged.blob),
             node = el("section"),
             preview = el("img");
-          preview.src = url;
+          preview.src = mapURL(url);
           preview.alt = description.value;
           preview.className = "workspace-image-preview";
           node.append(

@@ -19,6 +19,7 @@ export function renderMainNavigation({
   packId = "",
   extra = [],
   surface = "guide",
+  mapBase,
 } = {}) {
   let current = featureForPage(page);
   const primary = [
@@ -49,7 +50,7 @@ export function renderMainNavigation({
       (f.kind !== "guide" &&
         !(f.kind === "map" && ["map", "help"].includes(surface))) ||
       (surface !== "guide" && f.kind === "guide");
-    let url = featureURL(f, surface);
+    let url = featureURL(f, surface, { mapBase });
     if (packId && surface === "guide" && f.kind === "guide")
       url += "?pack=" + encodeURIComponent(packId);
     return `<a href="${e(url)}" ${page === f.id ? 'aria-current="page" ' : ""}data-feature-id="${e(f.id)}"${page !== "home" && ["planner", "missions", "catalog", "settings", "hajin-map"].includes(f.id) && current?.group === f.group ? ' data-active-group="true"' : ""}${external ? ' target="_blank" rel="noopener noreferrer" title="Opens in a new tab"' : ""}>${e(label)}</a>`;

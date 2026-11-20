@@ -174,6 +174,22 @@ export function validatePrivateState(value: unknown): PrivateState {
     throw Error("X01 workspace metadata exceeds 1 MB");
   return state;
 }
+type StoredPhoto = Omit<PrivatePhoto, 'blob'> & {bytes: Uint8Array};
+type StoredEnvelope = {kind:'dmz-x01-storage';version:1;state:Omit<PrivateState,'photos'> & {photos:StoredPhoto[]}};
+export function decodeStoredState(value:unknown):PrivateState {
+  if(!value || typeof value!=='object' || !Object.hasOwn(value,'kind'))return validatePrivateState(value);
+  const packed=value as StoredEnvelope;
+  if(Object.keys(packed).sort().join()!=='kind,state,version'||packed.kind!=='dmz-x01-storage'||packed.version!==1||!packed.state||Object.keys(packed.state).sort().join()!==Object.keys(emptyState()).sort().join()||!Array.isArray(packed.state.photos)||packed.state.photos.length>20)throw Error('Invalid X01 storage envelope');
+  let total=0;
+  for(const photo of packed.state.photos){if(!photo||Object.keys(photo).sort().join()!=='bytes,id,mime,name,pointId'||!(photo.bytes instanceof Uint8Array)||photo.bytes.byteLength>2*1024*1024||(total+=photo.bytes.byteLength)>20*1024*1024)throw Error('Invalid X01 stored photo bytes');}
+  return validatePrivateState({...packed.state,photos:packed.state.photos.map(({bytes,...photo})=>({...photo,blob:new Blob([new Uint8Array(bytes)],{type:photo.mime})}))});
+}
+export async function encodeStoredState(value:PrivateState):Promise<StoredEnvelope>{
+  const snapshot=structuredClone(validatePrivateState(value));
+  const photos=await Promise.all(snapshot.photos.map(async({blob,...photo})=>({...photo,bytes:new Uint8Array(await blob.arrayBuffer())})));
+  const packed:StoredEnvelope={kind:'dmz-x01-storage',version:1,state:{...snapshot,photos}};
+  decodeStoredState(packed);return packed;
+}
 const dbName = "dmz-x01-workbench-v1";
 async function database(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -194,13 +210,11 @@ export async function readPrivateState(): Promise<PrivateState> {
   try {
     return await new Promise((resolve, reject) => {
       const transaction = db.transaction("workspace", "readonly"),
-        request = transaction.objectStore("workspace").get("current");
+        request = transaction.objectStore("workspace").getAll("current", 1);
       request.onsuccess = () => {
         try {
           resolve(
-            request.result
-              ? validatePrivateState(request.result)
-              : emptyState(),
+            request.result.length === 0 ? emptyState() : decodeStoredState(request.result[0]),
           );
         } catch (error) {
           reject(error);
@@ -215,25 +229,24 @@ export async function readPrivateState(): Promise<PrivateState> {
 export async function savePrivateState(
   next: PrivateState,
 ): Promise<PrivateState> {
-  validatePrivateState(next);
+  const durable = await encodeStoredState(next), expectedRevision=durable.state.revision;
   const db = await database();
   try {
     return await new Promise((resolve, reject) => {
       const transaction = db.transaction("workspace", "readwrite"),
         store = transaction.objectStore("workspace"),
-        request = store.get("current");
+        request = store.getAll("current", 1);
       let saved: PrivateState;
       request.onsuccess = () => {
         try {
-          const current = request.result
-            ? validatePrivateState(request.result)
-            : emptyState();
-          if (current.revision !== next.revision)
+          const current = request.result.length === 0 ? emptyState() : decodeStoredState(request.result[0]);
+          if (current.revision !== expectedRevision)
             throw Error(
               "X01 workspace changed in another tab. Reload before saving.",
             );
-          saved = { ...next, revision: next.revision + 1 };
-          store.put(saved, "current");
+          durable.state.revision=expectedRevision+1;
+          saved = decodeStoredState(durable);
+          store.put(durable, "current");
         } catch (error) {
           transaction.abort();
           reject(error);

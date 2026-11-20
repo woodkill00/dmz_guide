@@ -1,4 +1,7 @@
 /** Typed compatibility surface for the existing browser-safe native raster modules. */
+declare module "*/domain/map-routes.mjs" {
+  export function mapPath(value: string, options?: { standalone?: boolean }): string;
+}
 declare module "*/client/raster-editor.mjs" {
   export function normalizeRaster(
     bytes: Uint8Array,
@@ -32,4 +35,12 @@ declare module "*/content/portable.mjs" {
   };
   export function base64FromBytes(bytes: Uint8Array): string;
   export function bytesFromBase64(text: string): Uint8Array;
+}
+
+declare module "*/domain/map-preferences.mjs" {
+ export function exportPreferences(storage: Storage, origin: string): any;
+ export function parsePreferences(text: string): any;
+ export function validPreference(key: string, value: any): boolean;
+ export function reviewPreferences(candidate: any, keys: string[], storage: Storage, origin: string): any;
+ export function applyPreferences(review: any, storage: Storage, origin: string): any;
 }

@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import { sourceImpacts } from "./operations.ts";
 import { sourceChanges } from "./field-guide.ts";
 import { el, button, note } from "./dom.ts";
@@ -285,7 +286,7 @@ export function createSourceUpdates(
     discardReceipt.hidden = true;
   }
   async function api(path: string, method = "GET", signal?: AbortSignal) {
-    const response = await fetch("/__map-updates" + path, {
+    const response = await fetch(mapURL("/__map-updates" + path), {
       method,
       headers: {
         "x-map-update-token": token,
@@ -304,7 +305,7 @@ export function createSourceUpdates(
   }
   async function capabilities() {
     try {
-      const response = await fetch("/__map-updates/capabilities", {
+      const response = await fetch(mapURL("/__map-updates/capabilities"), {
         signal: AbortSignal.timeout(5000),
         cache: "no-store",
       });
@@ -351,7 +352,7 @@ export function createSourceUpdates(
         sourcePolicies[o.id].capability === "referenceOnly"
       )
         authorizeLocalCapture(o.id, "Owner-enabled local update service.");
-      const response = await fetch(d.snapshot, { signal, cache: "no-store" });
+      const response = await fetch(mapURL(d.snapshot), { signal, cache: "no-store" });
       const bytes = await boundedBytes(response, 2 * 1024 * 1024);
       if ((await sha256(bytes)) !== d.snapshotDigest)
         throw Error("Staged source digest changed.");

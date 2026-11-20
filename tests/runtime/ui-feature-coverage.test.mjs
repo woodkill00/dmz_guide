@@ -129,7 +129,7 @@ test("071 modern SSR navigation retains every registry destination and safe comp
       assert(html.includes(`data-feature-id="${feature.id}"`), feature.id);
     assert.match(
       html,
-      /href="http:\/\/127\.0\.0\.1:5175\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/,
+      /href="\/map\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/,
     );
     assert.match(html, /<details class="ui-mobile-sections">/);
     assert.match(html, /DMZ FOB/);

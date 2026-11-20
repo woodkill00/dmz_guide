@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import L from "leaflet";
 import type { Registration } from "./registration.ts";
 /** Warp source pixels into a canonical canvas; camera and marker coordinates never change. */
@@ -84,7 +85,7 @@ export function createBasemapComparison(map: L.Map) {
         if (version !== generation) return false;
         url = URL.createObjectURL(output);
         layer = L.imageOverlay(
-          url,
+          mapURL(url),
           [
             [0, 0],
             [4096, 4096],

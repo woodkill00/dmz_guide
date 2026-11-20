@@ -114,6 +114,9 @@ def verify_release():
                     if name not in ('href', 'src') or not value or not value.startswith('/'):
                         continue
                     path = unquote(urlsplit(value).path).lstrip('/')
+                    if tag == 'a' and path in ('map/', 'map/x01/', 'map/safes/', 'map/loot/', 'map/migrate/', 'map/index.html', 'map/help.html', 'map/safes.html', 'map/loot.html', 'map/x01.html', 'map/x01-dmzhub.html', 'map/x01-workspace.html', 'map/migration.html'):
+                        # Finite optional local map entries have an explicit setup response in guide-only releases.
+                        continue
                     if tag == 'image' and name == 'href' and re.fullmatch(r'local-weapon-art/[a-z0-9]+(?:-[a-z0-9]+)*\.webp', path):
                         # Optional private art is served locally with an in-page text fallback.
                         continue

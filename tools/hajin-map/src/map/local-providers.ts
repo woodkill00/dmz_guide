@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import type { MarkerSource } from "./marker-sources";
 import { sourcePolicies, authorizeLocalCapture } from "../workspace/policy.ts";
 import { hajin } from "./hajin.ts";
@@ -68,7 +69,7 @@ export async function loadLocalProviderSources(): Promise<MarkerSource[]> {
   const controller = new AbortController(),
     timer = setTimeout(() => controller.abort(), 5000);
   try {
-    const response = await fetch("/maps/hajin/providers.local.json", {
+    const response = await fetch(mapURL("/maps/hajin/providers.local.json"), {
       signal: controller.signal,
     });
     if (response.status === 404) return [];
@@ -79,7 +80,7 @@ export async function loadLocalProviderSources(): Promise<MarkerSource[]> {
     const sources = localProviderSources(data);
     for (const source of data.sources) {
       const response = await fetch(
-        `/maps/hajin/providers/${source.id}/provenance.local.json`,
+        mapURL(`/maps/hajin/providers/${source.id}/provenance.local.json`),
         { signal: controller.signal },
       );
       const bytes = await boundedBytes(response, 2 * 1024 * 1024);

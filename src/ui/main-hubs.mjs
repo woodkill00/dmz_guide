@@ -11,7 +11,7 @@ const section = (id, title, copy, ids) =>
 const links = () =>
   resolvePresentation("guide").variant === "modern"
     ? ""
-    : '<p><a data-workspace-link href="/">Home</a> · <a data-workspace-link href="/dmz-guide/">DMZ Guide</a> · <a data-workspace-link href="/dmz-fob/">DMZ FOB</a> · <a data-workspace-link href="/dmz-weapons/">DMZ Weapons</a> · <a href="http://127.0.0.1:5175/" target="_blank" rel="noopener noreferrer">Map ↗</a></p>';
+    : '<p><a data-workspace-link href="/">Home</a> · <a data-workspace-link href="/dmz-guide/">DMZ Guide</a> · <a data-workspace-link href="/dmz-fob/">DMZ FOB</a> · <a data-workspace-link href="/dmz-weapons/">DMZ Weapons</a> · <a href="/map/" target="_blank" rel="noopener noreferrer">Map ↗</a></p>';
 export function featurePages() {
   return [
     {

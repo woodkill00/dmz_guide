@@ -1,3 +1,4 @@
+import { mapURL, mapMarkup } from '../site-paths.ts';
 import {createCollectionImport} from "./collection-import.ts";
 import {mountItemAreaHighlight} from "../map/item-area-highlight.ts";
 import {markerDraft,overridden,overrideVisible,markerOrigins} from "./marker-overrides.ts";
@@ -425,7 +426,7 @@ export function mountWorkspace(
   document.querySelector(".map-workspace")!.append(toast);
   let toastTimer: ReturnType<typeof setTimeout> | undefined;
   const issueDetails=el('details'),issueHeading=el('summary','Issue details'),issueList=el('ul');issueDetails.id='workspace-issue-details';issueDetails.hidden=true;issueDetails.append(issueHeading,issueList);if(modern)status.after(issueDetails);
-  const paintIssues=()=>{if(!modern||disposed||suspended)return;checkSave.hidden=!unsaved&&!unconfirmedWrite;const value=issues.snapshot();status.dataset.uiIssueSummary='map-workspace';const brief=(value.issues[0]?.message??'').replace(/\s+/g,' ');status.textContent=value.count?`${value.label}: ${brief.length>180?brief.slice(0,180)+'…':brief}`:value.status;status.setAttribute('role',value.count?'alert':'status');issueDetails.hidden=!value.count;issueHeading.textContent=`Issue details (${value.count})`;issueList.replaceChildren(...value.issues.map(issue=>{const row=el('li');const related:{[key:string]:{label:string;target:ToolTarget}}={'map-routes':{label:'Routes',target:'routes'},'map-sources':{label:'Sources',target:'sources'},'map-find':{label:'Map locations',target:'explore'},'map-review':{label:'Source review',target:'review'}};const owner=related[issue.owner];if(owner)row.append(button(`Open ${owner.label}`,()=>{openTool(owner.target);}));row.append(el('p',issue.message));if(issue.target?.startsWith('#')){const link=el('a','Open affected workspace');link.href=issue.target;row.append(link);}if(!issue.blocking)row.append(button('Dismiss reviewed notice',()=>{issues.clear(issue.owner,issue.cause);paintIssues();}));return row;}));};
+  const paintIssues=()=>{if(!modern||disposed||suspended)return;checkSave.hidden=!unsaved&&!unconfirmedWrite;const value=issues.snapshot();status.dataset.uiIssueSummary='map-workspace';const brief=(value.issues[0]?.message??'').replace(/\s+/g,' ');status.textContent=value.count?`${value.label}: ${brief.length>180?brief.slice(0,180)+'…':brief}`:value.status;status.setAttribute('role',value.count?'alert':'status');issueDetails.hidden=!value.count;issueHeading.textContent=`Issue details (${value.count})`;issueList.replaceChildren(...value.issues.map(issue=>{const row=el('li');const related:{[key:string]:{label:string;target:ToolTarget}}={'map-routes':{label:'Routes',target:'routes'},'map-sources':{label:'Sources',target:'sources'},'map-find':{label:'Map locations',target:'explore'},'map-review':{label:'Source review',target:'review'}};const owner=related[issue.owner];if(owner)row.append(button(`Open ${owner.label}`,()=>{openTool(owner.target);}));row.append(el('p',issue.message));if(issue.target?.startsWith('#')){const link=el('a','Open affected workspace');link.href=mapURL(issue.target);row.append(link);}if(!issue.blocking)row.append(button('Dismiss reviewed notice',()=>{issues.clear(issue.owner,issue.cause);paintIssues();}));return row;}));};
   const notice = (message: string) => {
     if(disposed||suspended)return;
     if(modern){issues.status(message.slice(0,2000));paintIssues();return;}
@@ -1272,7 +1273,7 @@ export function mountWorkspace(
               ),
               node = el("section"),
               image = el("img");
-            image.src = `data:image/png;base64,${icon.base64}`;
+            image.src = mapURL(`data:image/png;base64,${icon.base64}`);
             image.alt = icon.description;
             image.className = "icon-preview";
             node.append(
@@ -1320,7 +1321,7 @@ export function mountWorkspace(
         const icons=await services.process(async signal=>{const pack=parseIconPack(JSON.parse(await readJSONFile(file,256*1024,signal)));const staged:IconAsset[]=[];for(const e of pack.entries)staged.push(await stageDesignedIcon(e.design,e.description,signal));const projected=structuredClone(state);staged.forEach(icon=>commitIcon(projected,icon));validateWorkspace(projected);return staged;});
         const unique=new Set(icons.map(i=>i.id)),add=[...unique].filter(id=>!state.icons.some(i=>i.id===id)).length;
         const preview=el('section');preview.id='icon-pack-preview';preview.append(el('h3','Review icon design pack'),note(`${icons.length} recipes · ${add} new image(s) · ${icons.length-add} existing/repeated image(s) reused`));
-        for(const icon of icons){const img=el('img');img.src='data:image/png;base64,'+icon.base64;img.alt=icon.description;img.className='icon-preview';preview.append(img);}
+        for(const icon of icons){const img=el('img');img.src=mapURL('data:image/png;base64,'+icon.base64);img.alt=icon.description;img.className='icon-preview';preview.append(img);}
         preview.append(button('Import icon design pack',async()=>{try{if(icons.every(icon=>state.icons.some(old=>old.id===icon.id&&old.design))){closeDetail();notice('Icon pack unchanged; existing images and recipes reused.');return;}await commit('Icon pack imported',draft=>icons.forEach(icon=>commitIcon(draft,icon)),[],expected);closeDetail();}catch(error){services.error(error);}},'commit-icon-pack'),button('Cancel icon pack',closeDetail));services.detail(preview);
       }catch(error){services.error(error);}
     },'preview-icon-pack'));packs.querySelector<HTMLButtonElement>('#export-icon-pack')!.disabled=!state.icons.some(icon=>icon.design);body.append(packs);
@@ -1328,7 +1329,7 @@ export function mountWorkspace(
     for (const icon of state.icons) {
       const card = el("section", undefined, "workspace-card"),
         image = el("img");
-      image.src = `data:image/png;base64,${icon.base64}`;
+      image.src = mapURL(`data:image/png;base64,${icon.base64}`);
       image.alt = icon.description;
       image.className = "icon-preview";
       card.append(
@@ -1763,15 +1764,15 @@ export function mountWorkspace(
           );
           symbol = L.divIcon({
             className: "official-label",
-            html: text,
+            html: mapMarkup(text),
             iconSize: [180, 24],
             iconAnchor: [90, 12],
           });
         } else
           symbol = L.icon({
-            iconUrl: icon
+            iconUrl: mapURL(icon
               ? `data:image/png;base64,${icon.base64}`
-              : fallbackIcon!,
+              : fallbackIcon!),
             iconSize: [28, 28],
             iconAnchor: [14, 14],
           });
@@ -2031,7 +2032,7 @@ export function mountWorkspace(
       });
       const row = el("div", undefined, "website-layer-row");
       const link = el("a", sourcePolicies[source.id]?.name ?? source.id);
-      link.href = sourcePolicies[source.id].page;
+      link.href = mapURL(sourcePolicies[source.id].page);
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       link.id = `key-source-link-${source.id}`;
@@ -2064,7 +2065,7 @@ export function mountWorkspace(
         `${policy.name}: local source files unavailable`,
       );
       referenceLink.id = `key-source-link-${policy.id}`;
-      referenceLink.href = policy.page;
+      referenceLink.href = mapURL(policy.page);
       referenceLink.target = "_blank";
       referenceLink.rel = "noopener noreferrer";
       const retained =
@@ -2100,7 +2101,7 @@ export function mountWorkspace(
           note(`Permission required · 0 imported records. ${policy.reason}`),
         );
         const link = el("a", "Open source ↗");
-        link.href = policy.page;
+        link.href = mapURL(policy.page);
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         slot.append(
@@ -2171,7 +2172,7 @@ export function mountWorkspace(
         group.dataset.snapshotSource = policy.id;
         const legend = el("legend");
         const sourceLink = el("a", policy.name);
-        sourceLink.href = policy.page;
+        sourceLink.href = mapURL(policy.page);
         sourceLink.target = "_blank";
         sourceLink.rel = "noopener noreferrer";
         legend.append(sourceLink, document.createTextNode(" snapshot layers"));
@@ -2263,9 +2264,9 @@ export function mountWorkspace(
               ?.categories.find((c) => c.id === category.id)?.icon;
           if (ownIcon || sourceIcon) {
             const image = el("img");
-            image.src = ownIcon
+            image.src = mapURL(ownIcon
               ? `data:image/png;base64,${ownIcon.base64}`
-              : sourceIcon!;
+              : sourceIcon!);
             image.alt = "";
             image.width = image.height = 24;
             row.insertBefore(image, check);

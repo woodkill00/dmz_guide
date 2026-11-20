@@ -17,7 +17,7 @@ export function keyMapLinks(use, key) {
     ? refs
         .map(
           (ref) =>
-            `<a class="key-map-link" href="http://127.0.0.1:5175/?key-grid=${ref}&amp;key-name=${e(encodeURIComponent(key.name))}" target="_blank" rel="noopener noreferrer" title="Open the reported ${ref} grid area in the local map; door position is not verified">Map ${ref} ↗</a>`,
+            `<a class="key-map-link" href="/map/?key-grid=${ref}&amp;key-name=${e(encodeURIComponent(key.name))}" target="_blank" rel="noopener noreferrer" title="Open the reported ${ref} grid area in the local map; door position is not verified">Map ${ref} ↗</a>`,
         )
         .join(" ")
     : "<small>Map grid not established</small>";

@@ -23,7 +23,7 @@ test("058 every shared surface exposes boss in Track and every authored map dest
     for (const [id] of all) {
       const prefix = ["map", "help"].includes(surface)
         ? ""
-        : "http://127.0.0.1:5175";
+        : "/map";
       const href = prefix + "/?tool=" + id;
       assert.equal(
         html.split('href="' + href + '"').length - 1,
@@ -52,7 +52,7 @@ test("058 every shared surface exposes boss in Track and every authored map dest
 test("042 sitemap lists the same local navigation-only tools without private identities", () => {
   const html = renderSiteMap([], []);
   for (const [id] of [...destinations.tools, ...destinations.planner])
-    assert.ok(html.includes("http://127.0.0.1:5175/?tool=" + id));
+    assert.ok(html.includes("/map/?tool=" + id));
   assert.ok(
     !html.includes("boss=") &&
       !html.includes("session=") &&

@@ -49,7 +49,7 @@ export async function buildUnifiedIndex(packs) {
         "/keys/" + k.id + "/",
         {
           mapUrl: grid
-            ? "http://127.0.0.1:5175/?key-grid=" +
+            ? "/map/?key-grid=" +
               grid +
               "&key-name=" +
               encodeURIComponent(k.name).replace(

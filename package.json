@@ -7,6 +7,9 @@
     "node": "22.x || 24.x"
   },
   "scripts": {
+    "local": "node scripts/local.mjs",
+    "local:legacy-map": "npm --prefix tools/hajin-map run dev",
+    "build:maps": "node scripts/build-unified-map.mjs",
     "build": "node scripts/build.mjs",
     "start": "node scripts/serve.mjs",
     "test": "node --test --test-concurrency=4 tests/runtime/*.test.mjs",

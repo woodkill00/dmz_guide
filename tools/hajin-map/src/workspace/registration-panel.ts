@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import type { CoordinateFrame } from "./types.ts";
 import type { Anchor, Registration } from "./registration.ts";
 import { registerFrame } from "./registration.ts";
@@ -23,9 +24,9 @@ export function registrationPanel(
     canonical = el("img");
   source.alt = "Source image for landmark selection";
   canonical.alt = "Canonical image for landmark selection";
-  if (sourceURL) source.src = sourceURL;
+  if (sourceURL) source.src = mapURL(sourceURL);
   else source.hidden = true;
-  canonical.src = canonicalURL;
+  canonical.src = mapURL(canonicalURL);
   previews.append(source, canonical);
   panel.append(previews);
   const fit = el("textarea"),

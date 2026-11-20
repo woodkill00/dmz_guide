@@ -41,7 +41,7 @@ export function itemMapAreas(
             referenceURL: `/maps/?pack=${encodeURIComponent(pack.id)}&location=${encodeURIComponent(location.id)}`,
             mapURL:
               location.mapId === "mw4:hajin"
-                ? `http://127.0.0.1:5175/?tool=explore&area=${encodeURIComponent(location.name)}`
+                ? `/map/?tool=explore&area=${encodeURIComponent(location.name)}`
                 : `/maps/?pack=${encodeURIComponent(pack.id)}&location=${encodeURIComponent(location.id)}`,
           },
         ]),

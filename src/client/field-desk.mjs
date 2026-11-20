@@ -901,7 +901,7 @@ $("main").addEventListener("click", async (event) => {
       const plan = collectionPlan(),
         nonce = crypto.randomUUID(),
         target = window.open(
-          `http://127.0.0.1:5175/?tool=explore&collection=${nonce}`,
+          `/map/?tool=explore&collection=${nonce}`,
           "_blank",
         );
       if (!target)
@@ -912,7 +912,7 @@ $("main").addEventListener("click", async (event) => {
         "Waiting for the local map. File download/import is also available.";
       const handler = (event) => {
         if (
-          event.origin !== "http://127.0.0.1:5175" ||
+          event.origin !== location.origin ||
           event.source !== target ||
           event.data?.nonce !== nonce
         )
@@ -920,7 +920,7 @@ $("main").addEventListener("click", async (event) => {
         if (event.data?.type === "dmz-collection-ready")
           target.postMessage(
             { type: "dmz-collection-plan", nonce, plan },
-            "http://127.0.0.1:5175",
+            location.origin,
           );
         if (event.data?.type === "dmz-collection-received") {
           window.removeEventListener("message", handler);

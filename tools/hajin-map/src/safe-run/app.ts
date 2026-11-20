@@ -1,3 +1,4 @@
+import { mapMarkup, mapURL } from '../site-paths.ts';
 import {mountSafeRunLayout} from './layout.ts';
 import { mountSidebarSections } from "../map/sidebar-sections.ts";
 import L from "leaflet";
@@ -30,7 +31,7 @@ const candidateLabel = isLootRun ? "safes and clinics" : "safes";
 const storageKey = isLootRun ? "hajin-loot-run-v1" : stateKey;
 const roadNetworkKey = "hajin-loot-run-roads-v1";
 
-document.querySelector("#app")!.innerHTML = `
+document.querySelector("#app")!.innerHTML = mapMarkup(`
 <header class="safe-header"><div><p>HAJIN · ${isLootRun ? "LOOT ROUTING" : "SAFE ROUTING"}</p><h1>${runTitle}</h1></div><a href="/" class="safe-main-map-link" aria-label="Return to main map">← Main map</a><a href="${isLootRun ? "/safes.html" : "/loot.html"}" class="safe-main-map-link">${isLootRun ? "Safe Run" : "Loot Run"}</a></header>
 <main class="safe-layout"><aside id="safe-controls" tabindex="-1" aria-label="Safe-run planner">
 <div id="safe-intelligence" role="region" aria-label="Run status and source loading" tabindex="0"><p class="safe-intro">Choose a start and ${candidateLabel} to visit. These are source-reported candidates, not live or guaranteed spawns.</p>
@@ -46,7 +47,7 @@ ${isLootRun ? '<fieldset id="loot-options"><legend>Route choices</legend><label>
 </div><div id="safe-route-divider" role="separator" aria-label="Resize safe candidates and visit order" tabindex="0"></div><div id="safe-route-pane" data-section-name="visit order" role="region" aria-label="Visit order and source notes" tabindex="0"><section aria-labelledby="route-heading"><h2 id="route-heading">3 · ${isLootRun ? "Selected stops" : "Visit order"}</h2><p id="route-status" role="status">Choose your start to plan a run.</p><p class="safe-note">${isLootRun ? "Drag the ↕ handle or use ↑ / ↓ to arrange your selected stops. The suggested route below can differ when route choices are active." : "Drag the ↕ handle or use ↑ / ↓. Manual order stays until you choose Optimize."}</p><ol id="visit-order"></ol>${isLootRun ? '<h3>Suggested route</h3><ol id="planned-order"></ol>' : ""}</section>
 ${isLootRun ? '<section id="loot-observations" aria-labelledby="observations-heading"><h2 id="observations-heading">Gameplay checks</h2><p class="safe-note">Select a stop to record what you actually saw. Reports stay in this browser until exported.</p><label for="observation-stop">Stop</label><select id="observation-stop"></select><label for="observation-result">Result</label><select id="observation-result"><option value="found">Found at location</option><option value="not-found">Not found this match</option><option value="blocked">Could not reach</option></select><label for="observation-date">Date played</label><input id="observation-date" type="date"><label for="observation-build">Game build (if known)</label><input id="observation-build" type="text" maxlength="80" placeholder="Unknown"><label for="observation-note">Notes</label><textarea id="observation-note" maxlength="500" rows="3"></textarea><div class="safe-actions"><button id="save-observation" type="button">Save check</button><button id="clear-observation" type="button">Clear check</button><button id="export-observations" type="button">Export checks</button></div><p id="observation-status" role="status"></p><div id="observation-list"></div></section><p class="safe-note"><a href="/?tool=planner" target="_blank" rel="noopener noreferrer">Open road editor in main map</a> · <a href="https://github.com/woodkill00/dmz_guide/blob/main/docs/gameplay-verification.md" target="_blank" rel="noopener noreferrer">Gameplay worksheet</a></p>' : ""}
 <details><summary>Source captures and limitations</summary><ul id="source-list"></ul><p>${isLootRun ? "Safes and clinics" : "Safes"} may overlap across providers or be absent in a match. Safes can have access requirements. Nearby warnings are review hints, not confirmed duplicates. This page rereads reviewed local captures; update providers through the main map. It does not collect new remote data.</p><p>Road mode uses the separate local road file, not the main workspace’s private road edits. Missing road legs are left undrawn and listed below; dashed lines are off-road connectors.</p><a href="${hajin.source}" target="_blank" rel="noopener noreferrer">Official map background</a></details>
-</div></aside><section class="safe-terrain" aria-label="${runTitle}"><div id="safe-map" tabindex="0" role="region" aria-label="Hajin ${runTitle}. Arrow keys pan; plus and minus zoom."></div><div class="safe-map-tools" role="group" aria-label="Map controls"><button id="safe-zoom-in" type="button" aria-label="Zoom in">+</button><button id="safe-zoom-out" type="button" aria-label="Zoom out">−</button><button id="safe-reset" type="button">${document.documentElement.dataset.uiVariant==='modern'?'Fit map':'Full map'}</button><label><input id="safe-grid" type="checkbox" checked> Grid</label></div><p id="terrain-status" role="status"></p><p class="safe-map-credit">Source-reported ${candidateLabel} · © Activision · manual planning</p></section></main>`;
+</div></aside><section class="safe-terrain" aria-label="${runTitle}"><div id="safe-map" tabindex="0" role="region" aria-label="Hajin ${runTitle}. Arrow keys pan; plus and minus zoom."></div><div class="safe-map-tools" role="group" aria-label="Map controls"><button id="safe-zoom-in" type="button" aria-label="Zoom in">+</button><button id="safe-zoom-out" type="button" aria-label="Zoom out">−</button><button id="safe-reset" type="button">${document.documentElement.dataset.uiVariant==='modern'?'Fit map':'Full map'}</button><label><input id="safe-grid" type="checkbox" checked> Grid</label></div><p id="terrain-status" role="status"></p><p class="safe-map-credit">Source-reported ${candidateLabel} · © Activision · manual planning</p></section></main>`);
 const $ = <T extends HTMLElement>(id: string) =>
   document.getElementById(id) as T;
 const disposeModernLayout=mountSafeRunLayout();
@@ -160,7 +161,7 @@ function accessInfo(s: Stop, details = false) {
     );
   for (const k of info.keys) {
     const link = el("a", "Key guide: " + k.name);
-    link.href = "http://127.0.0.1:4173/keys/" + encodeURIComponent(k.id) + "/";
+    link.href = mapURL("http://127.0.0.1:4173/keys/" + encodeURIComponent(k.id) + "/");
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.dataset.safeKey = k.id;
@@ -192,7 +193,7 @@ function accessInfo(s: Stop, details = false) {
       for (const report of info.reports) {
         const paragraph = el("p", report.evidence + " "),
           link = el("a", report.sourceId + " · " + report.capturedAt);
-        link.href = report.page;
+        link.href = mapURL(report.page);
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         paragraph.append(link);
@@ -319,11 +320,11 @@ function safeIcon(s:Stop,index:number){return L.divIcon({
           (restricted(s) ? " safe-locked" : "") +
           (index < 0 ? " safe-excluded" : ""),
         html:
-          (index < 0 ? "−" : String(index + 1)) +
+          mapMarkup((index < 0 ? "−" : String(index + 1)) +
           (s.kind === "clinic" ? '<span class="clinic-kind-cue" aria-hidden="true">C</span>' : "") +
           (restricted(s)
             ? '<span class="safe-lock-cue" aria-hidden="true">!</span>'
-            : ""),
+            : "")),
         iconSize: [28, 28],
       });}
 function draw() {
@@ -334,7 +335,7 @@ function draw() {
     L.marker([p.start[1], p.start[0]], {
       icon: L.divIcon({
         className: "safe-start-marker",
-        html: "S",
+        html: mapMarkup("S"),
         iconSize: [30, 30],
       }),
       title: "Run start",
@@ -706,7 +707,7 @@ async function load() {
     for (const s of loaded.sources) {
       const row = el("li"),
         link = el("a", s.name);
-      link.href = s.page;
+      link.href = mapURL(s.page);
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       row.append(link, document.createTextNode(" · captured " + s.date));
@@ -943,7 +944,7 @@ if (isLootRun) {
     const blob = new Blob([JSON.stringify(lootJournal, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.href = url;
+    link.href = mapURL(url);
     link.download = "hajin-loot-run-gameplay-checks.json";
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 60_000);

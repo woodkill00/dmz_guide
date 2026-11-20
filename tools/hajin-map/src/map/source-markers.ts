@@ -1,3 +1,4 @@
+import { mapURL, mapMarkup } from '../site-paths.ts';
 import {markerPopup,markerPopupOptions} from './marker-popup.ts';
 import L from 'leaflet';
 import { hajin } from './hajin';
@@ -99,7 +100,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     if (!snapshot || !keyContainer) return;
     keyContainer.replaceChildren();
     const heading = document.createElement('h3'); heading.className = 'key-source-name';
-    const siteLink=document.createElement('a');siteLink.textContent=source.name;siteLink.href=source.page;siteLink.target='_blank';siteLink.rel='noopener noreferrer';heading.append(siteLink);
+    const siteLink=document.createElement('a');siteLink.textContent=source.name;siteLink.href=mapURL(source.page);siteLink.target='_blank';siteLink.rel='noopener noreferrer';heading.append(siteLink);
     const domain = document.createElement('p'); domain.className = 'key-source-domain'; domain.textContent = source.website;
     keyContainer.append(heading, domain);
     for (const group of [...new Set(snapshot.categories.map(category => category.group))]) {
@@ -114,7 +115,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
           else enabled.delete(category.id);
           update();
         });
-        const image = document.createElement('img'); image.src = category.icon; image.alt = ''; image.width = 24; image.height = 24;
+        const image = document.createElement('img'); image.src = mapURL(category.icon); image.alt = ''; image.width = 24; image.height = 24;
         image.addEventListener('error', () => { image.hidden = true; });
         const name = document.createElement('span'); name.textContent = category.name;
         const count = document.createElement('span'); count.className = 'category-count'; count.textContent = String(amount);
@@ -131,7 +132,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     container.replaceChildren();
     const card = document.createElement('details'); card.className = 'source-layer'; card.open = true; card.dataset.source = source.id;
     const summary = document.createElement('summary');
-    const heading = document.createElement('a'); heading.className = 'source-name'; heading.textContent = source.name;heading.href=source.page;heading.target='_blank';heading.rel='noopener noreferrer';heading.addEventListener('click',event=>event.stopPropagation());
+    const heading = document.createElement('a'); heading.className = 'source-name'; heading.textContent = source.name;heading.href=mapURL(source.page);heading.target='_blank';heading.rel='noopener noreferrer';heading.addEventListener('click',event=>event.stopPropagation());
     const domain = document.createElement('span'); domain.className = 'source-domain'; domain.textContent = source.website;
     const badge = document.createElement('span'); badge.className = 'source-selection';
     summary.append(heading, domain, badge); card.append(summary);
@@ -139,7 +140,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     const intro = document.createElement('p');
     intro.className = 'layers-intro';
     intro.textContent = `Captured ${new Date(snapshot.capturedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}. Imported source locations; separate from your own discoveries.`;
-    const sourceLink = document.createElement('a'); sourceLink.className = 'source-link'; sourceLink.href = source.page; sourceLink.target = '_blank'; sourceLink.rel = 'noopener noreferrer'; sourceLink.textContent = 'View source website ↗';
+    const sourceLink = document.createElement('a'); sourceLink.className = 'source-link'; sourceLink.href = mapURL(source.page); sourceLink.target = '_blank'; sourceLink.rel = 'noopener noreferrer'; sourceLink.textContent = 'View source website ↗';
     body.append(intro, sourceLink);
     const masterLabel = document.createElement('label');
     masterLabel.className = 'layer-master';
@@ -176,7 +177,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
         const row = document.createElement('label'); row.className = 'category-filter';
         const input = document.createElement('input'); input.type = 'checkbox'; input.dataset.category = category.id; input.disabled = !amount;
         input.addEventListener('change', () => { if (input.checked) enabled.add(category.id); else enabled.delete(category.id); update(); });
-        const image = document.createElement('img'); image.src = category.icon; image.alt = ''; image.width = 24; image.height = 24;
+        const image = document.createElement('img'); image.src = mapURL(category.icon); image.alt = ''; image.width = 24; image.height = 24;
         image.addEventListener('error', () => { image.hidden = true; });
         const title = document.createElement('span'); title.textContent = category.name;
         const quantity = document.createElement('span'); quantity.className = 'category-count'; quantity.textContent = String(amount);
@@ -221,11 +222,11 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
         content.textContent = record.name;
       } else {
         content.className = 'official-pin';
-        const image = document.createElement('img'); image.src = category.icon; image.alt = ''; image.width = 20; image.height = 20;
+        const image = document.createElement('img'); image.src = mapURL(category.icon); image.alt = ''; image.width = 20; image.height = 20;
         image.addEventListener('error', () => { image.hidden = true; content.textContent = '•'; });
         content.append(image);
       }
-      const markerIcon = L.divIcon({ className: label ? 'official-label' : 'official-marker', html: content, iconSize: label ? [180, 24] : [28, 34], iconAnchor: label ? [90, 12] : [14, 32] });
+      const markerIcon = L.divIcon({ className: label ? 'official-label' : 'official-marker', html: mapMarkup(content), iconSize: label ? [180, 24] : [28, 34], iconAnchor: label ? [90, 12] : [14, 32] });
       const [x, y] = toPixels({...record,x:record.x,y:record.y}, hajin);
       const marker = L.marker([y, x], { icon: markerIcon, title: record.name, alt: record.name, keyboard: true, riseOnHover: true });
       marker.on('add', () => {
@@ -238,7 +239,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
       const {root:popup,details,actions}=markerPopup(record.name);
       const detail = document.createElement('p'); detail.textContent = `${category.name} · ${source.name}`;
       const location = document.createElement('p'); location.textContent = `Image position: ${Math.round(x)}, ${Math.round(y)}`;
-      const link = document.createElement('a'); link.href = source.recordLink(record.id); link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = `View on ${source.website} ↗`;
+      const link = document.createElement('a'); link.href = mapURL(source.recordLink(record.id)); link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = `View on ${source.website} ↗`;
       details.append(detail, location);actions.append(link);
       const notes=document.createElement('p');notes.textContent=record.notes||'No notes supplied.';
       const claim=document.createElement('p');claim.textContent=`Source claim · not independently verified · captured ${snapshot.capturedAt}`;
@@ -264,7 +265,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
     container.textContent = `Loading ${source.name} locations…`;
     if (keyContainer) keyContainer.textContent = `Loading ${source.name} icons…`;
     try {
-      const response = await fetch(source.snapshot, { signal: request.signal });
+      const response = await fetch(mapURL(source.snapshot), { signal: request.signal });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('Expected a JSON snapshot.');
       const bytes = await boundedBytes(response, 2 * 1024 * 1024);
@@ -293,7 +294,7 @@ export function createSourceMarkers(source: MarkerSource, map: L.Map, container:
   }
   load();
   function capacityMessage(){
-    for(const host of [container,keyContainer])if(host&&!host.querySelector('[data-source-capacity]')){host.replaceChildren();const note=document.createElement('p');note.dataset.sourceCapacity=source.id;note.setAttribute('role','status');note.textContent=`${source.name} unavailable: the combined source view exceeds20,000 records. Hide another website layer to make room, or reduce imported source records. This capture is retained.`;const link=document.createElement('a');link.href=source.page;link.target='_blank';link.rel='noopener noreferrer';link.textContent=`Open ${source.name}`;host.append(note,link);}
+    for(const host of [container,keyContainer])if(host&&!host.querySelector('[data-source-capacity]')){host.replaceChildren();const note=document.createElement('p');note.dataset.sourceCapacity=source.id;note.setAttribute('role','status');note.textContent=`${source.name} unavailable: the combined source view exceeds20,000 records. Hide another website layer to make room, or reduce imported source records. This capture is retained.`;const link=document.createElement('a');link.href=mapURL(source.page);link.target='_blank';link.rel='noopener noreferrer';link.textContent=`Open ${source.name}`;host.append(note,link);}
   }
   return { id: source.id, reload: load, setAll,
     setCapacityBlocked(value:boolean){if(value===capacityBlocked)return;capacityBlocked=value;if(value){root.clearLayers();groups.clear();markerPool.length=0;capacityMessage();onUpdate(0,snapshot?.records.length??0,'failed');}else if(snapshot){restoringSnapshot=true;try{addRecords();}finally{restoringSnapshot=false;}}},

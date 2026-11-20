@@ -307,7 +307,7 @@ export function createRunReviewQueue({
     if (handoff) throw Error("Finish the current map handoff first.");
     const nonce = crypto.randomUUID();
     const target = window.open(
-      `http://127.0.0.1:5175/?tool=planner&boss-review=${nonce}`,
+      `/map/?tool=planner&boss-review=${nonce}`,
       "_blank",
     );
     if (!target)
@@ -337,7 +337,7 @@ export function createRunReviewQueue({
     };
     const onMessage = async (event) => {
       if (
-        event.origin !== "http://127.0.0.1:5175" ||
+        event.origin !== location.origin ||
         event.source !== target ||
         event.data?.nonce !== nonce ||
         handoff?.entryId !== entry.id

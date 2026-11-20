@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import { validateJsonTree } from './validation.ts';
 
 export const iconFrames = ['pin','circle','square','diamond','shield','none'] as const;
@@ -70,12 +71,12 @@ export function designedPNG(design:IconDesign,description:string,signal?:AbortSi
     if(signal?.aborted){reject(new Error('Icon creation cancelled.'));return;}
     const image=new Image(),url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
     let finished=false;
-    const finish=(error?:Error,blob?:Blob)=>{if(finished)return;finished=true;clearTimeout(timer);signal?.removeEventListener('abort',cancel);image.onload=image.onerror=null;image.src='';URL.revokeObjectURL(url);if(error)reject(error);else resolve(blob!);};
+    const finish=(error?:Error,blob?:Blob)=>{if(finished)return;finished=true;clearTimeout(timer);signal?.removeEventListener('abort',cancel);image.onload=image.onerror=null;image.src=mapURL('');URL.revokeObjectURL(url);if(error)reject(error);else resolve(blob!);};
     const cancel=()=>finish(new Error('Icon creation cancelled.'));
     const timer=setTimeout(()=>finish(new Error('Icon creation timed out. Try again.')),10000);
     signal?.addEventListener('abort',cancel,{once:true});
     image.onerror=()=>finish(new Error('Unable to render this icon.'));
     image.onload=()=>{try{const canvas=document.createElement('canvas');canvas.width=canvas.height=256;const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Canvas unavailable.');ctx.drawImage(image,0,0,256,256);canvas.toBlob(blob=>blob?finish(undefined,blob):finish(new Error('Unable to encode icon.')),'image/png');}catch(error){finish(error instanceof Error?error:new Error('Unable to render icon.'));}};
-    image.src=url;
+    image.src=mapURL(url);
   });
 }

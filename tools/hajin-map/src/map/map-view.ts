@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import L from "leaflet";
 import { hajin } from "./hajin";
 import { fromPixels } from "./coordinates";
@@ -191,7 +192,7 @@ export function createMapView(
         ? hajin.background
         : `${hajin.background}?retry=${generation}`;
     try {
-      const response = await fetch(source, { signal: request.signal });
+      const response = await fetch(mapURL(source), { signal: request.signal });
       const mime = response.headers.get("content-type")?.split(";")[0] || "";
       if (!["image/png", "image/jpeg", "image/webp"].includes(mime))
         throw new Error("Expected raster background.");
@@ -200,7 +201,7 @@ export function createMapView(
       imageURL = URL.createObjectURL(
         new Blob([bytes as Uint8Array<ArrayBuffer>], { type: mime }),
       );
-      const layer = L.imageOverlay(imageURL, bounds, {
+      const layer = L.imageOverlay(mapURL(imageURL), bounds, {
         pane: "hajin-basemaps",
         alt: "Hajin DMZ terrain map showing roads, buildings, rivers and coastline",
         interactive: false,

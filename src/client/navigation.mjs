@@ -12,7 +12,7 @@ if (pack && pack.length <= 100 && ID.test(pack)) {
     ".site-nav a[href], .site-header .brand, [data-workspace-link]",
   )) {
     const target = new URL(anchor.href, location.href);
-    if (target.origin !== location.origin) continue;
+    if (target.origin !== location.origin || target.pathname.startsWith('/map/')) continue;
     target.searchParams.set("pack", pack);
     anchor.href = target.href;
   }

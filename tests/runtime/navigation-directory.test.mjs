@@ -72,7 +72,7 @@ test("033 FR-002/004: sitemap contains public routes and masked spoilers, no pri
     assert(!html.includes(`>${record.name || record.title}</a>`));
   assert.match(html, /FICTIONAL FIXTURES/);
   assert.match(renderMapWorkspace(), /not live game GPS/);
-  assert.match(renderMapWorkspace(), /127\.0\.0\.1:5175/);
+  assert.match(renderMapWorkspace(), /\/map\//);
 });
 test("033 FR-005: remove target keeps pack identity even when item IDs overlap", () => {
   const first = structuredClone(
@@ -142,7 +142,7 @@ test("033 FR-004: intermediary navigation carries only a bounded pack to same-or
   const run = (search, owningPack = "") => {
     const anchors = [
       { href: "https://guide.test/items/" },
-      { href: "http://127.0.0.1:5175/" },
+      { href: "/map/" },
     ];
     vm.runInNewContext(source, {
       ID,
@@ -174,7 +174,7 @@ test("033 FR-004: intermediary navigation carries only a bounded pack to same-or
     valid[0].href,
     "https://guide.test/items/?pack=demo%3Atraining-pack",
   );
-  assert.equal(valid[1].href, "http://127.0.0.1:5175/");
+  assert.equal(valid[1].href, "/map/");
   assert.equal(
     run("?pack=https://bad.test")[0].href,
     "https://guide.test/items/",

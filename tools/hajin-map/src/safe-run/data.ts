@@ -1,3 +1,4 @@
+import { mapURL } from '../site-paths.ts';
 import { markerSources, type MarkerSource } from "../map/marker-sources.ts";
 import { loadCurrentCaptureSelection } from "../map/current-captures.ts";
 import { loadLocalProviderSources } from "../map/local-providers.ts";
@@ -14,7 +15,7 @@ async function read(path: string, limit: number) {
   const controller = new AbortController(),
     timer = setTimeout(() => controller.abort(), 5000);
   try {
-    const response = await fetch(path, {
+    const response = await fetch(mapURL(path), {
       signal: controller.signal,
       cache: "no-store",
     });
