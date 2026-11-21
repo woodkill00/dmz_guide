@@ -47,8 +47,13 @@ test("Current static registry admission matches its captured inventory; browser 
   assert.equal(new Set(features.map((f) => f.id)).size, features.length);
   assert.equal(
     features.length,
-    88,
+    89,
     "Rebaseline the owning registry contract deliberately",
+  );
+  assert.equal(
+    features.find((f) => f.id === "track-items")?.path,
+    "/track/items/",
+    "098 Items directory is the explicit added feature",
   );
   assert.equal(snapshot.count, 83, "Keep the 071 historical baseline intact");
   for (const prior of snapshot.features) {

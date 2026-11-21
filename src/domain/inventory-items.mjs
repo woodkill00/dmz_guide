@@ -1,3 +1,4 @@
+import { CURRENCY_STOCK_LIMIT } from "./quantity-limits.mjs";
 import { inventoryGameEntry } from "./inventory-game-order.mjs";
 import { fieldUpgradeRank } from "./field-upgrade-roster.mjs";
 import {
@@ -8,7 +9,7 @@ import {
 } from "./profile.mjs";
 import { previewContentRebind } from "./profile-preview.mjs";
 export const inventoryInputLimit = (profile, item) =>
-  item?.kind === "currency" ? 2000000 : stockLimit(profile, item);
+  item?.kind === "currency" ? CURRENCY_STOCK_LIMIT : stockLimit(profile, item);
 export function cashFormatSave(profile, pack, previousPack = null) {
   const needsUpgrade =
     profile.schemaVersion < 3 &&

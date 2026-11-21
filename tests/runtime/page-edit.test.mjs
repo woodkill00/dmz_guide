@@ -1,3 +1,4 @@
+import { servicePath } from "../../src/domain/local-services.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { fixtureCatalog } from "../helpers/catalog.mjs";
@@ -142,10 +143,7 @@ test("010 FR-001/002: every public detail has exact contextual actions and inert
         };
         assert(
           guidance.includes(
-            ("http://127.0.0.1:4174" + authorPath(target)).replaceAll(
-              "&",
-              "&amp;",
-            ),
+            servicePath("author", authorPath(target)).replaceAll("&", "&amp;"),
           ),
         );
         assert(

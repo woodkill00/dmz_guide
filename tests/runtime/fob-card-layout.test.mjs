@@ -40,7 +40,7 @@ test("stock input keeps blank distinct from zero and validates grouped currency,
   assert.equal(parseUpgradeStock("1,000", item, p), 1000);
   for (const raw of ["-1", "1.2", "1e3", "Infinity", "1,00", "1000001"])
     assert.throws(() => parseUpgradeStock(raw, item, p));
-  assert.throws(() => parseUpgradeStock("2000001", cash, p));
+  assert.throws(() => parseUpgradeStock("1000000000", cash, p));
 });
 test("untrusted names/descriptions are escaped and stale profile stock controls are readonly", () => {
   const p = newProfile(pack),

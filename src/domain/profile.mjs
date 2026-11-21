@@ -1,3 +1,4 @@
+import { CURRENCY_STOCK_LIMIT } from "./quantity-limits.mjs";
 import { validateFieldOps, emptyFieldOps } from "./field-ops-state.mjs";
 import { validateItemBlueprints } from "./item-blueprints.mjs";
 import {
@@ -15,7 +16,7 @@ const validID = (id) =>
   typeof id === "string" && id.length <= 100 && ID.test(id);
 export const stockLimit = (profile, item) =>
   profile.schemaVersion === 3 && item?.kind === "currency"
-    ? 2000000
+    ? CURRENCY_STOCK_LIMIT
     : LIMITS.quantity;
 export function validateInventoryForPack(profile, pack) {
   // A mismatched backup retains its historical stock; rebind validates against the new known kinds.
@@ -141,9 +142,10 @@ export function validateProfile(p) {
         assert(
           Number.isSafeInteger(v) &&
             v >= 0 &&
-            v <= (p.schemaVersion === 3 ? 2000000 : LIMITS.quantity),
+            v <=
+              (p.schemaVersion === 3 ? CURRENCY_STOCK_LIMIT : LIMITS.quantity),
           p.schemaVersion === 3
-            ? "Quantity must be an integer from 0 to 2000000; known non-currency items remain capped at 1000000"
+            ? `Quantity must be an integer from 0 to ${CURRENCY_STOCK_LIMIT}; known non-currency items remain capped at 1000000`
             : "Quantity must be an integer from 0 to 1000000",
         );
       else if (key === "completion")

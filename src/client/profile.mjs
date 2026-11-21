@@ -848,7 +848,7 @@ $("#inventory-form")?.addEventListener(
         return;
       error(
         new Error(
-          "Enter a whole nonnegative quantity: up to 2,000,000 for currency, or 1,000,000 for other items.",
+          "Enter a whole nonnegative quantity: up to 999,999,999 for currency, or 1,000,000 for other items.",
         ),
       );
       revealInvalidInventory();

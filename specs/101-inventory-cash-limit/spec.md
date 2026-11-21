@@ -1,0 +1,6 @@
+# Cash balance save repair
+Reproduction: Inventory rejects 6,209,662 because cash draft/profile validators cap currency at2,000,000. Expected: both comma-formatted and raw6209662 save exactly and reload with grouping.
+FR01: Extend the application's currency stock/reserve bound to999,999,999 (a bounded software limit, not a claimed in-game cap), using one shared constant. Keep non-currency/cost/goal and legacy profile limits intact; existing explicit currency format confirmation remains for legacy profiles.
+FR02: Validate/save/backup/restore/planning and upgrade purchase/refund snapshots accept higher known currency without losing unrelated quantities/progress. Unknown identifiers keep existing catalog-independent envelope behavior; pack-specific validation still enforces material caps. No silent data rewrite or owner-profile inspection.
+FR03: Accurate UI limits/messages, strict comma parsing, reject malformed/negative/fractional/unsafe/out-of-bound values; original reproduction and boundary regressions pass. Prior unchanged backups remain accepted. Older application versions may reject newly exported balances over their old cap; document compatibility without inventing a new schema.
+Scope: saved stash/reserve balance and derived snapshots, not an increase to transfer, OCR, carried or per-run reservation input bounds.

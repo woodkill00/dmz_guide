@@ -1,3 +1,4 @@
+import { CURRENCY_STOCK_LIMIT } from "./quantity-limits.mjs";
 import { readRecord, commitRecord } from "../storage/store.mjs";
 
 const MAX_PLANS = 8;
@@ -151,9 +152,9 @@ export function evaluateRunReadiness(
         const carried = profile.fieldOps?.carried?.[id] ?? 0;
         const protectedStock = profile.reserves?.[id] ?? 0;
         const known =
-          integer(stock, 2000000) &&
+          integer(stock, CURRENCY_STOCK_LIMIT) &&
           integer(carried, 2000000) &&
-          integer(protectedStock, 2000000);
+          integer(protectedStock, CURRENCY_STOCK_LIMIT);
         const available = known
           ? Math.max(
               0,

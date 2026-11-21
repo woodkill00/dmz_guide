@@ -1,3 +1,4 @@
+import { CURRENCY_STOCK_LIMIT } from "./quantity-limits.mjs";
 import { assert, clone, LIMITS } from "../content/limits.mjs";
 import { validateProfile, validateInventoryForPack } from "./profile.mjs";
 import { spoilerGuard } from "./progression.mjs";
@@ -333,7 +334,7 @@ export function recordSpendingReversal(profile, purchaseId, options) {
     assert(
       Number.isSafeInteger(c.after + c.consumed) &&
         c.after + c.consumed <=
-          (c.kind === "currency" ? 2000000 : LIMITS.quantity),
+          (c.kind === "currency" ? CURRENCY_STOCK_LIMIT : LIMITS.quantity),
       "Refund would exceed inventory limit",
     );
     candidate.inventory[c.itemId] = c.before;

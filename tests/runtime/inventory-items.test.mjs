@@ -47,7 +47,7 @@ test("legacy cash 1333601 previews format update and content rebind without muta
   assert.deepEqual(profile, snapshot);
   validateProfile(result.candidate);
 });
-test("prospective currency draft accepts 2m but preserves legacy saved validators and material cap", () => {
+test("prospective currency draft accepts expanded cash but preserves legacy saved validators and material cap", () => {
   const profile = legacyProfile();
   const legacy = createInventoryDraft(pack.items, profile),
     draft = createInventoryDraft(pack.items, profile, {
@@ -61,7 +61,7 @@ test("prospective currency draft accepts 2m but preserves legacy saved validator
   );
   legacy.set("inventory", cash, "1333601", profile);
   assert.equal(legacy.firstInvalid().id, cash);
-  draft.set("inventory", cash, "2000001", profile);
+  draft.set("inventory", cash, "1000000000", profile);
   assert.equal(draft.firstInvalid().id, cash);
   assert.throws(() => cashFormatSave(profile, pack));
   draft.set("inventory", cash, "1333601", profile);
@@ -297,4 +297,56 @@ test("four corrected tactical identities stay tactical in both catalogs and stal
     "Equipment",
     "Never recategorize unrelated records by a fuzzy name match",
   );
+});
+
+test("101 raw/grouped higher cash, max and legacy confirmation candidate remain exact and bounded", async () => {
+  const { currencyQuantityRaw, currencyQuantityText } = await import(
+    "../../src/domain/inventory-presentation.mjs"
+  );
+  const { CURRENCY_STOCK_LIMIT } = await import(
+    "../../src/domain/quantity-limits.mjs"
+  );
+  const { parseProfile, validateInventoryForPack } = await import(
+    "../../src/domain/profile.mjs"
+  );
+  for (const text of ["6209662", "6,209,662", "999,999,999"]) {
+    const profile = legacyProfile();
+    const draft = createInventoryDraft(pack.items, profile, {
+      allowCurrencyUpgrade: true,
+    });
+    const value = currencyQuantityRaw(text);
+    draft.set("inventory", cash, value, profile);
+    draft.set("reserves", cash, value, profile);
+    assert.equal(draft.firstInvalid(), null);
+    const result = cashFormatSave(profile, pack);
+    assert.equal(result.needsUpgrade, true);
+    assert.equal(result.candidate.inventory[cash], Number(value));
+    assert.equal(result.candidate.reserves[cash], Number(value));
+    validateInventoryForPack(result.candidate, pack);
+    assert.deepEqual(
+      parseProfile(JSON.stringify(result.candidate)),
+      result.candidate,
+    );
+    assert.equal(
+      currencyQuantityText(value),
+      Number(value).toLocaleString("en-US"),
+    );
+  }
+  const profile = newProfile(pack);
+  const draft = createInventoryDraft(pack.items, profile, {
+    allowCurrencyUpgrade: true,
+  });
+  for (const value of [
+    "-1",
+    "1.5",
+    "6,20,9662",
+    String(CURRENCY_STOCK_LIMIT + 1),
+    "9007199254740992",
+  ]) {
+    draft.set("inventory", cash, currencyQuantityRaw(value), profile);
+    assert.equal(draft.firstInvalid()?.id, cash);
+  }
+  profile.inventory[cash] = 6209662;
+  profile.inventory["mw4:metals"] = 1000001;
+  assert.throws(() => validateInventoryForPack(profile, pack));
 });

@@ -70,7 +70,7 @@ export function inventorySaveAction({
         (result.rebound
           ? "Also bind this profile to the updated catalog; changed or unconfirmed upgrade requirements will require review. "
           : "") +
-        "Update this local profile to support currency up to 2,000,000, then save all entered quantities. Materials remain limited to 1,000,000. Existing progress is retained; legacy unlocked upgrades may require review. No past spending is invented. The previous saved profile remains recoverable.";
+        "Update this local profile to support currency up to 999,999,999, then save all entered quantities. Materials remain limited to 1,000,000. Existing progress is retained; legacy unlocked upgrades may require review. No past spending is invented. The previous saved profile remains recoverable.";
       const message = document.createElement("p");
       message.setAttribute("role", "alert");
       const confirm = document.createElement("button"),
