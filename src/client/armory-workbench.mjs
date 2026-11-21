@@ -1,3 +1,9 @@
+import {
+  acquisitionCamoIcons,
+  acquisitionCamoPanel,
+} from "../ui/acquisition-camos.mjs";
+import { acquisitionCamoController } from "./acquisition-camos.mjs";
+import { validateProgressCatalog } from "../domain/camo-progress.mjs";
 import "./quick-tracker.mjs";
 import { ownsBlueprint } from "../domain/weapon-acquisition.mjs";
 import {
@@ -20,9 +26,8 @@ import {
   bytesFromBase64,
   hashBytes,
 } from "../content/portable.mjs";
-const { db, refs, metrics, codmunity, codMetrics } = JSON.parse(
-  document.querySelector("#armory-public-data").textContent,
-);
+const { db, refs, metrics, codmunity, codMetrics, camoProgress, camoWeapons } =
+  JSON.parse(document.querySelector("#armory-public-data").textContent);
 const $ = (s) => document.querySelector(s),
   e = (v) =>
     String(v ?? "").replace(
@@ -36,6 +41,10 @@ const $ = (s) => document.querySelector(s),
           "'": "&#39;",
         })[c],
     );
+const camoPreview = acquisitionCamoController(
+  document.querySelector("#acquisition"),
+  validateProgressCatalog(camoProgress),
+);
 const today = () => new Date().toISOString().slice(0, 10),
   newId = () => crypto.randomUUID();
 const name = (id) =>
@@ -631,12 +640,13 @@ function acquisitionRoster() {
             .sort((a, b) => a.name.localeCompare(b.name))
             .map(
               (w) =>
-                `<div class="tracker-weapon-row" data-acquisition-weapon="${e(w.id)}"><a href="/armory/${encodeURIComponent(w.id)}/">${e(w.name)}</a><label><input type="checkbox" data-roster-manual="${e(w.id)}" aria-label="Manual found: ${e(w.name)}">Manual found</label><small data-acquisition-counts></small><button type="button" data-inspect-acquisition="${e(w.id)}">Attachments / blueprints</button></div>`,
+                `<div class="tracker-weapon-row" data-acquisition-weapon="${e(w.id)}"><a href="/armory/${encodeURIComponent(w.id)}/">${e(w.name)}</a><label><input type="checkbox" data-roster-manual="${e(w.id)}" aria-label="Manual found: ${e(w.name)}">Manual found</label><small data-acquisition-counts></small><button type="button" data-inspect-acquisition="${e(w.id)}">Attachments / blueprints</button>${acquisitionCamoIcons(camoWeapons.find((c) => c.id === w.id))}${acquisitionCamoPanel(camoWeapons.find((c) => c.id === w.id))}</div>`,
             )
             .join("")}</details>`,
       )
       .join("");
   }
+  camoPreview.paint(workspace, ready);
   const term = $("#acquisition-query").value.trim().toLowerCase(),
     category = $("#acquisition-class").value,
     show = $("#acquisition-show").value;

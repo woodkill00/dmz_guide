@@ -1,3 +1,5 @@
+import { acquisitionCamoController } from "./acquisition-camos.mjs";
+import { parseProgressCatalog } from "../domain/camo-progress.mjs";
 import { parseBounded } from "../content/limits.mjs";
 import {
   validateAcquisitionCatalog,
@@ -17,6 +19,12 @@ const catalog = validateAcquisitionCatalog(
     document.querySelector("#acquisition-public-data").textContent,
     512 * 1024,
     { depth: 8, nodes: 25000, string: 1000 },
+  ),
+);
+const camoPreview = acquisitionCamoController(
+  root,
+  parseProgressCatalog(
+    document.querySelector("#acquisition-camo-data").textContent,
   ),
 );
 let inputIntent = 0;
@@ -68,6 +76,7 @@ function download(value, label) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 function sync() {
+  camoPreview.paint(workspace, ready);
   const rows = acquisitionRows(catalog, workspace),
     query = $("#acq-query").value.trim().toLowerCase(),
     category = $("#acq-class").value,

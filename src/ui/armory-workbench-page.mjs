@@ -1,3 +1,5 @@
+import { readWeaponCamos } from "../content/weapon-camos.mjs";
+import { progressCatalog } from "../domain/camo-progress.mjs";
 import { servicePath } from "../domain/local-services.mjs";
 import { readCodmunity } from "../content/codmunity.mjs";
 import codMetrics from "../domain/codmunity-metrics.json" with { type: "json" };
@@ -46,6 +48,7 @@ export function armoryPublicReferences(packs) {
 }
 export async function featurePages(packs) {
   const db = await readWeaponIntel();
+  const camoCatalog = await readWeaponCamos();
   const codmunity = (await readCodmunity()).value;
   const refs = armoryPublicReferences(packs);
   const options = db.weapons
@@ -81,6 +84,8 @@ export async function featurePages(packs) {
     metrics,
     codmunity,
     codMetrics,
+    camoProgress: progressCatalog(camoCatalog),
+    camoWeapons: camoCatalog.weapons,
   }).replaceAll("<", "\\u003c");
   return [
     {
@@ -89,7 +94,10 @@ export async function featurePages(packs) {
       page: "armory-workbench",
       body: `${pageHeading("PRIVATE ARMORY", "Compare. Build. Verify.", "Saved builds, evidence and acquisition stay on this device.")}<p><a href="/armory/">Weapon database</a> · <a href="/armory/updates/">Update dashboard startup</a></p>${nav}<p id="armory-status" class="notice" role="status">Opening private storage…</p><p id="armory-error" role="alert" hidden></p><noscript><p>Comparison, private storage and evidence tools require JavaScript. <a href="/armory/">The weapon database remains readable.</a></p></noscript>${compare}${builder}${evidence}${acquisition}${backups}<script type="application/json" id="armory-public-data">${payload}</script>`,
       scripts: ["/assets/src/client/armory-workbench.mjs"],
-      styles: ["/assets/src/ui/gunsmith.css"],
+      styles: [
+        "/assets/src/ui/gunsmith.css",
+        "/assets/src/ui/acquisition-camos.css",
+      ],
     },
   ];
 }
