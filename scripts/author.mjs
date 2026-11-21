@@ -41,6 +41,7 @@ const staticFiles = new Set([
   "src/ui/page-composition.mjs",
   "src/ui/page-composition.css",
   "src/ui/page-editor.css",
+  "src/ui/crafting-preview.css",
   "src/client/page-editor.mjs",
   "src/client/page-editor-media.mjs",
   "src/domain/page-document.mjs",

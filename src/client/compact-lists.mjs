@@ -1,3 +1,4 @@
+import { renderCraftPreview } from "../ui/crafting-preview.mjs";
 import { escapeHTML as esc } from "../ui/render.mjs";
 export const useLabels = {
   recipes: "Recipes",
@@ -20,7 +21,11 @@ export function usesList(rows, offset = 0) {
         )}</ul>${rows.length > 50 ? `<div class="draft-actions"><button type="button" data-use-page="${Math.max(0, offset - 50)}" ${offset === 0 ? "disabled" : ""}>Previous uses</button><button type="button" data-use-page="${offset + 50}" ${offset + 50 >= rows.length ? "disabled" : ""}>Next uses</button><span>${offset + 1}–${Math.min(offset + 50, rows.length)} of ${rows.length}</span></div>` : ""}`
     : "<p>No known links in this catalog.</p>";
 }
-export function useCell(rows, kind, id) {
+export function useCell(rows, kind, id, pack = null) {
+  if (kind === "crafts" && pack) {
+    const preview = renderCraftPreview(pack, id);
+    return `<div class="inventory-use${preview ? " inventory-craft-preview" : ""}" role="group" aria-label="Crafts">${preview || "<span>—</span>"}</div>`;
+  }
   return `<div class="inventory-use" role="group" aria-label="${useLabels[kind]}"><span class="mobile-label">${useLabels[kind]}</span>${rows.length ? `${useLink(rows[0])}${rows.length > 1 ? `<button type="button" data-show-use="${esc(id)}" data-kind="${kind}" aria-label="Show all ${useLabels[kind]}">+${rows.length - 1}</button>` : ""}` : "<span>—</span>"}</div>`;
 }
 export function singleExpansion(container, selector) {

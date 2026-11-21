@@ -1,3 +1,4 @@
+import { renderCraftPreview } from "./crafting-preview.mjs";
 import {
   dashboardSections,
   dashboardTitles,
@@ -55,7 +56,7 @@ export function dashboardTile(row, pack, section, key) {
         : state === "alternative"
           ? "Crafting alternative"
           : "Missing";
-  return `<button type="button" class="dash-tile" data-dash-item="${e(row.id)}" data-dash-key="${e(key)}" data-dash-owner="${section}" data-state="${state}" data-rarity="${e(item?.rarity || "unknown")}" aria-expanded="false" aria-controls="dash-detail-${section}"><span data-inventory-icon="${e(row.id)}" data-icon-status="missing" aria-hidden="true">◇</span><span class="dash-tile-name">${e(row.name)}</span><strong>${row.minimum && missing != null ? "≥ " : ""}${dashboardNumber(missing)}</strong><small>${label}${row.assumedZero ? " · estimate" : ""} · ${e(item?.rarity || "rarity unknown")}</small></button>`;
+  return `<div class="dash-item-entry"><button type="button" class="dash-tile" data-dash-item="${e(row.id)}" data-dash-key="${e(key)}" data-dash-owner="${section}" data-state="${state}" data-rarity="${e(item?.rarity || "unknown")}" aria-expanded="false" aria-controls="dash-detail-${section}"><span data-inventory-icon="${e(row.id)}" data-icon-status="missing" aria-hidden="true">◇</span><span class="dash-tile-name">${e(row.name)}</span><strong>${row.minimum && missing != null ? "≥ " : ""}${dashboardNumber(missing)}</strong><small>${label}${row.assumedZero ? " · estimate" : ""} · ${e(item?.rarity || "rarity unknown")}</small></button>${renderCraftPreview(pack, row.id)}</div>`;
 }
 export function dashboardItemPanel(
   row,

@@ -70,3 +70,37 @@ Required final proof remains the current rebuilt all303/490/anchor audit, actual
 PASS; no remaining actionable blocker in inspected consolidation. Read096-concise-runtime24/24, current2108+404 guide/eight-entry map build, current303pages/490edges/all-anchors audit and Chromium/Firefox/WebKit actual source/X01 target-visible/ingredient-return, keyboard/mobile/private/icon navigation PASS. Inspected browser target visibility assertion and actual ingredient return click, not merely hash matching. Current formatPASS/repository0 are present. Viewed latest mobile screenshot: one icon/name button per product and collapsed variants, readable compact fields, no visible clipping. Manual/collectible/identity-only preservation remains covered by focused regression.
 
 Parent-executed receipts independently inspected; no fresh broad suite/package/remote CI invented. Scope is item-page Crafting presentation, not a broader Recipes directory redesign or new source/profile/planner semantics. Earlier reviewer history remains valid for its snapshots. Parent retains task/docs/local readiness completion; only reviewer-owned review.md edited and no merge/publication approval.
+
+## FR02d/T008 shared preview planning review —2026-11-21
+
+Planning READY; no concrete scope contradiction found in amended spec/tasks. Explicit surfaces are dashboard, Quick Collect tiles/ingredients, FOB materials, directory identities and existing Inventory Crafts column. Distinct direct outputs only, collapsed/no-empty/no-recursion/no-cost preview and exact pack/spoiler/current-origin rules are appropriately bounded presentation reuse; Inventory replaces rather than duplicates its column. Keep209 admitted methods as current audit evidence, not a hardcoded universal catalog size.
+
+Implementation oracles: sibling preview never nests details/links inside action button/anchor/label; original control IDs/event targets/focus/draft/disabled behavior and fixed input geometry survive. Preview count matches privacy-filtered distinct outputs, not hidden/missing relations; no secondary icon source-anchor injection. Reuse per-pack cached index and avoid fetching/mutating state on disclosure/load; bound mounted output work as well as visual scroll for larger custom packs, with an explicit detail destination if preview truncates. Current private-pack output links must retain pack identity. Test actual primary click/key action before/after toggling previews, exact links/icons/hydration, collapse keyboard/focus, long labels/large-output/mobile200% and no duplicated Inventory column. Prior096 acceptance is historical; current implementation/receipts pending. Only reviewer note edited.
+
+## FR02d implementation interim finding —2026-11-21
+
+### CRAFTUSE-04 / P2 — capped directory fallback uses an untyped record
+
+src/ui/crafting-preview.mjs All-products link invokes the supplied referenceURL with raw pack.items entry, unlike normal chips which annotate recordType:item and pack. Item directory passes actual recordUrl callback; for a resource-kind input this produces/resource/id/ rather than/items/id/ (weapon-kind similarly wrong). Only the>8-output path exposes it, so small real fixtures can miss it. Pass a fully typed/scoped owner record to the fallback callback and test capped preview with actual recordUrl plus private callback, preserving exact destination/pack.
+
+Other bounded source observations: cached exact-ID reverse index, distinct filtered output count, eight mounted chips and explicit All-products link satisfy preview bounds; previews are siblings to dashboard/Quick Collect controls and occupy existing Inventory Crafts cell. No other confirmed blocker in this pass. Current runtime/browser/build final evidence pending; parent25 focused tests are not substituted for the missing actual callback cap case. Reviewer note only.
+
+## CRAFTUSE-04 and preview visibility source recheck —2026-11-21
+
+CRAFTUSE-04 source repair present: capped All-products callback receives full item recordType/pack. Inspected new>8-output actual recordUrl and pack-aware private callback assertions. Compactor moves the existing Crafts preview cell into inventory-name before advancing other cells, retaining one node/no extra column and existing control identities. Public author stylesheet allowlist explicitly admits imported crafting-preview.css; MIME regression remains required. No new actionable blocker in this bounded source recheck.
+
+Current final runtime/build/five-surface browser run still pending. Prior Inventory hidden-layout timeout remains failed history, not a passing original run. CSS remains prefixed with bounded chip scroll and focus style; primary controls remain siblings, not nested. Only reviewer note edited; no final implementation acceptance yet.
+
+## Quick Collect wrapper recheck —2026-11-21
+
+Inspected final build-collect-view structure and prefixed CSS. Inner build-summary-item groups primary tile and preview as one layout item while the info panel remains its original sibling; outer display:contents can no longer place preview in a separate grid column. Existing primary data-build-peek/ID/aria-controls and delegated click/focus handlers remain unchanged; preview links/details are siblings, not nested controls. No new structural/focus blocker found in source. Current browser must prove tile height/position stability, preview below tile and original info-panel activation after opening; prior successful surface run did not establish the later visual fix. No executed final result inferred until fresh frozen rerun. Reviewer note only.
+
+## FR02d/T008 final bounded disposition —2026-11-21
+
+- [x] Shared compact crafting previews accepted locally.
+
+PASS; CRAFTUSE-04 closed and no remaining actionable blocker in reviewed five-surface implementation. Typed/scoped fallback preserves native/private destinations; eight-chip cap and explicit full-products link retain access to complete direct uses. Same Inventory cell moves into visible identity area without duplicate column, nested controls or replacing input nodes. Quick Collect inner wrapper keeps tile+preview one grid child and info-panel sibling/control identity unchanged. Pure display does not change planner/private state.
+
+Directly read frozen096-preview-browser.log all15 surface×engine terminals PASS: dashboard, Quick Collect, Inventory, upgrades and item directory in Chromium/Firefox/WebKit, native keyboard/capped/private links, primary actions,390px and exact unchanged profile. Inspected geometry assertions tile<150px, before/after height stable and preview below tile. Read35/35 affected runtime (including typed fallback and author CSS MIME),4/4 final preview domain, current2108+404 guide/eight-entry map builds, formatPASS and repository0. Viewed final Chromium Quick Collect390px screenshot: compact primary tiles remain side by side, preview below with readable output names and no stretched tile. Earlier hidden-Inventory and stretched-tile attempts remain historical failures, not the final tested state.
+
+Parent-executed receipts independently inspected, not reviewer-run broad suites. Overlapping35/4 tests are not added into a fabricated aggregate total. Earlier096/095 broad/package results remain historical; no new remote CI, data/source ownership, merge or publication approval. Parent retains artifact deduplication/tasks/docs/local-readiness delivery. Only reviewer-owned review.md edited.

@@ -1,7 +1,8 @@
+import { renderCraftPreview } from "../ui/crafting-preview.mjs";
 import { escapeHTML as esc } from "../ui/render.mjs";
 const n = (v) => (v == null ? "Review" : Number(v).toLocaleString("en-US"));
-export function buildRow(row) {
-  return `<li class="collect-row build-ingredient" data-collect-row="${esc(row.id)}" data-covered="${row.remaining === 0}"><div class="collect-icon" data-inventory-icon="${esc(row.id)}" data-icon-status="missing">◇</div><a class="build-ingredient-name" href="/local/?pack=${encodeURIComponent(row.packId)}&amp;id=${encodeURIComponent(row.id)}" title="Owned ${row.held == null ? "not entered (assumed 0)" : n(row.held)}; required ${n(row.required)}">${esc(row.name)}</a><strong data-collect-remaining aria-label="${esc(n(row.remaining))} still needed" title="Still needed${row.minimum ? "; minimum only" : ""}">${row.minimum && row.remaining != null ? "≥" : ""}${n(row.remaining)}</strong></li>`;
+export function buildRow(row, pack = null) {
+  return `<li class="collect-row build-ingredient" data-collect-row="${esc(row.id)}" data-covered="${row.remaining === 0}"><div class="collect-icon" data-inventory-icon="${esc(row.id)}" data-icon-status="missing">◇</div><div class="build-ingredient-label"><a class="build-ingredient-name" href="/local/?pack=${encodeURIComponent(row.packId)}&amp;id=${encodeURIComponent(row.id)}" title="Owned ${row.held == null ? "not entered (assumed 0)" : n(row.held)}; required ${n(row.required)}">${esc(row.name)}</a>${renderCraftPreview(pack, row.id)}</div><strong data-collect-remaining aria-label="${esc(n(row.remaining))} still needed" title="Still needed${row.minimum ? "; minimum only" : ""}">${row.minimum && row.remaining != null ? "≥" : ""}${n(row.remaining)}</strong></li>`;
 }
 export function itemSummaryMarkup(
   rows,
@@ -25,7 +26,7 @@ export function itemSummaryMarkup(
       const count = recipeTotals ? r.required : r.remaining;
       const text = `${r.name}: ${n(r.required)} required; ${n(r.remaining)} missing; owned ${r.held == null ? "not entered" : n(r.held)}; ${item?.rarity || "rarity unknown"}`;
       const panel = `${key}-peek-${index}`;
-      return `<div class="build-summary-entry"><button type="button" class="build-summary-tile" data-build-peek="${esc(r.id)}" data-rarity="${rarity}" data-covered="${r.remaining === 0}" aria-expanded="false" aria-controls="${panel}" aria-label="${esc(text)}" title="${esc(text)}"><span data-inventory-icon="${esc(r.id)}" data-icon-status="missing" aria-hidden="true">◇</span><span class="build-summary-name">${esc(r.name)}</span><strong>${r.minimum && count != null ? "≥" : ""}${n(count)}</strong>${recipeTotals ? `<small class="build-summary-missing">${n(r.remaining)} missing</small>` : ""}</button><div id="${panel}" class="build-summary-info" data-build-info="${esc(r.id)}" hidden><strong>${esc(r.name)}</strong><button type="button" data-build-peek-close aria-label="Close ingredient details">×</button><p>Required <b>${n(r.required)}</b> · Missing <b>${n(r.remaining)}</b> · Owned ${r.held == null ? "not entered (assumed 0)" : n(r.held)} · ${esc(item?.rarity || "Rarity unknown")}</p><small>${esc(describe(r))}</small><a href="/local/?pack=${encodeURIComponent(pack.id)}&amp;id=${encodeURIComponent(r.id)}">Item details</a></div></div>`;
+      return `<div class="build-summary-entry"><div class="build-summary-item"><button type="button" class="build-summary-tile" data-build-peek="${esc(r.id)}" data-rarity="${rarity}" data-covered="${r.remaining === 0}" aria-expanded="false" aria-controls="${panel}" aria-label="${esc(text)}" title="${esc(text)}"><span data-inventory-icon="${esc(r.id)}" data-icon-status="missing" aria-hidden="true">◇</span><span class="build-summary-name">${esc(r.name)}</span><strong>${r.minimum && count != null ? "≥" : ""}${n(count)}</strong>${recipeTotals ? `<small class="build-summary-missing">${n(r.remaining)} missing</small>` : ""}</button>${renderCraftPreview(pack, r.id)}</div><div id="${panel}" class="build-summary-info" data-build-info="${esc(r.id)}" hidden><strong>${esc(r.name)}</strong><button type="button" data-build-peek-close aria-label="Close ingredient details">×</button><p>Required <b>${n(r.required)}</b> · Missing <b>${n(r.remaining)}</b> · Owned ${r.held == null ? "not entered (assumed 0)" : n(r.held)} · ${esc(item?.rarity || "Rarity unknown")}</p><small>${esc(describe(r))}</small><a href="/local/?pack=${encodeURIComponent(pack.id)}&amp;id=${encodeURIComponent(r.id)}">Item details</a></div></div>`;
     })
     .join("");
   return `<section class="build-summary" aria-label="${esc(title)}"><h2>${esc(title)} <small>${rows.length} types</small></h2><div class="build-summary-grid">${tiles}</div>${rows.length ? "" : "<small>No outstanding items in this section.</small>"}</section>`;
@@ -36,7 +37,7 @@ export function buildGroupsMarkup(model, pack, amounts, busy, open) {
   if (!model.groups.length)
     return "<small>Select items in Inventory to see their ingredients here.</small>";
   const rows = (list, key) =>
-    `<ul class="quick-collect-list">${list.map((r) => buildRow({ ...r, packId: pack.id }, key, amounts, busy)).join("")}</ul>`;
+    `<ul class="quick-collect-list">${list.map((r) => buildRow({ ...r, packId: pack.id }, pack)).join("")}</ul>`;
   const alternatives = (list, key, id) =>
     list.length
       ? `<details class="build-secondary" data-build-alternatives="${esc(id)}"${open.get("alt:" + id) ? " open" : ""}><summary>Craft these ingredients instead</summary>${rows(list, key)}</details>`

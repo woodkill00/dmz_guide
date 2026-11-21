@@ -178,6 +178,8 @@ export function compactInventoryRows() {
     entry.dataset.quickRow = "true";
     const row = entry.querySelector(".inventory-row"),
       detail = entry.querySelector(".inventory-details");
+    const craftPreview = row.querySelector(":scope > .inventory-craft-preview");
+    if (craftPreview) row.querySelector(".inventory-name").append(craftPreview);
     const advanced = document.createElement("div");
     advanced.className = "tracker-inventory-math";
     for (const cell of [...row.children]) {

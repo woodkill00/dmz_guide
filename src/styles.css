@@ -1,4 +1,5 @@
 @import "./ui/layout-tokens.css";
+@import "./ui/crafting-preview.css";
 .build-target-choice {
   min-width: 0;
   padding: 0.25rem;

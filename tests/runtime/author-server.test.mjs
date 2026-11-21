@@ -436,6 +436,11 @@ test("Studio image semantics module is available through real author HTTP allowl
 });
 test("095 Studio serves every shared navigation dependency with its correct MIME type", async (t) => {
   const { app } = await fixture(t);
+  const previewCSS = await fetch(
+    app.url + "/assets/src/ui/crafting-preview.css",
+  );
+  assert.equal(previewCSS.status, 200);
+  assert.match(previewCSS.headers.get("content-type"), /css/);
   for (const [path, type] of [
     ["map-routes.mjs", "javascript"],
     ["local-services.mjs", "javascript"],
