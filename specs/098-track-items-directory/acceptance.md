@@ -1,0 +1,11 @@
+# Acceptance
+
+2026-11-21, Windows/Node24.15.0. Local read-only /track/items/ directory and registry-owned Items tracking tab. Existing /items/ reference directory and profile formats remain separate.
+
+- Starter coverage303 visible item identities exactly once: Common16, Uncommon29, Rare29, Epic25, Legendary23, Ultra137, Not recorded44. All names sorted within their recorded section; no rarity or identity inferred/merged. Other recorded rarities remain independent. Grouping rejects duplicate IDs and projects only guarded public ID/name/category, preventing hidden rarity metadata from entering the view.
+- `098-runtime.log`:18/18 affected domain, tracker, navigation and current-build topology tests passed. Default source pack and safe fake fixtures tested without mutating catalog data. Tracker destinations resolve by feature ID, with seven tabs and parent planner access; Weapons retains its acquisition fragment/separate context.
+- `098-browser.log`: Chromium/Firefox/WebKit passed303-item exact coverage, rarity/name ordering, search, multiple independently collapsed groups, catalog selection/private item links, Inventory/Quick Collect/parent Track→Items,390px no horizontal overflow or fragmented tab labels, and no directory profile/armory database creation. Chromium with JavaScript disabled also shows all303 default items.
+- `098-build.log`:2,109 guide routes plus404; `098-map-build.log`:eight-entry namespaced map refreshed for shared navigation source. Final full format check passed and structural checks0; current feature inventory regenerated without altering071 baseline identities. Local4173 reports ready/maps true.
+- Latest mobile screenshot inspected: readable two-row tracker tabs, compact catalog controls, visible rarity heading/count and item icons/names. Search hides/shows already ordered rows, preserving native click stability. Existing small Used to craft previews remain available; no ownership/quantity forms or automatic private profile initialization added.
+
+No source collection, new game facts/assets, saved inventory changes, broad CI/package proof or public deployment claimed. Reviewer-owned final disposition is in review.md. Ordinary build module registration was required for the new feature page; route coverage was verified in actual output, not assumed from the registry alone.

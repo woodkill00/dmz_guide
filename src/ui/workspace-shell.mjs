@@ -26,6 +26,7 @@ export function featureHub(feature) {
       "dmz-fob",
       "planner",
       "inventory",
+      "track-items",
       "collection",
       "needed",
       "quick-collect",

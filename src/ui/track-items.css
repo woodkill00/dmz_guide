@@ -1,0 +1,86 @@
+.track-items-directory {
+  min-width: 0;
+  max-width: 70rem;
+}
+.track-items-directory .filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.track-items-directory .filter-bar label {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+.track-items-directory select,
+.track-items-directory input {
+  width: 100%;
+  max-width: 100%;
+}
+.track-rarity-group {
+  margin-block: 0.6rem;
+  border: 1px solid var(--line, #69736a);
+  border-radius: 0.5rem;
+}
+.track-rarity-group > summary {
+  padding: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.track-rarity-group > summary span {
+  font-weight: 400;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+.track-rarity-group > ul {
+  list-style: none;
+  padding: 0 0.6rem;
+  margin: 0;
+}
+.track-item-row {
+  border-top: 1px solid var(--line, #39413d);
+  padding: 0.4rem 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.track-item-row > div > small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin-left: 2.2rem;
+}
+.track-item-row > div > .item-craft-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem;
+  min-height: 2.75rem;
+  max-width: 100%;
+  text-decoration: none;
+  font-weight: 600;
+}
+.track-item-row > div > .item-craft-button .item-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: 0 0 1.75rem;
+  overflow: hidden;
+}
+.track-item-row .item-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.track-item-row .item-art small {
+  display: none;
+}
+.track-items-directory a:focus-visible,
+.track-rarity-group > summary:focus-visible {
+  outline: 2px solid var(--accent, #b9d16e);
+  outline-offset: 2px;
+}
+.track-item-row[hidden],
+.track-rarity-group[hidden] {
+  display: none;
+}

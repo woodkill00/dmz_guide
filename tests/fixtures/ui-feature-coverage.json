@@ -1,13 +1,20 @@
 {
   "source": "src/ui/feature-registry.mjs",
-  "head": "c199b7f097050222c1240f7263ad85d0f846fa2c",
+  "head": "fc3daea7d079db3098d7c961e038f5d61a10d2d5",
   "hashes": {
-    "src/ui/feature-registry.mjs": "a1e33093ecab23675478e24141a67b11c452f43a713735d565e7e3c67847331a",
+    "src/ui/feature-registry.mjs": "36c54ce21863d1753b2e6ab1f5cc40d261e2a6e061f7105393344b247aacb4b5",
     "src/ui/map-destinations.json": "7eda40618c784083b520f1ad9c356fe3d284ce83a394389f9d6527beb7da85f0",
     "specs/071-ui-ux-implementation/feature-coverage.md": "3d4511eb0781dfc70cfddac5d2423913ec442a109c6dc84306e5e8f9e9b16add"
   },
-  "count": 88,
+  "count": 89,
   "features": [
+    {
+      "id": "track-items",
+      "label": "Items by rarity",
+      "kind": "guide",
+      "path": "/track/items/",
+      "group": "Prepare"
+    },
     {
       "id": "field-desk",
       "label": "Field desk",

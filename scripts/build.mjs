@@ -208,6 +208,7 @@ async function generate(dist) {
     "collection-page",
     "needed-page",
     "quick-collect-page",
+    "track-items-page",
     "x01-printer-page",
     "features",
     "editor-page",

@@ -20,6 +20,15 @@ export const navigationConfig = {
     { key: "Reference", id: "reference", label: "Reference" },
     { key: "Manage", id: "manage", label: "Manage" },
   ],
+  trackerTabs: [
+    { id: "inventory", label: "Inventory" },
+    { id: "track-items", label: "Items" },
+    { id: "armory-workbench", label: "Weapons", hash: "acquisition" },
+    { id: "upgrades", label: "Upgrades" },
+    { id: "needed", label: "Needed" },
+    { id: "quick-collect", label: "Quick collect" },
+    { id: "field-desk", label: "Field desk" },
+  ],
   modernPrimary: [
     "home",
     "hajin-map",
@@ -59,6 +68,7 @@ export function validateNavigationConfig(config) {
     throw Error("Modern navigation feature identities must be unique");
   for (const [rows, identity] of [
     [config.primary, "id"],
+    [config.trackerTabs, "id"],
     [config.groups, "key"],
     [config.hubs, "key"],
   ]) {
@@ -93,6 +103,13 @@ export const navigationGroup = (key, config = navigationConfig) =>
 
 export const featureGroups = navigationConfig.groups.map((group) => group.key);
 const rows = [
+  [
+    "track-items",
+    "Items by rarity",
+    "Prepare",
+    "/track/items/",
+    "All recorded items, grouped by rarity and sorted alphabetically",
+  ],
   [
     "field-desk",
     "Field desk",
