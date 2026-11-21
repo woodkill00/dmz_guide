@@ -10,3 +10,9 @@
 - Formatting, structural and diff checks recorded in096-format.log and096-structure.log. No public deployment, provider scrape, new asset, schema change, planner allocation change or saved-inventory edit.
 
 Implementation review found CRAFTUSE01/02; fixes use retained maximum versus consumed sum and show reported DMZ access levels. Source station is unknown unless recorded; X01 remains separately labeled as carried materials. Final independent disposition is authoritative in review.md.
+
+## Requested icon-button refinement
+
+FR02b: output, recipe and ingredient links in the crafting section now use compact button-style anchors with the existing item-icon loader/fallback and visible item name. Recipe buttons use their output-item icon. Icon decoration stays outside the accessible name. Loader avoids injecting a source hyperlink inside existing navigation links; item-page source attribution stays available. Keyboard focus and original relative/private URLs remain intact.
+
+`096-buttons-runtime.log`23/23 affected tests passed, including full protected-title regression after reviewer CRAFTUSE03. `096-buttons-domain.log`7/7 passed (overlapping scope). Current rebuilt `096-buttons-browser.log` passes303-page/490-edge audit and all three engines: button icons hydrate, no nested anchors, clicking actual icon opens the exact item, keyboard/source/X01/private links and390px layout remain correct. Rebuilt guide2108routes and all8mapentries; formatting/structure/diff receipts in096-buttons-* logs. No recipe, profile or game-data changes. Reviewer disposition in review.md.

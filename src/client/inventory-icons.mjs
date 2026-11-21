@@ -190,7 +190,7 @@ export async function hydrateInventoryIcons(
               img.naturalHeight !== job.asset.height
             )
               throw Error("Icon dimensions mismatch");
-            if (job.asset.sourcePage && !cell.closest("button")) {
+            if (job.asset.sourcePage && !cell.closest("a, button")) {
               const link = document.createElement("a");
               link.href = job.asset.sourcePage;
               link.target = "_blank";

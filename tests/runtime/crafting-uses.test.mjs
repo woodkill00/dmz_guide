@@ -9,9 +9,12 @@ import {
   craftingInputAmounts,
   craftReferenceAnchor,
 } from "../../src/domain/crafting-uses.mjs";
-import { renderCraftingUses } from "../../src/ui/crafting-uses.mjs";
+import {
+  renderCraftingUses,
+  craftingItemLink,
+} from "../../src/ui/crafting-uses.mjs";
 import { itemUses } from "../../src/domain/item-uses.mjs";
-import { recordUrl } from "../../src/ui/render.mjs";
+import { recordUrl, allRecords, renderDetail } from "../../src/ui/render.mjs";
 const fixture = () => ({
   id: "fixture:craft",
   contentVersion: "1",
@@ -33,6 +36,23 @@ const recipe = (id, quantity = 2) => ({
   output: { itemId: "c", quantity: 1 },
   station: "Fixture station",
   prerequisites: [],
+});
+
+test("crafting buttons use output-item icons for recipes and preserve accessible names and private links", () => {
+  const p = fixture(),
+    r = recipe("r");
+  p.recipes = [r];
+  const html = craftingItemLink(
+    { ...r, recordType: "recipe" },
+    p,
+    (row) => `/local/?id=${row.id}`,
+  );
+  assert.ok(html.includes('class="item-craft-button"'));
+  assert.ok(html.includes('data-inventory-icon="c"'));
+  assert.ok(!html.includes('data-inventory-icon="r"'));
+  assert.ok(html.includes('aria-hidden="true"'));
+  assert.ok(html.includes('href="/local/?id=r"'));
+  assert.ok(html.includes("<span>r</span>"));
 });
 
 test("exact methods merge; differing costs, contexts, other inputs and prerequisites remain distinct", () => {
@@ -257,4 +277,21 @@ test("hostile labels escape and item/recipe links use current private/preview ca
   assert.ok(html.includes('href="/local/?pack=fixture&amp;id=r"'));
   assert.ok(html.includes("&lt;img"));
   assert.ok(!html.includes("<img src=x"));
+});
+
+test("producing recipe buttons preserve protected-title masking", () => {
+  const pack = loadFixturePack("official-starter");
+  pack.items.push({
+    ...pack.items[0],
+    id: "fixture:hidden",
+    name: "Hidden Pattern",
+    spoiler: true,
+  });
+  pack.recipes[0].name = "Print Hidden Pattern";
+  const item = allRecords([pack]).find(
+    (r) => r.id === pack.recipes[0].output.itemId,
+  );
+  const html = renderDetail(item, [pack]);
+  assert.ok(html.includes("item-craft-button"));
+  assert.ok(!html.includes("Hidden Pattern"));
 });

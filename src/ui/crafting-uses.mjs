@@ -4,6 +4,7 @@ import {
   craftingInputAmounts,
   craftReferenceAnchor,
 } from "../domain/crafting-uses.mjs";
+import { itemIcon } from "./item-workspace.mjs";
 const cache = new WeakMap();
 const esc = (value) =>
   String(value ?? "").replace(
@@ -21,11 +22,32 @@ const context = (method) =>
     : method.kind === "x01"
       ? method.station
       : `${method.kind === "blueprint" ? "Blueprint" : "Crafting"} reference · station not recorded`;
+export function craftingItemLink(
+  item,
+  pack,
+  referenceURL,
+  { hash = "", label = item.name } = {},
+) {
+  const type =
+    item.recordType ||
+    (pack.recipes.includes(item)
+      ? "recipe"
+      : pack.objectives.includes(item)
+        ? "objective"
+        : "item");
+  const iconItem =
+    type === "recipe"
+      ? pack.items.find((row) => row.id === item.output?.itemId)
+      : type === "item"
+        ? item
+        : null;
+  return `<a${iconItem ? ' class="item-craft-button"' : ""} href="${esc(referenceURL({ ...item, recordType: type, pack }) + hash)}">${iconItem ? itemIcon({ ...iconItem, pack }).replace("<span ", '<span aria-hidden="true" ') : ""}<span>${esc(label)}</span></a>`;
+}
 export function renderCraftingUses(record, pack, referenceURL) {
   if (!cache.has(pack)) cache.set(pack, buildCraftingUses(pack));
   const index = cache.get(pack);
   const link = (item, hash = "", label = item.name) =>
-    `<a href="${esc(referenceURL({ ...item, recordType: item.recordType || (pack.recipes.includes(item) ? "recipe" : pack.objectives.includes(item) ? "objective" : "item"), pack }) + hash)}">${esc(label)}</a>`;
+    craftingItemLink(item, pack, referenceURL, { hash, label });
   const shown = (methods) =>
     visibleCraftingMethods(pack, methods || [], !!record.spoiler);
   const grouped = new Map();

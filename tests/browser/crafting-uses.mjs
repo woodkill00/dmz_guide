@@ -48,6 +48,28 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     });
     await page.goto(new URL(ingredient, base).href);
     const uses = page.locator("[data-crafting-uses]");
+    assert.equal(
+      await uses
+        .locator(
+          "[data-craft-output] > strong > a.item-craft-button > [data-inventory-icon]",
+        )
+        .count(),
+      5,
+    );
+    await page.waitForFunction(
+      () =>
+        document.querySelectorAll(".item-craft-button .item-art img").length >
+        0,
+      {},
+      { timeout: 20000 },
+    );
+    assert.equal(await page.locator(".item-craft-button a").count(), 0);
+    const product = uses.locator("[data-craft-output] > strong > a").first();
+    const productPath = new URL(await product.getAttribute("href"), base)
+      .pathname;
+    await product.locator(".item-art").click();
+    await page.waitForURL((url) => url.pathname === productPath);
+    await page.goto(new URL(ingredient, base).href);
     assert.equal(await uses.locator("[data-craft-output]").count(), 5);
     const summary = uses.locator(":scope > summary");
     await summary.focus();

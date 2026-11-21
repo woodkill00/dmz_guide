@@ -196,6 +196,44 @@
   display: grid;
   gap: 0.5rem;
 }
+.item-workspace a.item-craft-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+  min-height: 2.75rem;
+  padding: 0.3rem 0.6rem;
+  margin-block: 0.2rem;
+  border: 1px solid var(--border, #69736a);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, currentColor 5%, transparent);
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.item-craft-button:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+.item-craft-button:focus-visible {
+  outline: 2px solid var(--accent, #b9d16e);
+  outline-offset: 3px;
+}
+.item-craft-button .item-art {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  border-radius: 0.25rem;
+}
+.item-craft-button .item-art > span {
+  font-size: 0.8rem;
+}
+.item-craft-button .item-art small {
+  font-size: 0.45rem;
+}
+.item-craft-button > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 .item-craft-products > li {
   padding: 0.5rem 0;
   border-bottom: 1px solid var(--border, #39413d);
