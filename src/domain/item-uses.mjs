@@ -1,6 +1,7 @@
 import { requirementFacts } from "../content/validate.mjs";
 import { spoilerGuard } from "./progression.mjs";
 import { isObjectiveCompleted } from "./upgrade-progress.mjs";
+import { buildCraftingUses } from "./crafting-uses.mjs";
 const cache = new WeakMap();
 const missionTracks = new Set([
   "dmz-order",
@@ -37,6 +38,20 @@ function indexFor(pack) {
         .get(input.itemId)
         .recipes.push({ record: recipe, role, dependencies });
       index.get(input.itemId).crafts.push({ record: output, dependencies });
+    }
+  }
+  // Informational output links include captured blueprint/X01 references too.
+  // They do not become executable recipes or alter requirement forecasts.
+  for (const [itemId, methods] of buildCraftingUses(pack).uses) {
+    for (const method of methods.filter((row) => row.kind !== "catalog")) {
+      index.get(itemId).crafts.push({
+        record: method.output,
+        dependencies: [
+          method.output,
+          ...method.inputs.map((row) => row.record),
+          ...method.prerequisites.map((row) => row.record),
+        ],
+      });
     }
   }
   for (const objective of pack.objectives || []) {

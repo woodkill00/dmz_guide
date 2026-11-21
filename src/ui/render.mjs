@@ -1,4 +1,5 @@
 import { servicePath } from "../domain/local-services.mjs";
+import { renderCraftingUses } from "./crafting-uses.mjs";
 import {
   renderPageComposition,
   pageProjectionParts,
@@ -401,7 +402,6 @@ export function renderDetail(
       rows.length
         ? `<details class="item-use-group"><summary>${e(title)} (${rows.length})</summary><ul class="item-use-list">${[...new Map(rows.map((r) => [r.id, r])).values()].map((r) => `<li>${ref(r.id)}</li>`).join("")}</ul></details>`
         : "";
-    const crafting = uses.filter((r) => r.recordType === "recipe");
     const upgrades = uses.filter(
       (r) => r.recordType === "objective" && r.track === "dmz-upgrade",
     );
@@ -410,11 +410,12 @@ export function renderDetail(
     );
     const actualLocations = locations.filter((r) => !r.spoiler);
     detail += `<section id="item-crafting" tabindex="-1" class="panel item-crafting"><h2>Crafting</h2>${
-      list(
-        "Recipes making this item",
-        produces.filter((r) => !r.spoiler),
-      ) || "<p>No crafting recipe recorded.</p>"
-    }${list("Used to craft", crafting)}</section><section id="item-uses" tabindex="-1" class="panel item-uses"><h2>Item uses</h2>${list("Missions", missions)}${list("Upgrades", upgrades)}${list("Mapped locations", actualLocations)}${!uses.length && !produces.length ? "<p>No crafting or mission uses recorded.</p>" : ""}<p><a href="${e(readerHref(`/local/?pack=${encodeURIComponent(pack.id)}&id=${encodeURIComponent(record.id)}`))}">Track inventory and upgrade progress</a></p></section>`;
+      renderCraftingUses(record, pack, referenceURL) +
+        list(
+          "Recipes making this item",
+          produces.filter((r) => !r.spoiler),
+        ) || "<p>No crafting recipe recorded.</p>"
+    }</section><section id="item-uses" tabindex="-1" class="panel item-uses"><h2>Item uses</h2>${list("Missions", missions)}${list("Upgrades", upgrades)}${list("Mapped locations", actualLocations)}${!missions.length && !upgrades.length && !actualLocations.length ? "<p>No other mission, upgrade or mapped-location uses recorded.</p>" : ""}<p><a href="${e(readerHref(`/local/?pack=${encodeURIComponent(pack.id)}&id=${encodeURIComponent(record.id)}`))}">Track inventory and upgrade progress</a></p></section>`;
   }
 
   if (record.stats && (record.recordType !== "item" || record.stats.length))

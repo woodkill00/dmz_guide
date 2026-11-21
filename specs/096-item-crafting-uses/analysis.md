@@ -1,0 +1,7 @@
+# Analysis
+
+Initial implementer assessment: requirements cover catalog, reported blueprint and X01 edges; direct-only scope avoids changing planner semantics. Main risks: unmapped provider IDs, same output with differing recipes, source-only links without public anchors, spoiler leakage through other inputs. Domain audit and view guards must cover these explicitly. All evidence remains pack-scoped. Independent plan review pending.
+
+Convergence: independent plan review accepted the bounded design. Implementation review found retained-tool summation and missing source DMZ access labels; both fixed with regressions. Source-only unknown stations are labeled unknown rather than assumed FOB. Exhaustive audit exposed19 identity-only blueprints with no recipe endpoints; recorded separately from490 resolved ingredient edges. Final generated-page/link/three-engine evidence in acceptance.md and review.md; no remaining implementer-known gap in recorded-edge scope.
+
+Independent plan review accepted; see review.md. Implementation analysis resolved fragment escaping with ASCII hex anchors; equivalent methods include full requirements, context, access and prerequisites, and all merged reference endpoints participate in spoiler filtering. Informational inventory output links extended without changing planner recipes. Bundled audit currently303 items/209 methods/490 edges, zero unresolved; execution receipts follow acceptance. No new game facts or source collection.

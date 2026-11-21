@@ -190,6 +190,32 @@
   margin: 0.35rem 0;
   padding-left: 1.25rem;
 }
+.item-craft-products {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.item-craft-products > li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border, #39413d);
+  overflow-wrap: anywhere;
+}
+.item-craft-products ul {
+  padding-left: 1rem;
+  margin: 0.25rem 0;
+}
+.item-craft-products li + li {
+  margin-top: 0.25rem;
+}
+.item-craft-references > section {
+  scroll-margin-top: 5rem;
+  padding: 0.5rem 0;
+}
+.item-craft-references > section:target {
+  outline: 2px solid var(--accent, #b9d16e);
+  outline-offset: 0.25rem;
+}
 .item-workspace .item-use-list a {
   display: inline-block;
   padding: 0.5rem 0.15rem;

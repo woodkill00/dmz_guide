@@ -111,6 +111,7 @@ async function render() {
     markup = `<p class="item-local-context">Saved catalog view · <a href="/local/?pack=${encodeURIComponent(state.pack.id)}">All local records</a></p>`;
   if (chosen) {
     const detailMarkup = renderDetail(chosen, [state.pack], {
+      referenceURL: link,
       authorActions:
         !chosen.spoiler || state.profile.spoilers
           ? `<aside class="record-author-actions" aria-label="Page editing">${repositoryTarget ? `<a class="button primary" data-compose-record href="${esc(servicePath("author", "/?" + new URLSearchParams(repositoryTarget)))}">Edit page</a><a class="button" data-repository-reference href="${esc(recordUrl(chosen))}">${focusedItem ? "Repository item &amp; photo actions" : "Repository reference page"}</a>` : "<p>Private-only record · no repository editor target.</p>"}<a class="button" data-private-edit href="/editor/?pack=${encodeURIComponent(state.pack.id)}&amp;record=${encodeURIComponent(chosen.id)}">${focusedItem ? "Edit private item &amp; pictures" : "Edit private copy"}</a><small>${repositoryTarget ? "Edit page saves repository content through the local author service. " : ""}Private-copy edits and player progress stay separate.</small></aside>`

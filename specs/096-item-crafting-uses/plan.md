@@ -1,0 +1,9 @@
+# Implementation plan
+
+Manual pinned Spec Kit lifecycle artifacts; no CLI/skill execution claimed. Constitution unchanged. Pure domain reverse index per pack plus captured reference adapters, rendered within existing item Crafting section. Static build, live/private detail render and author preview share renderDetail. ReferenceURL callback owns internal links; source-only method links target an existing source-reference section on the output item. External evidence URLs come from bundled source metadata. X01 stays outside planner recipes.
+
+Dependencies: FR01 domain before FR02 view; FR03/04 guard both. No schema, profile, API, ownership or pack identity migration. Touched areas: new crafting-use domain/view/tests, renderDetail integration, item workspace CSS only as needed. Existing producing-recipe links and upgrade/mission lists retained. Audit discrepancies explicitly instead of changing game data automatically.
+
+Inventory's existing informational crafting-output links also use the reverse adapters for reported blueprint/X01 outputs; executable recipe lists and planner forecasts stay unchanged. Private item rendering passes its existing local-link callback so related custom records remain in their saved pack. Fragment anchors use deterministic ASCII hex IDs so all browser engines find the same target without URI decoding mismatch.
+
+Verification: meaningful domain cases plus complete bundled edge audit, affected item/intel/spoiler tests, build and three-engine local item navigation at desktop/mobile. Refresh unified map artifact if shared source fingerprint changes; restart only verified owned service if necessary. Independent analysis/review before completion. No automatic source import or collection, and no public deploy.
