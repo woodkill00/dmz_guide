@@ -29,8 +29,16 @@ import {
   bytesFromBase64,
   hashBytes,
 } from "../content/portable.mjs";
-const { db, refs, metrics, codmunity, codMetrics, camoProgress, camoWeapons } =
-  JSON.parse(document.querySelector("#armory-public-data").textContent);
+const {
+  db,
+  refs,
+  metrics,
+  codmunity,
+  codMetrics,
+  camoProgress,
+  camoWeapons,
+  acquisitionWeapons,
+} = JSON.parse(document.querySelector("#armory-public-data").textContent);
 const $ = (s) => document.querySelector(s),
   e = (v) =>
     String(v ?? "").replace(
@@ -79,7 +87,9 @@ const camoPreview = acquisitionCamoController(
 const today = () => new Date().toISOString().slice(0, 10),
   newId = () => crypto.randomUUID();
 const name = (id) =>
-  db.weapons.find((w) => w.id === id)?.name || `Archived weapon: ${id}`;
+  acquisitionWeapons.find((w) => w.id === id)?.name ||
+  db.weapons.find((w) => w.id === id)?.name ||
+  `Archived weapon: ${id}`;
 let workspace = emptyArmory(),
   previous = null,
   unsaved = null,
@@ -663,16 +673,18 @@ function acquisitionRoster() {
   const root = $("#acquisition-roster");
   if (!root) return;
   if (!root.children.length) {
-    const categories = [...new Set(db.weapons.map((w) => w.category))].sort();
+    const categories = [
+      ...new Set(acquisitionWeapons.map((w) => w.category)),
+    ].sort();
     root.innerHTML = categories
       .map(
         (category) =>
-          `<details class="tracker-weapon-group" open data-weapon-category="${e(category)}"><summary>${e(category.replaceAll("-", " "))}</summary>${db.weapons
+          `<details class="tracker-weapon-group" open data-weapon-category="${e(category)}"><summary>${e(category.replaceAll("-", " "))}</summary>${acquisitionWeapons
             .filter((w) => w.category === category)
             .sort((a, b) => a.name.localeCompare(b.name))
             .map(
               (w) =>
-                `<div class="tracker-weapon-row" data-acquisition-weapon="${e(w.id)}"><a href="/armory/${encodeURIComponent(w.id)}/">${e(w.name)}</a><label><input type="checkbox" data-roster-manual="${e(w.id)}" aria-label="Manual found: ${e(w.name)}">Manual found</label><small data-acquisition-counts></small><button type="button" data-inspect-acquisition="${e(w.id)}">Attachments / blueprints</button>${acquisitionCamoIcons(camoWeapons.find((c) => c.id === w.id))}${acquisitionCamoPanel(camoWeapons.find((c) => c.id === w.id))}</div>`,
+                `<div class="tracker-weapon-row" data-acquisition-weapon="${e(w.id)}"><a href="${db.weapons.some((combat) => combat.id === w.id) ? `/armory/${encodeURIComponent(w.id)}/` : `/armory/acquisition/?weapon=${encodeURIComponent(w.id)}#weapon-${encodeURIComponent(w.id)}`}">${e(w.name)}</a><label><input type="checkbox" data-roster-manual="${e(w.id)}" aria-label="Manual found: ${e(w.name)}">Manual found</label><small data-acquisition-counts></small><button type="button" data-inspect-acquisition="${e(w.id)}">Attachments / blueprints</button>${acquisitionCamoIcons(camoWeapons.find((c) => c.id === w.id))}${acquisitionCamoPanel(camoWeapons.find((c) => c.id === w.id))}</div>`,
             )
             .join("")}</details>`,
       )
@@ -684,7 +696,7 @@ function acquisitionRoster() {
     show = $("#acquisition-show").value;
   let count = 0;
   for (const row of root.querySelectorAll("[data-acquisition-weapon]")) {
-    const weapon = db.weapons.find(
+    const weapon = acquisitionWeapons.find(
         (w) => w.id === row.dataset.acquisitionWeapon,
       ),
       entry = workspace.acquisition[weapon.id] || {
@@ -707,7 +719,7 @@ function acquisitionRoster() {
       ...group.querySelectorAll("[data-acquisition-weapon]"),
     ].some((row) => !row.hidden);
   $("#acquisition-count").textContent =
-    `${count} matching weapons � ${db.weapons.filter((w) => workspace.acquisition[w.id]?.manual).length} manuals found`;
+    `${count} matching weapons � ${acquisitionWeapons.filter((w) => workspace.acquisition[w.id]?.manual).length} manuals found`;
 }
 for (const id of ["acquisition-query", "acquisition-class", "acquisition-show"])
   $("#" + id)?.addEventListener(
@@ -785,7 +797,7 @@ function tracker() {
   $("#acquisition-links").innerHTML =
     `<p><a href="https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-dmz-how-to-play-forward-operating-base-guide" target="_blank" rel="noopener noreferrer">Official DMZ acquisition / Gunsmith guide</a> · <a href="/maps/">Map references</a></p>${related.length ? `<ul>${related.map((r) => `<li><a href="${e(r.url)}">${e(r.name)}</a> · ${e(r.type)} · ${e(r.scope)}</li>`).join("")}</ul>` : "<p>No sourced weapon-specific mission or location link is established in this checkout. Generic map access does not promise a manual drop.</p>"}`;
   const archived = Object.keys(workspace.acquisition).filter(
-      (id) => !db.weapons.some((w) => w.id === id),
+      (id) => !acquisitionWeapons.some((w) => w.id === id),
     ),
     missing = entry.attachments.filter((id) => !all.some((a) => a.id === id));
   $("#archived-references").textContent = [

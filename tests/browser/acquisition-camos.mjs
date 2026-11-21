@@ -1,7 +1,9 @@
+import { readWeaponAcquisition } from "../../src/content/weapon-acquisition.mjs";
 import assert from "node:assert/strict";
 import { chromium, firefox, webkit } from "playwright";
 import { readWeaponCamos } from "../../src/content/weapon-camos.mjs";
 import { readWeaponIntel } from "../../src/content/weapon-intel.mjs";
+const acquisition = await readWeaponAcquisition();
 const base = process.env.DMZ_SITE_URL || "http://127.0.0.1:4173";
 const catalog = await readWeaponCamos(),
   db = await readWeaponIntel();
@@ -28,7 +30,7 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
             document.querySelector("#weapon-acquisition").dataset.busy ===
               "false" && !document.querySelector("[data-manual]").disabled,
         );
-      const expected = path.includes("workbench") ? db.weapons.length : 35;
+      const expected = acquisition.weapons.length;
       assert.equal(
         await page.locator("[data-acquisition-camos]").count(),
         expected,
