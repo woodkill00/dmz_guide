@@ -12,7 +12,7 @@ export function renderTcnoItemIntel(
   record,
   pack,
   ref,
-  { omitDescription = false, mapAreas = "" } = {},
+  { omitDescription = false, mapAreas = "", omitCoveredRecipes = false } = {},
 ) {
   if (pack.id !== intel.packId || !record.sourceIds?.includes(intel.sourceId))
     return "";
@@ -31,7 +31,13 @@ export function renderTcnoItemIntel(
     })
     .join("");
   const unlocks = intel.unlocks.filter(
-    (u) => ids.includes(u.outputItemId) || ids.includes(u.id),
+    (u) =>
+      (ids.includes(u.outputItemId) || ids.includes(u.id)) &&
+      !(
+        omitCoveredRecipes &&
+        ["blueprint", "crafting"].includes(u.kind) &&
+        intel.mapping[u.outputItemId] === record.id
+      ),
   );
   const references = unlocks
     .map(
@@ -39,5 +45,5 @@ export function renderTcnoItemIntel(
         `<details><summary>${esc(u.name)} · ${esc(u.kind)}</summary><p>${u.dmzLevel ? `Reported DMZ level: ${esc(u.dmzLevel)}. ` : ""}${u.outputCount ? `Reported output: ${esc(u.outputCount)}. ` : ""}Source reference; ownership and crafting access are tracked separately.</p><h4>Listed requirements</h4><ul>${u.requirements?.map((r) => `<li>${itemLink(r.itemId)} × ${esc(r.amount)}</li>`).join("") || "<li>No requirements listed.</li>"}</ul><h4>FOB prerequisites</h4><ul>${u.requiredFobIds?.map((id) => `<li>${intel.upgradeMap[id] ? ref(intel.upgradeMap[id]) : esc(id) + " (not mapped)"}</li>`).join("") || "<li>No FOB prerequisite listed.</li>"}</ul></details>`,
     )
     .join("");
-  return `<section id="item-find" tabindex="-1" class="panel tcno-item-intel" data-item-source-intel><h2>Where to find</h2>${pack.guides.some((g) => g.id === LOOT_TYPES_INDEX) ? `<p class="loot-type-buttons">${ref(LOOT_TYPES_INDEX)}</p>` : ""}<p><a href="https://tools.tcno.co/dmz/fob">TroubleChute source</a> · checked ${esc(intel.reviewed)} · source-reported, current game build not independently verified.</p>${facts}${mapAreas}<details class="item-unlock-references"><summary>Source crafting &amp; unlock references (${unlocks.length})</summary>${references || "<p>No unlock reference listed for this item in the captured source.</p>"}</details></section>`;
+  return `<section id="item-find" tabindex="-1" class="panel tcno-item-intel" data-item-source-intel><h2>Where to find</h2>${pack.guides.some((g) => g.id === LOOT_TYPES_INDEX) ? `<p class="loot-type-buttons">${ref(LOOT_TYPES_INDEX)}</p>` : ""}<p><a href="https://tools.tcno.co/dmz/fob">TroubleChute source</a> · checked ${esc(intel.reviewed)} · source-reported, current game build not independently verified.</p>${facts}${mapAreas}${unlocks.length || !omitCoveredRecipes ? `<details class="item-unlock-references"><summary>${omitCoveredRecipes ? "Other unlock references" : "Source crafting &amp; unlock references"} (${unlocks.length})</summary>${references || "<p>No unlock reference listed for this item in the captured source.</p>"}</details>` : ""}</section>`;
 }

@@ -17,6 +17,15 @@ import {
 } from "../content/catalog-loader.mjs";
 
 let reader;
+function revealCraftingTarget() {
+  if (!/^#craft-reference-[a-f0-9]+$/.test(location.hash)) return;
+  const target = document.getElementById(location.hash.slice(1));
+  if (!target?.closest(".item-craft-references")) return;
+  for (let node = target; node; node = node.parentElement)
+    if (node.tagName === "DETAILS") node.open = true;
+}
+window.addEventListener("hashchange", revealCraftingTarget);
+revealCraftingTarget();
 let active = true;
 window.addEventListener("pagehide", () => {
   active = false;
@@ -77,6 +86,7 @@ async function publishedPack(id) {
   return (await reader).getPublished(id);
 }
 export async function enhanceItemWorkspace(pack, profile) {
+  revealCraftingTarget();
   if (!active) return;
   const workspace = document.querySelector("[data-item-workspace]");
   if (workspace) {

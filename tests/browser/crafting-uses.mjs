@@ -79,6 +79,8 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     assert.notEqual(await uses.getAttribute("open"), null);
     for (const prefix of ["source:", "x01:"]) {
       await page.goto(new URL(ingredient, base).href);
+      for (const menu of await page.locator(".item-craft-methods").all())
+        await menu.locator(":scope > summary").click();
       const method = page.locator(`[data-craft-method^="${prefix}"] a`).first();
       const href = await method.getAttribute("href");
       assert.ok(href.includes("#craft-reference-"));

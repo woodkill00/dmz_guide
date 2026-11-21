@@ -56,57 +56,54 @@ export function renderCraftingUses(record, pack, referenceURL) {
       grouped.set(method.output.id, { output: method.output, methods: [] });
     grouped.get(method.output.id).methods.push(method);
   }
-  const methodLink = (method) =>
-    method.recipe
-      ? link(method.recipe)
-      : link(
-          method.output,
-          `#${craftReferenceAnchor(method.id)}`,
-          method.label,
-        );
   const groups = [...grouped.values()].sort((a, b) =>
     a.output.name.localeCompare(b.output.name),
   );
-  const uses = `<details open class="item-craft-uses" data-crafting-uses><summary>Used to craft (${groups.length} items)</summary>${
+  const methodURL = (method) =>
+    method.recipe
+      ? referenceURL({ ...method.recipe, recordType: "recipe", pack })
+      : referenceURL({ ...method.output, recordType: "item", pack }) +
+        `#${craftReferenceAnchor(method.id)}`;
+  const uses = `<details open class="item-craft-uses" data-crafting-uses><summary>Used to craft (${groups.length})</summary>${
     groups.length
       ? `<ul class="item-craft-products">${groups
           .map(
             ({ output, methods }) =>
-              `<li data-craft-output="${esc(output.id)}"><strong>${link(output)}</strong><ul>${methods
+              `<li data-craft-output="${esc(output.id)}"><strong>${link(output)}</strong><details class="item-craft-methods"><summary>Recipes (${methods.length})</summary><ul>${methods
                 .map(
                   (method) =>
-                    `<li data-craft-method="${esc(method.id)}">${methodLink(method)} <span>· ${esc(context(method))}</span><br><small>This item: ${craftingInputAmounts(
+                    `<li data-craft-method="${esc(method.id)}"><a href="${esc(methodURL(method))}">${esc(context(method))}</a><small> ${craftingInputAmounts(
                       method,
                       record.id,
                     )
                       .map(
                         (input) =>
-                          `${esc(quantity(input.quantity))} · ${input.role === "consumed" ? "consumed" : input.role === "retained" ? "retained tool" : "listed requirement; consumption not recorded"}`,
+                          `${esc(quantity(input.quantity))}${input.role === "retained" ? " · retained tool" : input.role === "unknown" ? " · usage unverified" : ""}`,
                       )
                       .join("; ")}</small></li>`,
                 )
-                .join("")}</ul></li>`,
+                .join("")}</ul></details></li>`,
           )
           .join("")}</ul>`
-      : "<p>No direct crafting uses recorded in this catalog and its captured references.</p>"
-  }<small>Recorded recipes and source references. Access and blueprint ownership are separate; current-game coverage may be incomplete.</small></details>`;
-  const references = shown(index.produces.get(record.id)).filter(
-    (method) => !method.recipe,
-  );
-  const own = references.length
-    ? `<details open class="item-craft-references"><summary>Reported recipes for this item (${references.length})</summary>${references
+      : "<p>No crafting uses recorded.</p>"
+  }</details>`;
+  const methods = shown(index.produces.get(record.id));
+  const own = methods.length
+    ? `<section class="item-craft-references"><h3>Make this item</h3>${methods
         .map(
-          (method) =>
-            `<section id="${craftReferenceAnchor(method.id)}">${method.references
+          (method, index) =>
+            `<details class="item-craft-recipe" id="${craftReferenceAnchor(method.id)}"${index === 0 ? " open" : ""}><summary>${esc(context(method))}${method.outputQuantity == null ? "" : ` · output × ${esc(method.outputQuantity)}`}</summary>${method.references
               .slice(1)
               .map(
                 (ref) => `<span id="${craftReferenceAnchor(ref.id)}"></span>`,
               )
               .join(
                 "",
-              )}<h3>${esc(method.label)}</h3><p>${esc(context(method))} · Source-reported${["blueprint", "crafting"].includes(method.kind) ? (method.access == null ? " · DMZ level not recorded" : ` · Reported DMZ level ${esc(method.access)}`) : ""}${method.outputQuantity == null ? " · output amount not recorded" : ` · output × ${esc(method.outputQuantity)}`}.</p><ul>${method.inputs.map((input) => `<li>${input.record ? link(input.record) : "Unmapped ingredient"} ${esc(quantity(input.quantity))}</li>`).join("") || "<li>No requirements recorded; this does not establish a free craft.</li>"}</ul>${method.prerequisites.length ? `<p>FOB prerequisites: ${method.prerequisites.map((input) => (input.record ? link(input.record) : "Unmapped prerequisite")).join(", ")}</p>` : ""}${method.sourceURL ? `<p><a href="${esc(method.sourceURL)}" rel="noreferrer noopener">Recipe source ↗</a></p>` : ""}</section>`,
+              )}<ul class="item-craft-ingredients">${method.inputs.map((input) => `<li>${input.record ? link(input.record) : "Unmapped ingredient"} <strong>${esc(quantity(input.quantity))}</strong></li>`).join("") || "<li>Ingredients not recorded.</li>"}</ul>${["blueprint", "crafting"].includes(method.kind) ? `<p>${method.access == null ? "DMZ level not recorded" : `Reported DMZ level ${esc(method.access)}`}</p>` : ""}${method.prerequisites.length ? `<p>FOB prerequisites: ${method.prerequisites.map((input) => (input.record ? link(input.record) : "Unmapped prerequisite")).join(", ")}</p>` : ""}<p>${method.recipe ? link(method.recipe, "", "Full recipe") : `<a href="${esc(method.sourceURL)}" rel="noreferrer noopener">Source details ↗</a>`}</p></details>`,
         )
-        .join("")}</details>`
+        .join(
+          "",
+        )}<small>Recorded requirements; access and blueprint ownership are separate.</small></section>`
     : "";
-  return uses + own;
+  return own + uses;
 }

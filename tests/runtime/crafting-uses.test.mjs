@@ -14,6 +14,7 @@ import {
   craftingItemLink,
 } from "../../src/ui/crafting-uses.mjs";
 import { itemUses } from "../../src/domain/item-uses.mjs";
+import { renderTcnoItemIntel } from "../../src/ui/tcno-item-intel.mjs";
 import { recordUrl, allRecords, renderDetail } from "../../src/ui/render.mjs";
 const fixture = () => ({
   id: "fixture:craft",
@@ -36,6 +37,40 @@ const recipe = (id, quantity = 2) => ({
   output: { itemId: "c", quantity: 1 },
   station: "Fixture station",
   prerequisites: [],
+});
+
+test("crafting layout has one production section and one output button, without duplicate source recipes", () => {
+  const pack = loadFixturePack("official-starter");
+  const item = allRecords([pack]).find((r) => r.id === "mw4:medkit");
+  const html = renderDetail(item, [pack]);
+  assert.equal((html.match(/<h3>Make this item<\/h3>/g) || []).length, 1);
+  assert.ok(!html.includes("Recipes making this item"));
+  assert.ok(!html.includes("Source crafting &amp; unlock references"));
+  const p = fixture();
+  p.recipes = [recipe("one"), recipe("two", 3)];
+  const uses = renderCraftingUses(p.items[0], p, recordUrl);
+  assert.equal((uses.match(/class="item-craft-button"/g) || []).length, 1);
+  assert.equal((uses.match(/data-craft-method=/g) || []).length, 2);
+  assert.ok(uses.includes('<details class="item-craft-methods">'));
+});
+test("consolidation retains blueprint collectible references that have a different output", () => {
+  const pack = loadFixturePack("official-starter");
+  const unlock = intel.unlocks.find(
+    (u) =>
+      u.kind === "blueprint" &&
+      intel.mapping[u.id] &&
+      intel.mapping[u.outputItemId] &&
+      intel.mapping[u.id] !== intel.mapping[u.outputItemId],
+  );
+  assert.ok(unlock);
+  const item = pack.items.find((i) => i.id === intel.mapping[unlock.id]);
+  const html = renderTcnoItemIntel(
+    item,
+    pack,
+    (id) => `<a href="/local/?id=${id}">${id}</a>`,
+    { omitCoveredRecipes: true },
+  );
+  assert.ok(html.includes(unlock.name));
 });
 
 test("crafting buttons use output-item icons for recipes and preserve accessible names and private links", () => {

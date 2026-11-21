@@ -195,6 +195,7 @@
   padding: 0;
   display: grid;
   gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
 }
 .item-workspace a.item-craft-button {
   display: inline-flex;
@@ -235,9 +236,37 @@
   overflow-wrap: anywhere;
 }
 .item-craft-products > li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border, #39413d);
+  padding: 0.4rem;
+  border: 1px solid var(--border, #39413d);
+  border-radius: 0.5rem;
   overflow-wrap: anywhere;
+}
+.item-craft-products .item-craft-button {
+  margin: 0;
+}
+.item-craft-methods > summary {
+  font-size: 0.8rem;
+  padding-top: 0.35rem;
+}
+.item-craft-methods small {
+  display: block;
+}
+.item-craft-recipe {
+  margin-block: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border, #39413d);
+  border-radius: 0.5rem;
+  scroll-margin-top: 5rem;
+}
+.item-craft-recipe:target {
+  outline: 2px solid var(--accent, #b9d16e);
+}
+.item-craft-inputs {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
 }
 .item-craft-products ul {
   padding-left: 1rem;

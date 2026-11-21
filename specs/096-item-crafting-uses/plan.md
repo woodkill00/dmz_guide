@@ -6,4 +6,6 @@ Dependencies: FR01 domain before FR02 view; FR03/04 guard both. No schema, profi
 
 Inventory's existing informational crafting-output links also use the reverse adapters for reported blueprint/X01 outputs; executable recipe lists and planner forecasts stay unchanged. Private item rendering passes its existing local-link callback so related custom records remain in their saved pack. Fragment anchors use deterministic ASCII hex IDs so all browser engines find the same target without URI decoding mismatch.
 
+FR02c presentation amendment consolidates overlapping producing/source panels into one method view and folds variant detail under each distinct output. Preserve all domain edges and source conditions; remove only duplicate display of covered source entries. Unrepresented blueprint/manual identities remain. Restricted crafting-fragment handling expands the target disclosure on load/hash change/private enhancement so compact defaults do not break deep links.
+
 Verification: meaningful domain cases plus complete bundled edge audit, affected item/intel/spoiler tests, build and three-engine local item navigation at desktop/mobile. Refresh unified map artifact if shared source fingerprint changes; restart only verified owned service if necessary. Independent analysis/review before completion. No automatic source import or collection, and no public deploy.

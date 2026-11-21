@@ -1,5 +1,5 @@
 import { servicePath } from "../domain/local-services.mjs";
-import { renderCraftingUses, craftingItemLink } from "./crafting-uses.mjs";
+import { renderCraftingUses } from "./crafting-uses.mjs";
 import {
   renderPageComposition,
   pageProjectionParts,
@@ -388,6 +388,7 @@ export function renderDetail(
     detail +=
       renderTcnoItemIntel(record, pack, ref, {
         omitDescription: true,
+        omitCoveredRecipes: true,
         mapAreas,
       }) ||
       `<section id="item-find" tabindex="-1" class="panel"><h2>Where to find</h2><p>No loot source recorded. No location has been inferred.</p>${mapAreas}</section>`;
@@ -396,11 +397,10 @@ export function renderDetail(
         !r.spoiler &&
         (r.inputs || r.requirements || []).some((x) => x.itemId === record.id),
     );
-    const produces = records.filter((r) => r.output?.itemId === record.id);
     const locations = records.filter((r) => r.itemIds?.includes(record.id));
-    const list = (title, rows, craftButtons = false) =>
+    const list = (title, rows) =>
       rows.length
-        ? `<details class="item-use-group"><summary>${e(title)} (${rows.length})</summary><ul class="item-use-list">${[...new Map(rows.map((r) => [r.id, r])).values()].map((r) => `<li>${craftButtons ? craftingItemLink(displayRecord(r), pack, referenceURL) : ref(r.id)}</li>`).join("")}</ul></details>`
+        ? `<details class="item-use-group"><summary>${e(title)} (${rows.length})</summary><ul class="item-use-list">${[...new Map(rows.map((r) => [r.id, r])).values()].map((r) => `<li>${ref(r.id)}</li>`).join("")}</ul></details>`
         : "";
     const upgrades = uses.filter(
       (r) => r.recordType === "objective" && r.track === "dmz-upgrade",
@@ -409,14 +409,11 @@ export function renderDetail(
       (r) => r.recordType === "objective" && r.track !== "dmz-upgrade",
     );
     const actualLocations = locations.filter((r) => !r.spoiler);
-    detail += `<section id="item-crafting" tabindex="-1" class="panel item-crafting"><h2>Crafting</h2>${
-      renderCraftingUses(record, pack, referenceURL) +
-        list(
-          "Recipes making this item",
-          produces.filter((r) => !r.spoiler),
-          true,
-        ) || "<p>No crafting recipe recorded.</p>"
-    }</section><section id="item-uses" tabindex="-1" class="panel item-uses"><h2>Item uses</h2>${list("Missions", missions)}${list("Upgrades", upgrades)}${list("Mapped locations", actualLocations)}${!missions.length && !upgrades.length && !actualLocations.length ? "<p>No other mission, upgrade or mapped-location uses recorded.</p>" : ""}<p><a href="${e(readerHref(`/local/?pack=${encodeURIComponent(pack.id)}&id=${encodeURIComponent(record.id)}`))}">Track inventory and upgrade progress</a></p></section>`;
+    detail += `<section id="item-crafting" tabindex="-1" class="panel item-crafting"><h2>Crafting</h2>${renderCraftingUses(
+      record,
+      pack,
+      referenceURL,
+    )}</section><section id="item-uses" tabindex="-1" class="panel item-uses"><h2>Item uses</h2>${list("Missions", missions)}${list("Upgrades", upgrades)}${list("Mapped locations", actualLocations)}${!missions.length && !upgrades.length && !actualLocations.length ? "<p>No other mission, upgrade or mapped-location uses recorded.</p>" : ""}<p><a href="${e(readerHref(`/local/?pack=${encodeURIComponent(pack.id)}&id=${encodeURIComponent(record.id)}`))}">Track inventory and upgrade progress</a></p></section>`;
   }
 
   if (record.stats && (record.recordType !== "item" || record.stats.length))
