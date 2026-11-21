@@ -1,4 +1,5 @@
 import { spoilerGuard } from "./progression.mjs";
+import { buildCraftingUses, visibleCraftingMethods } from "./crafting-uses.mjs";
 export const rarityOrder = [
   "Common",
   "Uncommon",
@@ -52,4 +53,32 @@ export function rarityItems(pack) {
             compare(a.item.name, b.item.name) || compare(a.item.id, b.item.id),
         ),
     }));
+}
+
+export function rarityItemColumns(pack) {
+  const groups = rarityItems(pack),
+    index = buildCraftingUses(pack);
+  const used = new Set(
+    groups
+      .flatMap((group) => group.items)
+      .filter(
+        ({ item }) =>
+          visibleCraftingMethods(pack, index.uses.get(item.id) || []).length,
+      )
+      .map(({ item }) => item.id),
+  );
+  return [
+    { id: "crafting", label: "Used in crafting" },
+    { id: "other", label: "Other items" },
+  ].map((column) => ({
+    ...column,
+    groups: groups
+      .map((group) => ({
+        ...group,
+        items: group.items.filter(
+          ({ item }) => used.has(item.id) === (column.id === "crafting"),
+        ),
+      }))
+      .filter((group) => group.items.length),
+  }));
 }

@@ -1,0 +1,13 @@
+# Acceptance — 2026-11-21
+
+FR01–03: /track/items/ now shows Used in crafting and Other items columns, each retaining ordered rarity disclosures and alphabetical item names. Membership uses the same visible catalog/reference/retained-tool/X01 input relationships as existing Used to craft previews. Output-only eligibility does not make an item a crafting ingredient. Other is explicitly labelled No recorded crafting uses; no assertion about uncatalogued game mechanics. Default starter has33 used-in-crafting and270 other visible identities, exactly303 once across both columns. No items merged, invented or copied between catalogs.
+
+Search updates column matching counts and empty states, preserves row/name order, and opens matching groups. Existing independent disclosure state, expand/collapse, selected-pack links, icons, craft previews, catalog switching and default no-JS directory remain. Unique IDs include pack/column/group. Desktop two minmax columns stack below48rem; no additional profile/store owner or writes.
+
+Executed Windows/Node24 receipts:
+- 103-runtime.log18/18 PASS: existing rarity/privacy/link/tab behavior, exact disjoint303 partition, synthetic consumed/retained positive, produced-only negative, concealed recipe privacy, immutable source and unique DOM anchors.
+- 103-browser.log Chromium/Firefox/WebKit PASS: exact33/270/303 identities, each-column rarity and alphabetical name order, craft-preview classification parity, desktop side-by-side/mobile stacked geometry, search and specific item links, independent groups, catalog contexts, tracker navigation,390px no overflow/unbroken tab labels and no directory guide/armory database creation. Chromium no-JavaScript default303 PASS.
+- 103-topology.log11/11 registry/current built topology checks PASS;103-build.log2109 guide routes plus404;103-map-build.log eight map entries refreshed for shared source. Full103-format.log pass and103-structure.log zero failures.
+- Viewed103-desktop.png: both column headings/counts, ingredient/tool previews and separate Other rarity list readable side by side. Existing browser screenshots under103 engine-mobile filenames and geometric assertions cover stacking. Local4173 status ready/maps true.
+
+Planning and bounded implementation independently reviewed in reviewer-owned review.md. Analysis/convergence found no remaining scoped implementation-known gap. Full repository aggregate not rerun for this bounded view feature; previous aggregate receipts remain historical. No source collection/assets, game completeness claim, user-profile edits, schema change, external write/push/merge/deployment. Rollback returns the single list without touching saved quantities or progress.

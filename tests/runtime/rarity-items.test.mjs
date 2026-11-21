@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { rarityItems } from "../../src/domain/rarity-items.mjs";
+import {
+  rarityItems,
+  rarityItemColumns,
+} from "../../src/domain/rarity-items.mjs";
 import {
   renderTrackItems,
   featurePages,
@@ -118,4 +121,57 @@ test("tracker tabs resolve stable registry IDs with Items current and the parent
   const clone = structuredClone(navigationConfig);
   clone.trackerTabs[1].label = clone.trackerTabs[0].label;
   assert.throws(() => validateNavigationConfig(clone), /unique/);
+});
+
+test("103 crafting columns partition visible input/tool uses; outputs alone and concealed methods stay other", () => {
+  const p = fixture();
+  p.recipes = [
+    {
+      id: "fixture:recipe",
+      name: "Synthetic visible recipe",
+      output: { itemId: "b", quantity: 1 },
+      inputs: [
+        { itemId: "a", quantity: 2, consumed: true },
+        { itemId: "c", quantity: 1, consumed: false },
+      ],
+      prerequisites: [],
+    },
+  ];
+  const before = JSON.stringify(p);
+  const columns = rarityItemColumns(p);
+  const ids = (column) =>
+    column.groups.flatMap((g) => g.items.map((r) => r.item.id));
+  assert.deepEqual(ids(columns[0]).sort(), ["a", "c"]);
+  assert.ok(
+    ids(columns[1]).includes("b"),
+    "Being craftable as an output alone is not an ingredient use",
+  );
+  const all = columns.flatMap(ids);
+  assert.equal(new Set(all).size, p.items.length);
+  assert.equal(all.length, p.items.length);
+  assert.equal(JSON.stringify(p), before);
+  p.recipes[0].spoiler = true;
+  assert.equal(
+    ids(rarityItemColumns(p)[0]).length,
+    0,
+    "Hidden recipe does not disclose ingredient membership",
+  );
+});
+
+test("103 starter column partition is exact, disjoint and preserves published sorting and previews", () => {
+  const p = loadFixturePack("official-starter");
+  const columns = rarityItemColumns(p);
+  const ids = columns.map((c) =>
+    c.groups.flatMap((g) => g.items.map((r) => r.item.id)),
+  );
+  assert.deepEqual(
+    ids.map((a) => a.length),
+    [33, 270],
+  );
+  assert.equal(new Set(ids.flat()).size, 303);
+  assert.ok(ids[0].includes("mw4:ingredient-detonators"));
+  const html = renderTrackItems([p]);
+  assert.equal((html.match(/data-track-item-column=/g) || []).length, 2);
+  const uniqueIds = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(new Set(uniqueIds).size, uniqueIds.length);
 });

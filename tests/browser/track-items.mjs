@@ -24,11 +24,29 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       await selected().locator("[data-track-item]:not([hidden])").count(),
       303,
     );
+    const columns = selected().locator("[data-track-item-column]");
     assert.deepEqual(
+      await columns.evaluateAll((nodes) =>
+        nodes.map((n) => n.dataset.trackItemColumn),
+      ),
+      ["crafting", "other"],
+    );
+    assert.deepEqual(
+      await columns.evaluateAll((nodes) =>
+        nodes.map((n) => n.querySelectorAll("[data-track-item]").length),
+      ),
+      [33, 270],
+    );
+    assert.equal(
       await selected()
-        .locator("[data-track-rarity]")
-        .evaluateAll((nodes) => nodes.map((n) => n.dataset.trackRarity)),
-      [
+        .locator("[data-track-item]")
+        .evaluateAll(
+          (nodes) => new Set(nodes.map((n) => n.dataset.trackItem)).size,
+        ),
+      303,
+    );
+    for (const column of await columns.all()) {
+      const order = [
         "Common",
         "Uncommon",
         "Rare",
@@ -36,7 +54,31 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         "Legendary",
         "Ultra",
         "Not recorded",
-      ],
+      ];
+      const labels = await column
+        .locator("[data-track-rarity]")
+        .evaluateAll((nodes) => nodes.map((n) => n.dataset.trackRarity));
+      assert.deepEqual(
+        labels,
+        [...labels].sort((a, b) => order.indexOf(a) - order.indexOf(b)),
+      );
+    }
+    assert.equal(
+      await columns.first().locator("[data-craft-preview]").count(),
+      33,
+    );
+    assert.equal(
+      await columns.last().locator("[data-craft-preview]").count(),
+      0,
+    );
+    const desktop = await columns.evaluateAll((nodes) =>
+      nodes.map((n) => ({
+        x: n.getBoundingClientRect().x,
+        y: n.getBoundingClientRect().y,
+      })),
+    );
+    assert.ok(
+      desktop[1].x > desktop[0].x && Math.abs(desktop[1].y - desktop[0].y) < 2,
     );
     assert.equal(
       await selected()
@@ -88,22 +130,26 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     for (const rarity of ["Common", "Rare"])
       await selected()
         .locator(`[data-track-rarity="${rarity}"] > summary`)
+        .first()
         .click();
     assert.equal(
       await selected()
         .locator('[data-track-rarity="Common"]')
+        .first()
         .getAttribute("open"),
       null,
     );
     assert.equal(
       await selected()
         .locator('[data-track-rarity="Rare"]')
+        .first()
         .getAttribute("open"),
       null,
     );
     assert.notEqual(
       await selected()
         .locator('[data-track-rarity="Epic"]')
+        .first()
         .getAttribute("open"),
       null,
     );
@@ -157,7 +203,16 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       ),
       true,
     );
-    await page.screenshot({ path: `test-results/098-${name}-mobile.png` });
+    const mobile = await columns.evaluateAll((nodes) =>
+      nodes.map((n) => ({
+        x: n.getBoundingClientRect().x,
+        y: n.getBoundingClientRect().y,
+      })),
+    );
+    assert.ok(
+      Math.abs(mobile[1].x - mobile[0].x) < 2 && mobile[1].y > mobile[0].y,
+    );
+    await page.screenshot({ path: `test-results/103-${name}-mobile.png` });
     const databases = await page.evaluate(async () =>
       typeof indexedDB.databases === "function"
         ? (await indexedDB.databases()).map((d) => d.name)
@@ -177,7 +232,7 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       assert.equal(await tab.getAttribute("aria-current"), "page");
     }
     console.log(
-      `${name}:303 items/rarity/name order,search,independent sections,catalog links,Track/Inventory/QuickCollect Items tab,mobile,no directory profile writes PASS`,
+      `${name}:303 items/crafting-other columns/rarity/name order,search,independent sections,catalog links,Track/Inventory/QuickCollect Items tab,mobile,no directory profile writes PASS`,
     );
   } finally {
     await browser.close();

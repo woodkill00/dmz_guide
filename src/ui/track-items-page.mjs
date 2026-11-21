@@ -1,4 +1,4 @@
-import { rarityItems } from "../domain/rarity-items.mjs";
+import { rarityItems, rarityItemColumns } from "../domain/rarity-items.mjs";
 import { craftingItemLink } from "./crafting-uses.mjs";
 import { renderCraftPreview } from "./crafting-preview.mjs";
 import { features, featureURL } from "./feature-registry.mjs";
@@ -22,19 +22,19 @@ export function renderTrackItems(packs) {
     url.searchParams.set("id", item.id);
     return url.pathname + url.search;
   };
-  return `<header class="page-heading"><h1>Items</h1><p>Browse by rarity. Names are alphabetical within each section.</p></header><section class="track-items-directory" data-default-pack="${e(defaultPack.id)}"><form id="track-items-filters" class="filter-bar"><label>Find item<input id="track-items-query" type="search" maxlength="200" placeholder="Item name or category"></label><label>Catalog<select id="track-items-pack">${packs.map((pack) => `<option value="${e(pack.id)}"${pack.id === defaultPack.id ? " selected" : ""}>${e(pack.title)}${isFixture(pack) ? " · FICTIONAL" : ""}</option>`).join("")}</select></label></form><p id="track-items-count" role="status">${defaultCount} catalog items</p><noscript>Showing the default catalog. Enable JavaScript for search and catalog switching.</noscript><div class="actions"><button type="button" data-track-items-expand>Expand sections</button><button type="button" data-track-items-collapse>Collapse sections</button></div>${packs
+  return `<header class="page-heading"><h1>Items</h1><p>Crafting uses and other items, grouped by rarity and alphabetical name.</p></header><section class="track-items-directory" data-default-pack="${e(defaultPack.id)}"><form id="track-items-filters" class="filter-bar"><label>Find item<input id="track-items-query" type="search" maxlength="200" placeholder="Item name or category"></label><label>Catalog<select id="track-items-pack">${packs.map((pack) => `<option value="${e(pack.id)}"${pack.id === defaultPack.id ? " selected" : ""}>${e(pack.title)}${isFixture(pack) ? " · FICTIONAL" : ""}</option>`).join("")}</select></label></form><p id="track-items-count" role="status">${defaultCount} catalog items</p><noscript>Showing the default catalog. Enable JavaScript for search and catalog switching.</noscript><div class="actions"><button type="button" data-track-items-expand>Expand sections</button><button type="button" data-track-items-collapse>Collapse sections</button></div>${packs
     .map(
       (pack, packIndex) =>
-        `<section data-track-items-pack="${e(pack.id)}"${pack.id === defaultPack.id ? "" : " hidden"}>${isFixture(pack) ? '<p class="notice">FICTIONAL TRAINING DATA · NOT GAME FACTS</p>' : ""}${rarityItems(
+        `<section data-track-items-pack="${e(pack.id)}"${pack.id === defaultPack.id ? "" : " hidden"}>${isFixture(pack) ? '<p class="notice">FICTIONAL TRAINING DATA · NOT GAME FACTS</p>' : ""}<div class="track-items-columns">${rarityItemColumns(
           pack,
         )
           .map(
-            (group, groupIndex) =>
-              `<details open class="track-rarity-group" data-track-rarity="${e(group.label)}" id="track-rarity-${packIndex}-${groupIndex}"><summary>${e(group.label)} <span data-track-rarity-count>${group.items.length} items</span></summary><ul>${group.items.map(({ item, category }) => `<li class="track-item-row" data-track-item="${e(item.id)}" data-track-search="${e((item.name + " " + category).toLowerCase())}"><div>${craftingItemLink({ ...item, recordType: "item" }, pack, (record) => itemURL(pack, record))}${category ? `<small>${e(category)}</small>` : ""}${renderCraftPreview(pack, item.id)}</div></li>`).join("")}</ul></details>`,
+            (column) =>
+              `<section class="track-items-column" data-track-item-column="${column.id}" aria-labelledby="track-column-${packIndex}-${column.id}"><h2 id="track-column-${packIndex}-${column.id}">${column.label} <small data-track-column-count>${column.groups.reduce((n, g) => n + g.items.length, 0)} items</small></h2>${column.id === "other" ? '<p class="track-column-hint">No recorded crafting uses.</p>' : ""}${column.groups.map((group, groupIndex) => `<details open class="track-rarity-group" data-track-rarity="${e(group.label)}" id="track-rarity-${packIndex}-${column.id}-${groupIndex}"><summary>${e(group.label)} <span data-track-rarity-count>${group.items.length} items</span></summary><ul>${group.items.map(({ item, category }) => `<li class="track-item-row" data-track-item="${e(item.id)}" data-track-search="${e((item.name + " " + category).toLowerCase())}"><div>${craftingItemLink({ ...item, recordType: "item" }, pack, (record) => itemURL(pack, record))}${category ? `<small>${e(category)}</small>` : ""}${renderCraftPreview(pack, item.id)}</div></li>`).join("")}</ul></details>`).join("")}<p data-track-column-empty${column.groups.length ? " hidden" : ""}>No matching items.</p></section>`,
           )
           .join(
             "",
-          )}<details class="track-items-evidence"><summary>Catalog coverage</summary><p>${e(pack.coverage?.note || "Coverage not recorded.")}</p></details></section>`,
+          )}</div><details class="track-items-evidence"><summary>Catalog coverage</summary><p>${e(pack.coverage?.note || "Coverage not recorded.")}</p></details></section>`,
     )
     .join(
       "",

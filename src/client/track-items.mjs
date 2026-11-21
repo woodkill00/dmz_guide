@@ -48,6 +48,13 @@ if (root) {
           `${matching} item${matching === 1 ? "" : "s"}`;
       }
     }
+    for (const column of root.querySelectorAll("[data-track-item-column]")) {
+      const rows = [...column.querySelectorAll("[data-track-item]")];
+      const matching = rows.filter((row) => !row.hidden).length;
+      column.querySelector("[data-track-column-count]").textContent =
+        `${matching} of ${rows.length}`;
+      column.querySelector("[data-track-column-empty]").hidden = matching !== 0;
+    }
     priorSearch = !!tokens.length;
     count.textContent = `${shown} of ${total} catalog items`;
     root.querySelector("#track-items-empty").hidden = shown !== 0;
