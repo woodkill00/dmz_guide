@@ -1,3 +1,4 @@
+import { CURRENCY_STOCK_LIMIT } from "../domain/quantity-limits.mjs";
 import { hydrateInventoryIcons } from "./inventory-icons.mjs";
 import { buildTargetControl } from "../ui/build-target-control.mjs";
 import { inventoryReviewReasons } from "../domain/inventory-review.mjs";
@@ -848,7 +849,7 @@ $("#inventory-form")?.addEventListener(
         return;
       error(
         new Error(
-          "Enter a whole nonnegative quantity: up to 999,999,999 for currency, or 1,000,000 for other items.",
+          `Enter a whole nonnegative quantity: up to ${CURRENCY_STOCK_LIMIT.toLocaleString("en-US")} for currency, or 1,000,000 for other items.`,
         ),
       );
       revealInvalidInventory();

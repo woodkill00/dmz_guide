@@ -50,16 +50,23 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
           page
             .getByRole("button", { name: "Save inventory", exact: true })
             .click();
-        for (const input of ["6,209,662", "6209662"]) {
+        for (const input of [
+          "6,209,662",
+          "6209662",
+          "7,000,000,000",
+          "7000000000",
+        ]) {
+          const expected = Number(input.replaceAll(",", ""));
+          const reserveExpected = expected === 7000000000 ? expected : 6200000;
           const revision = (await saved(page)).revision;
           await amount.fill(input);
           await revealTrackerControl(
             page,
             `[data-field="reserves"][data-id="${cash}"]`,
           );
-          await reserve.fill("6,200,000");
+          await reserve.fill(reserveExpected.toLocaleString("en-US"));
           await save();
-          if (legacy && input.includes(",")) {
+          if (legacy && input === "6,209,662") {
             await page
               .locator("#currency-format-confirm")
               .waitFor({ state: "visible" });
@@ -76,35 +83,29 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
           );
           await ready(page);
           const profile = await saved(page);
-          assert.equal(profile.inventory[cash], 6209662);
-          assert.equal(profile.reserves[cash], 6200000);
+          assert.equal(profile.inventory[cash], expected);
+          assert.equal(profile.reserves[cash], reserveExpected);
           assert.equal(profile.inventory["mw4:metals"], 7);
           assert.equal(profile.schemaVersion, 3);
           await page.reload();
           await ready(page);
           await page.locator("#inventory-query").fill("cash");
-          assert.equal(await amount.inputValue(), "6,209,662");
-          assert.equal(await reserve.inputValue(), "6,200,000");
+          assert.equal(
+            await amount.inputValue(),
+            expected.toLocaleString("en-US"),
+          );
+          assert.equal(
+            await reserve.inputValue(),
+            reserveExpected.toLocaleString("en-US"),
+          );
         }
-        await amount.fill("999,999,999");
-        const revision = (await saved(page)).revision;
-        await save();
-        await page.waitForFunction(
-          async (revision) =>
-            (
-              await (
-                await import("/assets/src/storage/store.mjs")
-              ).loadProfile("official:mw4-dmz-starter")
-            ).value.revision > revision,
-          revision,
-        );
-        await ready(page);
-        assert.equal((await saved(page)).inventory[cash], 999999999);
-        for (const invalid of ["1,000,000,000", "6,20,9662", "-1", "1.5"]) {
+        assert.equal(await amount.getAttribute("max"), "7000000000");
+        assert.equal(await reserve.getAttribute("max"), "7000000000");
+        for (const invalid of ["7,000,000,001", "6,20,9662", "-1", "1.5"]) {
           await amount.fill(invalid);
           await save();
           await page.locator("#error").waitFor({ state: "visible" });
-          assert.equal((await saved(page)).inventory[cash], 999999999);
+          assert.equal((await saved(page)).inventory[cash], 7000000000);
           assert.equal(await amount.inputValue(), invalid);
         }
       } finally {
@@ -112,7 +113,7 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
       }
     }
     console.log(
-      `${name}: Inventory6209662 grouped/raw saves, reload formatting, reserve/unrelated stock, explicit legacy confirmation, max and invalid-draft retention PASS`,
+      `${name}: Inventory6209662+7b grouped/raw saves, reload formatting, reserve/unrelated stock, explicit legacy confirmation, max and invalid-draft retention PASS`,
     );
   } finally {
     await browser.close();

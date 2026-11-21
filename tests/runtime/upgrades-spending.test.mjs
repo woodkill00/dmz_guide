@@ -285,7 +285,7 @@ test("B11 v3 cash stock and protected reserve support 2M; costs, noncurrency and
     2000000,
   );
   const tooMuch = structuredClone(profile);
-  tooMuch.inventory[cash] = 1000000000;
+  tooMuch.inventory[cash] = 7000000001;
   assert.throws(() => validateProfile(tooMuch));
   for (const field of ["inventory", "reserves"]) {
     const material = structuredClone(profile);
@@ -530,7 +530,7 @@ test("101 expanded cash purchase, refund and backup roundtrip preserve exact hig
 
 test("101 refund at the software currency maximum returns exactly to the bound", () => {
   const { pack, profile, cash } = fixture();
-  profile.inventory[cash] = 999999999;
+  profile.inventory[cash] = 7000000000;
   const bought = recordUpgradePurchase(
     pack,
     profile,
@@ -542,7 +542,7 @@ test("101 refund at the software currency maximum returns exactly to the bound",
     "spend:one",
     op("undo"),
   ).candidate;
-  assert.equal(restored.inventory[cash], 999999999);
+  assert.equal(restored.inventory[cash], 7000000000);
   validateProfile(restored);
   const over = structuredClone(restored);
   over.inventory[cash]++;

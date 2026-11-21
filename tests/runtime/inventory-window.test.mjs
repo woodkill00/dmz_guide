@@ -1,3 +1,4 @@
+import { CURRENCY_STOCK_LIMIT } from "../../src/domain/quantity-limits.mjs";
 import * as inventoryItems from "../../src/domain/inventory-items.mjs";
 import * as inventoryPresentation from "../../src/domain/inventory-presentation.mjs";
 import { itemUses } from "../../src/domain/item-uses.mjs";
@@ -277,6 +278,7 @@ function nativeInvalidHarness() {
     reveals = 0;
   const draft = { firstInvalid: () => ({ id: "demo:item-75" }) };
   const context = {
+    CURRENCY_STOCK_LIMIT,
     inventoryDraft: draft,
     pendingInventoryInvalid: null,
     state: { pack: { id: "demo:pack" }, loading: false, saving: false },

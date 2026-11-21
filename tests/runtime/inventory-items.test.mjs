@@ -61,7 +61,7 @@ test("prospective currency draft accepts expanded cash but preserves legacy save
   );
   legacy.set("inventory", cash, "1333601", profile);
   assert.equal(legacy.firstInvalid().id, cash);
-  draft.set("inventory", cash, "1000000000", profile);
+  draft.set("inventory", cash, "7000000001", profile);
   assert.equal(draft.firstInvalid().id, cash);
   assert.throws(() => cashFormatSave(profile, pack));
   draft.set("inventory", cash, "1333601", profile);
@@ -309,7 +309,7 @@ test("101 raw/grouped higher cash, max and legacy confirmation candidate remain 
   const { parseProfile, validateInventoryForPack } = await import(
     "../../src/domain/profile.mjs"
   );
-  for (const text of ["6209662", "6,209,662", "999,999,999"]) {
+  for (const text of ["6209662", "6,209,662", "999,999,999", "7,000,000,000"]) {
     const profile = legacyProfile();
     const draft = createInventoryDraft(pack.items, profile, {
       allowCurrencyUpgrade: true,
