@@ -3,7 +3,10 @@ import {
   acquisitionCamoPanel,
 } from "../ui/acquisition-camos.mjs";
 import { acquisitionCamoController } from "./acquisition-camos.mjs";
-import { validateProgressCatalog } from "../domain/camo-progress.mjs";
+import {
+  validateProgressCatalog,
+  editCamoCompletion,
+} from "../domain/camo-progress.mjs";
 import "./quick-tracker.mjs";
 import { ownsBlueprint } from "../domain/weapon-acquisition.mjs";
 import {
@@ -41,9 +44,37 @@ const $ = (s) => document.querySelector(s),
           "'": "&#39;",
         })[c],
     );
+let camoInputIntent = 0;
+for (const type of ["pointerdown", "keydown", "input"])
+  document.addEventListener(type, () => camoInputIntent++);
+const camoCatalog = validateProgressCatalog(camoProgress);
 const camoPreview = acquisitionCamoController(
   document.querySelector("#acquisition"),
-  validateProgressCatalog(camoProgress),
+  camoCatalog,
+  async (weapon, camo, checked, checkbox) => {
+    const intent = camoInputIntent;
+    try {
+      await mutate((value) => {
+        value.camoCompletions = editCamoCompletion(
+          value,
+          camoCatalog,
+          weapon,
+          camo,
+          checked,
+        ).camoCompletions;
+      });
+    } catch (error) {
+      failure(error);
+      acquisitionRoster();
+    }
+    if (
+      intent === camoInputIntent &&
+      document.visibilityState !== "hidden" &&
+      document.activeElement === document.body &&
+      checkbox.isConnected
+    )
+      checkbox.focus({ preventScroll: true });
+  },
 );
 const today = () => new Date().toISOString().slice(0, 10),
   newId = () => crypto.randomUUID();
@@ -76,6 +107,7 @@ const failure = (error) => {
   $("#armory-error").textContent = error.message || String(error);
 };
 function controls() {
+  camoPreview.setEditable(ready && !pending && !loading && !unsaved);
   document.querySelector("main").dataset.armoryBusy = String(
     pending || loading,
   );

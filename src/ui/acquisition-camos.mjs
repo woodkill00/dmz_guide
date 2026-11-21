@@ -28,5 +28,5 @@ export function acquisitionCamoIcons(weapon) {
 
 export function acquisitionCamoPanel(weapon) {
   if (!weapon) return "";
-  return `<section class="acquisition-camo-panel" id="acq-camo-panel-${e(weapon.id)}" aria-label="Selected camo challenge" hidden><strong data-acq-camo-heading></strong><p data-acq-camo-requirement></p><p data-acq-camo-status></p><a data-acq-camo-link href="/armory/camos/${e(weapon.id)}/">Open camo tracker</a> <button type="button" data-acq-camo-close>Close details</button></section>`;
+  return `<section class="acquisition-camo-panel" id="acq-camo-panel-${e(weapon.id)}" aria-label="Selected camo challenge" hidden><strong data-acq-camo-heading></strong><p data-acq-camo-requirement></p><p data-acq-camo-status></p><label class="acquisition-camo-completion"><input type="checkbox" data-acq-camo-complete disabled> Completed</label><a data-acq-camo-link href="/armory/camos/${e(weapon.id)}/">Open camo tracker</a> <button type="button" data-acq-camo-close>Close details</button></section>`;
 }

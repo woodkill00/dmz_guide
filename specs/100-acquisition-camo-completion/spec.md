@@ -1,0 +1,4 @@
+# Inline acquisition camo completion
+FR01: Each selected camo on Track Weapons and acquisition has a labelled Completed checkbox that saves/checks/unchecks via the existing armory owner. Icon clicks alone remain read-only. Keep panel, focus and next-status progression stable.
+FR02: Reuse editCamoCompletion and persisted camoCompletions: shared completion keys remain shared; manual/counter/build data survives. Camo pages/overview and both acquisition pages read the same saved record on navigation/refresh. Existing open workbench instances use their explicit saved-workspace reload; no new automatic workbench form reload is in scope.
+FR03: Lock completion controls during unreadable, busy, retained-failure states; preserve unsaved candidate/retry/export/conflict protection. Do not add storage owners/schema or silently claim failed saves. Save is explicit through checking; no profile migration or game fact changes.

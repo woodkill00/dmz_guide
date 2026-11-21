@@ -8,7 +8,8 @@ const labels = {
 };
 const marks = { completed: "✓", next: "●", remaining: "○", unknown: "?" };
 
-export function acquisitionCamoController(root, catalog) {
+export function acquisitionCamoController(root, catalog, complete) {
+  let editable = false;
   const panelFor = (strip) =>
     root.querySelector(
       `#acq-camo-panel-${CSS.escape(strip.dataset.acquisitionCamos)}`,
@@ -21,6 +22,15 @@ export function acquisitionCamoController(root, catalog) {
       button.dataset.camoRequirement;
     panel.querySelector("[data-acq-camo-status]").textContent =
       labels[button.dataset.state];
+    const checkbox = panel.querySelector("[data-acq-camo-complete]");
+    checkbox.dataset.weapon = strip.dataset.acquisitionCamos;
+    checkbox.dataset.camo = button.dataset.acqCamo;
+    checkbox.checked = button.dataset.state === "completed";
+    checkbox.disabled = !editable;
+    checkbox.setAttribute(
+      "aria-label",
+      `Completed: ${button.dataset.camoName}`,
+    );
     panel.querySelector("[data-acq-camo-link]").hash = button.dataset.acqCamo;
   }
   root.addEventListener("click", (event) => {
@@ -53,7 +63,23 @@ export function acquisitionCamoController(root, catalog) {
       button?.focus({ preventScroll: true });
     }
   });
+  root.addEventListener("change", (event) => {
+    const checkbox = event.target.closest("[data-acq-camo-complete]");
+    if (checkbox && editable && complete)
+      complete(
+        checkbox.dataset.weapon,
+        checkbox.dataset.camo,
+        checkbox.checked,
+        checkbox,
+      );
+  });
   return {
+    setEditable(value) {
+      editable = !!value && typeof complete === "function";
+      root
+        .querySelectorAll("[data-acq-camo-complete]")
+        .forEach((n) => (n.disabled = !editable));
+    },
     paint(workspace, ready) {
       for (const strip of root.querySelectorAll("[data-acquisition-camos]")) {
         const states = ready
