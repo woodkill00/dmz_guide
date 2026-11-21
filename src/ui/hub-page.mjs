@@ -1,3 +1,4 @@
+import { navigationGroup } from "./navigation-config.mjs";
 import { dashboardShell } from "./dashboard-page.mjs";
 import { features, featureGroups, featureURL } from "./feature-registry.mjs";
 const e = (v) =>
@@ -9,7 +10,7 @@ const e = (v) =>
       ],
   );
 const card = (f) =>
-  `<article class="hub-card" data-feature-card data-search="${e([f.label, f.group, f.description].join(" ").toLowerCase())}"><div><span class="eyebrow">${e(f.group)}</span><h3><a data-feature-id="${f.id}" href="${e(featureURL(f))}"${f.kind !== "guide" ? ' target="_blank" rel="noopener noreferrer"' : ""}>${e(f.label)}${f.kind !== "guide" ? " ↗" : ""}</a></h3><p>${e(f.description)}</p></div><button type="button" data-pin-feature="${f.id}" aria-label="Pin ${e(f.label)}" aria-pressed="false" hidden>☆</button></article>`;
+  `<article class="hub-card" data-feature-card data-search="${e([f.label, navigationGroup(f.group).label, f.description].join(" ").toLowerCase())}"><div><span class="eyebrow">${e(navigationGroup(f.group).label)}</span><h3><a data-feature-id="${f.id}" href="${e(featureURL(f))}"${f.kind !== "guide" ? ' target="_blank" rel="noopener noreferrer"' : ""}>${e(f.label)}${f.kind !== "guide" ? " ↗" : ""}</a></h3><p>${e(f.description)}</p></div><button type="button" data-pin-feature="${f.id}" aria-label="Pin ${e(f.label)}" aria-pressed="false" hidden>☆</button></article>`;
 export function renderDashboard() {
   const quick = [
     "quick-collect",
@@ -36,7 +37,7 @@ export function featurePages() {
       body: `<header class="page-heading"><h1>All features</h1><p>Every workspace and map tool, organized around your next task. ↗ opens a companion.</p></header><label>Find a feature<input id="feature-query" type="search" maxlength="100"></label><p id="feature-count" role="status"></p>${featureGroups
         .map(
           (group) =>
-            `<section id="${group.toLowerCase()}" data-feature-group><h2>${group}</h2><div class="hub-grid">${features
+            `<section id="${e(navigationGroup(group).id)}" data-feature-group><h2>${e(navigationGroup(group).label)}</h2><div class="hub-grid">${features
               .filter((f) => f.group === group)
               .map(card)
               .join("")}</div></section>`,

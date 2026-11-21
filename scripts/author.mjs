@@ -52,6 +52,7 @@ const staticFiles = new Set([
   "src/ui/directory-view.css",
   "src/ui/directory-view.mjs",
   "src/ui/workspace-shell.mjs",
+  "src/ui/navigation-config.mjs",
   "src/client/workspace-shell.mjs",
   "src/client/studio.mjs",
   "src/client/studio-media.mjs",

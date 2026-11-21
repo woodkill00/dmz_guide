@@ -1,0 +1,11 @@
+# Acceptance
+
+2026-11-21; Windows/Node24.15.0. Scoped navigation change, not a route or saved-data migration. Prepare primary label is Track; former Track feature category is Progression. Old group identities/anchors remain Prepare/prepare and Track/track.
+
+- `097-runtime.log`:40/40 affected navigation, topology, query/hash, author MIME and configuration tests passed. `097-final-labels.log`:4/4 current label tests passed with positive label-change sensitivity and unchanged destinations/IDs across guide/map/help/Studio/manager. Counts overlap.
+- `097-browser.log`:2,117 generated guide/map navigation blocks audited. Chromium/Firefox/WebKit pass actual Track route, Progression Orders/page1 navigation, existing features/#prepare and #track anchors, changed-label identical hrefs and Orders insertion, namespaced map navigation and390px menu. Permanent retained-HTML regression renders old labels, removes new group attributes and verifies current client labels and Orders placement by stable feature IDs.
+- `097-build.log`:2,108 guide routes plus404; `097-map-build.log`:eight-entry namespaced map build. Full formatting passed; structural checks0; diff checks clean. Shared feature inventory regenerated without changing071 IDs. Local4173 status ready/maps true.
+- Central configuration is owned by feature-registry.mjs, alongside stable feature paths; navigation-config.mjs is a public facade. Existing companion clients can use the already-public registry without a newly required module. New author-server launches also explicitly serve the facade, with MIME regression.
+- An attempted author restart was rejected by local execution policy and was not retried or bypassed. No process was stopped. The safer retained-template client adapter was implemented instead. `097-live-editor.log` verifies the existing running editor displays Track/Progression and inserts Orders correctly without restarting or editing content. No passwords, tokens or user records were exported.
+
+Independent source/implementation disposition is in review.md. No broad suite, packaged-release run, remote CI, main merge or public deployment is claimed. To undo, revert this feature's commit and rebuild guide/map; saved feature IDs and bookmarks need no rebind.

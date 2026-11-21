@@ -441,6 +441,11 @@ test("095 Studio serves every shared navigation dependency with its correct MIME
   );
   assert.equal(previewCSS.status, 200);
   assert.match(previewCSS.headers.get("content-type"), /css/);
+  const navigationModule = await fetch(
+    app.url + "/assets/src/ui/navigation-config.mjs",
+  );
+  assert.equal(navigationModule.status, 200);
+  assert.match(navigationModule.headers.get("content-type"), /javascript/);
   for (const [path, type] of [
     ["map-routes.mjs", "javascript"],
     ["local-services.mjs", "javascript"],

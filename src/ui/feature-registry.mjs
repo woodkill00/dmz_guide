@@ -1,7 +1,97 @@
 import destinations from "./map-destinations.json" with { type: "json" };
 import { mapPath } from "../domain/map-routes.mjs";
 import { servicePath } from "../domain/local-services.mjs";
-export const featureGroups = ["Map", "Prepare", "Track", "Reference", "Manage"];
+// Display names can change without changing feature IDs, routes or saved bookmarks.
+export const navigationConfig = {
+  primary: [
+    { id: "home", label: "Home" },
+    { id: "hajin-map", label: "Map" },
+    { id: "planner", label: "Track" },
+    { id: "missions", label: "Orders" },
+    { id: "catalog", label: "Reference" },
+    { id: "settings", label: "Manage" },
+    { id: "search", label: "Search" },
+  ],
+  // Keys are existing registry identities, not the text shown in the menu.
+  groups: [
+    { key: "Map", id: "map", label: "Map" },
+    { key: "Prepare", id: "prepare", label: "Track" },
+    { key: "Track", id: "track", label: "Progression" },
+    { key: "Reference", id: "reference", label: "Reference" },
+    { key: "Manage", id: "manage", label: "Manage" },
+  ],
+  modernPrimary: [
+    "home",
+    "hajin-map",
+    "dmz-guide",
+    "dmz-fob",
+    "dmz-weapons",
+    "missions",
+  ],
+  hubs: [
+    { key: "Map", label: "Map" },
+    { key: "DMZ Guide", label: "DMZ Guide" },
+    { key: "DMZ FOB", label: "DMZ FOB" },
+    { key: "DMZ Weapons", label: "DMZ Weapons" },
+    { key: "Tools", label: "Tools" },
+  ],
+  featureLabels: {
+    "hajin-map": "Map",
+    missions: "Orders",
+    "tool-missions": "Map mission tracker",
+    settings: "Guide profiles & backups",
+    "tool-settings": "Map settings",
+    "tool-backups": "Map backups",
+    "tool-workspace-search": "Search my map workspace",
+    "tool-explore": "Find map locations",
+    "tool-updates": "Map source updates",
+    "weapon-updates": "Weapon source updates",
+    recipes: "Crafting recipes",
+  },
+};
+export function validateNavigationConfig(config) {
+  if (
+    !Array.isArray(config.modernPrimary) ||
+    !config.modernPrimary.length ||
+    new Set(config.modernPrimary).size !== config.modernPrimary.length ||
+    config.modernPrimary.some((id) => typeof id !== "string" || !id)
+  )
+    throw Error("Modern navigation feature identities must be unique");
+  for (const [rows, identity] of [
+    [config.primary, "id"],
+    [config.groups, "key"],
+    [config.hubs, "key"],
+  ]) {
+    if (
+      !Array.isArray(rows) ||
+      !rows.length ||
+      new Set(rows.map((row) => row[identity])).size !== rows.length ||
+      new Set(rows.map((row) => row.label?.trim().toLowerCase())).size !==
+        rows.length ||
+      rows.some(
+        (row) =>
+          typeof row[identity] !== "string" ||
+          typeof row.label !== "string" ||
+          !row.label.trim() ||
+          row.label.length > 80,
+      )
+    )
+      throw Error(
+        "Navigation identities and labels must be unique and nonempty",
+      );
+  }
+  if (
+    new Set(config.groups.map((row) => row.id)).size !== config.groups.length ||
+    config.groups.some((row) => !/^[a-z][a-z0-9-]*$/.test(row.id))
+  )
+    throw Error("Invalid navigation group anchor");
+  return config;
+}
+validateNavigationConfig(navigationConfig);
+export const navigationGroup = (key, config = navigationConfig) =>
+  config.groups.find((group) => group.key === key);
+
+export const featureGroups = navigationConfig.groups.map((group) => group.key);
 const rows = [
   [
     "field-desk",

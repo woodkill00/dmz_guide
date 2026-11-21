@@ -1,0 +1,9 @@
+# Plan and analysis
+
+Manual pinned Spec Kit lifecycle artifacts; no skill/CLI invocation claimed. Constitution unchanged. Current feature registry already owns feature paths, but primary labels and group titles are duplicated and Orders enhancement selects aria-label=Track. Renaming that text alone would put Orders in the wrong category. Breadcrumb/directory fragments are also derived from group text.
+
+Use shared navigation configuration with opaque existing group keys, explicit anchor IDs and labels. Preserve existing IDs/paths and 071 baseline. Renderer accepts label configuration for regression tests; client Orders enhancement uses stable group/hub attributes. Keep route resolution in featureURL and merge optional pack context with search parameters rather than label-derived strings. Classic Studio explicitly serves any new imported navigation module. No arbitrary URL forwarding or profile migration.
+
+Touch shared config, feature registry, main navigation, workspace label overrides, menu enhancement, feature directory/breadcrumb/topology and affected tests/docs. Validate isolated label edits, all surfaces, current generated navigation and real browser links/mobile. Refresh map fingerprint/build for shared-source changes; leave existing local site ready. Independent plan/implementation review and task→analysis→fix cycle required. No public deploy or automatic main merge.
+
+Convergence: config ownership moved into the existing public feature registry, with navigation-config as facade. Client enhancement reapplies configured labels by feature ID and infers missing legacy group attributes by registered members, retaining old running companion templates without a service restart. An execution-policy rejected restart was abandoned; no equivalent process termination was attempted. Permanent old-HTML and real live-editor proofs cover the safer alternative. Final scoped receipts in acceptance.md; reviewer-owned disposition in review.md.

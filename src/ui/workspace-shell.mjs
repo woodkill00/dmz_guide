@@ -1,12 +1,7 @@
+import { navigationConfig } from "./feature-registry.mjs";
 export const UI_CONTRACT = "071-v1";
-export const primaryHubs = Object.freeze([
-  "home",
-  "hajin-map",
-  "dmz-guide",
-  "dmz-fob",
-  "dmz-weapons",
-  "missions",
-]);
+export const primaryHubs = Object.freeze(navigationConfig.modernPrimary);
+
 export function featureHub(feature) {
   const id = typeof feature === "string" ? feature : feature?.id;
   if (id === "home") return "Home";
@@ -72,22 +67,17 @@ export function featureHub(feature) {
     return "Tools";
   return "Map";
 }
-const labels = {
-  "hajin-map": "Map",
-  missions: "Orders",
-  "tool-missions": "Map mission tracker",
-  settings: "Guide profiles & backups",
-  "tool-settings": "Map settings",
-  "tool-backups": "Map backups",
-  "tool-workspace-search": "Search my map workspace",
-  "tool-explore": "Find map locations",
-  "tool-updates": "Map source updates",
-  "weapon-updates": "Weapon source updates",
-  recipes: "Crafting recipes",
-};
-export function featureLabel(f) {
-  return labels[f.id] ?? f.label;
+export function featureLabel(f, config = navigationConfig) {
+  return (
+    config.featureLabels[f.id] ??
+    (config.modernPrimary.includes(f.id)
+      ? config.hubs.find((hub) => hub.key === featureHub(f))?.label
+      : null) ??
+    config.primary.find((entry) => entry.id === f.id)?.label ??
+    f.label
+  );
 }
+
 export function mountWorkspaceShell(root = document, { mounted = true } = {}) {
   const html = root.documentElement;
   if (html?.dataset.uiVariant !== "modern") return () => {};

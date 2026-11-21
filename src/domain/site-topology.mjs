@@ -1,3 +1,4 @@
+import { navigationGroup } from "../ui/navigation-config.mjs";
 import {
   servicePath,
   serviceOrigin,
@@ -213,7 +214,7 @@ export function buildSiteTopology(pages, renderedPages) {
         label: f.label,
         href,
         kind: guide ? "missing-workspace" : "companion",
-        group: f.group,
+        group: navigationGroup(f.group).label,
         family: f.kind || "guide",
         service:
           f.kind === "map"
