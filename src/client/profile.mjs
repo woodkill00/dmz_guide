@@ -546,7 +546,12 @@ function render() {
   if ($("#inventory-fields")) {
     inventoryUses = itemUses(state.pack, state.profile);
     inventoryIndex = new Map(
-      [...inventoryUses].map(([id, uses]) => [id, uses.item]),
+      [...inventoryUses]
+        .filter(
+          ([, uses]) =>
+            itemSection(uses.item).toLowerCase() !== "weapon manuals",
+        )
+        .map(([id, uses]) => [id, uses.item]),
     );
     if (inventoryPack !== state.pack) {
       inventoryPageNumber = 0;
