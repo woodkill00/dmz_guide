@@ -108,9 +108,9 @@ test("057 untrusted backup rejects wrong kind, duplicate fields, prototypes, ove
   assert.throws(() => validateKeyWorkspace(s));
 });
 test("057 source accounting covers every imported row and preserves disagreements", () => {
-  assert.equal(allKeys.length, 62);
-  assert.equal(keyAccess.uses.length, 71);
-  assert.equal(keyAccess.groups.length, 21);
+  assert.equal(allKeys.length, 80);
+  assert.equal(keyAccess.uses.length, 89);
+  assert.equal(keyAccess.groups.length, 22);
   const counts = {};
   for (const c of keyRoomDetails.comparisons)
     counts[c.status] = (counts[c.status] || 0) + 1;
@@ -120,7 +120,7 @@ test("057 source accounting covers every imported row and preserves disagreement
     "grid-conflict": 2,
     "unresolved-identity": 1,
   });
-  assert.equal(Object.keys(keyRoomDetails.records).length, 62);
+  assert.equal(Object.keys(keyRoomDetails.records).length, 80);
   const mill = Object.entries(keyRoomDetails.records).find(([id]) =>
     id.includes("mill-explosives"),
   )[1];

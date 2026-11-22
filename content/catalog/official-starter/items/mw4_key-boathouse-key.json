@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Mission item reported from Colossus during Operation Fallen Ember.",
+  "id": "mw4:key-boathouse-key",
+  "kind": "item",
+  "name": "Boathouse Key",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-f5a54d242af4"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

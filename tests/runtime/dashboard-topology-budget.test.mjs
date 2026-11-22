@@ -69,5 +69,5 @@ test("087 default JSON node budget and dedicated topology overflow remain enforc
     /node limit/,
   );
   // Feature090 raised only the dedicated topology ceiling; overflow checks above stay unchanged.
-  assert.equal(TOPOLOGY_JSON_NODES, 400000);
+  assert.equal(TOPOLOGY_JSON_NODES, 450000);
 });

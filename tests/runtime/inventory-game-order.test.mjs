@@ -7,7 +7,7 @@ import {
 } from "../../src/domain/inventory-items.mjs";
 const expected = {
   Consumables:
-    "Energy Drink|Bandage|Pain Killers|Sedative Inhaler|Radiation Blockers|Smelling Salts|Medkit|Staff Emergency Exfil Keycard|Self-Revive Kit|Door Breacher Charge",
+    "Energy Drink|Bandage|Pain Killers|Sedative Inhaler|Radiation Blockers|Smelling Salts|Medkit|Self-Revive Kit|Door Breacher Charge",
   Backpacks:
     "Small Backpack|Medium Backpack|Medium Scavenger Backpack|Medium Weapon Backpack|Small Secure Backpack|Large Backpack|Medium Secure Backpack|Large Scavenger Backpack|Large Secure Backpack|Secure Scavenger Backpack",
   Tacticals:

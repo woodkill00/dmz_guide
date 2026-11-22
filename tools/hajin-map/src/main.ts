@@ -4,6 +4,7 @@ import {mountMapWorkspaceLayout} from './map/workspace-layout.ts';
 import {mountSidebarSections} from './map/sidebar-sections.ts';
 import {mountFieldToolbar} from './map/field-toolbar.ts';
 import {keyGridFocus} from './map/key-grid-control.ts';
+import {mountKeyMarkerTarget} from './map/key-marker-link.ts';
 import { parseToolTarget } from './tool-links.ts';
 import 'leaflet/dist/leaflet.css';
 import './styles.css';
@@ -218,6 +219,7 @@ document.querySelector('#map')!.addEventListener('keydown', event => {
 });
 const disposeSelectionDiagnostics=mountSelectionDiagnostics(viewer.map);
 const authorWorkspace = mountWorkspace(viewer, sources,source=>{const controller=createSource(source);sources.push(controller);return controller;});
+const disposeKeyMarkerTarget=mountKeyMarkerTarget(location.search,(source,id)=>authorWorkspace.openKeyMarker(source,id),()=>state==='ready');
 document.addEventListener("ui-map-layers",()=>authorWorkspace.showLayers());
 let workflowDisposed=false;window.addEventListener('pagehide',()=>workflowDisposed=true);window.addEventListener('pageshow',()=>workflowDisposed=false);
 const openWorkflow=async(target:import('./tool-links.ts').ToolTarget)=>{await authorWorkspace.ready;if(workflowDisposed)return;if(target==='layers'){document.querySelector<HTMLButtonElement>('#layers')?.click();return;}if(target==='key'||target==='grid'||target==='updates'){if(modernLayout)authorWorkspace.showLayers(target);else setKeyOpen(true);document.querySelector<HTMLElement>(target==='grid'?'#show-coordinate-grid':target==='updates'?'#map-source-updates':'#key-show-all')?.focus();return;}if(target==='map'){modernLayout?.showMap();document.querySelector<HTMLElement>('#map')?.focus();return;}if(!authorWorkspace.openTool(target))throw Error('This tool is not available yet.');};
@@ -243,6 +245,6 @@ if(requestedTool)void authorWorkspace.ready.then(()=>{
   document.querySelector('.map-workspace')?.append(message);message.focus();
 });
 
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeSelectionDiagnostics(); modernLayout?.destroy(); disposeFieldToolbar(); disposeMenuLayout(); authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeKeyMarkerTarget(); disposeSelectionDiagnostics(); modernLayout?.destroy(); disposeFieldToolbar(); disposeMenuLayout(); authorWorkspace.destroy(); sources.forEach(source => source.destroy()); viewer.destroy(); });
 }
 void startSources();

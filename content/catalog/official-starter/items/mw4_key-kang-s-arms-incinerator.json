@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "A Warden drop is suggested by the source but remains unconfirmed.",
+  "id": "mw4:key-kang-s-arms-incinerator",
+  "kind": "item",
+  "name": "Kang's Arms Incinerator",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

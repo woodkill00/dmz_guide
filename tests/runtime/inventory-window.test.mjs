@@ -17,6 +17,7 @@ import {
 import { stockLimit } from "../../src/domain/profile.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { keyItemReference } from "../../src/domain/key-item-links.mjs";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 
@@ -80,6 +81,7 @@ for (const count of [100, 1000, 5000]) {
         profile: { inventory: {}, reserves: {}, completion: {} },
       },
       esc: (s) => s,
+      keyItemReference,
     });
     assert(
       (fields.innerHTML.match(/data-inventory-item=/g) || []).length <= 50,

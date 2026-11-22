@@ -1,0 +1,16 @@
+{
+  "id": "source:key-reference-336000705dad",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-22",
+    "kind": "web",
+    "lineageKey": "key-reference-106",
+    "observationKey": "key-reference-336000705dad"
+  },
+  "publishedAt": "Not stated",
+  "reviewedAt": "2026-11-22",
+  "supports": "Reported key identity, acquisition and location context; current-build confirmation unknown.",
+  "title": "DMZMap key directory",
+  "type": "community",
+  "url": "https://dmzmap.com/keys"
+}

@@ -5,6 +5,7 @@ const form = document.querySelector("#key-filters"),
   search = document.querySelector("#key-search"),
   type = document.querySelector("#key-type"),
   locationFilter = document.querySelector("#key-location"),
+  regionFilter = document.querySelector("#key-region"),
   view = document.querySelector("#key-view"),
   groups = [...document.querySelectorAll("[data-key-group]")],
   rows = [...document.querySelectorAll("[data-key-row]")];
@@ -25,6 +26,7 @@ function filter(preserveActive = false) {
         row.querySelector("[data-target-use]")?.dataset.targetUse,
       );
     let matches =
+      (!regionFilter?.value || regionFilter.value === row.dataset.region) &&
       (!type.value || type.value === row.dataset.category) &&
       (!locationFilter.value || locationFilter.value === row.dataset.group) &&
       words.every((w) => text.includes(w));
@@ -67,6 +69,10 @@ function filter(preserveActive = false) {
     )
       group.open = true;
   }
+  for (const block of document.querySelectorAll("[data-key-region-block]"))
+    block.hidden = ![...block.querySelectorAll("[data-key-group]")].some(
+      (g) => !g.hidden,
+    );
   document.querySelector("#key-count").textContent =
     `${unique.size} of ${new Set(rows.map((row) => row.dataset.keyId)).size} keys · ${visible} matching ${visible === 1 ? "use location" : "use locations"} · ${count} map ${count === 1 ? "area" : "areas"}`;
   document.querySelector("#key-empty").hidden = !!visible;
@@ -84,6 +90,7 @@ if (form) {
     search.value = "";
     type.value = "";
     locationFilter.value = "";
+    if (regionFilter) regionFilter.value = "";
     view.value = "all";
     groups.forEach((group) => (group.open = true));
     filter();

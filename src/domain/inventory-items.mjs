@@ -1,6 +1,7 @@
 import { CURRENCY_STOCK_LIMIT } from "./quantity-limits.mjs";
 import { inventoryGameEntry } from "./inventory-game-order.mjs";
 import { fieldUpgradeRank } from "./field-upgrade-roster.mjs";
+import { keyItemReference } from "./key-item-links.mjs";
 import {
   stockLimit,
   previewUpgradeMigration,
@@ -78,6 +79,8 @@ const RESOURCE_ORDER = [
   "mw4:metals",
 ];
 export function itemSection(item) {
+  const key = keyItemReference(item.id);
+  if (key) return key.mapId === "x01" ? "Keys · X01" : "Keys · Hajin";
   if (MISC_ITEM_IDS.has(item.id)) return "Misc items";
   if (fieldUpgradeRank(item.id) !== null) return "Field upgrades";
   const gameEntry = inventoryGameEntry(item.id);
@@ -203,6 +206,8 @@ export function compareItems(a, b, mode = "name") {
 }
 
 export function inventoryFamily(item) {
+  if (keyItemReference(item.id) || /^keys(?:\s|$)/i.test(item.category || ""))
+    return "Keys";
   if (item.kind === "weapon") return "Weapons";
   if (item.kind === "currency") return "Currency";
   const type = itemSection(item);

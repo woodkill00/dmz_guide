@@ -1,4 +1,5 @@
 import { allKeys, keyAccess } from "../content/key-access.mjs";
+import { keyReference, keyMapRoster } from "../content/key-reference.mjs";
 import { keyRoomDetails } from "../content/key-room-details.mjs";
 import { e } from "./render.mjs";
 export function gridReferences(value) {
@@ -12,6 +13,24 @@ export function gridReferences(value) {
   );
 }
 export function keyMapLinks(use, key) {
+  const ref = keyReference(key.id);
+  if (ref?.mapId === "x01") {
+    return ref.markers.length
+      ? ref.markers
+          .map(
+            (m) =>
+              `<a class="key-map-link" href="/map/x01/?floor=${m.floor}&amp;marker=${e(m.id)}" target="_blank" rel="noopener noreferrer">X01 · Floor ${m.floor} ↗</a>`,
+          )
+          .join(" ")
+      : '<a class="key-map-link" href="/map/x01/" target="_blank" rel="noopener noreferrer">X01 map ↗</a><small>No matching marker in current capture</small>';
+  }
+  if (ref?.markers.length)
+    return ref.markers
+      .map(
+        (m) =>
+          `<a class="key-map-link" href="/map/?key-source=${m.provider}&amp;key-marker=${e(m.id)}" target="_blank" rel="noopener noreferrer">${ref.markers.length > 1 ? e(keyMapRoster.sources.find((s) => s.mapId === ref.mapId && s.provider === m.provider).markers.find((r) => r.id === m.id).name) : "Map marker"} ↗</a>`,
+      )
+      .join(" ");
   const refs = gridReferences(use.grid);
   return refs.length
     ? refs

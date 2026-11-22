@@ -53,6 +53,7 @@ import {
   renderMapWorkspace,
 } from "../src/ui/navigation-page.mjs";
 import { readCatalog, bundledSources, catalogJSON } from "./catalog.mjs";
+import { validateKeyInventory } from "../src/content/key-reference.mjs";
 import { prepareBundledAssets, writeBundledAssets } from "./bundled-assets.mjs";
 import { readWeaponAcquisition } from "../src/content/weapon-acquisition.mjs";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -83,6 +84,10 @@ async function generate(dist) {
     { root },
     async () => {
       const catalog = await readCatalog({ root, schema });
+      const keyPack = catalog.entries.find(
+        (e) => e.pack.id === "official:mw4-dmz-starter",
+      );
+      if (keyPack) validateKeyInventory(keyPack.pack);
       const bundled = await prepareBundledAssets({
         root,
         packs: catalog.packs,

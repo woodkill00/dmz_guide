@@ -4,9 +4,9 @@ import { loadFixturePack } from "../helpers/catalog.mjs";
 import { allRecords, renderDetail } from "../../src/ui/render.mjs";
 import { itemOverview } from "../../src/ui/item-summary.mjs";
 const pack = loadFixturePack("official-starter");
-test("all 303 item pages consolidate overview, uses and evidence without removing real stats", () => {
+test("all 376 item pages consolidate overview, uses and evidence without removing real stats", () => {
   const items = allRecords([pack]).filter((r) => r.recordType === "item");
-  assert.equal(items.length, 303);
+  assert.equal(items.length, 376);
   const names = new Set();
   for (const r of items) {
     const key = r.name.toLowerCase().replace(/[^a-z0-9]/g, "");

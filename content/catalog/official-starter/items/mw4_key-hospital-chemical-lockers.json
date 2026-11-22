@@ -1,0 +1,19 @@
+{
+  "aliases": [
+    "Hospital Chemical Lockers Key",
+    "Chem Lab Locker"
+  ],
+  "category": "Keys · Hajin",
+  "description": "Reported on hospital lab desks and storeroom shelves; not a guaranteed spawn.",
+  "id": "mw4:key-hospital-chemical-lockers",
+  "kind": "item",
+  "name": "Hospital Chemical Lockers",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-255efda5932d",
+    "source:key-reference-f5a54d242af4"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

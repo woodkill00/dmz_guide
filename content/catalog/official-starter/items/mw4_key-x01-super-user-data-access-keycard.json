@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · X01",
+  "description": "Reported in flooded barracks after power is cut.",
+  "id": "mw4:key-x01-super-user-data-access-keycard",
+  "kind": "item",
+  "name": "Super User Data Access Keycard",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-336000705dad"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

@@ -1,13 +1,20 @@
 {
-  "aliases": [],
-  "category": "Consumables",
+  "aliases": [
+    "Maintenance Room",
+    "Maintenance Access Card",
+    "Maintenance Access"
+  ],
+  "category": "Keys · X01",
   "description": "TroubleChute-listed item. Current-build behavior is not independently verified.",
   "id": "mw4:tcno-item-x01-maintenance-access",
   "kind": "item",
   "name": "Maintenance Access",
   "rarity": "Rare",
   "sourceIds": [
-    "source:tcno-items-20261110"
+    "source:tcno-items-20261110",
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1",
+    "source:key-reference-a3147e38e43b"
   ],
   "stats": [],
   "status": "observed",

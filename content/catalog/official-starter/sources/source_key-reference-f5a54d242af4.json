@@ -1,0 +1,16 @@
+{
+  "id": "source:key-reference-f5a54d242af4",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-10-28",
+    "kind": "web",
+    "lineageKey": "key-reference-106",
+    "observationKey": "key-reference-f5a54d242af4"
+  },
+  "publishedAt": "Not stated",
+  "reviewedAt": "2026-10-28",
+  "supports": "Reported key identity, acquisition and location context; current-build confirmation unknown.",
+  "title": "COD Central · Hospital Chemical Lockers",
+  "type": "community",
+  "url": "https://codcentral.net/blog/mw4-dmz-keys/"
+}

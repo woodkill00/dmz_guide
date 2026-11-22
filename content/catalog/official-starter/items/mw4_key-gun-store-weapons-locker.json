@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Explosives Equipment Kit at levels 16 and 19; Trap Equipment Kit at level 42.",
+  "id": "mw4:key-gun-store-weapons-locker",
+  "kind": "item",
+  "name": "Gun Store Weapons Locker",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-5e7a280c4b5b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

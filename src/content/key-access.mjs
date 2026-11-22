@@ -7,6 +7,9 @@ export const KEY_ACCESS_SOURCES = [
   "https://dmztracker.gg/guides/keys-guide/",
   "https://www.modern-warfare4.wiki/guide/mw4-dmz-irradiated-container",
   "https://codcentral.net/blog/mw4-dmz-keys/",
+  "https://dmzhub.gg/maps/x01-black-site",
+  "https://dmzmap.com/keys",
+  "https://hajindmzkeys.com/areas/x01/",
 ];
 const requireValue = (v) => {
   if (!v) throw Error("Invalid key access data");

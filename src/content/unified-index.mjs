@@ -3,6 +3,7 @@ import { resolvePresentation } from "../ui/presentation-config.mjs";
 import { featureLabel } from "../ui/workspace-shell.mjs";
 import { features, featureURL } from "../ui/feature-registry.mjs";
 import { allKeys, keyAccess } from "./key-access.mjs";
+import { keyReference } from "./key-reference.mjs";
 import { keyRoomDetails } from "./key-room-details.mjs";
 import { gridReferences } from "../ui/key-workspace-view.mjs";
 import { readWeaponIntel } from "./weapon-intel.mjs";
@@ -34,6 +35,8 @@ export async function buildUnifiedIndex(packs) {
   );
   const other = [];
   for (const k of allKeys) {
+    const ref = keyReference(k.id),
+      marker = ref.markers[0];
     const grid = gridReferences(k.locations[0]?.grid || "")[0];
     other.push(
       row(
@@ -49,15 +52,22 @@ export async function buildUnifiedIndex(packs) {
         ].join(" "),
         "/keys/" + k.id + "/",
         {
-          mapUrl: grid
-            ? "/map/?key-grid=" +
-              grid +
-              "&key-name=" +
-              encodeURIComponent(k.name).replace(
-                /[!'()*]/g,
-                (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase(),
-              )
-            : null,
+          mapUrl:
+            ref.mapId === "x01"
+              ? marker
+                ? `/map/x01/?floor=${marker.floor}&marker=${marker.id}`
+                : "/map/x01/"
+              : marker
+                ? `/map/?key-source=${marker.provider}&key-marker=${encodeURIComponent(marker.id)}`
+                : grid
+                  ? "/map/?key-grid=" +
+                    grid +
+                    "&key-name=" +
+                    encodeURIComponent(k.name).replace(
+                      /[!'()*]/g,
+                      (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase(),
+                    )
+                  : null,
           planUrl: "/keys/" + k.id + "/",
         },
       ),

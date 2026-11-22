@@ -1,6 +1,8 @@
 {
-  "aliases": [],
-  "category": "Keys",
+  "aliases": [
+    "Reactor DRC Locker"
+  ],
+  "category": "Keys · Hajin",
   "description": "Listed as a FOB upgrade material by TroubleChute. Acquisition and live-build applicability are not independently verified.",
   "id": "mw4:tcno-key-fallout-drc-locker",
   "kind": "item",
@@ -8,7 +10,9 @@
   "rarity": "Ultra",
   "sourceIds": [
     "source:tcno-fob-20261110",
-    "source:tcno-items-20261110"
+    "source:tcno-items-20261110",
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
   ],
   "stats": [],
   "status": "observed",

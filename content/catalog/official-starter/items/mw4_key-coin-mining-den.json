@@ -1,0 +1,17 @@
+{
+  "aliases": [
+    "Coin Mining Den Key"
+  ],
+  "category": "Keys · Hajin",
+  "description": "Story reward: Operation Shopping Hacks.",
+  "id": "mw4:key-coin-mining-den",
+  "kind": "item",
+  "name": "Coin Mining Den",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-5e7a280c4b5b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

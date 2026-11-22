@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "A key is reported behind the East Wing terminal that takes four K9 Battery Cores.",
+  "id": "mw4:key-the-citadel-main-control-room",
+  "kind": "item",
+  "name": "The Citadel Main Control Room",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

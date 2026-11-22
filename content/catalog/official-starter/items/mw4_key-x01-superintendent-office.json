@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Superintendent´s Office"
+  ],
+  "category": "Keys · X01",
+  "description": "Reported as loot; no guaranteed source established.",
+  "id": "mw4:key-x01-superintendent-office",
+  "kind": "item",
+  "name": "Superintendent's Office",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1",
+    "source:key-reference-a3147e38e43b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

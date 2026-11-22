@@ -77,11 +77,11 @@ test("protected identities, names and rarity labels never enter directory metada
   assert.ok(!JSON.stringify(groups).includes("Secret Alloy"));
   assert.equal(groups.find((g) => g.label === "Not recorded").items.length, 2);
 });
-test("all303 starter items occur once in their recorded groups and keep exact pack-specific links", () => {
+test("all376 starter items occur once in their recorded groups and keep exact pack-specific links", () => {
   const p = loadFixturePack("official-starter"),
     before = JSON.stringify(p),
     groups = rarityItems(p);
-  assert.equal(groups.flatMap((g) => g.items).length, 303);
+  assert.equal(groups.flatMap((g) => g.items).length, 376);
   assert.deepEqual(
     groups.map((g) => [g.label, g.items.length]),
     [
@@ -91,11 +91,11 @@ test("all303 starter items occur once in their recorded groups and keep exact pa
       ["Epic", 25],
       ["Legendary", 23],
       ["Ultra", 137],
-      ["Not recorded", 44],
+      ["Not recorded", 117],
     ],
   );
   const html = renderTrackItems([p]);
-  assert.equal((html.match(/data-track-item=/g) || []).length, 303);
+  assert.equal((html.match(/data-track-item=/g) || []).length, 376);
   assert.ok(html.includes("pack=official%3Amw4-dmz-starter&amp;id="));
   assert.equal(JSON.stringify(p), before);
   assert.equal(
@@ -166,9 +166,9 @@ test("103 starter column partition is exact, disjoint and preserves published so
   );
   assert.deepEqual(
     ids.map((a) => a.length),
-    [33, 270],
+    [33, 343],
   );
-  assert.equal(new Set(ids.flat()).size, 303);
+  assert.equal(new Set(ids.flat()).size, 376);
   assert.ok(ids[0].includes("mw4:ingredient-detonators"));
   const html = renderTrackItems([p]);
   assert.equal((html.match(/data-track-item-column=/g) || []).length, 2);

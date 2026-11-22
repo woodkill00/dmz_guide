@@ -84,6 +84,10 @@
     {
       "id": "wolves-stadium",
       "name": "Wolves Stadium"
+    },
+    {
+      "id": "x01-black-site",
+      "name": "X01 Black Site"
     }
   ],
   "uses": [
@@ -971,6 +975,222 @@
       "status": "unknown",
       "sources": [],
       "note": "Additional access keys have not been established by the current sources."
+    },
+    {
+      "id": "boathouse-key--haneul-nuclear-reactor-boathouse-i4",
+      "keyId": "boathouse-key",
+      "locationName": "Haneul Nuclear Reactor boathouse",
+      "grid": "I4",
+      "groupId": "haneul-nuclear-reactor",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "helicopter-key--sky-heist-heavy-chopper-h6",
+      "keyId": "helicopter-key",
+      "locationName": "Sky Heist heavy chopper",
+      "grid": "H6",
+      "groupId": "the-grid",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "downtown-branch-lobby-main--hanex-bank-branch-the-grid-g6",
+      "keyId": "downtown-branch-lobby-main",
+      "locationName": "Hanex Bank branch · The Grid",
+      "grid": "G6",
+      "groupId": "the-grid",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "netshin-security-office--netshin-tech-complex-the-grid-g6",
+      "keyId": "netshin-security-office",
+      "locationName": "Netshin Tech Complex · The Grid",
+      "grid": "G6",
+      "groupId": "the-grid",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-deep-vault-106--deep-vault-room-106-c2",
+      "keyId": "x01-deep-vault-106",
+      "locationName": "Deep Vault Room 106",
+      "grid": "C2",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-deep-vault-301--deep-vault-room-301-b1",
+      "keyId": "x01-deep-vault-301",
+      "locationName": "Deep Vault Room 301",
+      "grid": "B1",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-deep-vault-406--deep-vault-room-406-c1",
+      "keyId": "x01-deep-vault-406",
+      "locationName": "Deep Vault Room 406",
+      "grid": "C1",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-vault-drc-locker--x01-vault-drc-locker-b1",
+      "keyId": "x01-vault-drc-locker",
+      "locationName": "X01 Vault DRC Locker",
+      "grid": "B1",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-maintenance-room--x01-maintenance-room-e5",
+      "keyId": "x01-maintenance-room",
+      "locationName": "X01 Maintenance Room",
+      "grid": "E5",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-small-test-chamber--x01-small-test-chamber-e4",
+      "keyId": "x01-small-test-chamber",
+      "locationName": "X01 Small Test Chamber",
+      "grid": "E4",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-executive-room--x01-executive-room-c4",
+      "keyId": "x01-executive-room",
+      "locationName": "X01 Executive Room",
+      "grid": "C4",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-audit-room--x01-audit-room-g4",
+      "keyId": "x01-audit-room",
+      "locationName": "X01 Audit Room",
+      "grid": "G4",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-superintendent-office--x01-superintendent-s-office-e3",
+      "keyId": "x01-superintendent-office",
+      "locationName": "X01 Superintendent's Office",
+      "grid": "E3",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-chol-min-stash-room--x01-lt-chol-min-s-stash-room-e7",
+      "keyId": "x01-chol-min-stash-room",
+      "locationName": "X01 Lt. Chol-Min's Stash Room",
+      "grid": "E7",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-staff-emergency-exfil-keycard--x01-emergency-exfil-shafts-not-recorded",
+      "keyId": "x01-staff-emergency-exfil-keycard",
+      "locationName": "X01 emergency exfil shafts",
+      "grid": "Not recorded",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-encodable-blank-keycard--x01-keycard-encoder-stations-not-recorded",
+      "keyId": "x01-encodable-blank-keycard",
+      "locationName": "X01 keycard encoder stations",
+      "grid": "Not recorded",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-archive-closet--x01-data-center-archive-closet-h5",
+      "keyId": "x01-archive-closet",
+      "locationName": "X01 Data Center archive closet",
+      "grid": "H5",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
+    },
+    {
+      "id": "x01-super-user-data-access-keycard--x01-supply-depot-flooded-barracks-f2",
+      "keyId": "x01-super-user-data-access-keycard",
+      "locationName": "X01 Supply Depot flooded barracks",
+      "grid": "F2",
+      "groupId": "x01-black-site",
+      "requiredUses": [],
+      "possibleUses": [],
+      "status": "unknown",
+      "sources": [],
+      "note": "Additional access-key prerequisites have not been established; see the source notes."
     }
   ]
 }

@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Reported Jang-ui Lieutenant drop.",
+  "id": "mw4:key-jang-ui-s-converted-power-room",
+  "kind": "item",
+  "name": "Jang-ui's Converted Power Room",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

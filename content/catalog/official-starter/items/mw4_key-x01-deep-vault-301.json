@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "Deep Vault Room 301"
+  ],
+  "category": "Keys · X01",
+  "description": "Reported Captain drop; not guaranteed.",
+  "id": "mw4:key-x01-deep-vault-301",
+  "kind": "item",
+  "name": "Deep Vault 301",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1",
+    "source:key-reference-a3147e38e43b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

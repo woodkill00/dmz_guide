@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Story reward: Operation Critical Extraction.",
+  "id": "mw4:key-mirae-electrical-room",
+  "kind": "item",
+  "name": "Mirae Electrical Room",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-5e7a280c4b5b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

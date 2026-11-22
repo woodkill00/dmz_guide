@@ -1,6 +1,8 @@
 {
-  "aliases": [],
-  "category": "Keys",
+  "aliases": [
+    "Emergency Egress Keycard"
+  ],
+  "category": "Keys · X01",
   "description": "Reported X01 printer reference. Carried-backpack materials are required; this is separate from FOB printing. Item effects and rarity are not independently verified.",
   "id": "mw4:x01-staff-emergency-exfil-keycard",
   "kind": "item",
@@ -8,7 +10,9 @@
   "rarity": "Epic",
   "sourceIds": [
     "source:gamerant-x01-printer-20261106",
-    "source:tcno-items-20261110"
+    "source:tcno-items-20261110",
+    "source:key-directory-20261122",
+    "source:key-reference-336000705dad"
   ],
   "stats": [],
   "status": "observed",

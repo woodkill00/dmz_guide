@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "The source has not established an acquisition route.",
+  "id": "mw4:key-rice-mill-bunker",
+  "kind": "item",
+  "name": "Rice Mill Bunker",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

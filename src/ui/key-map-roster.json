@@ -1,0 +1,388 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "mapId": "hajin",
+      "provider": "codcentral",
+      "url": "https://codcentral.net/blog/mw4-dmz-map/",
+      "capturedAt": "2026-10-30T21:29:02.980Z",
+      "sha256": "cba2202c2b3917da043a1c9e7d955eb65166ac53db9d038299eecce789f2420d",
+      "markers": [
+        {
+          "id": "key-air-base-drc-weapons-locker",
+          "name": "Air Base DRC Weapons Locker",
+          "floor": null
+        },
+        {
+          "id": "key-bank-branch-vault-access-1",
+          "name": "Bank Branch Vault Access (north Songdo Wharf)",
+          "floor": null
+        },
+        {
+          "id": "key-blackmarket-weapons-locker-1",
+          "name": "Blackmarket Weapons Locker (Hanrim Village)",
+          "floor": null
+        },
+        {
+          "id": "key-blackmarket-weapons-locker-2",
+          "name": "Blackmarket Weapons Locker (south Deadtown)",
+          "floor": null
+        },
+        {
+          "id": "key-coin-mining-den",
+          "name": "Coin Mining Den",
+          "floor": null
+        },
+        {
+          "id": "key-commandant-office",
+          "name": "Commandant Office",
+          "floor": null
+        },
+        {
+          "id": "key-counting-room-vault",
+          "name": "Counting Room Vault",
+          "floor": null
+        },
+        {
+          "id": "key-executive-arms-auction",
+          "name": "Executive Arms Auction",
+          "floor": null
+        },
+        {
+          "id": "key-field-depot",
+          "name": "Field Depot",
+          "floor": null
+        },
+        {
+          "id": "key-gangbyeon-apartment-b",
+          "name": "Gangbyeon Apartment B",
+          "floor": null
+        },
+        {
+          "id": "key-gas-station-electrical-room",
+          "name": "Gas Station Electrical Room",
+          "floor": null
+        },
+        {
+          "id": "key-gun-store-weapons-locker-1",
+          "name": "Gun Store Weapons Locker (west Cheongun Village)",
+          "floor": null
+        },
+        {
+          "id": "key-gun-store-weapons-locker-2",
+          "name": "Gun Store Weapons Locker (north Songdo Wharf)",
+          "floor": null
+        },
+        {
+          "id": "key-haejeok-radio-station",
+          "name": "Haejeok Radio Station",
+          "floor": null
+        },
+        {
+          "id": "key-haksan-school-armory",
+          "name": "Haksan School Armory",
+          "floor": null
+        },
+        {
+          "id": "key-hanex-guard-station",
+          "name": "Hanex Guard Station",
+          "floor": null
+        },
+        {
+          "id": "key-hanwoori-art-records-room",
+          "name": "Hanwoori Art Records Room",
+          "floor": null
+        },
+        {
+          "id": "key-hazard-storehouse",
+          "name": "Hazard Storehouse",
+          "floor": null
+        },
+        {
+          "id": "key-hoesik-supply-room",
+          "name": "Hoesik Supply Room",
+          "floor": null
+        },
+        {
+          "id": "key-imjin-mill-foremans-office",
+          "name": "Imjin Mill Foreman's Office",
+          "floor": null
+        },
+        {
+          "id": "key-iskras-control-room",
+          "name": "Iskra's Control Room",
+          "floor": null
+        },
+        {
+          "id": "key-jang-uis-converted-power-room",
+          "name": "Jang-ui's Converted Power Room",
+          "floor": null
+        },
+        {
+          "id": "key-jin-taes-private-lounge",
+          "name": "Jin-Tae's Private Lounge",
+          "floor": null
+        },
+        {
+          "id": "key-kangs-arms-incinerator",
+          "name": "Kang's Arms Incinerator",
+          "floor": null
+        },
+        {
+          "id": "key-lucera-suite-703-bedroom",
+          "name": "Lucera Suite 703 Bedroom",
+          "floor": null
+        },
+        {
+          "id": "key-mechanics-shack",
+          "name": "Mechanic's Shack",
+          "floor": null
+        },
+        {
+          "id": "key-militia-arms-depot",
+          "name": "Militia Arms Depot",
+          "floor": null
+        },
+        {
+          "id": "key-mill-explosives-lab",
+          "name": "Mill Explosives Lab",
+          "floor": null
+        },
+        {
+          "id": "key-mirae-electrical-room",
+          "name": "Mirae Electrical Room",
+          "floor": null
+        },
+        {
+          "id": "key-netshin-it-room",
+          "name": "Netshin IT Room",
+          "floor": null
+        },
+        {
+          "id": "key-old-barber-shop",
+          "name": "Old Barber Shop",
+          "floor": null
+        },
+        {
+          "id": "key-police-station-armory-1",
+          "name": "Police Station Armory (Pyeonghwa Village)",
+          "floor": null
+        },
+        {
+          "id": "key-police-station-armory-2",
+          "name": "Police Station Armory (Revolution Dam)",
+          "floor": null
+        },
+        {
+          "id": "key-police-station-armory-3",
+          "name": "Police Station Armory (Cheongun Village)",
+          "floor": null
+        },
+        {
+          "id": "key-police-station-armory-4",
+          "name": "Police Station Armory (Hajin City east)",
+          "floor": null
+        },
+        {
+          "id": "key-police-station-armory-5",
+          "name": "Police Station Armory (Wolves Stadium)",
+          "floor": null
+        },
+        {
+          "id": "key-police-weapon-depository",
+          "name": "Police Weapon Depository",
+          "floor": null
+        },
+        {
+          "id": "key-prison-encampment-storage",
+          "name": "Prison Encampment Storage",
+          "floor": null
+        },
+        {
+          "id": "key-rail-depot-storage",
+          "name": "Rail Depot Storage",
+          "floor": null
+        },
+        {
+          "id": "key-re-education-center-annex",
+          "name": "Re-Education Center Annex",
+          "floor": null
+        },
+        {
+          "id": "key-reactor-02-control-room",
+          "name": "Reactor 02 Control Room",
+          "floor": null
+        },
+        {
+          "id": "key-reactor-drc-locker",
+          "name": "Reactor DRC Locker",
+          "floor": null
+        },
+        {
+          "id": "key-rozes-highrise-armory",
+          "name": "Roze's Highrise Armory",
+          "floor": null
+        },
+        {
+          "id": "key-shop-records-room",
+          "name": "Shop Records Room",
+          "floor": null
+        },
+        {
+          "id": "key-shopping-drc-locker",
+          "name": "Shopping DRC Locker",
+          "floor": null
+        },
+        {
+          "id": "key-supreme-leaders-bunker-access-card",
+          "name": "Supreme Leader's Bunker Access Card",
+          "floor": null
+        },
+        {
+          "id": "key-the-chemists-secure-armory",
+          "name": "The Chemist's Secure Armory",
+          "floor": null
+        },
+        {
+          "id": "key-the-citadel-south-wing",
+          "name": "The Citadel South Wing",
+          "floor": null
+        },
+        {
+          "id": "key-the-doctors-command-office",
+          "name": "The Doctor's Command Office",
+          "floor": null
+        },
+        {
+          "id": "key-underground-propaganda-store-room",
+          "name": "Underground Propaganda Store Room",
+          "floor": null
+        },
+        {
+          "id": "key-utility-maintenance-storage",
+          "name": "Utility Maintenance Storage",
+          "floor": null
+        },
+        {
+          "id": "key-vault-armory",
+          "name": "Vault Armory",
+          "floor": null
+        },
+        {
+          "id": "key-weapons-mod-workshop",
+          "name": "Weapons Mod Workshop",
+          "floor": null
+        },
+        {
+          "id": "key-bank-branch-vault-access-2",
+          "name": "Bank Branch Vault Access (Wolves Stadium branch)",
+          "floor": null
+        },
+        {
+          "id": "key-bank-branch-vault-access-3",
+          "name": "Bank Branch Vault Access (Cheongun Village branch)",
+          "floor": null
+        },
+        {
+          "id": "key-gangbyeon-apartment-a",
+          "name": "Gangbyeon Apartment A",
+          "floor": null
+        },
+        {
+          "id": "key-hotel-lucera-entrance",
+          "name": "Hotel Lucera Lobby",
+          "floor": null
+        },
+        {
+          "id": "key-goranis-scout-overlook",
+          "name": "Gorani's Scout Overlook",
+          "floor": null
+        },
+        {
+          "id": "key-south-block-armory",
+          "name": "South Block Armory",
+          "floor": null
+        },
+        {
+          "id": "key-the-citadel-main-control-room",
+          "name": "The Citadel Main Control Room",
+          "floor": null
+        },
+        {
+          "id": "key-the-citadel-secondary-control-room",
+          "name": "The Citadel Secondary Control Room",
+          "floor": null
+        },
+        {
+          "id": "key-fire-station-storage-1",
+          "name": "Fire Station Storage (Imjin Farmland)",
+          "floor": null
+        },
+        {
+          "id": "key-fire-station-storage-2",
+          "name": "Fire Station Storage (Cheongun Village)",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "mapId": "x01",
+      "provider": "dmzhub",
+      "url": "https://dmzhub.gg/maps/x01-black-site",
+      "capturedAt": "2026-11-11T16:24:35.153Z",
+      "sha256": "909655d6f1dcde5ed19091aa5ff0d5417353537c3c9b71f2d063d9e93bff44f3",
+      "markers": [
+        {
+          "id": "dmzhub-723",
+          "name": "Small Test Chamber",
+          "floor": 1
+        },
+        {
+          "id": "dmzhub-732",
+          "name": "Deep Vault Room 301",
+          "floor": 1
+        },
+        {
+          "id": "dmzhub-733",
+          "name": "Maintenance Room",
+          "floor": 1
+        },
+        {
+          "id": "dmzhub-787",
+          "name": "X01 VAULT DRC LOCKER KEY",
+          "floor": 1
+        },
+        {
+          "id": "dmzhub-806",
+          "name": "Deep Vault 406",
+          "floor": 1
+        },
+        {
+          "id": "dmzhub-811",
+          "name": "Deep Vault 106",
+          "floor": 1
+        },
+        {
+          "id": "dmzhub-667",
+          "name": "Superintendent's Office",
+          "floor": 2
+        },
+        {
+          "id": "dmzhub-727",
+          "name": "Audit Room",
+          "floor": 2
+        },
+        {
+          "id": "dmzhub-730",
+          "name": "Executive Room",
+          "floor": 2
+        },
+        {
+          "id": "dmzhub-741",
+          "name": "Lt. Chol-Min's Stash Room",
+          "floor": 2
+        }
+      ]
+    }
+  ]
+}

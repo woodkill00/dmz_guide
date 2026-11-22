@@ -31,6 +31,8 @@ import { renderStudioPage } from "../src/ui/studio-page.mjs";
 const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const staticFiles = new Set([
   ...workspaceAssets,
+  "src/domain/key-item-links.mjs",
+  "src/domain/key-item-links.json",
   "src/client/page-editor.mjs",
   "src/client/page-editor-media.mjs",
   "src/client/page-editor-experience.mjs",
