@@ -2,6 +2,8 @@
 
 Open `/keys/` for separate Hajin and X01 lists. Region, location, acquisition and text filters work together. Encoder labels such as Engineering Access and Audit Officer Access find their corresponding room-card entries instead of duplicate keys.
 
+Lists, source comparisons and the trip checklist scroll with the page. Filters stay above the results and can be collapsed. **Expand areas** and **Collapse areas** change the location groups without clearing quantities or notes. Desktop tables become labelled cards on smaller screens.
+
 The checked directory contains80 canonical keys:66Hajin and14X01. Every named key-room marker in the reviewed COD Central Hajin and DMZHub X01 captures is represented. **Map coverage** lists16 keys without a matching marker in those captures, including mission/encoder cards and reported rooms. These remain available as references. This is checked-provider coverage, not proof of every key in the current game.
 
 Mapped links open the actual provider marker. X01 links select the provider floor too. Unmapped Hajin keys can show a labelled grid area; unmapped X01 keys open its overview without a guessed marker. Captures have their own dates and provider grids can disagree; sources and uncertainty remain visible.

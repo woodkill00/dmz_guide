@@ -1,0 +1,7 @@
+# Analysis
+
+Cycle2: independent planning/source review found FLOW01: collapsing a group could lose visible input focus under WebKit pointer behavior. Current Collapse action explicitly focuses its initiating button before closing groups. Private save/blur refresh now preserves disclosure state; only an explicit filter change reopens matching groups, so saved updates cannot undo Collapse. Native DOM nodes and values remain attached.
+
+Cycle3: new real-wheel browser journey passes Chromium/Firefox/WebKit. It verifies no nested vertical list containers with a14-key trip and expanded comparisons, page scroll over the X01 list, pointer Collapse with active quantity input and preserved node/value, saved reload,320–1440px/light/dark/200% and modern CSS cascade. Reviewer source finding closed; final evidence review remains separate. No public data, private-store schema or key counts changed.
+
+Cycle1: each FR maps to explicit tasks. Main risk is leaking overrides into other armory tables; use directory wrapper scope and key-workspace trip selector. Hidden rows must retain display:none under responsive cards; overflow removal must not create page-width overflow or clip focused controls. Default no-JS native tables/details still work. New group buttons do not mutate models or close private notes/backups. Retain source uncertainty,80key/89use counts and exact map links. Await independent planning review.

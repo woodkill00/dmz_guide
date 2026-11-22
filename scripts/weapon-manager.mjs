@@ -18,6 +18,7 @@ const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const statusPath = ".local/weapon-updates/manager-status.json";
 const assets = new Set([
   ...workspaceAssets,
+  "src/ui/key-directory-flow.css",
   "src/domain/key-item-links.mjs",
   "src/domain/key-item-links.json",
   "src/ui/workspace-shell.css",

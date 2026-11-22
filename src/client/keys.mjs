@@ -62,10 +62,12 @@ function filter(preserveActive = false) {
     group.querySelector("[data-group-count]").textContent =
       `(${n} ${n === 1 ? "key" : "keys"})`;
     if (
-      words.length ||
-      type.value ||
-      locationFilter.value ||
-      selected !== "all"
+      !preserveActive &&
+      (words.length ||
+        type.value ||
+        regionFilter?.value ||
+        locationFilter.value ||
+        selected !== "all")
     )
       group.open = true;
   }
@@ -80,6 +82,18 @@ function filter(preserveActive = false) {
 workspace = mountKeyWorkspace(() => filter(true));
 if (form) {
   form.hidden = false;
+  const areaActions = document.querySelector("#key-area-actions");
+  if (areaActions) {
+    areaActions.hidden = false;
+    for (const [id, open] of [
+      ["key-expand-areas", true],
+      ["key-collapse-areas", false],
+    ])
+      document.getElementById(id)?.addEventListener("click", (event) => {
+        if (!open) event.currentTarget.focus({ preventScroll: true });
+        for (const group of groups) group.open = open;
+      });
+  }
   const menu = document.querySelector("#key-filter-menu");
   if (menu && matchMedia("(max-width:600px)").matches) menu.open = false;
   form.addEventListener("submit", (e) => e.preventDefault());
@@ -98,7 +112,7 @@ if (form) {
   document.addEventListener("focusout", (event) => {
     const row = event.target.closest("[data-key-row]");
     if (row && !row.contains(event.relatedTarget))
-      queueMicrotask(() => filter());
+      queueMicrotask(() => filter(true));
   });
   filter();
 }
