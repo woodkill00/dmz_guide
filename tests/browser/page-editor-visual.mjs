@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
 import { chromium, firefox, webkit } from "playwright";
 import { pageEditorFixture } from "../helpers/page-editor.mjs";
+import { servicePath } from "../../src/domain/local-services.mjs";
 await mkdir("test-results", { recursive: true });
 for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
   const f = await pageEditorFixture(),
@@ -95,11 +96,11 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       await page.locator("main").innerText(),
       /Synthetic route notes/,
     );
-    assert.match(
+    assert.equal(
       await page
         .getByRole("link", { name: /^All missions/ })
         .getAttribute("href"),
-      /^http:\/\/127\.0\.0\.1:4173\/missions\//,
+      servicePath("guide", "/missions/"),
     );
     console.log(
       `093 ${name} Orders edit/preview/twosaves/reopen/responsive/source-preservation PASS`,

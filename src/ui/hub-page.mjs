@@ -66,7 +66,7 @@ export function featurePages() {
         .map((t) => `<option>${t}</option>`)
         .join(
           "",
-        )}</select></label><button>Search</button></form><p id="unified-status" role="status">Loading public search index…</p><div id="unified-results"></div><button id="unified-more" type="button" hidden>Show next 100</button><noscript><a href="/features/">Browse all features</a> or <a href="/catalog/">browse the catalog</a>.</noscript>`,
+        )}</select></label><button>Search</button><button type="button" id="unified-clear">Clear</button></form><p id="unified-status" role="status">Loading public search index…</p><div id="unified-results"></div><div class="site-pagination"><button id="unified-prev" type="button" hidden>Previous</button><button id="unified-more" type="button" hidden>Next100</button></div><noscript><a href="/features/">Browse all features</a> or <a href="/catalog/">browse the catalog</a>.</noscript>`,
       scripts: ["/assets/src/client/unified-search.mjs"],
     },
   ];

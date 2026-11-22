@@ -1,3 +1,4 @@
+import { renderWorkspaceTools } from "./site-tools.mjs";
 import {
   navigationConfig,
   navigationGroup,
@@ -110,7 +111,9 @@ export function renderMainNavigation({
             .map((f) => modernLink(f))
             .join("")}</section>`,
       )
-      .join("")}</div></details></nav>`;
+      .join(
+        "",
+      )}</div></details>${renderWorkspaceTools({ surface, mapBase })}</nav>`;
   }
   return `<nav class="site-nav${surface !== "guide" ? " companion-nav" : ""}" aria-label="Main navigation" data-navigation-surface="${e(surface)}">${primary
     .map((id) =>
@@ -132,7 +135,9 @@ export function renderMainNavigation({
           .map((f) => link(f))
           .join("")}</section>`,
     )
-    .join("")}</div></details></nav>`;
+    .join(
+      "",
+    )}</div></details>${renderWorkspaceTools({ surface, mapBase })}</nav>`;
 }
 export function renderBreadcrumbs(
   page,

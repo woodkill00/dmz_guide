@@ -743,7 +743,7 @@ try {
       assert.equal(await keyLink.count(), 1);
       assert.equal(
         await keyLink.getAttribute("href"),
-        "http://127.0.0.1:4173/keys/haejeok-radio-station/",
+        "/local-services/guide/?destination=%2Fkeys%2Fhaejeok-radio-station%2F",
       );
       assert.equal(await keyLink.getAttribute("target"), "_blank");
       assert.match(await keyLink.getAttribute("rel"), /noopener/);

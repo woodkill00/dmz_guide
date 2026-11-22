@@ -1,0 +1,17 @@
+[
+  "src/client/navigation-menu-entry.mjs",
+  "src/client/site-tools.mjs",
+  "src/client/navigation-state.mjs",
+  "src/storage/save-events.mjs",
+  "src/domain/site-workflows.mjs",
+  "src/domain/save-receipt.mjs",
+  "src/domain/navigation-hub.mjs",
+  "src/ui/site-tools.css",
+  "src/ui/feature-registry.mjs",
+  "src/ui/map-destinations.json",
+  "src/domain/map-routes.mjs",
+  "src/domain/local-services.mjs",
+  "src/domain/local-services.json",
+  "src/ui/navigation-config.mjs",
+  "src/ui/crafting-preview.css"
+]

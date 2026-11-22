@@ -1,3 +1,4 @@
+import { validateQualityLog } from "./site-quality.mjs";
 import { parseBounded } from "../content/limits.mjs";
 import { hashBytes } from "../content/portable.mjs";
 
@@ -27,6 +28,11 @@ export const WORKSPACE_MODULES = Object.freeze({
     origin: "http://127.0.0.1:4173",
     restore: "/map/?tool=backups",
   },
+  quality: {
+    label: "Content quality editorial notes",
+    origin: "http://127.0.0.1:4173",
+    restore: "/quality/",
+  },
   armory: {
     label: "Armory workspace",
     origin: "http://127.0.0.1:4173",
@@ -40,6 +46,13 @@ const encoder = new TextEncoder();
 export function moduleKind(value) {
   if (!value || typeof value !== "object" || Array.isArray(value))
     throw Error("Choose a supported JSON workspace export");
+  if (
+    value.version === 1 &&
+    Object.keys(value).sort().join() === "entries,version"
+  ) {
+    validateQualityLog(value);
+    return "quality";
+  }
   if (value.kind === "dmz-field-backup" && value.version === 1) return "field";
   if (value.kind === "dmz-private-map-workspace" && value.schemaVersion === 1)
     return "map";
@@ -73,8 +86,8 @@ const parse = (text, max = MAX_PART) =>
 
 /** Bundle only files explicitly selected by the owner. No cross-origin reads. */
 export async function createWorkspaceManifest(files) {
-  if (!Array.isArray(files) || !files.length || files.length > 6)
-    throw Error("Choose one to six workspace exports");
+  if (!Array.isArray(files) || !files.length || files.length > 7)
+    throw Error("Choose one to seven workspace exports");
   const modules = [],
     seen = new Set();
   let total = 0;
@@ -128,7 +141,7 @@ export async function inspectWorkspaceManifest(bundle) {
     bundle.version !== 1 ||
     !Array.isArray(bundle.modules) ||
     !bundle.modules.length ||
-    bundle.modules.length > 6 ||
+    bundle.modules.length > 7 ||
     !Array.isArray(bundle.omitted)
   )
     throw Error("Unsupported workspace manifest");

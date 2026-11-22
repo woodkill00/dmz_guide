@@ -209,6 +209,7 @@ async function generate(dist) {
     "needed-page",
     "quick-collect-page",
     "track-items-page",
+    "site-experience-page",
     "x01-printer-page",
     "features",
     "editor-page",
@@ -236,7 +237,10 @@ async function generate(dist) {
       continue;
     }
     const module = await import(pathToFileURL(file));
-    const extensions = await module.featurePages(packs, { chapterIntel });
+    const extensions = await module.featurePages(packs, {
+      chapterIntel,
+      catalog,
+    });
     for (const page of extensions)
       pages.push({
         ...quickTrackerPage(page),

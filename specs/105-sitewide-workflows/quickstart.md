@@ -1,0 +1,2 @@
+# Feature quickstart
+Run npm run local and use the printed unified address. Workspace in navigation opens help, quality, recent work, maps and recovery. Help covers all14 workflows. Quality is a public-reference editorial list, not player progress. Workspace backup can preview selected existing profile/armory current or prior snapshots; other modules use existing exports. New-tab save notices never overwrite drafts. Run npm run test:sitewide for feature journeys/measurements after building; actual command added during implementation. No account or external service needed.

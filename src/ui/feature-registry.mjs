@@ -298,6 +298,13 @@ const rows = [
     "/workspace-backup/",
     "Bundle private exports and inspect recovery modules",
   ],
+  [
+    "data-review",
+    "Source & catalog review",
+    "Manage",
+    "/data-review/",
+    "Review catalog claims and update impacts",
+  ],
   ["editor", "Editor", "Manage", "/editor/", "Private record editor"],
   ["local", "Private reader", "Reference", "/local/", "Your private content"],
   [
@@ -306,6 +313,20 @@ const rows = [
     "Manage",
     "/community/",
     "Sources and contribution guidance",
+  ],
+  [
+    "help",
+    "Help & instructions",
+    "Manage",
+    "/help/",
+    "Searchable instructions for every main workflow",
+  ],
+  [
+    "quality",
+    "Content quality",
+    "Manage",
+    "/quality/",
+    "Review field-level reference gaps and exact editor links",
   ],
   ["sitemap", "Site map", "Manage", "/sitemap/", "All pages and records"],
   [

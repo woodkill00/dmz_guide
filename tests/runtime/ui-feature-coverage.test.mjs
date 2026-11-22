@@ -47,7 +47,7 @@ test("Current static registry admission matches its captured inventory; browser 
   assert.equal(new Set(features.map((f) => f.id)).size, features.length);
   assert.equal(
     features.length,
-    89,
+    92,
     "Rebaseline the owning registry contract deliberately",
   );
   assert.equal(
@@ -55,6 +55,12 @@ test("Current static registry admission matches its captured inventory; browser 
     "/track/items/",
     "098 Items directory is the explicit added feature",
   );
+  for (const id of ["help", "quality", "data-review"])
+    assert.equal(
+      features.find((f) => f.id === id)?.path,
+      `/${id}/`,
+      "105 workflow destinations are explicit registry additions",
+    );
   assert.equal(snapshot.count, 83, "Keep the 071 historical baseline intact");
   for (const prior of snapshot.features) {
     const current = features.find((feature) => feature.id === prior.id);

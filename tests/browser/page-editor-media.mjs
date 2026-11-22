@@ -293,7 +293,7 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
           await page
             .getByRole("link", { name: "Inventory & blueprint", exact: true })
             .getAttribute("href"),
-          /^http:\/\/127\.0\.0\.1:4173\/inventory\//,
+          /^\/local-services\/guide\/\?destination=%2Finventory%2F/,
         );
         for (const width of [320, 1440]) {
           await page.setViewportSize({ width, height: 1000 });
@@ -325,8 +325,14 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
   } catch (error) {
     console.log(
       "Editor media failure",
-      await page.locator("#pe-error").textContent(),
-      await page.locator("#pe-fields").innerText(),
+      await page
+        .locator("#pe-error")
+        .textContent({ timeout: 1000 })
+        .catch(() => "not in editor"),
+      await page
+        .locator("#pe-fields")
+        .innerText({ timeout: 1000 })
+        .catch(() => "not in editor"),
     );
     await page.screenshot({
       path: `test-results/page-editor-media-failure-${name}.png`,

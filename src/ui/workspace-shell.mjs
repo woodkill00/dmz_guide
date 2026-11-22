@@ -1,3 +1,4 @@
+import { workspacePreferences } from "../domain/site-workflows.mjs";
 import { navigationConfig } from "./feature-registry.mjs";
 export const UI_CONTRACT = "071-v1";
 export const primaryHubs = Object.freeze(navigationConfig.modernPrimary);
@@ -63,6 +64,8 @@ export function featureHub(feature) {
       "features",
       "search",
       "sitemap",
+      "help",
+      "quality",
     ].includes(id)
   )
     return "Tools";
@@ -115,6 +118,12 @@ export function mountWorkspaceShell(root = document, { mounted = true } = {}) {
     writable = false;
   }
 
+  try {
+    const shared = root.defaultView.localStorage.getItem("dmz-workspace-ui-v1");
+    if (shared !== null)
+      preference.density = workspacePreferences(shared).density;
+  } catch {}
+  html.dataset.workspaceDensity = preference.density;
   html.dataset.density = preference.density;
   for (const button of root.querySelectorAll("[data-ui-density]")) {
     const paint = () => {
@@ -128,6 +137,16 @@ export function mountWorkspaceShell(root = document, { mounted = true } = {}) {
       );
     };
     paint();
+    root.defaultView.addEventListener(
+      "workspace-density",
+      (event) => {
+        if (["compact", "comfortable"].includes(event.detail?.density)) {
+          html.dataset.density = event.detail.density;
+          paint();
+        }
+      },
+      { signal },
+    );
     button.addEventListener(
       "click",
       () => {
@@ -146,6 +165,12 @@ export function mountWorkspaceShell(root = document, { mounted = true } = {}) {
           button.title =
             "Spacing changed for this page; storage is unavailable.";
         }
+        html.dataset.workspaceDensity = html.dataset.density;
+        root.defaultView.dispatchEvent(
+          new CustomEvent("workspace-density", {
+            detail: { density: html.dataset.density },
+          }),
+        );
         paint();
       },
       { signal },

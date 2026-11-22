@@ -1,3 +1,4 @@
+import { previewSavedWorkspace } from "../storage/workspace-preview.mjs";
 import { parseBounded } from "../content/limits.mjs";
 import {
   createWorkspaceManifest,
@@ -79,10 +80,10 @@ $("workspace-create").addEventListener("click", async () => {
     const files = [...$("workspace-files").files];
     if (
       !files.length ||
-      files.length > 6 ||
+      files.length > 7 ||
       files.some((file) => file.size > 20 * 1024 * 1024)
     )
-      throw Error("Choose one to six JSON exports, each up to 20 MiB");
+      throw Error("Choose one to seven JSON exports, each up to 20 MiB");
     const inputs = await Promise.all(
       files.map(async (file) => ({ name: file.name, text: await file.text() })),
     );
@@ -143,3 +144,69 @@ $("workspace-import").addEventListener("change", async () => {
       );
   }
 });
+
+let savedPreview = null,
+  savedEpoch = 0;
+const savedFingerprint = () =>
+  JSON.stringify({
+    packId: $("saved-backup-pack").value,
+    profile: $("saved-backup-profile").checked,
+    armory: $("saved-backup-armory").checked,
+    previous: $("saved-backup-snapshot").value === "previous",
+  });
+const invalidateSaved = () => {
+  savedEpoch++;
+  savedPreview = null;
+  $("saved-backup-download").hidden = true;
+};
+for (const id of [
+  "saved-backup-pack",
+  "saved-backup-profile",
+  "saved-backup-armory",
+  "saved-backup-snapshot",
+])
+  $(id).addEventListener("input", invalidateSaved);
+const requestedPack = new URL(location.href).searchParams.get("pack");
+if (requestedPack && /^[A-Za-z0-9:._-]{1,100}$/.test(requestedPack))
+  $("saved-backup-pack").value = requestedPack;
+$("saved-backup-preview").onclick = async () => {
+  invalidateSaved();
+  const epoch = savedEpoch,
+    fingerprint = savedFingerprint();
+  $("saved-backup-status").textContent = "Inspecting existing saved records…";
+  $("saved-backup-details").replaceChildren();
+  try {
+    const preview = await previewSavedWorkspace(JSON.parse(fingerprint));
+    if (epoch !== savedEpoch || fingerprint !== savedFingerprint()) return;
+    savedPreview = { ...preview, fingerprint };
+    $("saved-backup-status").textContent =
+      `Preview ready · ${preview.projection.modules.length} modules · ${preview.projection.totalBytes.toLocaleString()} bytes · ${preview.previous ? "previous saved snapshots" : "current saved records"}. No restore performed.`;
+    const list = document.createElement("ul");
+    for (const row of preview.snapshots) {
+      const li = document.createElement("li");
+      li.textContent = `${row.id}: current ${row.current ? "available" : "absent"}; previous ${row.previous ? "available" : "absent"}`;
+      list.append(li);
+    }
+    const omissions = document.createElement("p");
+    omissions.textContent =
+      "Not in this bundle: " +
+      preview.projection.omitted
+        .map((id) => WORKSPACE_MODULES[id].label)
+        .join(", ");
+    $("saved-backup-details").append(list, omissions);
+    $("saved-backup-download").hidden = false;
+  } catch (error) {
+    if (epoch === savedEpoch)
+      $("saved-backup-status").textContent = error.message;
+  }
+};
+$("saved-backup-download").onclick = () => {
+  if (!savedPreview || savedPreview.fingerprint !== savedFingerprint()) return;
+  download(
+    "dmz-saved-workspace.json",
+    JSON.stringify(savedPreview.bundle, null, 2),
+  );
+  $("saved-backup-status").textContent =
+    "Bundle download requested. Confirm the file exists in browser Downloads; this does not prove filesystem persistence. No restore performed.";
+};
+window.addEventListener("pagehide", invalidateSaved);

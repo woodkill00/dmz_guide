@@ -166,6 +166,12 @@ try {
   await needed.locator("#needed-refresh").click();
   await needed.locator("#needed-scope").selectOption("collection");
   await needed.locator("#needed-query").fill("Fictional wire");
+  await needed.waitForFunction(
+    () =>
+      document.querySelector(
+        '[data-needed-item="craft:wire"] [data-needed-required] .needed-number',
+      )?.textContent === "12",
+  );
   assert.equal(await value("required"), "12");
   assert.equal(await value("missing"), "0");
   await needed.evaluate(async () => {

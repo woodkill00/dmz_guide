@@ -1,12 +1,12 @@
 {
   "source": "src/ui/feature-registry.mjs",
-  "head": "d251c1033387e0d699aae4e5f3d77c23fc71e52a",
+  "head": "1d8544b6eb1294a9916a9f02968590fd64906ac0",
   "hashes": {
-    "src/ui/feature-registry.mjs": "36c54ce21863d1753b2e6ab1f5cc40d261e2a6e061f7105393344b247aacb4b5",
+    "src/ui/feature-registry.mjs": "8c28e0b1d2e874a41f1715069de6dbe5361911d055e41d25b4e4118fdb930421",
     "src/ui/map-destinations.json": "7eda40618c784083b520f1ad9c356fe3d284ce83a394389f9d6527beb7da85f0",
     "specs/071-ui-ux-implementation/feature-coverage.md": "3d4511eb0781dfc70cfddac5d2423913ec442a109c6dc84306e5e8f9e9b16add"
   },
-  "count": 89,
+  "count": 92,
   "features": [
     {
       "id": "track-items",
@@ -261,6 +261,13 @@
       "group": "Manage"
     },
     {
+      "id": "data-review",
+      "label": "Source & catalog review",
+      "kind": "guide",
+      "path": "/data-review/",
+      "group": "Manage"
+    },
+    {
       "id": "editor",
       "label": "Editor",
       "kind": "guide",
@@ -279,6 +286,20 @@
       "label": "Community",
       "kind": "guide",
       "path": "/community/",
+      "group": "Manage"
+    },
+    {
+      "id": "help",
+      "label": "Help & instructions",
+      "kind": "guide",
+      "path": "/help/",
+      "group": "Manage"
+    },
+    {
+      "id": "quality",
+      "label": "Content quality",
+      "kind": "guide",
+      "path": "/quality/",
       "group": "Manage"
     },
     {

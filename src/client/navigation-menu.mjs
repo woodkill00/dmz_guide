@@ -1,3 +1,4 @@
+import { setupSiteTools } from "./site-tools.mjs";
 import { features, navigationConfig } from "../ui/feature-registry.mjs";
 import { featureHub, featureLabel } from "../ui/workspace-shell.mjs";
 // Native disclosures remain navigation, not application menus. No private state.
@@ -5,6 +6,7 @@ export function setupNavigationMenu(
   root = document,
   navigation = navigationConfig,
 ) {
+  setupSiteTools(root);
   // Older running companion servers can retain HTML templates; apply the same
   // display configuration by stable feature IDs without restarting a session.
   for (const nav of root.querySelectorAll(".site-nav")) {

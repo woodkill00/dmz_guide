@@ -1,3 +1,4 @@
+import { readWeaponAcquisition } from "./weapon-acquisition.mjs";
 import { resolvePresentation } from "../ui/presentation-config.mjs";
 import { featureLabel } from "../ui/workspace-shell.mjs";
 import { features, featureURL } from "../ui/feature-registry.mjs";
@@ -75,6 +76,19 @@ export async function buildUnifiedIndex(packs) {
           "Source reports; verify mode and build",
         ].join(" "),
         "/armory/" + w.id + "/",
+      ),
+    );
+  const acquisition = await readWeaponAcquisition();
+  for (const weapon of acquisition.weapons.filter(
+    (w) => !db.weapons.some((combat) => combat.id === w.id),
+  ))
+    other.push(
+      row(
+        "weapon:" + weapon.id,
+        "weapon",
+        weapon.name,
+        "Acquisition and camo reference; combat statistics not yet catalogued.",
+        `/armory/acquisition/?weapon=${encodeURIComponent(weapon.id)}#weapon-${encodeURIComponent(weapon.id)}`,
       ),
     );
   for (const a of db.attachments)
