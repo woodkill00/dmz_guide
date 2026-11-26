@@ -10,8 +10,8 @@
 }
 .key-directory-page .key-filters {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: calc(0.5rem + 0.15vw);
-  margin-block: 0.5rem;
+  gap: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.0015));
+  margin-block: var(--ui-space-4);
   align-items: end;
 }
 .key-directory-page .key-filters label:has(#key-search) {
@@ -24,14 +24,14 @@
 .key-directory-page .key-directory-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-block: 0.75rem;
+  gap: var(--ui-space-4);
+  margin-block: var(--ui-space-6);
 }
 .key-directory-page .key-directory-actions[hidden] {
   display: none;
 }
 .key-directory-page .key-directory-sources {
-  margin-block: 0.5rem;
+  margin-block: var(--ui-space-4);
 }
 .key-directory-page .key-directory-sources > summary {
   cursor: pointer;
@@ -39,7 +39,9 @@
   align-content: center;
 }
 .key-directory-page .key-location-group {
-  margin-block: calc(0.65rem + 0.1vw);
+  margin-block: calc(
+    var(--ui-space-5) + calc(var(--ui-viewport-inline) * 0.001)
+  );
 }
 html .key-directory-page .armory-table-wrap,
 html[data-ui-variant="modern"]
@@ -77,7 +79,7 @@ html[data-ui-variant="modern"]
 .key-directory-page .key-use-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem 0.65rem;
+  gap: var(--ui-space-2) var(--ui-space-5);
 }
 .key-directory-page .key-directory th:first-child {
   inline-size: 28%;
@@ -101,9 +103,9 @@ html[data-ui-variant="modern"]
   .key-directory-page table.armory-table tbody tr {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.4rem 0.75rem;
+    gap: var(--ui-space-3) var(--ui-space-6);
     border-block-end: 1px solid var(--line);
-    padding-block: 0.65rem;
+    padding-block: var(--ui-space-5);
   }
   .key-directory-page table.armory-table tr[hidden] {
     display: none;
@@ -112,7 +114,7 @@ html[data-ui-variant="modern"]
     display: block;
     inline-size: 100%;
     border: 0;
-    padding: 0.3rem;
+    padding: var(--ui-space-2);
   }
   .key-directory-page table.armory-table th[scope="row"] {
     grid-column: 1 / -1;
@@ -122,7 +124,7 @@ html[data-ui-variant="modern"]
     content: attr(data-label);
     display: block;
     font-weight: 650;
-    margin-block-end: 0.3rem;
+    margin-block-end: var(--ui-space-2);
   }
 }
 @media (max-width: 600px) {

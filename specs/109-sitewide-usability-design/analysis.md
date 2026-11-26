@@ -22,3 +22,6 @@ Pending: independent planning consistency review and any owning-artifact repairs
 ## Pass3 — independent recheck and closure
 
 Independent reviewer reports planning READY; USABILITY-01/02 are closed and reviewer-owned checklist completed. All18 requirements and32 task definitions reconcile; dependency graph is acyclic and local document links pass. No confirmed blocking planning issue remains. This is not an application implementation/test verdict. T03–T31 and their baseline/rollout/acceptance gates remain future work.
+
+## Implementation repair cycle
+Independent USABILITY03/04 repairs preserve embedded navigation reopen controls after DOM reparenting and measure actual pinned offsets. Browser checks exposed and repaired a320px/200%-text dashboard heading overflow and a fixed migration notice obscuring map actions. Independent visual review identified compact missing-image labels and overlapping legacy mobile toolbars; repairs are undergoing matching browser/visual rechecks. Full runtime's isolated navigation VM is updated for the new layout initializer; real DOM behavior is covered separately. Final implementation analysis remains open while acceptance evidence completes.

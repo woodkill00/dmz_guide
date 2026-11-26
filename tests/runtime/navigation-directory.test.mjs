@@ -146,6 +146,7 @@ test("033 FR-004: intermediary navigation carries only a bounded pack to same-or
       // This VM isolates catalog propagation. Real DOM dismissal is exercised
       // in compact-ui.mjs across all three browser engines.
       setupNavigationMenu: () => {},
+      mountLayoutSystem: () => {},
       rememberFeature: () => {},
       URL,
       location: {

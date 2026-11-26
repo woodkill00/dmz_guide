@@ -1,0 +1,292 @@
+/* Component refinements; data and interaction owners remain unchanged. */
+@media (min-width: 761px) {
+  html[data-layout-system="109"][data-ui-variant="legacy"]
+    .map-workspace
+    > .field-toolbar {
+    top: calc(var(--ui-control) + var(--ui-gutter) * 2);
+    left: var(--ui-gutter);
+    transform: none;
+    max-inline-size: calc(100% - var(--ui-gutter) * 2);
+  }
+}
+@media (max-width: 760px) {
+  html[data-layout-system="109"][data-ui-variant="legacy"] body.map-page,
+  html[data-layout-system="109"][data-ui-variant="legacy"] body.map-page #app {
+    block-size: auto;
+    min-block-size: var(--ui-viewport-block);
+    overflow: visible;
+  }
+  html[data-layout-system="109"][data-ui-variant="legacy"]
+    body.map-page
+    .workspace {
+    block-size: auto;
+    min-block-size: calc(var(--ui-terrain-min-block) + var(--ui-control) * 4);
+    overflow: visible;
+  }
+  html[data-layout-system="109"][data-ui-variant="legacy"] .map-workspace {
+    display: grid;
+    grid-template-rows: auto auto minmax(var(--ui-terrain-min-block), 1fr);
+    min-block-size: calc(var(--ui-terrain-min-block) + var(--ui-control) * 4);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(var(--ui-terrain-min-block), 1fr);
+  }
+  html[data-layout-system="109"][data-ui-variant="legacy"]
+    .map-workspace
+    > .field-toolbar {
+    position: static;
+    grid-row: 1;
+    transform: none;
+    inline-size: auto;
+    max-inline-size: none;
+    margin: var(--ui-space-3) var(--ui-gutter);
+  }
+  html[data-layout-system="109"][data-ui-variant="legacy"]
+    .map-workspace
+    > .map-top-right {
+    position: static;
+    grid-row: 2;
+    transform: none;
+    justify-content: flex-end;
+    margin: var(--ui-space-3) var(--ui-gutter);
+    max-inline-size: none;
+  }
+  html[data-layout-system="109"][data-ui-variant="legacy"]
+    .map-workspace
+    > #map {
+    grid-row: 3;
+    min-block-size: var(--ui-terrain-min-block);
+    block-size: 100%;
+  }
+  html[data-layout-system="109"][data-ui-variant="legacy"]
+    .map-workspace
+    > .map-heading {
+    display: none;
+  }
+}
+html[data-layout-system="109"][data-layout-short="true"]
+  #ui-selection-detail
+  .marker-popup-title {
+  font-size: var(--ui-type-label);
+  line-height: 1.2;
+}
+.local-transfer-notice {
+  position: relative;
+  font-size: var(--ui-type-meta);
+}
+.local-transfer-notice > summary {
+  min-block-size: var(--ui-control);
+  align-content: center;
+  padding: var(--ui-space-2) var(--ui-space-4);
+  cursor: pointer;
+}
+.local-transfer-notice > a {
+  display: block;
+  max-inline-size: var(--ui-overlay-inline);
+  padding: var(--ui-space-4);
+}
+html[data-layout-system="109"] {
+  scroll-padding-block-start: calc(var(--ui-top-offset) + var(--ui-gap));
+}
+html[data-layout-system="109"] body {
+  overflow-wrap: break-word;
+}
+html[data-layout-system="109"]
+  :is(
+    main,
+    .panel,
+    .filter-bar,
+    .item-action-card,
+    .dash-section,
+    .mission-page-card
+  ) {
+  min-inline-size: 0;
+}
+html[data-layout-system="109"] :is(.site-header, .companion-header) {
+  gap: var(--ui-gap);
+  padding-block: var(--ui-space-4);
+  padding-inline: var(--ui-gutter);
+}
+html[data-layout-system="109"] .site-header .header-note {
+  font-size: var(--ui-type-meta);
+  line-height: 1.35;
+}
+.ui-layout-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ui-space-2);
+  margin-inline-start: auto;
+}
+.ui-layout-controls button {
+  min-block-size: var(--ui-hit-primary);
+  padding: var(--ui-space-3) var(--ui-space-4);
+  font-size: var(--ui-type-label);
+}
+html[data-layout-system="109"] .site-nav {
+  gap: var(--ui-space-2);
+  padding-block: var(--ui-space-2);
+  padding-inline: var(--ui-gutter);
+}
+html[data-layout-system="109"] :is(.nav-more > div, .site-tools-panel) {
+  max-inline-size: var(--ui-overlay-inline);
+  max-block-size: min(
+    var(--ui-overlay-block),
+    var(--ui-visible-block, var(--ui-viewport-block))
+  );
+  overscroll-behavior: contain;
+}
+html[data-layout-system="109"] :is(.breadcrumbs, .quick-tracker-tabs) {
+  gap: var(--ui-space-3);
+  flex-wrap: wrap;
+}
+html[data-layout-system="109"]
+  :is(.dash-toolbar, .filter-bar, .inventory-filters, .upgrade-view-controls) {
+  gap: var(--ui-gap);
+  align-items: end;
+}
+html[data-layout-system="109"]
+  :is(
+    .dash-section,
+    .mission-page-card,
+    .item-action-card,
+    .upgrade-family,
+    .fob-upgrade-card,
+    .weapon-picker-card
+  ) {
+  border-radius: var(--ui-radius-lg);
+}
+html[data-layout-system="109"]
+  :is(.dash-section > header, .item-workspace-header, .page-heading) {
+  gap: var(--ui-gap);
+}
+html[data-layout-system="109"]
+  :is(
+    .inventory-name > small,
+    .tracker-catalog-note,
+    .item-card__metadata,
+    .dash-summary,
+    .order-preview-count
+  ) {
+  font-size: var(--ui-type-meta);
+  line-height: 1.45;
+}
+html[data-layout-system="109"]
+  :is(
+    .dash-tile,
+    .item-card,
+    .inventory-name,
+    .weapon-picker-name,
+    .key-title,
+    .mission-page-card h4
+  ) {
+  overflow-wrap: anywhere;
+}
+html[data-layout-system="109"]
+  :is(.dash-tile, .build-summary-tile, .item-craft-button) {
+  gap: var(--ui-space-4);
+}
+html[data-layout-system="109"]
+  :is(.dash-section-links, .dash-quick-tools, .item-section-links)
+  a {
+  min-block-size: var(--ui-hit-compact);
+  align-content: center;
+}
+html[data-layout-system="109"] .inventory-head {
+  top: var(--ui-top-offset);
+}
+html[data-layout-system="109"] :is(.inventory-head, table thead) {
+  scroll-margin-block-start: calc(var(--ui-top-offset) + var(--ui-gap));
+}
+html[data-layout-system="109"]
+  :is(.item-action-card, .key-detail-panel, .mission-page-card)
+  p {
+  line-height: 1.5;
+}
+html[data-layout-system="109"] .mission-objective-steps > li {
+  margin-block: var(--ui-space-2);
+}
+html[data-layout-system="109"]
+  :is(.item-collection-counts, .item-collection-counts dd) {
+  font-variant-numeric: tabular-nums;
+}
+html[data-layout-system="109"]
+  :is(.quantity-cell input, .owned-cell input, [data-fob-owned]) {
+  min-inline-size: calc(1ch * 9);
+  font-variant-numeric: tabular-nums;
+}
+html[data-layout-system="109"]
+  :is(dialog, [role="dialog"]):not([data-ui-inline]) {
+  max-inline-size: min(var(--ui-content), calc(100vi - var(--ui-gutter) * 2));
+  max-block-size: var(--ui-overlay-block);
+}
+html[data-layout-system="109"] dialog:modal {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+html[data-layout-system="109"]
+  :is([role="alert"], .error, .save-error, .draft-recovery, .notice.error) {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  html[data-layout-system="109"] .site-header .header-note {
+    display: none;
+  }
+  html[data-layout-system="109"] .site-header {
+    flex-wrap: wrap;
+  }
+  html[data-layout-system="109"] .ui-layout-controls {
+    margin-inline-start: 0;
+  }
+  html[data-layout-system="109"]
+    :is(.item-workspace-grid, .key-directory-layout) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  html[data-layout-system="109"] .item-action-card {
+    position: static;
+  }
+  html[data-layout-system="109"] :is(.dash-toolbar label, .filter-bar label) {
+    max-inline-size: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-layout-system="109"] {
+    scroll-behavior: auto;
+  }
+}
+html[data-layout-system="109"] .site-nav[hidden] {
+  display: none;
+}
+html[data-layout-system="109"]
+  .site-nav[data-ui-navigation-state="collapsed"]
+  > :not(.ui-layout-controls) {
+  display: none;
+}
+html[data-layout-system="109"] .readable-marker-popup .marker-popup-details {
+  max-block-size: min(
+    calc(var(--ui-visible-block, var(--ui-viewport-block)) * 0.42),
+    calc(1rem * 18)
+  );
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+html[data-layout-system="109"][data-layout-short="true"]
+  :is(
+    .site-header,
+    .site-nav,
+    .quick-tracker-tabs,
+    .pe-outline,
+    .pe-inspector
+  ) {
+  position: static;
+  max-block-size: none;
+}
+
+.ui-layout-controls button {
+  background: var(--surface, var(--ws-surface));
+  color: var(--text, var(--ws-text));
+  border: 1px solid var(--line);
+  font-size: var(--ui-type-label);
+  min-block-size: var(--ui-control);
+  padding: var(--ui-space-3) var(--ui-space-5);
+}

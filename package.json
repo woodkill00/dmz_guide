@@ -48,7 +48,12 @@
     "test:sitemap": "node tests/browser/site-topology-run.mjs",
     "test:ui:modern": "node scripts/test-modern-ui.mjs",
     "test:ui:map": "node scripts/test-modern-ui.mjs --map-only",
-    "items:icons": "node scripts/collect-item-icons.mjs"
+    "items:icons": "node scripts/collect-item-icons.mjs",
+    "ui:audit": "node scripts/ui-audit.mjs",
+    "test:ui:sitewide": "node tests/browser/usability109.mjs",
+    "test:ui:sweep": "node tests/browser/usability109-sweep.mjs",
+    "test:ui:services": "node tests/browser/usability109-services.mjs",
+    "test:ui:performance": "node tests/browser/usability109-performance.mjs"
   },
   "devDependencies": {
     "@tesseract.js-data/eng": "1.0.0",

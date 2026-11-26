@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { chromium, firefox, webkit } from "playwright";
 import { monitorBrowser } from "./health.mjs";
-const base = "http://127.0.0.1:4173";
+const base = process.env.DMZ_SITE_URL || "http://127.0.0.1:4173";
 for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
   const browser = await engine.launch(),
     health = monitorBrowser(browser);

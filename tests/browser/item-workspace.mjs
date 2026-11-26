@@ -7,7 +7,7 @@ const context = await browser.newContext({
   viewport: { width: 1440, height: 1000 },
 });
 const page = await context.newPage();
-const base = "http://127.0.0.1:4173";
+const base = process.env.DMZ_SITE_URL || "http://127.0.0.1:4173";
 const pack = "official:mw4-dmz-starter";
 const errors = [];
 page.on("pageerror", (reason) =>

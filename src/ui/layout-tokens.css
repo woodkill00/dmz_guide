@@ -1,14 +1,75 @@
-/* Compact visual rhythm; controls grow with text instead of clipping it. */
+/* Shared dimension arithmetic for guide, editor and map chrome. */
 :root {
-  --ui-gutter: clamp(0.75rem, calc(0.5rem + 1vw), 1.5rem);
-  --ui-gap: clamp(0.5rem, calc(0.4rem + 0.3vw), 0.75rem);
-  --ui-pad: clamp(0.625rem, calc(0.5rem + 0.4vw), 1rem);
-  --ui-control: max(44px, 2.5rem);
-  --ui-radius: 0.5rem;
+  --ui-space-unit: 0.25rem;
+  --ui-density-factor: 1;
+  --ui-space-1: calc(var(--ui-space-unit) * 0.5 * var(--ui-density-factor));
+  --ui-space-2: calc(var(--ui-space-unit) * var(--ui-density-factor));
+  --ui-space-3: calc(var(--ui-space-unit) * 1.5 * var(--ui-density-factor));
+  --ui-space-4: calc(var(--ui-space-unit) * 2 * var(--ui-density-factor));
+  --ui-space-5: calc(var(--ui-space-unit) * 2.5 * var(--ui-density-factor));
+  --ui-space-6: calc(var(--ui-space-unit) * 3 * var(--ui-density-factor));
+  --ui-space-7: calc(var(--ui-space-unit) * 3.5 * var(--ui-density-factor));
+  --ui-space-8: calc(var(--ui-space-unit) * 4 * var(--ui-density-factor));
+  --ui-space-9: calc(var(--ui-space-unit) * 5 * var(--ui-density-factor));
+  --ui-space-10: calc(var(--ui-space-unit) * 6 * var(--ui-density-factor));
+  --ui-space-11: calc(var(--ui-space-unit) * 8 * var(--ui-density-factor));
+  --ui-space-12: calc(var(--ui-space-unit) * 12 * var(--ui-density-factor));
+  --ui-type-meta: calc(1rem * 0.8125);
+  --ui-type-label: calc(1rem * 0.875);
+  --ui-type-body: calc(1rem * 0.9375);
+  --ui-type-base: 1rem;
+  --ui-type-lead: calc(1rem * 1.125);
+  --ui-type-heading: calc(1rem * 1.25);
+  --ui-type-title: calc(1rem * 1.5);
+  --ui-type-display: clamp(1.75rem, calc(1.25rem + 2vi), 3rem);
+  --ui-hit-primary: max(44px, calc(1rem * 2.75));
+  --ui-hit-compact: max(24px, calc(1rem * 1.5));
+  --ui-radius-sm: calc(var(--ui-space-unit) * 1.5);
+  --ui-radius: var(--ui-radius-2);
+  --ui-radius-lg: calc(var(--ui-space-unit) * 3);
+  --ui-gutter: clamp(0.75rem, calc(0.5rem + 1vi), 1.5rem);
+  --ui-gap: clamp(0.5rem, calc(0.4rem + 0.3vi), 0.875rem);
+  --ui-pad: var(--ui-space-6);
+  --ui-control: max(44px, calc(1rem * 2.75));
   --ui-content: 90rem;
-  --ui-body: 0.9375rem;
-  --ui-metadata: 0.8125rem;
-  --ui-pane-inline: clamp(18rem, 25vw, 22rem);
-  --ui-terrain-min-block: 12rem;
-  --ui-task-min-block: 14rem;
+  --ui-body: var(--ui-type-body);
+  --ui-metadata: var(--ui-type-meta);
+  --ui-pane-inline: clamp(18rem, calc(14rem + 8vi), 22rem);
+  --ui-viewport-block: 100vh;
+  --ui-top-offset: 0px;
+  --ui-available-block: max(
+    0px,
+    calc(var(--ui-viewport-block) - var(--ui-top-offset))
+  );
+  --ui-overlay-block: max(
+    0px,
+    calc(
+      var(--ui-visible-block, var(--ui-viewport-block)) - var(--ui-top-offset) -
+        var(--ui-gutter) * 2 - env(safe-area-inset-bottom, 0px)
+    )
+  );
+  --ui-overlay-inline: min(34rem, calc(100vi - var(--ui-gutter) * 2));
+  --ui-terrain-min-block: calc(1rem * 12);
+  --ui-task-min-block: calc(1rem * 14);
+  --ui-layer-content: 1;
+  --ui-layer-sticky: 20;
+  --ui-layer-menu: 700;
+  --ui-layer-dialog: 3000;
+  --ui-radius-1: calc(var(--ui-space-unit) * 1);
+  --ui-radius-2: calc(var(--ui-space-unit) * 2);
+  --ui-radius-3: calc(var(--ui-space-unit) * 3);
+  --ui-radius-4: calc(var(--ui-space-unit) * 4);
+  --ui-viewport-inline: 100vi;
+}
+:root[data-density="compact"] {
+  --ui-density-factor: 0.875;
+}
+@supports (height: 100dvh) {
+  :root {
+    --ui-viewport-block: 100dvh;
+  }
+}
+html[data-workspace-density="compact"],
+html[data-density="compact"] {
+  --ui-density-factor: 0.875;
 }

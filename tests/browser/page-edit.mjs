@@ -668,12 +668,20 @@ export async function runPageEditTests({
       assert.match(await page.locator("main").textContent(), /Node\.js 22/);
       for (const intent of ["edit", "images"]) {
         const path = authorPath(target(record.id, intent));
-        assert.equal(
+        const handoff = new URL(
           await page
             .locator(`[data-open-local="${intent}"]`)
             .getAttribute("href"),
-          "http://127.0.0.1:4174" + path,
+          reader.url,
         );
+        assert.equal(handoff.origin, new URL(reader.url).origin);
+        assert.equal(
+          handoff.search,
+          "?destination=" + encodeURIComponent(path),
+        );
+        assert.equal(handoff.hash, "");
+        assert.equal(handoff.pathname, "/local-services/author/");
+        assert.equal(handoff.searchParams.get("destination"), path);
         assert.equal(
           await page.locator(`#${intent} .author-destination`).textContent(),
           path,
@@ -687,14 +695,17 @@ export async function runPageEditTests({
       "Public details and instructions never contact/probe a local author server",
     );
     page.off("request", recordRequest);
-    // The test author uses a random non-default port. Change only its link origin,
-    // retaining the exact generated destination, then exercise a real anchor click.
+    // Unwrap the validated owner handoff to this fixture's random-port author,
+    // retaining its exact destination, then exercise a real anchor click.
     const lastId = entry.pack.locations[0].id;
     await page
       .locator('[data-open-local="images"]')
       .evaluate((anchor, origin) => {
         const url = new URL(anchor.href);
-        anchor.href = origin + url.pathname + url.search;
+        const destination = url.searchParams.get("destination");
+        if (!destination || !destination.startsWith("/?"))
+          throw Error("Invalid fixture author handoff");
+        anchor.href = new URL(destination, origin).href;
       }, author.url);
     let chooserCount = 0;
     page.on("filechooser", () => chooserCount++);

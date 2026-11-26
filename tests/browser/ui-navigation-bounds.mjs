@@ -153,7 +153,12 @@ try {
     "package-lock.json",
   ])
     await cp(join(project, path), join(fixture, path), { recursive: true });
-  for (const name of ["site.json", "weapon-intel.json", "codmunity-stats.json"])
+  for (const name of [
+    "site.json",
+    "weapon-intel.json",
+    "weapon-acquisition.json",
+    "codmunity-stats.json",
+  ])
     await cp(join(project, "content", name), join(fixture, "content", name));
   await cp(
     join(project, "content/catalog/demo-training"),

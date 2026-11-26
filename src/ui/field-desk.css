@@ -2,25 +2,31 @@
 .field-inline {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: var(--ui-space-5);
   align-items: end;
-  margin-block: 0.65rem;
+  margin-block: var(--ui-space-5);
 }
 .field-desk-nav a {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  padding: 0.4rem 0.65rem;
+  padding: var(--ui-space-3) var(--ui-space-5);
   border: 1px solid var(--border, #64715f);
-  border-radius: 0.35rem;
+  border-radius: var(--ui-radius-1);
 }
 body[data-page="field-desk"] .panel {
-  padding: clamp(0.7rem, calc(0.5rem + 0.7vw), 1.15rem);
-  margin-block: 0.8rem;
+  padding: clamp(
+    var(--ui-space-6),
+    calc(
+      var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.006999999999999999)
+    ),
+    var(--ui-space-9)
+  );
+  margin-block: var(--ui-space-6);
   min-width: 0;
 }
 body[data-page="field-desk"] h2 {
-  font-size: 1.15rem;
+  font-size: var(--ui-type-lead);
 }
 body[data-page="field-desk"] label {
   min-width: 0;
@@ -35,20 +41,20 @@ body[data-page="field-desk"] textarea {
   width: 100%;
 }
 .field-table-wrap {
-  max-block-size: clamp(12rem, calc(100dvh - 18rem), 34rem);
+  max-block-size: none;
   max-width: 100%;
   overflow: auto;
   border: 1px solid var(--border, #64715f);
-  border-radius: 0.4rem;
+  border-radius: var(--ui-radius-2);
 }
 .field-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: var(--ui-type-label);
 }
 .field-table th,
 .field-table td {
-  padding: 0.5rem;
+  padding: var(--ui-space-4);
   text-align: left;
   border-bottom: 1px solid var(--border, #64715f);
   vertical-align: middle;
@@ -63,13 +69,17 @@ body[data-page="field-desk"] textarea {
   width: 7rem;
 }
 .field-table select {
-  width: clamp(10rem, calc(8rem + 8vw), 24rem);
+  width: clamp(
+    10rem,
+    calc(8rem + calc(var(--ui-viewport-inline) * 0.08)),
+    24rem
+  );
 }
 .field-table button {
   min-height: 44px;
 }
 .field-meta {
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
   opacity: 0.85;
 }
 .field-photo {
@@ -79,26 +89,26 @@ body[data-page="field-desk"] textarea {
 }
 .field-history-entry {
   border-bottom: 1px solid var(--border, #64715f);
-  padding: 0.4rem 0;
+  padding: var(--ui-space-3) 0;
 }
 .field-plan-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
-  gap: 0.4rem;
-  margin-block: 0.7rem;
+  gap: var(--ui-space-3);
+  margin-block: var(--ui-space-6);
 }
 .field-plan-list label {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--ui-space-4);
   border: 1px solid var(--border, #64715f);
-  padding: 0.4rem;
-  border-radius: 0.35rem;
-  font-size: 0.9rem;
+  padding: var(--ui-space-3);
+  border-radius: var(--ui-radius-1);
+  font-size: var(--ui-type-label);
 }
 #field-review {
   border: 2px solid #c1bc76;
-  scroll-margin-top: 1rem;
+  scroll-margin-top: var(--ui-space-8);
 }
 #scan-rows:empty::after {
   content: "No screenshot rows staged.";
@@ -106,19 +116,19 @@ body[data-page="field-desk"] textarea {
 .run-review-list {
   list-style: none;
   display: grid;
-  gap: 0.5rem;
-  margin: 0 0 1rem;
+  gap: var(--ui-space-4);
+  margin: 0 0 var(--ui-space-8);
   padding: 0;
 }
 .run-review-list li {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem 0.8rem;
+  gap: var(--ui-space-3) var(--ui-space-6);
   min-width: 0;
-  padding: 0.6rem;
+  padding: var(--ui-space-5);
   border: 1px solid var(--border, #64715f);
-  border-radius: 0.4rem;
+  border-radius: var(--ui-radius-2);
 }
 .run-review-list li strong {
   overflow-wrap: anywhere;
@@ -130,7 +140,7 @@ body[data-page="field-desk"] textarea {
   margin-inline-start: auto;
 }
 #review-queue-preview {
-  scroll-margin-top: 1rem;
+  scroll-margin-top: var(--ui-space-8);
 }
 .field-desk-nav {
   position: relative;

@@ -3,17 +3,17 @@
   display: flex;
   flex-wrap: wrap;
   align-items: end;
-  gap: calc(0.5rem + 0.2vw);
+  gap: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.002));
 }
 .camo-coverage,
 .camo-reference-note {
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
   color: var(--muted, #aeb8b0);
   max-width: 90ch;
 }
 .camo-search label {
   display: grid;
-  gap: 0.25rem;
+  gap: var(--ui-space-2);
   flex: 1 1 12rem;
   min-width: 0;
 }
@@ -26,22 +26,22 @@
 .camo-directory {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-  gap: 0.5rem;
-  margin-block: 1rem;
+  gap: var(--ui-space-4);
+  margin-block: var(--ui-space-8);
 }
 .camo-weapon-link {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.25rem 0.5rem;
-  padding: 0.7rem;
+  gap: var(--ui-space-2) var(--ui-space-4);
+  padding: var(--ui-space-6);
   border: 1px solid var(--border, #4a554b);
-  border-radius: 0.4rem;
+  border-radius: var(--ui-radius-2);
   text-decoration: none;
   overflow-wrap: anywhere;
 }
 .camo-weapon-link small {
   grid-column: 1;
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 .camo-weapon-link > span {
   grid-column: 2;
@@ -54,9 +54,9 @@
 .camo-guidance,
 .camo-group {
   border: 1px solid var(--border, #4a554b);
-  border-radius: 0.4rem;
-  padding: calc(0.5rem + 0.2vw);
-  margin-block: 0.75rem;
+  border-radius: var(--ui-radius-2);
+  padding: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.002));
+  margin-block: var(--ui-space-6);
 }
 .camo-guidance summary,
 .camo-group summary {
@@ -72,11 +72,11 @@
   overflow-wrap: anywhere;
 }
 .camo-guidance li {
-  margin-block: 0.4rem;
+  margin-block: var(--ui-space-3);
 }
 .camo-group summary span {
   font-weight: 400;
-  margin-left: 0.5rem;
+  margin-left: var(--ui-space-4);
 }
 .camo-rows {
   list-style: none;
@@ -85,10 +85,12 @@
 }
 .camo-row {
   display: grid;
-  grid-template-columns: calc(5rem + 1vw) minmax(0, 1fr);
+  grid-template-columns:
+    calc(5rem + calc(var(--ui-viewport-inline) * 0.01))
+    minmax(0, 1fr);
   align-items: center;
-  gap: calc(0.5rem + 0.5vw);
-  padding-block: 0.65rem;
+  gap: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.005));
+  padding-block: var(--ui-space-5);
   border-top: 1px solid var(--border, #4a554b);
   scroll-margin-top: 5rem;
 }
@@ -99,7 +101,7 @@
   width: 100%;
   aspect-ratio: 1;
   border: 1px solid var(--border, #4a554b);
-  border-radius: 0.35rem;
+  border-radius: var(--ui-radius-1);
   overflow: hidden;
   background: var(--surface, #202821);
 }
@@ -115,10 +117,10 @@
   display: none;
 }
 .camo-image-fallback {
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
   text-align: center;
   line-height: 1.2;
-  padding: 0.3rem;
+  padding: var(--ui-space-2);
   overflow-wrap: anywhere;
   color: var(--text, #e5eadf);
 }
@@ -127,15 +129,15 @@
   overflow-wrap: anywhere;
 }
 .camo-objective h3 {
-  font-size: 1rem;
-  margin: 0.15rem 0;
+  font-size: var(--ui-type-base);
+  margin: var(--ui-space-1) 0;
 }
 .camo-objective p {
-  margin: 0.3rem 0;
-  font-size: 0.9rem;
+  margin: var(--ui-space-2) 0;
+  font-size: var(--ui-type-label);
 }
 .camo-objective small {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 @media (max-width: 420px) {
   .camo-row {
@@ -145,13 +147,13 @@
 
 .camo-group summary h2 {
   display: inline;
-  font-size: 1rem;
+  font-size: var(--ui-type-base);
   margin: 0;
 }
 
 /* Four-tier Gunsmith presentation. Source swatches remain local-only. */
 #camo-tracker {
-  max-inline-size: calc(44rem + 2vw);
+  max-inline-size: calc(44rem + calc(var(--ui-viewport-inline) * 0.02));
 }
 .camo-legend,
 .camo-tracker-toolbar,
@@ -161,19 +163,19 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: calc(0.35rem + 0.3vw);
+  gap: calc(var(--ui-space-3) + calc(var(--ui-viewport-inline) * 0.003));
 }
 .camo-legend,
 .camo-tracking-note {
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
   line-height: 1.5;
 }
 .camo-legend span {
   white-space: nowrap;
 }
 .camo-tracker-toolbar {
-  font-size: 0.8rem;
-  margin-block: 0.5rem;
+  font-size: var(--ui-type-meta);
+  margin-block: var(--ui-space-4);
 }
 #camo-save-status {
   flex: 1 1 16rem;
@@ -181,7 +183,7 @@
   margin: 0;
 }
 .camo-view-buttons {
-  margin-block: 0.7rem;
+  margin-block: var(--ui-space-6);
 }
 .camo-view-buttons button[aria-pressed="true"] {
   box-shadow: inset 0 -3px var(--accent, #d6bf75);
@@ -201,14 +203,16 @@
   border: 0;
   border-radius: 0;
   padding: 0;
-  margin-block: calc(0.7rem + 0.4vw);
+  margin-block: calc(
+    var(--ui-space-6) + calc(var(--ui-viewport-inline) * 0.004)
+  );
 }
 #camo-tracker .camo-group h2 {
-  font-size: 1rem;
+  font-size: var(--ui-type-base);
   line-height: 1.5;
-  margin: 0 0 0.4rem;
+  margin: 0 0 var(--ui-space-3);
   border-bottom: 1px solid var(--border, #4a554b);
-  padding-block: 0.3rem;
+  padding-block: var(--ui-space-2);
 }
 [data-camo-group-count] {
   font-variant-numeric: tabular-nums;
@@ -222,7 +226,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  gap: calc(0.3rem + 0.25vw);
+  gap: calc(var(--ui-space-2) + calc(var(--ui-viewport-inline) * 0.0025));
 }
 .camo-grid-special,
 .camo-grid-modeMastery {
@@ -235,13 +239,13 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 0.2rem;
+  gap: var(--ui-space-2);
   width: 100%;
   height: 100%;
   min-width: 0;
-  padding: 0.2rem;
+  padding: var(--ui-space-2);
   border: 3px solid #7a8480;
-  border-radius: 0.25rem;
+  border-radius: var(--ui-radius-1);
   text-align: left;
   white-space: normal;
   background: var(--surface, #202821);
@@ -290,20 +294,24 @@
   display: none;
 }
 .camo-tile strong {
-  font-size: clamp(0.7rem, calc(0.65rem + 0.25vw), 0.9rem);
+  font-size: clamp(
+    var(--ui-type-meta),
+    calc(var(--ui-type-meta) + calc(var(--ui-viewport-inline) * 0.0025)),
+    var(--ui-type-label)
+  );
   line-height: 1.3;
   min-block-size: 2.6em;
 }
 [data-camo-tile-status] {
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
   line-height: 1.2;
   min-block-size: 3.6em;
 }
 .camo-detail-panel {
   border: 1px solid var(--border, #4a554b);
-  padding: calc(0.5rem + 0.3vw);
-  margin-block: 0.5rem;
-  border-radius: 0.3rem;
+  padding: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.003));
+  margin-block: var(--ui-space-4);
+  border-radius: var(--ui-radius-1);
 }
 .camo-detail-panel[hidden],
 .camo-detail-panel article[hidden],
@@ -315,27 +323,27 @@
   justify-content: space-between;
 }
 .camo-detail-heading h3 {
-  font-size: 1rem;
+  font-size: var(--ui-type-base);
   margin: 0;
 }
 .camo-detail-panel p {
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
   overflow-wrap: anywhere;
-  margin-block: 0.5rem;
+  margin-block: var(--ui-space-4);
 }
 .camo-complete-label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
+  gap: var(--ui-space-4);
+  font-size: var(--ui-type-label);
 }
 .camo-detail-links,
 .camo-detail-panel small {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 #camo-save-error {
   max-inline-size: 85ch;
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
   overflow-wrap: anywhere;
 }
 
@@ -347,22 +355,22 @@
 }
 .camo-class {
   border: 1px solid var(--border, #394147);
-  border-radius: 0.6rem;
+  border-radius: var(--ui-radius-2);
   background: var(--surface, #192126);
-  margin-block: 0.65rem;
+  margin-block: var(--ui-space-5);
   overflow: clip;
 }
 .camo-class > summary {
   display: flex;
   align-items: center;
-  gap: calc(0.5rem + 0.5vw);
-  padding: calc(0.65rem + 0.2vw);
+  gap: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.005));
+  padding: calc(var(--ui-space-5) + calc(var(--ui-viewport-inline) * 0.002));
   cursor: pointer;
   list-style: none;
 }
 .camo-class > summary::after {
   content: "+";
-  font-size: 1.3rem;
+  font-size: var(--ui-type-heading);
 }
 .camo-class[open] > summary::after {
   content: "−";
@@ -376,36 +384,36 @@
   display: block;
 }
 .camo-class-title small {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
   color: var(--muted);
 }
 .camo-class-medals,
 .camo-summary-medals {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: calc(0.3rem + 0.6vw);
+  gap: calc(var(--ui-space-2) + calc(var(--ui-viewport-inline) * 0.006));
 }
 .camo-summary-medals {
   border: 1px solid var(--border);
-  border-radius: 0.6rem;
-  padding: calc(0.65rem + 0.5vw);
-  margin-block: 0.8rem;
+  border-radius: var(--ui-radius-2);
+  padding: calc(var(--ui-space-5) + calc(var(--ui-viewport-inline) * 0.005));
+  margin-block: var(--ui-space-6);
 }
 .camo-medal {
   display: grid;
   justify-items: center;
   align-content: start;
-  gap: 0.2rem;
+  gap: var(--ui-space-2);
   text-align: center;
   min-width: 0;
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 .camo-medal strong {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
   overflow-wrap: anywhere;
 }
 .camo-medal small {
-  font-size: 0.65rem;
+  font-size: var(--ui-type-meta);
 }
 .camo-medal-art {
   display: grid;
@@ -414,7 +422,7 @@
   inline-size: 48px;
   block-size: 48px;
   border-radius: 50%;
-  padding: 3px;
+  padding: var(--ui-space-1);
   background: conic-gradient(
     var(--camo-cyan) var(--camo-progress, 0%),
     var(--border) 0
@@ -430,7 +438,7 @@
   margin: 0;
 }
 .camo-medal-art > span {
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
 }
 .camo-class-medals .camo-medal-art {
   width: 30px;
@@ -441,16 +449,18 @@
   width: 1px;
   height: 1px;
   padding: 0;
-  margin: -1px;
+  margin: calc(var(--ui-space-1) * -1);
   overflow: hidden;
   clip-path: inset(50%);
 }
 .camo-class-weapons {
   border-top: 1px solid var(--border);
-  padding-inline: calc(0.5rem + 0.4vw);
+  padding-inline: calc(
+    var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.004)
+  );
 }
 .camo-overview-weapon {
-  padding-block: 0.65rem;
+  padding-block: var(--ui-space-5);
   border-bottom: 1px solid var(--border);
 }
 .camo-overview-weapon:last-child {
@@ -460,32 +470,32 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
   justify-content: space-between;
-  margin-bottom: 0.45rem;
+  margin-bottom: var(--ui-space-4);
 }
 .camo-overview-weapon header a {
   text-decoration: none;
 }
 [data-overview-weapon-count] {
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
   font-variant-numeric: tabular-nums;
 }
 .camo-overview-group {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.35rem;
-  margin-block: 0.4rem;
+  gap: var(--ui-space-3);
+  margin-block: var(--ui-space-3);
 }
 .camo-overview-group-label {
   flex: 0 0 7rem;
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 #camo-overview .camo-dots {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: var(--ui-space-3);
 }
 #camo-overview .camo-dot,
 #camo-tracker .camo-tile {
@@ -498,7 +508,7 @@
   min-height: 0;
   border: 3px solid #7a8480;
   border-radius: 50%;
-  padding: 3px;
+  padding: var(--ui-space-1);
   background: var(--surface, #192126);
   color: var(--text);
 }
@@ -536,13 +546,13 @@
   inset-block-end: -3px;
   background: var(--surface);
   color: var(--text);
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
   border-radius: 50%;
   line-height: 1;
 }
 #camo-overview .camo-dot .camo-image-fallback {
   padding: 0;
-  font-size: 0.6rem;
+  font-size: var(--ui-type-meta);
 }
 #camo-overview .camo-view-buttons button {
   flex: 0 1 auto;
@@ -558,7 +568,7 @@
   min-block-size: 1.5em;
 }
 #camo-overview .camo-detail-panel > button {
-  margin-inline-start: 0.7rem;
+  margin-inline-start: var(--ui-space-6);
 }
 .camo-grid {
   grid-template-columns: repeat(4, minmax(0, 48px));
@@ -574,7 +584,7 @@
   height: 1px;
   min-block-size: 0;
   padding: 0;
-  margin: -1px;
+  margin: calc(var(--ui-space-1) * -1);
   overflow: hidden;
   clip-path: inset(50%);
 }
@@ -606,6 +616,6 @@
   margin-inline: auto;
 }
 .camo-overview-weapon header h2 {
-  font-size: 1rem;
+  font-size: var(--ui-type-base);
   margin: 0;
 }

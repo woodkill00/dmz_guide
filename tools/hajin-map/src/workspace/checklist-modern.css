@@ -3,7 +3,7 @@ html[data-ui-variant="modern"] #boss-checklist {
   container: boss-checklist / inline-size;
   min-inline-size: 0;
   max-inline-size: 100%;
-  font-size: max(14px, 0.875rem);
+  font-size: max(var(--ui-type-label), var(--ui-type-label));
   line-height: 1.4;
 }
 html[data-ui-variant="modern"]
@@ -13,17 +13,17 @@ html[data-ui-variant="modern"]
   overflow-wrap: anywhere;
 }
 html[data-ui-variant="modern"] #boss-checklist .boss-group {
-  margin-block: 0.75rem;
+  margin-block: var(--ui-space-6);
 }
 html[data-ui-variant="modern"]
   #boss-checklist
   :is(.boss-name > a, .boss-mobile-label, .boss-count-status) {
-  font-size: max(14px, 0.875rem);
+  font-size: max(var(--ui-type-label), var(--ui-type-label));
   line-height: 1.4;
 }
 html[data-ui-variant="modern"] #boss-checklist .boss-counter-actions {
   flex-shrink: 0;
-  gap: 0.125rem;
+  gap: var(--ui-space-1);
 }
 html[data-ui-variant="modern"] #boss-checklist .boss-counter-actions strong {
   min-inline-size: 4ch;
@@ -51,12 +51,12 @@ html[data-ui-variant="modern"]
   html[data-ui-variant="modern"] #boss-checklist .boss-directory tr {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    padding-block: 0.25rem;
+    padding-block: var(--ui-space-2);
     border-block-end: 1px solid var(--ws-line, #60715e);
   }
   html[data-ui-variant="modern"] #boss-checklist .boss-directory td {
     display: block;
-    padding: 0.125rem 0.25rem;
+    padding: var(--ui-space-1) var(--ui-space-2);
     border: 0;
   }
   html[data-ui-variant="modern"]
@@ -84,6 +84,6 @@ html[data-ui-variant="modern"]
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.5rem;
+    gap: var(--ui-space-4);
   }
 }

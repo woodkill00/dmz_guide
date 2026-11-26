@@ -14,7 +14,13 @@ const server = await createServer({
 await server.listen();
 await mkdir(".local", { recursive: true });
 try {
-  for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
+  for (const [name, engine] of Object.entries({
+    chromium,
+    firefox,
+    webkit,
+  }).filter(
+    ([name]) => !process.env.UI_BROWSER || name === process.env.UI_BROWSER,
+  )) {
     const browser = await engine.launch();
     try {
       const context = await browser.newContext({
@@ -488,7 +494,33 @@ try {
             );
             await page
               .getByRole("button", { name: "Synthetic action", exact: true })
-              .click();
+              .click()
+              .catch(async (error) => {
+                await page.screenshot({
+                  path: `.local/menu-${name}-${width}-${scale}-failure.png`,
+                });
+                console.log(
+                  { name, width, scale, corner },
+                  await page.evaluate(() => {
+                    const n = document.querySelector(
+                        ".readable-marker-popup .marker-popup-actions button",
+                      ),
+                      r = n.getBoundingClientRect();
+                    return {
+                      action: r.toJSON(),
+                      map: document
+                        .querySelector("#map")
+                        .getBoundingClientRect()
+                        .toJSON(),
+                      hit: document.elementFromPoint(
+                        r.x + r.width / 2,
+                        r.y + r.height / 2,
+                      )?.outerHTML,
+                    };
+                  }),
+                );
+                throw error;
+              });
             await page.locator(".leaflet-popup-close-button").click();
           }
         }

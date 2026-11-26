@@ -49,7 +49,10 @@ test("crafting layout has one production section and one output button, without 
   const p = fixture();
   p.recipes = [recipe("one"), recipe("two", 3)];
   const uses = renderCraftingUses(p.items[0], p, recordUrl);
-  assert.equal((uses.match(/class="item-craft-button"/g) || []).length, 1);
+  assert.equal(
+    (uses.match(/class="item-craft-button(?: [^"\n]*)?"/g) || []).length,
+    1,
+  );
   assert.equal((uses.match(/data-craft-method=/g) || []).length, 2);
   assert.ok(uses.includes('<details class="item-craft-methods">'));
 });
@@ -82,12 +85,12 @@ test("crafting buttons use output-item icons for recipes and preserve accessible
     p,
     (row) => `/local/?id=${row.id}`,
   );
-  assert.ok(html.includes('class="item-craft-button"'));
+  assert.ok(/class="item-craft-button(?: [^"\n]*)?"/.test(html));
   assert.ok(html.includes('data-inventory-icon="c"'));
   assert.ok(!html.includes('data-inventory-icon="r"'));
   assert.ok(html.includes('aria-hidden="true"'));
   assert.ok(html.includes('href="/local/?id=r"'));
-  assert.ok(html.includes("<span>r</span>"));
+  assert.match(html, /<span class="item-card__name[^"]*">r<\/span>/);
 });
 
 test("exact methods merge; differing costs, contexts, other inputs and prerequisites remain distinct", () => {

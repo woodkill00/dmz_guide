@@ -1,0 +1,5312 @@
+{
+  "version": 1,
+  "scope": "Exact retained declarations. New or changed dimensions require geometry evidence and review.",
+  "entries": [
+    {
+      "file": "src/styles.css",
+      "selector": ".build-target-choice input[type=\"checkbox\"]",
+      "property": "width",
+      "value": "1.1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".build-target-choice input[type=\"checkbox\"]",
+      "property": "min-height",
+      "value": "1.1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".build-target-choice input[type=\"number\"]",
+      "property": "width",
+      "value": "4.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".build-target-choice input[type=\"number\"]",
+      "property": "min-height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "button,\ninput,\nselect",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "input[type=\"checkbox\"],\ninput[type=\"radio\"]",
+      "property": "width",
+      "value": "1.25rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "input[type=\"checkbox\"],\ninput[type=\"radio\"]",
+      "property": "min-height",
+      "value": "1.25rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".skip-link",
+      "property": "left",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".skip-link:focus",
+      "property": "top",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".brand-mark",
+      "property": "height",
+      "value": "2.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".brand-mark",
+      "property": "width",
+      "value": "2.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".site-nav a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".site-footer",
+      "property": "margin-top",
+      "value": "5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".site-footer > a:last-child",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".hero",
+      "property": "min-height",
+      "value": "565px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".signal-dot",
+      "property": "width",
+      "value": "6px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".signal-dot",
+      "property": "height",
+      "value": "6px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".button",
+      "property": "min-height",
+      "value": "48px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".text-link",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".radar-figure",
+      "property": "max-width",
+      "value": "460px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".radar-art",
+      "property": "max-width",
+      "value": "460px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".radar-art:after",
+      "property": "height",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".radar-blip",
+      "property": "width",
+      "value": "7px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".radar-blip",
+      "property": "height",
+      "value": "7px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".feature-card",
+      "property": "min-height",
+      "value": "235px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".feature-arrow",
+      "property": "right",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".feature-arrow",
+      "property": "top",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".record-card h3 a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".breadcrumbs a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".hero",
+      "property": "min-height",
+      "value": "620px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".site-header",
+      "property": "min-height",
+      "value": "85px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".brand-mark",
+      "property": "width",
+      "value": "2.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".brand-mark",
+      "property": "height",
+      "value": "2.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".radar-figure",
+      "property": "max-width",
+      "value": "320px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".feature-card",
+      "property": "min-height",
+      "value": "190px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "button:not(.theme-toggle)",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".spoiler-content summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "textarea",
+      "property": "min-height",
+      "value": "7rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".local-raster",
+      "property": "max-height",
+      "value": "30rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".map-canvas",
+      "property": "max-height",
+      "value": "36rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".nav-more > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".nav-more > div",
+      "property": "min-width",
+      "value": "12rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#draft-navigation,\n#upgrade-progress-confirm,\n#upgrade-spend-confirm",
+      "property": "width",
+      "value": "min(34rem, calc(100% - 24px))",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#draft-navigation,\n#upgrade-progress-confirm,\n#upgrade-spend-confirm",
+      "property": "max-width",
+      "value": "calc(100% - 24px)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#draft-navigation,\n#upgrade-progress-confirm,\n#upgrade-spend-confirm",
+      "property": "max-height",
+      "value": "calc(100% - 24px)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".draft-actions button",
+      "property": "min-width",
+      "value": "4.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".draft-actions button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".radar-figure,\n  .radar-art",
+      "property": "max-width",
+      "value": "200px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".item-row-actions a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".item-identity h3 a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".sitemap-links a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".sitemap-pack summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".sr-only",
+      "property": "width",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".sr-only",
+      "property": "height",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".nav-more > div",
+      "property": "width",
+      "value": "18rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".mission-picture-grid .local-raster",
+      "property": "max-height",
+      "value": "22rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#inventory-fields .inventory-head",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".inventory-use a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".inventory-details a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress > details > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress > details > summary",
+      "property": "right",
+      "value": "0.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress > details > summary",
+      "property": "top",
+      "value": "0.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress > details > summary",
+      "property": "width",
+      "value": "90px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress .upgrade-summary",
+      "property": "padding-right",
+      "value": "105px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress .upgrade-summary",
+      "property": "padding-right",
+      "value": "85px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress .upgrade-summary > button",
+      "property": "right",
+      "value": "0.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress .upgrade-summary > button",
+      "property": "top",
+      "value": "0.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress .upgrade-summary > button",
+      "property": "max-width",
+      "value": "80px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress > details > summary",
+      "property": "right",
+      "value": "0.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress > details > summary",
+      "property": "top",
+      "value": "3.8rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".compact-progress > details > summary",
+      "property": "width",
+      "value": "80px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-summary .upgrade-completion-check",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-summary .upgrade-completion-check input",
+      "property": "width",
+      "value": "18px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-summary .upgrade-completion-check input",
+      "property": "height",
+      "value": "18px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-summary .upgrade-completion-check input",
+      "property": "min-width",
+      "value": "18px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-summary .upgrade-completion-check input",
+      "property": "min-height",
+      "value": "18px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-list-shell .compact-progress.panel",
+      "property": "scroll-margin-top",
+      "value": "5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-list-shell :is(input, button, summary, a, select)",
+      "property": "scroll-margin-top",
+      "value": "6rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-list-heading,\n  .upgrade-list-shell .compact-progress .upgrade-summary",
+      "property": "padding-right",
+      "value": "105px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-list-heading",
+      "property": "padding",
+      "value": "var(--ui-space-5) 117px var(--ui-space-5) var(--ui-space-6)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-details-heading",
+      "property": "right",
+      "value": "0.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-details-heading",
+      "property": "width",
+      "value": "90px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-list-shell .compact-progress > details > summary",
+      "property": "top",
+      "value": "0.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-view-controls > details > label",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-view-controls input[type=\"checkbox\"]",
+      "property": "width",
+      "value": "18px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-view-controls input[type=\"checkbox\"]",
+      "property": "min-height",
+      "value": "18px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-material-card summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-view-controls > details > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".upgrade-family > details > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".inventory-upgrade-need",
+      "property": "min-height",
+      "value": "4rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#inventory-fields.has-upgrade-needs .inventory-upgrade-need",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#inventory-fields.has-upgrade-needs .stock-steps button",
+      "property": "min-width",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#inventory-fields.has-upgrade-needs .stock-steps button",
+      "property": "width",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#inventory-fields.has-upgrade-needs .stock-steps button",
+      "property": "height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#inventory-fields.has-upgrade-needs .owned-cell label",
+      "property": "min-width",
+      "value": "min(100%, 6rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#collection-why button,\n#craft-dialog button,\n.collection-item button",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#craft-dialog",
+      "property": "inset-block-start",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".profile-toolbar",
+      "property": "gap",
+      "value": "0.5rem var(--ui-gap)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "body[data-page=\"collection\"] main > nav",
+      "property": "gap",
+      "value": "0.25rem var(--ui-gap)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".armory-table th,\n.armory-table td",
+      "property": "min-inline-size",
+      "value": "7rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".armory-choices",
+      "property": "gap",
+      "value": "0.25rem var(--ui-gap)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".armory-choices",
+      "property": "max-block-size",
+      "value": "28rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".armory-choices input,\n.check-label input",
+      "property": "inline-size",
+      "value": "1.125rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".armory-choices input,\n.check-label input",
+      "property": "block-size",
+      "value": "1.125rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".armory-evidence-picture",
+      "property": "max-inline-size",
+      "value": "min(100%, 32rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#armory-status",
+      "property": "min-block-size",
+      "value": "calc(2.9em + 1.25rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-directory th",
+      "property": "min-width",
+      "value": "12rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-directory td",
+      "property": "min-width",
+      "value": "13rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-screenshot img",
+      "property": "width",
+      "value": "min(100%, 60rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-screenshot figcaption",
+      "property": "max-width",
+      "value": "60rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-item-link img",
+      "property": "inline-size",
+      "value": "calc(2rem + 4px)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-item-link img",
+      "property": "block-size",
+      "value": "calc(2rem + 4px)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-stock-line button",
+      "property": "min-inline-size",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-stock-line button",
+      "property": "min-block-size",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-directory thead",
+      "property": "inline-size",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-directory thead",
+      "property": "block-size",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-directory .key-stock-line button",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-directory .key-stock-line button",
+      "property": "min-inline-size",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-directory .key-stock-line input",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".key-use-actions label,\n  .key-packing-list label,\n  #key-restore-preview > label",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".hub-card button",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".topology-map",
+      "property": "min-height",
+      "value": "24rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".topology-inspector",
+      "property": "top",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".topology-inspector",
+      "property": "max-height",
+      "value": "32rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".topology-map",
+      "property": "max-height",
+      "value": "36rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".topology-map",
+      "property": "max-height",
+      "value": "32rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".topology-inspector",
+      "property": "max-height",
+      "value": "30rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".mindmap-toolbar output",
+      "property": "min-width",
+      "value": "3.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".home-mindmap .map-note",
+      "property": "width",
+      "value": "14.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".home-mindmap .map-note",
+      "property": "height",
+      "value": "7rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".home-mindmap button.note-toggle",
+      "property": "min-height",
+      "value": "1.7rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".mindmap-outline",
+      "property": "max-height",
+      "value": "44rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".home-mindmap .mindmap-outline .map-note",
+      "property": "min-height",
+      "value": "6rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".mindmap-viewport",
+      "property": "height",
+      "value": "32rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".mindmap-outline",
+      "property": "max-height",
+      "value": "32rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".inventory-category > h2 button",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".needed-table",
+      "property": "min-inline-size",
+      "value": "52rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".needed-table th[scope=\"row\"]",
+      "property": "min-inline-size",
+      "value": "10rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".loot-type-buttons a",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".item-use-list",
+      "property": "max-height",
+      "value": "18rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".catalog-context",
+      "property": "max-width",
+      "value": "min(100%, 32rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".catalog-context > summary",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".catalog-context[open]",
+      "property": "max-height",
+      "value": "20rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#save-status[data-catalog-quiet=\"true\"]",
+      "property": "width",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": "#save-status[data-catalog-quiet=\"true\"]",
+      "property": "height",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".quick-tracker .tracker-context.catalog-context",
+      "property": "max-width",
+      "value": "min(100%, 32rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".quick-tracker .tracker-context.catalog-context[open]",
+      "property": "max-width",
+      "value": "min(100%, 32rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".run-plan-card [data-reservation-form] label",
+      "property": "min-width",
+      "value": "min(100%, 12rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".run-plan-card [data-reservation-form] select",
+      "property": "max-width",
+      "value": "min(100%, 24rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".run-plan-card [data-reservation-form] input",
+      "property": "width",
+      "value": "min(100%, 8rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".order-completion input",
+      "property": "width",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".order-completion input",
+      "property": "height",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".blueprint-check input",
+      "property": "width",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/styles.css",
+      "selector": ".blueprint-check input",
+      "property": "height",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/acquisition-camos.css",
+      "selector": ".acquisition-camos .acquisition-camo[type=\"button\"]",
+      "property": "width",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/acquisition-camos.css",
+      "selector": ".acquisition-camos .acquisition-camo[type=\"button\"]",
+      "property": "height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/acquisition-camos.css",
+      "selector": ".acquisition-camos .acquisition-camo[type=\"button\"]",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/acquisition-camos.css",
+      "selector": ".acquisition-camo-completion",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/compact-navigation.css",
+      "selector": ".site-nav [data-navigation-filter]",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/companion-navigation.css",
+      "selector": ".companion-nav a,\n.companion-nav summary,\n.companion-nav [aria-current=\"page\"]",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/companion-navigation.css",
+      "selector": ".companion-nav .nav-more > div",
+      "property": "right",
+      "value": "12px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/companion-navigation.css",
+      "selector": ".companion-nav .nav-more > div",
+      "property": "width",
+      "value": "230px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/companion-navigation.css",
+      "selector": ".companion-nav .nav-more > div",
+      "property": "right",
+      "value": "8px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/crafting-preview.css",
+      "selector": ".craft-preview-links",
+      "property": "max-height",
+      "value": "12rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/crafting-preview.css",
+      "selector": ".craft-preview .item-craft-button",
+      "property": "min-height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/crafting-preview.css",
+      "selector": ".craft-preview .item-art",
+      "property": "width",
+      "value": "1.35rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/crafting-preview.css",
+      "selector": ".craft-preview .item-art",
+      "property": "height",
+      "value": "1.35rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-quick-tools a",
+      "property": "min-height",
+      "value": "24px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-toolbar select",
+      "property": "width",
+      "value": "min(100%, 28rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-tile",
+      "property": "min-height",
+      "value": "6rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-tile [data-inventory-icon]",
+      "property": "width",
+      "value": "2.25rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-tile [data-inventory-icon]",
+      "property": "height",
+      "value": "2.25rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-progress-list [data-inventory-icon]",
+      "property": "width",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-progress-list [data-inventory-icon]",
+      "property": "height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-section button,\n.dash-section summary",
+      "property": "min-height",
+      "value": "24px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-detail button,\n.dash-toolbar button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-detail input",
+      "property": "width",
+      "value": "7rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-upgrade-completion",
+      "property": "min-height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-upgrade-completion input",
+      "property": "width",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-upgrade-completion input",
+      "property": "height",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": "#dashboard-action-status",
+      "property": "min-height",
+      "value": "1.25rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-tile",
+      "property": "min-height",
+      "value": "5.3rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/dashboard.css",
+      "selector": ".dash-section > header button",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/directory-view.css",
+      "selector": "html[data-ui-variant=\"modern\"] [data-ui-directory] thead th",
+      "property": "inset-block-start",
+      "value": "var(--ui-directory-sticky-top, 0px)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/directory-view.css",
+      "selector": "html[data-ui-variant=\"modern\"]\n  [data-ui-directory]\n  :is(\n    button,\n    input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"hidden\"]),\n    select,\n    textarea\n  )",
+      "property": "min-block-size",
+      "value": "max(44px, 2.75rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/directory-view.css",
+      "selector": "html[data-ui-variant=\"modern\"]\n  [data-ui-directory]\n  label:has(> input[type=\"checkbox\"]),\nhtml[data-ui-variant=\"modern\"]\n  [data-ui-directory]\n  label:has(> input[type=\"radio\"])",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/field-desk.css",
+      "selector": ".field-desk-nav a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/field-desk.css",
+      "selector": ".field-table input[type=\"number\"]",
+      "property": "width",
+      "value": "7rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/field-desk.css",
+      "selector": ".field-table button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/field-desk.css",
+      "selector": ".field-photo",
+      "property": "max-width",
+      "value": "min(100%, 24rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/field-desk.css",
+      "selector": ".field-photo",
+      "property": "max-height",
+      "value": "16rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/field-desk.css",
+      "selector": "body[data-page=\"field-desk\"] summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/field-desk.css",
+      "selector": ".field-table",
+      "property": "min-width",
+      "value": "35rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-rail a",
+      "property": "width",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-rail a",
+      "property": "min-height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-class-menu button",
+      "property": "min-height",
+      "value": "2.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-roster-filter input,\n.gs-roster-filter select",
+      "property": "min-height",
+      "value": "2.2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-class-select",
+      "property": "max-width",
+      "value": "7.4rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-weapon-list",
+      "property": "max-height",
+      "value": "clamp(21rem, calc(100svh - 24rem), 43rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-surface .gs-row-link",
+      "property": "min-height",
+      "value": "1.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-primary",
+      "property": "min-height",
+      "value": "2.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-unknown-track",
+      "property": "height",
+      "value": "0.2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-slot",
+      "property": "max-width",
+      "value": "12rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-plus",
+      "property": "width",
+      "value": "1.2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-plus",
+      "property": "height",
+      "value": "1.2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-directory",
+      "property": "min-height",
+      "value": "calc(100svh - 19rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-slot",
+      "property": "max-width",
+      "value": "9rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-thumbnail",
+      "property": "height",
+      "value": "2.8rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-preview-art",
+      "property": "min-height",
+      "value": "8rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-detail-art",
+      "property": "min-height",
+      "value": "7rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-weapon-list",
+      "property": "max-height",
+      "value": "16rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-unknown-track",
+      "property": "width",
+      "value": "min(100%, 5rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": ".gs-detail-art",
+      "property": "min-height",
+      "value": "7rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": "html[data-ui-variant=\"modern\"] .gs-rail a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": "html[data-ui-variant=\"modern\"] .gs-weapon-row button,\nhtml[data-ui-variant=\"modern\"] .gs-row-link",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/gunsmith.css",
+      "selector": "html[data-ui-variant=\"modern\"] .ui-weapon-context a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-card.css",
+      "selector": ".std-item-icon[data-item-size=\"icon\"]",
+      "property": "width",
+      "value": "1.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-card.css",
+      "selector": ".std-item-icon[data-item-size=\"icon\"]",
+      "property": "height",
+      "value": "1.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-card.css",
+      "selector": ".std-item-icon[data-item-size=\"inline\"],\n.std-item-icon[data-item-size=\"compact\"]",
+      "property": "width",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-card.css",
+      "selector": ".std-item-icon[data-item-size=\"inline\"],\n.std-item-icon[data-item-size=\"compact\"]",
+      "property": "height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-card.css",
+      "selector": ".std-item-icon[data-item-size=\"regular\"]",
+      "property": "width",
+      "value": "2.25rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-card.css",
+      "selector": ".std-item-icon[data-item-size=\"regular\"]",
+      "property": "height",
+      "value": "2.25rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": ".item-workspace",
+      "property": "max-width",
+      "value": "78rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": ".item-section-nav a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": ".item-workspace .button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": ".item-workspace summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": ".item-workspace a.item-craft-button",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": ".item-craft-button .item-art",
+      "property": "width",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": ".item-craft-button .item-art",
+      "property": "height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": ".item-craft-recipe",
+      "property": "scroll-margin-top",
+      "value": "5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": ".item-craft-references > section",
+      "property": "scroll-margin-top",
+      "value": "5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": ".item-workspace .local-raster",
+      "property": "max-height",
+      "value": "24rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": "body[data-page=\"items\"] .item-row .item-art",
+      "property": "width",
+      "value": "3rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": "body[data-page=\"items\"] .item-row .item-art",
+      "property": "height",
+      "value": "3rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": "body[data-page=\"items\"] .item-row-actions a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": "body[data-page=\"items\"] .directory-coverage summary,\nbody[data-page=\"items\"] .directory-help summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": "body[data-page=\"items\"] .item-row-build > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": "body[data-page=\"items\"] .item-row-build",
+      "property": "max-width",
+      "value": "14rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/item-workspace.css",
+      "selector": "body[data-page=\"items\"] .item-row-build input[type=\"number\"]",
+      "property": "max-width",
+      "value": "8rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/key-directory-flow.css",
+      "selector": ".key-directory-page .key-directory-sources > summary",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/key-directory-flow.css",
+      "selector": ".key-directory-page table.armory-table thead",
+      "property": "inline-size",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/key-directory-flow.css",
+      "selector": ".key-directory-page table.armory-table thead",
+      "property": "block-size",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/mission-audit.css",
+      "selector": ".mission-audit-row",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/mission-audit.css",
+      "selector": ".mission-audit-row small",
+      "property": "max-width",
+      "value": "7rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/mission-audit.css",
+      "selector": "#mission-audit-editor label",
+      "property": "max-width",
+      "value": "48rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/mission-audit.css",
+      "selector": "#mission-audit-stale-review",
+      "property": "width",
+      "value": "1.25rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/mission-audit.css",
+      "selector": "#mission-audit-stale-review",
+      "property": "min-height",
+      "value": "1.25rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-composition.css",
+      "selector": ".page-section > summary",
+      "property": "min-height",
+      "value": "2.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-composition.css",
+      "selector": ".page-section h2",
+      "property": "scroll-margin-top",
+      "value": "5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-composition.css",
+      "selector": ".page-photo img",
+      "property": "max-height",
+      "value": "30rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-composition.css",
+      "selector": ".page-table table",
+      "property": "min-width",
+      "value": "24rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-editor.css",
+      "selector": ".pe-workspace-tools > details",
+      "property": "max-width",
+      "value": "22rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-editor.css",
+      "selector": ".pe-mode-tabs",
+      "property": "top",
+      "value": "-0.65rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-editor.css",
+      "selector": ".pe-resize-handle",
+      "property": "width",
+      "value": "0.45rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-editor.css",
+      "selector": ".pe-library img",
+      "property": "height",
+      "value": "4rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-editor.css",
+      "selector": "#pe-refresh-status,\n#pe-disk-status",
+      "property": "max-height",
+      "value": "12rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-editor.css",
+      "selector": "#pe-readable-diff td,\n#pe-restore-diff td",
+      "property": "max-width",
+      "value": "24rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-editor.css",
+      "selector": ".pe-inspector textarea",
+      "property": "min-height",
+      "value": "5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-editor.css",
+      "selector": ".pe-bar button,\n  .pe-mode-tabs button",
+      "property": "min-height",
+      "value": "2.25rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/page-editor.css",
+      "selector": ".pe-comparison pre",
+      "property": "max-height",
+      "value": "24rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .tracker-more-filters",
+      "property": "min-width",
+      "value": "8rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .inventory-entry > .inventory-row",
+      "property": "min-height",
+      "value": "58px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .owned-cell .mobile-label",
+      "property": "width",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .owned-cell .mobile-label",
+      "property": "height",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .owned-cell input",
+      "property": "height",
+      "value": "36px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .owned-cell button",
+      "property": "width",
+      "value": "32px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .owned-cell button",
+      "property": "height",
+      "value": "36px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .inventory-save-bar",
+      "property": "bottom",
+      "value": "0.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .inventory-save-bar",
+      "property": "min-height",
+      "value": "50px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .tracker-roster-filter label",
+      "property": "min-width",
+      "value": "130px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .owned-cell input,\n  .quick-tracker .owned-cell button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .owned-cell button",
+      "property": "min-width",
+      "value": "36px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .inventory-entry > .inventory-row",
+      "property": "min-height",
+      "value": "54px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker\n  #inventory-fields\n  .inventory-entry\n  > .inventory-row\n  .owned-cell\n  input,\n.quick-tracker #inventory-fields .inventory-entry > .inventory-row button",
+      "property": "min-height",
+      "value": "32px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .inventory-category h2 button,\n.quick-tracker #inventory-fields .inventory-group h3 button",
+      "property": "min-height",
+      "value": "32px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields.comfortable .inventory-entry > .inventory-row",
+      "property": "min-height",
+      "value": "66px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker\n    #inventory-fields\n    .inventory-entry\n    > .inventory-row\n    .owned-cell\n    input,\n  .quick-tracker #inventory-fields .inventory-entry > .inventory-row button,\n  .quick-tracker #inventory-fields .inventory-category h2 button,\n  .quick-tracker #inventory-fields .inventory-group h3 button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .tracker-context.catalog-context > summary",
+      "property": "min-height",
+      "value": "3.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .owned-cell input",
+      "property": "min-height",
+      "value": "32px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .owned-cell input",
+      "property": "height",
+      "value": "32px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .owned-cell input",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .owned-cell input",
+      "property": "height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .inventory-entry > .inventory-row",
+      "property": "min-height",
+      "value": "54px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .quick-tracker-nav .tracker-context",
+      "property": "max-width",
+      "value": "min(100%, 40rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": "html[data-ui-variant] main.quick-tracker .filter-bar input,\n  html[data-ui-variant] main.quick-tracker .filter-bar select,\n  html[data-ui-variant] main.quick-tracker .filter-bar button",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .tracker-weapon-row label",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .breadcrumbs a",
+      "property": "min-height",
+      "value": "24px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .quick-tracker-nav > a[data-tracker-link]",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .needed-group > summary",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .needed-row",
+      "property": "min-height",
+      "value": "58px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .needed-details-button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .needed-group > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .inventory-blueprint label",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .inventory-blueprint input[type=\"checkbox\"]",
+      "property": "width",
+      "value": "18px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .inventory-blueprint input[type=\"checkbox\"]",
+      "property": "height",
+      "value": "18px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .inventory-blueprint input[type=\"checkbox\"]",
+      "property": "min-height",
+      "value": "18px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .inventory-blueprint label",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #inventory-fields .inventory-entry > .inventory-row",
+      "property": "min-height",
+      "value": "4rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".inventory-item-icon",
+      "property": "width",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".inventory-item-icon",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".inventory-item-icon img",
+      "property": "width",
+      "value": "2.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".inventory-item-icon img",
+      "property": "height",
+      "value": "2.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".inventory-item-icon a",
+      "property": "min-width",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".inventory-item-icon a",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".inventory-icon-placeholder",
+      "property": "width",
+      "value": "1.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".inventory-icon-placeholder",
+      "property": "height",
+      "value": "1.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker\n    #inventory-fields\n    .inventory-entry\n    > .inventory-row\n    > .inventory-blueprint\n    label",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker\n  #inventory-fields\n  .inventory-entry\n  > .inventory-row\n  > [data-show-use]",
+      "property": "width",
+      "value": "4rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker\n    #inventory-fields\n    .inventory-entry\n    > .inventory-row\n    > .inventory-upgrade-need",
+      "property": "min-height",
+      "value": "1.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .collect-remaining",
+      "property": "min-height",
+      "value": "4.25rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .collect-actions button",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .collect-row input,\n.quick-tracker .collect-row button",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .collect-icon img",
+      "property": "width",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .collect-icon img",
+      "property": "height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #build-collect .build-ingredient",
+      "property": "min-height",
+      "value": "3rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #build-collect .collect-icon img",
+      "property": "width",
+      "value": "1.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker #build-collect .collect-icon img",
+      "property": "height",
+      "value": "1.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": "#build-collect .build-secondary > summary",
+      "property": "min-height",
+      "value": "1.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".build-collect summary",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".build-target-actions input",
+      "property": "width",
+      "value": "5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".build-target-actions input",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".build-target-choice input[type=\"checkbox\"]",
+      "property": "width",
+      "value": "1.1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".build-target-choice input[type=\"checkbox\"]",
+      "property": "min-height",
+      "value": "1.1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".build-target-choice input[type=\"number\"]",
+      "property": "width",
+      "value": "4.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".build-target-choice input[type=\"number\"]",
+      "property": "min-height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .fob-material-icon",
+      "property": "width",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .fob-material-icon img",
+      "property": "width",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .fob-material-icon img",
+      "property": "height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .fob-stock-controls input,\n.quick-tracker .fob-stock-controls button",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .fob-material-progress progress",
+      "property": "height",
+      "value": "0.35rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .build-summary-tile",
+      "property": "width",
+      "value": "3.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .build-summary-tile",
+      "property": "min-height",
+      "value": "3.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .build-summary-tile [data-inventory-icon],\n.quick-tracker .build-summary-tile img",
+      "property": "width",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .build-summary-tile [data-inventory-icon],\n.quick-tracker .build-summary-tile img",
+      "property": "height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .build-summary-info",
+      "property": "max-height",
+      "value": "9rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .build-summary-info [data-build-peek-close]",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .build-summary-info [data-build-peek-close]",
+      "property": "min-width",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/quick-tracker.css",
+      "selector": ".quick-tracker .build-summary-tile",
+      "property": "min-height",
+      "value": "3.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/site-tools.css",
+      "selector": ".workspace-tools > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/site-tools.css",
+      "selector": ".workspace-tools-panel",
+      "property": "max-height",
+      "value": "min(70svh, 38rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/site-tools.css",
+      "selector": ".workspace-tool-links a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/site-tools.css",
+      "selector": ".site-task-launchpad a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/site-tools.css",
+      "selector": ".site-help-topic > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/site-tools.css",
+      "selector": ".site-quality-table",
+      "property": "max-height",
+      "value": "min(65svh, 48rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/site-tools.css",
+      "selector": ".site-quality-table select",
+      "property": "min-width",
+      "value": "7rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/site-tools.css",
+      "selector": ".site-quality-table table",
+      "property": "min-width",
+      "value": "40rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/site-tools.css",
+      "selector": ".workspace-tools-panel",
+      "property": "inset-inline",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": "header,\nmain,\nfooter",
+      "property": "width",
+      "value": "min(96%, 90rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": "button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": "summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": "pre",
+      "property": "max-height",
+      "value": "20rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": ".media-workbench img",
+      "property": "max-height",
+      "value": "20rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": ".media-card img",
+      "property": "height",
+      "value": "10rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": ".skip-link",
+      "property": "left",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": ".skip-link",
+      "property": "max-width",
+      "value": "calc(100% - 2rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": ".skip-link:focus",
+      "property": "top",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": "html[data-ui-variant=\"modern\"] #workspace",
+      "property": "width",
+      "value": "min(100%, 90rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": "html[data-ui-variant=\"modern\"]\n  :is(input:not([type=\"checkbox\"]), select, button)",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/studio.css",
+      "selector": "html[data-ui-variant=\"modern\"] .studio-nav a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/track-items.css",
+      "selector": ".track-items-directory",
+      "property": "max-width",
+      "value": "70rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/track-items.css",
+      "selector": ".track-item-row > div > .item-craft-button",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/track-items.css",
+      "selector": ".track-item-row > div > .item-craft-button .item-art",
+      "property": "width",
+      "value": "1.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/track-items.css",
+      "selector": ".track-item-row > div > .item-craft-button .item-art",
+      "property": "height",
+      "value": "1.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".weapon-context-art svg,\n.weapon-context-art img",
+      "property": "max-height",
+      "value": "7rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".picker-prestiged",
+      "property": "min-height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".weapon-context-card .picker-extraction-actions button",
+      "property": "min-height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".weapon-context-card .picker-extraction-actions button",
+      "property": "min-width",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".weapon-context-card input[type=\"checkbox\"]",
+      "property": "width",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".weapon-context-card input[type=\"checkbox\"]",
+      "property": "height",
+      "value": "1rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".weapon-context-card .picker-challenge",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".picker-swatch",
+      "property": "width",
+      "value": "32px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".picker-swatch",
+      "property": "height",
+      "value": "32px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".picker-swatch img",
+      "property": "width",
+      "value": "32px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".picker-swatch img",
+      "property": "height",
+      "value": "32px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".picker-done",
+      "property": "min-width",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".picker-done",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".weapon-extractions input",
+      "property": "width",
+      "value": "min(9rem, 100%)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".weapon-workspace .camo-tile-image",
+      "property": "max-width",
+      "value": "8rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".weapon-workspace #camo-tracker .camo-tile img",
+      "property": "max-width",
+      "value": "128px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".weapon-workspace #camo-tracker .camo-tile img",
+      "property": "max-height",
+      "value": "128px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/unified-weapons.css",
+      "selector": ".weapon-context-card .picker-manual",
+      "property": "min-height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-acquisition.css",
+      "selector": ".acq-art",
+      "property": "height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-acquisition.css",
+      "selector": ".acq-art svg",
+      "property": "height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-acquisition.css",
+      "selector": "#weapon-acquisition .acq-counter button",
+      "property": "min-width",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-acquisition.css",
+      "selector": "#weapon-acquisition .acq-counter button",
+      "property": "min-height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-acquisition.css",
+      "selector": ".acq-counter output",
+      "property": "min-width",
+      "value": "7.2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-acquisition.css",
+      "selector": "#weapon-acquisition button",
+      "property": "min-height",
+      "value": "2.75rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": ".camo-guidance summary,\n.camo-group summary",
+      "property": "min-height",
+      "value": "2rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": ".camo-row",
+      "property": "scroll-margin-top",
+      "value": "5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": "#camo-overview",
+      "property": "max-inline-size",
+      "value": "960px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": ".camo-medal-art",
+      "property": "inline-size",
+      "value": "48px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": ".camo-medal-art",
+      "property": "block-size",
+      "value": "48px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": ".camo-medal-art img",
+      "property": "inset",
+      "value": "4px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": ".camo-medal-art img",
+      "property": "width",
+      "value": "calc(100% - 8px)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": ".camo-medal-art img",
+      "property": "height",
+      "value": "calc(100% - 8px)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": ".camo-class-medals .camo-medal-art",
+      "property": "width",
+      "value": "30px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": ".camo-class-medals .camo-medal-art",
+      "property": "height",
+      "value": "30px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": ".camo-class-medals .camo-medal strong",
+      "property": "width",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": ".camo-class-medals .camo-medal strong",
+      "property": "height",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": "#camo-overview .camo-dot,\n#camo-tracker .camo-tile",
+      "property": "inline-size",
+      "value": "48px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": "#camo-overview .camo-dot,\n#camo-tracker .camo-tile",
+      "property": "block-size",
+      "value": "48px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": "#camo-overview .camo-view-buttons button",
+      "property": "min-block-size",
+      "value": "2.5rem",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": "#camo-tracker .camo-tile strong,\n#camo-tracker [data-camo-tile-status]",
+      "property": "width",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/weapon-camos.css",
+      "selector": "#camo-tracker .camo-tile strong,\n#camo-tracker [data-camo-tile-status]",
+      "property": "height",
+      "value": "1px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": "html[data-ui-variant=\"modern\"] :is(button, .button)",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": "html[data-ui-variant=\"modern\"] .site-header",
+      "property": "min-height",
+      "value": "64px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": "html[data-ui-variant=\"modern\"] .site-nav a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": "html[data-ui-variant=\"modern\"] .site-nav :is(summary, button)",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": "html[data-ui-variant=\"modern\"] main:not(.workspace)",
+      "property": "width",
+      "value": "min(100%, 90rem)",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": ".ui-home-detail > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": ".ui-home-quick button",
+      "property": "min-width",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": "html[data-ui-variant=\"modern\"] .site-header",
+      "property": "min-height",
+      "value": "56px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": "html[data-ui-variant=\"modern\"]\n    .site-nav[data-navigation-surface]\n    .nav-more\n    > div",
+      "property": "left",
+      "value": "10px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": "html[data-ui-variant=\"modern\"]\n    .site-nav[data-navigation-surface]\n    .nav-more\n    > div",
+      "property": "right",
+      "value": "10px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": "html[data-ui-variant=\"modern\"]:not([data-ui-shell-mounted])\n  .ui-mobile-sections\n  > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": "html[data-ui-variant=\"modern\"] .ui-home-hub > [data-pin-feature]",
+      "property": "width",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "src/ui/workspace-shell.css",
+      "selector": "html[data-ui-variant=\"modern\"] .ui-home-hub > [data-pin-feature]",
+      "property": "min-width",
+      "value": "44px",
+      "reason": "Retained intrinsic media, table, control or breakpoint geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/help.css",
+      "selector": ".skip",
+      "property": "left",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/help.css",
+      "selector": ".skip:focus",
+      "property": "top",
+      "value": "10px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/help.css",
+      "selector": ".help-header",
+      "property": "max-width",
+      "value": "1240px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/help.css",
+      "selector": ".help-layout",
+      "property": "max-width",
+      "value": "1240px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/help.css",
+      "selector": ".contents",
+      "property": "top",
+      "value": "24px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/help.css",
+      "selector": "main",
+      "property": "max-width",
+      "value": "840px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/help.css",
+      "selector": ".action",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/help.css",
+      "selector": ".text-action",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/modern-theme.css",
+      "selector": "html[data-ui-variant=\"modern\"]\n  :is(\n    #ui-map-task,\n    #workspace-dialog,\n    #ui-map-route,\n    #safe-controls,\n    .safe-map-tools,\n    .ui-safe-views\n  )\n  :is(\n    button,\n    input:not([type=\"checkbox\"]):not([type=\"radio\"]),\n    select,\n    textarea\n  )",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/modern-theme.css",
+      "selector": "html[data-ui-variant=\"modern\"] .safe-map-tools > label",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/modern-theme.css",
+      "selector": "html[data-ui-variant=\"modern\"]\n  :is(.map-controls, .map-top-right, .field-toolbar)\n  button",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/modern-theme.css",
+      "selector": "html[data-ui-variant=\"modern\"]\n  :is(.map-controls, .map-top-right, .field-toolbar)\n  button",
+      "property": "min-inline-size",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/modern-theme.css",
+      "selector": "html[data-ui-variant=\"modern\"] :is(.safe-skip, .skip-link, .skip)",
+      "property": "top",
+      "value": "0.5rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/modern-theme.css",
+      "selector": "html[data-ui-variant=\"modern\"] :is(.safe-skip, .skip-link, .skip)",
+      "property": "left",
+      "value": "0.5rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/modern-theme.css",
+      "selector": "html[data-ui-variant=\"modern\"] :is(.safe-skip, .skip-link, .skip)",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/modern-theme.css",
+      "selector": "html[data-ui-variant=\"modern\"] .leaflet-popup-content button",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/modern-theme.css",
+      "selector": "html[data-ui-variant=\"modern\"] .contents a",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/modern-theme.css",
+      "selector": "html[data-ui-variant=\"modern\"] .help-header > a",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/sidebar-sections.css",
+      "selector": ".sidebar-section-divider",
+      "property": "min-height",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/sidebar-sections.css",
+      "selector": ".sidebar-section-divider::before",
+      "property": "width",
+      "value": "38px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/sidebar-sections.css",
+      "selector": ".sidebar-section-divider::before",
+      "property": "height",
+      "value": "4px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/sidebar-sections.css",
+      "selector": ".sidebar-section-divider",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/map/sidebar-sections.css",
+      "selector": ".sidebar-section-divider::before",
+      "property": "width",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": "#observation-list",
+      "property": "max-height",
+      "value": "180px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": "button,\nselect,\ninput",
+      "property": "min-height",
+      "value": "calc(2rem + 6px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": "input[type=\"checkbox\"]",
+      "property": "min-height",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": "input[type=\"checkbox\"]",
+      "property": "width",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-skip",
+      "property": "left",
+      "value": "8px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-skip:focus",
+      "property": "top",
+      "value": "8px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-layout",
+      "property": "min-height",
+      "value": "500px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-stop-drag",
+      "property": "left",
+      "value": "6px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-stop-drag",
+      "property": "top",
+      "value": "6px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-stop-drag",
+      "property": "width",
+      "value": "28px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-stop-drag",
+      "property": "min-height",
+      "value": "34px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-map-tools",
+      "property": "top",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-map-tools",
+      "property": "right",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-map-tools",
+      "property": "max-width",
+      "value": "calc(100% - 24px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-map-credit",
+      "property": "bottom",
+      "value": "4px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-map-credit",
+      "property": "left",
+      "value": "10px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-map-credit",
+      "property": "max-width",
+      "value": "calc(100% - 20px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".clinic-kind-cue",
+      "property": "width",
+      "value": "14px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".clinic-kind-cue",
+      "property": "height",
+      "value": "14px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-lock-cue",
+      "property": "width",
+      "value": "14px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-lock-cue",
+      "property": "height",
+      "value": "14px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-terrain:has(.leaflet-popup) .safe-map-tools",
+      "property": "bottom",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-terrain",
+      "property": "min-height",
+      "value": "300px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-map-tools",
+      "property": "top",
+      "value": "8px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-map-tools",
+      "property": "right",
+      "value": "8px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": ".safe-map-tools",
+      "property": "max-width",
+      "value": "calc(100% - 16px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/safe-run/style.css",
+      "selector": "html[data-ui-variant=\"modern\"] .safe-main-map-link",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] .app-header",
+      "property": "min-height",
+      "value": "48px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] .ui-map-task-header button",
+      "property": "min-width",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] .ui-map-task-header button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#workspace-open",
+      "property": "left",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#workspace-open",
+      "property": "bottom",
+      "value": "62px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#workspace-open",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#workspace-dialog",
+      "property": "max-width",
+      "value": "980px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#workspace-dialog button,\n.workspace-provider-card button,\n#workspace-key-layers button,\n#workspace-dialog-layers button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace-field input:not([type=\"checkbox\"]),\n.workspace-field textarea,\n.workspace-field select",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace-field textarea",
+      "property": "min-height",
+      "value": "82px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace-field:has(input[type=\"checkbox\"])",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace-field input[type=\"checkbox\"]",
+      "property": "width",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace-field input[type=\"checkbox\"]",
+      "property": "height",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace-image-preview",
+      "property": "max-height",
+      "value": "400px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".icon-preview",
+      "property": "width",
+      "value": "48px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".icon-preview",
+      "property": "height",
+      "value": "48px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".registration-images img",
+      "property": "max-height",
+      "value": "340px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace-toast",
+      "property": "left",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace-toast",
+      "property": "bottom",
+      "value": "112px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace-toast",
+      "property": "max-width",
+      "value": "min(360px, calc(100% - 32px))",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#workspace-open",
+      "property": "left",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#workspace-open",
+      "property": "bottom",
+      "value": "58px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace-toast",
+      "property": "bottom",
+      "value": "110px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "button svg,\n.brand-mark svg,\n.source-link svg,\n.overlay-summary svg",
+      "property": "width",
+      "value": "22px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "button svg,\n.brand-mark svg,\n.source-link svg,\n.overlay-summary svg",
+      "property": "height",
+      "value": "22px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".app-header",
+      "property": "height",
+      "value": "80px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".brand-mark",
+      "property": "width",
+      "value": "37px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".brand-mark",
+      "property": "height",
+      "value": "37px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".status-dot,\n.local-badge span",
+      "property": "width",
+      "value": "5px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".status-dot,\n.local-badge span",
+      "property": "height",
+      "value": "5px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".local-badge span",
+      "property": "width",
+      "value": "4px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".local-badge span",
+      "property": "height",
+      "value": "4px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace",
+      "property": "min-height",
+      "value": "390px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".info-rule",
+      "property": "height",
+      "value": "1px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".source-link svg",
+      "property": "width",
+      "value": "15px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".source-link svg",
+      "property": "height",
+      "value": "15px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".overlay-summary svg",
+      "property": "width",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-heading",
+      "property": "left",
+      "value": "32px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-heading",
+      "property": "top",
+      "value": "28px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-top-right",
+      "property": "top",
+      "value": "25px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-top-right",
+      "property": "right",
+      "value": "24px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".icon-button",
+      "property": "width",
+      "value": "42px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".icon-button",
+      "property": "height",
+      "value": "42px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".icon-button svg",
+      "property": "width",
+      "value": "19px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".icon-button svg",
+      "property": "height",
+      "value": "19px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-controls",
+      "property": "right",
+      "value": "24px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-controls",
+      "property": "bottom",
+      "value": "82px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".control-divider",
+      "property": "height",
+      "value": "5px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-bottom-bar",
+      "property": "left",
+      "value": "26px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-bottom-bar",
+      "property": "bottom",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-bottom-bar",
+      "property": "right",
+      "value": "26px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-status",
+      "property": "width",
+      "value": "min(320px, calc(100% - 40px))",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".loader",
+      "property": "width",
+      "value": "24px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".loader",
+      "property": "height",
+      "value": "24px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".failure-symbol",
+      "property": "width",
+      "value": "27px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".failure-symbol",
+      "property": "height",
+      "value": "27px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "dialog",
+      "property": "max-width",
+      "value": "440px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "dialog",
+      "property": "width",
+      "value": "calc(100% - 28px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".sr-only",
+      "property": "width",
+      "value": "1px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".sr-only",
+      "property": "height",
+      "value": "1px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".skip-link",
+      "property": "left",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".skip-link:focus",
+      "property": "top",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-heading",
+      "property": "left",
+      "value": "24px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".app-header",
+      "property": "height",
+      "value": "66px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".brand-mark",
+      "property": "width",
+      "value": "31px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".brand-mark",
+      "property": "height",
+      "value": "31px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".workspace",
+      "property": "min-height",
+      "value": "310px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-heading",
+      "property": "left",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-heading",
+      "property": "top",
+      "value": "22px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-top-right",
+      "property": "right",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-top-right",
+      "property": "top",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-top-right .icon-button",
+      "property": "width",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-top-right .icon-button",
+      "property": "height",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-controls",
+      "property": "right",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-controls",
+      "property": "bottom",
+      "value": "82px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".icon-button",
+      "property": "width",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".icon-button",
+      "property": "height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-bottom-bar",
+      "property": "left",
+      "value": "18px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-bottom-bar",
+      "property": "right",
+      "value": "18px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-bottom-bar",
+      "property": "bottom",
+      "value": "39px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".source-layer-body .category-filter img",
+      "property": "width",
+      "value": "22px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".source-layer-body .category-filter img",
+      "property": "height",
+      "value": "22px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-close",
+      "property": "width",
+      "value": "28px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-close",
+      "property": "height",
+      "value": "28px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-item",
+      "property": "min-height",
+      "value": "43px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-item img",
+      "property": "width",
+      "value": "25px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-item img",
+      "property": "height",
+      "value": "25px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-toggle",
+      "property": "height",
+      "value": "38px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-toggle svg",
+      "property": "width",
+      "value": "17px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-toggle svg",
+      "property": "height",
+      "value": "17px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".sidebar",
+      "property": "left",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".sidebar",
+      "property": "right",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".sidebar",
+      "property": "top",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".sidebar",
+      "property": "bottom",
+      "value": "32px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-toggle",
+      "property": "height",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-item",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".official-pin",
+      "property": "width",
+      "value": "27px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".official-pin",
+      "property": "height",
+      "value": "27px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".official-pin img",
+      "property": "width",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".official-pin img",
+      "property": "height",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "input[type=\"checkbox\"]",
+      "property": "width",
+      "value": "17px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "input[type=\"checkbox\"]",
+      "property": "height",
+      "value": "17px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".category-filter",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#layers-dialog",
+      "property": "max-width",
+      "value": "420px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-top-right",
+      "property": "max-width",
+      "value": "calc(100% - 1rem)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".website-layer-row input",
+      "property": "width",
+      "value": "1rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".website-layer-row input",
+      "property": "height",
+      "value": "1rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".source-update-controls button",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".grid-toggle input",
+      "property": "width",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".grid-toggle input",
+      "property": "height",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#grid-position",
+      "property": "min-width",
+      "value": "24px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".icon-starters button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".icon-design-controls input[type=\"color\"]",
+      "property": "height",
+      "value": "42px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".icon-design-actions button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".help-link",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".tool-navigation-error",
+      "property": "top",
+      "value": "90px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".tool-navigation-error",
+      "property": "left",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".tool-navigation-error",
+      "property": "right",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".search-source-option",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#explore-panel button",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".annotation-form #point-vertices",
+      "property": "min-height",
+      "value": "120px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#point-evidence-list button",
+      "property": "min-height",
+      "value": "40px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".search-main-toolbar > .workspace-field",
+      "property": "max-width",
+      "value": "360px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".search-main-toolbar > button",
+      "property": "min-height",
+      "value": "40px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".marker-popup-actions button,\n.marker-popup-actions a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-workspace:has(.readable-marker-popup) .workspace-toast",
+      "property": "bottom",
+      "value": "8px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-workspace:has(.readable-marker-popup) .workspace-toast",
+      "property": "left",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-workspace:has(.readable-marker-popup) .workspace-toast",
+      "property": "max-width",
+      "value": "min(360px, calc(100% - 24px))",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#field-planner textarea",
+      "property": "min-height",
+      "value": "100px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".gameplay-toolbar",
+      "property": "left",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".gameplay-toolbar",
+      "property": "right",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".gameplay-toolbar",
+      "property": "top",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".gameplay-toolbar button,\n.gameplay-toolbar select",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-gameplay .map-top-right",
+      "property": "top",
+      "value": "130px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".gameplay-toolbar",
+      "property": "left",
+      "value": "10px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".gameplay-toolbar",
+      "property": "right",
+      "value": "10px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-gameplay .map-top-right",
+      "property": "top",
+      "value": "156px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".waypoint-list li > strong",
+      "property": "min-width",
+      "value": "100px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".waypoint-drag-handle",
+      "property": "min-width",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".waypoint-drag-handle",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".route-plan-summary",
+      "property": "left",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".route-plan-summary",
+      "property": "bottom",
+      "value": "170px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".route-plan-summary",
+      "property": "max-width",
+      "value": "min(360px, calc(100% - 100px))",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".route-plan-summary",
+      "property": "left",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".route-plan-summary",
+      "property": "bottom",
+      "value": "158px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".route-plan-summary",
+      "property": "max-width",
+      "value": "calc(100% - 90px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".waypoint-routes-open",
+      "property": "left",
+      "value": "170px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".waypoint-routes-open",
+      "property": "bottom",
+      "value": "62px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".waypoint-routes-open",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".route-plan-summary button,\n.route-tracking-controls button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".waypoint-routes-open",
+      "property": "left",
+      "value": "132px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".waypoint-routes-open",
+      "property": "bottom",
+      "value": "58px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-map-menu",
+      "property": "max-height",
+      "value": "calc(100% - 8px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-map-menu",
+      "property": "max-width",
+      "value": "calc(100% - 8px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-menu-drag-handle,\n.route-plan-summary .map-menu-drag-handle",
+      "property": "min-width",
+      "value": "28px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-menu-drag-handle,\n.route-plan-summary .map-menu-drag-handle",
+      "property": "min-height",
+      "value": "28px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-launcher",
+      "property": "bottom",
+      "value": "62px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-launcher",
+      "property": "left",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-routes",
+      "property": "left",
+      "value": "170px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-tracker",
+      "property": "left",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-tracker",
+      "property": "bottom",
+      "value": "170px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-tracker",
+      "property": "max-width",
+      "value": "min(360px, calc(100% - 100px))",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-gameplay",
+      "property": "left",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-gameplay",
+      "property": "right",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-gameplay",
+      "property": "top",
+      "value": "16px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-gameplay",
+      "property": "width",
+      "value": "calc(100% - 32px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-workspace",
+      "property": "left",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-workspace",
+      "property": "bottom",
+      "value": "58px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-routes",
+      "property": "left",
+      "value": "132px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-routes",
+      "property": "bottom",
+      "value": "58px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-tracker",
+      "property": "left",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-tracker",
+      "property": "bottom",
+      "value": "158px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-tracker",
+      "property": "max-width",
+      "value": "calc(100% - 90px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-gameplay",
+      "property": "left",
+      "value": "10px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-gameplay",
+      "property": "right",
+      "value": "10px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".movable-gameplay",
+      "property": "width",
+      "value": "calc(100% - 20px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#route-tracker-details select",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".toolkit-panel button,\n.toolkit-selection-controls button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".toolkit-panel textarea",
+      "property": "min-height",
+      "value": "100px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-gameplay .gameplay-toolbar button",
+      "property": "min-height",
+      "value": "48px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-filters .workspace-field",
+      "property": "min-width",
+      "value": "120px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-filters button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-name > a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-counter-actions",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-counter-actions button",
+      "property": "width",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-counter-actions button",
+      "property": "height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-counter-actions button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-counter-actions strong",
+      "property": "min-width",
+      "value": "24px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-count-status",
+      "property": "min-height",
+      "value": "14px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-order-handle",
+      "property": "min-width",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-order-handle",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-order-controls details",
+      "property": "width",
+      "value": "80px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-order-controls summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-order-controls button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-checklist-panel > a",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-filters .workspace-field",
+      "property": "min-width",
+      "value": "100px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-directory thead",
+      "property": "width",
+      "value": "1px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-directory thead",
+      "property": "height",
+      "value": "1px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".boss-mobile-label",
+      "property": "min-height",
+      "value": "14px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-grid-context button",
+      "property": "min-height",
+      "value": "40px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-toolbar",
+      "property": "inset-block-start",
+      "value": "10px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-toolbar",
+      "property": "max-inline-size",
+      "value": "calc(100% - 28px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-toolbar button,\n.field-toolbar summary,\n.map-selection-inspector button",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-toolbar-status",
+      "property": "max-inline-size",
+      "value": "25rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector",
+      "property": "right",
+      "value": "12px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector",
+      "property": "bottom",
+      "value": "55px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector",
+      "property": "inline-size",
+      "value": "min(var(--selection-width, 380px), calc(100% - 24px))",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector",
+      "property": "max-block-size",
+      "value": "min(var(--selection-height, 300px), calc(100% - 90px))",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector label",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-toolbar",
+      "property": "inset-block-start",
+      "value": "5px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-toolbar",
+      "property": "inline-size",
+      "value": "calc(100% - 20px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector",
+      "property": "left",
+      "value": "8px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector",
+      "property": "right",
+      "value": "8px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector",
+      "property": "bottom",
+      "value": "45px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-heading",
+      "property": "top",
+      "value": "70px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-toolbar",
+      "property": "inset-inline-start",
+      "value": "calc((100% - 260px) / 2)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-toolbar",
+      "property": "max-inline-size",
+      "value": "calc(100% - 300px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#map-key-content details[data-menu-section] > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-close",
+      "property": "min-width",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".key-close",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".marker-popup-actions",
+      "property": "max-height",
+      "value": "140px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector",
+      "property": "inline-size",
+      "value": "min(var(--selection-width, 320px), calc(100% - 24px))",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector",
+      "property": "max-block-size",
+      "value": "min(var(--selection-height, 240px), calc(100% - 90px))",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector",
+      "property": "right",
+      "value": "8px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".map-selection-inspector",
+      "property": "inline-size",
+      "value": "min(280px, calc(100% - 16px))",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#map-key-content .section-layer-bulk button",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "#map-key-content .category-sublist > summary",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"][data-map-space=\"scroll\"] .workspace",
+      "property": "min-height",
+      "value": "14rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"][data-map-space=\"scroll\"] #ui-map-task",
+      "property": "min-height",
+      "value": "14rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"][data-map-space=\"scroll\"] .map-workspace",
+      "property": "height",
+      "value": "12rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"][data-map-space=\"scroll\"] .map-workspace",
+      "property": "min-height",
+      "value": "12rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #ui-selection-back",
+      "property": "top",
+      "value": "var(--ui-task-header-height, 0px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #ui-map-task-resizer",
+      "property": "width",
+      "value": "24px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #ui-map-task-resizer::after",
+      "property": "top",
+      "value": "calc(50% - 24px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #ui-map-task-resizer::after",
+      "property": "left",
+      "value": "10px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #ui-map-task-resizer::after",
+      "property": "width",
+      "value": "4px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #ui-map-task-resizer::after",
+      "property": "height",
+      "value": "48px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #key-controls .grid-toggle",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #key-controls button",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #key-controls button",
+      "property": "min-width",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #key-map-info > summary",
+      "property": "width",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #key-map-info > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #key-map-info svg",
+      "property": "width",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] #key-map-info svg",
+      "property": "height",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] .key-updates-menu > summary",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": ".field-toolbar .field-tool-link",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/styles.css",
+      "selector": "html[data-ui-variant=\"modern\"] .ui-selection-toolbar",
+      "property": "top",
+      "value": "var(--ui-task-header-height, 0px)",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/workspace/checklist-modern.css",
+      "selector": "html[data-ui-variant=\"modern\"]\n  #boss-checklist\n  :is(.boss-counter-actions button, .boss-order-handle)",
+      "property": "min-inline-size",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/workspace/checklist-modern.css",
+      "selector": "html[data-ui-variant=\"modern\"]\n  #boss-checklist\n  :is(.boss-counter-actions button, .boss-order-handle)",
+      "property": "min-block-size",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/workspace/checklist-modern.css",
+      "selector": "html[data-ui-variant=\"modern\"] #boss-checklist .boss-directory thead",
+      "property": "inline-size",
+      "value": "1px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/workspace/checklist-modern.css",
+      "selector": "html[data-ui-variant=\"modern\"] #boss-checklist .boss-directory thead",
+      "property": "block-size",
+      "value": "1px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/hub-style.css",
+      "selector": ".x01-hub-marker img",
+      "property": "width",
+      "value": "26px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/hub-style.css",
+      "selector": ".x01-hub-marker img",
+      "property": "height",
+      "value": "26px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/hub-style.css",
+      "selector": ".x01-poi-label span",
+      "property": "max-width",
+      "value": "120px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/shared-icons.css",
+      "selector": ".x01-shared-pin",
+      "property": "width",
+      "value": "27px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/shared-icons.css",
+      "selector": ".x01-shared-pin",
+      "property": "height",
+      "value": "27px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/shared-icons.css",
+      "selector": ".x01-shared-pin img",
+      "property": "width",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/shared-icons.css",
+      "selector": ".x01-shared-pin img",
+      "property": "height",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/shared-icons.css",
+      "selector": ".x01-shared-key-icon",
+      "property": "width",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/shared-icons.css",
+      "selector": ".x01-shared-key-icon",
+      "property": "height",
+      "value": "20px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-skip",
+      "property": "left",
+      "value": "1rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-skip:focus",
+      "property": "top",
+      "value": "1rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-layout",
+      "property": "min-height",
+      "value": "29rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-search input",
+      "property": "min-height",
+      "value": "44px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-layer-head button,\n.x01-detail button,\n.x01-map-tools button",
+      "property": "min-height",
+      "value": "40px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-layers label",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-results button",
+      "property": "min-height",
+      "value": "40px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-sources summary",
+      "property": "min-height",
+      "value": "40px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-stage #x01-map",
+      "property": "min-height",
+      "value": "15rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-image-status",
+      "property": "min-height",
+      "value": "1rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-grid-toggle",
+      "property": "min-height",
+      "value": "40px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-detail",
+      "property": "max-height",
+      "value": "14rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-panel",
+      "property": "max-height",
+      "value": "34rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/style.css",
+      "selector": ".x01-results",
+      "property": "max-height",
+      "value": "13rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".x01-workbench button",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".x01-workbench textarea",
+      "property": "min-height",
+      "value": "4.5rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-grid",
+      "property": "min-height",
+      "value": "32rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-maps",
+      "property": "min-height",
+      "value": "18rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-panel summary",
+      "property": "min-height",
+      "value": "36px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-status",
+      "property": "min-height",
+      "value": "1.4rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-photo",
+      "property": "max-height",
+      "value": "11rem",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-mark",
+      "property": "width",
+      "value": "30px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-mark",
+      "property": "height",
+      "value": "30px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-cod-pin",
+      "property": "width",
+      "value": "18px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-cod-pin",
+      "property": "height",
+      "value": "18px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-sr-only",
+      "property": "width",
+      "value": "1px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-sr-only",
+      "property": "height",
+      "value": "1px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-mark img",
+      "property": "width",
+      "value": "24px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-mark img",
+      "property": "height",
+      "value": "24px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-cod-pin img",
+      "property": "width",
+      "value": "13px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    },
+    {
+      "file": "tools/hajin-map/src/x01/workbench-style.css",
+      "selector": ".wb-cod-pin img",
+      "property": "height",
+      "value": "13px",
+      "reason": "Retained map primitive, media or intrinsic control geometry"
+    }
+  ]
+}

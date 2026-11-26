@@ -5,13 +5,13 @@
 .quick-tracker-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0.4rem 0 0.75rem;
+  gap: var(--ui-space-3);
+  margin: var(--ui-space-3) 0 var(--ui-space-6);
 }
 .quick-tracker-nav a {
-  padding: 0.45rem 0.9rem;
+  padding: var(--ui-space-4) var(--ui-space-7);
   border: 1px solid var(--line);
-  border-radius: 0.4rem;
+  border-radius: var(--ui-radius-2);
   text-decoration: none;
 }
 .quick-tracker-nav a[aria-current="page"] {
@@ -20,12 +20,16 @@
   font-weight: 700;
 }
 .quick-tracker .page-heading {
-  margin: 0.4rem 0;
+  margin: var(--ui-space-3) 0;
   padding: 0;
 }
 .quick-tracker .page-heading h1 {
-  font-size: clamp(1.4rem, 2vw, 1.9rem);
-  margin: 0.25rem 0;
+  font-size: clamp(
+    var(--ui-type-title),
+    calc(var(--ui-viewport-inline) * 0.02),
+    1.9rem
+  );
+  margin: var(--ui-space-2) 0;
 }
 .quick-tracker .page-heading .eyebrow {
   display: block;
@@ -33,20 +37,20 @@
 }
 .quick-tracker .tracker-explanation,
 .quick-tracker .tracker-catalog-note {
-  font-size: 0.85rem;
-  margin: 0.25rem 0;
+  font-size: var(--ui-type-label);
+  margin: var(--ui-space-2) 0;
 }
 .quick-tracker .profile-toolbar {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin: 0.5rem 0;
+  gap: var(--ui-space-6);
+  margin: var(--ui-space-4) 0;
 }
 .quick-tracker .profile-toolbar label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
   flex: 1;
   margin: 0;
 }
@@ -55,19 +59,19 @@
   flex: 1;
 }
 .quick-tracker .profile-toolbar button {
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker #save-status,
 .quick-tracker #armory-status {
-  margin: 0.35rem 0;
-  padding: 0.35rem 0;
+  margin: var(--ui-space-3) 0;
+  padding: var(--ui-space-3) 0;
   border: 0;
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
 }
 .quick-tracker .filter-bar {
-  padding: 0.6rem;
+  padding: var(--ui-space-5);
   gap: var(--tracker-gap);
-  margin: 0.6rem 0;
+  margin: var(--ui-space-5) 0;
   align-items: end;
 }
 .quick-tracker .filter-bar label {
@@ -80,23 +84,23 @@
 .tracker-filter-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
+  gap: var(--ui-space-6);
+  padding: var(--ui-space-4) 0;
 }
 .quick-tracker #inventory-pagination {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
-  margin: 0.5rem 0;
-  font-size: 0.8rem;
+  gap: var(--ui-space-4);
+  margin: var(--ui-space-4) 0;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker #inventory-pagination p {
   margin: 0;
 }
 .quick-tracker #inventory-pagination button {
-  padding: 0.35rem 0.6rem;
+  padding: var(--ui-space-3) var(--ui-space-5);
 }
 .quick-tracker .inventory-category h2,
 .quick-tracker .inventory-group h3 {
@@ -104,11 +108,11 @@
 }
 .quick-tracker .inventory-category h2 button,
 .quick-tracker .inventory-group h3 button {
-  padding: 0.45rem 0.6rem;
-  font-size: 0.9rem;
+  padding: var(--ui-space-4) var(--ui-space-5);
+  font-size: var(--ui-type-label);
 }
 .quick-tracker .inventory-category {
-  margin: 0.6rem 0;
+  margin: var(--ui-space-5) 0;
   overflow-x: auto;
 }
 .quick-tracker .inventory-group {
@@ -123,30 +127,30 @@
 .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
   display: grid;
   grid-template-columns: minmax(160px, 1.6fr) 180px minmax(110px, 1fr) 70px;
-  gap: 0.6rem;
+  gap: var(--ui-space-5);
   align-items: center;
   min-height: 58px;
-  padding: 0.35rem 0.5rem;
+  padding: var(--ui-space-3) var(--ui-space-4);
 }
 .quick-tracker .inventory-row .inventory-name {
   grid-column: auto;
 }
 .quick-tracker .inventory-name small {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .inventory-upgrade-need {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
   padding: 0;
 }
 .quick-tracker .inventory-upgrade-need strong,
 .quick-tracker .inventory-upgrade-need small {
   display: inline;
-  margin-right: 0.4rem;
+  margin-right: var(--ui-space-3);
 }
 .quick-tracker .owned-cell {
   display: flex;
   align-items: flex-start;
-  gap: 0.25rem;
+  gap: var(--ui-space-2);
 }
 .quick-tracker .owned-cell .stock-steps {
   display: contents;
@@ -177,8 +181,8 @@
 .quick-tracker .tracker-inventory-math {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  padding: 0.6rem 0;
+  gap: var(--ui-space-8);
+  padding: var(--ui-space-5) 0;
 }
 .quick-tracker .tracker-inventory-math > * {
   flex: 1 1 120px;
@@ -189,9 +193,9 @@
 .quick-tracker .inventory-save-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  margin: 0.5rem 0;
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-4);
+  margin: var(--ui-space-4) 0;
   border: 1px solid var(--line);
   background: var(--surface);
   position: sticky;
@@ -207,30 +211,30 @@
   border-color: var(--accent);
 }
 .quick-tracker .inventory-save-bar button {
-  padding: 0.4rem 0.7rem;
+  padding: var(--ui-space-3) var(--ui-space-6);
 }
 .quick-tracker .upgrade-family {
-  margin: 0.65rem 0;
+  margin: var(--ui-space-5) 0;
 }
 .quick-tracker .upgrade-family > h2 {
-  padding: 0.3rem 0.5rem;
-  font-size: 1rem;
+  padding: var(--ui-space-2) var(--ui-space-4);
+  font-size: var(--ui-type-base);
   margin: 0;
 }
 .quick-tracker .upgrade-family > h2 small {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .compact-progress {
-  padding: 0.5rem;
-  margin: 0.3rem 0;
+  padding: var(--ui-space-4);
+  margin: var(--ui-space-2) 0;
 }
 .quick-tracker .upgrade-summary {
-  gap: 0.5rem;
-  font-size: 0.8rem;
+  gap: var(--ui-space-4);
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .upgrade-summary h3 {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: var(--ui-type-body);
 }
 .quick-tracker .upgrade-requirements {
   max-height: none;
@@ -239,15 +243,15 @@
   white-space: nowrap;
 }
 .quick-tracker .panel {
-  padding: 0.65rem;
+  padding: var(--ui-space-5);
 }
 .quick-tracker .tracker-weapon-group {
   border: 1px solid var(--line);
-  border-radius: 0.4rem;
-  margin: 0.6rem 0;
+  border-radius: var(--ui-radius-2);
+  margin: var(--ui-space-5) 0;
 }
 .quick-tracker .tracker-weapon-group > summary {
-  padding: 0.5rem;
+  padding: var(--ui-space-4);
   text-transform: capitalize;
   background: var(--surface);
 }
@@ -255,19 +259,19 @@
   display: grid;
   grid-template-columns: minmax(120px, 1.2fr) 150px minmax(100px, 1fr) auto;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
   border-top: 1px solid var(--line);
-  padding: 0.4rem 0.6rem;
+  padding: var(--ui-space-3) var(--ui-space-5);
 }
 .quick-tracker .tracker-weapon-row label {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--ui-space-3);
   margin: 0;
 }
 .quick-tracker .tracker-roster-filter {
   display: flex;
-  gap: 0.75rem;
+  gap: var(--ui-space-6);
   flex-wrap: wrap;
 }
 .quick-tracker .tracker-roster-filter label {
@@ -279,18 +283,18 @@
   border: 0;
 }
 .quick-tracker .tracker-weapon-row button {
-  font-size: 0.8rem;
-  padding: 0.35rem 0.6rem;
+  font-size: var(--ui-type-meta);
+  padding: var(--ui-space-3) var(--ui-space-5);
 }
 .quick-tracker .needed-table {
   min-width: 0;
 }
 .quick-tracker .needed-table th,
 .quick-tracker .needed-table td {
-  padding: 0.45rem;
+  padding: var(--ui-space-4);
 }
 .quick-tracker .tracker-budget-details {
-  margin: 0.4rem 0;
+  margin: var(--ui-space-3) 0;
 }
 @media (max-width: 700px) {
   .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
@@ -330,33 +334,33 @@
   }
 }
 main.quick-tracker {
-  padding-block-start: 0.5rem;
+  padding-block-start: var(--ui-space-4);
 }
 .quick-tracker .breadcrumbs {
-  margin: 0.2rem 0 0.4rem;
+  margin: var(--ui-space-2) 0 var(--ui-space-3);
 }
 .quick-tracker .quick-tracker-nav {
-  margin: 0.3rem 0;
+  margin: var(--ui-space-2) 0;
 }
 .quick-tracker .page-heading {
   margin: 0;
 }
 .quick-tracker .page-heading h1 {
-  margin: 0.1rem 0;
+  margin: var(--ui-space-1) 0;
 }
 .quick-tracker .profile-toolbar {
-  margin: 0.25rem 0;
+  margin: var(--ui-space-2) 0;
 }
 .quick-tracker .inventory-save-bar[data-dirty="false"] {
   position: static;
 }
 .quick-tracker #inventory-fields .inventory-category,
 .quick-tracker #inventory-fields .inventory-group {
-  padding: 0.15rem;
-  margin: 0.25rem 0;
+  padding: var(--ui-space-1);
+  margin: var(--ui-space-2) 0;
 }
 .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
-  padding: 0.2rem 0.4rem;
+  padding: var(--ui-space-2) var(--ui-space-3);
   min-height: 54px;
 }
 .quick-tracker
@@ -378,18 +382,18 @@ main.quick-tracker {
 .quick-tracker .tracker-needed-calculation {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.4rem;
-  padding: 0.35rem 0;
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-3) 0;
 }
 .quick-tracker .needed-table th {
   width: auto;
 }
 .quick-tracker #upgrade-budget-summary .notice {
-  padding: 0.35rem 0.6rem;
-  margin: 0.35rem 0;
+  padding: var(--ui-space-3) var(--ui-space-5);
+  margin: var(--ui-space-3) 0;
 }
 .quick-tracker #upgrade-budget-summary > p {
-  margin: 0.3rem 0;
+  margin: var(--ui-space-2) 0;
 }
 .quick-tracker #progress-filters {
   grid-template-columns: minmax(120px, 1fr) auto auto auto;
@@ -402,7 +406,7 @@ main.quick-tracker {
 }
 .quick-tracker #inventory-fields.comfortable .inventory-entry > .inventory-row {
   min-height: 66px;
-  padding-block: 0.6rem;
+  padding-block: var(--ui-space-5);
 }
 @media (max-width: 700px), (pointer: coarse) {
   .quick-tracker
@@ -424,11 +428,11 @@ main.quick-tracker {
   }
 }
 body[data-page] main.quick-tracker {
-  padding-block-start: 0.5rem;
+  padding-block-start: var(--ui-space-4);
 }
 .quick-tracker .tracker-context {
-  font-size: 0.8rem;
-  margin: 0.3rem 0;
+  font-size: var(--ui-type-meta);
+  margin: var(--ui-space-2) 0;
   min-width: 0;
 }
 .quick-tracker .tracker-context > summary {
@@ -465,7 +469,7 @@ body[data-page] main.quick-tracker {
 }
 .quick-tracker .tracker-edit-stock {
   display: inline-block;
-  margin-inline: 0.3rem;
+  margin-inline: var(--ui-space-2);
 }
 .quick-tracker .needed-table td,
 .quick-tracker .needed-table th {
@@ -481,7 +485,7 @@ body[data-page] main.quick-tracker {
   }
 }
 html[data-ui-variant] body[data-page] main.quick-tracker {
-  padding-block-start: 0.5rem;
+  padding-block-start: var(--ui-space-4);
 }
 .quick-tracker
   #inventory-fields
@@ -490,7 +494,7 @@ html[data-ui-variant] body[data-page] main.quick-tracker {
   display: none;
 }
 .quick-tracker #inventory-fields .inventory-upgrade-need small {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
   min-height: 54px;
@@ -521,13 +525,13 @@ html[data-ui-variant] body[data-page] main.quick-tracker {
   max-width: none;
 }
 .quick-tracker .tracker-context .profile-toolbar {
-  margin: 0.5rem 0;
+  margin: var(--ui-space-4) 0;
 }
 .quick-tracker .page-heading {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: var(--ui-space-6);
 }
 .quick-tracker .tracker-explanation[open] {
   flex-basis: 100%;
@@ -550,27 +554,27 @@ html[data-ui-variant] body[data-page] main.quick-tracker {
   }
 }
 html[data-ui-variant] main.quick-tracker .tracker-budget-panel {
-  padding: 0.4rem 0.6rem;
-  margin-block: 0.4rem;
-  font-size: 0.8rem;
+  padding: var(--ui-space-3) var(--ui-space-5);
+  margin-block: var(--ui-space-3);
+  font-size: var(--ui-type-meta);
 }
 html[data-ui-variant] main.quick-tracker .tracker-budget-panel .notice {
   border: 0;
   padding: 0;
-  margin: 0.2rem 0;
+  margin: var(--ui-space-2) 0;
 }
 html[data-ui-variant]
   main.quick-tracker
   .tracker-budget-panel
   .tracker-budget-details {
-  margin: 0.2rem 0;
+  margin: var(--ui-space-2) 0;
 }
 html[data-ui-variant] main.quick-tracker .tracker-budget-panel > details {
-  margin: 0.2rem 0;
+  margin: var(--ui-space-2) 0;
 }
 .quick-tracker .upgrade-family > h2 {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
   align-items: baseline;
   flex-wrap: wrap;
 }
@@ -578,8 +582,8 @@ html[data-ui-variant] main.quick-tracker .tracker-budget-panel > details {
   display: inline;
 }
 html[data-ui-variant] main.quick-tracker .upgrade-family .compact-progress {
-  padding: 0.35rem 0.5rem;
-  margin: 0.2rem 0;
+  padding: var(--ui-space-3) var(--ui-space-4);
+  margin: var(--ui-space-2) 0;
 }
 html[data-ui-variant]
   main.quick-tracker
@@ -589,7 +593,7 @@ html[data-ui-variant]
   white-space: nowrap;
   width: auto;
   min-width: max-content;
-  padding: 0.3rem 0.5rem;
+  padding: var(--ui-space-2) var(--ui-space-4);
 }
 .quick-tracker .upgrade-family .compact-progress .upgrade-summary {
   grid-template-columns:
@@ -597,8 +601,8 @@ html[data-ui-variant]
     minmax(75px, auto);
 }
 .quick-tracker .upgrade-family > details > summary {
-  padding: 0.3rem 0.5rem;
-  font-size: 0.8rem;
+  padding: var(--ui-space-2) var(--ui-space-4);
+  font-size: var(--ui-type-meta);
 }
 @media (min-width: 701px) and (pointer: fine) {
   html[data-ui-variant] main.quick-tracker .filter-bar input,
@@ -606,10 +610,10 @@ html[data-ui-variant]
   html[data-ui-variant] main.quick-tracker .filter-bar button {
     min-height: 36px;
     height: auto;
-    padding: 0.35rem 0.6rem;
+    padding: var(--ui-space-3) var(--ui-space-5);
   }
   html[data-ui-variant] main.quick-tracker .filter-bar {
-    padding: 0.45rem 0.6rem;
+    padding: var(--ui-space-4) var(--ui-space-5);
   }
 }
 @media (max-width: 700px) {
@@ -638,7 +642,7 @@ html[data-ui-variant]
 }
 html[data-ui-variant] main.quick-tracker .page-heading {
   padding: 0;
-  margin-block: 0.2rem;
+  margin-block: var(--ui-space-2);
   min-height: 0;
 }
 @media (min-width: 701px) and (pointer: fine) {
@@ -656,7 +660,7 @@ html[data-ui-variant] main.quick-tracker .page-heading {
 .quick-tracker .upgrade-list-shell[data-layout="grouped"] #progress-rows {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.65rem;
+  gap: var(--ui-space-5);
   align-items: start;
 }
 html[data-ui-variant]
@@ -664,8 +668,8 @@ html[data-ui-variant]
   .upgrade-list-shell[data-layout="grouped"]
   .upgrade-family {
   border: 1px solid var(--line);
-  border-radius: 0.4rem;
-  padding: 0.35rem;
+  border-radius: var(--ui-radius-2);
+  padding: var(--ui-space-3);
   margin: 0;
   min-width: 0;
 }
@@ -678,7 +682,7 @@ html[data-ui-variant]
 .quick-tracker .upgrade-list-shell[data-layout="grouped"] .upgrade-summary {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.35rem;
+  gap: var(--ui-space-3);
 }
 .quick-tracker
   .upgrade-list-shell[data-layout="grouped"]
@@ -706,16 +710,16 @@ html[data-ui-variant]
   padding: 0;
 }
 .quick-tracker .upgrade-list-shell[data-layout="grouped"] .upgrade-family > h2 {
-  margin: 0.15rem;
+  margin: var(--ui-space-1);
   padding: 0;
-  font-size: 0.95rem;
+  font-size: var(--ui-type-body);
 }
 .quick-tracker
   .upgrade-list-shell[data-layout="grouped"]
   .upgrade-family
   > h2
   small {
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
 }
 @media (max-width: 1100px) {
   .quick-tracker .upgrade-list-shell[data-layout="grouped"] #progress-rows {
@@ -773,7 +777,7 @@ html[data-ui-variant]
   position: static;
   width: auto;
   max-width: none;
-  padding: 0.3rem 0;
+  padding: var(--ui-space-2) 0;
   margin: 0;
 }
 /* Keep the mobile task controls compact without shrinking their touch targets. */
@@ -784,8 +788,8 @@ html[data-ui-variant]
     white-space: nowrap;
     min-height: 2.75rem;
     text-align: center;
-    padding: 0.45rem 0.25rem;
-    font-size: 0.8rem;
+    padding: var(--ui-space-4) var(--ui-space-2);
+    font-size: var(--ui-type-meta);
   }
   .quick-tracker .filter-bar:has(#inventory-query) {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -813,7 +817,7 @@ html[data-ui-variant]
     grid-column: 1/-1;
   }
   .quick-tracker #progress-filters button {
-    padding-inline: 0.3rem;
+    padding-inline: var(--ui-space-2);
   }
 }
 /* Needed shares the inventory's named groups and compact rows, not a wide table. */
@@ -824,34 +828,34 @@ html[data-ui-variant]
 }
 .quick-tracker .needed-group {
   border: 1px solid var(--line);
-  border-radius: 0.4rem;
-  margin: 0.6rem 0;
+  border-radius: var(--ui-radius-2);
+  margin: var(--ui-space-5) 0;
   min-width: 0;
 }
 .quick-tracker .needed-group > summary {
   background: var(--surface);
-  padding: 0.45rem 0.6rem;
+  padding: var(--ui-space-4) var(--ui-space-5);
   font-weight: 650;
   cursor: pointer;
   min-height: 36px;
   align-content: center;
 }
 .quick-tracker .needed-subgroup {
-  margin: 0.35rem;
-  border-radius: 0.25rem;
+  margin: var(--ui-space-3);
+  border-radius: var(--ui-radius-1);
 }
 .quick-tracker .needed-subgroup > summary {
   background: var(--raised);
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
 }
 .quick-tracker .needed-row {
   display: grid;
   grid-template-columns:
     minmax(160px, 1.6fr) minmax(100px, 1fr) minmax(100px, 1fr)
     minmax(100px, auto);
-  gap: 0.6rem;
+  gap: var(--ui-space-5);
   align-items: center;
-  padding: 0.45rem 0.6rem;
+  padding: var(--ui-space-4) var(--ui-space-5);
   border-top: 1px solid var(--line);
   min-height: 58px;
 }
@@ -866,7 +870,7 @@ html[data-ui-variant]
 .quick-tracker .needed-metric-label {
   display: block;
   color: var(--muted);
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .needed-metric {
   position: relative;
@@ -874,34 +878,34 @@ html[data-ui-variant]
 .quick-tracker .needed-details-button {
   background: var(--surface);
   color: var(--text);
-  padding: 0.35rem 0.6rem;
-  font-size: 0.8rem;
+  padding: var(--ui-space-3) var(--ui-space-5);
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .needed-detail {
-  padding: 0.6rem;
+  padding: var(--ui-space-5);
   border-top: 1px solid var(--line);
   background: var(--surface);
   overflow-wrap: anywhere;
 }
 .quick-tracker .needed-detail .tracker-needed-calculation {
   position: relative;
-  padding: 0.45rem 0;
+  padding: var(--ui-space-4) 0;
 }
 .quick-tracker .needed-detail .tracker-needed-calculation > span {
   position: relative;
 }
 .quick-tracker .needed-detail > details {
-  margin: 0.4rem 0;
+  margin: var(--ui-space-3) 0;
 }
 .quick-tracker .needed-group-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0.4rem 0;
+  gap: var(--ui-space-4);
+  margin: var(--ui-space-3) 0;
 }
 .quick-tracker .needed-group-actions button {
-  padding: 0.35rem 0.6rem;
-  font-size: 0.8rem;
+  padding: var(--ui-space-3) var(--ui-space-5);
+  font-size: var(--ui-type-meta);
   background: var(--surface);
   color: var(--text);
 }
@@ -937,7 +941,7 @@ html[data-ui-variant]
 .quick-tracker .needed-detail .tracker-needed-calculation > span > small {
   display: block;
   color: var(--muted);
-  margin-top: 0.25rem;
+  margin-top: var(--ui-space-2);
 }
 /* Item blueprints are a distinct, staged checklist alongside inventory quantities. */
 .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
@@ -948,9 +952,9 @@ html[data-ui-variant]
 .quick-tracker .inventory-blueprint label {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--ui-space-3);
   min-height: 36px;
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
   cursor: pointer;
 }
 .quick-tracker #inventory-fields .inventory-blueprint input[type="checkbox"] {
@@ -963,7 +967,7 @@ html[data-ui-variant]
 }
 .quick-tracker .inventory-blueprint small {
   color: var(--muted);
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 @media (max-width: 700px) {
   .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
@@ -995,12 +999,12 @@ html[data-ui-variant]
     minmax(12rem, 18rem) 2.75rem 11rem 10rem minmax(6rem, 1fr)
     4rem;
   grid-template-areas: "name icon owned blueprint need actions";
-  gap: calc(0.3rem + 0.1vw);
+  gap: calc(var(--ui-space-2) + calc(var(--ui-viewport-inline) * 0.001));
   align-items: start;
   align-content: start;
   grid-auto-rows: max-content;
   min-height: 4rem;
-  padding: 0.25rem 0.375rem;
+  padding: var(--ui-space-2) var(--ui-space-3);
 }
 .quick-tracker
   #inventory-fields
@@ -1055,10 +1059,10 @@ html[data-ui-variant]
   width: fit-content;
   max-width: 100%;
   min-height: 4.5em;
-  gap: 0.25rem;
-  padding: 0.05rem 0.3rem;
-  margin-top: 0.125rem;
-  font-size: 0.7rem;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-1) var(--ui-space-2);
+  margin-top: var(--ui-space-1);
+  font-size: var(--ui-type-meta);
   vertical-align: top;
 }
 .quick-tracker #inventory-fields .collection-state .collection-short,
@@ -1078,7 +1082,7 @@ html[data-ui-variant]
   align-items: center;
   justify-content: center;
   align-self: center;
-  gap: 0.1rem;
+  gap: var(--ui-space-1);
   color: var(--muted);
   text-align: center;
 }
@@ -1100,27 +1104,27 @@ html[data-ui-variant]
   width: 1.5rem;
   height: 1.5rem;
   border: 1px dashed var(--muted);
-  border-radius: 0.25rem;
-  font-size: 1rem;
+  border-radius: var(--ui-radius-1);
+  font-size: var(--ui-type-base);
   line-height: 1;
 }
 .inventory-item-icon small {
-  font-size: 0.65rem;
+  font-size: var(--ui-type-meta);
   line-height: 1.1;
 }
 @media (max-width: 1100px) and (min-width: 701px) {
   .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
     grid-template-columns: minmax(0, 18rem) 2.75rem 11rem minmax(4rem, 1fr);
     grid-template-areas: "name icon owned actions" "blueprint blueprint need need";
-    row-gap: 0.125rem;
+    row-gap: var(--ui-space-1);
   }
 }
 @media (max-width: 700px) {
   .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
     grid-template-columns: minmax(0, 1fr) 4rem;
     grid-template-areas: "name icon" "owned actions" "blueprint blueprint" "need need";
-    row-gap: 0.125rem;
-    padding-block: 0.375rem;
+    row-gap: var(--ui-space-1);
+    padding-block: var(--ui-space-3);
   }
   .quick-tracker
     #inventory-fields
@@ -1147,8 +1151,8 @@ html[data-ui-variant]
 }
 
 .quick-tracker #inventory-fields .owned-cell input {
-  font-size: 0.8rem;
-  padding-inline: 0.2rem;
+  font-size: var(--ui-type-meta);
+  padding-inline: var(--ui-space-2);
 }
 .quick-tracker
   #inventory-fields
@@ -1164,8 +1168,8 @@ html[data-ui-variant]
     .inventory-upgrade-need
     > .upgrade-need-label {
     display: inline;
-    margin-right: 0.4rem;
-    font-size: 0.7rem;
+    margin-right: var(--ui-space-3);
+    font-size: var(--ui-type-meta);
   }
 }
 
@@ -1181,7 +1185,7 @@ html[data-ui-variant]
     align-items: center;
     justify-content: flex-start;
     min-height: 1.5rem;
-    gap: 0.125rem 0.4rem;
+    gap: var(--ui-space-1) var(--ui-space-3);
   }
   .quick-tracker
     #inventory-fields
@@ -1200,7 +1204,7 @@ html[data-ui-variant]
   > .inventory-counts {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.125rem 0.75rem;
+  gap: var(--ui-space-1) var(--ui-space-6);
   min-height: 0;
   align-content: center;
   justify-content: stretch;
@@ -1212,7 +1216,7 @@ html[data-ui-variant]
   > small {
   display: block;
   margin: 0;
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
   line-height: 1.25;
   font-weight: 600;
 }
@@ -1223,13 +1227,13 @@ html[data-ui-variant]
   > strong {
   display: block;
   margin: 0;
-  font-size: 0.95rem;
+  font-size: var(--ui-type-body);
   line-height: 1.3;
   font-variant-numeric: tabular-nums;
 }
 .quick-tracker #inventory-fields .inventory-counts > [data-tier-uncertainty] {
   grid-column: 1 / -1;
-  font-size: 0.65rem;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .needed-row {
   grid-template-columns:
@@ -1261,8 +1265,8 @@ body[data-page="quick-collect"] #error[hidden] {
       12rem
     );
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0;
+  gap: var(--ui-space-5);
+  padding: var(--ui-space-5) 0;
   border-bottom: 1px solid var(--line);
   min-width: 0;
 }
@@ -1273,7 +1277,7 @@ body[data-page="quick-collect"] #error[hidden] {
 .quick-tracker .collect-name small,
 .quick-tracker .collect-remaining small {
   display: block;
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .collect-remaining strong {
   font-variant-numeric: tabular-nums;
@@ -1285,20 +1289,20 @@ body[data-page="quick-collect"] #error[hidden] {
 body[data-page="quick-collect"] .filter-bar {
   display: grid;
   grid-template-columns: minmax(10rem, 1fr) auto;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
 }
 .quick-tracker .collect-actions {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.35rem;
+  gap: var(--ui-space-3);
   align-items: end;
 }
 .quick-tracker .collect-actions button {
   min-width: 0;
   min-height: 2.75rem;
   margin: 0;
-  padding: 0.35rem;
-  font-size: 0.8rem;
+  padding: var(--ui-space-3);
+  font-size: var(--ui-type-meta);
 }
 @media (max-width: 600px) {
   body[data-page="quick-collect"] .filter-bar {
@@ -1321,7 +1325,7 @@ body[data-page="quick-collect"] .filter-bar {
 .quick-tracker .collect-row form {
   display: grid;
   grid-template-columns: minmax(3rem, 1fr) auto;
-  gap: 0.35rem;
+  gap: var(--ui-space-3);
   margin: 0;
 }
 .quick-tracker .collect-row input,
@@ -1329,7 +1333,7 @@ body[data-page="quick-collect"] .filter-bar {
   min-width: 0;
   width: 100%;
   min-height: 2.75rem;
-  padding: 0.35rem;
+  padding: var(--ui-space-3);
   margin: 0;
 }
 .quick-tracker .collect-icon img {
@@ -1338,7 +1342,7 @@ body[data-page="quick-collect"] .filter-bar {
   object-fit: contain;
 }
 .quick-tracker .collect-help {
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
 }
 @media (max-width: 600px) {
   .quick-tracker .collect-row {
@@ -1351,28 +1355,28 @@ body[data-page="quick-collect"] .filter-bar {
 
 /* FOB cards keep direct costs visible, with optional evidence and purchase details. */
 .build-collect {
-  margin-block: 0.75rem;
+  margin-block: var(--ui-space-6);
   border: 1px solid var(--line);
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+  border-radius: var(--ui-radius-2);
+  padding: var(--ui-space-4);
   min-width: 0;
 }
 .build-collect h2 {
-  font-size: 1rem;
-  margin: 0 0 0.4rem;
+  font-size: var(--ui-type-base);
+  margin: 0 0 var(--ui-space-3);
 }
 .quick-tracker #build-collect .build-ingredient {
   grid-template-columns: 1.5rem minmax(0, 1fr) minmax(2.5rem, max-content);
-  gap: 0.25rem;
+  gap: var(--ui-space-2);
   min-height: 3rem;
-  padding: 0.2rem 0;
+  padding: var(--ui-space-2) 0;
 }
 .build-ingredient-name {
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
   overflow-wrap: anywhere;
 }
 .build-ingredient [data-collect-remaining] {
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
   color: #ffb4b4;
   font-variant-numeric: tabular-nums;
 }
@@ -1392,43 +1396,43 @@ body[data-page="quick-collect"] .filter-bar {
   height: 1.5rem;
 }
 .build-quantity {
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
   color: var(--muted);
 }
 #build-collect .build-secondary {
-  margin: 0.15rem 0;
+  margin: var(--ui-space-1) 0;
 }
 #build-collect .build-secondary > summary {
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
   min-height: 1.75rem;
-  padding: 0.2rem;
+  padding: var(--ui-space-2);
 }
 #build-collect > details[data-build-group] > summary {
-  font-size: 0.85rem;
-  padding: 0.3rem;
+  font-size: var(--ui-type-label);
+  padding: var(--ui-space-2);
 }
 .build-collect details {
-  margin: 0.4rem 0;
+  margin: var(--ui-space-3) 0;
   min-width: 0;
 }
 .build-collect summary {
   cursor: pointer;
   min-height: 2.75rem;
   display: list-item;
-  padding: 0.4rem;
+  padding: var(--ui-space-3);
   overflow-wrap: anywhere;
 }
 .build-target-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
 }
 .build-target-actions label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
+  gap: var(--ui-space-4);
+  font-size: var(--ui-type-meta);
 }
 .build-target-actions input {
   width: 5rem;
@@ -1436,13 +1440,13 @@ body[data-page="quick-collect"] .filter-bar {
 }
 .build-target-choice {
   min-width: 0;
-  padding: 0.25rem;
-  font-size: 0.75rem;
+  padding: var(--ui-space-2);
+  font-size: var(--ui-type-meta);
 }
 .build-target-choice label {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--ui-space-3);
   margin: 0;
 }
 .build-target-choice input[type="checkbox"] {
@@ -1451,18 +1455,18 @@ body[data-page="quick-collect"] .filter-bar {
   flex-shrink: 0;
 }
 .build-target-choice .build-target-count {
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
 }
 .build-target-choice input[type="number"] {
   width: 4.5rem;
   min-width: 0;
   min-height: 2rem;
-  padding: 0.2rem;
-  margin: 0.2rem 0;
+  padding: var(--ui-space-2);
+  margin: var(--ui-space-2) 0;
 }
 .build-target-choice [data-build-status] {
   display: block;
-  font-size: 0.65rem;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker #inventory-fields .inventory-build-target {
   grid-area: build;
@@ -1492,11 +1496,11 @@ body[data-page="quick-collect"] .filter-bar {
   .quick-tracker #inventory-fields .inventory-entry > .inventory-row {
     grid-template-columns: repeat(3, minmax(0, 1fr)) 4rem;
     grid-template-areas: "name name name icon" "owned owned owned actions" "blueprint blueprint blueprint blueprint" "need need build build";
-    padding-block: 0.2rem;
+    padding-block: var(--ui-space-2);
   }
   .quick-tracker-nav > a[data-tracker-link] {
-    font-size: 0.75rem;
-    padding-inline: 0.2rem;
+    font-size: var(--ui-type-meta);
+    padding-inline: var(--ui-space-2);
     overflow-wrap: anywhere;
   }
 }
@@ -1523,11 +1527,11 @@ html[data-ui-variant]
   main.quick-tracker
   .upgrade-list-shell[data-layout]
   .fob-upgrade-card {
-  padding: calc(0.4rem + 2px);
+  padding: calc(var(--ui-space-3) + var(--ui-space-1));
   border: 1px solid var(--line);
-  border-radius: 0.55rem;
+  border-radius: var(--ui-radius-2);
   min-width: 0;
-  margin-block: 0.45rem;
+  margin-block: var(--ui-space-4);
 }
 html[data-ui-variant]
   main.quick-tracker
@@ -1536,7 +1540,7 @@ html[data-ui-variant]
   .upgrade-summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.4rem;
+  gap: var(--ui-space-3);
   padding: 0;
   width: auto;
   align-items: start;
@@ -1564,7 +1568,7 @@ html[data-ui-variant]
 .quick-tracker .fob-upgrade-card .upgrade-manual {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: var(--ui-space-5);
   flex-wrap: wrap;
 }
 .quick-tracker .fob-upgrade-card .upgrade-manual > small {
@@ -1575,29 +1579,29 @@ html[data-ui-variant]
 }
 .quick-tracker .fob-upgrade-card .upgrade-summary h3,
 .quick-tracker .fob-upgrade-card .upgrade-summary h2 {
-  font-size: 1rem;
+  font-size: var(--ui-type-base);
   margin: 0;
 }
 .quick-tracker .fob-card-body {
   min-width: 0;
 }
 .quick-tracker .fob-effect {
-  margin: 0.4rem 0;
-  font-size: 0.85rem;
+  margin: var(--ui-space-3) 0;
+  font-size: var(--ui-type-label);
 }
 .quick-tracker .fob-prerequisites {
-  font-size: 0.75rem;
-  margin: 0.25rem 0;
+  font-size: var(--ui-type-meta);
+  margin: var(--ui-space-2) 0;
 }
 .quick-tracker .fob-materials {
   display: grid;
-  gap: 0.25rem;
+  gap: var(--ui-space-2);
 }
 .quick-tracker .fob-material {
   display: grid;
   grid-template-columns: 2rem minmax(0, 1fr);
-  gap: 0.35rem 0.5rem;
-  padding-block: 0.35rem;
+  gap: var(--ui-space-3) var(--ui-space-4);
+  padding-block: var(--ui-space-3);
   border-top: 1px solid var(--line);
   align-items: center;
   min-width: 0;
@@ -1607,18 +1611,18 @@ html[data-ui-variant]
   overflow-wrap: anywhere;
 }
 .quick-tracker .fob-material-name > a {
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
   font-weight: 600;
 }
 .quick-tracker .fob-material-name > small {
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .fob-material-name > small,
 .quick-tracker .fob-material-count {
   display: block;
 }
 .quick-tracker .fob-material-count {
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
   font-variant-numeric: tabular-nums;
 }
 .quick-tracker .fob-material[data-stock-state="short"] .fob-material-count,
@@ -1656,7 +1660,7 @@ html[data-theme="light"]
 .quick-tracker .fob-material-icon {
   width: 2rem;
   text-align: center;
-  font-size: 0.6rem;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .fob-material-icon img {
   width: 2rem;
@@ -1668,17 +1672,17 @@ html[data-theme="light"]
   display: block;
 }
 .quick-tracker .fob-material-icon > span {
-  font-size: 1.25rem;
+  font-size: var(--ui-type-heading);
 }
 .quick-tracker .fob-material-icon > small {
-  font-size: 0.5rem;
+  font-size: var(--ui-type-meta);
   overflow-wrap: normal;
   word-break: normal;
 }
 .quick-tracker .fob-stock-controls {
   display: grid;
   grid-template-columns: 2.75rem minmax(3rem, 1fr) 2.75rem auto 2.75rem;
-  gap: 0.25rem;
+  gap: var(--ui-space-2);
   grid-column: 1 / -1;
   min-width: 0;
 }
@@ -1693,8 +1697,8 @@ html[data-theme="light"]
   min-width: 0;
   min-height: 2.75rem;
   margin: 0;
-  padding: 0.25rem;
-  font-size: 0.8rem;
+  padding: var(--ui-space-2);
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .fob-stock-controls input {
   text-align: center;
@@ -1717,7 +1721,7 @@ html[data-theme="light"]
 }
 .quick-tracker .fob-stock-controls [data-fob-dirty] {
   grid-column: 1 / -1;
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .fob-stock-controls [data-fob-dirty][hidden] {
   display: block !important;
@@ -1725,9 +1729,9 @@ html[data-theme="light"]
 }
 .quick-tracker .fob-material-progress {
   display: grid;
-  gap: 0.25rem;
-  margin-top: 0.4rem;
-  font-size: 0.75rem;
+  gap: var(--ui-space-2);
+  margin-top: var(--ui-space-3);
+  font-size: var(--ui-type-meta);
 }
 .quick-tracker .fob-material-progress progress {
   width: 100%;
@@ -1735,8 +1739,8 @@ html[data-theme="light"]
 }
 .quick-tracker .fob-stock-note {
   display: block;
-  font-size: 0.7rem;
-  margin-top: 0.25rem;
+  font-size: var(--ui-type-meta);
+  margin-top: var(--ui-space-2);
 }
 .quick-tracker .upgrade-list-shell.hide-materials .fob-materials,
 .quick-tracker .upgrade-list-shell.hide-materials .fob-material-progress {
@@ -1753,11 +1757,11 @@ html[data-theme="light"]
 
 /* Shared ingredient tiles with one small in-flow details area. */
 .quick-tracker .build-summary {
-  margin-block: 0.5rem 0.75rem;
+  margin-block: var(--ui-space-4) var(--ui-space-6);
 }
 .quick-tracker .build-summary h2 {
-  font-size: 0.85rem;
-  margin: 0.3rem 0;
+  font-size: var(--ui-type-label);
+  margin: var(--ui-space-2) 0;
 }
 .quick-tracker .build-summary h2 small {
   font-weight: normal;
@@ -1766,7 +1770,7 @@ html[data-theme="light"]
 .quick-tracker .build-summary-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem;
+  gap: var(--ui-space-2);
 }
 .quick-tracker .build-summary-entry {
   display: contents;
@@ -1779,11 +1783,11 @@ html[data-theme="light"]
   width: 3.5rem;
   min-width: 0;
   min-height: 3.5rem;
-  padding: 0.2rem;
+  padding: var(--ui-space-2);
   margin: 0;
   border: 1px solid var(--rarity);
   border-bottom-width: 3px;
-  border-radius: 0.35rem;
+  border-radius: var(--ui-radius-1);
   background: var(--surface);
   color: var(--text);
 }
@@ -1813,7 +1817,7 @@ html[data-theme="light"]
   object-fit: contain;
 }
 .quick-tracker .build-summary-tile strong {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
   line-height: 1;
   color: #ffb4b4;
 }
@@ -1833,10 +1837,10 @@ html[data-theme="light"]
   order: 1;
   flex: 0 0 100%;
   box-sizing: border-box;
-  padding: 0.5rem;
+  padding: var(--ui-space-4);
   border: 1px solid var(--line);
-  border-radius: 0.35rem;
-  font-size: 0.8rem;
+  border-radius: var(--ui-radius-1);
+  font-size: var(--ui-type-meta);
   max-height: 9rem;
   overflow: auto;
   overflow-wrap: anywhere;
@@ -1845,7 +1849,7 @@ html[data-theme="light"]
   display: none;
 }
 .quick-tracker .build-summary-info p {
-  margin: 0.25rem 0;
+  margin: var(--ui-space-2) 0;
 }
 .quick-tracker .build-summary-info small,
 .quick-tracker .build-summary-info a {
@@ -1856,24 +1860,24 @@ html[data-theme="light"]
   min-height: 2.75rem;
   min-width: 2.75rem;
   margin: 0;
-  padding: 0.2rem;
+  padding: var(--ui-space-2);
 }
 
 .quick-tracker .build-summary-tile {
-  width: calc(7rem + 0.5vw);
+  width: calc(7rem + calc(var(--ui-viewport-inline) * 0.005));
   max-width: 100%;
   grid-template-columns: 2rem minmax(0, 1fr);
   grid-template-rows: auto auto;
-  column-gap: 0.35rem;
-  row-gap: 0.15rem;
+  column-gap: var(--ui-space-3);
+  row-gap: var(--ui-space-1);
   min-height: 3.75rem;
-  padding: 0.3rem;
+  padding: var(--ui-space-2);
 }
 .quick-tracker .build-summary-tile [data-inventory-icon] {
   grid-row: 1 / 3;
 }
 .quick-tracker .build-summary-name {
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
   line-height: 1.15;
   overflow-wrap: anywhere;
   text-align: left;
@@ -1896,7 +1900,7 @@ html[data-theme="light"]
   grid-column: 1 / -1;
 }
 .quick-tracker .build-summary h2 small {
-  margin-inline-start: 0.4rem;
+  margin-inline-start: var(--ui-space-3);
 }
 
 .quick-tracker .build-summary-tile {
@@ -1918,24 +1922,24 @@ html[data-theme="light"]
 }
 
 .quick-tracker .build-tile-group {
-  margin-block: 0.6rem;
-  padding: 0.4rem;
+  margin-block: var(--ui-space-5);
+  padding: var(--ui-space-3);
   border: 1px solid var(--line);
-  border-radius: 0.4rem;
+  border-radius: var(--ui-radius-2);
 }
 .quick-tracker .build-tile-group .build-summary {
   margin: 0;
 }
 .quick-tracker .build-tile-group h2,
 .quick-tracker .build-tile-group h3 {
-  font-size: 0.85rem;
-  margin: 0.2rem 0 0.4rem;
+  font-size: var(--ui-type-label);
+  margin: var(--ui-space-2) 0 var(--ui-space-3);
 }
 
 .quick-tracker .build-summary-missing {
   grid-column: 1 / -1;
   grid-row: 3;
-  font-size: 0.65rem;
+  font-size: var(--ui-type-meta);
   color: var(--muted);
   line-height: 1.1;
 }

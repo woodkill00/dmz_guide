@@ -1,7 +1,9 @@
+import { mountLayoutSystem } from "./layout-system.mjs";
 import { rememberFeature } from "./navigation-state.mjs";
 import { ID } from "../content/limits.mjs";
 import { setupNavigationMenu } from "./navigation-menu.mjs";
 setupNavigationMenu();
+mountLayoutSystem(document);
 
 // Carry only a bounded catalog identity, never query text or private player data.
 const pack =

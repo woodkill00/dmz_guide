@@ -128,7 +128,7 @@ export async function runUnifiedWeaponsTests({
       "Synthetic retained draft",
     );
     page.once("dialog", (dialog) => dialog.dismiss());
-    await page.locator(".weapon-picker summary").click();
+    await page.locator(".weapon-picker > summary").click();
     await page
       .locator('[data-weapon-context="han-86"]')
       .click({ noWaitAfter: true });

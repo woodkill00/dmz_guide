@@ -1,4 +1,6 @@
 [
+  "src/client/layout-system.mjs",
+  "src/ui/layout-refinements.css",
   "src/client/navigation-menu-entry.mjs",
   "src/client/site-tools.mjs",
   "src/client/navigation-state.mjs",

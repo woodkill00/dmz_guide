@@ -26,7 +26,9 @@ const cases = process.argv.includes("--safe-route-only")
       ["narrow", 320, 568, "light", 100],
       ["text", 390, 844, "light", 200],
       ["short-text", 320, 400, "dark", 200],
-    ];
+    ].filter(
+      ([label]) => !process.env.UI_CASE || label === process.env.UI_CASE,
+    );
 const stored = (p) =>
   p.evaluate(async () => {
     const { openWorkspace } = await import("/src/workspace/store.ts");
@@ -378,6 +380,28 @@ try {
           .locator("#ui-selection-detail .marker-popup-actions button")
           .last();
         await action.scrollIntoViewIfNeeded();
+        if (!(await hit(action)))
+          console.log(
+            "Unreachable action",
+            engineName,
+            label,
+            await action.evaluate((n) => {
+              const r = n.getBoundingClientRect();
+              const h = document.elementFromPoint(
+                r.x + r.width / 2,
+                r.y + r.height / 2,
+              );
+              return {
+                rect: r.toJSON(),
+                obscuring: h?.outerHTML,
+                viewport: [innerWidth, innerHeight],
+                task: document
+                  .querySelector("#ui-map-task")
+                  ?.getBoundingClientRect()
+                  .toJSON(),
+              };
+            }),
+          );
         assert.equal(
           await hit(action),
           true,

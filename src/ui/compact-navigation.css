@@ -3,8 +3,8 @@
 .site-nav > a,
 .site-nav .nav-more > summary {
   min-block-size: var(--ui-control);
-  padding: 0.375rem 0.625rem;
-  border-radius: 0.375rem;
+  padding: var(--ui-space-3) var(--ui-space-5);
+  border-radius: var(--ui-radius-1);
 }
 .site-nav > a:hover,
 .site-nav .nav-more > summary:hover {
@@ -14,9 +14,15 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
   gap: var(--ui-gap);
-  inline-size: min(54rem, calc(100vw - var(--ui-gutter) * 2));
-  max-inline-size: calc(100vw - var(--ui-gutter) * 2);
-  max-block-size: min(65dvh, calc(100dvh - var(--ui-gutter) * 2));
+  inline-size: min(
+    54rem,
+    calc(var(--ui-viewport-inline) - var(--ui-gutter) * 2)
+  );
+  max-inline-size: calc(var(--ui-viewport-inline) - var(--ui-gutter) * 2);
+  max-block-size: min(
+    calc(var(--ui-viewport-block) * 0.65),
+    calc(var(--ui-viewport-block) - var(--ui-gutter) * 2)
+  );
   padding: var(--ui-pad);
   border-radius: var(--ui-radius);
   overflow: auto;
@@ -30,9 +36,9 @@
   min-inline-size: 0;
 }
 .site-nav .nav-menu-group .nav-group-label {
-  margin: 0 0 0.25rem;
-  padding: 0.5rem;
-  font-size: 0.8125rem;
+  margin: 0 0 var(--ui-space-2);
+  padding: var(--ui-space-4);
+  font-size: var(--ui-type-meta);
   border-block-start: 0;
   border-block-end: 1px solid currentColor;
 }
@@ -41,28 +47,28 @@
   display: flex;
   align-items: center;
   min-block-size: var(--ui-control);
-  padding: 0.375rem 0.5rem;
-  border-radius: 0.375rem;
+  padding: var(--ui-space-3) var(--ui-space-4);
+  border-radius: var(--ui-radius-1);
 }
 .site-nav .nav-orders-group {
   border-block-start: 1px solid currentColor;
-  margin-block-start: 0.5rem;
-  padding-block-start: 0.5rem;
+  margin-block-start: var(--ui-space-4);
+  padding-block-start: var(--ui-space-4);
 }
 .site-nav .nav-orders-pages > summary {
   cursor: pointer;
   min-block-size: var(--ui-control);
-  padding: 0.375rem 0.5rem;
+  padding: var(--ui-space-3) var(--ui-space-4);
 }
 .site-nav .nav-orders-pages > div {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(6.25rem, 1fr));
-  gap: 0.25rem;
-  max-block-size: min(13rem, 35dvh);
+  gap: var(--ui-space-2);
+  max-block-size: min(13rem, calc(var(--ui-viewport-block) * 0.35));
   overflow-y: auto;
 }
 .site-nav .nav-orders-pages a {
-  font-size: 0.875rem;
+  font-size: var(--ui-type-label);
 }
 @media (max-width: 600px) {
   .site-nav:not([data-navigation-surface="map"]):not(
@@ -72,7 +78,7 @@
     > div {
     inline-size: 100%;
     max-inline-size: 100%;
-    max-block-size: 50dvh;
+    max-block-size: calc(var(--ui-viewport-block) * 0.5);
   }
 }
 @media (prefers-reduced-motion: no-preference) {

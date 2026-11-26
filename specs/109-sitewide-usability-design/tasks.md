@@ -42,3 +42,6 @@ No implementation task authorizes a deployment, credential change, external mess
 Traceability closure: FR17 is owned by T05/T23/T25/T29/T30 (baselines, route/lifecycle/full verification) and FR18 by T03/T24/T30/T31 (isolated rollout, safe consolidation, independent acceptance and documentation). Full-scope planning/final tasks cover FR01–FR18.
 
 Planning status: [x] T00 artifact creation; [x] T01 independent review/analysis repair cycle; [x] T02 planning reconciliation. T03–T31 remain unimplemented and unverified.
+
+## Implementation status — 2026-11-26
+Implementation is active on feature/109-sitewide-usability-design in MW4_109. T03 isolation is complete. T04 inventory, T06/T07 tokens/policy and T09/T10 shell refinements are implemented; family tasks T11–T22 have migrated consumers with owner tests executing. T05/T08 and final acceptance gates T23–T31 remain open until their required evidence is reconciled. See [implementation.md](implementation.md) for actual results; the planning-only status above is historical, not the current code state. No unchecked task is implicitly approved by a stylesheet migration.

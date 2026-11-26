@@ -75,6 +75,7 @@ jobs:
       - run: npm run map:install
       - run: npm run format:check
       - run: npm run build
+      - run: npm run ui:audit
       - run: npm test
       - run: npx playwright install chromium
       - run: node tests/browser/measured-scale-runner.mjs

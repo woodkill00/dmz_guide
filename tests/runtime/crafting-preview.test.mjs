@@ -43,7 +43,10 @@ test("previews are bounded, distinct, pack-scoped and spoiler-safe without chang
   const before = JSON.stringify(pack),
     html = renderCraftPreview(pack, "a");
   assert.ok(html.includes("Used to craft <span>10</span>"));
-  assert.equal((html.match(/class="item-craft-button"/g) || []).length, 8);
+  assert.equal(
+    (html.match(/class="item-craft-button(?: [^"\n]*)?"/g) || []).length,
+    8,
+  );
   assert.ok(html.includes("All 10 products"));
   const native = renderCraftPreview(pack, "a", { referenceURL: recordUrl });
   assert.ok(native.includes('class="craft-preview-more" href="/items/a/"'));
@@ -78,7 +81,10 @@ test("preview contains only distinct visible outputs, with a bounded full-list e
   const before = JSON.stringify(p),
     html = renderCraftPreview(p, "a");
   assert.ok(html.includes("Used to craft <span>10</span>"));
-  assert.equal((html.match(/class="item-craft-button"/g) || []).length, 8);
+  assert.equal(
+    (html.match(/class="item-craft-button(?: [^"\n]*)?"/g) || []).length,
+    8,
+  );
   assert.ok(html.includes("All 10 products"));
   const native = renderCraftPreview(p, "a", { referenceURL: recordUrl });
   assert.ok(native.includes('class="craft-preview-more" href="/items/a/"'));

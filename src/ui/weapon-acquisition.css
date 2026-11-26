@@ -3,7 +3,7 @@
   --acq-manual-progress: #f2ce66;
   --acq-manual-complete: #9fdd8f;
   --acq-gap: clamp(0.4rem, calc(0.3rem + 0.3vw), 0.7rem);
-  font-size: 0.9rem;
+  font-size: var(--ui-type-label);
   min-width: 0;
 }
 :root[data-theme="light"] #weapon-acquisition {
@@ -29,7 +29,7 @@
   flex-wrap: wrap;
   align-items: end;
   gap: var(--acq-gap);
-  margin-block: 0.6rem;
+  margin-block: var(--ui-space-5);
 }
 .acq-toolbar label {
   flex: 1 1 10rem;
@@ -48,15 +48,15 @@
   width: 100%;
 }
 .acq-group {
-  margin-block: 1rem;
+  margin-block: var(--ui-space-8);
 }
 .acq-group h2 {
-  font-size: 1.05rem;
+  font-size: var(--ui-type-base);
 }
 .acq-weapon {
   border: 1px solid var(--line);
-  border-radius: 0.4rem;
-  margin-block: 0.3rem;
+  border-radius: var(--ui-radius-2);
+  margin-block: var(--ui-space-2);
   overflow-wrap: anywhere;
 }
 .acq-weapon > summary {
@@ -67,7 +67,7 @@
     );
   align-items: center;
   gap: var(--acq-gap);
-  padding: 0.5rem;
+  padding: var(--ui-space-4);
   cursor: pointer;
   list-style: disclosure-closed;
 }
@@ -81,7 +81,7 @@
 .acq-art {
   height: 2rem;
   min-width: 0;
-  margin-inline-start: 0.6rem;
+  margin-inline-start: var(--ui-space-5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,19 +92,19 @@
 }
 .acq-art .gs-art-missing,
 .acq-art .gs-art-error {
-  font-size: 0.68rem;
+  font-size: var(--ui-type-meta);
   text-align: center;
 }
 .acq-weapon > summary small,
 .acq-hint {
-  font-size: 0.78rem;
+  font-size: var(--ui-type-meta);
 }
 .acq-weapon-body {
-  padding: 0 0.65rem 0.5rem;
+  padding: 0 var(--ui-space-5) var(--ui-space-4);
 }
 .acq-weapon fieldset {
   min-width: 0;
-  padding: 0.5rem;
+  padding: var(--ui-space-4);
   border: 1px solid var(--line);
 }
 .acq-record {
@@ -115,18 +115,18 @@
 .acq-blueprint label {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--ui-space-3);
   min-width: 0;
 }
 .acq-counter {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--ui-space-4);
 }
 #weapon-acquisition .acq-counter button {
   min-width: 2rem;
   min-height: 2rem;
-  padding: 0.15rem 0.5rem;
+  padding: var(--ui-space-1) var(--ui-space-4);
 }
 .acq-counter output {
   min-width: 7.2rem;
@@ -143,19 +143,19 @@
 .acq-blueprint {
   display: grid;
   grid-template-columns: minmax(9rem, 0.7fr) minmax(0, 1fr);
-  gap: 0.5rem;
-  padding-block: 0.45rem;
+  gap: var(--ui-space-4);
+  padding-block: var(--ui-space-4);
   border-top: 1px solid var(--line);
 }
 .acq-blueprint span {
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
 }
 .acq-recovery {
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
 }
 #weapon-acquisition button {
   min-height: 2.75rem;
-  padding: 0.35rem 0.65rem;
+  padding: var(--ui-space-3) var(--ui-space-5);
 }
 #weapon-acquisition [hidden] {
   display: none !important;
@@ -165,18 +165,18 @@
   color: var(--lime);
 }
 .acq-help {
-  padding: 0.5rem;
+  padding: var(--ui-space-4);
   border: 1px solid var(--line);
-  margin-block: 0.5rem;
+  margin-block: var(--ui-space-4);
 }
 .acq-custom {
-  margin-block: 0.6rem;
+  margin-block: var(--ui-space-5);
 }
 .acq-custom ul {
-  padding-inline-start: 1.3rem;
+  padding-inline-start: var(--ui-space-9);
 }
 .acq-custom li {
-  padding-block: 0.3rem;
+  padding-block: var(--ui-space-2);
 }
 @media (max-width: 680px) {
   .acq-weapon > summary {

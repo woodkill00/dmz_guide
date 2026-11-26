@@ -16,3 +16,6 @@ Application implementation, full route classification, controlled populated base
 - Existing feature108 source changes and current Git branch are preserved; application implementation tasks remain not run. No application files, commit, push, merge or deployment by this planning delivery.
 
 Final planning disposition: READY in reviewer-owned review.md, both P2 findings closed. Planning tasks T00–T02 complete; application tasks T03–T31 remain not run. Application code, saved user data and local service unchanged.
+
+## Implementation started — 2026-11-26
+The planning-only statements above describe the earlier planning delivery. Application changes now exist on the isolated109 branch. Current implementation, exact verification receipts and pending acceptance gates are recorded in [implementation.md](implementation.md). Final application acceptance is not yet granted.

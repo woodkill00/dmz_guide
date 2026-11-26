@@ -31,7 +31,11 @@ async function noOverflow(page) {
     "page must not overflow horizontally",
   );
 }
-for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
+for (const [engine, type] of Object.entries({
+  chromium,
+  firefox,
+  webkit,
+}).filter(([name]) => !process.env.BROWSER || name === process.env.BROWSER)) {
   const browser = await type.launch(),
     context = await browser.newContext({
       viewport: { width: 1366, height: 900 },
@@ -138,9 +142,54 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
         (r) => r.id === id && r.state === "later",
       );
     }, firstId);
+    await page.waitForFunction(
+      () => document.querySelector("#quality-rows select")?.disabled === false,
+    );
     await page.reload();
     await readyQuality(page);
+    // WebKit restores native form filters on reload; start this assertion unfiltered.
+    await page.locator('#quality-filters button[type="reset"]').click();
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#quality-type").value === "" &&
+        document.querySelectorAll("#quality-rows tr").length === 100,
+    );
     await page.locator("#quality-filter").selectOption("later");
+    if (process.env.QUALITY_DIAGNOSTIC)
+      console.log(
+        await page.evaluate(async () => ({
+          filters: [
+            ...document.querySelectorAll(
+              "#quality-filters input,#quality-filters select",
+            ),
+          ].map((n) => [n.id, n.value]),
+          status: document.querySelector("#quality-status").textContent,
+          record: await (
+            await import("/assets/src/storage/quality-review-store.mjs")
+          ).readQualityReviews(),
+        })),
+      );
+    await page
+      .waitForFunction(
+        () => document.querySelectorAll("#quality-rows tr").length === 1,
+      )
+      .catch(async (error) => {
+        console.log(
+          "Quality filter diagnostic",
+          await page.evaluate(async () => ({
+            status: document.querySelector("#quality-status").textContent,
+            filters: [
+              ...document.querySelectorAll(
+                "#quality-filters input,#quality-filters select",
+              ),
+            ].map((n) => [n.id, n.value]),
+            saved: await (
+              await import("/assets/src/storage/quality-review-store.mjs")
+            ).readQualityReviews(),
+          })),
+        );
+        throw error;
+      });
     assert.equal(await page.locator("#quality-rows tr").count(), 1);
     assert.equal(
       await page.locator("#quality-rows tr").getAttribute("data-quality-id"),
@@ -257,9 +306,8 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
     assert.equal(new URL(page.url()).searchParams.get("q"), "Cronen Osprey");
     assert.equal(await page.locator(".search-result").count(), 1);
     assert.ok(
-      (
-        await page.locator(".search-result h3 a").getAttribute("href")
-      ).startsWith("/armory/acquisition/"),
+      (await page.locator(".search-result h3 a").getAttribute("href")) ===
+        "/armory/cronen-osprey/#acquisition",
     );
     await page.locator("#unified-clear").click();
     await page.waitForFunction(
@@ -320,12 +368,11 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
     assert.ok((await d.innerText()).includes("Another tab saved"));
     await amount.fill("6209663"); // Leave a real unsaved inventory edit in place.
     const weaponPage = await context.newPage();
-    await weaponPage.goto(base + "/armory/acquisition/?weapon=cronen-osprey");
+    await weaponPage.goto(base + "/armory/cronen-osprey/#acquisition");
     await weaponPage.waitForFunction(
-      () =>
-        document.querySelector("#weapon-acquisition").dataset.busy === "false",
+      () => document.querySelector("main")?.dataset.armoryBusy === "false",
     );
-    await weaponPage.locator("#weapon-cronen-osprey [data-manual]").uncheck();
+    await weaponPage.locator("#tracker-manual").uncheck();
     await page.waitForFunction(
       () => !document.querySelector("[data-workspace-remote]").hidden,
     );
@@ -341,9 +388,9 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
     const good = await weaponPage.evaluate(() =>
       localStorage.getItem("dmz-save-receipt-v1"),
     );
-    await weaponPage.locator("#weapon-cronen-osprey [data-manual]").click();
+    await weaponPage.locator("#tracker-manual").click();
     await weaponPage
-      .locator("#acq-error")
+      .locator("#armory-error")
       .filter({ hasText: "quota" })
       .waitFor();
     assert.equal(await weaponPage.evaluate(() => window.__events), 0);
@@ -356,7 +403,10 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
     await weaponPage.evaluate(
       () => (IDBObjectStore.prototype.put = window.__originalPut),
     );
-    await weaponPage.locator("#acq-retry").click();
+    await weaponPage
+      .locator('.weapon-workspace-tabs a[href="#backups"]')
+      .click();
+    await weaponPage.locator("#workspace-retry").click();
     await weaponPage.waitForFunction(() => window.__events === 1);
     assert.equal(await amount.inputValue(), "6209663");
     await weaponPage.close();

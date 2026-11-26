@@ -281,6 +281,24 @@ try {
               (document.documentElement.style.fontSize = z === 2 ? "200%" : ""),
             zoom,
           );
+          if (
+            await page.evaluate(
+              () => document.documentElement.scrollWidth > innerWidth + 1,
+            )
+          )
+            console.log(
+              await page.evaluate(() =>
+                [...document.querySelectorAll("body *")]
+                  .map((n) => ({
+                    tag: n.tagName,
+                    cls: n.className,
+                    right: n.getBoundingClientRect().right,
+                    width: n.getBoundingClientRect().width,
+                  }))
+                  .filter((n) => n.right > innerWidth + 1)
+                  .slice(0, 25),
+              ),
+            );
           assert(
             await page.evaluate(
               () => document.documentElement.scrollWidth <= innerWidth + 1,

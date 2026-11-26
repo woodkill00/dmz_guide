@@ -10,14 +10,22 @@
   gap: var(--weapon-gap);
 }
 .weapon-workspace-heading h1 {
-  margin-block: 0.15rem;
-  font-size: clamp(1.6rem, calc(1.2rem + 1.5vw), 2.6rem);
+  margin-block: var(--ui-space-1);
+  font-size: clamp(
+    var(--ui-type-title),
+    calc(var(--ui-type-heading) + calc(var(--ui-viewport-inline) * 0.015)),
+    2.6rem
+  );
 }
 .weapon-workspace-heading p {
-  margin-block: 0.3rem;
+  margin-block: var(--ui-space-2);
 }
 .weapon-context-art {
-  width: clamp(7rem, calc(8rem + 8vw), 17rem);
+  width: clamp(
+    7rem,
+    calc(8rem + calc(var(--ui-viewport-inline) * 0.08)),
+    17rem
+  );
   flex: 0 0 auto;
 }
 .weapon-context-art svg,
@@ -30,9 +38,9 @@
 
 .weapon-picker {
   margin-block: var(--weapon-gap);
-  padding: calc(0.5rem + 0.2vw);
+  padding: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.002));
   border: 1px solid var(--border, #455047);
-  border-radius: 0.75rem;
+  border-radius: var(--ui-radius-3);
   background: var(--surface, #18211d);
 }
 .weapon-picker summary {
@@ -41,7 +49,7 @@
 }
 .weapon-picker summary small {
   color: var(--muted, #aab5af);
-  margin-inline-start: 0.5rem;
+  margin-inline-start: var(--ui-space-4);
 }
 .weapon-picker-filters {
   display: grid;
@@ -50,43 +58,45 @@
 }
 .weapon-picker-filters label {
   display: grid;
-  gap: 0.3rem;
-  margin-block: 0.7rem;
+  gap: var(--ui-space-2);
+  margin-block: var(--ui-space-6);
 }
 .weapon-context-list {
   display: grid;
   grid-template-columns: repeat(
     auto-fill,
-    minmax(min(100%, calc(16rem + 1vw)), 1fr)
+    minmax(min(100%, calc(16rem + calc(var(--ui-viewport-inline) * 0.01))), 1fr)
   );
-  gap: calc(0.5rem + 0.15vw);
+  gap: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.0015));
   align-items: start;
 }
 .weapon-picker-group {
   min-width: 0;
-  margin-block: calc(0.7rem + 0.25vw);
+  margin-block: calc(
+    var(--ui-space-6) + calc(var(--ui-viewport-inline) * 0.0025)
+  );
 }
 .weapon-picker-group h3 {
   display: inline-flex;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
   align-items: baseline;
-  margin-block: 0.5rem;
+  margin-block: var(--ui-space-4);
 }
 .weapon-picker-group > summary {
-  padding-block: 0.25rem;
+  padding-block: var(--ui-space-2);
   cursor: pointer;
 }
 .weapon-picker-group h3 small {
   color: var(--muted, #aab5af);
-  font-size: 0.78rem;
+  font-size: var(--ui-type-meta);
 }
 .weapon-context-card {
   display: grid;
-  gap: 0.45rem;
+  gap: var(--ui-space-4);
   min-width: 0;
   border: 1px solid var(--border, #455047);
-  border-radius: 0.75rem;
-  padding: calc(0.65rem + 0.15vw);
+  border-radius: var(--ui-radius-3);
+  padding: calc(var(--ui-space-5) + calc(var(--ui-viewport-inline) * 0.0015));
   background: var(--surface, #18211d);
 }
 .weapon-context-card[data-selected="true"] {
@@ -97,7 +107,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
   min-width: 0;
 }
 .picker-identity {
@@ -106,40 +116,40 @@
   min-width: 0;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.15rem 0.5rem;
+  gap: var(--ui-space-1) var(--ui-space-4);
 }
 .picker-prestiged {
   display: flex;
   flex-wrap: wrap;
   overflow-wrap: anywhere;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--ui-space-2);
   min-height: 2rem;
   cursor: pointer;
-  font-size: 0.68rem !important;
+  font-size: var(--ui-type-meta) !important;
 }
 .picker-extractions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.3rem;
+  gap: var(--ui-space-2);
 }
 .picker-extraction-actions {
   display: flex;
-  gap: 0.25rem;
+  gap: var(--ui-space-2);
 }
 .weapon-context-card .picker-extraction-actions button {
   display: grid;
   place-items: center;
   min-height: 2rem;
   min-width: 2rem;
-  padding: 0.1rem;
+  padding: var(--ui-space-1);
   border: 1px solid var(--border, #455047);
-  border-radius: 0.3rem;
+  border-radius: var(--ui-radius-1);
   background: transparent;
   color: inherit;
-  font-size: 1rem;
+  font-size: var(--ui-type-base);
 }
 .weapon-context-list .weapon-context-card a {
   padding: 0;
@@ -150,7 +160,7 @@
   overflow-wrap: anywhere;
 }
 .picker-card-heading a {
-  font-size: 1rem;
+  font-size: var(--ui-type-base);
   font-weight: 700;
 }
 .weapon-workspace .weapon-context-card fieldset {
@@ -162,7 +172,7 @@
   margin: 0;
 }
 .weapon-context-card :is(p, small, label, select, button) {
-  font-size: 0.78rem;
+  font-size: var(--ui-type-meta);
 }
 .weapon-context-card small {
   color: var(--muted, #aab5af);
@@ -171,7 +181,7 @@
 .picker-done {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: var(--ui-space-2);
   white-space: nowrap;
 }
 .weapon-context-card input[type="checkbox"] {
@@ -183,20 +193,20 @@
 }
 .picker-track {
   min-width: 0;
-  padding: calc(0.45rem + 0.1vw);
+  padding: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.001));
   border: 1px solid var(--border, #455047);
-  border-radius: 0.5rem;
+  border-radius: var(--ui-radius-2);
   background: color-mix(in srgb, var(--muted, #aab5af) 5%, transparent);
 }
 .picker-track-heading {
   display: flex;
-  gap: 0.4rem;
+  gap: var(--ui-space-3);
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 0.2rem;
+  margin-bottom: var(--ui-space-2);
 }
 .picker-track-heading > strong {
-  font-size: 0.68rem;
+  font-size: var(--ui-type-meta);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -207,18 +217,18 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--ui-space-3);
 }
 .weapon-context-card .picker-challenge {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
   min-width: 0;
   width: 100%;
   min-height: 2.75rem;
-  padding: 0.2rem 0;
+  padding: var(--ui-space-2) 0;
   border: 0;
-  border-radius: 0.25rem;
+  border-radius: var(--ui-radius-1);
   background: transparent;
   color: inherit;
   text-align: start;
@@ -235,9 +245,9 @@
   width: 32px;
   height: 32px;
   border: 1px solid var(--border, #455047);
-  border-radius: 0.3rem;
+  border-radius: var(--ui-radius-1);
   overflow: hidden;
-  font-size: 1.1rem;
+  font-size: var(--ui-type-lead);
 }
 .picker-swatch img {
   position: absolute;
@@ -249,25 +259,25 @@
 .picker-challenge-copy {
   display: grid;
   min-width: 0;
-  gap: 0.1rem;
+  gap: var(--ui-space-1);
   overflow-wrap: anywhere;
 }
 .picker-challenge-copy strong {
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
   line-height: 1.3;
 }
 .picker-challenge-copy small {
-  font-size: 0.66rem;
+  font-size: var(--ui-type-meta);
   line-height: 1.3;
 }
 .picker-unlock-hint {
-  font-size: 0.65rem;
+  font-size: var(--ui-type-meta);
   text-decoration: underline;
   text-underline-offset: 0.15em;
 }
 .picker-done {
   flex-direction: column;
-  font-size: 0.65rem !important;
+  font-size: var(--ui-type-meta) !important;
   min-width: 2rem;
   min-height: 2.75rem;
   justify-content: center;
@@ -285,22 +295,22 @@
 }
 .picker-requirement {
   min-width: 0;
-  margin-top: 0.4rem;
-  padding-top: 0.5rem;
+  margin-top: var(--ui-space-3);
+  padding-top: var(--ui-space-4);
   border-top: 1px solid var(--border, #455047);
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
 .picker-requirement > strong {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 .picker-requirement p {
-  margin: 0.3rem 0 0.6rem;
+  margin: var(--ui-space-2) 0 var(--ui-space-5);
 }
 .picker-another {
   display: grid;
-  gap: 0.25rem;
+  gap: var(--ui-space-2);
   overflow: clip;
 }
 .picker-another:focus-within {
@@ -310,21 +320,21 @@
 .picker-another select {
   min-width: 0;
   width: 100%;
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
 }
 .picker-detail-links {
   display: flex;
-  gap: 0.6rem;
+  gap: var(--ui-space-5);
   flex-wrap: wrap;
-  margin-top: 0.5rem;
+  margin-top: var(--ui-space-4);
 }
 .weapon-context-card .picker-detail-links a {
   display: inline;
   text-decoration: underline;
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
 }
 .weapon-context-card [data-picker-error] {
-  font-size: 0.78rem;
+  font-size: var(--ui-type-meta);
   color: var(--danger, #f49b9b);
   overflow-wrap: anywhere;
 }
@@ -339,7 +349,7 @@
 }
 .weapon-small-note {
   color: var(--muted, #aab5af);
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
 }
 :root[data-theme="light"] .weapon-context-card [data-picker-error] {
   color: #b42332;
@@ -347,13 +357,13 @@
 .weapon-workspace-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem;
-  margin-block: 0.6rem;
+  gap: var(--ui-space-2);
+  margin-block: var(--ui-space-5);
 }
 .weapon-workspace-tabs a {
-  padding: 0.45rem 0.65rem;
-  border-radius: 0.4rem;
-  font-size: 0.87rem;
+  padding: var(--ui-space-4) var(--ui-space-5);
+  border-radius: var(--ui-radius-2);
+  font-size: var(--ui-type-label);
   border: 1px solid var(--border, #455047);
   text-decoration: none;
 }
@@ -367,31 +377,35 @@
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.4rem;
-  font-size: 0.78rem;
+  gap: var(--ui-space-3);
+  font-size: var(--ui-type-meta);
   color: var(--muted, #aab5af);
 }
 .weapon-save-line p {
-  margin-block: 0.25rem;
+  margin-block: var(--ui-space-2);
 }
 .weapon-workspace [data-workbench-panel] {
   min-width: 0;
-  padding: clamp(0.6rem, calc(0.3rem + 0.6vw), 1rem);
+  padding: clamp(
+    var(--ui-space-5),
+    calc(var(--ui-space-2) + calc(var(--ui-viewport-inline) * 0.006)),
+    var(--ui-space-8)
+  );
   border: 1px solid var(--border, #455047);
-  border-radius: 0.6rem;
-  margin-block: 0.6rem;
+  border-radius: var(--ui-radius-2);
+  margin-block: var(--ui-space-5);
 }
 .weapon-workspace [data-workbench-panel] > h2 {
-  margin-block: 0 0.5rem;
-  font-size: 1.15rem;
+  margin-block: 0 var(--ui-space-4);
+  font-size: var(--ui-type-lead);
 }
 .weapon-workspace h3 {
-  font-size: 1rem;
-  margin-block: 1rem 0.45rem;
+  font-size: var(--ui-type-base);
+  margin-block: var(--ui-space-8) var(--ui-space-4);
 }
 .weapon-workspace fieldset {
   min-width: 0;
-  padding: 0.65rem;
+  padding: var(--ui-space-5);
 }
 .weapon-workspace input:not([type="checkbox"]),
 .weapon-workspace select,
@@ -406,11 +420,11 @@
 .weapon-workspace .armory-choices {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
-  gap: 0.25rem;
+  gap: var(--ui-space-2);
 }
 .weapon-workspace .armory-choices label {
-  padding: 0.35rem;
-  font-size: 0.82rem;
+  padding: var(--ui-space-3);
+  font-size: var(--ui-type-meta);
 }
 .weapon-workspace
   #acquisition-editor
@@ -423,27 +437,27 @@
 }
 .weapon-attachment-search {
   display: grid;
-  gap: 0.3rem;
-  margin-block: 0.7rem;
+  gap: var(--ui-space-2);
+  margin-block: var(--ui-space-6);
 }
 .weapon-source-notes {
-  margin-block: 0.7rem;
-  font-size: 0.85rem;
+  margin-block: var(--ui-space-6);
+  font-size: var(--ui-type-label);
 }
 .weapon-extractions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: var(--ui-space-3);
   align-items: end;
-  margin-block: 0.65rem;
+  margin-block: var(--ui-space-5);
 }
 .weapon-extractions label {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   min-width: 0;
   max-width: 100%;
-  gap: 0.25rem;
-  font-size: 0.8rem;
+  gap: var(--ui-space-2);
+  font-size: var(--ui-type-meta);
 }
 :root[data-theme="light"] .weapon-workspace [data-progress="completed"] strong,
 :root[data-theme="light"] .weapon-workspace output[data-state="completed"] {
@@ -476,8 +490,8 @@
 }
 .weapon-blueprint {
   display: grid;
-  gap: 0.25rem;
-  padding: 0.55rem 0;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-4) 0;
   border-bottom: 1px solid var(--border, #455047);
 }
 .weapon-blueprint small {
@@ -508,7 +522,7 @@
 }
 @media (max-width: 540px) {
   .weapon-context-art {
-    width: min(28vw, 7rem);
+    width: min(calc(var(--ui-viewport-inline) * 0.28), 7rem);
   }
   .weapon-workspace-heading > div:first-child {
     min-width: 0;
@@ -520,7 +534,7 @@
     text-align: center;
   }
   .weapon-workspace fieldset {
-    padding: 0.4rem;
+    padding: var(--ui-space-3);
   }
   .weapon-workspace .armory-actions {
     flex-wrap: wrap;

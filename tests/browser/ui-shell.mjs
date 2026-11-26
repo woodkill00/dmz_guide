@@ -121,6 +121,8 @@ export async function runUIShellTests({ browser, base }) {
     ]) {
       await page.evaluate(
         ({ key, raw }) => {
+          // This case isolates the legacy density fallback; shared preferences are authoritative.
+          localStorage.removeItem("dmz-workspace-ui-v1");
           localStorage.setItem(key, raw);
           localStorage.setItem(
             "dmz-ui-display-v1.map",

@@ -101,7 +101,7 @@ html[data-ui-variant="modern"]
     .contents
   )
   :is(p, small, label, legend, summary, dt, dd, li) {
-  font-size: max(14px, 0.875rem);
+  font-size: max(var(--ui-type-label), var(--ui-type-label));
 }
 html[data-ui-variant="modern"]
   :is(
@@ -135,7 +135,7 @@ html[data-ui-variant="modern"]
   color: var(--ws-text);
   background-color: var(--ws-raised);
   border-color: var(--ws-control-line);
-  font-size: max(14px, 0.875rem);
+  font-size: max(var(--ui-type-label), var(--ui-type-label));
   min-block-size: 44px;
 }
 html[data-ui-variant="modern"]
@@ -241,7 +241,7 @@ html[data-ui-variant="modern"]
   color: var(--ws-text);
   background-color: var(--ws-surface);
   border-color: var(--ws-line);
-  font-size: max(14px, 0.875rem);
+  font-size: max(var(--ui-type-label), var(--ui-type-label));
 }
 html[data-ui-variant="modern"] .safe-map-tools > label {
   min-block-size: 44px;
@@ -263,11 +263,11 @@ html[data-ui-variant="modern"]
 html[data-ui-variant="modern"] :is(.safe-skip, .skip-link, .skip) {
   top: 0.5rem;
   left: 0.5rem;
-  max-inline-size: calc(100vw - 1rem);
+  max-inline-size: calc(var(--ui-viewport-inline) - 1rem);
   min-block-size: 44px;
   color: var(--ws-accent-ink);
   background: var(--ws-accent);
-  padding: 0.75rem;
+  padding: var(--ui-space-6);
   line-height: 1.4;
 }
 html[data-ui-variant="modern"] :is(.safe-skip, .skip-link, .skip):not(:focus) {
@@ -300,22 +300,22 @@ html[data-ui-variant="modern"] .leaflet-container a.leaflet-popup-close-button {
   color: var(--ws-text);
 }
 html[data-ui-variant="modern"] :is(.safe-skip, .skip-link, .skip) {
-  font-size: max(14px, 0.875rem);
+  font-size: max(var(--ui-type-label), var(--ui-type-label));
 }
 html[data-ui-variant="modern"] .contents a {
   display: flex;
   align-items: center;
   min-block-size: 44px;
-  font-size: max(14px, 0.875rem);
+  font-size: max(var(--ui-type-label), var(--ui-type-label));
   overflow-wrap: anywhere;
 }
 html[data-ui-variant="modern"] .contents > strong,
 html[data-ui-variant="modern"] .help-header .brand span {
-  font-size: max(14px, 0.75rem);
+  font-size: max(var(--ui-type-label), var(--ui-type-meta));
 }
 html[data-ui-variant="modern"] .help-header > a {
   min-block-size: 44px;
-  font-size: max(14px, 0.875rem);
+  font-size: max(var(--ui-type-label), var(--ui-type-label));
 }
 html[data-ui-variant="modern"] .help-header {
   flex-wrap: wrap;

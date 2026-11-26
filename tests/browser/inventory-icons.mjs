@@ -6,7 +6,7 @@ const engine = process.env.BROWSER || "chromium",
   page = await browser.newPage({ viewport: { width: 1440, height: 1000 } }),
   errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
-const base = "http://127.0.0.1:4173",
+const base = process.env.DMZ_SITE_URL || "http://127.0.0.1:4173",
   ready = () =>
     page.waitForFunction(
       () =>
