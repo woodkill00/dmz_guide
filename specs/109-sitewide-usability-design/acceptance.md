@@ -1,4 +1,10 @@
-# Planning delivery status
+# Feature 109 acceptance
+
+2026-11-27 premerge candidate: application changes are committed and pushed through [PR41](https://github.com/woodkill00/dmz_guide/pull/41). Independent review records bounded desktop implementation acceptance in review.md. Full Studio passes Chrome, Firefox and isolated WebKit; Home, adverse-editor, mission instruction, dynamic navigation and modern marker checks have current three-engine receipts. Full runtime1195, map runtime245, Python79, builds, formatting and layout policy pass in their recorded environments.
+
+Merge requires the complete current map browser terminal and all required CI checks on the final PR head. Earlier failures remain disclosed and are not counted passing. Physical-device keyboard/browser-toolbar/manual accessibility checks are unrun; no physical-device certification or universal completion claim is granted. implementation.md and coverage.json identify evidence and limits. Player data is preserved. This status is a premerge review record; the PR records the actual merge and CI outcome.
+
+## Historical planning delivery
 
 2026-11-26:109 planning artifacts created. Existing application files and the local4173 service are unchanged by this planning request.
 

@@ -214,6 +214,14 @@ try {
         await settle(p);
         const before = await camera(p),
           domain = await stored(p);
+        if (!(await hit(p.locator('[data-official-id="b"]')))) {
+          console.log(engineName, label, await p.evaluate(() => Object.fromEntries(
+            ['#map','.map-workspace','.map-controls','.map-top-right','[data-official-id="b"]'].map(selector => {
+              const node=document.querySelector(selector); return [selector,node?.getBoundingClientRect().toJSON()];
+            }),
+          )));
+          await p.screenshot({path:`.local/marker-visual/${engineName}-${label}-blocked.png`});
+        }
         await p.locator('[data-official-id="b"]').click();
         await p.locator("#ui-selection-detail").waitFor();
         await settle(p);

@@ -362,11 +362,32 @@ async function runHomeFailureTests({ browser, base }) {
   await service.addInitScript(() => {
     const original = window.fetch;
     window.__servicePorts = [];
+    window.__sameOriginServices = [];
     window.fetch = (path, options) => {
       const u = new URL(path, location.href);
       if (
+        u.origin === location.origin &&
+        ["/", "/local-site/status.json"].includes(u.pathname)
+      ) {
+        window.__sameOriginServices.push(u.pathname);
+        return Promise.resolve(
+          new Response(
+            u.pathname === "/"
+              ? "Synthetic guide"
+              : JSON.stringify({ maps: true }),
+            {
+              status: 200,
+              headers: {
+                "content-type":
+                  u.pathname === "/" ? "text/html" : "application/json",
+              },
+            },
+          ),
+        );
+      }
+      if (
         u.hostname === "127.0.0.1" &&
-        ["4173", "4174", "4176", "5175"].includes(u.port) &&
+        ["4174", "4176"].includes(u.port) &&
         u.pathname === "/"
       ) {
         window.__servicePorts.push(u.port);
@@ -393,10 +414,13 @@ async function runHomeFailureTests({ browser, base }) {
       () => !document.querySelector("#hub-service-check").disabled,
     );
     assert.deepEqual((await sp.evaluate(() => window.__servicePorts)).sort(), [
-      "4173",
       "4174",
       "4176",
     ]);
+    assert.deepEqual(
+      (await sp.evaluate(() => window.__sameOriginServices)).sort(),
+      ["/", "/local-site/status.json"],
+    );
     assert.match(
       await sp.locator("#hub-services").innerText(),
       /Update manager: unavailable/,
