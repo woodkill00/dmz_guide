@@ -296,7 +296,25 @@ export async function runUnifiedWeaponsTests({
               await page.evaluate(
                 () => document.documentElement.scrollWidth <= innerWidth + 1,
               ),
-              `${section} ${width} ${theme} ${zoom}`,
+              `${section} ${width} ${theme} ${zoom}: ${JSON.stringify(
+                await page.evaluate(() => ({
+                  scroll: document.documentElement.scrollWidth,
+                  width: innerWidth,
+                  offenders: [...document.querySelectorAll("main *")]
+                    .filter(
+                      (n) =>
+                        n.getClientRects().length &&
+                        n.getBoundingClientRect().right > innerWidth + 1,
+                    )
+                    .slice(0, 12)
+                    .map((n) => ({
+                      tag: n.tagName,
+                      class: n.className,
+                      text: n.textContent.slice(0, 100),
+                      right: n.getBoundingClientRect().right,
+                    })),
+                })),
+              )}`,
             );
             layouts++;
           }

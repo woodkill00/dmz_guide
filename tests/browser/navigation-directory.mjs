@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { openCatalogContext } from "./open-catalog-context.mjs";
 import { authorPath } from "../../src/content/author-target.mjs";
+import { MAP_BASE } from "../../src/domain/map-routes.mjs";
 
 export async function runNavigationDirectoryTests({
   browser,
@@ -268,10 +269,21 @@ export async function runNavigationDirectoryTests({
     );
     await page.goto(base + remove);
     assert.equal(await page.locator('[data-open-local="remove"]').count(), 1);
-    assert(
-      (
-        await page.locator('[data-open-local="remove"]').getAttribute("href")
-      ).includes("intent=remove"),
+    const removeHandoff = new URL(
+      await page.locator('[data-open-local="remove"]').getAttribute("href"),
+      base,
+    );
+    assert.equal(removeHandoff.origin, new URL(base).origin);
+    assert.equal(removeHandoff.pathname, "/local-services/author/");
+    assert.equal(removeHandoff.hash, "");
+    assert.equal(
+      removeHandoff.searchParams.get("destination"),
+      authorPath({
+        packKey: "demo-training",
+        packId: "demo:training-pack",
+        id: "demo:wire",
+        intent: "remove",
+      }),
     );
     await page.goto(base + "/items/");
     await page.fill("#catalog-search", "no-such-item-zzzz");
@@ -328,12 +340,15 @@ export async function runNavigationDirectoryTests({
         .href.includes("pack=demo%3Atraining-pack"),
     );
     assert.equal(
-      await page.locator('main a[href="http://127.0.0.1:5175/"]').count(),
+      await page.locator(`main a.button.primary[href="${MAP_BASE}"]`).count(),
       1,
     );
     assert.equal(
-      await page.locator('.site-nav a[href="http://127.0.0.1:5175/"]').count(),
-      1,
+      await page
+        .locator(".site-nav")
+        .getByRole("link", { name: "Map", exact: true })
+        .getAttribute("href"),
+      MAP_BASE,
     );
     assert(
       (await page.locator("main").textContent()).includes("not live game GPS"),

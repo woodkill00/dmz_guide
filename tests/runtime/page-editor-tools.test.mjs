@@ -12,6 +12,8 @@ import { digest } from "../../scripts/page-documents.mjs";
 import { withRepositorySnapshot } from "../../scripts/author-store.mjs";
 import { deflateSync } from "node:zlib";
 import { randomBytes } from "node:crypto";
+import { createPageEditorStore } from "../../scripts/page-editor-store.mjs";
+import { createAuthorStore } from "../../scripts/author-store.mjs";
 const id = () => newPageId("o").slice(2);
 const recovery = (s) =>
   structuredClone({
@@ -399,7 +401,7 @@ test("094 refresh attempts deduplicate, serialize across tool instances, retry a
   };
   const tools = createPageEditorTools({
       root: f.root,
-      pageStore: { status: async () => ({ state: "committed" }) },
+      pageStore: { statusForRefresh: async () => ({ state: "committed" }) },
       runBuild: launch,
       deadline: 10000,
     }),
@@ -462,6 +464,90 @@ test("094 refresh attempts deduplicate, serialize across tool instances, retry a
   } finally {
     await tools.close();
     await other.close();
+    await f.close();
+  }
+});
+
+test("109 refresh verifies the saved receipt after a background checkpoint snapshot releases", async () => {
+  const f = await pageEditorFixture();
+  let tools, release, held;
+  try {
+    const s = await f.get("test:order");
+    s.document.sections[0].title = "Synthetic refresh race";
+    const p = await f.post("/api/page-edits/preview", {
+      target: s.target,
+      record: s.record,
+      contentVersion: s.pack.contentVersion,
+      document: s.document,
+      uploads: [],
+      repositoryRevision: s.repositoryRevision,
+      pageRevision: s.pageRevision,
+    });
+    const operationId = id();
+    await f.post("/api/page-edits/commit", {
+      operationId,
+      target: s.target,
+      expectedRevision: p.expectedRevision,
+      expectedDocumentRevision: p.expectedDocumentRevision,
+      previewDigest: p.previewDigest,
+    });
+    const pageStore = createPageEditorStore({
+      root: f.root,
+      store: await createAuthorStore({ root: f.root }),
+    });
+    let entered;
+    const ready = new Promise((resolve) => (entered = resolve));
+    held = withRepositorySnapshot({ root: f.root }, () => {
+      entered();
+      return new Promise((resolve) => (release = resolve));
+    });
+    await ready;
+    assert.equal((await pageStore.status(operationId)).state, "unresolved");
+    let launched = 0;
+    tools = createPageEditorTools({
+      root: f.root,
+      pageStore,
+      runBuild: () => {
+        launched++;
+        return {
+          pid: null,
+          done: Promise.resolve(),
+          terminate: async () => {},
+        };
+      },
+    });
+    const admitted = tools.post({
+      action: "refresh",
+      savedOperationId: operationId,
+      requestId: id(),
+    });
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.equal(
+      launched,
+      0,
+      "Refresh cannot bypass the held repository snapshot",
+    );
+    release();
+    await held;
+    const job = await admitted;
+    let final;
+    for (let i = 0; i < 100; i++) {
+      final = await tools.get("refresh", undefined, job.id);
+      if (final.state !== "running") break;
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+    assert.equal(final.state, "succeeded");
+    assert.equal(launched, 1);
+    assert.equal(
+      (await f.get("test:order")).document.revision,
+      1,
+      "Refresh does not submit another canonical Save",
+    );
+    assert.equal((await pageStore.status(operationId)).state, "committed");
+  } finally {
+    release?.();
+    await held;
+    await tools?.close();
     await f.close();
   }
 });

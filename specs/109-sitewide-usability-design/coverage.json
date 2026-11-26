@@ -174,7 +174,7 @@
   },
   "remaining": [
     {
-      "gate": "current-commit full map browser and GitHub quality terminals",
+      "gate": "final-head GitHub quality terminals (local full map browser passed109-map-browser-delivery.log)",
       "status": "pending"
     },
     {

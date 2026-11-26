@@ -208,6 +208,7 @@
   );
 }
 #camo-tracker .camo-group h2 {
+  overflow-wrap: anywhere;
   font-size: var(--ui-type-base);
   line-height: 1.5;
   margin: 0 0 var(--ui-space-3);

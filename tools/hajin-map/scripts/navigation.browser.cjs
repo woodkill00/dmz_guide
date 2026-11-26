@@ -4,7 +4,7 @@ exports.runNavigationBrowser=async function(parent,base,fixture){
  let nojs;const extraErrors=[];t.context.on('page',p=>p.on('pageerror',e=>extraErrors.push(e.message)));
  try{
   // Fixed guide links are intercepted with labelled synthetic content; no service probes.
-  let guideRequests=0;
+  let guideRequests=0;const itemsPath=(await import('../../../src/domain/local-services.mjs')).servicePath('guide','/items/');await t.context.route(base+itemsPath,route=>{assert.equal(new URL(route.request().url()).searchParams.get('destination'),'/items/');guideRequests++;return route.fulfill({status:302,headers:{location:base+'/items/'}});});await t.context.route(base+'/items/',route=>route.fulfill({status:200,contentType:'text/html',body:'<title>Synthetic guide</title><h1>Synthetic item directory</h1>'}));
   await t.context.route('http://127.0.0.1:4173/**',route=>{guideRequests++;return route.fulfill({contentType:'text/html',body:'<!doctype html><title>SYNTHETIC guide destination</title><h1>SYNTHETIC guide</h1>'});});
   await ready('points');await page.locator('#point-title').fill('SYNTHETIC retained navigation draft');await page.locator('#close-workspace').click();
   await page.locator('#zoom-in:enabled').waitFor();
@@ -15,7 +15,7 @@ exports.runNavigationBrowser=async function(parent,base,fixture){
   const more=nav.locator('details.nav-more');if(!await more.evaluate(e=>e.open))await more.locator(':scope > summary').click();
   const boss=nav.getByRole('link',{name:'Boss checklist',exact:true});assert.equal(await boss.getAttribute('target'),'_blank');const bossEvent=t.context.waitForEvent('page');await boss.focus();await page.keyboard.press('Enter');const bossTab=await bossEvent;await bossTab.locator('#boss-list-heading').waitFor();assert.equal(await bossTab.getByRole('navigation',{name:'Main navigation'}).locator('a[aria-current=page]').textContent(),'Boss checklist');await bossTab.close();assert.equal(JSON.stringify(await read()),before);
   if(!await more.evaluate(e=>e.open))await more.locator(':scope > summary').click();
-  const itemsPath=(await import('../../../src/domain/local-services.mjs')).servicePath('guide','/items/'),items=nav.locator('a[href="'+itemsPath+'"]');assert.equal(await items.getAttribute('rel'),'noopener noreferrer');assert.equal(await items.getAttribute('target'),'_blank');
+  const items=nav.locator('a[href="'+itemsPath+'"]');assert.equal(await items.getAttribute('rel'),'noopener noreferrer');assert.equal(await items.getAttribute('target'),'_blank');
   const popup=t.context.waitForEvent('page');await items.focus();await page.keyboard.press('Enter');const tab=await popup;await tab.waitForLoadState();assert.equal(new URL(tab.url()).pathname,'/items/');assert.equal(new URL(tab.url()).search,'');await tab.close();
   await page.locator('#workspace-open').click();assert.equal(await page.locator('#point-title').inputValue(),'SYNTHETIC retained navigation draft');await page.locator('#close-workspace').click();assert.equal(JSON.stringify(await read()),before);
   await page.setViewportSize({width:320,height:800});await page.evaluate(()=>document.documentElement.style.fontSize='200%');if(!await more.evaluate(e=>e.open))await more.locator(':scope > summary').click();
