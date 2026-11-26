@@ -72,9 +72,7 @@
   ],
   "registry": {
     "checked": 92,
-    "capabilityGated": [
-      "studio"
-    ],
+    "capabilityGated": ["studio"],
     "evidence": "test-results/109-feature-readiness.json"
   },
   "matrices": [
@@ -122,70 +120,57 @@
     {
       "owner": "upgrades",
       "engines": 3,
-      "evidence": [
-        "109-upgrades-fixed.log"
-      ]
+      "evidence": ["109-upgrades-fixed.log"]
     },
     {
       "owner": "Orders",
       "engines": 3,
-      "evidence": [
-        "109-orders.log"
-      ]
+      "evidence": ["109-orders.log"]
     },
     {
       "owner": "blueprints and cross-page inventory drafts",
       "engines": 3,
-      "evidence": [
-        "109-blueprints.log"
-      ]
+      "evidence": ["109-blueprints.log"]
     },
     {
       "owner": "weapons and camo/manual progress",
       "engines": 3,
-      "evidence": [
-        "109-weapons-fixed.log"
-      ]
+      "evidence": ["109-weapons-fixed.log"]
     },
     {
       "owner": "keys and recovery",
       "engines": 3,
-      "evidence": [
-        "109-keys.log"
-      ]
+      "evidence": ["109-keys.log"]
     },
     {
       "owner": "editorial reviews and backups",
       "engines": 3,
-      "evidence": [
-        "109-sitewide-accepted.log"
-      ]
+      "evidence": ["109-sitewide-accepted.log"]
     },
     {
       "owner": "map marker editing and backups",
       "engines": 3,
-      "evidence": [
-        "109-marker-edit-controls.log"
-      ]
+      "evidence": ["109-marker-edit-controls.log"]
     },
     {
       "owner": "Safe Run",
       "engines": 3,
-      "evidence": [
-        "109-safe-route.log"
-      ]
+      "evidence": ["109-safe-route.log"]
     },
     {
       "owner": "Loot Run",
       "engines": 1,
-      "evidence": [
-        "109-loot-route.log"
-      ]
+      "evidence": ["109-loot-route.log"]
+    },
+    {
+      "owner": "X01 source/floor/workspace journeys",
+      "engines": 3,
+      "evidence": ["109-x01-journeys.log"]
     }
   ],
   "services": {
     "realDisposableStudioAndManager": "test-results/109-services-small-fixture.log",
-    "fullStudio": "running:109-studio-link-repaired.log /109-studio-firefox-repaired.log /109-studio-webkit-repaired.log"
+    "fullStudio": "running:109-studio-current-chrome.log /109-studio-current-firefox.log /109-studio-current-webkit.log"
   },
   "remaining": [
     {
@@ -200,5 +185,18 @@
       "gate": "final independent implementation acceptance and delivery reconciliation",
       "status": "pending"
     }
-  ]
+  ],
+  "originalOriginSmoke": {
+    "base": "http://127.0.0.1:4173",
+    "engines": 3,
+    "routes": 7,
+    "evidence": "test-results/109-original-origin-smoke.json"
+  },
+  "rollout": {
+    "sourceCommit": "d30fe39",
+    "branch": "feature/109-sitewide-usability-design",
+    "repository": "MW4",
+    "remotePublication": false,
+    "storageMigration": false
+  }
 }

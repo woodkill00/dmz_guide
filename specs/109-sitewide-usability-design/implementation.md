@@ -1,6 +1,6 @@
 # Feature 109 implementation and verification
 
-Worktree: `MW4_109`, branch `feature/109-sitewide-usability-design`, checkpoint `a5baed481b92dadf7514234c01fede3bf84834fb`. The original workspace and its browser data have been retained. No remote push, merge or deployment.
+Current implementation: `d30fe39` on `feature/109-sitewide-usability-design` in the consolidated `MW4` workspace. The isolated `MW4_109` worktree is detached at that checkpoint for disposable tests. The earlier baseline checkpoint is `a5baed481b92dadf7514234c01fede3bf84834fb`. Browser data has been retained. No remote push, merge or deployment.
 
 The shared token contract now supplies calc-backed spacing, density, typography, corner sizes, visible viewport and measured sticky offsets. Consumers across 32 existing guide/map stylesheets use those tokens. Intrinsic media, minimum hit targets, table sizes and map primitives retain explicit dimensions in `layout-exceptions.json`; world coordinates and item/planner counts were not converted into layout values.
 
@@ -18,7 +18,7 @@ Audit and ordinary field-table lists use document scrolling. Metadata has a shar
 
 One-time migration scripts require explicit `--apply` or `--review-current`; they are not automatic fixers. Review source changes and geometry before refreshing any exception. `ui-layout-policy.test.mjs` proves that replacing an approved dimension with another raw value fails even when the declaration count does not grow.
 
-## Evidence ledger (updated as suites finish)
+## Historical intermediate evidence ledger
 
 - Guide and unified map builds passed; maps include admitted owner-local provider snapshots in the ignored development configuration.
 - Map runtime: 245 passed, zero failed (`109-map-runtime.log`).
@@ -33,7 +33,7 @@ One-time migration scripts require explicit `--apply` or `--review-current`; the
 - Topology: 2,278 guide routes, zero static findings; 50 of 52 companion targets opened, two explicitly unavailable services, zero failed (`.local/site-topology-audit/report.html`).
 - First full implementation runtime: 1,194/1,195 passed. Sole failure was the isolated navigation VM missing the new layout initializer stub. Repaired; targeted 5/5 pass; clean full rerun is executing. Four stale checkpoint crafting assertions were also repaired; affected 14/14 passed.
 
-Final acceptance remains pending final runtime, settled visual review, remaining owner suites and performance reconciliation. Physical mobile keyboard/browser-toolbar checks require a real supported device and have not been performed. Neither screenshots alone nor the absence of a confirmed code defect closes those gates.
+The intermediate running statuses above are superseded by the terminal receipts below. Physical mobile keyboard/browser-toolbar checks require a real supported device and have not been performed. Neither screenshots alone nor the absence of a confirmed code defect closes those gates.
 
 ## Latest verification — local desktop candidate
 
@@ -51,4 +51,16 @@ Final acceptance remains pending final runtime, settled visual review, remaining
 - Fixed budgets passed:38 matched DOM comparisons,10 native navigation+two-frame samples, and CSS source **423,601 bytes versus423,763 maximum** (`109-performance.json`, `109-map-header-budget.log`). Raw literal-layout declarations fell from3,316 to868; exact remaining primitives have a maintained ledger. These measurements do not promise universal performance.
 - Layout policy is now included in the quality CI job after the build. This turn ran local checks; it did not run or claim a GitHub Actions result.
 
-Remaining signoff limits: final navigation-bounds fixture reconciliation, final source/build/format receipts, full delivery reconciliation and independent acceptance. Actual mobile keyboard/browser-toolbar and physical-device checks are not run. The separate broad legacy071 runner was not all green: its navigation fixture omitted the newer weapon acquisition source file; that fixture repair is being verified. No unexecuted runner is counted as passed.
+Remaining signoff limits: full Studio adverse-workflow terminals and independent final acceptance. Actual mobile keyboard/browser-toolbar and physical-device checks are not run. The separate broad legacy071 runner was not all green: its navigation fixture omitted the newer weapon acquisition source file. After that fixture repair, the focused navigation-bounds suite passed48 cases across three engines; the entire old umbrella runner was not repeated or counted as passed. Final formatting, source audit and guide/map builds passed before local rollout.
+
+## Consolidated local rollout
+
+Local source checkpoint: `d30fe39` on `feature/109-sitewide-usability-design`. The feature branch is now checked out in `C:/Users/theju/Documents/coding/MW4`. The isolated `MW4_109` worktree remains available at that same checkpoint for the running disposable tests and historical receipts.
+
+The original local service was rebuilt and restarted at `http://127.0.0.1:4173/`. No browser storage, inventory, progression, local authorizations or cached owner assets were reset or migrated. A fresh isolated Chromium/Firefox/WebKit smoke passed Home, Inventory, Upgrades and all four main map routes at the original address (`test-results/109-original-origin-smoke.log`). The repository's private `.playwright-mcp/` files remain untracked and untouched.
+
+Current terminal additions: X01 floor/source/workspace journeys passed all three engines (`109-x01-journeys.log`); Quick Collect now also passed Firefox and WebKit; source token consolidation preserved all51 final root declarations and passed24 exact computed comparisons. Current retained CSS source is422,771 bytes, below423,763. Navigation bounds passed48 real guide/Studio/manager/map cases, including320px/200% text in both themes. The source inventory includes every maintained CSS selector/property owner plus all eight map entry owners.
+
+Full Studio v1/v2 guided/JSON save, restart and export/import prerequisite roundtrips passed all three engines. The complete Studio suite remains running; its earlier runs exposed stale absolute-port and random-port handoff test assumptions. The fixtures now validate same-origin handoff paths and exact decoded destinations before unwrapping to their explicitly owned random-port test service. Real reader Edit/Images origins/destinations passed separately in all three engines. These harness repairs do not count the still-running full suite as passed.
+
+This is a local feature-branch rollout, not a remote push, main merge, publication, or physical-mobile-device certification. Final independent acceptance and the complete Studio terminals remain open.
