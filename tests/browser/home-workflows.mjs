@@ -147,7 +147,7 @@ export async function runHomeWorkflowTests({ browser, base }) {
     );
     await page.locator("#progress-query").fill("delivery");
     const detail = missionArticle.getByRole("link", {
-      name: "Open selected private record",
+      name: "Open full page & edit",
     });
     await detail.click();
     await page.locator(".return-results").click();
@@ -204,9 +204,12 @@ export async function runHomeWorkflowTests({ browser, base }) {
     assert.match(page.url(), /\/armory\//);
     assert(
       await page
-        .getByRole("link", { name: "Attachment directory" })
+        .getByRole("link", { name: "Attachments", exact: true })
         .isVisible(),
     );
+    await page.getByRole("link", { name: "Attachments", exact: true }).click();
+    await page.locator("#owned-attachments").waitFor();
+    assert(await page.locator("#owned-attachments").isVisible());
     await page.keyboard.press("Control+k");
     await page.waitForURL("**/search/**");
     await page.goto(base + "/features/");
@@ -388,7 +391,6 @@ async function runHomeFailureTests({ browser, base }) {
       "4173",
       "4174",
       "4176",
-      "5175",
     ]);
     assert.match(
       await sp.locator("#hub-services").innerText(),
@@ -402,7 +404,7 @@ async function runHomeFailureTests({ browser, base }) {
     await service.close();
   }
   console.log(
-    "058 failure journeys PASS: held summary cannot cross catalog selection, bounded hung storage, explicit four-service allowlist with unavailable service",
+    "058 failure journeys PASS: held summary cannot cross catalog selection, bounded hung storage, finite local-service allowlist with unavailable service",
   );
 }
 

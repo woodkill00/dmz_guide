@@ -18,6 +18,15 @@ const expectedIds = [
     ),
   ),
 ];
+const initiallyOpen = new Set(
+  chapters
+    .filter((chapter) => /\/missions\/(?:hajin|x01)\/1\/$/.test(chapter.path))
+    .flatMap((chapter) =>
+      [...chapter.body.matchAll(/data-mission-objectives="([^"]+)"/g)].map(
+        (match) => match[1],
+      ),
+    ),
+);
 await mkdir("test-results", { recursive: true });
 try {
   for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
@@ -56,13 +65,16 @@ try {
         expectedIds.toSorted(),
       );
       for (const r of rendered) {
-        assert.equal(r.open, false);
+        assert.equal(r.open, initiallyOpen.has(r.id), r.id);
         assert.deepEqual(r.steps, byId.get(r.id).steps, r.id);
       }
       const gear = page.locator(
           '[data-mission-objectives="mw4:order-gear-up"]',
         ),
         next = page.locator('[data-mission-objectives="mw4:order-crackshot"]');
+      for (const disclosure of [gear, next])
+        if (await disclosure.evaluate((node) => node.open))
+          await disclosure.locator("summary").click();
       await gear.locator("summary").focus();
       await page.keyboard.press("Enter");
       assert.equal(await gear.evaluate((n) => n.open), true);
