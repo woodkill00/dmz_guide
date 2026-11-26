@@ -171,7 +171,9 @@
   line-height: 1.5;
 }
 .camo-legend span {
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-inline-size: 0;
 }
 .camo-tracker-toolbar {
   font-size: var(--ui-type-meta);
