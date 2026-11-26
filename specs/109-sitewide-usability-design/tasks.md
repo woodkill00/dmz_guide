@@ -1,6 +1,6 @@
 # Implementation tasks
 
-Status: application layout rollout implemented locally; final Studio acceptance is running. Use implementation.md and coverage.json for executed checks and pending gates. The planning history below is retained. Dependencies are serial unless a future worktree plan explicitly assigns disjoint files. Requirement IDs refer to spec.md.
+Status: application layout rollout implemented; all three full Studio engines have terminal passes. Current-commit full map browser and GitHub checks remain pending merge gates. Use implementation.md and coverage.json for executed checks and pending limits. The planning history below is retained. Dependencies are serial unless a future worktree plan explicitly assigns disjoint files. Requirement IDs refer to spec.md.
 
 | ID  | Requirements             | Work and owning paths                                                                                            | Depends on  | Required exit evidence                                                                            |
 | --- | ------------------------ | ---------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------- |

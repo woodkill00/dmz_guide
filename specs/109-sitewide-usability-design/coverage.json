@@ -170,12 +170,12 @@
   ],
   "services": {
     "realDisposableStudioAndManager": "test-results/109-services-small-fixture.log",
-    "fullStudio": "running:109-studio-current-chrome.log /109-studio-current-firefox.log /109-studio-current-webkit.log"
+    "fullStudio": "PASS Chrome:109-studio-current-chrome.log; Firefox:109-studio-current-firefox.log; WebKit isolated:109-studio-webkit-isolated.log. Earlier concurrent WebKit timeout retained separately."
   },
   "remaining": [
     {
-      "gate": "full Studio terminal receipts",
-      "status": "running"
+      "gate": "current-commit full map browser and GitHub quality terminals",
+      "status": "pending"
     },
     {
       "gate": "physical mobile keyboard, dynamic toolbar, hardware device behavior",
@@ -196,7 +196,7 @@
     "sourceCommit": "d30fe39",
     "branch": "feature/109-sitewide-usability-design",
     "repository": "MW4",
-    "remotePublication": false,
+    "remotePublication": "feature branch pushed; PR41 draft; main merge pending",
     "storageMigration": false
   }
 }

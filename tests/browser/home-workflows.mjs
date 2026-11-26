@@ -382,7 +382,12 @@ async function runHomeFailureTests({ browser, base }) {
   const sp = await service.newPage();
   try {
     await sp.goto(base + "/");
-    await sp.getByText("Local services", { exact: true }).click();
+    if (
+      !(await sp
+        .locator("#hub-service-check")
+        .evaluate((node) => node.closest("details").open))
+    )
+      await sp.getByText("Local services", { exact: true }).click();
     await sp.locator("#hub-service-check").click();
     await sp.waitForFunction(
       () => !document.querySelector("#hub-service-check").disabled,
