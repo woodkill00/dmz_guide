@@ -56,6 +56,8 @@ import { readCatalog, bundledSources, catalogJSON } from "./catalog.mjs";
 import { validateKeyInventory } from "../src/content/key-reference.mjs";
 import { prepareBundledAssets, writeBundledAssets } from "./bundled-assets.mjs";
 import { readWeaponAcquisition } from "../src/content/weapon-acquisition.mjs";
+import { weaponAlias } from "../src/ui/weapon-alias.mjs";
+import { canonicalizeWeaponAnchors } from "../src/ui/weapon-link-migration.mjs";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 async function generate(dist) {
@@ -102,6 +104,7 @@ async function generate(dist) {
     },
   );
   const packs = catalog.packs;
+  const weaponIds = (await readWeaponAcquisition()).weapons.map((w) => w.id);
   const chapterIntel = await chapterOverrides(root);
   setBundledAssets(bundled.manifest);
   const pages = [
@@ -119,7 +122,11 @@ async function generate(dist) {
     ["weapons", "Weapon reference", "weapon"],
     ["recipes", "Recipes & crafting", "recipe"],
     ["guides", "The field manual", "guide"],
-  ])
+  ]) {
+    if (path === "weapons") {
+      pages.push(weaponAlias("/weapons/", weaponIds, { section: "reference" }));
+      continue;
+    }
     pages.push({
       path: `/${path}/`,
       title,
@@ -139,6 +146,7 @@ async function generate(dist) {
       page: path,
       scripts: ["/assets/src/client/catalog.mjs"],
     });
+  }
   pages.push({
     path: "/items/manage/",
     title: "Add or edit items",
@@ -242,7 +250,9 @@ async function generate(dist) {
       continue;
     }
     const module = await import(pathToFileURL(file));
-    const extensions = await module.featurePages(packs, {
+    const extensions = await (
+      module.unifiedFeaturePages || module.featurePages
+    )(packs, {
       chapterIntel,
       catalog,
     });
@@ -300,9 +310,11 @@ async function generate(dist) {
   const siteMapPage = pages.find((page) => page.path === "/sitemap/");
   const routeFamilies = new Map();
   for (const page of [...pages, notFoundPage]) {
-    const family = page.path.startsWith("/contribute/")
-      ? "Authoring guidance"
-      : page.page || "Other pages";
+    const family = page.compatibilityFor
+      ? "Legacy weapon bookmarks (redirects)"
+      : page.path.startsWith("/contribute/")
+        ? "Authoring guidance"
+        : page.page || "Other pages";
     if (!routeFamilies.has(family)) routeFamilies.set(family, []);
     routeFamilies.get(family).push(page);
   }
@@ -317,7 +329,10 @@ async function generate(dist) {
     paths.add(page.path);
   }
   const renderedPages = new Map(
-    pages.map((page) => [page.path, renderLayout(page)]),
+    pages.map((page) => [
+      page.path,
+      canonicalizeWeaponAnchors(renderLayout(page), weaponIds),
+    ]),
   );
   for (const page of pages) {
     const file = join(dist, page.path, "index.html");
@@ -359,7 +374,7 @@ async function generate(dist) {
   }
   await mkdir(join(dist, "assets/content/packs"), { recursive: true });
   const dashboardWeapons = (await readWeaponAcquisition()).weapons.map(
-    ({ id, name }) => ({ id, name }),
+    ({ id, name, category }) => ({ id, name, category }),
   );
   await emit(
     join(dist, "assets/content/dashboard-weapons.json"),

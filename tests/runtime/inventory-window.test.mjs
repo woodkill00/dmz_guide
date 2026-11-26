@@ -1,3 +1,4 @@
+import { renderItemIcon } from "../../src/ui/item-card.mjs";
 import { CURRENCY_STOCK_LIMIT } from "../../src/domain/quantity-limits.mjs";
 import * as inventoryItems from "../../src/domain/inventory-items.mjs";
 import * as inventoryPresentation from "../../src/domain/inventory-presentation.mjs";
@@ -56,6 +57,7 @@ for (const count of [100, 1000, 5000]) {
       ...inventoryItems,
       ...inventoryPresentation,
       itemUses,
+      renderItemIcon,
       useLabels,
       useCell,
       upgradeNeedCell,

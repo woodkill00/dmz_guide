@@ -55,6 +55,8 @@ export const navigationConfig = {
     "tool-explore": "Find map locations",
     "tool-updates": "Map source updates",
     "weapon-updates": "Weapon source updates",
+    armory: "Weapons",
+    "armory-workbench": "Weapons",
     recipes: "Crafting recipes",
   },
 };
@@ -411,6 +413,14 @@ export function featureURL(
   surface = "guide",
   { mapBase = ["map", "help"].includes(surface) ? "/" : "/map/" } = {},
 ) {
+  const weaponDestinations = {
+    "dmz-weapons": "/armory/",
+    weapons: "/armory/#reference",
+    "armory-workbench": "/armory/",
+    "weapon-acquisition": "/armory/#acquisition",
+    "weapon-camos": "/armory/#camos",
+  };
+  const path = weaponDestinations[feature.id] || feature.path;
   if (feature.kind === "studio")
     return surface === "studio"
       ? feature.path
@@ -421,8 +431,8 @@ export function featureURL(
       : mapPath(feature.path, { standalone: mapBase === "/" });
   return surface === "guide" ||
     (["map", "help"].includes(surface) && mapBase === "/map/")
-    ? feature.path
-    : servicePath("guide", feature.path);
+    ? path
+    : servicePath("guide", path);
 }
 export function featureForPage(page) {
   return (

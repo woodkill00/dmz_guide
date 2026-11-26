@@ -190,7 +190,11 @@ export async function hydrateInventoryIcons(
               img.naturalHeight !== job.asset.height
             )
               throw Error("Icon dimensions mismatch");
-            if (job.asset.sourcePage && !cell.closest("a, button")) {
+            if (
+              job.asset.sourcePage &&
+              !cell.closest("a, button") &&
+              cell.getAttribute("aria-hidden") !== "true"
+            ) {
               const link = document.createElement("a");
               link.href = job.asset.sourcePage;
               link.target = "_blank";
@@ -203,6 +207,7 @@ export async function hydrateInventoryIcons(
               cell.replaceChildren(link);
             } else cell.replaceChildren(img);
             cell.dataset.iconStatus = "available";
+            cell.title = job.asset.attribution || "Item image";
           }
         } catch {
           for (const cell of job.cells)

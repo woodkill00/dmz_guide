@@ -8,7 +8,15 @@ import {
   editCamoCompletion,
 } from "../domain/camo-progress.mjs";
 import "./quick-tracker.mjs";
-import { ownsBlueprint } from "../domain/weapon-acquisition.mjs";
+import {
+  ownsBlueprint,
+  extractionCount,
+  editAcquisition,
+  blueprintOwnedName,
+} from "../domain/weapon-acquisition.mjs";
+import { workbenchCamos } from "./workbench-camos.mjs";
+import { weaponPicker } from "./weapon-picker.mjs";
+import { resolveWeaponEntry } from "../domain/weapon-routes.mjs";
 import {
   emptyArmory,
   validateArmory,
@@ -56,6 +64,88 @@ let camoInputIntent = 0;
 for (const type of ["pointerdown", "keydown", "input"])
   document.addEventListener(type, () => camoInputIntent++);
 const camoCatalog = validateProgressCatalog(camoProgress);
+const contextElement = document.querySelector("#unified-weapon-context");
+const weaponContext = contextElement
+  ? JSON.parse(contextElement.textContent)
+  : null;
+const picker = weaponPicker(
+  document.querySelector("#weapon-picker"),
+  camoCatalog,
+  camoWeapons,
+  {
+    intent: () => camoInputIntent,
+    extraction: async (weapon, delta) => {
+      try {
+        await mutate((value) => {
+          value.acquisition = editAcquisition(value, weapon, {
+            kind: "count",
+            value: (extractionCount(value.acquisition[weapon]) ?? 0) + delta,
+          }).acquisition;
+        });
+      } catch (error) {
+        failure(error);
+        throw error;
+      }
+    },
+    manual: async (weapon, owned) => {
+      try {
+        await mutate((value) => {
+          value.acquisition = editAcquisition(value, weapon, {
+            kind: "manual",
+            value: owned,
+          }).acquisition;
+        });
+      } catch (error) {
+        failure(error);
+        throw error;
+      }
+    },
+    complete: async (weapon, camo, completed = true) => {
+      try {
+        await mutate((value) => {
+          value.camoCompletions = editCamoCompletion(
+            value,
+            camoCatalog,
+            weapon,
+            camo,
+            completed,
+          ).camoCompletions;
+        });
+      } catch (error) {
+        failure(error);
+        throw error;
+      }
+    },
+  },
+);
+const gridCamos = workbenchCamos(
+  document.querySelector("#camo-tracker"),
+  camoCatalog,
+  async (weapon, camo, checked, checkbox) => {
+    const intent = camoInputIntent;
+    try {
+      await mutate((value) => {
+        value.camoCompletions = editCamoCompletion(
+          value,
+          camoCatalog,
+          weapon,
+          camo,
+          checked,
+        ).camoCompletions;
+      });
+    } catch (error) {
+      failure(error);
+      gridCamos.paint(workspace, ready);
+    }
+    if (
+      intent === camoInputIntent &&
+      document.visibilityState !== "hidden" &&
+      document.activeElement === document.body &&
+      checkbox.isConnected
+    )
+      checkbox.focus({ preventScroll: true });
+  },
+);
 const camoPreview = acquisitionCamoController(
   document.querySelector("#acquisition"),
   camoCatalog,
@@ -117,7 +207,9 @@ const failure = (error) => {
   $("#armory-error").textContent = error.message || String(error);
 };
 function controls() {
+  picker.setEditable(ready && !pending && !loading && !unsaved);
   camoPreview.setEditable(ready && !pending && !loading && !unsaved);
+  gridCamos.setEditable(ready && !pending && !loading && !unsaved);
   document.querySelector("main").dataset.armoryBusy = String(
     pending || loading,
   );
@@ -125,7 +217,16 @@ function controls() {
     workspace.revision,
   );
   document.querySelectorAll("[data-private-controls]").forEach((n) => {
-    n.disabled = !ready || pending || loading;
+    n.disabled =
+      !ready ||
+      pending ||
+      loading ||
+      !!unsaved ||
+      !!(
+        weaponContext &&
+        !weaponContext.combat &&
+        n.closest("#builder,#evidence")
+      );
   });
 }
 function invalidatePreview() {
@@ -769,6 +870,32 @@ function tracker() {
       (a.name + " " + a.slot).toLowerCase().includes(term),
     );
   $("#tracker-manual").checked = entry.manual;
+  if (weaponContext) {
+    picker.paint(workspace, ready);
+    $("#weapon-context-filter").dispatchEvent(new Event("change"));
+    const count = extractionCount(entry);
+    $("#weapon-extraction-count").textContent =
+      `${count === null ? "Not recorded" : count} / 3`;
+    $("#weapon-extraction-count").dataset.state =
+      count >= 3
+        ? "completed"
+        : entry.manual || count > 0
+          ? "next"
+          : "remaining";
+    const input = $("#weapon-extractions [name=count]");
+    // Preserve a typed correction while another field auto-saves.
+    if (document.activeElement !== input && !input.dataset.dirty)
+      input.value = count ?? "";
+    for (const control of document.querySelectorAll(
+      "[data-unified-blueprint]",
+    )) {
+      const blueprint = weaponContext.known.find(
+        (b) => b.id === control.dataset.unifiedBlueprint,
+      );
+      control.checked = ownsBlueprint(entry, blueprintOwnedName(blueprint));
+    }
+    gridCamos.paint(workspace, ready);
+  }
   $("#tracker-attachments").innerHTML = matches
     .map(
       (a) =>
@@ -778,9 +905,12 @@ function tracker() {
   $("#tracker-count").textContent =
     `${entry.attachments.length} acquired records · ${matches.length} of ${all.length} attachments shown`;
   $("#blueprint-list").innerHTML = entry.blueprints
-    .map(
-      (b, i) =>
-        `<p>${e(b)} <button type="button" data-blueprint-remove="${i}">Remove blueprint</button></p>`,
+    .map((b, i) =>
+      weaponContext?.known.some((known) =>
+        ownsBlueprint({ blueprints: [b] }, blueprintOwnedName(known)),
+      )
+        ? ""
+        : `<p>${e(b)} <button type="button" data-blueprint-remove="${i}">Remove blueprint</button></p>`,
     )
     .join("");
   const weaponName = name(weapon),
@@ -812,6 +942,114 @@ function tracker() {
     .join(" · ");
 }
 $("#tracker-weapon").addEventListener("change", tracker);
+if (weaponContext) {
+  // The page context owns acquisition and camo selection. Build/evidence selectors
+  // remain explicit so saved builds for another weapon can still be inspected.
+  $("#tracker-weapon").addEventListener("change", () => {
+    const selected = $("#tracker-weapon").value;
+    $("#tracker-weapon").value = weaponContext.weapon;
+    tracker();
+    location.assign(
+      `/armory/${encodeURIComponent(selected)}/${location.hash || "#acquisition"}`,
+    );
+  });
+  $("#weapon-extractions [name=count]").addEventListener("input", (event) => {
+    event.target.dataset.dirty = "true";
+    dirtyForms.add("weapon-extractions");
+  });
+  const saveCount = async (count) => {
+    try {
+      await mutate((value) => {
+        value.acquisition = editAcquisition(value, weaponContext.weapon, {
+          kind: "count",
+          value: count,
+        }).acquisition;
+      });
+      delete $("#weapon-extractions [name=count]").dataset.dirty;
+      dirtyForms.delete("weapon-extractions");
+      tracker();
+    } catch (error) {
+      failure(error);
+      tracker();
+    }
+  };
+  $("#weapon-extractions").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const input = event.target.elements.count;
+    if (!input.value.trim()) {
+      failure(Error("Enter a whole extraction count from 0 to 9999."));
+      return;
+    }
+    saveCount(Number(input.value));
+  });
+  $("#weapon-extractions").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-extraction-step]");
+    if (button) {
+      const input = $("#weapon-extractions [name=count]");
+      if (
+        input.dataset.dirty &&
+        (!input.value.trim() || !input.checkValidity())
+      ) {
+        failure(Error("Enter a whole extraction count from 0 to 9999."));
+        return;
+      }
+      saveCount(
+        Math.max(
+          0,
+          (input.dataset.dirty
+            ? Number(input.value)
+            : (extractionCount(tracked()) ?? 0)) +
+            Number(button.dataset.extractionStep),
+        ),
+      );
+    }
+  });
+  $("#weapon-known-blueprints").addEventListener("change", async (event) => {
+    const checkbox = event.target.closest("[data-unified-blueprint]"),
+      blueprint = weaponContext.known.find(
+        (b) => b.id === checkbox?.dataset.unifiedBlueprint,
+      );
+    if (!blueprint) return;
+    try {
+      await mutate((value) => {
+        value.acquisition = editAcquisition(value, weaponContext.weapon, {
+          kind: "blueprint",
+          name: blueprintOwnedName(blueprint),
+          owned: checkbox.checked,
+        }).acquisition;
+      });
+    } catch (error) {
+      failure(error);
+      tracker();
+    }
+  });
+  const filterContext = () => {
+    let visible = 0;
+    const query = $("#weapon-context-search").value.trim().toLocaleLowerCase();
+    const filter = $("#weapon-context-filter").value;
+    for (const link of document.querySelectorAll("[data-weapon-context]")) {
+      const entry = workspace.acquisition[link.dataset.weaponContext];
+      link.closest("[data-weapon-card]").hidden =
+        !link.dataset.search.includes(query) ||
+        (filter === "missing" && !!entry?.manual) ||
+        (filter === "owned" && !entry?.manual) ||
+        (filter === "remaining" && extractionCount(entry) >= 3) ||
+        (filter === "completed" && !(extractionCount(entry) >= 3));
+      if (!link.closest("[data-weapon-card]").hidden) visible++;
+    }
+    for (const group of document.querySelectorAll("[data-picker-category]")) {
+      const count = group.querySelectorAll(
+        "[data-weapon-card]:not([hidden])",
+      ).length;
+      group.hidden = count === 0;
+      group.querySelector("[data-picker-group-count]").textContent =
+        String(count);
+    }
+    $("#weapon-context-empty").hidden = visible > 0;
+  };
+  $("#weapon-context-search").addEventListener("input", filterContext);
+  $("#weapon-context-filter").addEventListener("change", filterContext);
+}
 $("#tracker-search").addEventListener("input", tracker);
 $("#tracker-manual").addEventListener("change", async (event) => {
   const weapon = $("#tracker-weapon").value,
@@ -884,6 +1122,7 @@ function resetDraftForms() {
   selectedAttachments = [];
   previousWeapon = $("#build-weapon").value;
   dirtyForms.clear();
+  if (weaponContext) delete $("#weapon-extractions [name=count]").dataset.dirty;
   buildPickers();
 }
 function renderPrivate() {
@@ -915,7 +1154,7 @@ $("#workspace-export").addEventListener("click", () =>
   download("private-armory-backup.json", {
     format: "dmz-armory-backup",
     version: 1,
-    workspace: corruptStored || workspace,
+    workspace: corruptStored ?? workspace,
   }),
 );
 $("#workspace-unsaved").addEventListener("click", () =>
@@ -962,7 +1201,7 @@ async function load() {
       ]);
     } catch (error) {
       if (epoch === loadEpoch && capturedGeneration === generation) {
-        corruptStored = record.value;
+        corruptStored = record.value === undefined ? record : record.value;
         if (Number.isSafeInteger(record.value?.revision))
           workspace.revision = record.value.revision;
         ready = false;
@@ -1103,15 +1342,16 @@ $("#workspace-import-apply").addEventListener("click", async () => {
 });
 function tabs() {
   const id = location.hash.slice(1),
-    target = [
-      "compare",
-      "builder",
-      "evidence",
-      "acquisition",
-      "backups",
-    ].includes(id)
-      ? id
-      : "compare";
+    target = weaponContext
+      ? resolveWeaponEntry(
+          location.href,
+          acquisitionWeapons.map((w) => w.id),
+        ).section
+      : ["compare", "builder", "evidence", "acquisition", "backups"].includes(
+            id,
+          )
+        ? id
+        : "compare";
   document.querySelectorAll("[data-workbench-panel]").forEach((n) => {
     n.hidden = n.id !== target;
   });
@@ -1119,6 +1359,33 @@ function tabs() {
     if (a.hash === "#" + target) a.setAttribute("aria-current", "page");
     else a.removeAttribute("aria-current");
   });
+  if (weaponContext) {
+    for (const link of document.querySelectorAll("[data-weapon-context]"))
+      link.hash = target;
+    const entry = resolveWeaponEntry(
+      location.href,
+      acquisitionWeapons.map((w) => w.id),
+    );
+    if (entry.camo) {
+      const tile = document.querySelector(
+        `[data-camo-tile="${CSS.escape(entry.camo)}"]`,
+      );
+      const view = tile?.closest("[data-camo-view-panel]")?.dataset
+        .camoViewPanel;
+      if (view)
+        document
+          .querySelector(`[data-camo-view="${CSS.escape(view)}"]`)
+          ?.click();
+      if (tile?.getAttribute("aria-expanded") !== "true") tile?.click();
+    }
+    const anchor = document.getElementById(id);
+    if (
+      id !== target &&
+      anchor &&
+      document.getElementById(target)?.contains(anchor)
+    )
+      anchor.scrollIntoView();
+  }
 }
 window.addEventListener("hashchange", () => {
   sharedGeneration++;
@@ -1154,9 +1421,33 @@ load()
           "Unknown or repeated weapon selection ignored; saved workspace is unchanged.",
         );
     }
+    const entry = weaponContext
+      ? resolveWeaponEntry(
+          location.href,
+          acquisitionWeapons.map((w) => w.id),
+        )
+      : null;
+    if (entry?.weapon && entry.weapon !== weaponContext.weapon) {
+      location.replace(entry.href);
+      return;
+    }
     document.querySelector("main").dataset.armoryReady = "true";
+    if (weaponContext) {
+      if (!weaponContext.combat) {
+        for (const id of ["builder", "evidence"]) {
+          const note = document.createElement("p");
+          note.className = "notice";
+          note.textContent =
+            "Combat/compatibility data for this weapon is not catalogued. This editor is unavailable; acquisition and camos remain usable.";
+          $("#" + id).prepend(note);
+        }
+      }
+      tabs();
+      if (entry.notice) status(entry.notice);
+    }
   })
   .catch((error) => {
+    picker.paint(workspace, false);
     failure(error);
     status(
       "Private storage could not open. Public comparison remains available; no data was replaced.",

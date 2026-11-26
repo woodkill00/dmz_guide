@@ -4,7 +4,7 @@ import {
   craftingInputAmounts,
   craftReferenceAnchor,
 } from "../domain/crafting-uses.mjs";
-import { itemIcon } from "./item-workspace.mjs";
+import { renderItemCardBody } from "./item-card.mjs";
 const cache = new WeakMap();
 const esc = (value) =>
   String(value ?? "").replace(
@@ -41,7 +41,7 @@ export function craftingItemLink(
       : type === "item"
         ? item
         : null;
-  return `<a${iconItem ? ' class="item-craft-button"' : ""} href="${esc(referenceURL({ ...item, recordType: type, pack }) + hash)}">${iconItem ? itemIcon({ ...iconItem, pack }).replace("<span ", '<span aria-hidden="true" ') : ""}<span>${esc(label)}</span></a>`;
+  return `<a${iconItem ? ' class="item-craft-button item-card" data-item-size="inline"' : ""} href="${esc(referenceURL({ ...item, recordType: type, pack }) + hash)}">${iconItem ? renderItemCardBody({ ...iconItem, pack }, { size: "inline", name: label }) : `<span>${esc(label)}</span>`}</a>`;
 }
 export function renderCraftingUses(record, pack, referenceURL) {
   if (!cache.has(pack)) cache.set(pack, buildCraftingUses(pack));

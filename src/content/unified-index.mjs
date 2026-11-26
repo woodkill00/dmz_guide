@@ -1,4 +1,5 @@
 import { readWeaponAcquisition } from "./weapon-acquisition.mjs";
+import { weaponURL, weaponAttachmentURL } from "../domain/weapon-routes.mjs";
 import { resolvePresentation } from "../ui/presentation-config.mjs";
 import { featureLabel } from "../ui/workspace-shell.mjs";
 import { features, featureURL } from "../ui/feature-registry.mjs";
@@ -98,7 +99,7 @@ export async function buildUnifiedIndex(packs) {
         "weapon",
         weapon.name,
         "Acquisition and camo reference; combat statistics not yet catalogued.",
-        `/armory/acquisition/?weapon=${encodeURIComponent(weapon.id)}#weapon-${encodeURIComponent(weapon.id)}`,
+        weaponURL(weapon.id),
       ),
     );
   for (const a of db.attachments)
@@ -111,7 +112,10 @@ export async function buildUnifiedIndex(packs) {
           " · " +
           a.about +
           " · Compatibility and effects remain source-reported",
-        "/armory/#attachments",
+        weaponAttachmentURL(
+          a.weapons.find((id) => db.weapons.some((w) => w.id === id)) || "",
+          a.id,
+        ),
       ),
     );
   for (const pack of packs) {

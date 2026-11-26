@@ -82,18 +82,27 @@
 }
 .dash-tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 8rem), 1fr));
-  gap: 0.4rem;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(100%, calc(10.5rem + 2vw)), 1fr)
+  );
+  gap: 0.6rem;
+  align-items: start;
+}
+.dash-item-entry {
+  min-width: 0;
+  container-type: inline-size;
 }
 .dash-tile {
   min-width: 0;
   display: grid;
-  grid-template-columns: 2.25rem 1fr;
-  gap: 0.25rem 0.4rem;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.55rem;
+  align-content: start;
   text-align: left;
-  padding: 0.5rem;
-  min-height: 5rem;
+  padding: calc(0.6rem + 0.1vw);
+  min-height: 6rem;
+  width: 100%;
   position: relative;
   border-radius: 0.5rem;
   background: var(--bg);
@@ -104,7 +113,6 @@
   place-items: center;
   width: 2.25rem;
   height: 2.25rem;
-  grid-row: span 2;
 }
 .dash-tile img {
   max-width: 100%;
@@ -112,9 +120,67 @@
   object-fit: contain;
 }
 .dash-tile-name {
-  font-size: 0.8rem;
-  line-height: 1.25;
-  overflow-wrap: anywhere;
+  min-width: 0;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  font-weight: 650;
+  overflow-wrap: break-word;
+  word-break: normal;
+  letter-spacing: normal;
+  word-spacing: normal;
+  white-space: normal;
+}
+.dash-tile-heading {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+@container (max-width: 12rem) {
+  .dash-tile-heading {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.dash-tile-quantity {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.65rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+.dash-tile-quantity > span {
+  color: var(--muted);
+}
+.dash-tile-meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.5rem;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  text-transform: none;
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+.dash-tile-rarity {
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 0.3rem;
+}
+.dash-tile-note {
+  color: var(--muted);
+}
+.dash-item-entry > .craft-preview {
+  margin-top: 0.35rem;
+}
+.dash-item-entry > .craft-preview > summary {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  padding-block: 0.2rem;
+  word-spacing: normal;
 }
 #dashboard button.dash-tile {
   background: var(--bg);
@@ -133,9 +199,10 @@
   font-size: 0.95rem;
 }
 .dash-tile strong {
-  grid-column: 1 / -1;
-  white-space: nowrap;
-  font-size: 0.95rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
 }
 .dash-progress-list [data-inventory-icon] {
   display: inline-grid;
@@ -170,14 +237,6 @@ html[data-theme="light"] #dashboard .dash-tile[data-state="covered"] strong {
 html[data-theme="light"] #dashboard .dash-tile[data-state="alternative"] strong,
 html[data-theme="light"] #dashboard .dash-tile[data-state="review"] strong {
   color: #785300;
-}
-.dash-tile strong {
-  font-size: 1.05rem;
-}
-.dash-tile small {
-  grid-column: 1/-1;
-  font-size: 0.65rem;
-  overflow-wrap: anywhere;
 }
 .dash-tile[data-state="short"] strong {
   color: #ff8d8d;
@@ -263,11 +322,97 @@ html[data-theme="light"] #dashboard .dash-tile[data-state="review"] strong {
   font-size: 0.72rem;
 }
 .dash-group {
-  margin-block: 0.5rem;
+  margin-block: 0.7rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--line);
+}
+.dash-build-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.65rem;
+  margin-bottom: 0.45rem;
 }
 .dash-group h3 {
   font-size: 0.85rem;
-  margin-block: 0.4rem;
+  margin: 0;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.dash-build-badge {
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.dash-count-note {
+  margin-top: 0.65rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--line);
+}
+.dash-count-note > summary {
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  padding-block: 0.2rem;
+}
+.dash-upgrade-list {
+  display: grid;
+  gap: 0.75rem;
+}
+.dash-upgrade {
+  min-width: 0;
+  padding: calc(0.55rem + 0.1vw);
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+}
+.dash-upgrade > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+  margin-bottom: 0.6rem;
+}
+.dash-upgrade h3 {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.dash-upgrade header small {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.dash-upgrade-completion {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.dash-upgrade-completion input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+}
+.dash-upgrade-materials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0.5rem;
+}
+.dash-upgrade-feedback {
+  padding: 0.55rem;
+  margin-bottom: 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+}
+.dash-upgrade-feedback button,
+.dash-upgrade-undo {
+  font-size: 0.72rem;
+  margin: 0.2rem;
 }
 .dash-pager {
   display: flex;
@@ -333,4 +478,25 @@ body[data-page="home"] .hub-personal {
   [data-theme="light"] .dash-tile[data-state="review"] strong {
     color: #785300;
   }
+}
+
+#dashboard-weapons {
+  grid-column: 1 / -1;
+}
+.dash-weapon-workspace [data-dashboard-completed] {
+  margin-top: 0.5rem;
+  padding: 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+}
+.dash-weapon-workspace [data-dashboard-completed] > summary {
+  cursor: pointer;
+  padding: 0.3rem;
+  font-size: 0.8rem;
+}
+#dash-weapon-recovery {
+  border: 1px solid var(--danger, #f49b9b);
+  border-radius: 0.5rem;
+  padding: 0.6rem;
+  margin-bottom: 0.6rem;
 }

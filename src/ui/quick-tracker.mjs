@@ -16,7 +16,9 @@ export function quickTrackerPage(page) {
     .map((tab) => {
       const feature = features.find((row) => row.id === tab.id);
       if (!feature) throw Error("Unknown tracker feature");
-      return `<a href="${e(featureURL(feature) + (tab.hash ? `#${tab.hash}` : ""))}" data-tracker-link data-tracker-feature="${e(tab.id)}"${page.page === tab.id ? ' aria-current="page"' : ""}>${e(tab.label)}</a>`;
+      const url = new URL(featureURL(feature), "https://navigation.invalid");
+      if (tab.hash) url.hash = tab.hash;
+      return `<a href="${e(url.pathname + url.search + url.hash)}" data-tracker-link data-tracker-feature="${e(tab.id)}"${page.page === tab.id ? ' aria-current="page"' : ""}>${e(tab.label)}</a>`;
     })
     .join("");
   return {

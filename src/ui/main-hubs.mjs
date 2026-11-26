@@ -102,3 +102,11 @@ export function featurePages() {
     },
   ];
 }
+import { weaponAlias } from "./weapon-alias.mjs";
+import { readWeaponAcquisition } from "../content/weapon-acquisition.mjs";
+export async function unifiedFeaturePages() {
+  const ids = (await readWeaponAcquisition()).weapons.map((w) => w.id);
+  return featurePages().map((page) =>
+    page.path === "/dmz-weapons/" ? weaponAlias(page.path, ids) : page,
+  );
+}

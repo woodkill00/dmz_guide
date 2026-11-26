@@ -43,7 +43,16 @@ try {
       await p.locator('main[aria-busy="false"]').waitFor();
       for (const path of ["/dmz-guide/", "/dmz-weapons/"]) {
         await p.goto(server.base + path);
-        assert.equal(await p.evaluate(() => window.__hubDatabaseReads), 0);
+        if (path === "/dmz-guide/")
+          assert.equal(await p.evaluate(() => window.__hubDatabaseReads), 0);
+        else {
+          await p.waitForURL("**/armory/#acquisition");
+          await p.waitForSelector('main[data-armory-ready="true"]');
+          assert.equal(
+            await p.locator("main").getAttribute("data-armory-revision"),
+            "0",
+          );
+        }
         assert(await p.locator("h1").isVisible());
       }
       await p.goto(server.base + "/sitemap/");
@@ -52,7 +61,7 @@ try {
         "Map",
         "DMZ Guide",
         "DMZ FOB",
-        "DMZ Weapons",
+        "Weapons",
         "Tools & settings",
       ])
         assert(

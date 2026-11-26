@@ -11,7 +11,16 @@ import {
 } from "../domain/reader-flow.mjs";
 import { imageDescription } from "../content/image-description.mjs";
 import { loadBundledPayloads } from "../content/bundled-assets.mjs";
-import { getCatalog, init, state, $, esc, error, persist } from "./common.mjs";
+import {
+  getCatalog,
+  init,
+  state,
+  $,
+  esc,
+  error,
+  persist,
+  hasUnsavedDraft,
+} from "./common.mjs";
 import { mountBuildTargets } from "./build-target-controls.mjs";
 import { readRecord } from "../storage/store.mjs";
 import { locationTimeline } from "../domain/field-ops.mjs";
@@ -143,7 +152,27 @@ async function render() {
     const advice = $("#item-upgrade-advice");
     advice.classList.add("item-personal-uses");
     $("#item-uses")?.append(advice);
-    await enhanceItemWorkspace(state.pack, state.profile);
+    await enhanceItemWorkspace(state.pack, state.profile, {
+      pack: () => state.pack,
+      profile: () => state.profile,
+      busy: () => state.saving || state.loading,
+      dirty: () => hasUnsavedDraft(),
+      adopt: (value) => {
+        state.profile = value;
+        state.revision = value.revision;
+      },
+      save: async (candidate, expected, journal) => {
+        if (expected !== state.revision)
+          throw Error("Saved progress changed. Reload before editing.");
+        let receipt;
+        const saved = await persist(candidate, journal, {
+          onCommitted: (value) => (receipt = value),
+        });
+        if (receipt) return receipt;
+        if (!saved)
+          throw Error("Blueprint not saved. Review the retained proposal.");
+      },
+    });
     if (token !== generation) return;
   }
   await mountBuildTargets($("#local-records"), {

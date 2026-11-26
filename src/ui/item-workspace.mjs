@@ -1,3 +1,4 @@
+import { renderItemIcon } from "./item-card.mjs";
 import { itemSection } from "../domain/inventory-items.mjs";
 import { keyItemReference } from "../domain/key-item-links.mjs";
 // Pure, shared native/private item presentation. No profile or catalog writes.
@@ -10,9 +11,7 @@ const e = (value) =>
       ],
   );
 export function itemIcon(record) {
-  if (record.spoiler)
-    return '<span class="item-art"><span aria-hidden="true">◇</span><small>Protected</small></span>';
-  return `<span class="item-art" data-inventory-icon="${e(record.id)}" data-icon-pack="${e(record.pack.id)}" data-icon-status="missing" title="Item image not added"><span aria-hidden="true">◇</span><small>Image needed</small></span>`;
+  return renderItemIcon(record, { className: "item-art", size: "inherit" });
 }
 export function renderItemWorkspace({
   record,

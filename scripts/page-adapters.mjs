@@ -14,6 +14,7 @@ import {
 } from "../src/content/key-access.mjs";
 import { assertSafePath, readCatalogFile } from "./catalog.mjs";
 import { stableJSON } from "../src/domain/page-document.mjs";
+import { weaponURL } from "../src/domain/weapon-routes.mjs";
 const escape = (v) =>
   String(v ?? "").replace(
     /[&<>"']/g,
@@ -34,21 +35,21 @@ export const SOURCE_ADAPTERS = {
     catalogId: "weapon-intel",
     path: "content/weapon-intel.json",
     collection: "weapons",
-    route: (id) => `/armory/${id}/`,
+    route: (id) => weaponURL(id, "reference"),
     validate: validateWeaponIntel,
   },
   "weapon-acquisition": {
     catalogId: "weapon-acquisition",
     path: "content/weapon-acquisition.json",
     collection: "weapons",
-    route: (id) => `/armory/acquisition/#weapon-${id}`,
+    route: (id) => weaponURL(id),
     validate: validateAcquisitionCatalog,
   },
   "weapon-camos": {
     catalogId: "weapon-camos",
     path: "src/ui/weapon-camos.json",
     collection: "weapons",
-    route: (id) => `/armory/camos/${id}/`,
+    route: (id) => weaponURL(id, "camos"),
   },
   "key-reference": {
     catalogId: "keys",

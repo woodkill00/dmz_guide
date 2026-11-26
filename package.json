@@ -35,6 +35,7 @@
     "weapons:apply": "node scripts/weapon-database.mjs apply",
     "weapons:validate": "node scripts/weapon-database.mjs validate",
     "test:weapons": "node scripts/weapon-database.mjs test",
+    "test:weapons:workspace": "node tests/browser/unified-weapons-run.mjs",
     "weapons:manage": "node scripts/weapon-manager.mjs",
     "keys:images": "node scripts/collect-key-images.mjs",
     "weapons:art": "node scripts/collect-weapon-art.mjs",

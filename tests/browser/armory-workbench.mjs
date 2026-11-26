@@ -1,4 +1,3 @@
-import { revealTrackerControl } from "./tracker-controls.mjs";
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
 import { readWeaponIntel } from "../../src/content/weapon-intel.mjs";
@@ -139,13 +138,14 @@ export async function runArmoryWorkbenchTests({
     await page.locator('[data-build-slot="optic"]').selectOption("");
     await page.locator('[data-build-slot="apex"]').selectOption("");
     await tab(page, "acquisition");
-    await revealTrackerControl(page, "#tracker-weapon");
-    await page.locator("#tracker-weapon").selectOption("han-86");
+    assert.equal(await page.locator("#tracker-weapon").inputValue(), "han-86");
     await page.locator("#tracker-manual").check();
     await waitRevision(page, 3);
+    await tab(page, "owned-attachments");
     await page.locator("#tracker-search").fill("FSS IS300");
     await page.locator('[data-owned-attachment="fss-is300"]').check();
     await waitRevision(page, 4);
+    await tab(page, "acquisition");
     await page
       .locator("#blueprint-form [name=blueprint]")
       .fill("Synthetic owned blueprint");
@@ -384,9 +384,13 @@ export async function runArmoryWorkbenchTests({
         .textContent.includes("Synthetic quota"),
     );
     await tab(page, "acquisition");
-    await revealTrackerControl(page, "#tracker-weapon");
-    await page.locator("#tracker-weapon").selectOption("m4");
-    await page.locator("#tracker-manual").click();
+    assert(await page.locator("#tracker-manual").isDisabled());
+    // Verify the mutation guard as well as the disabled UI after a failed save.
+    await page
+      .locator("#tracker-manual")
+      .evaluate((node) =>
+        node.dispatchEvent(new Event("change", { bubbles: true })),
+      );
     await page.waitForFunction(() =>
       document
         .querySelector("#armory-error")

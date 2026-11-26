@@ -7,11 +7,22 @@ import {
 import { resolvePresentation } from "./presentation-config.mjs";
 import { featureHub, featureLabel } from "./workspace-shell.mjs";
 import {
-  features,
+  features as registeredFeatures,
   featureGroups,
   featureURL,
   featureForPage,
 } from "./feature-registry.mjs";
+// Stable compatibility identities remain available to saved shortcuts and the
+// feature directory, but the navigation exposes one weapon workspace entry.
+const features = registeredFeatures.filter(
+  (f) =>
+    ![
+      "weapons",
+      "armory-workbench",
+      "weapon-acquisition",
+      "weapon-camos",
+    ].includes(f.id),
+);
 const e = (v) =>
   String(v ?? "").replace(
     /[&<>"']/g,

@@ -14,7 +14,7 @@ export async function runCodmunityTests({ browser, base }) {
   const context = await browser.newContext(),
     page = await context.newPage();
   try {
-    await page.goto(base + "/armory/han-86/");
+    await page.goto(base + "/armory/han-86/#reference");
     assert.match(await page.locator(".gs-detail-footer").innerText(), /\*WZ/);
     assert.match(
       await page.locator("#codmunity-data").innerText(),
@@ -46,7 +46,7 @@ export async function runCodmunityTests({ browser, base }) {
     );
     let layouts = 0;
     for (const route of ["/armory/", "/armory/han-86/", "/armory/pila/"]) {
-      await page.goto(base + route);
+      await page.goto(base + route + "#reference");
       await page.waitForSelector('[data-armory-filter][data-enhanced="true"]');
       for (const width of [320, 390, 768, 1440])
         for (const zoom of [false, true]) {

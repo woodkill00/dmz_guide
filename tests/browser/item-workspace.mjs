@@ -210,10 +210,17 @@ try {
     /official-starter\/mw4--ingredient-ballistic-fabric\/#edit/,
   );
   await edit.click();
-  assert.match(
+  const authorLink = new URL(
     await page.locator('[data-open-local="edit"]').getAttribute("href"),
-    /id=mw4%3Aingredient-ballistic-fabric/,
+    base,
   );
+  assert.equal(authorLink.pathname, "/local-services/author/");
+  const destination = new URL(authorLink.searchParams.get("destination"), base);
+  assert.equal(
+    destination.searchParams.get("id"),
+    "mw4:ingredient-ballistic-fabric",
+  );
+  assert.equal(destination.searchParams.get("intent"), "edit");
   await page.goto(base + "/local/?pack=demo%3Atraining-pack");
   await page.waitForFunction(
     () => document.querySelector("main")?.getAttribute("aria-busy") === "false",

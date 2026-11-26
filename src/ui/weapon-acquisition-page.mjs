@@ -1,4 +1,13 @@
 import { readWeaponCamos } from "../content/weapon-camos.mjs";
+import { weaponAlias } from "./weapon-alias.mjs";
+export async function unifiedFeaturePages() {
+  return [
+    weaponAlias(
+      "/armory/acquisition/",
+      (await readWeaponAcquisition()).weapons.map((w) => w.id),
+    ),
+  ];
+}
 import { progressCatalog } from "../domain/camo-progress.mjs";
 import {
   acquisitionCamoIcons,

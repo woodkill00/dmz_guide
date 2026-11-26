@@ -419,6 +419,9 @@ test("087 home offers map, search, dashboard sections and the full feature direc
     "Recent work",
   ])
     assert(markup.includes(label));
-  assert.match(markup, /<h2><a href="\/dmz-weapons\/">Weapons<\/a><\/h2>/);
+  assert.match(
+    markup,
+    /<h2><a href="\/armory\/#acquisition">Weapons<\/a><\/h2>/,
+  );
   assert(!markup.includes("radar-art"));
 });

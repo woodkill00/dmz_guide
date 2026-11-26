@@ -21,7 +21,7 @@ try {
     1,
   );
   for (const cell of await page.locator("[data-inventory-icon]").all()) {
-    assert.match(await cell.innerText(), /Icon needed/);
+    assert.match(await cell.innerText(), /No image/);
     assert.equal(await cell.locator("img").count(), 0);
   }
   const row = page.locator(".inventory-entry").first();

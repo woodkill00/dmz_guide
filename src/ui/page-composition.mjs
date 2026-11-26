@@ -54,9 +54,13 @@ export function renderPageComposition(
     imageURL = () => null,
     referenceURL = () => null,
     editorMarkers = false,
+    anchorPrefix = "",
   } = {},
 ) {
   validatePageDocument(document);
+  if (anchorPrefix && !/^[a-z][a-z0-9-]{0,60}$/.test(anchorPrefix))
+    throw Error("Invalid page anchor prefix");
+  const anchor = (id) => anchorPrefix + id;
   const image = (b) => {
     const url = imageURL(b.assetId);
     const caption = [
@@ -90,7 +94,7 @@ export function renderPageComposition(
       case "list":
         return `<${b.ordered ? "ol" : "ul"}>${b.entries.map((t) => `<li>${e(t)}</li>`).join("")}</${b.ordered ? "ol" : "ul"}>`;
       case "steps":
-        return `<ol>${b.entries.map((t) => `<li id="${t.id}">${e(t.text)}</li>`).join("")}</ol>`;
+        return `<ol>${b.entries.map((t) => `<li id="${anchor(t.id)}">${e(t.text)}</li>`).join("")}</ol>`;
       case "callout":
         return `<aside class="page-callout page-callout-${b.tone}">${e(b.text)}</aside>`;
       case "image":
@@ -125,12 +129,12 @@ export function renderPageComposition(
             ? '<small class="page-authored-note">Authored guide notes · not independently verified</small>'
             : "";
       return s.collapsed
-        ? `<details id="${s.id}" class="page-section"><summary>${e(s.title)}</summary><div class="page-section-${s.layout}">${provenance}${content}</div></details>`
-        : `<section id="${s.id}" class="page-section"><h2>${e(s.title)}</h2>${s.kind === "custom" ? '<small class="page-authored-note">Authored guide notes · not independently verified</small>' : ""}<div class="page-section-${s.layout}">${content}</div></section>`;
+        ? `<details id="${anchor(s.id)}" class="page-section"><summary>${e(s.title)}</summary><div class="page-section-${s.layout}">${provenance}${content}</div></details>`
+        : `<section id="${anchor(s.id)}" class="page-section"><h2>${e(s.title)}</h2>${s.kind === "custom" ? '<small class="page-authored-note">Authored guide notes · not independently verified</small>' : ""}<div class="page-section-${s.layout}">${content}</div></section>`;
     })
     .join(
       "",
-    )}${document.deletedAnchors.map((id) => `<span id="${id}" class="page-retired-anchor">This guide section was removed.</span>`).join("")}</div>`;
+    )}${document.deletedAnchors.map((id) => `<span id="${anchor(id)}" class="page-retired-anchor">This guide section was removed.</span>`).join("")}</div>`;
   const seen = new Set();
   for (const [, id] of html.matchAll(/\sid="([^"]+)"/g)) {
     if (seen.has(id))

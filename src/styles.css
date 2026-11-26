@@ -4346,3 +4346,146 @@ html[data-theme="light"] .catalog-context summary[data-fixture="true"] {
 .run-prerequisite {
   margin-inline-start: calc(var(--depth, 0) * 0.75rem);
 }
+.order-completion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+.order-completion input {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  accent-color: var(--accent);
+}
+.dash-order {
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  padding: 0.6rem;
+  margin: 0.55rem 0;
+  min-width: 0;
+}
+.dash-order header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.dash-order h4 {
+  margin: 0;
+  flex: 1;
+  min-width: 8rem;
+  overflow-wrap: anywhere;
+}
+.dash-order ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem 0;
+}
+.dash-order li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+}
+.dash-order li a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.dash-order details {
+  margin-top: 0.5rem;
+}
+.order-show-completed {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.mission-page-card > .order-completion {
+  margin-bottom: 0.5rem;
+}
+.mission-page-card li > .order-completion {
+  margin: 0.3rem 0.4rem 0.3rem 0;
+}
+.dash-order .dash-order-mission {
+  display: block;
+}
+.order-mission-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.dash-order .mission-objective-steps > li {
+  display: list-item;
+  padding: 0.15rem 0;
+  line-height: 1.45;
+}
+.dash-order .mission-objective-steps {
+  padding-inline-start: 1.35rem;
+}
+.mission-page-card > .order-completion + small {
+  display: block;
+  margin-block: 0.1rem 0.4rem;
+}
+.order-page-index {
+  margin-block: 0.4rem 0.6rem;
+}
+.order-page-index nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+.order-page-index a {
+  display: block;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  overflow-wrap: anywhere;
+}
+.order-preview-count {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.blueprint-category {
+  margin-block: 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  min-width: 0;
+}
+.blueprint-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0.5rem;
+  margin-block: 0.5rem;
+}
+.dash-blueprint {
+  min-width: 0;
+  padding: 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+}
+.dash-blueprint .item-card {
+  border: 0;
+  background: transparent;
+  padding: 0.2rem;
+}
+.blueprint-check {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  margin-top: 0.35rem;
+}
+.blueprint-check input {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--accent);
+}
+.blueprint-owned {
+  margin-top: 0.4rem;
+}

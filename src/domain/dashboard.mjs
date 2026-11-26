@@ -1,3 +1,5 @@
+import { itemSection } from "./inventory-items.mjs";
+import { orderPageLabel } from "./order-progress.mjs";
 import { validateProfile, validateInventoryForPack } from "./profile.mjs";
 import { quickCollect } from "./quick-collect.mjs";
 import { buildTargetNeeds } from "./build-targets.mjs";
@@ -83,7 +85,10 @@ export function projectDashboard(pack, profile, { crafting = false } = {}) {
     families = upgradeFamilies(pack, profile).families;
   const upgrades = families.map((f) => ({
     id: f.current.id,
+    familyId: f.id,
     name: f.name,
+    currentName: f.current.name,
+    ownComplete: f.current.ownCompleted,
     tier: f.current.tier,
     complete: f.complete,
     done: f.members.filter((m) => m.completed).length,
@@ -98,13 +103,17 @@ export function projectDashboard(pack, profile, { crafting = false } = {}) {
     return {
       page,
       set,
-      label,
+      label: orderPageLabel(page, label, set),
       variable,
+      protected: ids.some((id) =>
+        pack.objectives.some((r) => r.id === id && !safe(r)),
+      ),
       total: rows.length,
       done: rows.filter((r) => profile.completion[r.id] === "completed").length,
       rows: rows.map((r) => ({
         id: r.id,
         name: r.name,
+        steps: (r.steps || []).map((step) => guard.text(step)),
         done: profile.completion[r.id] === "completed",
       })),
     };
@@ -147,6 +156,7 @@ export function projectDashboard(pack, profile, { crafting = false } = {}) {
       id: r.id,
       name: r.name,
       rarity: r.rarity || "unknown",
+      section: itemSection(r),
       owned:
         !!profile.itemBlueprints?.[r.id] ||
         !!automaticIngredientBlueprint(pack, profile, r),
@@ -221,11 +231,8 @@ export function weaponDashboard(acquisition, weapons) {
         manualExtractions: count,
         remaining: Math.max(0, 3 - (count ?? 0)),
         unrecorded: count === null,
-        outstanding: !manual || count === null || count < 3,
+        outstanding: count === null || count < 3,
       };
     })
-    .sort(
-      (a, b) =>
-        Number(a.manual) - Number(b.manual) || a.name.localeCompare(b.name),
-    );
+    .sort((a, b) => a.name.localeCompare(b.name));
 }

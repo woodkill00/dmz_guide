@@ -66,6 +66,9 @@ export async function attachSpecialEditors({
         route = config.route(record.id),
         page = pages.find((p) => p.path === route.split(/[?#]/)[0]);
       if (!page) continue;
+      const unifiedWeapon = page.body.includes(
+        `data-selected-weapon="${record.id}"`,
+      );
       const saved = documents.documents.get(await pageKey(target));
       const referenceRoutes = saved
         ? pageReferenceRoutes(catalog.entries, saved.document)
@@ -74,7 +77,7 @@ export async function attachSpecialEditors({
         ? `<section class="panel local-source-corrections"><h2>Local authored corrections</h2><p>The Current column contains local edits, not the publisher's captured wording. Original source links apply to the Original column. These corrections are not independently verified.</p><div class="page-table" tabindex="0" role="region" aria-label="Source corrections"><table><thead><tr><th scope="col">Field</th><th scope="col">Original</th><th scope="col">Current (local)</th></tr></thead><tbody>${saved.document.sourceEdits.map((change) => `<tr><th scope="row">${e(change.path)}</th><td>${e(change.beforePresent ? change.before : "Not present")}</td><td>${e(change.afterPresent ? change.after : "Removed")} · ${e(change.editedAt)}</td></tr>`).join("")}</tbody></table></div></section>`
         : "";
       const compose = saved
-        ? `<aside class="notice">This source includes local edits. Original source references do not independently verify those edits.</aside>${renderPageComposition(saved.document, { projections: specialProjections(saved.record), imageURL: (id) => bundledAssetURL(saved.entry.pack, id, bundled.manifest), referenceURL: (t) => referenceRoutes[stableJSON(t)] || null })}`
+        ? `<aside class="notice">This source includes local edits. Original source references do not independently verify those edits.</aside>${renderPageComposition(saved.document, { projections: specialProjections(saved.record), imageURL: (id) => bundledAssetURL(saved.entry.pack, id, bundled.manifest), referenceURL: (t) => referenceRoutes[stableJSON(t)] || null, anchorPrefix: unifiedWeapon && adapter !== "weapon-intel" ? `${adapter}-` : "" })}`
         : "";
       const action = `${correctionTable}<p class="record-author-actions"><a class="button" href="${e(servicePath("author", specialEditorURL(target)))}" data-compose-source="${adapter}">Edit ${adapter === "weapon-acquisition" ? e(record.name) + " reference" : "page"}</a><small>Local repository editor · private player progress stays separate. Start with <code>npm run author</code> if the editor is offline.</small></p>${chapter ? "" : compose}`;
       if (chapter && saved)
@@ -101,7 +104,29 @@ export async function attachSpecialEditors({
                 `$1<p class="notice">Local authored requirement · original source: ${e(change.before)}</p>`,
               );
         }
-      if (adapter === "weapon-acquisition") {
+      if (
+        unifiedWeapon &&
+        ["weapon-intel", "weapon-acquisition", "weapon-camos"].includes(adapter)
+      ) {
+        const panel = {
+          "weapon-intel": "reference",
+          "weapon-acquisition": "acquisition",
+          "weapon-camos": "camos",
+        }[adapter];
+        const label = {
+          "weapon-intel": "Weapon stats reference",
+          "weapon-acquisition": "Acquisition reference",
+          "weapon-camos": "Camo reference",
+        }[adapter];
+        const warning = saved?.document.sourceEdits.length
+          ? '<p class="notice">Contains local authored edits. Expand the reference notes for original values and attribution.</p>'
+          : "";
+        page.body = page.body.replace(
+          `<section id="${panel}" data-workbench-panel>`,
+          (match) =>
+            `${match}${warning}<details class="weapon-source-notes"><summary>${label} · notes & edit</summary>${action}</details>`,
+        );
+      } else if (adapter === "weapon-acquisition") {
         const pattern = new RegExp(
           `(<details[^>]*data-acquisition-weapon="${record.id}"[\\s\\S]*?<div class="acq-weapon-body">)`,
         );

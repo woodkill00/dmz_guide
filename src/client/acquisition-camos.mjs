@@ -1,4 +1,5 @@
 import { camoStates } from "../domain/camo-progress.mjs";
+import { weaponCamoURL } from "../domain/weapon-routes.mjs";
 
 const labels = {
   completed: "Completed",
@@ -31,7 +32,10 @@ export function acquisitionCamoController(root, catalog, complete) {
       "aria-label",
       `Completed: ${button.dataset.camoName}`,
     );
-    panel.querySelector("[data-acq-camo-link]").hash = button.dataset.acqCamo;
+    panel.querySelector("[data-acq-camo-link]").href = weaponCamoURL(
+      strip.dataset.acquisitionCamos,
+      button.dataset.acqCamo,
+    );
   }
   root.addEventListener("click", (event) => {
     const button = event.target.closest("[data-acq-camo]");

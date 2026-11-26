@@ -169,7 +169,7 @@ test("088 dashboard manual goals include unsaved weapons, preserve unknowns and 
   assert.equal(byId.zero.remaining, 3);
   assert.equal(byId.zero.unrecorded, false);
   assert.equal(byId.unchecked.remaining, 0);
-  assert.equal(byId.unchecked.outstanding, true);
+  assert.equal(byId.unchecked.outstanding, false);
   assert.equal(byId.unsaved.remaining, 3);
   assert.equal(byId.unsaved.unrecorded, true);
   assert(!byId.retired);

@@ -1887,7 +1887,7 @@ html[data-theme="light"]
 
 .quick-tracker .build-summary-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 6.5rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
 }
 .quick-tracker .build-summary-tile {
   width: 100%;

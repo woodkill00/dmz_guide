@@ -23,7 +23,7 @@ test("quick tracker wraps only owning pages without replacing existing controls 
     assert.equal(result.path, input.path);
     assert.equal((result.body.match(/aria-current="page"/g) || []).length, 1);
     assert.equal((result.body.match(/data-tracker-link/g) || []).length, 7);
-    assert(result.body.includes("/armory/workbench/#acquisition"));
+    assert(result.body.includes("/armory/#acquisition"));
     assert.equal(
       input.body,
       '<form id="existing"><input name="quantity"></form>',

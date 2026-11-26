@@ -1,0 +1,44 @@
+# Specification
+
+## Outcome and scope
+
+Improve the entire application: Home/Dashboard, shared navigation/search, Track (Inventory, Items, Needed, Quick Collect, upgrades/FOB, Field desk), Orders and story/audit pages, weapons/camos/acquisition, keys, all reference/detail/editor pages, settings/backup/quality/help/sitemap, and the Hajin/X01/Safe Run/Loot Run maps. Include secondary tabs, open disclosures, empty/loading/error/recovery states and local author-service entry points. Existing application owners, routes, saves and game facts remain authoritative.
+
+Compact means less duplication and better use of space, not miniature text or hidden essential controls. The visual direction is restrained tactical chrome: consistent dark/light surfaces, clear typography, limited borders, quiet secondary metadata and a single obvious primary action per context.
+
+## User journeys
+
+- **US1 P1 — Find and resume:** reach any principal feature from consistent navigation, identify the current location and return with search/filter/selection intact. A renamed label never changes a feature ID or bookmark.
+- **US2 P1 — Track quickly:** inspect a compact item/weapon/order/upgrade, understand remaining quantities and update a single value without page jumping, losing focus, collapsing useful context or hiding a failed save.
+- **US3 P1 — Use the map:** resize/retract the sidebar, open a stable marker inspector, find routes/layers/search and recover movable panels after resizing or switching screen size. Terrain remains usable while tools are open.
+- **US4 P1 — Read and edit:** navigate readable instructions and linked requirements, expand detail on demand and edit without a second scroll trap, obscured actions or discarded drafts.
+- **US5 P2 — Trust the interface:** recognize saving/saved/unknown/partial/error states, keep keyboard/touch access and discover recovery without repeated technical banners.
+
+## Requirements
+
+- **FR01 Inventory and scope:** generate a fresh route/feature/page-family inventory. Every registered feature and built route is assigned to a family and a verification owner; unclassified routes block final acceptance. Legacy aliases and owner-gated tools get explicit outcomes, not silent omissions.
+- **FR02 Layout mathematics:** all maintained application sizing/spacing/position calculations use shared calc-backed tokens. Cover content gutters, gaps, card widths, sidebar constraints, sticky offsets, overlay bounds and viewport heights across guide/map code. Use clamp/min/max, intrinsic Grid/Flex and aspect-ratio for bounds/flow. Primitive constants, native intrinsic values, map/world coordinates and third-party internals have explicit documented exceptions. No meaningless calc(16 px) wrappers or blanket text replacement.
+- **FR03 Shared visual contract:** one semantic token vocabulary for space, type, surfaces, status, elevation, focus and layering, with guide/map adapters. Reuse item cards and common action/field/status/disclosure patterns. Preserve source icon colors and map coordinate accuracy.
+- **FR04 Navigation:** same main information architecture and current-page indication across every shell; stable registry-driven URLs, concise secondary navigation, searchable overflow, breadcrumbs where useful, no duplicate primary actions or dead back links.
+- **FR05 Clutter:** place routine warnings/status in a concise contextual strip; move provenance, catalog/version details, source coverage and advanced actions into accessible disclosures. Never hide unknown scope, save failure, unsaved/conflicting state or destructive-action consequences behind optional detail.
+- **FR06 Dashboard:** prioritize actionable remaining work; consistent cards, category summaries and progressive disclosure for build ingredients, outstanding items, weapons/manuals/camos, upgrades, Orders and blueprints. Make full page/section coverage discoverable without displaying every row. Preserve completed visibility choices and current pending task defaults.
+- **FR07 Lists/tables:** one intentional document scroll on ordinary pages. Sticky column headings stay with the relevant table, quantity controls stay aligned and labels/counts remain distinguishable. At narrow widths use a defined stacked view or a labelled, keyboard-accessible horizontal data-table region. Never clip a value or require competing vertical scroll panes.
+- **FR08 References/detail/editors:** shared item/weapon/key/order/upgrade anatomy: identity, current tracking action, instructions/requirements, linked relationships, contextual edit and optional sources/photos. Maintain exact private/repository targets and all guarded drafts. Do not duplicate the same recipes in multiple panels.
+- **FR09 Progressive disclosure:** clear labels/counts; keyboard/pointer parity; explicit choices survive rerender and progress updates in the current session. Auto-open relevant remaining work only when not overridden by the user. Context-specific persistence must not copy player data into UI preferences.
+- **FR10 Maps and tools:** consistent tool chrome for all map variants/floors, bounded inspectors/menus, retractable/resizable navigation, safe drag/resize handles and a visible Reset layout action. Selection persists while the user pans/zooms; no automatic recentering or transient-popup flicker. Preserve route order/reached/undo and layer/source/category semantics.
+- **FR11 Interaction and focus:** asynchronous saves/renders never steal newer focus or move the intended hit target. Respect pointer/keyboard intent, active lifecycle and canonical state ownership. Provide a visible focus destination when completion hides the edited row. Native keyboard/touch alternatives exist for resize/drag/reorder.
+- **FR12 Status and feedback:** shared idle/draft/saving/saved/failed/conflict/committed-unverified language and presentation. Status-only edits preserve quantities. Failed candidates remain exportable; acknowledged commits verify read-only, never replay. A UI refresh never silently retries an uncommitted proposal.
+- **FR13 Accessibility:** WCAG2.2AA-focused acceptance for labels, non-color status, keyboard access, focus visibility/not-obscured, text spacing, reduced motion and contrast. Prefer44 CSSpx primary/touch action targets; compact repeated desktop controls meet24 CSSpx or a documented applicable spacing exception. Compact density must not reduce required hit areas.
+- **FR14 Reflow:** readable at 320 CSSpx equivalent,200 % text and 400 % browser zoom/reflow, landscape and short viewports. Normal pages have no document horizontal overflow; genuinely2D maps/data tables retain bounded interaction and usable surrounding controls. Mobile browser chrome/keyboard and safe-area insets cannot obscure the active action.
+- **FR15 Performance and state:** establish current per-family render/DOM/interaction baselines before budgets. Reduce duplicate mounts/listeners and expensive hidden content where justified; any lazy mounting keeps completion, draft, focus, disclosure and counts correct. No duplicate write owners or profile schema migration for styling.
+- **FR16 CSS migration:** migrate by component/family, reconcile cascade ownership and remove superseded rules only after matching coverage passes. Track calc/token adoption and approved exceptions by maintained stylesheet; prevent new unapproved raw layout arithmetic. No broad override layer left as the final implementation.
+- **FR17 Verification:** map every requirement to tasks and executable evidence; run guide+map builds, affected runtime/browser suites, three-engine journey tests, layout geometry, reviewed visual comparisons, expanded-state Axe and route audits. Test successful and adverse interactions, not screenshots alone.
+- **FR18 Delivery:** phased local rollout with reversible component changes and failure recovery, independent planning/implementation/design reviews, updated tutorials/design reference and a final coverage/evidence ledger. Planning approval and past tests do not constitute current implementation acceptance.
+
+## Completion criteria
+
+All registered/built page families have current coverage; all critical journeys and applicable adverse cases pass; no unresolved confirmed P1/P2; expanded interactive states have no new serious/critical Axe violations; screenshot changes are reviewed; tokens/exception inventory reconcile; budgets selected after baseline pass; guide/map builds and link audits are current. Deferred or unavailable checks are explicit and cannot count as complete.
+
+## Exclusions
+
+No gameplay rebalancing, missing mission/stat invention, new scraping/data-provider integration, account linking, authentication/cloud sync, framework rewrite, automatic restore, broad route renaming, deployment or Git merge. Do not change completion semantics, catalog identities, blueprint eligibility or crafting calculations as a side effect of layout work.

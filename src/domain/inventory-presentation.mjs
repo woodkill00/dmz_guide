@@ -36,7 +36,15 @@ export function automaticIngredientBlueprint(pack, profile, item) {
     ? upgrade
     : null;
 }
+export function itemHasNoBlueprint(item) {
+  const rarity = itemRarity(item).toLowerCase();
+  return (
+    rarity === "rare" ||
+    (rarity === "legendary" && itemSection(item) === "Ingredients")
+  );
+}
 export function inventoryBlueprintAvailable(item, uses) {
+  if (!item || itemHasNoBlueprint(item)) return false;
   return (
     !!uses?.acquisition.length ||
     itemSection(item) === "Field upgrades" ||
@@ -71,6 +79,7 @@ export function currencyQuantityRaw(value) {
 }
 export function inventoryBlueprintOwnershipLabel(pack, profile, id) {
   const item = pack.items.find((record) => record.id === id);
+  if (item && itemHasNoBlueprint(item)) return "No blueprint";
   const grant = item && automaticIngredientBlueprint(pack, profile, item);
   return grant
     ? "Blueprint owned (" + grant.name + ")"

@@ -1,0 +1,165 @@
+.std-item-icon {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 0.3rem;
+}
+.std-item-icon > span {
+  font-size: 0.8rem;
+  line-height: 1;
+}
+.std-item-icon > small {
+  font-size: 0.5rem;
+  line-height: 1.1;
+  text-align: center;
+}
+.std-item-icon img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.std-item-icon[data-item-size="icon"] {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 1.5rem;
+}
+.std-item-icon[data-item-size="inline"],
+.std-item-icon[data-item-size="compact"] {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+}
+.std-item-icon[data-item-size="regular"] {
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 2.25rem;
+}
+.std-item-icon[data-item-size="icon"] small,
+.std-item-icon[data-item-size="inline"] small {
+  display: none;
+}
+.item-card {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: calc(0.45rem + 0.1vw);
+  border: 1px solid var(--line, var(--border));
+  border-radius: 0.5rem;
+  color: var(--text);
+  background: var(--bg);
+  text-decoration: none;
+}
+.item-card__heading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+.item-card__name {
+  min-width: 0;
+  font-weight: 650;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  word-break: normal;
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+.item-card__quantity {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.65rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+.item-card__quantity > span {
+  color: var(--muted);
+}
+.item-card__quantity strong {
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.item-card__meta,
+.item-card__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.5rem;
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+.item-card__rarity {
+  border: 1px solid var(--line, var(--border));
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.3rem;
+}
+.item-card__note,
+.item-card__facts {
+  color: var(--muted);
+}
+.item-card[data-item-size="inline"],
+.item-card[data-item-size="icon"] {
+  display: inline-flex;
+  width: auto;
+  align-items: center;
+}
+.item-card[data-item-size="compact"] {
+  font-size: 0.78rem;
+}
+.item-card[data-state="short"] .item-card__quantity strong {
+  color: #ff8d8d;
+}
+.item-card[data-state="covered"] .item-card__quantity strong {
+  color: #90dca7;
+}
+.item-card[data-state="review"] .item-card__quantity strong {
+  color: #eacb77;
+}
+[data-theme="light"]
+  .item-card[data-state="short"]
+  .item-card__quantity
+  strong {
+  color: #9b1717;
+}
+[data-theme="light"]
+  .item-card[data-state="covered"]
+  .item-card__quantity
+  strong {
+  color: #186333;
+}
+[data-theme="light"]
+  .item-card[data-state="review"]
+  .item-card__quantity
+  strong {
+  color: #785300;
+}
+.item-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.item-card[data-item-size="inline"] .item-card__heading {
+  display: flex;
+}
+.item-card[data-item-size="inline"] .item-card__name {
+  font-size: inherit;
+}
+
+/* Adapt the old Quick Collect host without changing the shared card anatomy. */
+.build-summary-tile.item-card[data-item-size] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto;
+  place-items: stretch;
+  gap: 0.4rem;
+  padding: 0.4rem;
+}
+.build-summary-tile.item-card .item-card__name {
+  grid-row: auto;
+  grid-column: auto;
+  text-align: start;
+  line-height: 1.35;
+  font-size: 0.78rem;
+}

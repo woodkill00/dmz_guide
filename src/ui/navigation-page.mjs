@@ -18,7 +18,9 @@ export function renderSiteMap(pages, packs) {
     )
     .join("");
   const workspaces = pages.filter(
-    (page) => /^\/[a-z-]*\/$/.test(page.path) || page.path === "/",
+    (page) =>
+      !page.compatibilityFor &&
+      (/^\/[a-z-]*\/$/.test(page.path) || page.path === "/"),
   );
   return `${pageHeading("FIND YOUR WAY", "Site map", "Every guide workspace and bundled content record, organized by catalog. Private records are only available in your private reader.")}${renderTopologyReview()}<section id="site-page-directory" class="panel" data-ui-directory data-ui-directory-pagination="true" aria-label="Guide pages"><h2>Guide pages</h2><ul class="sitemap-links" data-ui-directory-rows>${workspaces.map((page) => `<li data-ui-directory-row><a data-workspace-link href="${e(page.path)}">${e(page.title)}</a></li>`).join("")}</ul></section><section class="panel"><h2>Map tools and trackers</h2><p>These open the interactive map on this site. Start the unified local site with npm run local.</p><ul class="sitemap-links">${mapLinks}</ul><p><a href="${servicePath("author", "/")}" target="_blank" rel="noopener noreferrer">Content Studio · separate local app ↗</a></p></section><section><h2>Content records</h2><p>Catalogs remain separate. Fixture records are fictional; source reports do not establish current-build accuracy.</p>${packs
     .map(

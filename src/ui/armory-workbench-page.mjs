@@ -1,4 +1,5 @@
 import { readWeaponAcquisition } from "../content/weapon-acquisition.mjs";
+import { weaponAlias } from "./weapon-alias.mjs";
 import { readWeaponCamos } from "../content/weapon-camos.mjs";
 import { progressCatalog } from "../domain/camo-progress.mjs";
 import { servicePath } from "../domain/local-services.mjs";
@@ -8,6 +9,16 @@ import { readWeaponIntel } from "../content/weapon-intel.mjs";
 import { spoilerGuard } from "../domain/progression.mjs";
 import { e, pageHeading, allRecords, recordUrl, isFixture } from "./render.mjs";
 const field = (label, input) => `<label>${label}${input}</label>`;
+export async function unifiedFeaturePages() {
+  const { weapons } = await readWeaponAcquisition();
+  return [
+    weaponAlias(
+      "/armory/workbench/",
+      weapons.map((w) => w.id),
+      { section: "compare" },
+    ),
+  ];
+}
 const input = (name, attrs = "") => `<input name="${name}" ${attrs}>`;
 const textarea = (name, max) =>
   `<textarea name="${name}" maxlength="${max}" rows="2"></textarea>`;

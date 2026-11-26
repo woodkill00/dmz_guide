@@ -174,7 +174,7 @@ export async function projectSiteQuality(
         field: "stats",
         message:
           "Acquisition/camo reference exists; no combat-stat record in this database.",
-        readerURL: `/armory/acquisition/?weapon=${encodeURIComponent(weapon.id)}#weapon-${encodeURIComponent(weapon.id)}`,
+        readerURL: weaponURL(weapon.id),
         editorURL: specialEditorURL("weapon-acquisition", weapon.id),
       });
   }
@@ -311,3 +311,4 @@ export function editQualityReview(log, row, state) {
 }
 export const qualityReviewKey = "dmz-quality-reviews-v1";
 export const qualityState = (log, row) => qualityReview(row, log);
+import { weaponURL } from "./weapon-routes.mjs";

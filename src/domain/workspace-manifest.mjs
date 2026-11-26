@@ -1,4 +1,5 @@
 import { validateQualityLog } from "./site-quality.mjs";
+import { weaponURL } from "./weapon-routes.mjs";
 import { parseBounded } from "../content/limits.mjs";
 import { hashBytes } from "../content/portable.mjs";
 
@@ -36,7 +37,7 @@ export const WORKSPACE_MODULES = Object.freeze({
   armory: {
     label: "Armory workspace",
     origin: "http://127.0.0.1:4173",
-    restore: "/armory/workbench/#backups",
+    restore: weaponURL("", "backups"),
   },
 });
 const MAX_BYTES = 32 * 1024 * 1024;

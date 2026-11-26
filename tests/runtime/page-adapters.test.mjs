@@ -4,6 +4,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { pageEditorFixture } from "../helpers/page-editor.mjs";
 import { newPageId } from "../../src/domain/page-document.mjs";
+import { weaponURL } from "../../src/domain/weapon-routes.mjs";
 test("093 specialized source adapters validate and atomically roundtrip without mutating player progress", async () => {
   const f = await pageEditorFixture();
   try {
@@ -141,6 +142,13 @@ test("093 specialized source adapters validate and atomically roundtrip without 
       ).json();
       assert.equal(reopened.document.revision, 1);
       assert.equal(reopened.baseChanged, false);
+      const weaponSection = {
+        "weapon-intel": "reference",
+        "weapon-acquisition": "acquisition",
+        "weapon-camos": "camos",
+      }[adapter];
+      if (weaponSection)
+        assert.equal(reopened.readerURL, weaponURL(id, weaponSection));
       assert(reopened.document.sourceEdits.length > 0);
       assert(
         reopened.document.sourceEdits.every((e) => e.origin === "local-author"),

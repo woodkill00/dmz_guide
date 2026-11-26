@@ -1,9 +1,11 @@
+import { mountItemBlueprint } from "./item-blueprint-controls.mjs";
 import { upgradeNeeds } from "../domain/upgrade-needs.mjs";
 import { collectionNeedsValues } from "./upgrade-needs-view.mjs";
 import { itemUses } from "../domain/item-uses.mjs";
 import {
   automaticIngredientBlueprint,
   inventoryBlueprintAvailable,
+  itemHasNoBlueprint,
 } from "../domain/inventory-presentation.mjs";
 import {
   hydrateInventoryIcons,
@@ -85,7 +87,7 @@ async function publishedPack(id) {
   );
   return (await reader).getPublished(id);
 }
-export async function enhanceItemWorkspace(pack, profile) {
+export async function enhanceItemWorkspace(pack, profile, context = null) {
   revealCraftingTarget();
   if (!active) return;
   const workspace = document.querySelector("[data-item-workspace]");
@@ -104,7 +106,7 @@ export async function enhanceItemWorkspace(pack, profile) {
       scope.textContent =
         profile && profile.contentVersion !== pack.contentVersion
           ? "Saved catalog version differs. Review it in Inventory before changing quantities."
-          : "Saved inventory · quantities and blueprints are edited in Inventory.";
+          : "Saved Inventory · quantities are edited in Inventory.";
       host.replaceChildren(text, scope);
       const current = profile || newProfile(pack);
       const needs = upgradeNeeds(pack, current);
@@ -133,15 +135,12 @@ export async function enhanceItemWorkspace(pack, profile) {
       host.append(counts, note);
       const item = pack.items.find((item) => item.id === id);
       if (item && inventoryBlueprintAvailable(item, uses)) {
-        const blueprint = document.createElement("p");
-        blueprint.className = "item-blueprint-state";
-        const granted = automaticIngredientBlueprint(pack, current, item);
-        blueprint.textContent = granted
-          ? `Blueprint: granted by ${granted.name}`
-          : current.itemBlueprints?.[id]
-            ? "Blueprint: owned"
-            : "Blueprint: not marked owned";
-        host.append(blueprint);
+        await mountItemBlueprint(workspace, pack, profile, item, context);
+      } else if (item && itemHasNoBlueprint(item)) {
+        const state = document.createElement("p");
+        state.className = "item-blueprint-state";
+        state.textContent = "No blueprint required";
+        host.append(state);
       }
     }
   }

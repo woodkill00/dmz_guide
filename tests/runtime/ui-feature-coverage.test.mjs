@@ -130,14 +130,29 @@ test("071 canonical hub and ambiguous feature labels preserve distinct owners", 
   );
 });
 
-test("071 modern SSR navigation retains every registry destination and safe companion links", () => {
+test("071/108 modern SSR navigation retains destinations with one consolidated weapon entry and safe companion links", () => {
   const previous = process.env.DMZ_UI_VARIANT;
   try {
     process.env.DMZ_UI_VARIANT = "modern";
     const html = renderMainNavigation({ page: "inventory", surface: "guide" });
     assert.match(html, /data-ui-navigation="modern"/);
-    for (const feature of features)
-      assert(html.includes(`data-feature-id="${feature.id}"`), feature.id);
+    const weaponAliases = [
+      "weapons",
+      "armory-workbench",
+      "weapon-acquisition",
+      "weapon-camos",
+    ];
+    for (const feature of features) {
+      if (weaponAliases.includes(feature.id)) {
+        assert(
+          !html.includes(`data-feature-id="${feature.id}"`),
+          feature.id + " is consolidated",
+        );
+        assert(featureURL(feature).startsWith("/armory/"));
+      } else
+        assert(html.includes(`data-feature-id="${feature.id}"`), feature.id);
+    }
+    assert.equal((html.match(/data-feature-id="armory"/g) || []).length, 1);
     assert.match(
       html,
       /href="\/map\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/,
