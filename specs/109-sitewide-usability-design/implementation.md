@@ -63,4 +63,12 @@ Current terminal additions: X01 floor/source/workspace journeys passed all three
 
 Full Studio v1/v2 guided/JSON save, restart and export/import prerequisite roundtrips passed all three engines. The complete Studio suite remains running; its earlier runs exposed stale absolute-port and random-port handoff test assumptions. The fixtures now validate same-origin handoff paths and exact decoded destinations before unwrapping to their explicitly owned random-port test service. Real reader Edit/Images origins/destinations passed separately in all three engines. These harness repairs do not count the still-running full suite as passed.
 
-This is a local feature-branch rollout, not a remote push, main merge, publication, or physical-mobile-device certification. Final independent acceptance and the complete Studio terminals remain open.
+The preceding paragraph described the earlier local-only checkpoint. The branch is now pushed for the owner-authorized main merge through PR41. No main merge or physical-mobile-device certification is claimed yet.
+
+## Premerge verification and repair cycle
+
+Full Studio Chrome and Firefox terminals passed, including actual save/restart/fresh-clone/import/conflict recovery. WebKit's concurrent run failed with a native save-request timeout; contention is plausible but unproven. Its complete isolated rerun is retained separately as `109-studio-webkit-isolated.log` and is not counted passing until terminal.
+
+Initial GitHub checks exposed mobile search result visibility, default tracker obstruction, legacy weapon disclosure fixtures and a missing Node24 map dependency. The search title now precedes grid metadata. Tracker geometry reserves actual overlapping navigation/tool/gameplay and lower-launcher space; saved positions retain independent bounds. Native toggle/containment at360x800,320x568,320x480,1440x1000 and the existing drag/touch/reset/reload/Axe suite passed (`109-menu-layout-boundaries-gameplay.log`). Full map-engine terminal results passed all three engines (`109-map-engines-premerge.log`). Legacy armory/Gunsmith suites passed all three engines after scoping the summary and respecting its open state (`109-premerge-armory-fixed.log`). No assertion coverage was removed.
+
+Repository contracts passed with zero failures; Python79/79 passed using `py -3` (`109-premerge-contracts-py.log`, `109-premerge-python-py.log`). Dynamic page-editor experience had an initial CI WebKit refresh timeout; fresh three-engine local reruns passed without production changes. Failure diagnostics now include refresh state. Current source/map runtime and formatting checks pass; initial CI failures remain historical failures and require a new full CI result before merge.

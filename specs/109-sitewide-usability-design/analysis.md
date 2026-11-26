@@ -25,3 +25,11 @@ Independent reviewer reports planning READY; USABILITY-01/02 are closed and revi
 
 ## Implementation repair cycle
 Independent USABILITY03/04 repairs preserve embedded navigation reopen controls after DOM reparenting and measure actual pinned offsets. Browser checks exposed and repaired a320px/200%-text dashboard heading overflow and a fixed migration notice obscuring map actions. Independent visual review identified compact missing-image labels and overlapping legacy mobile toolbars; repairs are undergoing matching browser/visual rechecks. Full runtime's isolated navigation VM is updated for the new layout initializer; real DOM behavior is covered separately. Final implementation analysis remains open while acceptance evidence completes.
+
+## Premerge repair cycle — 2026-11-26
+
+PR41 is pushed as a draft. Chrome and Firefox full Studio suites passed; WebKit's concurrent save timed out with its draft retained. A complete isolated WebKit rerun is required; contention is a hypothesis, not a confirmed cause. Physical-device checks remain explicitly unrun.
+
+CI found reproducible mobile search-title visibility and tracker/tool overlap failures (FR07/FR10/FR14). Search grid metadata now follows the result title, preserving all fields and actions. Default tracker placement measures overlapping top tools and lower launchers; saved user positions retain their owner and are reclamped. Verify the existing full map-engine suite plus default/drag/reset/short-height boundary checks before closing these findings.
+
+Legacy armory/Gunsmith fixtures assumed a single, initially closed weapon disclosure. They now target the direct summary and open only when needed; the same filtering, navigation and layout assertions remain. Node24 compatibility now installs the map toolchain already required by unified-server runtime imports. These are test/provisioning repairs, not removed coverage. Dynamic page-editor refresh had one CI WebKit timeout; fresh local three-engine reruns passed without changing production behavior, and failure diagnostics now include refresh status. CI recheck remains mandatory.

@@ -14,7 +14,9 @@ export async function runGunsmithTests({
   try {
     await page.goto(base + "/armory/#reference");
     await page.waitForSelector('main[data-armory-ready="true"]');
-    await page.locator(".weapon-picker summary").click();
+    if (!(await page.locator(".weapon-picker").evaluate((node) => node.open)))
+      if (!(await page.locator(".weapon-picker").evaluate((node) => node.open)))
+        await page.locator(".weapon-picker > summary").click();
     assert.equal(await page.locator("[data-weapon-context]").count(), 35);
     await page.locator("#weapon-context-search").fill("smg");
     assert.equal(
@@ -201,7 +203,9 @@ export async function runGunsmithTests({
       const p = await native.newPage();
       await p.goto(base + "/armory/");
       assert.equal(await p.locator("[data-weapon-context]").count(), 35);
-      await p.locator(".weapon-picker summary").click();
+      if (!(await p.locator(".weapon-picker").evaluate((node) => node.open)))
+        if (!(await p.locator(".weapon-picker").evaluate((node) => node.open)))
+          await p.locator(".weapon-picker > summary").click();
       await p.locator('[data-weapon-context="m4"]').click();
       assert.equal(new URL(p.url()).pathname, "/armory/m4/");
       assert(await p.locator('[data-focus-slot="optic"]').count());

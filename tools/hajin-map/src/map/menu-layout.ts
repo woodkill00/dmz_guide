@@ -62,6 +62,36 @@ export function mountMapMenuLayout(host: HTMLElement) {
     paint(old.id);
   }
   const resize = new ResizeObserver(() => schedule());
+  function fitDefaultTracker() {
+    const tracker = menus.get('tracker')?.node;
+    if (!tracker || tracker.hidden) return;
+    if (positions.tracker) {
+      const details = tracker.querySelector<HTMLElement>('#route-tracker-details');
+      const chrome = tracker.offsetHeight - (details?.offsetHeight || 0);
+      const available = Math.max(0, host.clientHeight - 8);
+      tracker.style.maxHeight = `${available}px`;
+      tracker.style.setProperty('--tracker-available-height', `${Math.max(0, available - chrome)}px`);
+      paint('tracker');
+      return;
+    }
+    const hostRect = host.getBoundingClientRect(), rect = tracker.getBoundingClientRect();
+    const overlaps = (other: DOMRect) => other.right > rect.left && other.left < rect.right;
+    const topMenus = ['navigation', 'map-tools', 'gameplay'].map(id => menus.get(id)?.node)
+      .filter((node): node is HTMLElement => !!node && !node.hidden);
+    const top = Math.max(4, ...topMenus.map(node => node.getBoundingClientRect())
+      .filter(overlaps).map(other => other.bottom - hostRect.top + 8));
+    const launchers = ['workspace', 'routes'].map(id => menus.get(id)?.node)
+      .filter((node): node is HTMLElement => !!node && !node.hidden);
+    const bottom = Math.min(host.clientHeight - 8, ...launchers.map(node => node.getBoundingClientRect())
+      .filter(overlaps).map(other => other.top - hostRect.top - 8));
+    const available = Math.max(0, bottom - top);
+    const details = tracker.querySelector<HTMLElement>('#route-tracker-details');
+    const chrome = tracker.offsetHeight - (details?.offsetHeight || 0);
+    tracker.style.maxHeight = `${available}px`;
+    tracker.style.setProperty('--tracker-available-height', `${Math.max(0, available - chrome)}px`);
+    tracker.style.top = `${top}px`;
+    tracker.style.bottom = 'auto';
+  }
   function discover() {
     for (const [id, selector, label] of definitions) {
       const original = host.querySelector<HTMLElement>(selector);
@@ -117,6 +147,7 @@ export function mountMapMenuLayout(host: HTMLElement) {
       if (menu.handle.parentElement !== menu.node) menu.node.prepend(menu.handle);
       paint(id);
     }
+    fitDefaultTracker();
   }
   function schedule() { if (!frame) frame = requestAnimationFrame(() => { frame = 0; discover(); }); }
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && drag) { event.preventDefault(); event.stopPropagation(); cancel(); } }, { capture: true, signal: listeners.signal });

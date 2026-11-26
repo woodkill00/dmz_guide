@@ -9,6 +9,15 @@ exports.runMenuLayoutBrowser=async function(parent,base,fixture){
   await ready('map');
   await page.evaluate(async()=>{const {openWorkspace}=await import('/src/workspace/store.ts'),{emptyWorkspace}=await import('/src/workspace/model.ts'),{emptyFieldGuide}=await import('/src/workspace/field-guide.ts');const db=await openWorkspace();try{const old=await db.read(),w=emptyWorkspace(),f=emptyFieldGuide();f.routes=[{id:'synthetic',name:'SYNTHETIC movable route',color:'#ddcc88',mode:'direct',waypoints:[{kind:'manual',id:'a',label:'A',x:100,y:100},{kind:'manual',id:'b',label:'B',x:200,y:200}]}];f.activeRouteId='synthetic';f.gameplay.enabled=true;w.fieldGuide=f;await db.commit(w,old.current?.revision??0);}finally{db.close();}});
   await ready('map');await handle('tracker').waitFor();await page.locator('#close-key').click();
+  for(const [width,height] of [[360,800],[320,568],[320,480],[1440,1000]]){
+   await page.setViewportSize({width,height});
+   await handle('tracker').focus();await page.keyboard.press('Home');
+   await page.locator('#route-tracker-toggle').click();
+   assert.equal(await page.locator('#route-tracker-toggle').getAttribute('aria-expanded'),'false');
+   await page.locator('#route-tracker-toggle').click();
+   assert.equal(await page.locator('#route-tracker-toggle').getAttribute('aria-expanded'),'true');
+   await contained('tracker');
+  }
   const before=JSON.stringify(await read()),center=()=>page.evaluate(async()=>{const {viewer}=await import('/src/main.ts');return [viewer.map.getCenter().lat,viewer.map.getCenter().lng,viewer.map.getZoom()];}),mapBefore=await center();
   for(const id of ids){await handle(id).focus();await page.keyboard.press('Home');const b=await box(id);await drag(id,id==='navigation'||id==='map-tools'?-75:75,id==='map-tools'||id==='gameplay'?45:-45);const a=await box(id);assert.ok(Math.abs(a.x-b.x)>20||Math.abs(a.y-b.y)>20,id+' moved');await contained(id);}
   const cdp=await t.context.newCDPSession(page);await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:true});const touch=await handle('tracker').boundingBox(),touchBefore=await box('tracker');const touchPoint={x:touch.x+12,y:touch.y+12};await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[touchPoint]});await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:touchPoint.x+30,y:touchPoint.y+20}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});assert.ok((await box('tracker')).x>touchBefore.x+20,'emulated touch moves tracker');await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:false});await cdp.detach();
