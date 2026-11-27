@@ -341,6 +341,7 @@ async function failure(t, mode, pattern, options) {
       performance.now() - started < (semanticResponse ? 14000 : 3000),
       "failure and cleanup are bounded",
     );
+    return rejection;
   } catch (error) {
     // Keep the original startup/cleanup error when a later assertion fails.
     // Its prefix includes phase, elapsed time, PID, exit code and signal.
@@ -421,6 +422,10 @@ for (const [mode, pattern] of [
 
 test("allowed delayed close preserves semantic error within the overall failure bound", async (t) => {
   const options = await fixture(t, "headers");
+  // Reserve time for the injected close delay within the SAME 3s total bound.
+  // The request timeout remains100ms; all other rejection fixtures keep2.5s.
+  options.timeoutMs = 2000;
+  options.cleanupGraceMs = 350;
   const emit = ChildProcess.prototype.emit;
   let delayed = 0;
   const closeEvents = [];
@@ -434,7 +439,11 @@ test("allowed delayed close preserves semantic error within the overall failure 
     }
     return emit.call(this, event, ...args);
   });
-  await failure(t, "headers", /request.*timeout/i, options);
+  const rejection = await failure(t, "headers", /request.*timeout/i, options);
+  assert.doesNotMatch(
+    rejection.message,
+    /cleanup also failed|cleanup deadline/i,
+  );
   if (delayed !== 1)
     t.diagnostic(
       JSON.stringify({
