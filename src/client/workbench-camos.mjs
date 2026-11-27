@@ -62,6 +62,9 @@ export function workbenchCamos(root, catalog, complete) {
     },
     true,
   );
+  // Cached failures may finish before this controller attaches its listener.
+  for (const image of root.querySelectorAll("[data-camo-image]"))
+    if (image.complete && !image.naturalWidth) image.hidden = true;
   return {
     setEditable(value) {
       editable = !!value;

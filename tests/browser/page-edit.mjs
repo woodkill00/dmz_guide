@@ -3,6 +3,7 @@ import { STUDIO_API_FUNCTIONAL_DEADLINE_MS } from "./studio-functional-deadline.
 import assert from "node:assert/strict";
 import {
   cp,
+  copyFile,
   mkdtemp,
   mkdir,
   readFile,
@@ -82,6 +83,9 @@ async function waitForModernEvidenceShell(page) {
 }
 
 export async function captureDocumentEvidence(page, path) {
+  return captureDocumentEvidenceAttempt(page, path, 0);
+}
+async function captureDocumentEvidenceAttempt(page, path, attempt) {
   await waitForModernEvidenceShell(page);
   await page.evaluate(() => document.fonts.ready);
   const measure = () =>
@@ -127,6 +131,19 @@ export async function captureDocumentEvidence(page, path) {
   assert(dimensions.width > 0 && dimensions.height > 0);
   const tiled = dimensions.width > 32000 || dimensions.height > 32000;
   const slices = [];
+  const recapture = async (reason) => {
+    const retained = path.replace(/\.png$/, "-unstable-first.png");
+    await copyFile(path, retained);
+    await writeFile(
+      path.replace(/\.png$/, "-unstable-first.json"),
+      JSON.stringify(
+        { reason, retained, dimensions, after: await measure() },
+        null,
+        2,
+      ),
+    );
+    return captureDocumentEvidenceAttempt(page, path, 1);
+  };
   const maxSlice = 12000;
   const widthStep = tiled ? maxSlice : dimensions.width;
   const heightStep = tiled ? maxSlice : dimensions.height;
@@ -173,6 +190,18 @@ export async function captureDocumentEvidence(page, path) {
           settledDuringCapture = true;
         }
       }
+      const afterCapture = await measure();
+      if (
+        !tiled &&
+        attempt === 0 &&
+        (png.readUInt32BE(16) !== clip.width ||
+          png.readUInt32BE(20) !== clip.height ||
+          afterCapture.width !== dimensions.width ||
+          afterCapture.height !== dimensions.height)
+      )
+        return recapture(
+          "Document changed during its first full-page capture; retry once with a fresh exact PNG.",
+        );
       assert.equal(
         png.readUInt32BE(16),
         clip.width,
@@ -225,6 +254,7 @@ export async function captureDocumentEvidence(page, path) {
         2,
       ),
     );
+    if (!tiled && attempt === 0) return recapture(error.message);
     throw error;
   }
   const coveredPixels = slices.reduce(
@@ -243,6 +273,7 @@ export async function captureDocumentEvidence(page, path) {
         url: page.url(),
         mode: tiled ? "document-tiles" : "full-page",
         settledDuringCapture,
+        captureAttempts: attempt + 1,
         coordinateSpace: "CSS document pixels",
         dimensions,
         maxTileHeight: tiled ? maxSlice : null,

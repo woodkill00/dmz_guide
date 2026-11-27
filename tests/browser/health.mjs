@@ -1,4 +1,19 @@
 import assert from "node:assert/strict";
+import { readWeaponCamos } from "../../src/content/weapon-camos.mjs";
+import { camoImagePath } from "../../src/domain/weapon-camos.mjs";
+export async function optionalCamoArtwork(base) {
+  const catalog = await readWeaponCamos();
+  return {
+    urls: catalog.weapons.flatMap((weapon) =>
+      weapon.rows.map(
+        (row) => new URL(camoImagePath(weapon.id, row.id), base).href,
+      ),
+    ),
+    // Four complete catalog visits per context; repeated failures remain bounded.
+    maxCount:
+      catalog.weapons.reduce((n, weapon) => n + weapon.rows.length, 0) * 4,
+  };
+}
 const expectedConsole = new WeakMap();
 const expectedResponses = new WeakMap();
 /** Only an isolated negative-test context may declare exact, bounded codec diagnostics. */
@@ -67,7 +82,27 @@ export function expectResponseErrors(
     };
   };
 }
-export function monitorBrowser(browser) {
+export function monitorBrowser(browser, { optionalArtwork } = {}) {
+  const artworkURLs = new Set(optionalArtwork?.urls || []);
+  for (const raw of artworkURLs) {
+    const url = new URL(raw);
+    assert(
+      ["http:", "https:"].includes(url.protocol) &&
+        !url.search &&
+        !url.hash &&
+        !url.username &&
+        !url.password,
+    );
+    assert(
+      /^\/local-camo-images\/[a-z0-9-]+\/[a-z0-9-]+\.webp$/.test(url.pathname),
+    );
+  }
+  if (optionalArtwork)
+    assert(
+      Number.isInteger(optionalArtwork.maxCount) &&
+        optionalArtwork.maxCount > 0,
+    );
+  const artworkObservations = [];
   const failures = [],
     responses = [],
     pendingDiagnostics = [],
@@ -75,6 +110,8 @@ export function monitorBrowser(browser) {
     original = browser.newContext.bind(browser);
   browser.newContext = async (...args) => {
     const context = await original(...args);
+    const artwork = { responses: [], console: [] };
+    artworkObservations.push(artwork);
     contexts.push(context);
     context.on("page", (page) => {
       page.on("pageerror", (error) =>
@@ -106,6 +143,14 @@ export function monitorBrowser(browser) {
           return;
         }
         const location = message.location?.();
+        if (
+          artworkURLs.has(location?.url) &&
+          text ===
+            "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        ) {
+          artwork.console.push(location.url);
+          return;
+        }
         failures.push(
           "Console: " + text + (location?.url ? " at " + location.url : ""),
         );
@@ -116,6 +161,16 @@ export function monitorBrowser(browser) {
           failures.push("Request: " + request.url() + " " + reason);
       });
       page.on("response", (response) => {
+        if (
+          response.status() === 404 &&
+          artworkURLs.has(response.url()) &&
+          response.request().method() === "GET" &&
+          response.request().resourceType() === "image" &&
+          artwork.responses.length < optionalArtwork.maxCount
+        ) {
+          artwork.responses.push(response.url());
+          return;
+        }
         const expected = expectedResponses.get(context);
         if (
           expected &&
@@ -157,6 +212,14 @@ export function monitorBrowser(browser) {
     return context;
   };
   const check = () => {
+    for (const artwork of artworkObservations) {
+      for (const url of new Set(artwork.console))
+        assert(
+          artwork.console.filter((value) => value === url).length <=
+            artwork.responses.filter((value) => value === url).length,
+          "Optional-art console requires matching exact image GET 404",
+        );
+    }
     for (const context of contexts) {
       const expected = expectedResponses.get(context);
       if (expected)
@@ -177,6 +240,10 @@ export function monitorBrowser(browser) {
     return {
       failures: [...failures],
       responses: responses.map((value) => ({ ...value })),
+      optionalArtwork: artworkObservations.map((value) => ({
+        responses: [...value.responses],
+        console: [...value.console],
+      })),
     };
   };
   return check;
