@@ -500,6 +500,7 @@ export async function runReaderFlowTests({
     assert.deepEqual(actual, expected);
     assert(!page.url().includes("q=") && !page.url().includes("wire"));
     await page.goto(`${base}/`);
+    await page.waitForLoadState("networkidle");
     await page.locator("#hub-query").fill("wire training");
     await page.locator(".hub-search button").click();
     await page.waitForURL(/\/search\//);
@@ -549,6 +550,7 @@ export async function runReaderFlowTests({
         ]) {
           await page.setViewportSize({ width, height: 844 });
           await page.goto(base + route);
+          await page.waitForLoadState("networkidle");
           if (route.startsWith("/maps")) await ready();
           const themeToggle = page.locator("#theme-toggle");
           if (

@@ -240,7 +240,8 @@
   max-height: none;
 }
 .quick-tracker .upgrade-completion-check {
-  white-space: nowrap;
+  white-space: normal;
+  flex-wrap: wrap;
 }
 .quick-tracker .panel {
   padding: var(--ui-space-5);
@@ -590,9 +591,9 @@ html[data-ui-variant]
   .upgrade-family
   .compact-progress
   button {
-  white-space: nowrap;
+  white-space: normal;
   width: auto;
-  min-width: max-content;
+  min-width: 0;
   padding: var(--ui-space-2) var(--ui-space-4);
 }
 .quick-tracker .upgrade-family .compact-progress .upgrade-summary {
@@ -1536,10 +1537,13 @@ html[data-ui-variant]
 html[data-ui-variant]
   main.quick-tracker
   .upgrade-list-shell[data-layout]
-  .fob-upgrade-card
+  .fob-upgrade-card.compact-progress
   .upgrade-summary {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, calc(var(--ui-control) * 3)), 1fr)
+  );
   gap: var(--ui-space-3);
   padding: 0;
   width: auto;
@@ -1700,7 +1704,8 @@ html[data-theme="light"]
   padding: var(--ui-space-2);
   font-size: var(--ui-type-meta);
 }
-.quick-tracker .fob-stock-controls input {
+.quick-tracker .fob-stock-controls [data-fob-owned] {
+  min-inline-size: 0;
   text-align: center;
 }
 .quick-tracker .fob-stock-controls button {

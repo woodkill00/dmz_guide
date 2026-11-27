@@ -145,6 +145,45 @@ export function monitorBrowser(browser, { optionalArtwork } = {}) {
     const context = await original(...args);
     const artwork = { responses: [], console: [] };
     const pendingArtwork = new Set();
+    const requestDetails = new WeakMap();
+    const seen = Object.fromEntries(
+      ["start", "finish", "failure", "response"].map((kind) => [
+        kind,
+        new WeakSet(),
+      ]),
+    );
+    const contextOrigin = new Error("Browser context created").stack
+      ?.split("\n")
+      .slice(1, 7);
+    const first = (kind, value) => {
+      if (seen[kind].has(value)) return false;
+      seen[kind].add(value);
+      return true;
+    };
+    const requestPage = (request) => {
+      try {
+        return request.frame?.()?.page?.();
+      } catch {
+        return null;
+      }
+    };
+    function onRequest(request, page) {
+      if (!first("start", request)) return;
+      if (
+        artworkURLs.has(request.url()) &&
+        request.method() === "GET" &&
+        request.resourceType() === "image"
+      ) {
+        pendingArtwork.add(request);
+        requestDetails.set(request, {
+          started: performance.now(),
+          page: page?.url?.()?.split(/[?#]/)[0] || null,
+        });
+      }
+    }
+    function onFinished(request) {
+      if (first("finish", request)) pendingArtwork.delete(request);
+    }
     let closingRequested = false;
     if (typeof context.close === "function") {
       const close = context.close.bind(context);
@@ -160,23 +199,51 @@ export function monitorBrowser(browser, { optionalArtwork } = {}) {
             "Optional artwork did not settle before owned context close: " +
               [...pendingArtwork].map((request) => request.url()).join(", "),
           );
+        if (pendingArtwork.size)
+          failures.push(
+            "Pending artwork lifecycle: " +
+              JSON.stringify({
+                contextOrigin,
+                requests: [...pendingArtwork].slice(0, 12).map((request) => ({
+                  url: request.url(),
+                  page: requestDetails.get(request)?.page,
+                  ageMs: Math.round(
+                    performance.now() -
+                      (requestDetails.get(request)?.started ??
+                        performance.now()),
+                  ),
+                })),
+              }),
+          );
         return close(...closeArgs);
       };
     }
     artworkObservations.push(artwork);
     contexts.push(context);
+    context.on("request", (request) =>
+      onRequest(request, requestPage(request)),
+    );
+    context.on("requestfinished", onFinished);
+    context.on("requestfailed", (request) =>
+      onFailed(request, requestPage(request)),
+    );
+    context.on("response", (response) =>
+      onResponse(response, requestPage(response.request())),
+    );
     context.on("page", (page) => {
-      page.on("request", (request) => {
-        if (
-          artworkURLs.has(request.url()) &&
-          request.method() === "GET" &&
-          request.resourceType() === "image"
-        )
-          pendingArtwork.add(request);
-      });
-      page.on("requestfinished", (request) => pendingArtwork.delete(request));
+      page.on("request", (request) => onRequest(request, page));
+      page.on("requestfinished", onFinished);
       page.on("pageerror", (error) =>
-        failures.push("JavaScript: " + error.message),
+        failures.push(
+          "JavaScript: " +
+            error.message +
+            " " +
+            JSON.stringify({
+              page: page.url?.()?.split(/[?#]/)[0] || null,
+              contextOrigin,
+              stack: error.stack?.slice(0, 1600),
+            }),
+        ),
       );
       page.on("console", (message) => {
         if (message.type() !== "error") return;
@@ -216,90 +283,94 @@ export function monitorBrowser(browser, { optionalArtwork } = {}) {
           "Console: " + text + (location?.url ? " at " + location.url : ""),
         );
       });
-      page.on("requestfailed", (request) => {
-        pendingArtwork.delete(request);
-        const reason = request.failure()?.errorText || "";
-        const expected = expectedScriptAborts.get(context);
-        if (
-          expected &&
-          expected.observed.length < expected.count &&
-          request.url() === expected.url &&
-          request.method() === "GET" &&
-          request.resourceType() === "script" &&
-          reason === expected.errorText
-        ) {
-          expected.observed.push({
-            url: request.url(),
-            method: request.method(),
-            type: request.resourceType(),
-            reason,
-          });
-          return;
-        }
-        if (!/ERR_ABORTED|NS_BINDING_ABORTED|cancelled/i.test(reason))
-          failures.push(
-            "Request: " +
-              request.url() +
-              " " +
-              reason +
-              " " +
-              JSON.stringify({
-                page: page.url?.() || null,
-                method: request.method?.() || null,
-                type: request.resourceType?.() || null,
-                closingRequested,
-              }),
-          );
-      });
-      page.on("response", (response) => {
-        if (
-          response.status() === 404 &&
-          artworkURLs.has(response.url()) &&
-          response.request().method() === "GET" &&
-          response.request().resourceType() === "image" &&
-          artwork.responses.length < optionalArtwork.maxCount
-        ) {
-          artwork.responses.push(response.url());
-          return;
-        }
-        const expected = expectedResponses.get(context);
-        if (
-          expected &&
-          expected.responses.length < expected.count &&
-          response.status() === expected.status &&
-          response.url() === expected.url &&
-          response.request().method() === expected.method
-        ) {
-          expected.responses.push({
-            method: expected.method,
-            url: expected.url,
-            status: expected.status,
-          });
-          return;
-        }
-        if (response.status() >= 400) {
-          failures.push("HTTP " + response.status() + ": " + response.url());
-          const diagnostic = {
-            status: response.status(),
-            method: response.request().method(),
-            url: response.url(),
-            page: page.url?.() || null,
-          };
-          responses.push(diagnostic);
-          if (response.text)
-            pendingDiagnostics.push(
-              response.text().then(
-                (body) => {
-                  diagnostic.body = body.slice(0, 8192);
-                },
-                (error) => {
-                  diagnostic.bodyError = error.message;
-                },
-              ),
-            );
-        }
-      });
+      page.on("requestfailed", (request) => onFailed(request, page));
+      page.on("response", (response) => onResponse(response, page));
     });
+    function onFailed(request, page) {
+      if (!first("failure", request)) return;
+      pendingArtwork.delete(request);
+      const reason = request.failure()?.errorText || "";
+      const expected = expectedScriptAborts.get(context);
+      if (
+        expected &&
+        expected.observed.length < expected.count &&
+        request.url() === expected.url &&
+        request.method() === "GET" &&
+        request.resourceType() === "script" &&
+        reason === expected.errorText
+      ) {
+        expected.observed.push({
+          url: request.url(),
+          method: request.method(),
+          type: request.resourceType(),
+          reason,
+        });
+        return;
+      }
+      if (!/ERR_ABORTED|NS_BINDING_ABORTED|cancelled/i.test(reason))
+        failures.push(
+          "Request: " +
+            request.url() +
+            " " +
+            reason +
+            " " +
+            JSON.stringify({
+              page: page?.url?.() || null,
+              method: request.method?.() || null,
+              type: request.resourceType?.() || null,
+              closingRequested,
+            }),
+        );
+    }
+    function onResponse(response, page) {
+      if (!first("response", response)) return;
+      if (
+        response.status() === 404 &&
+        artworkURLs.has(response.url()) &&
+        response.request().method() === "GET" &&
+        response.request().resourceType() === "image" &&
+        artwork.responses.length < optionalArtwork.maxCount
+      ) {
+        artwork.responses.push(response.url());
+        return;
+      }
+      const expected = expectedResponses.get(context);
+      if (
+        expected &&
+        expected.responses.length < expected.count &&
+        response.status() === expected.status &&
+        response.url() === expected.url &&
+        response.request().method() === expected.method
+      ) {
+        expected.responses.push({
+          method: expected.method,
+          url: expected.url,
+          status: expected.status,
+        });
+        return;
+      }
+      if (response.status() >= 400) {
+        failures.push("HTTP " + response.status() + ": " + response.url());
+        const diagnostic = {
+          status: response.status(),
+          method: response.request().method(),
+          url: response.url(),
+          page: page?.url?.() || null,
+        };
+        responses.push(diagnostic);
+        if (response.text)
+          pendingDiagnostics.push(
+            response.text().then(
+              (body) => {
+                diagnostic.body = body.slice(0, 8192);
+              },
+              (error) => {
+                diagnostic.bodyError = error.message;
+              },
+            ),
+          );
+      }
+    }
     return context;
   };
   const check = () => {

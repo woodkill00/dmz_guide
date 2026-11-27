@@ -53,6 +53,7 @@ export async function runArmoryWorkbenchTests({
     page = await context.newPage();
   try {
     await page.goto(base + "/armory/workbench/");
+    await page.waitForLoadState("networkidle");
     await page.waitForFunction(
       () => document.querySelector("main").dataset.armoryReady === "true",
     );
@@ -319,10 +320,9 @@ export async function runArmoryWorkbenchTests({
       () => !document.querySelector("#workspace-import-apply").hidden,
     );
     const other = await context.newPage();
-    await other.goto(base + "/armory/workbench/");
-    await other.waitForFunction(
-      () => document.querySelector("main").dataset.armoryReady === "true",
-    );
+    // This actor changes storage only; do not start an unrelated live Armory
+    // view whose rerendered lazy artwork is immediately cancelled on close.
+    await other.goto(base + "/features/");
     await other.evaluate(async () => {
       const { readArmory, saveArmory } = await import(
         "/assets/src/storage/armory-store.mjs"
@@ -335,6 +335,7 @@ export async function runArmoryWorkbenchTests({
       };
       await saveArmory(r.value, r.value.revision);
     });
+    await other.waitForLoadState("networkidle");
     await other.close();
     await page.locator("#workspace-import-apply").click();
     await page.waitForFunction(() =>
@@ -426,6 +427,7 @@ export async function runArmoryWorkbenchTests({
         .textContent.includes("revision 8"),
     );
     await page.reload();
+    await page.waitForLoadState("networkidle");
     await page.waitForFunction(
       () => document.querySelector("main").dataset.armoryReady === "true",
     );

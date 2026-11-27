@@ -545,8 +545,8 @@
 #camo-overview .camo-dot-mark,
 #camo-tracker .camo-dot-mark {
   position: absolute;
-  inset-inline-end: -3px;
-  inset-block-end: -3px;
+  inset-inline-end: 0;
+  inset-block-end: 0;
   background: var(--surface);
   color: var(--text);
   font-size: var(--ui-type-meta);

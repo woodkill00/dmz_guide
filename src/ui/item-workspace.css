@@ -316,11 +316,18 @@
   overflow-wrap: anywhere;
 }
 body[data-page="items"] .item-row {
-  display: grid;
-  grid-template-columns: 3rem minmax(0, 1fr) auto auto;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--ui-space-6);
   padding: var(--ui-space-5) var(--ui-space-7);
+}
+body[data-page="items"] .item-identity {
+  flex: 1;
+  min-width: min(100%, calc(var(--ui-control) * 4));
+}
+body[data-page="items"] .build-target-choice > * {
+  min-width: 0;
 }
 body[data-page="items"] .item-row .item-art {
   width: 3rem;
@@ -340,6 +347,7 @@ body[data-page="items"] .item-row .item-identity p {
 body[data-page="items"] .item-row-actions {
   display: flex;
   flex-wrap: wrap;
+  max-width: 100%;
   gap: var(--ui-space-2);
 }
 body[data-page="items"] .item-row-actions a {
@@ -383,12 +391,6 @@ body[data-page="items"] .directory-help summary {
   }
   .item-section-nav a {
     flex: none;
-  }
-  body[data-page="items"] .item-row {
-    grid-template-columns: 2.75rem minmax(0, 1fr);
-  }
-  body[data-page="items"] .item-row-actions {
-    grid-column: 2;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -438,12 +440,6 @@ html[data-theme="light"] .item-workspace [data-item-rarity="Rare"] {
 html[data-theme="light"] .item-workspace [data-item-rarity="Uncommon"] {
   color: #286332;
 }
-@media (max-width: 800px) {
-  body[data-page="items"] .item-row-build {
-    grid-column: 2;
-  }
-}
-
 .item-collection-counts {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

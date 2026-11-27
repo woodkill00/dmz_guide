@@ -122,7 +122,7 @@ test("R8 picker groups every identity once in source class order with distinct i
   for (const [category] of weaponClasses) {
     const group = html
       .split(`data-picker-category="${category}"`)[1]
-      .split("</details>")[0];
+      .split('<details class="weapon-picker-group"')[0];
     const rows = acquisition.weapons
       .filter((w) => w.category === category)
       .sort((a, b) => a.name.localeCompare(b.name));

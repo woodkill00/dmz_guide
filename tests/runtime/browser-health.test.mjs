@@ -99,6 +99,132 @@ async function setup(options) {
   return { browser, check, context, page };
 }
 
+async function networkFixture() {
+  let closed = 0;
+  const browser = {
+    newContext: async () =>
+      Object.assign(new EventEmitter(), { close: async () => closed++ }),
+  };
+  const url = "http://127.0.0.1:4174/local-camo-images/han-86/smoke.webp";
+  const health = monitorBrowser(browser, {
+    optionalArtwork: { urls: [url], maxCount: 1 },
+  });
+  const context = await browser.newContext(),
+    page = new EventEmitter();
+  page.url = () => "http://127.0.0.1:4174/synthetic/?private=never-log#draft";
+  context.emit("page", page);
+  const request = () => ({
+    url: () => url,
+    method: () => "GET",
+    resourceType: () => "image",
+    frame: () => ({ page: () => page }),
+    failure: () => ({ errorText: "net::ERR_FAILED" }),
+  });
+  const response = (req, status = 404) => ({
+    url: () => url,
+    status: () => status,
+    request: () => req,
+    text: async () => "SYNTHETIC response",
+  });
+  return {
+    context,
+    page,
+    request,
+    response,
+    health,
+    url,
+    closed: () => closed,
+  };
+}
+
+test("context-only image completion after page departure drains exact request identity", async () => {
+  const f = await networkFixture(),
+    req = f.request();
+  f.page.emit("request", req);
+  f.page.emit("close");
+  const closing = f.context.close();
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  assert.equal(f.closed(), 0);
+  f.context.emit("response", f.response(req));
+  f.context.emit("requestfinished", req);
+  await closing;
+  assert.equal(f.closed(), 1);
+  f.health();
+});
+
+test("context and page network streams deduplicate identity but preserve distinct request budgets", async () => {
+  const f = await networkFixture(),
+    req = f.request(),
+    response = f.response(req);
+  for (const emitter of [f.context, f.page]) {
+    emitter.emit("request", req);
+    emitter.emit("response", response);
+    emitter.emit("requestfinished", req);
+  }
+  f.page.emit("console", {
+    ...message(
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    ),
+    location: () => ({ url: f.url }),
+  });
+  f.health();
+  assert.deepEqual(
+    (await f.health.diagnostics()).optionalArtwork[0].responses,
+    [f.url],
+  );
+  const another = f.request();
+  f.context.emit("request", another);
+  f.context.emit("response", f.response(another));
+  f.context.emit("requestfinished", another);
+  await f.context.close();
+  assert.throws(f.health, /No unexpected/);
+});
+
+test("context-only network failures and HTTP500 remain fatal after optional request retirement", async () => {
+  for (const kind of ["requestfailed", "HTTP500"]) {
+    const f = await networkFixture(),
+      req = f.request();
+    f.context.emit("request", req);
+    if (kind === "requestfailed") {
+      f.context.emit("requestfailed", req);
+      f.page.emit("requestfailed", req);
+    } else {
+      const response = f.response(req, 500);
+      f.context.emit("response", response);
+      f.page.emit("response", response);
+      f.context.emit("requestfinished", req);
+    }
+    await f.context.close();
+    assert.throws(f.health, /No unexpected/);
+    const diagnostics = await f.health.diagnostics();
+    assert.equal(diagnostics.failures.length, 1);
+    assert.match(
+      diagnostics.failures[0],
+      kind === "requestfailed" ? /ERR_FAILED/ : /HTTP 500/,
+    );
+  }
+});
+
+test("genuinely pending artwork still exhausts the original 2500ms guard and reports bounded origin diagnostics", async () => {
+  const f = await networkFixture();
+  f.page.emit("request", f.request());
+  const began = performance.now();
+  await f.context.close();
+  assert(performance.now() - began >= 2450);
+  assert.equal(f.closed(), 1);
+  assert.throws(f.health, /No unexpected/);
+  const failures = (await f.health.diagnostics()).failures;
+  assert(
+    failures.some((value) =>
+      value.startsWith("Optional artwork did not settle"),
+    ),
+  );
+  assert(
+    failures.some((value) => value.includes("Pending artwork lifecycle:")),
+  );
+  assert(!failures.join(" ").includes("never-log"));
+});
+
 test("optional camo art permits only declared image GET 404s with matching console evidence", async () => {
   const url = "http://127.0.0.1:4174/local-camo-images/han-86/smoke.webp";
   const options = { optionalArtwork: { urls: [url], maxCount: 1 } };
