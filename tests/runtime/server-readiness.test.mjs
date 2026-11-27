@@ -423,7 +423,10 @@ test("allowed delayed close preserves semantic error within the overall failure 
   const options = await fixture(t, "headers");
   const emit = ChildProcess.prototype.emit;
   let delayed = 0;
+  const closeEvents = [];
   t.mock.method(ChildProcess.prototype, "emit", function (event, ...args) {
+    if (event === "close")
+      closeEvents.push({ pid: this.pid, spawnargs: this.spawnargs });
     if (event === "close" && this.spawnargs?.[1] === options.entrypoint) {
       delayed++;
       setTimeout(() => emit.call(this, event, ...args), 150);
@@ -432,6 +435,14 @@ test("allowed delayed close preserves semantic error within the overall failure 
     return emit.call(this, event, ...args);
   });
   await failure(t, "headers", /request.*timeout/i, options);
+  if (delayed !== 1)
+    t.diagnostic(
+      JSON.stringify({
+        expectedEntrypoint: options.entrypoint,
+        delayed,
+        closeEvents,
+      }),
+    );
   assert.equal(delayed, 1, "only the owned real close event is delayed");
   t.diagnostic(
     "Simulated 150ms owned-child close delay retained exact request-timeout evidence and real ESRCH cleanup proof",

@@ -4,6 +4,7 @@ import { chromium } from "playwright";
 import { createServer } from "../../tools/hajin-map/node_modules/vite/dist/node/index.js";
 import { startBrowserServer } from "./server.mjs";
 
+process.env.DMZ_UNIFIED_SITE = "1";
 const guide = await startBrowserServer();
 const map = await createServer({
   root: fileURLToPath(new URL("../../tools/hajin-map/", import.meta.url)),
@@ -13,8 +14,8 @@ const map = await createServer({
 });
 await map.listen();
 const actualMap = `http://127.0.0.1:${map.httpServer.address().port}`;
-const mapBase = "http://127.0.0.1:5175";
-const guideBase = "http://127.0.0.1:4173";
+const guideBase = guide.base;
+const mapBase = guideBase + "/map";
 const browser = await chromium.launch();
 let failure;
 try {
@@ -23,20 +24,11 @@ try {
   context.on("page", (page) =>
     page.on("pageerror", (reason) => errors.push(reason.message)),
   );
-  await context.route("http://127.0.0.1:4173/**", async (route) => {
-    const upstream = await route.fetch({
-      url:
-        guide.base +
-        new URL(route.request().url()).pathname +
-        new URL(route.request().url()).search,
-    });
-    await route.fulfill({ response: upstream });
-  });
   const png = Buffer.from(
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==",
     "base64",
   );
-  await context.route("http://127.0.0.1:5175/**", async (route) => {
+  await context.route(mapBase + "/**", async (route) => {
     const url = new URL(route.request().url());
     if (url.pathname.endsWith("/official/markers.json"))
       return route.fulfill({
@@ -49,7 +41,7 @@ try {
           markers: [],
         },
       });
-    if (url.pathname.startsWith("/maps/"))
+    if (url.pathname.startsWith("/map/maps/"))
       return route.fulfill({ body: png, contentType: "image/png" });
     const upstream = await route.fetch({
       url: actualMap + url.pathname + url.search,
@@ -60,9 +52,11 @@ try {
   await seed.goto(`${mapBase}/?tool=boss-checklist`);
   await seed.locator("#workspace-open:enabled").waitFor();
   await seed.evaluate(async () => {
-    const { openWorkspace } = await import("/src/workspace/store.ts");
-    const { emptyWorkspace } = await import("/src/workspace/model.ts");
-    const { emptyFieldGuide } = await import("/src/workspace/field-guide.ts");
+    const { openWorkspace } = await import("/map/src/workspace/store.ts");
+    const { emptyWorkspace } = await import("/map/src/workspace/model.ts");
+    const { emptyFieldGuide } = await import(
+      "/map/src/workspace/field-guide.ts"
+    );
     const db = await openWorkspace();
     try {
       const old = await db.read();
@@ -283,7 +277,9 @@ try {
       ?.textContent.includes("boss · saved"),
   );
   const logs = await mapPage.evaluate(async () => {
-    const db = await (await import("/src/workspace/store.ts")).openWorkspace();
+    const db = await (
+      await import("/map/src/workspace/store.ts")
+    ).openWorkspace();
     try {
       return (await db.read()).current.data.fieldGuide.checklists;
     } finally {

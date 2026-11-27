@@ -29,30 +29,31 @@ export async function runWeaponCamoTests({ browser, base, name = "chromium" }) {
     return route.continue();
   });
   try {
-    await page.goto(base + "/dmz-weapons/");
-    await page.locator('main a[href="/armory/camos/"]').click();
-    assert.equal(await page.locator("[data-camo-weapon]").count(), 35);
-    await page.locator("[data-camo-query]").fill("osprey");
+    await page.goto(base + "/armory/#camos");
+    assert.equal(await page.locator("[data-weapon-context]").count(), 35);
+    await page.locator("#weapon-context-search").fill("osprey");
     await page.waitForFunction(
       () =>
-        document.querySelector("[data-camo-count]").textContent === "1 weapons",
+        document.querySelectorAll("[data-weapon-card]:not([hidden])").length ===
+        1,
     );
-    assert.equal(await page.locator("[data-camo-weapon]:visible").count(), 1);
-    await page.locator("[data-camo-class]").selectOption("shotgun");
-    await page.waitForFunction(
-      () => !document.querySelector("[data-camo-empty]").hidden,
+    assert.equal(
+      await page.locator("[data-weapon-context]:visible").count(),
+      1,
     );
-    assert(await page.locator("[data-camo-empty]").isVisible());
-    await page.locator('.camo-search button[type="reset"]').click();
+    await page.locator("#weapon-context-filter").selectOption("owned");
+    await page.locator("#weapon-context-empty").waitFor({ state: "visible" });
+    await page.locator("#weapon-context-search").fill("");
+    await page.locator("#weapon-context-filter").selectOption("all");
     await page.waitForFunction(
       () =>
-        document.querySelector("[data-camo-count]").textContent ===
-        "35 weapons",
+        document.querySelectorAll("[data-weapon-card]:not([hidden])").length ===
+        35,
     );
-    assert.equal(await page.locator("[data-camo-weapon]").count(), 35);
-    await page
-      .locator('[data-overview-class="assault-rifle"] > summary')
-      .click();
+    assert.equal(await page.locator("[data-weapon-context]").count(), 35);
+    const category = page.locator('[data-picker-category="assault-rifle"]');
+    if (!(await category.evaluate((node) => node.open)))
+      await category.locator(":scope > summary").click();
     const saved = await page.evaluate(async () => {
       localStorage.setItem(
         "camo-preservation-fixture",
@@ -76,7 +77,8 @@ export async function runWeaponCamoTests({ browser, base, name = "chromium" }) {
       await saveArmory(workspace, 0);
       return JSON.stringify((await readArmory()).value);
     });
-    await page.locator('[data-camo-weapon="han-86"]').click();
+    await page.locator('[data-weapon-context="han-86"]').click();
+    await page.locator('.weapon-workspace-tabs a[href="#camos"]').click();
     await page.locator("[data-camo-row]").first().waitFor();
     const variant = await page.evaluate(
       () =>
@@ -248,20 +250,19 @@ export async function runWeaponCamoTests({ browser, base, name = "chromium" }) {
       .first()
       .scrollIntoViewIfNeeded()
       .catch(() => {});
-    await page.waitForFunction(() =>
-      document
-        .querySelector(".camo-tile-image")
-        .classList.contains("camo-art-missing"),
-    );
+    await page
+      .locator("[data-camo-image]")
+      .first()
+      .waitFor({ state: "hidden" });
     assert(await page.locator(".camo-image-fallback").first().isVisible());
     assert.equal(await page.locator("[data-camo-row]").count(), 25);
-    await page.locator('main a[href="/armory/han-86/"]').click();
-    await page.locator('main a[href="/armory/camos/han-86/"]').click();
-    await page.goto(base + "/armory/camos/cronen-osprey/");
+    await page.locator('.weapon-workspace-tabs a[href="#acquisition"]').click();
+    await page.locator('.weapon-workspace-tabs a[href="#camos"]').click();
+    await page.goto(base + "/armory/cronen-osprey/#camos");
     assert.equal(await page.locator("[data-camo-row]").count(), 25);
-    assert.equal(
-      await page.locator('main a[href="/armory/cronen-osprey/"]').count(),
-      0,
+    assert.match(
+      await page.locator("#reference").textContent(),
+      /not been catalogued/,
     );
     const after = await page.evaluate(async () => {
       const { readArmory } = await import(

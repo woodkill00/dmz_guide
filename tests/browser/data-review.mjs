@@ -20,10 +20,13 @@ try {
   );
   assert.equal((await page.locator("#review-list li").count()) > 0, true);
   const repairLink = page
-    .locator('#review-list a[href^="http://127.0.0.1:4174/"]')
+    .locator('#review-list a[href^="/local-services/author/"]')
     .first();
   assert.equal(await repairLink.count(), 1);
-  const repair = new URL(await repairLink.getAttribute("href"));
+  const handoff = new URL(await repairLink.getAttribute("href"), server.base);
+  assert.equal(handoff.origin, new URL(server.base).origin);
+  assert.equal(handoff.pathname, "/local-services/author/");
+  const repair = new URL(handoff.searchParams.get("destination"), server.base);
   assert.equal(repair.searchParams.get("packId"), "official:mw4-dmz-starter");
   assert.equal(repair.searchParams.get("intent"), "edit");
   await page

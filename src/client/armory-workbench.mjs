@@ -198,7 +198,27 @@ let workspace = emptyArmory(),
   restorePreview = null,
   restoreJob = null,
   pictureJob = null;
+let lifecycleEpoch = 0,
+  departed = false,
+  resumeAfterMutation = false;
 const dirtyForms = new Set();
+async function reconcileResumedWorkspace() {
+  if (
+    !resumeAfterMutation ||
+    departed ||
+    pending ||
+    loading ||
+    unsaved ||
+    dirtyForms.size
+  )
+    return;
+  resumeAfterMutation = false;
+  try {
+    await load();
+  } catch (error) {
+    failure(error);
+  }
+}
 const status = (message) => {
   $("#armory-status").textContent = message;
 };
@@ -265,10 +285,20 @@ async function mutate(change) {
   change(candidate);
   validateArmory(candidate);
   unsaved = candidate;
+  const epoch = lifecycleEpoch;
   pending = true;
   controls();
   try {
-    const saved = await saveArmory(candidate, workspace.revision);
+    const saved = await saveArmory(candidate, workspace.revision, {
+      requireValidCurrent: true,
+    });
+    if (epoch !== lifecycleEpoch) {
+      // The durable acknowledgement belongs to the departed document epoch.
+      // Reread the current writer on return; never replay this candidate.
+      unsaved = null;
+      resumeAfterMutation = true;
+      return saved;
+    }
     previous = workspace;
     workspace = saved;
     unsaved = null;
@@ -280,6 +310,7 @@ async function mutate(change) {
   } finally {
     pending = false;
     controls();
+    await reconcileResumedWorkspace();
   }
 }
 async function inspectImages(value, signal) {
@@ -354,12 +385,20 @@ function cancelRestore() {
   $("#workspace-import-cancel").hidden = true;
 }
 window.addEventListener("pagehide", () => {
+  lifecycleEpoch++;
+  departed = true;
   generation++;
   sharedGeneration++;
   loadEpoch++;
   loadJob?.abort();
   restoreJob?.abort();
   pictureJob?.abort();
+});
+window.addEventListener("pageshow", (event) => {
+  if (!event.persisted) return;
+  departed = false;
+  resumeAfterMutation = true;
+  void reconcileResumedWorkspace();
 });
 window.addEventListener("beforeunload", (event) => {
   if (
@@ -1231,12 +1270,22 @@ async function load() {
   }
 }
 $("#workspace-retry").addEventListener("click", async () => {
+  const epoch = lifecycleEpoch;
+  let admitted = false;
   try {
     if (!unsaved || pending || loading)
       throw new Error("No failed candidate is available to retry");
     pending = true;
+    admitted = true;
     controls();
-    const saved = await saveArmory(unsaved, workspace.revision);
+    const saved = await saveArmory(unsaved, workspace.revision, {
+      requireValidCurrent: true,
+    });
+    if (epoch !== lifecycleEpoch) {
+      unsaved = null;
+      resumeAfterMutation = true;
+      return;
+    }
     previous = workspace;
     workspace = saved;
     unsaved = null;
@@ -1246,8 +1295,11 @@ $("#workspace-retry").addEventListener("click", async () => {
   } catch (error) {
     failure(error);
   } finally {
-    pending = false;
-    controls();
+    if (admitted) {
+      pending = false;
+      controls();
+      await reconcileResumedWorkspace();
+    }
   }
 });
 $("#workspace-reload").addEventListener("click", async () => {
@@ -1310,6 +1362,8 @@ $("#workspace-import").addEventListener("change", async (event) => {
 });
 $("#workspace-import-cancel").addEventListener("click", cancelRestore);
 $("#workspace-import-apply").addEventListener("click", async () => {
+  const epoch = lifecycleEpoch;
+  let admitted = false;
   try {
     if (pending || loading || unsaved)
       throw new Error(
@@ -1322,8 +1376,15 @@ $("#workspace-import-apply").addEventListener("click", async () => {
     candidate.revision = p.revision;
     unsaved = candidate;
     pending = true;
+    admitted = true;
     controls();
     const saved = await saveArmory(candidate, p.revision);
+    if (epoch !== lifecycleEpoch) {
+      unsaved = null;
+      resumeAfterMutation = true;
+      cancelRestore();
+      return;
+    }
     previous = workspace;
     workspace = saved;
     corruptStored = null;
@@ -1336,8 +1397,11 @@ $("#workspace-import-apply").addEventListener("click", async () => {
   } catch (error) {
     failure(error);
   } finally {
-    pending = false;
-    controls();
+    if (admitted) {
+      pending = false;
+      controls();
+      await reconcileResumedWorkspace();
+    }
   }
 });
 function tabs() {
