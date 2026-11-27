@@ -77,7 +77,7 @@ jobs:
       - run: npm run build
       - run: npm run ui:audit
       - run: npm test
-      - run: npx playwright install chromium
+      - run: npx playwright install --with-deps chromium firefox webkit
       - run: node tests/browser/measured-scale-runner.mjs
       - run: node tests/browser/contributor-workflows.mjs
       - run: npm run test:browser
@@ -183,6 +183,7 @@ jobs:
       - run: node tests/browser/page-editor-experience-adverse.mjs
       - run: npm run build
       - run: node tests/browser/optional-artwork.mjs
+      - run: node tests/browser/health-failures.mjs
       - run: node tests/browser/mission-chapter-links.mjs
       - run: node tests/browser/mission-objectives.mjs
       - run: node tests/browser/all-page-edit-links.mjs

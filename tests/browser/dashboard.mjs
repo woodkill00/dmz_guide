@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
+import { expectScriptCancellation } from "./health.mjs";
 export async function runDashboardTests({
   browser,
   base,
@@ -493,17 +494,35 @@ async function runDashboardManualTests({ browser, base }) {
   }
 }
 
-async function runDashboardModuleFailureTests({ browser, base }) {
+export async function runDashboardModuleFailureTests({ browser, base }) {
   const context = await browser.newContext();
+  expectScriptCancellation(context, {
+    label: "Deliberately interrupted dashboard module",
+    url: base + "/assets/src/client/dashboard.mjs",
+    errorText: {
+      chromium: "net::ERR_ABORTED",
+      firefox: "NS_ERROR_ABORT",
+      webkit: "Blocked by Web Inspector",
+    }[browser.browserType().name()],
+  });
   const page = await context.newPage(),
     errors = [];
+  const interrupted = [];
+  page.on("requestfailed", (request) => {
+    if (request.url() === base + "/assets/src/client/dashboard.mjs")
+      interrupted.push({
+        method: request.method(),
+        type: request.resourceType(),
+        reason: request.failure()?.errorText,
+      });
+  });
   page.on("pageerror", (e) => errors.push(e.message));
   await context.route("**/assets/src/client/dashboard.mjs", async (route) => {
     await page.evaluate(() => {
       dispatchEvent(new PageTransitionEvent("pagehide", { persisted: true }));
       dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true }));
     });
-    await route.abort();
+    await route.abort("aborted");
   });
   try {
     await page.goto(base + "/");
@@ -515,6 +534,13 @@ async function runDashboardModuleFailureTests({ browser, base }) {
       await page.locator('.hub-personal a[href="/features/"]').isVisible(),
     );
     assert.deepEqual(errors, []);
+    assert.equal(interrupted.length, 1);
+    assert.equal(interrupted[0].method, "GET");
+    assert.equal(interrupted[0].type, "script");
+    assert.match(
+      interrupted[0].reason,
+      /ERR_ABORTED|NS_BINDING_ABORTED|NS_ERROR_ABORT|Blocked by Web Inspector|cancelled|aborted/i,
+    );
     console.log(
       "087 interrupted dashboard module reports reload recovery with links retained PASS",
     );

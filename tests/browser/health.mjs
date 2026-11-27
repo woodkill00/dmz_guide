@@ -16,6 +16,39 @@ export async function optionalCamoArtwork(base) {
 }
 const expectedConsole = new WeakMap();
 const expectedResponses = new WeakMap();
+const expectedScriptAborts = new WeakMap();
+export function expectScriptCancellation(
+  context,
+  { label, url, errorText, count = 1 },
+) {
+  const target = new URL(url);
+  assert(
+    label &&
+      ["http:", "https:"].includes(target.protocol) &&
+      !target.search &&
+      !target.hash &&
+      !target.username &&
+      !target.password,
+  );
+  assert(
+    ["net::ERR_ABORTED", "NS_ERROR_ABORT", "Blocked by Web Inspector"].includes(
+      errorText,
+    ),
+    "Only explicit browser cancellation diagnostics may be scoped",
+  );
+  assert(Number.isInteger(count) && count > 0 && count <= 4);
+  assert(!expectedScriptAborts.has(context));
+  const scope = { label, url: target.href, errorText, count, observed: [] };
+  expectedScriptAborts.set(context, scope);
+  return () => {
+    assert.equal(
+      scope.observed.length,
+      count,
+      `${label}: exact script cancellations required`,
+    );
+    return [...scope.observed];
+  };
+}
 /** Only an isolated negative-test context may declare exact, bounded codec diagnostics. */
 export function expectConsoleErrors(context, { label, patterns, maxCount }) {
   assert(typeof label === "string" && label.length > 0);
@@ -111,9 +144,37 @@ export function monitorBrowser(browser, { optionalArtwork } = {}) {
   browser.newContext = async (...args) => {
     const context = await original(...args);
     const artwork = { responses: [], console: [] };
+    const pendingArtwork = new Set();
+    let closingRequested = false;
+    if (typeof context.close === "function") {
+      const close = context.close.bind(context);
+      context.close = async (...closeArgs) => {
+        closingRequested = true;
+        // Do not manufacture failed lazy-image requests by tearing down an
+        // otherwise healthy context mid-response. Never waive a real failure.
+        const deadline = performance.now() + 2500;
+        while (pendingArtwork.size && performance.now() < deadline)
+          await new Promise((resolve) => setTimeout(resolve, 25));
+        if (pendingArtwork.size)
+          failures.push(
+            "Optional artwork did not settle before owned context close: " +
+              [...pendingArtwork].map((request) => request.url()).join(", "),
+          );
+        return close(...closeArgs);
+      };
+    }
     artworkObservations.push(artwork);
     contexts.push(context);
     context.on("page", (page) => {
+      page.on("request", (request) => {
+        if (
+          artworkURLs.has(request.url()) &&
+          request.method() === "GET" &&
+          request.resourceType() === "image"
+        )
+          pendingArtwork.add(request);
+      });
+      page.on("requestfinished", (request) => pendingArtwork.delete(request));
       page.on("pageerror", (error) =>
         failures.push("JavaScript: " + error.message),
       );
@@ -156,9 +217,39 @@ export function monitorBrowser(browser, { optionalArtwork } = {}) {
         );
       });
       page.on("requestfailed", (request) => {
+        pendingArtwork.delete(request);
         const reason = request.failure()?.errorText || "";
+        const expected = expectedScriptAborts.get(context);
+        if (
+          expected &&
+          expected.observed.length < expected.count &&
+          request.url() === expected.url &&
+          request.method() === "GET" &&
+          request.resourceType() === "script" &&
+          reason === expected.errorText
+        ) {
+          expected.observed.push({
+            url: request.url(),
+            method: request.method(),
+            type: request.resourceType(),
+            reason,
+          });
+          return;
+        }
         if (!/ERR_ABORTED|NS_BINDING_ABORTED|cancelled/i.test(reason))
-          failures.push("Request: " + request.url() + " " + reason);
+          failures.push(
+            "Request: " +
+              request.url() +
+              " " +
+              reason +
+              " " +
+              JSON.stringify({
+                page: page.url?.() || null,
+                method: request.method?.() || null,
+                type: request.resourceType?.() || null,
+                closingRequested,
+              }),
+          );
       });
       page.on("response", (response) => {
         if (
@@ -221,6 +312,13 @@ export function monitorBrowser(browser, { optionalArtwork } = {}) {
         );
     }
     for (const context of contexts) {
+      const script = expectedScriptAborts.get(context);
+      if (script)
+        assert.equal(
+          script.observed.length,
+          script.count,
+          `${script.label}: exact script cancellations required`,
+        );
       const expected = expectedResponses.get(context);
       if (expected)
         assert.equal(
