@@ -50,8 +50,11 @@
 }
 .item-card {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--ui-space-4);
   min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   padding: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.001));
   border: 1px solid var(--line, var(--border));
   border-radius: var(--ui-radius-2);
@@ -70,7 +73,7 @@
   min-width: 0;
   font-weight: 650;
   line-height: 1.4;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
   word-break: normal;
   letter-spacing: normal;
   word-spacing: normal;

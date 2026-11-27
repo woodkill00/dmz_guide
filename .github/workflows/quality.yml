@@ -184,15 +184,18 @@ jobs:
       - run: npm run build
       - run: node tests/browser/optional-artwork.mjs
       - run: node tests/browser/health-failures.mjs
+      - run: npm run test:cards
       - run: node tests/browser/mission-chapter-links.mjs
       - run: node tests/browser/mission-objectives.mjs
       - run: node tests/browser/all-page-edit-links.mjs
-      - name: Save page editor visual evidence
+      - name: Save page editor and card visual evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: page-editor-094-evidence
-          path: test-results/page-editor-*.png
+          path: |
+            test-results/page-editor-*.png
+            test-results/card-reflow/
           retention-days: 14
           if-no-files-found: warn
 

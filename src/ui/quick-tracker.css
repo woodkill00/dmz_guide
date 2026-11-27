@@ -590,9 +590,9 @@ html[data-ui-variant]
   .upgrade-family
   .compact-progress
   button {
-  white-space: nowrap;
+  white-space: normal;
   width: auto;
-  min-width: max-content;
+  min-width: 0;
   padding: var(--ui-space-2) var(--ui-space-4);
 }
 .quick-tracker .upgrade-family .compact-progress .upgrade-summary {

@@ -137,9 +137,22 @@ export function weaponPicker(
     card.querySelector("[data-picker-manual]").checked =
       readable && !!record?.manual;
     card.querySelector("[data-picker-manual]").indeterminate = !readable;
-    card.querySelector("[data-weapon-context-progress]").textContent = readable
-      ? `Manual extractions ${count ?? "—"}/3`
-      : "Progress unavailable";
+    const countToken = readable ? `${count ?? "—"}/3` : "—/3";
+    card.querySelector("[data-weapon-context-progress]").textContent =
+      countToken;
+    const countMeaning = !readable
+      ? "Manual extraction progress is unavailable. Reload saved progress to review it."
+      : count === null || count === undefined
+        ? "Successful manual extractions have not been recorded. The goal is 3."
+        : `${count} of 3 successful manual extractions recorded.`;
+    const countHelp = card.querySelector("[data-picker-extraction-help]");
+    countHelp.setAttribute(
+      "aria-label",
+      `${countToken} · ${weapon.name}: ${countMeaning} Show count help.`,
+    );
+    countHelp.title = `${countMeaning} Manual ownership is tracked separately.`;
+    card.querySelector(".picker-count-description").textContent =
+      `${countMeaning} Use − and + to correct the count. Manual ownership is tracked separately.`;
     const selector = card.querySelector("[data-picker-camo-select]"),
       image = card.querySelector("[data-picker-camo-image]");
     if (!readable) {
@@ -306,6 +319,8 @@ export function weaponPicker(
     }
   });
   root.addEventListener("click", (event) => {
+    for (const help of root.querySelectorAll(".picker-count-help[open]"))
+      if (!help.contains(event.target)) help.open = false;
     const step = event.target.closest("[data-picker-extraction-step]");
     if (step) {
       if (editable && !step.disabled)
@@ -330,6 +345,16 @@ export function weaponPicker(
       );
     panel.hidden = !panel.hidden;
     button.setAttribute("aria-expanded", String(!panel.hidden));
+  });
+  root.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    const help = event.target.closest(".picker-count-help[open]");
+    if (help) {
+      help.open = false;
+      help.querySelector("summary").focus({ preventScroll: true });
+      event.preventDefault();
+      event.stopPropagation();
+    }
   });
   root.addEventListener(
     "error",

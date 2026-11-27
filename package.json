@@ -14,6 +14,7 @@
     "start": "node scripts/serve.mjs",
     "test": "node --test --test-concurrency=4 tests/runtime/*.test.mjs",
     "test:browser": "node tests/browser/run.mjs",
+    "test:cards": "node tests/browser/card-reflow.mjs && node tests/browser/reusable-card-reflow.mjs",
     "test:sitewide": "node tests/browser/sitewide-workflows.mjs",
     "test:tracker": "node tests/browser/quick-tracker.mjs",
     "check": "node scripts/check-python.mjs && npm test && npm run build",
