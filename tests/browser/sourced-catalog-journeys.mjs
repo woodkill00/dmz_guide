@@ -34,6 +34,8 @@ async function saved(page, revision) {
 }
 async function findProgress(page, query) {
   await openParentDetails(page.locator("#progress-state"));
+  // Search the full current catalog, independent of browser-restored filter values.
+  await page.locator("#progress-clear").click();
   await page.locator("#progress-state").selectOption("");
   await page.locator("#progress-query").fill(query);
   await page
