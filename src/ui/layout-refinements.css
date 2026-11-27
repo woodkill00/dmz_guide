@@ -128,6 +128,17 @@ html[data-layout-system="109"] .site-nav {
   padding-block: var(--ui-space-2);
   padding-inline: var(--ui-gutter);
 }
+html[data-layout-system="109"] .site-nav a {
+  min-inline-size: var(--ui-hit-primary);
+}
+html[data-layout-system="109"]
+  :is(
+    .provenance > p.muted,
+    #progress-rows dd,
+    #progress-rows .upgrade-summary > div > small
+  ) {
+  font-size: var(--ui-type-base);
+}
 html[data-layout-system="109"] :is(.nav-more > div, .site-tools-panel) {
   max-inline-size: var(--ui-overlay-inline);
   max-block-size: min(

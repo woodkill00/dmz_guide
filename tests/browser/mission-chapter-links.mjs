@@ -69,6 +69,10 @@ try {
           await page.locator("main h1").innerText(),
           `${set === "hajin" ? "Hajin" : "X01"} · Page 1`,
         );
+        await page.evaluate(() => document.fonts.ready);
+        await page.waitForFunction(
+          () => document.documentElement.scrollWidth <= innerWidth + 1,
+        );
         assert.equal(
           await page.evaluate(
             () => document.documentElement.scrollWidth <= innerWidth + 1,

@@ -860,6 +860,13 @@ body[data-page="local"] .page-heading > .eyebrow {
   color: var(--muted);
   font-size: var(--ui-type-label);
 }
+.requirements li > span {
+  min-inline-size: 0;
+}
+.requirements li > strong {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
 .stat-row,
 .claim {
   border-top: 1px solid var(--line);
