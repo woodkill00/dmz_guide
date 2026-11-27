@@ -6,6 +6,12 @@ export async function runHomeWorkflowTests({ browser, base }) {
     page = await context.newPage(),
     errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
+  // These are completed user journeys and layout measurements. Deliberately
+  // interrupted reads are exercised separately by the back-navigation tests.
+  const visit = async (url) => {
+    await page.goto(url);
+    await page.waitForLoadState("networkidle");
+  };
   const ready = () =>
     page.waitForFunction(
       () =>
@@ -13,7 +19,7 @@ export async function runHomeWorkflowTests({ browser, base }) {
         document.querySelector("#progress-rows")?.children.length,
     );
   try {
-    await page.goto(base + "/");
+    await visit(base + "/");
     await page
       .locator('#hub-pack option[value="official:mw4-dmz-starter"]')
       .waitFor({ state: "attached" });
@@ -37,9 +43,9 @@ export async function runHomeWorkflowTests({ browser, base }) {
       );
     });
     assert.equal(empty, undefined);
-    await page.goto(base + "/features/");
+    await visit(base + "/features/");
     await page.locator('[data-pin-feature="upgrades"]').click();
-    await page.goto(base + "/");
+    await visit(base + "/");
     await page.locator('#hub-pins a[href="/upgrades/"]').waitFor();
     await page.locator('#hub-pins a[href="/upgrades/"]').click();
     await ready();
@@ -102,7 +108,7 @@ export async function runHomeWorkflowTests({ browser, base }) {
     assert.deepEqual(after.inventory, before.inventory);
     assert.deepEqual(after.goals, before.goals);
     assert.equal(after.done, 1);
-    await page.goto(base + "/?pack=observed%3Aupgrade-review-20261026");
+    await visit(base + "/?pack=observed%3Aupgrade-review-20261026");
     await page.waitForFunction(() =>
       document.querySelector("#hub-progress").textContent.includes("1/28"),
     );
@@ -117,7 +123,7 @@ export async function runHomeWorkflowTests({ browser, base }) {
     assert.match(await page.locator("#hub-continue").innerText(), /Upgrades/);
     await page.waitForLoadState("networkidle");
     // Mission workflow deliberately uses the established clearly labeled fictional training catalog.
-    await page.goto(base + "/missions/?pack=demo%3Atraining-pack");
+    await visit(base + "/missions/?pack=demo%3Atraining-pack");
     await ready();
     const mission = page.locator('[data-progress-id="demo:delivery-order"]');
     await mission.waitFor({ state: "attached" });
@@ -159,7 +165,7 @@ export async function runHomeWorkflowTests({ browser, base }) {
       await page.locator("#pack-select").inputValue(),
       "demo:training-pack",
     );
-    await page.goto(base + "/?pack=demo%3Atraining-pack");
+    await visit(base + "/?pack=demo%3Atraining-pack");
     await page.waitForFunction(() =>
       document.querySelector("#hub-progress").textContent.includes("1/1"),
     );
@@ -212,7 +218,7 @@ export async function runHomeWorkflowTests({ browser, base }) {
     assert(await page.locator("#owned-attachments").isVisible());
     await page.keyboard.press("Control+k");
     await page.waitForURL("**/search/**");
-    await page.goto(base + "/features/");
+    await visit(base + "/features/");
     await page.locator("#feature-query").fill("routes");
     assert((await page.locator("[data-feature-card]:visible").count()) >= 1);
     assert.equal(
@@ -232,7 +238,7 @@ export async function runHomeWorkflowTests({ browser, base }) {
     ])
       for (const width of [320, 390, 768, 1440]) {
         await page.setViewportSize({ width, height: 1000 });
-        await page.goto(base + path);
+        await visit(base + path);
         for (const enlarged of [false, true]) {
           await page.evaluate(
             (z) => (document.documentElement.style.fontSize = z ? "200%" : ""),

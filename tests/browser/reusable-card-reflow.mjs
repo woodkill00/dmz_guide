@@ -128,6 +128,29 @@ try {
                 return {
                   bad,
                   overflow: node.scrollWidth > node.clientWidth + 1,
+                  ...(node.scrollWidth > node.clientWidth + 1
+                    ? {
+                        cardWidth: [node.scrollWidth, node.clientWidth],
+                        scrollingDescendants: [...node.querySelectorAll("*")]
+                          .filter((child) => {
+                            const box = child.getBoundingClientRect();
+                            return (
+                              box.width &&
+                              box.height &&
+                              child.scrollWidth > child.clientWidth + 1 &&
+                              !child.closest("table,.sr-only,[hidden]")
+                            );
+                          })
+                          .slice(0, 18)
+                          .map((child) => ({
+                            tag: child.className || child.tagName,
+                            text: child.textContent.trim().slice(0, 45),
+                            width: [child.scrollWidth, child.clientWidth],
+                            overflow: getComputedStyle(child).overflowX,
+                            font: getComputedStyle(child).font,
+                          })),
+                      }
+                    : {}),
                 };
               },
               { width, font },

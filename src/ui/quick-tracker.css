@@ -240,7 +240,8 @@
   max-height: none;
 }
 .quick-tracker .upgrade-completion-check {
-  white-space: nowrap;
+  white-space: normal;
+  flex-wrap: wrap;
 }
 .quick-tracker .panel {
   padding: var(--ui-space-5);
@@ -1536,10 +1537,13 @@ html[data-ui-variant]
 html[data-ui-variant]
   main.quick-tracker
   .upgrade-list-shell[data-layout]
-  .fob-upgrade-card
+  .fob-upgrade-card.compact-progress
   .upgrade-summary {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, calc(var(--ui-control) * 3)), 1fr)
+  );
   gap: var(--ui-space-3);
   padding: 0;
   width: auto;
