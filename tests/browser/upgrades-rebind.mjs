@@ -216,7 +216,8 @@ async function upload(page, profile, name) {
   });
 }
 async function seed(page, base, fixtures, retainPrior = true) {
-  await page.goto(base);
+  // Seeding needs this origin and storage, not Home's unrelated dashboard reads.
+  await page.goto(base + "/features/");
   return page.evaluate(
     async ({ before, after, profile, retainPrior }) => {
       const { commitRecord, saveProfile } = await import(

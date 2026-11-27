@@ -121,6 +121,7 @@ export async function runGunsmithTests({
             );
             layouts++;
           }
+      await page.waitForLoadState("networkidle");
     }
     if (expectLocalArt) {
       for (const [id, figure] of Object.entries(figures)) {
@@ -150,6 +151,7 @@ export async function runGunsmithTests({
           await page.screenshot({
             path: `test-results/gunsmith050-${route === "/armory/" ? "roster" : "detail"}-${width}.png`,
           });
+          await page.waitForLoadState("networkidle");
         }
     }
     // Early failed images precede deferred module execution on cold static pages.
