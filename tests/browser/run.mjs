@@ -36,8 +36,10 @@ try {
           ? { executablePath: "/usr/bin/chromium" }
           : {}),
   });
-  const { monitorBrowser } = await import("./health.mjs");
-  const checkHealth = monitorBrowser(browser);
+  const { monitorBrowser, optionalCamoArtwork } = await import("./health.mjs");
+  const checkHealth = monitorBrowser(browser, {
+    optionalArtwork: await optionalCamoArtwork(base),
+  });
   await mkdir("test-results", { recursive: true });
   await runArmoryTests({ browser, base });
   await runGunsmithTests({ browser, base });

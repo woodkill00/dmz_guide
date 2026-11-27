@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "A counter find inside Citadel Main Control Room was reported, not guaranteed.",
+  "id": "mw4:key-south-block-armory",
+  "kind": "item",
+  "name": "South Block Armory",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

@@ -1,3 +1,5 @@
+import { renderItemIcon } from "../../src/ui/item-card.mjs";
+import { CURRENCY_STOCK_LIMIT } from "../../src/domain/quantity-limits.mjs";
 import * as inventoryItems from "../../src/domain/inventory-items.mjs";
 import * as inventoryPresentation from "../../src/domain/inventory-presentation.mjs";
 import { itemUses } from "../../src/domain/item-uses.mjs";
@@ -16,6 +18,7 @@ import {
 import { stockLimit } from "../../src/domain/profile.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { keyItemReference } from "../../src/domain/key-item-links.mjs";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 
@@ -54,6 +57,7 @@ for (const count of [100, 1000, 5000]) {
       ...inventoryItems,
       ...inventoryPresentation,
       itemUses,
+      renderItemIcon,
       useLabels,
       useCell,
       upgradeNeedCell,
@@ -79,6 +83,7 @@ for (const count of [100, 1000, 5000]) {
         profile: { inventory: {}, reserves: {}, completion: {} },
       },
       esc: (s) => s,
+      keyItemReference,
     });
     assert(
       (fields.innerHTML.match(/data-inventory-item=/g) || []).length <= 50,
@@ -277,6 +282,7 @@ function nativeInvalidHarness() {
     reveals = 0;
   const draft = { firstInvalid: () => ({ id: "demo:item-75" }) };
   const context = {
+    CURRENCY_STOCK_LIMIT,
     inventoryDraft: draft,
     pendingInventoryInvalid: null,
     state: { pack: { id: "demo:pack" }, loading: false, saving: false },

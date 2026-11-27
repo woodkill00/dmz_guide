@@ -1,0 +1,14 @@
+# Acceptance — 2026-11-21
+
+FR01–03: /armory/workbench/#acquisition used33 combat-stat identities instead of the existing35 acquisition identities. Separate validated acquisitionWeapons now supplies roster, class options, selected acquisition picker, matching/manual totals and archive classification. Cronen Osprey and CSG-35 are both present, with their existing25-camo rows and same inline completion/manual save owner. Combat comparison/build/evidence remain limited to actual33-weapon database; no unknown stats/attachments added. Acquisition-only names route to the existing /armory/acquisition/?weapon=ID#weapon-ID rather than missing combat detail pages.
+
+No new game fact, source/data edits, schema or migration. Existing acquisition entries are retained whole when toggled; manual extraction counters, named/custom blueprints, camos and other weapons are not reset or completed automatically. Alias/name fallback resolves known acquisition identities; only genuinely unknown saved IDs remain archived.
+
+Executed Windows/Node24 receipts:
+- 104-runtime.log19/19 PASS: exact acquisition payload/picker35 vs unchanged combat/build33, both missing identities and25-camo metadata; existing acquisition/armory/camo domain behavior.
+- 104-browser.log Chromium/Firefox/WebKit PASS: exact35 roster identity set,35 tracker options, both omitted guns excluded from combat selectors and supplied25 camo buttons; preexisting Cronen manual,2 extraction records, custom blueprint and camo1 load. Search/class/select correct, canonical acquisition name link returns200, manual untick/tick and camo2 save/reload/dedicated-page parity preserve2 extractions/custom blueprint/unrelated M4 count3. Cronen is no longer falsely archived.
+- 104-preview-regression.log all three engines PASS with updated canonical acquisition roster coverage on both pages: all875 camos, exact requirements/keyboard, icon clicks read-only, persisted/shared state, panel retention, actual border colors, mobile layout and missing-art fallback.
+- 104-workbench-regression.log existing Chromium049 workbench suite PASS:40 responsive/text layouts, saved/shared builds, screenshot observations, comparison, tracker, backups/cancel/superseding reads, stale CAS, quota retention/reload. No all-three baseline repeat claimed.
+- 104-topology.log11/11 current registry/build tests PASS;104-build.log2109 guide routes plus404;104-map-build.log eight map entries refreshed. Full104-format.log pass;104-structure.log zero failures. Current feature inventory regenerated; local4173 ready/maps true.
+
+Independent source/evidence disposition is reviewer-owned review.md. No remaining scoped implementation-known gap; production source frozen for final checks. No full aggregate/package/remote CI claim, owner private data read/change, push/main merge/publication. Rollback changes visible coverage only and retains saved records.

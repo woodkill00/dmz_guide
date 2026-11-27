@@ -1,7 +1,7 @@
 name: Repository quality
 on:
   push:
-    branches: [main, '002-repository-bootstrap']
+    branches: [main, "002-repository-bootstrap"]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -29,10 +29,10 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '22.x'
+          node-version: "22.x"
           package-manager-cache: false
       - name: Check repository contracts and provenance
         run: python scripts/check.py
@@ -67,7 +67,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '22.x'
+          node-version: "22.x"
           package-manager-cache: false
       - name: Report selected Node
         run: node --version
@@ -75,8 +75,9 @@ jobs:
       - run: npm run map:install
       - run: npm run format:check
       - run: npm run build
+      - run: npm run ui:audit
       - run: npm test
-      - run: npx playwright install chromium
+      - run: npx playwright install --with-deps chromium firefox webkit
       - run: node tests/browser/measured-scale-runner.mjs
       - run: node tests/browser/contributor-workflows.mjs
       - run: npm run test:browser
@@ -151,10 +152,11 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.x'
+          node-version: "24.x"
           package-manager-cache: false
       - run: node --version
       - run: npm ci --ignore-scripts
+      - run: npm run map:install
       - run: npm run format:check
       - run: npm run build
       - run: npm test
@@ -170,15 +172,18 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
-          node-version: '22.x'
+          node-version: "22.x"
           package-manager-cache: false
       - run: npm ci --ignore-scripts
       - run: npm run map:install
       - run: npx playwright install --with-deps chromium firefox webkit
       - run: node tests/browser/page-editor-run.mjs
+      - run: node tests/browser/capture-settlement.mjs
       - run: node tests/browser/page-editor-experience.mjs
       - run: node tests/browser/page-editor-experience-adverse.mjs
       - run: npm run build
+      - run: node tests/browser/optional-artwork.mjs
+      - run: node tests/browser/health-failures.mjs
       - run: node tests/browser/mission-chapter-links.mjs
       - run: node tests/browser/mission-objectives.mjs
       - run: node tests/browser/all-page-edit-links.mjs
@@ -201,7 +206,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '22.x'
+          node-version: "22.x"
           package-manager-cache: false
       - run: npm ci --ignore-scripts
       - run: npm run build

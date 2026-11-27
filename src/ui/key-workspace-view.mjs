@@ -1,4 +1,5 @@
 import { allKeys, keyAccess } from "../content/key-access.mjs";
+import { keyReference, keyMapRoster } from "../content/key-reference.mjs";
 import { keyRoomDetails } from "../content/key-room-details.mjs";
 import { e } from "./render.mjs";
 export function gridReferences(value) {
@@ -12,6 +13,24 @@ export function gridReferences(value) {
   );
 }
 export function keyMapLinks(use, key) {
+  const ref = keyReference(key.id);
+  if (ref?.mapId === "x01") {
+    return ref.markers.length
+      ? ref.markers
+          .map(
+            (m) =>
+              `<a class="key-map-link" href="/map/x01/?floor=${m.floor}&amp;marker=${e(m.id)}" target="_blank" rel="noopener noreferrer">X01 · Floor ${m.floor} ↗</a>`,
+          )
+          .join(" ")
+      : '<a class="key-map-link" href="/map/x01/" target="_blank" rel="noopener noreferrer">X01 map ↗</a><small>No matching marker in current capture</small>';
+  }
+  if (ref?.markers.length)
+    return ref.markers
+      .map(
+        (m) =>
+          `<a class="key-map-link" href="/map/?key-source=${m.provider}&amp;key-marker=${e(m.id)}" target="_blank" rel="noopener noreferrer">${ref.markers.length > 1 ? e(keyMapRoster.sources.find((s) => s.mapId === ref.mapId && s.provider === m.provider).markers.find((r) => r.id === m.id).name) : "Map marker"} ↗</a>`,
+      )
+      .join(" ");
   const refs = gridReferences(use.grid);
   return refs.length
     ? refs
@@ -65,6 +84,6 @@ export function keySourceReview() {
     ["grid-conflict", "unresolved-identity"].includes(c.status),
   );
   const rows = (list, label) =>
-    `<div data-ui-directory aria-label="${e(label)}" data-ui-directory-pagination="true" data-ui-directory-sticky-identity="true"><div class="armory-table-wrap" data-ui-directory-scroll role="region" aria-label="Key source comparisons" tabindex="0"><table class="armory-table"><thead><tr><th scope="col">Source key</th><th scope="col">Provider grid</th><th scope="col">Status</th><th scope="col">Review note</th></tr></thead><tbody data-ui-directory-rows>${list.map((c) => `<tr><th scope="row">${c.keyId ? `<a href="/keys/${c.keyId}/">${e(c.keyName)}</a>` : e(c.keyName)}</th><td>${e(c.grid)}</td><td>${e(c.status.replace(/-/g, " "))}</td><td>${e(c.note)} <a href="${e(c.sourceURL)}" target="_blank" rel="noopener noreferrer">${e(c.sourceName)} · ${e(c.sourceDate)}</a></td></tr>`).join("")}</tbody></table></div></div>`;
+    `<div data-ui-directory aria-label="${e(label)}" data-ui-directory-pagination="true" data-ui-directory-sticky-identity="true"><div class="armory-table-wrap" data-ui-directory-scroll role="region" aria-label="Key source comparisons"><table class="armory-table key-source-comparison"><thead><tr><th scope="col">Source key</th><th scope="col">Provider grid</th><th scope="col">Status</th><th scope="col">Review note</th></tr></thead><tbody data-ui-directory-rows>${list.map((c) => `<tr><th scope="row">${c.keyId ? `<a href="/keys/${c.keyId}/">${e(c.keyName)}</a>` : e(c.keyName)}</th><td data-label="Provider grid">${e(c.grid)}</td><td data-label="Status">${e(c.status.replace(/-/g, " "))}</td><td data-label="Review note">${e(c.note)} <a href="${e(c.sourceURL)}" target="_blank" rel="noopener noreferrer">${e(c.sourceName)} · ${e(c.sourceDate)}</a></td></tr>`).join("")}</tbody></table></div></div>`;
   return `<details id="key-source-review" class="panel"><summary>Catalog coverage and source differences (${issues.length} to review)</summary><p>${keyRoomDetails.comparisons.length} records compared from the DMZTracker index; checked ${e(keyRoomDetails.checkedAt)}. New reports remain unverified. Matched names do not prove matching doors. Existing grids and the player-reported hospital chain were retained.</p>${rows(issues, "Key source differences to review")}<details><summary>All provider comparisons (${keyRoomDetails.comparisons.length})</summary>${rows(keyRoomDetails.comparisons, "All key source comparisons")}</details></details>`;
 }

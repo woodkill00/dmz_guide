@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Keys · X01",
+  "description": "Reported as loot; no guaranteed source established.",
+  "id": "mw4:key-x01-vault-drc-locker",
+  "kind": "item",
+  "name": "X01 Vault DRC Locker Key",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1",
+    "source:key-reference-a3147e38e43b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

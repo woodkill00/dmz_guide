@@ -40,7 +40,7 @@ try {
   await page.locator("#confirm-currency-format").click();
   await page.locator("#currency-format-confirm").waitFor({ state: "detached" });
   assert.match(await page.locator("#error").innerText(), /changed/);
-  assert.equal(await input.inputValue(), "1333601");
+  assert.equal(await input.inputValue(), "1,333,601");
   await page.evaluate(async () => {
     const { state } = await import("/assets/src/client/common.mjs");
     state.revision--;
@@ -62,7 +62,7 @@ try {
       .querySelector('#currency-format-confirm [role="alert"]')
       ?.textContent.includes("not confirmed"),
   );
-  assert.equal(await input.inputValue(), "1333601");
+  assert.equal(await input.inputValue(), "1,333,601");
   assert.equal(
     await page.evaluate(
       async () =>
@@ -75,7 +75,7 @@ try {
     99,
   );
   await page.locator("#cancel-currency-format").click();
-  assert.equal(await input.inputValue(), "1333601");
+  assert.equal(await input.inputValue(), "1,333,601");
   console.log(
     "PASS: staged-revision invalidation and durable CAS conflict do not overwrite newer stock or discard cash draft.",
   );

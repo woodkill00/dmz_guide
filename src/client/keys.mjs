@@ -5,6 +5,7 @@ const form = document.querySelector("#key-filters"),
   search = document.querySelector("#key-search"),
   type = document.querySelector("#key-type"),
   locationFilter = document.querySelector("#key-location"),
+  regionFilter = document.querySelector("#key-region"),
   view = document.querySelector("#key-view"),
   groups = [...document.querySelectorAll("[data-key-group]")],
   rows = [...document.querySelectorAll("[data-key-row]")];
@@ -25,6 +26,7 @@ function filter(preserveActive = false) {
         row.querySelector("[data-target-use]")?.dataset.targetUse,
       );
     let matches =
+      (!regionFilter?.value || regionFilter.value === row.dataset.region) &&
       (!type.value || type.value === row.dataset.category) &&
       (!locationFilter.value || locationFilter.value === row.dataset.group) &&
       words.every((w) => text.includes(w));
@@ -60,13 +62,19 @@ function filter(preserveActive = false) {
     group.querySelector("[data-group-count]").textContent =
       `(${n} ${n === 1 ? "key" : "keys"})`;
     if (
-      words.length ||
-      type.value ||
-      locationFilter.value ||
-      selected !== "all"
+      !preserveActive &&
+      (words.length ||
+        type.value ||
+        regionFilter?.value ||
+        locationFilter.value ||
+        selected !== "all")
     )
       group.open = true;
   }
+  for (const block of document.querySelectorAll("[data-key-region-block]"))
+    block.hidden = ![...block.querySelectorAll("[data-key-group]")].some(
+      (g) => !g.hidden,
+    );
   document.querySelector("#key-count").textContent =
     `${unique.size} of ${new Set(rows.map((row) => row.dataset.keyId)).size} keys · ${visible} matching ${visible === 1 ? "use location" : "use locations"} · ${count} map ${count === 1 ? "area" : "areas"}`;
   document.querySelector("#key-empty").hidden = !!visible;
@@ -74,6 +82,18 @@ function filter(preserveActive = false) {
 workspace = mountKeyWorkspace(() => filter(true));
 if (form) {
   form.hidden = false;
+  const areaActions = document.querySelector("#key-area-actions");
+  if (areaActions) {
+    areaActions.hidden = false;
+    for (const [id, open] of [
+      ["key-expand-areas", true],
+      ["key-collapse-areas", false],
+    ])
+      document.getElementById(id)?.addEventListener("click", (event) => {
+        if (!open) event.currentTarget.focus({ preventScroll: true });
+        for (const group of groups) group.open = open;
+      });
+  }
   const menu = document.querySelector("#key-filter-menu");
   if (menu && matchMedia("(max-width:600px)").matches) menu.open = false;
   form.addEventListener("submit", (e) => e.preventDefault());
@@ -84,6 +104,7 @@ if (form) {
     search.value = "";
     type.value = "";
     locationFilter.value = "";
+    if (regionFilter) regionFilter.value = "";
     view.value = "all";
     groups.forEach((group) => (group.open = true));
     filter();
@@ -91,7 +112,7 @@ if (form) {
   document.addEventListener("focusout", (event) => {
     const row = event.target.closest("[data-key-row]");
     if (row && !row.contains(event.relatedTarget))
-      queueMicrotask(() => filter());
+      queueMicrotask(() => filter(true));
   });
   filter();
 }

@@ -22,7 +22,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { runEditorTests } from "./editor.mjs";
 import { runLocalNetworkTests } from "./offline.mjs";
-import { monitorBrowser } from "./health.mjs";
+import { monitorBrowser, optionalCamoArtwork } from "./health.mjs";
 await writeFile("dist/__test-text-zoom.css", ":root{font-size:200%}");
 const server = await startBrowserServer();
 const { base } = server;
@@ -32,7 +32,9 @@ try {
   await mkdir("test-results", { recursive: true });
   for (const [name, engine] of Object.entries({ firefox, webkit })) {
     const browser = await engine.launch({ headless: true });
-    const health = monitorBrowser(browser);
+    const health = monitorBrowser(browser, {
+      optionalArtwork: await optionalCamoArtwork(base),
+    });
     try {
       await runArmoryTests({ browser, base });
       await runGunsmithTests({ browser, base });

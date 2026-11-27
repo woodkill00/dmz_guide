@@ -1,10 +1,13 @@
+@import "./layout-tokens.css";
+@import "./layout-refinements.css";
+@import "./site-tools.css";
 .companion-nav {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: var(--ui-space-2);
   margin: 0;
-  padding: 4px 12px;
+  padding: var(--ui-space-2) var(--ui-space-6);
   background: #182019;
   color: #eff3e5;
   border-bottom: 1px solid #81956266;
@@ -23,10 +26,10 @@
   display: flex;
   align-items: center;
   min-height: 44px;
-  padding: 8px 12px;
+  padding: var(--ui-space-4) var(--ui-space-6);
   color: #eff3e5;
   text-decoration: none;
-  border-radius: 4px;
+  border-radius: var(--ui-radius-1);
   box-sizing: border-box;
   overflow-wrap: anywhere;
 }
@@ -61,24 +64,24 @@
   right: 12px;
   top: 100%;
   width: 230px;
-  max-width: calc(100vw - 24px);
-  max-height: 60dvh;
+  max-width: calc(var(--ui-viewport-inline) - 24px);
+  max-height: calc(var(--ui-viewport-block) * 0.6);
   overflow: auto;
   background: #182019;
   border: 1px solid #81956288;
   box-shadow: 0 10px 30px #0008;
-  padding: 6px;
+  padding: var(--ui-space-3);
   z-index: 1;
 }
 @media (max-width: 600px) {
   .companion-nav {
     gap: 0;
-    padding: 4px 8px;
-    font-size: 0.75rem;
+    padding: var(--ui-space-2) var(--ui-space-4);
+    font-size: var(--ui-type-meta);
   }
   .companion-nav a,
   .companion-nav summary {
-    padding: 8px;
+    padding: var(--ui-space-4);
   }
   .companion-nav .nav-more > div {
     right: 8px;
@@ -86,8 +89,8 @@
 }
 
 .companion-nav .nav-group-label {
-  margin: 8px 4px 2px;
-  padding: 6px 8px;
+  margin: var(--ui-space-4) var(--ui-space-2) var(--ui-space-1);
+  padding: var(--ui-space-3) var(--ui-space-4);
   font-size: 0.8em;
   font-weight: 700;
   color: #d4de9b;
@@ -102,6 +105,6 @@
     position: static;
     width: 100%;
     max-width: 100%;
-    max-height: 50dvh;
+    max-height: calc(var(--ui-viewport-block) * 0.5);
   }
 }

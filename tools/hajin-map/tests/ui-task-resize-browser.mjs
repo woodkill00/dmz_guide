@@ -197,6 +197,7 @@ try {
       );
       await page.setViewportSize({ width: 390, height: 844 });
       await settle(page);
+      await page.waitForFunction(() => document.getElementById('ui-map-task-resizer').hidden);
       assert.equal(await handle.isVisible(), false);
       await page.setViewportSize({ width: 1440, height: 1000 });
       await ready();

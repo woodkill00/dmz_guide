@@ -305,3 +305,18 @@ test("route stops only add a unique exact sourced key use", () => {
     [],
   );
 });
+
+test("101 higher cash stays known in run readiness and protected reserves are respected", () => {
+  const doc = addRunPlan(emptyRunPlans(pack), plan("cash-run", 700));
+  const profile = {
+    packId: pack.id,
+    contentVersion: pack.contentVersion,
+    inventory: { "fixture:item": 6209662 },
+    reserves: { "fixture:item": 6209000 },
+  };
+  const result = evaluateRunReadiness(doc, profile).rows[0].reservations[0];
+  assert.equal(result.status, "short");
+  assert.equal(result.available, 662);
+  assert.equal(result.missing, 38);
+  assert.equal(profile.inventory["fixture:item"], 6209662);
+});

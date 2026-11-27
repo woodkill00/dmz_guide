@@ -105,6 +105,7 @@ try {
   assert.match(await page.locator("#observation-list").textContent(), /SYNTHETIC test observation/);
   assert.match(await page.locator("#road-status").textContent(), /imported road segments/);
   const axe = await new AxeBuilder({ page }).analyze();
+  if (axe.violations.length) console.log(JSON.stringify(axe.violations.map(v => ({id:v.id, nodes:v.nodes.map(n => ({html:n.html,target:n.target}))})), null, 2));
   assert.deepEqual(axe.violations.map((violation) => ({ id: violation.id, nodes: violation.nodes.length })), []);
   await page.evaluate(() => localStorage.setItem("hajin-loot-run-observations-v1", "{bad"));
   await page.reload();

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-11-02",
+  "checkedAt": "2026-11-22",
   "keys": [
     {
       "id": "hospital-chemical-lab",
@@ -1154,6 +1154,519 @@
           "url": "https://dmztracker.com/keys/",
           "label": "DMZTracker · key index",
           "date": "2026-11-01"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "boathouse-key",
+      "name": "Boathouse Key",
+      "aliases": [],
+      "category": "story",
+      "acquisition": "Mission item reported from Colossus during Operation Fallen Ember.",
+      "locations": [
+        {
+          "name": "Haneul Nuclear Reactor boathouse",
+          "grid": "I4"
+        }
+      ],
+      "steps": [
+        "Opens the reactor island boathouse garage. Mission item; persistent stash behavior is not established."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+          "label": "COD Central key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "helicopter-key",
+      "name": "Helicopter Key",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "Mission item reported from the pilot during Sky Heist.",
+      "locations": [
+        {
+          "name": "Sky Heist heavy chopper",
+          "grid": "H6"
+        }
+      ],
+      "steps": [
+        "Used for the Sky Heist chopper; this is a mission reference, not proof of a permanent stash key."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+          "label": "COD Central key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "downtown-branch-lobby-main",
+      "name": "Downtown Branch Lobby Main",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no guaranteed source established.",
+      "locations": [
+        {
+          "name": "Hanex Bank branch · The Grid",
+          "grid": "G6"
+        }
+      ],
+      "steps": [
+        "Opens the branch lobby; distinct from the vault-access card."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+          "label": "COD Central key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "netshin-security-office",
+      "name": "Netshin Security Office",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as field loot; no guaranteed source established.",
+      "locations": [
+        {
+          "name": "Netshin Tech Complex · The Grid",
+          "grid": "G6"
+        }
+      ],
+      "steps": [
+        "Upper-floor office; distinct from Netshin IT Room."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+          "label": "COD Central key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-deep-vault-106",
+      "name": "Deep Vault 106",
+      "aliases": [],
+      "category": "unknown",
+      "acquisition": "Acquisition reports differ; check the source before a run.",
+      "locations": [
+        {
+          "name": "Deep Vault Room 106",
+          "grid": "C2"
+        }
+      ],
+      "steps": [
+        "Numbered room inside the Deep Vault."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-deep-vault-301",
+      "name": "Deep Vault 301",
+      "aliases": [
+        "Deep Vault Room 301"
+      ],
+      "category": "boss",
+      "acquisition": "Reported Captain drop; not guaranteed.",
+      "locations": [
+        {
+          "name": "Deep Vault Room 301",
+          "grid": "B1"
+        }
+      ],
+      "steps": [
+        "Gate access and the numbered room are separate uses of this card."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-deep-vault-406",
+      "name": "Deep Vault 406",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "Reported on the Executive Room desk.",
+      "locations": [
+        {
+          "name": "Deep Vault Room 406",
+          "grid": "C1"
+        }
+      ],
+      "steps": [
+        "Check the matching room number before using the card."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-vault-drc-locker",
+      "name": "X01 Vault DRC Locker Key",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported as loot; no guaranteed source established.",
+      "locations": [
+        {
+          "name": "X01 Vault DRC Locker",
+          "grid": "B1"
+        }
+      ],
+      "steps": [
+        "Opens the X01 vault locker, not the three Hajin DRC lockers."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-maintenance-room",
+      "name": "Maintenance Room",
+      "aliases": [
+        "Maintenance Access Card",
+        "Maintenance Access"
+      ],
+      "category": "local",
+      "acquisition": "Encode a blank card using Maintenance Access.",
+      "locations": [
+        {
+          "name": "X01 Maintenance Room",
+          "grid": "E5"
+        }
+      ],
+      "steps": [
+        "Encoded-card label and room name refer to the same tracked key."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-small-test-chamber",
+      "name": "Small Test Chamber",
+      "aliases": [
+        "Engineering Access Card",
+        "Engineering Access"
+      ],
+      "category": "local",
+      "acquisition": "Encode a blank card using Engineering Access.",
+      "locations": [
+        {
+          "name": "X01 Small Test Chamber",
+          "grid": "E4"
+        }
+      ],
+      "steps": [
+        "Encoded-card label and room name refer to the same tracked key."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-executive-room",
+      "name": "Executive Room",
+      "aliases": [
+        "Executive Access Card",
+        "Executive Access"
+      ],
+      "category": "local",
+      "acquisition": "Encode a blank card using Executive Access.",
+      "locations": [
+        {
+          "name": "X01 Executive Room",
+          "grid": "C4"
+        }
+      ],
+      "steps": [
+        "Encoded-card label and room name refer to the same tracked key."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-audit-room",
+      "name": "Audit Room",
+      "aliases": [
+        "Audit Officer Access Card",
+        "Audit Officer Access"
+      ],
+      "category": "local",
+      "acquisition": "Encode a blank card using Audit Officer Access.",
+      "locations": [
+        {
+          "name": "X01 Audit Room",
+          "grid": "G4"
+        }
+      ],
+      "steps": [
+        "Encoded-card label and room name refer to the same tracked key."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-superintendent-office",
+      "name": "Superintendent's Office",
+      "aliases": [
+        "Superintendent´s Office"
+      ],
+      "category": "loot",
+      "acquisition": "Reported as loot; no guaranteed source established.",
+      "locations": [
+        {
+          "name": "X01 Superintendent's Office",
+          "grid": "E3"
+        }
+      ],
+      "steps": [
+        "Source grids differ; follow the selected provider marker."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-chol-min-stash-room",
+      "name": "Lt. Chol-Min's Stash Room",
+      "aliases": [],
+      "category": "unknown",
+      "acquisition": "Lieutenant-drop reports differ; no guaranteed source established.",
+      "locations": [
+        {
+          "name": "X01 Lt. Chol-Min's Stash Room",
+          "grid": "E7"
+        }
+      ],
+      "steps": [
+        "DMZHub marks E7; DMZTracker reports D7. Keep the provider distinction."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-staff-emergency-exfil-keycard",
+      "name": "Staff Emergency Exfil Keycard",
+      "aliases": [
+        "Emergency Egress Keycard"
+      ],
+      "category": "loot",
+      "acquisition": "Reported X01 loot or an X01 printer output.",
+      "locations": [
+        {
+          "name": "X01 emergency exfil shafts",
+          "grid": "Not recorded"
+        }
+      ],
+      "steps": [
+        "Emergency extraction card; several shafts use it."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmzmap.com/keys",
+          "label": "DMZMap key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-encodable-blank-keycard",
+      "name": "Encodable Blank Keycard",
+      "aliases": [],
+      "category": "loot",
+      "acquisition": "Reported X01 loot or an X01 printer output.",
+      "locations": [
+        {
+          "name": "X01 keycard encoder stations",
+          "grid": "Not recorded"
+        }
+      ],
+      "steps": [
+        "Not a door key by itself; encode it into a room access card."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmzmap.com/keys",
+          "label": "DMZMap key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-archive-closet",
+      "name": "Archive Closet",
+      "aliases": [],
+      "category": "unknown",
+      "acquisition": "No established pickup location.",
+      "locations": [
+        {
+          "name": "X01 Data Center archive closet",
+          "grid": "H5"
+        }
+      ],
+      "steps": [
+        "Room is reported but missing from our current named map-marker capture. Floor reports differ; no floor is assigned."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmzmap.com/keys",
+          "label": "DMZMap key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "status": "source-reported-unverified"
+    },
+    {
+      "id": "x01-super-user-data-access-keycard",
+      "name": "Super User Data Access Keycard",
+      "aliases": [],
+      "category": "local",
+      "acquisition": "Reported in flooded barracks after power is cut.",
+      "locations": [
+        {
+          "name": "X01 Supply Depot flooded barracks",
+          "grid": "F2"
+        }
+      ],
+      "steps": [
+        "Order item reported for Water Wading; no door use established."
+      ],
+      "requirements": [],
+      "sources": [
+        {
+          "url": "https://dmzmap.com/keys",
+          "label": "DMZMap key directory",
+          "date": "2026-11-22"
         }
       ],
       "status": "source-reported-unverified"

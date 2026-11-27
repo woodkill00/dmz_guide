@@ -6,7 +6,7 @@ body {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 1rem;
+  gap: var(--ui-space-8);
   border-bottom: 1px solid var(--line);
 }
 .pe-header > div {
@@ -36,35 +36,35 @@ body {
   border-color: var(--accent);
 }
 .pe-header .eyebrow {
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
   letter-spacing: 0.12em;
 }
 .pe-header #pe-identity {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
   color: var(--muted);
-  max-width: calc(65vw - 1rem);
+  max-width: calc(calc(var(--ui-viewport-inline) * 0.65) - 1rem);
   overflow-wrap: anywhere;
 }
 .pe-header-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
   align-items: flex-start;
   flex-wrap: wrap;
 }
 .pe-navigation {
-  max-width: min(28rem, 90vw);
+  max-width: min(28rem, calc(var(--ui-viewport-inline) * 0.9));
 }
 .pe-navigation > summary {
   cursor: pointer;
-  padding: 0.5rem;
+  padding: var(--ui-space-4);
 }
 .pe-workspace-tools {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  padding-block: 0.6rem;
-  font-size: 0.8rem;
+  gap: var(--ui-space-3);
+  padding-block: var(--ui-space-5);
+  font-size: var(--ui-type-meta);
 }
 .pe-workspace-tools > details {
   max-width: 22rem;
@@ -72,33 +72,33 @@ body {
 .pe-workspace-tools label {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--ui-space-3);
 }
 .pe-workspace-tools input[type="range"] {
-  width: min(12rem, 50vw);
+  width: min(12rem, calc(var(--ui-viewport-inline) * 0.5));
 }
 .pe-header {
-  padding: calc(0.75rem + 0.5vw);
+  padding: calc(var(--ui-space-6) + calc(var(--ui-viewport-inline) * 0.005));
 }
 .pe-header h1 {
-  font-size: 1.5rem;
-  margin: 0.3rem 0;
+  font-size: var(--ui-type-title);
+  margin: var(--ui-space-2) 0;
 }
 #page-workbench {
   max-width: none;
-  padding: calc(0.5rem + 0.4vw);
+  padding: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.004));
   container-type: inline-size;
 }
 .pe-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--ui-space-3);
   position: sticky;
   top: 0;
   z-index: 3;
   background: var(--bg);
-  padding: 0.5rem;
+  padding: var(--ui-space-4);
   border-bottom: 1px solid var(--line);
 }
 .pe-bar p {
@@ -107,7 +107,7 @@ body {
 }
 .pe-bar button,
 .pe-bar a {
-  font-size: 0.8rem;
+  font-size: var(--ui-type-meta);
 }
 .pe-grid {
   display: grid;
@@ -115,7 +115,7 @@ body {
       14rem,
       20rem
     );
-  gap: calc(0.5rem + 0.4vw);
+  gap: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.004));
   align-items: start;
 }
 .pe-grid {
@@ -139,19 +139,19 @@ body {
 .pe-outline,
 .pe-inspector {
   position: sticky;
-  top: calc(4.5rem + 1vh);
-  max-height: calc(100dvh - 7rem);
+  top: calc(4.5rem + calc(var(--ui-viewport-block) * 0.01));
+  max-height: calc(var(--ui-viewport-block) - 7rem);
   overflow: auto;
   scrollbar-gutter: stable;
 }
 .pe-mode-tabs {
   display: flex;
-  gap: 0.3rem;
+  gap: var(--ui-space-2);
   position: sticky;
   top: -0.65rem;
   z-index: 2;
   background: var(--surface);
-  padding-block: 0.4rem;
+  padding-block: var(--ui-space-3);
 }
 .pe-mode-tabs button {
   flex: 1 1 auto;
@@ -169,13 +169,13 @@ body {
 .pe-inspector textarea {
   overflow: auto;
   resize: vertical;
-  max-height: calc(75dvh - 5rem);
+  max-height: calc(calc(var(--ui-viewport-block) * 0.75) - 5rem);
 }
 .pe-task-row {
-  padding: 0.45rem;
+  padding: var(--ui-space-4);
   border: 1px solid var(--line);
-  border-radius: 0.35rem;
-  margin-block: 0.4rem;
+  border-radius: var(--ui-radius-1);
+  margin-block: var(--ui-space-3);
 }
 .pe-resize-handle {
   position: absolute;
@@ -198,17 +198,17 @@ body {
   outline: 2px solid var(--accent);
 }
 .pe-context-help {
-  font-size: 0.78rem;
+  font-size: var(--ui-type-meta);
   color: var(--muted);
 }
 #pe-sections li {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.35rem;
+  gap: var(--ui-space-3);
   align-items: start;
 }
 #pe-sections input {
-  margin-block: 0.6rem;
+  margin-block: var(--ui-space-5);
 }
 #pe-sections button {
   margin: 0;
@@ -216,7 +216,7 @@ body {
 #pe-preview [data-pe-block] {
   cursor: text;
   border: 1px solid transparent;
-  border-radius: 0.25rem;
+  border-radius: var(--ui-radius-1);
 }
 #pe-preview [data-pe-block]:hover {
   border-color: var(--line);
@@ -227,14 +227,14 @@ body {
   outline-offset: 2px;
 }
 .pe-error-summary {
-  padding: 0.7rem;
+  padding: var(--ui-space-6);
   border: 2px solid var(--danger, #ffb8a8);
-  border-radius: 0.4rem;
-  margin-block: 0.5rem;
+  border-radius: var(--ui-radius-2);
+  margin-block: var(--ui-space-4);
 }
 .pe-error-summary button {
   text-align: left;
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
   text-decoration: underline;
 }
 .pe-inline-error {
@@ -248,15 +248,15 @@ body {
 .pe-library {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(7rem, 100%), 1fr));
-  gap: 0.4rem;
-  max-height: calc(50dvh - 2rem);
+  gap: var(--ui-space-3);
+  max-height: calc(calc(var(--ui-viewport-block) * 0.5) - 2rem);
   overflow: auto;
 }
 .pe-library button {
   min-width: 0;
   overflow-wrap: anywhere;
   text-align: left;
-  font-size: 0.7rem;
+  font-size: var(--ui-type-meta);
 }
 .pe-library img {
   width: 100%;
@@ -265,8 +265,8 @@ body {
 }
 #pe-picture-drop {
   border: 1px dashed var(--line);
-  padding: 0.5rem;
-  border-radius: 0.4rem;
+  padding: var(--ui-space-4);
+  border-radius: var(--ui-radius-2);
 }
 #pe-picture-drop[data-drag="true"] {
   border-color: var(--accent);
@@ -284,8 +284,8 @@ body {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-4) 0;
   border-bottom: 1px solid var(--line);
 }
 .pe-history-row > span {
@@ -303,7 +303,7 @@ body {
   max-width: 24rem;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
 }
 .item-primary-edit .button {
   display: inline-flex;
@@ -316,24 +316,24 @@ body {
 .pe-inspector {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 0.5rem;
-  padding: 0.65rem;
+  border-radius: var(--ui-radius-2);
+  padding: var(--ui-space-5);
 }
 .pe-grid h2 {
-  font-size: 1rem;
+  font-size: var(--ui-type-base);
 }
 .pe-preview {
-  padding: 0.5rem;
+  padding: var(--ui-space-4);
 }
 #pe-preview > h1 {
-  font-size: 1.4rem;
+  font-size: var(--ui-type-title);
 }
 #pe-sections {
   padding: 0;
   list-style: none;
 }
 #pe-sections li {
-  margin: 0.35rem 0;
+  margin: var(--ui-space-3) 0;
 }
 #pe-sections button {
   width: 100%;
@@ -341,7 +341,7 @@ body {
   background: var(--raised);
   color: var(--text);
   border-color: var(--line);
-  padding: 0.45rem;
+  padding: var(--ui-space-4);
 }
 .pe-inspector label,
 .pe-outline label {
@@ -349,9 +349,9 @@ body {
   grid-template-columns: minmax(0, 1fr);
   overflow: clip;
   overflow-clip-margin: 0.25rem;
-  gap: 0.2rem;
-  font-size: 0.8rem;
-  margin-block: 0.4rem;
+  gap: var(--ui-space-2);
+  font-size: var(--ui-type-meta);
+  margin-block: var(--ui-space-3);
 }
 .pe-inspector input,
 .pe-inspector textarea,
@@ -371,29 +371,29 @@ body {
 }
 .pe-inspector button,
 .pe-outline > button {
-  margin: 0.2rem;
-  font-size: 0.8rem;
-  padding: 0.4rem;
+  margin: var(--ui-space-2);
+  font-size: var(--ui-type-meta);
+  padding: var(--ui-space-3);
 }
 .pe-block {
-  padding: 0.5rem;
-  margin: 0.5rem 0;
+  padding: var(--ui-space-4);
+  margin: var(--ui-space-4) 0;
   border: 1px solid var(--line);
-  border-radius: 0.3rem;
+  border-radius: var(--ui-radius-1);
 }
 .pe-block h3 {
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
 }
 .pe-block > summary {
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
   font-weight: 700;
-  padding-block: 0.25rem;
+  padding-block: var(--ui-space-2);
 }
 .pe-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.2rem;
+  gap: var(--ui-space-2);
 }
 .pe-actions > * {
   min-width: 0;
@@ -406,7 +406,7 @@ body {
 }
 #pe-error {
   color: var(--danger, #ffb8a8);
-  padding: 0.6rem;
+  padding: var(--ui-space-5);
   border: 1px solid currentColor;
 }
 #pe-review [hidden],
@@ -427,8 +427,8 @@ body {
   .pe-tabs {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-block: 0.5rem;
+    gap: var(--ui-space-3);
+    margin-block: var(--ui-space-4);
   }
   [data-pe-panel] {
     display: none;
@@ -480,13 +480,13 @@ body {
 #page-workbench {
   container-type: inline-size;
   max-width: 100%;
-  padding: calc(0.5rem + 0.3vw);
+  padding: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.003));
 }
 
 .pe-inspector #editor-fields fieldset {
   min-width: 0;
   max-width: 100%;
-  padding: 0.5rem;
+  padding: var(--ui-space-4);
 }
 .pe-inspector #editor-fields legend {
   max-width: 100%;

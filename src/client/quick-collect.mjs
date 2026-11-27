@@ -1,3 +1,5 @@
+import { renderItemIcon } from "../ui/item-card.mjs";
+import { renderCraftPreview } from "../ui/crafting-preview.mjs";
 import { init, state, esc, error, persist } from "./common.mjs";
 import { quickCollect } from "../domain/quick-collect.mjs";
 import { createFoundOperation } from "./collection-action.mjs";
@@ -156,7 +158,7 @@ function render() {
     .slice(0, 200)
     .map(
       (r) =>
-        `<li data-collect-row="${esc(r.id)}" class="collect-row" data-covered="${r.remaining === 0}"><div class="collect-icon" data-inventory-icon="${esc(r.id)}" data-icon-status="missing"><span aria-label="Icon needed">◇</span></div><div class="collect-name"><a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(r.id)}">${esc(r.name)}</a><small>Owned ${r.held == null ? "not entered" : n(r.held)}${r.alternative ? " · Crafting alternative" : ""}${r.partial ? " · Listed / provisional" : ""}</small></div><div class="collect-remaining"><small>Remaining</small><strong data-collect-remaining>${r.minimum && r.remaining != null ? "At least " : ""}${n(r.remaining)}</strong>${r.assumedZero ? "<small>Assumes 0 owned</small>" : ""}</div><form data-collect-add="${esc(r.id)}"><label class="sr-only" for="collect-amount-${esc(r.id)}">Found amount for ${esc(r.name)}</label><input id="collect-amount-${esc(r.id)}" type="text" inputmode="numeric" value="${esc(amounts.get(r.id) ?? "1")}" data-found-amount="${esc(r.id)}" aria-label="Found amount for ${esc(r.name)}"><button type="submit" aria-label="Add found ${esc(r.name)}"${busy ? " disabled" : ""}>+ Add</button></form></li>`,
+        `<li data-collect-row="${esc(r.id)}" class="collect-row" data-covered="${r.remaining === 0}">${renderItemIcon(state.pack.items.find((item) => item.id === r.id) || r, { packId: state.pack.id, size: "compact", className: "collect-icon", tag: "div", reveal: state.profile.spoilers })}<div class="collect-name"><a href="/local/?pack=${encodeURIComponent(state.pack.id)}&amp;id=${encodeURIComponent(r.id)}">${esc(r.name)}</a><small>Owned ${r.held == null ? "not entered" : n(r.held)}${r.alternative ? " · Crafting alternative" : ""}${r.partial ? " · Listed / provisional" : ""}</small>${renderCraftPreview(state.pack, r.id)}</div><div class="collect-remaining"><small>Remaining</small><strong data-collect-remaining>${r.minimum && r.remaining != null ? "At least " : ""}${n(r.remaining)}</strong>${r.assumedZero ? "<small>Assumes 0 owned</small>" : ""}</div><form data-collect-add="${esc(r.id)}"><label class="sr-only" for="collect-amount-${esc(r.id)}">Found amount for ${esc(r.name)}</label><input id="collect-amount-${esc(r.id)}" type="text" inputmode="numeric" value="${esc(amounts.get(r.id) ?? "1")}" data-found-amount="${esc(r.id)}" aria-label="Found amount for ${esc(r.name)}"><button type="submit" aria-label="Add found ${esc(r.name)}"${busy ? " disabled" : ""}>+ Add</button></form></li>`,
     )
     .join("");
   $("#collect-undo").hidden = false;

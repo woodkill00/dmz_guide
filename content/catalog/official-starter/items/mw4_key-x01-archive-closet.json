@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · X01",
+  "description": "No established pickup location.",
+  "id": "mw4:key-x01-archive-closet",
+  "kind": "item",
+  "name": "Archive Closet",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-336000705dad"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

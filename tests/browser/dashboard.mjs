@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
+import { expectScriptCancellation } from "./health.mjs";
 export async function runDashboardTests({
   browser,
   base,
@@ -251,11 +252,10 @@ export async function runDashboardTests({
         ?.textContent.includes("revision " + revision),
     parity.revision,
   );
-  await page.locator('#dashboard-weapons [data-dash-more="weapons"]').waitFor();
-  await page.locator('[data-dash-more="weapons"]').click();
+
   await page
     .locator('[data-dashboard-manual="m4"]')
-    .filter({ hasText: "2 more manual extractions" })
+    .filter({ hasText: "1/3" })
     .waitFor();
   assert(
     !(await page.locator("#dashboard-weapons").innerText()).includes(
@@ -263,9 +263,20 @@ export async function runDashboardTests({
     ),
   );
   assert.match(await page.locator("#dashboard-orders").innerText(), /1\/66/);
-  assert.match(await page.locator("#dashboard-recipes").innerText(), /1\/116/);
+  assert.equal(
+    await page
+      .locator(
+        '[data-dash-blueprint-owned="mw4:printer-item-3-plate-armor-vest"]',
+      )
+      .isChecked(),
+    true,
+  );
+  assert.match(
+    await page.locator("#dashboard-recipes").innerText(),
+    /\d+ blueprints still needed/,
+  );
   const upgradeLink = page
-    .locator("#dashboard-upgrades .dash-progress-list a")
+    .locator("#dashboard-upgrades .dash-upgrade h3 a")
     .first();
   const upgradeHref = await upgradeLink.getAttribute("href");
   assert(upgradeHref.includes("upgrade="));
@@ -344,18 +355,15 @@ async function runDashboardManualTests({ browser, base }) {
     await page.locator("[data-dashboard-manual]").first().waitFor();
     const heading = page.locator("#dashboard-weapons h2 a");
     assert.equal(await heading.innerText(), "Weapons");
-    assert.equal(await heading.getAttribute("href"), "/dmz-weapons/");
+    assert.equal(await heading.getAttribute("href"), "/armory/#acquisition");
     await heading.click();
-    await page.waitForURL("**/dmz-weapons/");
+    await page.waitForURL("**/armory/#acquisition");
     await page
-      .getByRole("heading", { name: "DMZ Weapons", level: 1 })
+      .getByRole("heading", { name: "Weapons", level: 1 })
       .waitFor({ state: "visible" });
     await page.goto(base + "/");
     await page.locator("[data-dashboard-manual]").first().waitFor();
-    assert.match(
-      await page.locator("#dashboard-weapons").innerText(),
-      /3 to record/,
-    );
+    assert.match(await page.locator("#dashboard-weapons").innerText(), /—\/3/);
     await page.evaluate(async () => {
       const { emptyArmory } = await import(
         "/assets/src/domain/armory-workspace.mjs"
@@ -389,23 +397,27 @@ async function runDashboardManualTests({ browser, base }) {
     });
     await page.locator("#hub-refresh").click();
     await page.waitForFunction(
-      () => document.querySelectorAll("[data-dashboard-manual]").length === 4,
+      () => document.querySelectorAll("[data-dashboard-manual]").length === 3,
     );
     assert.match(
       await page.locator('[data-dashboard-manual="m4"]').innerText(),
-      /2 more manual extractions/,
+      /1\/3/,
     );
     assert.match(
       await page.locator('[data-dashboard-manual="han-86"]').innerText(),
-      /1 more manual extraction/,
+      /2\/3/,
     );
     assert.match(
       await page.locator('[data-dashboard-manual="csg-35"]').innerText(),
-      /3 to record.*not entered/,
+      /—\/3/,
     );
     assert.match(
-      await page.locator('[data-dashboard-manual="cronen-osprey"]').innerText(),
-      /0 more manual extractions/,
+      await page
+        .locator(
+          '[data-weapon-card="cronen-osprey"] [data-weapon-context-progress]',
+        )
+        .textContent(),
+      /3\/3/,
     );
     assert.equal(
       await page
@@ -434,7 +446,7 @@ async function runDashboardManualTests({ browser, base }) {
     await page.locator("#hub-refresh").click();
     await page
       .locator("#dashboard-weapons")
-      .filter({ hasText: "All listed manuals marked collected" })
+      .filter({ hasText: "All listed weapons have 3+" })
       .waitFor();
     assert.equal(await page.locator("[data-dashboard-manual]").count(), 0);
     console.log(
@@ -482,17 +494,35 @@ async function runDashboardManualTests({ browser, base }) {
   }
 }
 
-async function runDashboardModuleFailureTests({ browser, base }) {
+export async function runDashboardModuleFailureTests({ browser, base }) {
   const context = await browser.newContext();
+  expectScriptCancellation(context, {
+    label: "Deliberately interrupted dashboard module",
+    url: base + "/assets/src/client/dashboard.mjs",
+    errorText: {
+      chromium: "net::ERR_ABORTED",
+      firefox: "NS_ERROR_ABORT",
+      webkit: "Blocked by Web Inspector",
+    }[browser.browserType().name()],
+  });
   const page = await context.newPage(),
     errors = [];
+  const interrupted = [];
+  page.on("requestfailed", (request) => {
+    if (request.url() === base + "/assets/src/client/dashboard.mjs")
+      interrupted.push({
+        method: request.method(),
+        type: request.resourceType(),
+        reason: request.failure()?.errorText,
+      });
+  });
   page.on("pageerror", (e) => errors.push(e.message));
   await context.route("**/assets/src/client/dashboard.mjs", async (route) => {
     await page.evaluate(() => {
       dispatchEvent(new PageTransitionEvent("pagehide", { persisted: true }));
       dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true }));
     });
-    await route.abort();
+    await route.abort("aborted");
   });
   try {
     await page.goto(base + "/");
@@ -504,6 +534,13 @@ async function runDashboardModuleFailureTests({ browser, base }) {
       await page.locator('.hub-personal a[href="/features/"]').isVisible(),
     );
     assert.deepEqual(errors, []);
+    assert.equal(interrupted.length, 1);
+    assert.equal(interrupted[0].method, "GET");
+    assert.equal(interrupted[0].type, "script");
+    assert.match(
+      interrupted[0].reason,
+      /ERR_ABORTED|NS_BINDING_ABORTED|NS_ERROR_ABORT|Blocked by Web Inspector|cancelled|aborted/i,
+    );
     console.log(
       "087 interrupted dashboard module reports reload recovery with links retained PASS",
     );

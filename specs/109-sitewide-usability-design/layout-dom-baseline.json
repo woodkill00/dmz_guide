@@ -1,0 +1,196 @@
+{
+  "baseCommit": "a5baed481b92dadf7514234c01fede3bf84834fb",
+  "fixture": "Public catalog plus isolated Bandage7,Detonators3,Synthetics123,buildBandage2; admitted owner-local public map snapshots",
+  "results": [
+    {
+      "route": "/",
+      "width": 390,
+      "nodes": 5825
+    },
+    {
+      "route": "/inventory/?pack=official%3Amw4-dmz-starter",
+      "width": 390,
+      "nodes": 8383
+    },
+    {
+      "route": "/track/items/?pack=official%3Amw4-dmz-starter",
+      "width": 390,
+      "nodes": 5774
+    },
+    {
+      "route": "/needed/?pack=official%3Amw4-dmz-starter",
+      "width": 390,
+      "nodes": 2133
+    },
+    {
+      "route": "/quick-collect/?pack=official%3Amw4-dmz-starter",
+      "width": 390,
+      "nodes": 3588
+    },
+    {
+      "route": "/upgrades/?pack=official%3Amw4-dmz-starter",
+      "width": 390,
+      "nodes": 2446
+    },
+    {
+      "route": "/missions/?pack=official%3Amw4-dmz-starter",
+      "width": 390,
+      "nodes": 4174
+    },
+    {
+      "route": "/armory/",
+      "width": 390,
+      "nodes": 6933
+    },
+    {
+      "route": "/keys/",
+      "width": 390,
+      "nodes": 5316
+    },
+    {
+      "route": "/local/?pack=official%3Amw4-dmz-starter&id=mw4%3Abandage",
+      "width": 390,
+      "nodes": 387
+    },
+    {
+      "route": "/settings/",
+      "width": 390,
+      "nodes": 232
+    },
+    {
+      "route": "/missions/audit/",
+      "width": 390,
+      "nodes": 2852
+    },
+    {
+      "route": "/quality/",
+      "width": 390,
+      "nodes": 1831
+    },
+    {
+      "route": "/help/",
+      "width": 390,
+      "nodes": 277
+    },
+    {
+      "route": "/sitemap/",
+      "width": 390,
+      "nodes": 8642
+    },
+    {
+      "route": "/map/",
+      "width": 390,
+      "nodes": 4862
+    },
+    {
+      "route": "/map/x01/",
+      "width": 390,
+      "nodes": 1099
+    },
+    {
+      "route": "/map/safes/",
+      "width": 390,
+      "nodes": 958
+    },
+    {
+      "route": "/map/loot/",
+      "width": 390,
+      "nodes": 1270
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "nodes": 5833
+    },
+    {
+      "route": "/inventory/?pack=official%3Amw4-dmz-starter",
+      "width": 1440,
+      "nodes": 8383
+    },
+    {
+      "route": "/track/items/?pack=official%3Amw4-dmz-starter",
+      "width": 1440,
+      "nodes": 5774
+    },
+    {
+      "route": "/needed/?pack=official%3Amw4-dmz-starter",
+      "width": 1440,
+      "nodes": 2133
+    },
+    {
+      "route": "/quick-collect/?pack=official%3Amw4-dmz-starter",
+      "width": 1440,
+      "nodes": 3588
+    },
+    {
+      "route": "/upgrades/?pack=official%3Amw4-dmz-starter",
+      "width": 1440,
+      "nodes": 2446
+    },
+    {
+      "route": "/missions/?pack=official%3Amw4-dmz-starter",
+      "width": 1440,
+      "nodes": 4174
+    },
+    {
+      "route": "/armory/",
+      "width": 1440,
+      "nodes": 6933
+    },
+    {
+      "route": "/keys/",
+      "width": 1440,
+      "nodes": 5316
+    },
+    {
+      "route": "/local/?pack=official%3Amw4-dmz-starter&id=mw4%3Abandage",
+      "width": 1440,
+      "nodes": 387
+    },
+    {
+      "route": "/settings/",
+      "width": 1440,
+      "nodes": 232
+    },
+    {
+      "route": "/missions/audit/",
+      "width": 1440,
+      "nodes": 2852
+    },
+    {
+      "route": "/quality/",
+      "width": 1440,
+      "nodes": 1831
+    },
+    {
+      "route": "/help/",
+      "width": 1440,
+      "nodes": 277
+    },
+    {
+      "route": "/sitemap/",
+      "width": 1440,
+      "nodes": 8642
+    },
+    {
+      "route": "/map/",
+      "width": 1440,
+      "nodes": 4862
+    },
+    {
+      "route": "/map/x01/",
+      "width": 1440,
+      "nodes": 1099
+    },
+    {
+      "route": "/map/safes/",
+      "width": 1440,
+      "nodes": 958
+    },
+    {
+      "route": "/map/loot/",
+      "width": 1440,
+      "nodes": 1270
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Story reward: Operation Grid Assault.",
+  "id": "mw4:key-rozes-highrise-armory",
+  "kind": "item",
+  "name": "Roze's Highrise Armory",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-5e7a280c4b5b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

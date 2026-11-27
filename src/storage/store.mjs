@@ -1,3 +1,4 @@
+import { publishSaveReceipt } from "./save-events.mjs";
 import { journalInventory } from "../domain/field-ops-state.mjs";
 import { clone } from "../content/limits.mjs";
 import { validateProfile } from "../domain/profile.mjs";
@@ -111,7 +112,14 @@ export async function commitRecord(
         tx.abort();
       }
     };
-    tx.oncomplete = () => resolve(result.value);
+    tx.oncomplete = () => {
+      if (store === "profiles") {
+        try {
+          publishSaveReceipt("profile", key, result.value.revision);
+        } catch {}
+      }
+      resolve(result.value);
+    };
     tx.onerror = () =>
       reject(error || tx.error || new Error("Storage save failed"));
     tx.onabort = () =>

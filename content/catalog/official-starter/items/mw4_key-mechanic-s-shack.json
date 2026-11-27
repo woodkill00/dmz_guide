@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "One moving-train locker find was reported; not a fixed spawn.",
+  "id": "mw4:key-mechanic-s-shack",
+  "kind": "item",
+  "name": "Mechanic's Shack",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

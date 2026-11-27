@@ -1,6 +1,54 @@
 import assert from "node:assert/strict";
+import { readWeaponCamos } from "../../src/content/weapon-camos.mjs";
+import { camoImagePath } from "../../src/domain/weapon-camos.mjs";
+export async function optionalCamoArtwork(base) {
+  const catalog = await readWeaponCamos();
+  return {
+    urls: catalog.weapons.flatMap((weapon) =>
+      weapon.rows.map(
+        (row) => new URL(camoImagePath(weapon.id, row.id), base).href,
+      ),
+    ),
+    // Four complete catalog visits per context; repeated failures remain bounded.
+    maxCount:
+      catalog.weapons.reduce((n, weapon) => n + weapon.rows.length, 0) * 4,
+  };
+}
 const expectedConsole = new WeakMap();
 const expectedResponses = new WeakMap();
+const expectedScriptAborts = new WeakMap();
+export function expectScriptCancellation(
+  context,
+  { label, url, errorText, count = 1 },
+) {
+  const target = new URL(url);
+  assert(
+    label &&
+      ["http:", "https:"].includes(target.protocol) &&
+      !target.search &&
+      !target.hash &&
+      !target.username &&
+      !target.password,
+  );
+  assert(
+    ["net::ERR_ABORTED", "NS_ERROR_ABORT", "Blocked by Web Inspector"].includes(
+      errorText,
+    ),
+    "Only explicit browser cancellation diagnostics may be scoped",
+  );
+  assert(Number.isInteger(count) && count > 0 && count <= 4);
+  assert(!expectedScriptAborts.has(context));
+  const scope = { label, url: target.href, errorText, count, observed: [] };
+  expectedScriptAborts.set(context, scope);
+  return () => {
+    assert.equal(
+      scope.observed.length,
+      count,
+      `${label}: exact script cancellations required`,
+    );
+    return [...scope.observed];
+  };
+}
 /** Only an isolated negative-test context may declare exact, bounded codec diagnostics. */
 export function expectConsoleErrors(context, { label, patterns, maxCount }) {
   assert(typeof label === "string" && label.length > 0);
@@ -67,7 +115,27 @@ export function expectResponseErrors(
     };
   };
 }
-export function monitorBrowser(browser) {
+export function monitorBrowser(browser, { optionalArtwork } = {}) {
+  const artworkURLs = new Set(optionalArtwork?.urls || []);
+  for (const raw of artworkURLs) {
+    const url = new URL(raw);
+    assert(
+      ["http:", "https:"].includes(url.protocol) &&
+        !url.search &&
+        !url.hash &&
+        !url.username &&
+        !url.password,
+    );
+    assert(
+      /^\/local-camo-images\/[a-z0-9-]+\/[a-z0-9-]+\.webp$/.test(url.pathname),
+    );
+  }
+  if (optionalArtwork)
+    assert(
+      Number.isInteger(optionalArtwork.maxCount) &&
+        optionalArtwork.maxCount > 0,
+    );
+  const artworkObservations = [];
   const failures = [],
     responses = [],
     pendingDiagnostics = [],
@@ -75,8 +143,38 @@ export function monitorBrowser(browser) {
     original = browser.newContext.bind(browser);
   browser.newContext = async (...args) => {
     const context = await original(...args);
+    const artwork = { responses: [], console: [] };
+    const pendingArtwork = new Set();
+    let closingRequested = false;
+    if (typeof context.close === "function") {
+      const close = context.close.bind(context);
+      context.close = async (...closeArgs) => {
+        closingRequested = true;
+        // Do not manufacture failed lazy-image requests by tearing down an
+        // otherwise healthy context mid-response. Never waive a real failure.
+        const deadline = performance.now() + 2500;
+        while (pendingArtwork.size && performance.now() < deadline)
+          await new Promise((resolve) => setTimeout(resolve, 25));
+        if (pendingArtwork.size)
+          failures.push(
+            "Optional artwork did not settle before owned context close: " +
+              [...pendingArtwork].map((request) => request.url()).join(", "),
+          );
+        return close(...closeArgs);
+      };
+    }
+    artworkObservations.push(artwork);
     contexts.push(context);
     context.on("page", (page) => {
+      page.on("request", (request) => {
+        if (
+          artworkURLs.has(request.url()) &&
+          request.method() === "GET" &&
+          request.resourceType() === "image"
+        )
+          pendingArtwork.add(request);
+      });
+      page.on("requestfinished", (request) => pendingArtwork.delete(request));
       page.on("pageerror", (error) =>
         failures.push("JavaScript: " + error.message),
       );
@@ -106,16 +204,64 @@ export function monitorBrowser(browser) {
           return;
         }
         const location = message.location?.();
+        if (
+          artworkURLs.has(location?.url) &&
+          text ===
+            "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        ) {
+          artwork.console.push(location.url);
+          return;
+        }
         failures.push(
           "Console: " + text + (location?.url ? " at " + location.url : ""),
         );
       });
       page.on("requestfailed", (request) => {
+        pendingArtwork.delete(request);
         const reason = request.failure()?.errorText || "";
+        const expected = expectedScriptAborts.get(context);
+        if (
+          expected &&
+          expected.observed.length < expected.count &&
+          request.url() === expected.url &&
+          request.method() === "GET" &&
+          request.resourceType() === "script" &&
+          reason === expected.errorText
+        ) {
+          expected.observed.push({
+            url: request.url(),
+            method: request.method(),
+            type: request.resourceType(),
+            reason,
+          });
+          return;
+        }
         if (!/ERR_ABORTED|NS_BINDING_ABORTED|cancelled/i.test(reason))
-          failures.push("Request: " + request.url() + " " + reason);
+          failures.push(
+            "Request: " +
+              request.url() +
+              " " +
+              reason +
+              " " +
+              JSON.stringify({
+                page: page.url?.() || null,
+                method: request.method?.() || null,
+                type: request.resourceType?.() || null,
+                closingRequested,
+              }),
+          );
       });
       page.on("response", (response) => {
+        if (
+          response.status() === 404 &&
+          artworkURLs.has(response.url()) &&
+          response.request().method() === "GET" &&
+          response.request().resourceType() === "image" &&
+          artwork.responses.length < optionalArtwork.maxCount
+        ) {
+          artwork.responses.push(response.url());
+          return;
+        }
         const expected = expectedResponses.get(context);
         if (
           expected &&
@@ -157,7 +303,22 @@ export function monitorBrowser(browser) {
     return context;
   };
   const check = () => {
+    for (const artwork of artworkObservations) {
+      for (const url of new Set(artwork.console))
+        assert(
+          artwork.console.filter((value) => value === url).length <=
+            artwork.responses.filter((value) => value === url).length,
+          "Optional-art console requires matching exact image GET 404",
+        );
+    }
     for (const context of contexts) {
+      const script = expectedScriptAborts.get(context);
+      if (script)
+        assert.equal(
+          script.observed.length,
+          script.count,
+          `${script.label}: exact script cancellations required`,
+        );
       const expected = expectedResponses.get(context);
       if (expected)
         assert.equal(
@@ -177,6 +338,10 @@ export function monitorBrowser(browser) {
     return {
       failures: [...failures],
       responses: responses.map((value) => ({ ...value })),
+      optionalArtwork: artworkObservations.map((value) => ({
+        responses: [...value.responses],
+        console: [...value.console],
+      })),
     };
   };
   return check;

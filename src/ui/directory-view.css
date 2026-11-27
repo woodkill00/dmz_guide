@@ -12,8 +12,8 @@ html[data-ui-variant="modern"] [data-ui-directory] [data-ui-directory-scroll] {
   scroll-padding-block-start: calc(
     var(--ui-directory-head-height, 3rem) + 0.5rem
   );
-  scroll-padding-block-end: 0.75rem;
-  scroll-padding-inline: 0.75rem;
+  scroll-padding-block-end: var(--ui-space-6);
+  scroll-padding-inline: var(--ui-space-6);
 }
 html[data-ui-variant="modern"] [data-ui-directory] table {
   inline-size: 100%;
@@ -51,8 +51,8 @@ html[data-ui-variant="modern"]
   scroll-margin-block-start: calc(
     var(--ui-directory-head-height, 3rem) + 0.5rem
   );
-  scroll-margin-block-end: 0.75rem;
-  scroll-margin-inline: 0.75rem;
+  scroll-margin-block-end: var(--ui-space-6);
+  scroll-margin-inline: var(--ui-space-6);
   max-inline-size: 100%;
   overflow-wrap: anywhere;
 }
@@ -73,8 +73,8 @@ html[data-ui-variant="modern"]
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
-  margin-block: 0.5rem;
+  gap: var(--ui-space-4);
+  margin-block: var(--ui-space-4);
 }
 html[data-ui-variant="modern"]
   [data-ui-directory]
@@ -83,12 +83,12 @@ html[data-ui-variant="modern"]
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
   min-inline-size: 0;
 }
 html[data-ui-variant="modern"] [data-ui-directory] .ui-directory-status,
 html[data-ui-variant="modern"] [data-ui-directory] .ui-directory-page-label {
-  font-size: 0.875rem;
+  font-size: var(--ui-type-label);
   overflow-wrap: anywhere;
 }
 @media (max-width: 700px) {
@@ -125,7 +125,7 @@ html[data-ui-variant="modern"]
   min-block-size: 44px;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--ui-space-4);
 }
 
 /* Live workspaces retain their domain-owned rows, paging and density controls. */
@@ -141,11 +141,15 @@ html[data-ui-variant="modern"]
 html[data-ui-variant="modern"]
   [data-ui-directory-layout="live"]:not(.comfortable)
   .inventory-group {
-  margin-block: 0.5rem;
+  margin-block: var(--ui-space-4);
 }
 html[data-ui-variant="modern"]
   .upgrade-list-shell[data-density="compact"]
   [data-ui-directory-layout="live"]
   .compact-progress {
-  padding: clamp(0.5rem, calc(0.35rem + 0.3vw), 0.75rem);
+  padding: clamp(
+    var(--ui-space-4),
+    calc(var(--ui-space-3) + calc(var(--ui-viewport-inline) * 0.003)),
+    var(--ui-space-6)
+  );
 }

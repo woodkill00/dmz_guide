@@ -68,7 +68,7 @@ for (const key of ["official-starter", "upgrade-observations"])
       assert.equal(automaticIngredientBlueprint(pack, p, target), null);
     },
   );
-test("all 21 field upgrades plus staff keycard can record blueprint without invented recipes", () => {
+test("eligible field upgrades and staff keycard can record blueprint; Rare items have no checklist", () => {
   const pack = loadFixturePack("official-starter"),
     before = structuredClone(pack),
     uses = itemUses(pack, newProfile(pack));
@@ -78,7 +78,10 @@ test("all 21 field upgrades plus staff keycard can record blueprint without inve
     ...field,
     pack.items.find((i) => i.id === "mw4:x01-staff-emergency-exfil-keycard"),
   ])
-    assert(inventoryBlueprintAvailable(i, uses.get(i.id)));
+    assert.equal(
+      inventoryBlueprintAvailable(i, uses.get(i.id)),
+      i.rarity?.toLowerCase() !== "rare",
+    );
   assert.deepEqual(pack, before);
 });
 test("misc source identities retain IDs and upgrade-use status until every relevant upgrade completed", () => {

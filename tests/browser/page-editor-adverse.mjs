@@ -98,7 +98,24 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       .waitFor();
     assert.equal((await f.get("test:order")).document.revision, 1);
     const repeated = await f.post("/api/page-edits/commit", submitted);
-    assert.equal(repeated.documentRevision, 1);
+    // A background checkpoint can hold the repository snapshot lock after the
+    // save acknowledgement. Resolve the existing operation by GET, never by
+    // resubmitting another mutation or treating an unresolved receipt as saved.
+    let receipt = repeated;
+    const receiptDeadline = Date.now() + 30000;
+    while (receipt.state === "unresolved" && Date.now() < receiptDeadline) {
+      const response = await fetch(
+        f.app.url + "/api/page-edits/operations/" + submitted.operationId,
+        { headers: f.headers },
+      );
+      assert.equal(response.status, 200);
+      receipt = await response.json();
+      if (receipt.state === "unresolved")
+        await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    assert.equal(receipt.state, "committed");
+    assert.equal(receipt.documentRevision, 1);
+    assert.equal((await f.get("test:order")).document.revision, 1);
     await page.unroute("**/api/page-edits/commit");
     await page.evaluate(() => {
       IDBObjectStore.prototype.put = function () {

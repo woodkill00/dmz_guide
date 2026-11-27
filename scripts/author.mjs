@@ -1,3 +1,4 @@
+import workspaceAssets from "../src/ui/site-tools-assets.json" with { type: "json" };
 import { LOCAL_SERVICE_PORTS } from "../src/domain/local-services.mjs";
 import { parseSpecialTarget, registerSpecialTarget } from "./page-adapters.mjs";
 import { renderPageEditor } from "../src/ui/page-editor-page.mjs";
@@ -29,6 +30,10 @@ import { renderStudioPage } from "../src/ui/studio-page.mjs";
 
 const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const staticFiles = new Set([
+  ...workspaceAssets,
+  "src/ui/key-directory-flow.css",
+  "src/domain/key-item-links.mjs",
+  "src/domain/key-item-links.json",
   "src/client/page-editor.mjs",
   "src/client/page-editor-media.mjs",
   "src/client/page-editor-experience.mjs",
@@ -41,6 +46,7 @@ const staticFiles = new Set([
   "src/ui/page-composition.mjs",
   "src/ui/page-composition.css",
   "src/ui/page-editor.css",
+  "src/ui/crafting-preview.css",
   "src/client/page-editor.mjs",
   "src/client/page-editor-media.mjs",
   "src/domain/page-document.mjs",
@@ -51,6 +57,7 @@ const staticFiles = new Set([
   "src/ui/directory-view.css",
   "src/ui/directory-view.mjs",
   "src/ui/workspace-shell.mjs",
+  "src/ui/navigation-config.mjs",
   "src/client/workspace-shell.mjs",
   "src/client/studio.mjs",
   "src/client/studio-media.mjs",

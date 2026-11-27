@@ -2,7 +2,7 @@ export function readExistingRecord(
   name,
   store,
   key,
-  { signal, timeout = 1500 } = {},
+  { signal, timeout = 1500, preserveUndefined = false } = {},
 ) {
   return new Promise((resolve, reject) => {
     let db,
@@ -44,7 +44,9 @@ export function readExistingRecord(
         }
         try {
           tx = db.transaction(store, "readonly");
-          const q = tx.objectStore(store).get(key);
+          const q = preserveUndefined
+            ? tx.objectStore(store).getAll(key, 1)
+            : tx.objectStore(store).get(key);
           let value;
           q.onsuccess = () => (value = q.result);
           tx.oncomplete = () => finish(null, value);

@@ -1,0 +1,16 @@
+{
+  "id": "source:key-reference-c8ed4987b567",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-02",
+    "kind": "web",
+    "lineageKey": "key-reference-106",
+    "observationKey": "key-reference-c8ed4987b567"
+  },
+  "publishedAt": "Not stated",
+  "reviewedAt": "2026-11-02",
+  "supports": "Reported key identity, acquisition and location context; current-build confirmation unknown.",
+  "title": "DMZTracker.gg · checked 2026-11-02",
+  "type": "community",
+  "url": "https://dmztracker.gg/guides/keys-guide/"
+}

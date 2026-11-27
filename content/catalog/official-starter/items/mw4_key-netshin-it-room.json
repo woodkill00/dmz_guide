@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "An apartment-locker find was reported; no fixed building established.",
+  "id": "mw4:key-netshin-it-room",
+  "kind": "item",
+  "name": "Netshin IT Room",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

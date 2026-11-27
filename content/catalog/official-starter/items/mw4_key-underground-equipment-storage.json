@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Field-loot reports include the Re-Education Center and moving train.",
+  "id": "mw4:key-underground-equipment-storage",
+  "kind": "item",
+  "name": "Underground Equipment Storage",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

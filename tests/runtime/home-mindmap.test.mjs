@@ -29,14 +29,15 @@ test("061 every existing page/tool occurs once under Home with an acyclic parent
   assert.equal(tree.sourceCount, topology.nodes.length);
   assert.equal(tree.nodes.get("route:/keys/").parent, "route:/dmz-guide/");
   assert.equal(tree.nodes.get("route:/upgrades/").parent, "route:/dmz-fob/");
-  assert.equal(tree.nodes.get("route:/armory/").parent, "route:/dmz-weapons/");
+  assert.equal(tree.nodes.get("route:/armory/").parent, tree.root);
+  assert.equal(tree.nodes.get("route:/dmz-weapons/").parent, "route:/armory/");
   assert.deepEqual(
     tree.nodes.get(tree.root).children.map((id) => tree.nodes.get(id).label),
     [
       "Map",
       "DMZ Guide",
       "DMZ FOB",
-      "DMZ Weapons",
+      "Weapons",
       "Tools & settings",
       "Source websites",
     ],

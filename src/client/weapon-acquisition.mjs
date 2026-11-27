@@ -1,3 +1,8 @@
+import { acquisitionCamoController } from "./acquisition-camos.mjs";
+import {
+  parseProgressCatalog,
+  editCamoCompletion,
+} from "../domain/camo-progress.mjs";
 import { parseBounded } from "../content/limits.mjs";
 import {
   validateAcquisitionCatalog,
@@ -19,6 +24,30 @@ const catalog = validateAcquisitionCatalog(
     { depth: 8, nodes: 25000, string: 1000 },
   ),
 );
+const camoCatalog = parseProgressCatalog(
+  document.querySelector("#acquisition-camo-data").textContent,
+);
+const camoPreview = acquisitionCamoController(
+  root,
+  camoCatalog,
+  async (weapon, camo, checked, checkbox) => {
+    if (!ready || pending || loading || failed) {
+      sync();
+      return;
+    }
+    try {
+      await commit(
+        editCamoCompletion(workspace, camoCatalog, weapon, camo, checked),
+        workspace.revision,
+        undefined,
+        checkbox,
+      );
+    } catch (e) {
+      error(e.message);
+      sync();
+    }
+  },
+);
 let inputIntent = 0;
 let workspace = emptyArmory(),
   ready = false,
@@ -38,6 +67,7 @@ const drafts = new Set(),
   };
 const rowFor = (id) => $(`[data-acquisition-weapon="${id}"]`);
 function locks() {
+  camoPreview.setEditable(ready && !pending && !loading && !failed);
   root.dataset.revision = String(workspace.revision);
   root.dataset.busy = String(pending || loading);
   root
@@ -68,6 +98,7 @@ function download(value, label) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 function sync() {
+  camoPreview.paint(workspace, ready);
   const rows = acquisitionRows(catalog, workspace),
     query = $("#acq-query").value.trim().toLowerCase(),
     category = $("#acq-class").value,

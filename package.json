@@ -14,6 +14,7 @@
     "start": "node scripts/serve.mjs",
     "test": "node --test --test-concurrency=4 tests/runtime/*.test.mjs",
     "test:browser": "node tests/browser/run.mjs",
+    "test:sitewide": "node tests/browser/sitewide-workflows.mjs",
     "test:tracker": "node tests/browser/quick-tracker.mjs",
     "check": "node scripts/check-python.mjs && npm test && npm run build",
     "format": "prettier --write \"src/**/*.mjs\" \"src/**/*.css\" \"scripts/*.mjs\" \"tests/**/*.mjs\" package.json",
@@ -34,6 +35,7 @@
     "weapons:apply": "node scripts/weapon-database.mjs apply",
     "weapons:validate": "node scripts/weapon-database.mjs validate",
     "test:weapons": "node scripts/weapon-database.mjs test",
+    "test:weapons:workspace": "node tests/browser/unified-weapons-run.mjs",
     "weapons:manage": "node scripts/weapon-manager.mjs",
     "keys:images": "node scripts/collect-key-images.mjs",
     "weapons:art": "node scripts/collect-weapon-art.mjs",
@@ -46,7 +48,12 @@
     "test:sitemap": "node tests/browser/site-topology-run.mjs",
     "test:ui:modern": "node scripts/test-modern-ui.mjs",
     "test:ui:map": "node scripts/test-modern-ui.mjs --map-only",
-    "items:icons": "node scripts/collect-item-icons.mjs"
+    "items:icons": "node scripts/collect-item-icons.mjs",
+    "ui:audit": "node scripts/ui-audit.mjs",
+    "test:ui:sitewide": "node tests/browser/usability109.mjs",
+    "test:ui:sweep": "node tests/browser/usability109-sweep.mjs",
+    "test:ui:services": "node tests/browser/usability109-services.mjs",
+    "test:ui:performance": "node tests/browser/usability109-performance.mjs"
   },
   "devDependencies": {
     "@tesseract.js-data/eng": "1.0.0",

@@ -396,6 +396,7 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       "094 failure",
       await failed.locator("#pe-error").textContent(),
       await failed.locator("#pe-disk-status").textContent(),
+      await failed.locator("#pe-refresh-status").textContent(),
     );
     await failed.screenshot({
       path: `test-results/page-editor-experience-failure-${name}.png`,

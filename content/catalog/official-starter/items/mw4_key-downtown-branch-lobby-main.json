@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Reported as field loot; no guaranteed source established.",
+  "id": "mw4:key-downtown-branch-lobby-main",
+  "kind": "item",
+  "name": "Downtown Branch Lobby Main",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-f5a54d242af4"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

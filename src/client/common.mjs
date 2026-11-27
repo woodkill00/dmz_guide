@@ -608,7 +608,11 @@ export async function init(
   })();
   return state;
 }
-export async function persist(candidate = state.profile, journal = {}) {
+export async function persist(
+  candidate = state.profile,
+  journal = {},
+  { onCommitted } = {},
+) {
   if (state.saving) {
     error(new Error("A save is already in progress. Wait for it to finish."));
     return false;
@@ -627,6 +631,7 @@ export async function persist(candidate = state.profile, journal = {}) {
     const packId = state.pack.id,
       token = generation;
     const saved = await saveProfile(candidate, state.revision, journal);
+    onCommitted?.(saved);
     if (token !== generation || state.pack.id !== packId) return false;
     state.profile = saved;
     state.revision = saved.revision;

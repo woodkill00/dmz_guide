@@ -1,13 +1,20 @@
 {
   "source": "src/ui/feature-registry.mjs",
-  "head": "256be760a1ec5d894c07faa429d0a96497c741db",
+  "head": "3bf3a3f405183fe1808afd80f0ed8cb3bff0edb7",
   "hashes": {
-    "src/ui/feature-registry.mjs": "177bfefbf2485954d8013b8a9ca0dca481b8c3d1747b86035487f6d9f5741e3a",
+    "src/ui/feature-registry.mjs": "fdb9c3914b45c698747d1dc8a0df5dcb4cea63422663cd3a05ced7d782dbd30e",
     "src/ui/map-destinations.json": "7eda40618c784083b520f1ad9c356fe3d284ce83a394389f9d6527beb7da85f0",
     "specs/071-ui-ux-implementation/feature-coverage.md": "3d4511eb0781dfc70cfddac5d2423913ec442a109c6dc84306e5e8f9e9b16add"
   },
-  "count": 88,
+  "count": 92,
   "features": [
+    {
+      "id": "track-items",
+      "label": "Items by rarity",
+      "kind": "guide",
+      "path": "/track/items/",
+      "group": "Prepare"
+    },
     {
       "id": "field-desk",
       "label": "Field desk",
@@ -254,6 +261,13 @@
       "group": "Manage"
     },
     {
+      "id": "data-review",
+      "label": "Source & catalog review",
+      "kind": "guide",
+      "path": "/data-review/",
+      "group": "Manage"
+    },
+    {
       "id": "editor",
       "label": "Editor",
       "kind": "guide",
@@ -272,6 +286,20 @@
       "label": "Community",
       "kind": "guide",
       "path": "/community/",
+      "group": "Manage"
+    },
+    {
+      "id": "help",
+      "label": "Help & instructions",
+      "kind": "guide",
+      "path": "/help/",
+      "group": "Manage"
+    },
+    {
+      "id": "quality",
+      "label": "Content quality",
+      "kind": "guide",
+      "path": "/quality/",
       "group": "Manage"
     },
     {

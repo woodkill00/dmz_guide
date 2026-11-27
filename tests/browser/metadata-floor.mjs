@@ -427,6 +427,26 @@ export async function runMetadataFloorTests({
                 control.width >= 44 && control.height >= 44,
                 `${control.text}: existing 44px control target preserved`,
               );
+            if (mode === "fixed") {
+              const quantities = await page
+                .locator(".requirements li > strong:visible")
+                .evaluateAll((nodes) =>
+                  nodes.map((node) => {
+                    const range = document.createRange();
+                    range.selectNodeContents(node);
+                    return {
+                      text: node.textContent,
+                      lines: range.getClientRects().length,
+                    };
+                  }),
+                );
+              for (const quantity of quantities)
+                assert.equal(
+                  quantity.lines,
+                  1,
+                  `${label}: requirement quantity stays intact: ${quantity.text}`,
+                );
+            }
             summary.cases.push({ label, belowFloor });
             await writeFile(
               `test-results/${engine}-metadata-${mode}-summary.json`,

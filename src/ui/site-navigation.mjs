@@ -1,11 +1,28 @@
-import { resolvePresentation } from "./presentation-config.mjs";
-import { primaryHubs, featureHub, featureLabel } from "./workspace-shell.mjs";
+import { renderWorkspaceTools } from "./site-tools.mjs";
 import {
-  features,
+  navigationConfig,
+  navigationGroup,
+  validateNavigationConfig,
+} from "./navigation-config.mjs";
+import { resolvePresentation } from "./presentation-config.mjs";
+import { featureHub, featureLabel } from "./workspace-shell.mjs";
+import {
+  features as registeredFeatures,
   featureGroups,
   featureURL,
   featureForPage,
 } from "./feature-registry.mjs";
+// Stable compatibility identities remain available to saved shortcuts and the
+// feature directory, but the navigation exposes one weapon workspace entry.
+const features = registeredFeatures.filter(
+  (f) =>
+    ![
+      "weapons",
+      "armory-workbench",
+      "weapon-acquisition",
+      "weapon-camos",
+    ].includes(f.id),
+);
 const e = (v) =>
   String(v ?? "").replace(
     /[&<>"']/g,
@@ -14,31 +31,32 @@ const e = (v) =>
         c
       ],
   );
+export function navigationHref(
+  feature,
+  { surface = "guide", mapBase, packId = "" } = {},
+) {
+  let url = featureURL(feature, surface, { mapBase });
+  if (packId && surface === "guide" && feature.kind === "guide") {
+    const destination = new URL(url, "https://navigation.invalid");
+    destination.searchParams.set("pack", packId);
+    url = destination.pathname + destination.search + destination.hash;
+  }
+  return url;
+}
 export function renderMainNavigation({
   page = "",
   packId = "",
   extra = [],
   surface = "guide",
   mapBase,
+  navigation = navigationConfig,
 } = {}) {
   let current = featureForPage(page);
-  const primary = [
-    "home",
-    "hajin-map",
-    "planner",
-    "missions",
-    "catalog",
-    "settings",
-    "search",
-  ];
-  const labels = {
-    "hajin-map": "Map",
-    planner: "Prepare",
-    missions: "Orders",
-    catalog: "Reference",
-    settings: "Manage",
-    search: "Search",
-  };
+  validateNavigationConfig(navigation);
+  const primary = navigation.primary.map((entry) => entry.id);
+  const labels = Object.fromEntries(
+    navigation.primary.map((entry) => [entry.id, entry.label]),
+  );
   const link = (f, label = f.label) => {
     const legacyBossWindow =
       f.id === "boss-checklist" &&
@@ -50,9 +68,7 @@ export function renderMainNavigation({
       (f.kind !== "guide" &&
         !(f.kind === "map" && ["map", "help"].includes(surface))) ||
       (surface !== "guide" && f.kind === "guide");
-    let url = featureURL(f, surface, { mapBase });
-    if (packId && surface === "guide" && f.kind === "guide")
-      url += "?pack=" + encodeURIComponent(packId);
+    const url = navigationHref(f, { surface, mapBase, packId });
     return `<a href="${e(url)}" ${page === f.id ? 'aria-current="page" ' : ""}data-feature-id="${e(f.id)}"${page !== "home" && ["planner", "missions", "catalog", "settings", "hajin-map"].includes(f.id) && current?.group === f.group ? ' data-active-group="true"' : ""}${external ? ' target="_blank" rel="noopener noreferrer" title="Opens in a new tab"' : ""}>${e(label)}</a>`;
   };
   const additional = extra
@@ -70,45 +86,45 @@ export function renderMainNavigation({
   if (resolvePresentation(rolloutSurface).variant === "modern") {
     const activeHub =
         surface === "manager" ? "DMZ Weapons" : featureHub(current),
-      modernLink = (f, label = featureLabel(f)) => {
+      activeHubLabel =
+        navigation.hubs.find((hub) => hub.key === activeHub)?.label ||
+        labels[current?.id] ||
+        activeHub,
+      modernLink = (f, label = featureLabel(f, navigation)) => {
         let markup = link(f, label);
         if (
-          primaryHubs.includes(f.id) &&
+          navigation.modernPrimary.includes(f.id) &&
           activeHub === featureHub(f) &&
           page !== f.id
         )
           markup = markup.replace("<a ", '<a data-active-group="true" ');
         return markup;
       };
-    const primaryMarkup = primaryHubs
+    const primaryMarkup = navigation.modernPrimary
       .map((id) => modernLink(features.find((f) => f.id === id)))
       .join("");
-    return `<nav class="site-nav${surface !== "guide" ? " companion-nav" : ""}" aria-label="Main navigation" data-navigation-surface="${e(surface)}" data-ui-navigation="modern"><details class="ui-mobile-sections"><summary>${e(activeHub === "Tools" ? "Sections" : activeHub)} · Sections</summary><div class="ui-primary-links">${primaryMarkup}</div></details>${modernLink(
+    return `<nav class="site-nav${surface !== "guide" ? " companion-nav" : ""}" aria-label="Main navigation" data-navigation-surface="${e(surface)}" data-ui-navigation="modern"><details class="ui-mobile-sections"><summary>${e(activeHub === "Tools" ? "Sections" : activeHubLabel)} · Sections</summary><div class="ui-primary-links">${primaryMarkup}</div></details>${modernLink(
       features.find((f) => f.id === "search"),
-      "Search",
-    )}<details class="nav-more"><summary>Tools · All features</summary><div><input data-navigation-filter hidden type="search" maxlength="100" aria-label="Find a link in this menu" placeholder="Find a workspace…"><button type="button" data-ui-density aria-pressed="false">Compact spacing</button>${["map", "help"].includes(surface) ? '<button type="button" id="theme-toggle">Light mode</button>' : ""}${[
-      "Map",
-      "DMZ Guide",
-      "DMZ FOB",
-      "DMZ Weapons",
-      "Tools",
-    ]
+      labels.search,
+    )}<details class="nav-more"><summary>${e(navigation.hubs.find((hub) => hub.key === "Tools").label)} · All features</summary><div><input data-navigation-filter hidden type="search" maxlength="100" aria-label="Find a link in this menu" placeholder="Find a workspace…"><button type="button" data-ui-density aria-pressed="false">Compact spacing</button>${["map", "help"].includes(surface) ? '<button type="button" id="theme-toggle">Light mode</button>' : ""}${navigation.hubs
       .map(
         (group) =>
-          `<section class="nav-menu-group" aria-label="${group}"><p class="nav-group-label">${group}</p>${[
+          `<section class="nav-menu-group" data-navigation-hub="${e(group.key)}" aria-label="${e(group.label)}"><p class="nav-group-label">${e(group.label)}</p>${[
             ...features,
             ...additional,
           ]
             .filter(
               (f) =>
-                featureHub(f) === group &&
-                !primaryHubs.includes(f.id) &&
+                featureHub(f) === group.key &&
+                !navigation.modernPrimary.includes(f.id) &&
                 f.id !== "search",
             )
             .map((f) => modernLink(f))
             .join("")}</section>`,
       )
-      .join("")}</div></details></nav>`;
+      .join(
+        "",
+      )}</div></details>${renderWorkspaceTools({ surface, mapBase })}</nav>`;
   }
   return `<nav class="site-nav${surface !== "guide" ? " companion-nav" : ""}" aria-label="Main navigation" data-navigation-surface="${e(surface)}">${primary
     .map((id) =>
@@ -122,7 +138,7 @@ export function renderMainNavigation({
     )}<details class="nav-more"><summary>More · ${e(current && !primary.includes(current.id) ? current.label : "All features")}</summary><div><input data-navigation-filter hidden type="search" maxlength="100" aria-label="Find a link in this menu" placeholder="Find a tool…">${featureGroups
     .map(
       (group) =>
-        `<section class="nav-menu-group" aria-label="${group}"><p class="nav-group-label">${group}</p>${[
+        `<section class="nav-menu-group" data-navigation-group="${e(group)}" aria-label="${e(navigationGroup(group, navigation).label)}"><p class="nav-group-label">${e(navigationGroup(group, navigation).label)}</p>${[
           ...features,
           ...additional,
         ]
@@ -130,13 +146,19 @@ export function renderMainNavigation({
           .map((f) => link(f))
           .join("")}</section>`,
     )
-    .join("")}</div></details></nav>`;
+    .join(
+      "",
+    )}</div></details>${renderWorkspaceTools({ surface, mapBase })}</nav>`;
 }
-export function renderBreadcrumbs(page, title = "") {
+export function renderBreadcrumbs(
+  page,
+  title = "",
+  navigation = navigationConfig,
+) {
   const f = featureForPage(page);
   return page === "home"
     ? ""
     : page === "run-plan"
-      ? `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/dmz-fob/">Prepare</a><span aria-hidden="true">/</span><span aria-current="page">${e(title || "Next run plan")}</span></nav>`
-      : `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span>${f ? `<a href="/features/#${f.group.toLowerCase()}">${e(f.group)}</a><span aria-hidden="true">/</span>${title && title !== f.label ? `<a href="${e(featureURL(f))}">${e(f.label)}</a><span aria-hidden="true">/</span><span aria-current="page">${e(title)}</span>` : `<span aria-current="page">${e(f.label)}</span>`}` : "<span>Details</span>"}</nav>`;
+      ? `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${e(featureURL(features.find((f) => f.id === "home")))}">${e(navigation.primary.find((f) => f.id === "home").label)}</a><span aria-hidden="true">/</span><a href="${e(featureURL(features.find((f) => f.id === "dmz-fob")))}">${e(navigationGroup("Prepare", navigation).label)}</a><span aria-hidden="true">/</span><span aria-current="page">${e(title || "Next run plan")}</span></nav>`
+      : `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${e(featureURL(features.find((f) => f.id === "home")))}">${e(navigation.primary.find((f) => f.id === "home").label)}</a><span aria-hidden="true">/</span>${f ? `<a href="${e(featureURL(features.find((f) => f.id === "features")))}#${e(navigationGroup(f.group, navigation).id)}">${e(navigationGroup(f.group, navigation).label)}</a><span aria-hidden="true">/</span>${title && title !== f.label ? `<a href="${e(featureURL(f))}">${e(f.label)}</a><span aria-hidden="true">/</span><span aria-current="page">${e(title)}</span>` : `<span aria-current="page">${e(f.label)}</span>`}` : "<span>Details</span>"}</nav>`;
 }

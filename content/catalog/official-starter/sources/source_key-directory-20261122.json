@@ -1,0 +1,16 @@
+{
+  "id": "source:key-directory-20261122",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-22",
+    "kind": "web",
+    "lineageKey": "key-directory-106",
+    "observationKey": "key-directory-20261122"
+  },
+  "publishedAt": "Not stated",
+  "reviewedAt": "2026-11-22",
+  "supports": "Canonical key identities and linked acquisition reports; reported, not current-build verified. Region and map coverage checked against DMZHub, COD Central and DMZMap.",
+  "title": "Reviewed Hajin and X01 key directory",
+  "type": "community",
+  "url": "https://dmztracker.com/keys/"
+}

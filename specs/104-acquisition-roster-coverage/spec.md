@@ -1,0 +1,5 @@
+# Acquisition roster coverage repair
+Reproduction: /armory/workbench/#acquisition uses33 combat-stat weapons and omits existing acquisition identities Cronen Osprey and CSG-35, though both already exist in the35-weapon acquisition/camo catalogs.
+FR01: Workbench acquisition roster, class filter, selected-weapon picker, manual totals and archive classification use the validated acquisition identity catalog. Include all35 exactly once, including both omitted guns. Existing manual/blueprint/extraction/camo records remain unchanged and editable through current owners.
+FR02: Comparator/build/evidence weapon lists remain bounded by actual combat database; do not invent stats, compatibility or source facts. Acquisition-only names link to the existing dedicated acquisition detail, not nonexistent combat detail routes. Camouflage icons/details/completion work as for other guns.
+FR03: Verify search/class/picker/manual save/camo save/reload and dedicated-page parity without changing recorded manual extraction counts or unrelated weapons. Existing native controls, storage/CAS and backup behavior preserved. No schema/data collection or source edits.

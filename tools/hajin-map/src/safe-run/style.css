@@ -1,9 +1,10 @@
+@import "../../../../src/ui/layout-tokens.css";
 :root {
   font-family: Arial, Helvetica, sans-serif;
   color: #edf1e7;
   background: #131815;
   color-scheme: dark;
-  font-size: 14px;
+  font-size: 100%;
   --safe-line: #54604b;
   --safe-accent: #e0e8ae;
 }
@@ -49,27 +50,30 @@ textarea {
   max-width: 100%;
   resize: vertical;
   border: 1px solid #738364;
-  border-radius: 4px;
+  border-radius: var(--ui-radius-1);
   background: #253025;
   color: #edf1e7;
-  padding: 6px 9px;
+  padding: var(--ui-space-3) var(--ui-space-4);
 }
-#loot-options, #loot-observations {
-  margin-block: 12px;
-  padding: 10px;
+#loot-options,
+#loot-observations {
+  margin-block: var(--ui-space-6);
+  padding: var(--ui-space-5);
   border: 1px solid var(--safe-line);
-  border-radius: 6px;
+  border-radius: var(--ui-radius-1);
 }
-#loot-options label, #loot-observations label {
+#loot-options label,
+#loot-observations label {
   display: flex;
   align-items: center;
-  gap: 7px;
-  margin-block: 8px 4px;
+  gap: var(--ui-space-3);
+  margin-block: var(--ui-space-4) var(--ui-space-2);
 }
 #loot-observations label:not(:has(input[type="checkbox"])) {
   display: block;
 }
-#loot-observations select, #loot-observations input[type="date"] {
+#loot-observations select,
+#loot-observations input[type="date"] {
   width: 100%;
 }
 #observation-list {
@@ -93,11 +97,11 @@ textarea {
   display: none;
 }
 .loot-run-page #safe-list {
-  max-height: min(42dvh, 440px);
+  max-height: min(calc(var(--ui-viewport-block) * 0.42), 440px);
   overflow: auto;
 }
 .loot-run-page #visit-order {
-  max-height: min(38dvh, 400px);
+  max-height: min(calc(var(--ui-viewport-block) * 0.38), 400px);
   overflow: auto;
 }
 button,
@@ -106,10 +110,10 @@ input {
   min-height: calc(2rem + 6px);
   max-width: 100%;
   border: 1px solid #738364;
-  border-radius: 4px;
+  border-radius: var(--ui-radius-1);
   background: #253025;
   color: #edf1e7;
-  padding: 6px 9px;
+  padding: var(--ui-space-3) var(--ui-space-4);
 }
 button {
   cursor: pointer;
@@ -137,7 +141,7 @@ p {
 small,
 .safe-note {
   color: #c1ccb7;
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
   line-height: 1.5;
 }
 .safe-skip {
@@ -146,40 +150,44 @@ small,
   left: 8px;
   z-index: 2000;
   background: #172119;
-  padding: 12px;
+  padding: var(--ui-space-6);
 }
 .safe-skip:focus {
   top: 8px;
 }
 .safe-header {
-  padding: 10px 18px;
+  padding: var(--ui-space-5) var(--ui-space-8);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--ui-space-6);
   border-bottom: 1px solid var(--safe-line);
 }
 .safe-header p {
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
   letter-spacing: 0.15em;
   margin: 0;
   color: #c4d297;
 }
 h1 {
-  font-size: 1.6rem;
-  margin: 3px 0;
+  font-size: var(--ui-type-title);
+  margin: var(--ui-space-1) 0;
 }
 h2 {
-  font-size: 1rem;
+  font-size: var(--ui-type-base);
 }
 .safe-layout {
   display: grid;
-  grid-template-columns: clamp(290px, calc(26vw + 35px), 390px) minmax(0, 1fr);
-  height: calc(100dvh - 135px);
+  grid-template-columns: clamp(
+      290px,
+      calc(calc(var(--ui-viewport-inline) * 0.26) + 35px),
+      390px
+    ) minmax(0, 1fr);
+  height: calc(var(--ui-viewport-block) - 135px);
   min-height: 500px;
 }
 #safe-controls {
-  padding: 12px;
+  padding: var(--ui-space-6);
   overflow: hidden;
   height: 100%;
   overscroll-behavior: contain;
@@ -188,32 +196,32 @@ h2 {
 }
 #safe-intelligence {
   flex: 0 0 auto;
-  max-block-size: clamp(96px, 22dvh, 160px);
+  max-block-size: clamp(96px, calc(var(--ui-viewport-block) * 0.22), 160px);
   overflow: auto;
   overscroll-behavior: contain;
-  padding-block-end: 8px;
+  padding-block-end: var(--ui-space-4);
   border-bottom: 1px solid var(--safe-line);
 }
 #safe-controls > .sidebar-scroll-section fieldset {
   margin: 0;
 }
 #safe-controls > .sidebar-scroll-section {
-  padding-block: 8px;
+  padding-block: var(--ui-space-4);
 }
 fieldset {
-  margin: 16px 0;
-  padding: 10px;
+  margin: var(--ui-space-8) 0;
+  padding: var(--ui-space-5);
   border: 1px solid var(--safe-line);
   min-width: 0;
 }
 legend {
   font-weight: bold;
   color: var(--safe-accent);
-  padding: 0 6px;
+  padding: 0 var(--ui-space-3);
 }
 fieldset > label {
   display: block;
-  margin: 8px 0 5px;
+  margin: var(--ui-space-4) 0 var(--ui-space-2);
 }
 fieldset > input,
 fieldset > select {
@@ -222,18 +230,18 @@ fieldset > select {
 .safe-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin: 7px 0;
+  gap: var(--ui-space-3);
+  margin: var(--ui-space-3) 0;
 }
 .safe-xy {
   display: flex;
-  gap: 8px;
-  margin: 10px 0;
+  gap: var(--ui-space-4);
+  margin: var(--ui-space-5) 0;
 }
 .safe-xy label {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--ui-space-3);
   min-width: 0;
 }
 .safe-xy input {
@@ -242,34 +250,34 @@ fieldset > select {
 }
 #manual-start {
   border-top: 1px solid var(--safe-line);
-  margin-top: 10px;
+  margin-top: var(--ui-space-5);
 }
 .safe-choice {
-  padding: 8px 0;
+  padding: var(--ui-space-4) 0;
   border-top: 1px solid var(--safe-line);
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 6px;
+  gap: var(--ui-space-3);
   align-items: center;
 }
 .safe-choice label {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: var(--ui-space-3);
   overflow-wrap: anywhere;
 }
 .safe-choice small {
   grid-column: 1/-1;
 }
 #safe-list {
-  padding-right: 3px;
+  padding-right: var(--ui-space-1);
 }
 #visit-order {
-  padding-left: 24px;
+  padding-left: var(--ui-space-10);
 }
 #visit-order li {
   position: relative;
-  padding: 6px;
+  padding: var(--ui-space-3);
   border-bottom: 1px solid var(--safe-line);
   overflow-wrap: anywhere;
 }
@@ -277,7 +285,7 @@ fieldset > select {
   width: 100%;
   text-align: left;
   background: #1d281f;
-  padding-inline-start: 38px;
+  padding-inline-start: var(--ui-space-11);
 }
 .safe-stop-drag {
   position: absolute;
@@ -289,9 +297,9 @@ fieldset > select {
   width: 28px;
   min-height: 34px;
   border: 1px solid #849477;
-  border-radius: 4px;
+  border-radius: var(--ui-radius-1);
   color: var(--safe-accent);
-  font-size: 20px;
+  font-size: var(--ui-type-heading);
   cursor: grab;
   user-select: none;
 }
@@ -300,10 +308,10 @@ fieldset > select {
 }
 #route-status span {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: var(--ui-space-3);
 }
 details {
-  padding: 12px 0;
+  padding: var(--ui-space-6) 0;
   border-top: 1px solid var(--safe-line);
   line-height: 1.5;
 }
@@ -312,14 +320,14 @@ summary {
   color: var(--safe-accent);
 }
 #source-list {
-  padding-left: 20px;
+  padding-left: var(--ui-space-9);
   overflow-wrap: anywhere;
 }
 .safe-intro {
   margin-top: 0;
 }
 #saved-status {
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
   color: #d1dfad;
 }
 #data-status {
@@ -344,17 +352,17 @@ summary {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 5px;
+  gap: var(--ui-space-2);
   max-width: calc(100% - 24px);
-  padding: 5px;
+  padding: var(--ui-space-2);
   background: #152017ee;
   border: 1px solid var(--safe-line);
-  border-radius: 5px;
+  border-radius: var(--ui-radius-1);
 }
 .safe-map-tools label {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--ui-space-2);
 }
 #terrain-status {
   position: absolute;
@@ -363,8 +371,8 @@ summary {
   max-width: 70%;
   z-index: 500;
   background: #172119;
-  padding: 12px;
-  border-radius: 5px;
+  padding: var(--ui-space-6);
+  border-radius: var(--ui-radius-1);
 }
 .safe-map-credit {
   position: absolute;
@@ -372,9 +380,9 @@ summary {
   left: 10px;
   z-index: 400;
   background: #152017ee;
-  padding: 5px;
+  padding: var(--ui-space-2);
   max-width: calc(100% - 20px);
-  font-size: 0.75rem;
+  font-size: var(--ui-type-meta);
   pointer-events: none;
 }
 .safe-number-marker,
@@ -386,7 +394,7 @@ summary {
   border: 2px solid #111b12;
   border-radius: 50%;
   font-weight: bold;
-  font-size: 13px;
+  font-size: var(--ui-type-meta);
   box-shadow: 0 1px 5px #000;
 }
 .safe-excluded {
@@ -415,7 +423,7 @@ summary {
   border-radius: 50%;
   background: #d7f8fb;
   color: #16343b;
-  font-size: 10px;
+  font-size: var(--ui-type-meta);
   line-height: 1;
   border: 1px solid #16343b;
 }
@@ -441,7 +449,7 @@ summary {
   border-radius: 50%;
   background: #fff0f1;
   color: #751321;
-  font-size: 11px;
+  font-size: var(--ui-type-meta);
   line-height: 1;
   font-weight: bold;
   border: 1px solid #751321;
@@ -449,7 +457,7 @@ summary {
 .safe-access-info {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 8px;
+  gap: var(--ui-space-2) var(--ui-space-4);
   align-items: center;
   overflow-wrap: anywhere;
 }
@@ -461,13 +469,13 @@ summary {
   font-weight: bold;
 }
 .safe-access-info a {
-  font-size: 0.85rem;
+  font-size: var(--ui-type-label);
 }
 .safe-access-info > details {
   width: 100%;
 }
 #visit-order .safe-access-info {
-  margin: 5px 0;
+  margin: var(--ui-space-2) 0;
 }
 .safe-access-legend strong {
   color: #ffb6c1;
@@ -475,7 +483,7 @@ summary {
 .safe-start-marker {
   background: #b9e9f1;
   color: #152017;
-  border-radius: 4px;
+  border-radius: var(--ui-radius-1);
 }
 .safe-run-page .leaflet-popup-content-wrapper,
 .safe-run-page .leaflet-popup-tip {
@@ -485,7 +493,7 @@ summary {
 .safe-run-page .leaflet-popup-content {
   line-height: 1.5;
   overflow-wrap: anywhere;
-  max-width: calc(100vw - 80px);
+  max-width: calc(var(--ui-viewport-inline) - 80px);
 }
 .safe-run-page .leaflet-popup-content button {
   width: 100%;
@@ -511,16 +519,16 @@ summary {
     min-height: 0;
   }
   .safe-terrain {
-    height: calc(55dvh + 30px);
+    height: calc(calc(var(--ui-viewport-block) * 0.55) + 30px);
     min-height: 300px;
   }
   #safe-controls {
-    height: clamp(560px, 90dvh, 920px);
+    height: clamp(560px, calc(var(--ui-viewport-block) * 0.9), 920px);
     flex: none;
     border-right: 0;
   }
   .safe-header {
-    padding: 8px 12px;
+    padding: var(--ui-space-4) var(--ui-space-6);
   }
   .safe-header a {
     max-width: 45%;
@@ -532,7 +540,7 @@ summary {
     max-width: calc(100% - 16px);
   }
   .safe-header h1 {
-    font-size: 1.4rem;
+    font-size: var(--ui-type-title);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -542,23 +550,93 @@ summary {
 }
 
 /* Modern separate Safe-run allocation. The original live controls remain attached. */
-html[data-ui-variant=modern] body.safe-run-page{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-html[data-ui-variant=modern] .safe-run-page #app{flex:1;min-height:0;display:flex;flex-direction:column}
-html[data-ui-variant=modern] .safe-header{flex:none;padding:.5rem 1rem;height:auto}
-html[data-ui-variant=modern] .safe-header h1{font-size:1.4rem;margin:0}
-html[data-ui-variant=modern] .ui-safe-views{display:flex;gap:.5rem;padding:.4rem .75rem;flex:none}
-html[data-ui-variant=modern] .safe-layout{flex:1;min-height:0;height:auto;grid-template-columns:minmax(18rem,24rem) minmax(0,1fr)}
-html[data-ui-variant=modern] #safe-controls{overflow:auto;height:auto;padding:.75rem;display:block}
-html[data-ui-variant=modern] #safe-intelligence{max-block-size:none;overflow:visible}
-html[data-ui-variant=modern] :is(#safe-start-pane,#safe-candidates-pane,#safe-route-pane){height:auto;max-height:none;overflow:visible}
-html[data-ui-variant=modern] :is(#safe-start-divider,#safe-route-divider){display:none}
-html[data-ui-variant=modern] .safe-terrain{min-height:0;height:auto;position:relative}
-html[data-ui-variant=modern] .safe-layout:not([data-ui-safe-view=docked]){grid-template-columns:minmax(0,1fr)}
-html[data-ui-variant=modern] .safe-layout [hidden]{display:none!important}
+html[data-ui-variant="modern"] body.safe-run-page {
+  height: var(--ui-viewport-block);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+html[data-ui-variant="modern"] .safe-run-page #app {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+html[data-ui-variant="modern"] .safe-header {
+  flex: none;
+  padding: var(--ui-space-4) var(--ui-space-8);
+  height: auto;
+}
+html[data-ui-variant="modern"] .safe-header h1 {
+  font-size: var(--ui-type-title);
+  margin: 0;
+}
+html[data-ui-variant="modern"] .ui-safe-views {
+  display: flex;
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-3) var(--ui-space-6);
+  flex: none;
+}
+html[data-ui-variant="modern"] .safe-layout {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  grid-template-columns: minmax(18rem, 24rem) minmax(0, 1fr);
+}
+html[data-ui-variant="modern"] #safe-controls {
+  overflow: auto;
+  height: auto;
+  padding: var(--ui-space-6);
+  display: block;
+}
+html[data-ui-variant="modern"] #safe-intelligence {
+  max-block-size: none;
+  overflow: visible;
+}
+html[data-ui-variant="modern"]
+  :is(#safe-start-pane, #safe-candidates-pane, #safe-route-pane) {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+html[data-ui-variant="modern"] :is(#safe-start-divider, #safe-route-divider) {
+  display: none;
+}
+html[data-ui-variant="modern"] .safe-terrain {
+  min-height: 0;
+  height: auto;
+  position: relative;
+}
+html[data-ui-variant="modern"] .safe-layout:not([data-ui-safe-view="docked"]) {
+  grid-template-columns: minmax(0, 1fr);
+}
+html[data-ui-variant="modern"] .safe-layout [hidden] {
+  display: none !important;
+}
 
-html[data-ui-variant=modern] .safe-layout{display:grid;grid-template-rows:minmax(0,1fr)}
+html[data-ui-variant="modern"] .safe-layout {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+}
 
 /* Safe Run owns its full-width map canvas, not the Guide reading-column cap. */
-html[data-ui-variant=modern] body.safe-run-page main.safe-layout{width:100%;max-width:none;margin:0;padding:0}
-html[data-ui-variant=modern] .safe-header{flex-wrap:wrap;gap:.5rem;background:var(--ws-surface)}
-html[data-ui-variant=modern] .safe-main-map-link{display:inline-flex;align-items:center;min-height:44px;padding:.4rem .65rem;border:1px solid var(--ws-control-line,var(--ws-line));border-radius:.4rem;text-decoration:none}
+html[data-ui-variant="modern"] body.safe-run-page main.safe-layout {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+html[data-ui-variant="modern"] .safe-header {
+  flex-wrap: wrap;
+  gap: var(--ui-space-4);
+  background: var(--ws-surface);
+}
+html[data-ui-variant="modern"] .safe-main-map-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--ui-space-3) var(--ui-space-5);
+  border: 1px solid var(--ws-control-line, var(--ws-line));
+  border-radius: var(--ui-radius-2);
+  text-decoration: none;
+}

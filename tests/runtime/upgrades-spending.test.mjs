@@ -285,7 +285,7 @@ test("B11 v3 cash stock and protected reserve support 2M; costs, noncurrency and
     2000000,
   );
   const tooMuch = structuredClone(profile);
-  tooMuch.inventory[cash]++;
+  tooMuch.inventory[cash] = 7000000001;
   assert.throws(() => validateProfile(tooMuch));
   for (const field of ["inventory", "reserves"]) {
     const material = structuredClone(profile);
@@ -500,4 +500,51 @@ test("B12 focused planners and advice accept 2M currency but reject known oversi
   for (const calculate of [planSingle, planShared])
     assert.throws(() => calculate(pack, profile), /bound/);
   assert.equal(upgradeAdvice(pack, profile).status, "blocked");
+});
+
+test("101 expanded cash purchase, refund and backup roundtrip preserve exact higher balance", () => {
+  const { pack, profile, cash } = fixture();
+  profile.inventory[cash] = 6209662;
+  profile.reserves[cash] = 6209000;
+  validateProfile(profile);
+  assert.deepEqual(parseProfile(JSON.stringify(profile)), profile);
+  const purchased = recordUpgradePurchase(
+    pack,
+    profile,
+    "test:first",
+    op(),
+  ).candidate;
+  const cost = purchased.spendHistory[0].costs.find((c) => c.itemId === cash);
+  assert.deepEqual(
+    [cost.before, cost.after, cost.reserve],
+    [6209662, 6209562, 6209000],
+  );
+  const restored = recordSpendingReversal(
+    purchased,
+    "spend:one",
+    op("undo"),
+  ).candidate;
+  assert.equal(restored.inventory[cash], 6209662);
+  validateProfile(restored);
+});
+
+test("101 refund at the software currency maximum returns exactly to the bound", () => {
+  const { pack, profile, cash } = fixture();
+  profile.inventory[cash] = 7000000000;
+  const bought = recordUpgradePurchase(
+    pack,
+    profile,
+    "test:first",
+    op(),
+  ).candidate;
+  const restored = recordSpendingReversal(
+    bought,
+    "spend:one",
+    op("undo"),
+  ).candidate;
+  assert.equal(restored.inventory[cash], 7000000000);
+  validateProfile(restored);
+  const over = structuredClone(restored);
+  over.inventory[cash]++;
+  assert.throws(() => validateProfile(over));
 });

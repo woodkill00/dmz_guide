@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "A duffel-bag find in the Citadel East Wing was reported.",
+  "id": "mw4:key-militia-arms-depot",
+  "kind": "item",
+  "name": "Militia Arms Depot",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

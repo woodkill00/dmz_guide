@@ -1,5 +1,54 @@
+import { setupSiteTools } from "./site-tools.mjs";
+import { features, navigationConfig } from "../ui/feature-registry.mjs";
+import { featureHub, featureLabel } from "../ui/workspace-shell.mjs";
 // Native disclosures remain navigation, not application menus. No private state.
-export function setupNavigationMenu(root = document) {
+export function setupNavigationMenu(
+  root = document,
+  navigation = navigationConfig,
+) {
+  setupSiteTools(root);
+  // Older running companion servers can retain HTML templates; apply the same
+  // display configuration by stable feature IDs without restarting a session.
+  for (const nav of root.querySelectorAll(".site-nav")) {
+    const modern = nav.dataset.uiNavigation === "modern";
+    for (const link of nav.querySelectorAll("a[data-feature-id]")) {
+      const feature = features.find((row) => row.id === link.dataset.featureId);
+      const primary = navigation.primary.find(
+        (row) => row.id === link.dataset.featureId,
+      );
+      if (modern && feature)
+        link.textContent = featureLabel(feature, navigation);
+      else if (primary && link.parentElement === nav)
+        link.textContent = primary.label;
+    }
+    for (const section of nav.querySelectorAll(
+      ".nav-more > div > .nav-menu-group",
+    )) {
+      const feature = features.find(
+        (row) =>
+          row.id ===
+          section.querySelector("a[data-feature-id]")?.dataset.featureId,
+      );
+      const group = modern
+        ? navigation.hubs.find(
+            (row) =>
+              row.key ===
+              (section.dataset.navigationHub || featureHub(feature)),
+          )
+        : navigation.groups.find(
+            (row) =>
+              row.key === (section.dataset.navigationGroup || feature?.group),
+          );
+      if (!group) continue;
+      section.setAttribute(
+        modern ? "data-navigation-hub" : "data-navigation-group",
+        group.key,
+      );
+      section.setAttribute("aria-label", group.label);
+      const label = section.querySelector(":scope > .nav-group-label");
+      if (label) label.textContent = group.label;
+    }
+  }
   for (const menu of root.querySelectorAll(".site-nav .nav-more")) {
     if (menu.dataset.enhanced) continue;
     menu.dataset.enhanced = "true";
@@ -9,8 +58,8 @@ export function setupNavigationMenu(root = document) {
       const entry = nav?.querySelector('[data-feature-id="missions"]');
       const group = menu.querySelector(
         nav?.dataset.uiNavigation === "modern"
-          ? '[aria-label="DMZ Guide"]'
-          : '[aria-label="Track"]',
+          ? '[data-navigation-hub="DMZ Guide"]'
+          : '[data-navigation-group="Track"]',
       );
       if (!entry || !group) return;
       const currentBase = () => {

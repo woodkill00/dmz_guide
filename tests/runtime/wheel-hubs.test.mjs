@@ -7,7 +7,7 @@ import {
 } from "../../src/domain/home-mindmap.mjs";
 import { featurePages } from "../../src/ui/main-hubs.mjs";
 import { renderDashboard } from "../../src/ui/hub-page.mjs";
-import { features } from "../../src/ui/feature-registry.mjs";
+import { features, featureURL } from "../../src/ui/feature-registry.mjs";
 test("062 wheel direction, delta units and range normalize consistently", () => {
   assert(wheelMindmapZoom(1, -120) > 1);
   assert(wheelMindmapZoom(1, 120) < 1);
@@ -56,8 +56,9 @@ test("062 real named hubs appear in registry and Home, FOB has authoritative Upg
     home = renderDashboard();
   for (const path of ["/dmz-guide/", "/dmz-fob/", "/dmz-weapons/"]) {
     assert(pages.some((p) => p.path === path));
-    assert(features.some((f) => f.path === path));
-    assert(home.includes('href="' + path + '"'));
+    const feature = features.find((f) => f.path === path);
+    assert(feature);
+    assert(home.includes('href="' + featureURL(feature) + '"'));
   }
   const fob = pages.find((p) => p.path === "/dmz-fob/");
   assert.match(fob.body, /<section id="upgrades"/);

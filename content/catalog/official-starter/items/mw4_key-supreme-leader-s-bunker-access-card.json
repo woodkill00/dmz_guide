@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Reported Operation Iron Citadel reward.",
+  "id": "mw4:key-supreme-leader-s-bunker-access-card",
+  "kind": "item",
+  "name": "Supreme Leader's Bunker Access Card",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

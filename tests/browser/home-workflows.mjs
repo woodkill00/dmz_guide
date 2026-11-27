@@ -147,7 +147,7 @@ export async function runHomeWorkflowTests({ browser, base }) {
     );
     await page.locator("#progress-query").fill("delivery");
     const detail = missionArticle.getByRole("link", {
-      name: "Open selected private record",
+      name: "Open full page & edit",
     });
     await detail.click();
     await page.locator(".return-results").click();
@@ -204,9 +204,12 @@ export async function runHomeWorkflowTests({ browser, base }) {
     assert.match(page.url(), /\/armory\//);
     assert(
       await page
-        .getByRole("link", { name: "Attachment directory" })
+        .getByRole("link", { name: "Attachments", exact: true })
         .isVisible(),
     );
+    await page.getByRole("link", { name: "Attachments", exact: true }).click();
+    await page.locator("#owned-attachments").waitFor();
+    assert(await page.locator("#owned-attachments").isVisible());
     await page.keyboard.press("Control+k");
     await page.waitForURL("**/search/**");
     await page.goto(base + "/features/");
@@ -359,11 +362,32 @@ async function runHomeFailureTests({ browser, base }) {
   await service.addInitScript(() => {
     const original = window.fetch;
     window.__servicePorts = [];
+    window.__sameOriginServices = [];
     window.fetch = (path, options) => {
       const u = new URL(path, location.href);
       if (
+        u.origin === location.origin &&
+        ["/", "/local-site/status.json"].includes(u.pathname)
+      ) {
+        window.__sameOriginServices.push(u.pathname);
+        return Promise.resolve(
+          new Response(
+            u.pathname === "/"
+              ? "Synthetic guide"
+              : JSON.stringify({ maps: true }),
+            {
+              status: 200,
+              headers: {
+                "content-type":
+                  u.pathname === "/" ? "text/html" : "application/json",
+              },
+            },
+          ),
+        );
+      }
+      if (
         u.hostname === "127.0.0.1" &&
-        ["4173", "4174", "4176", "5175"].includes(u.port) &&
+        ["4174", "4176"].includes(u.port) &&
         u.pathname === "/"
       ) {
         window.__servicePorts.push(u.port);
@@ -379,17 +403,24 @@ async function runHomeFailureTests({ browser, base }) {
   const sp = await service.newPage();
   try {
     await sp.goto(base + "/");
-    await sp.getByText("Local services", { exact: true }).click();
+    if (
+      !(await sp
+        .locator("#hub-service-check")
+        .evaluate((node) => node.closest("details").open))
+    )
+      await sp.getByText("Local services", { exact: true }).click();
     await sp.locator("#hub-service-check").click();
     await sp.waitForFunction(
       () => !document.querySelector("#hub-service-check").disabled,
     );
     assert.deepEqual((await sp.evaluate(() => window.__servicePorts)).sort(), [
-      "4173",
       "4174",
       "4176",
-      "5175",
     ]);
+    assert.deepEqual(
+      (await sp.evaluate(() => window.__sameOriginServices)).sort(),
+      ["/", "/local-site/status.json"],
+    );
     assert.match(
       await sp.locator("#hub-services").innerText(),
       /Update manager: unavailable/,
@@ -402,7 +433,7 @@ async function runHomeFailureTests({ browser, base }) {
     await service.close();
   }
   console.log(
-    "058 failure journeys PASS: held summary cannot cross catalog selection, bounded hung storage, explicit four-service allowlist with unavailable service",
+    "058 failure journeys PASS: held summary cannot cross catalog selection, bounded hung storage, finite local-service allowlist with unavailable service",
   );
 }
 

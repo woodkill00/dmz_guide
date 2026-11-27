@@ -1,0 +1,16 @@
+{
+  "id": "source:key-reference-a3147e38e43b",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-22",
+    "kind": "web",
+    "lineageKey": "key-reference-106",
+    "observationKey": "key-reference-a3147e38e43b"
+  },
+  "publishedAt": "Not stated",
+  "reviewedAt": "2026-11-22",
+  "supports": "Reported key identity, acquisition and location context; current-build confirmation unknown.",
+  "title": "DMZHub X01 key rooms",
+  "type": "community",
+  "url": "https://dmzhub.gg/maps/x01-black-site"
+}

@@ -56,3 +56,15 @@ export async function featurePages() {
     ],
   }));
 }
+import { weaponAlias } from "./weapon-alias.mjs";
+export async function unifiedFeaturePages() {
+  const { weapons } = await readWeaponCamos(),
+    ids = weapons.map((w) => w.id);
+  return [null, ...weapons].map((weapon) =>
+    weaponAlias(
+      weapon ? `/armory/camos/${weapon.id}/` : "/armory/camos/",
+      ids,
+      { weapon: weapon?.id || "", section: "camos" },
+    ),
+  );
+}

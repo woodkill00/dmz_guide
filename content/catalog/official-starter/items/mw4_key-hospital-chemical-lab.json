@@ -1,0 +1,19 @@
+{
+  "aliases": [
+    "Hospital Chemical Lab Key",
+    "Chemist Lab"
+  ],
+  "category": "Keys · Hajin",
+  "description": "Hospital searches include upper-floor offices; no guaranteed spawn is established.",
+  "id": "mw4:key-hospital-chemical-lab",
+  "kind": "item",
+  "name": "Hospital Chemical Lab",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-255efda5932d",
+    "source:key-reference-f5a54d242af4"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

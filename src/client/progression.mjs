@@ -1,3 +1,14 @@
+import { createOrderDisclosures } from "./order-disclosures.mjs";
+import { activeOrderPageKeys } from "../domain/order-progress.mjs";
+import { readDashboardProfile } from "../storage/dashboard-context.mjs";
+import {
+  orderProgress,
+  setOrderCompletion,
+} from "../domain/order-progress.mjs";
+import {
+  orderCompletionCheck,
+  hydrateOrderChecks,
+} from "../ui/order-progress.mjs";
 import { refreshTrackerContext } from "./quick-tracker.mjs";
 import { hajinOrderSequence } from "../content/hajin-order-sequence.mjs";
 import { chapterReaderPath } from "../domain/mission-chapter.mjs";
@@ -80,6 +91,19 @@ let familyModel = null,
   openFamily = null,
   familyPage = 0;
 let missionAnchorApplied = false;
+const orderTargets = new Map();
+const orderDisclosures = createOrderDisclosures(
+  document,
+  () => state.pack?.id || "",
+);
+let orderDraft = null;
+let orderSaveFlight = null;
+const orderDisabled = new Map();
+let orderReturnFlight = null;
+let orderIntent = 0,
+  orderNeedsRefresh = false;
+for (const type of ["pointerdown", "keydown", "input"])
+  document.addEventListener(type, () => orderIntent++);
 let overviewPack = null,
   overviewProfile = null;
 const labelStatus = (value) =>
@@ -93,10 +117,30 @@ const provenance = (source) =>
     ? `<p>Provenance: ${esc(source.provenance.kind)} · Capture date: ${esc(source.provenance.captureDate || "Unknown")} · Build identity: ${esc(source.provenance.buildStatus)}.</p><p>Observation: ${esc(source.provenance.observationKey)} · Lineage: ${esc(source.provenance.lineageKey)}.</p>`
     : "";
 function setBusy(value) {
+  if (!orderDraft && orderDisabled.size) {
+    for (const [control, disabled] of orderDisabled)
+      if (control.isConnected) control.disabled = disabled;
+    orderDisabled.clear();
+  }
+
+  if (focusedMissions && orderDraft)
+    for (const control of document.querySelectorAll(
+      "main button,main input,main select",
+    )) {
+      if (!control.closest("#order-save-recovery")) {
+        if (!orderDisabled.has(control))
+          orderDisabled.set(control, control.disabled);
+        control.disabled = true;
+      }
+    }
   for (const control of document.querySelectorAll(
-    "#pack-select, #spoiler-toggle, #progress-reset, #progress-reset-yes, [data-progress-id], [data-upgrade-id], [data-complete-upgrade], [data-fob-owned], [data-fob-step], [data-fob-save], [data-fob-cancel], #upgrade-progress-apply, #upgrade-progress-cancel, #upgrade-progress-export, #upgrade-undo",
+    "#pack-select, #spoiler-toggle, #progress-reset, #progress-reset-yes, [data-progress-id], [data-order-complete], [data-upgrade-id], [data-complete-upgrade], [data-fob-owned], [data-fob-step], [data-fob-save], [data-fob-cancel], #upgrade-progress-apply, #upgrade-progress-cancel, #upgrade-progress-export, #upgrade-undo",
   ))
-    control.disabled = value || control.hasAttribute("data-upgrade-readonly");
+    control.disabled =
+      value ||
+      !!orderDraft ||
+      control.hasAttribute("data-upgrade-readonly") ||
+      control.hasAttribute("data-order-readonly");
 }
 function upgradeControls(row, guard) {
   const upgrade = row.upgrade,
@@ -182,20 +226,37 @@ function renderMissionDirectory() {
     return;
   }
   const byId = new Map(state.pack.objectives.map((row) => [row.id, row]));
+  const missionGuard = spoilerGuard(state.pack, state.profile.spoilers);
   const packId = encodeURIComponent(state.pack.id);
+  orderTargets.clear();
+  const readonly = state.profile.contentVersion !== state.pack.contentVersion;
+  const pageCheck = (key, ids, label) => {
+    const progress = orderProgress(state.pack, state.profile, ids);
+    orderTargets.set(
+      key,
+      progress.rows.map((r) => r.id),
+    );
+    return (
+      orderCompletionCheck(key, label, { ...progress, readonly }) +
+      (progress.total < ids.length
+        ? "<small>Visible missions only</small>"
+        : "")
+    );
+  };
   const rowHTML = (id) => {
     const record = byId.get(id);
     if (!record) return "<li>Record missing · review source</li>";
     if (record.spoiler && !state.profile.spoilers)
       return "<li>Story mission · hidden until spoilers are enabled</li>";
-    return `<li><a href="${esc(missionHref(id))}">${esc(record.name)}</a> <small>${record.status === "observed" ? "Source reported" : esc(record.status || "Unverified")}</small>${renderMissionObjectives(record)}</li>`;
+    orderTargets.set(id, [id]);
+    return `<li>${orderCompletionCheck(id, record.name, { complete: state.profile.completion[id] === "completed", readonly })} <a href="${esc(missionHref(id))}">${esc(record.name)}</a> <small>${record.status === "observed" ? "Source reported" : esc(record.status || "Unverified")}</small>${renderMissionObjectives({ ...record, steps: (record.steps || []).map((step) => missionGuard.text(step)) })}</li>`;
   };
   hajin.innerHTML =
     '<h3 id="hajin-orders">Hajin · pages 1–24</h3><div class="mission-page-grid">' +
     hajinOrderSequence.pages
       .map(
         (row) =>
-          `<section id="hajin-page-${row.page}" class="mission-page-card" aria-label="Hajin page ${row.page}"><h4><a href="${esc(chapterReaderPath(`hajin-${row.page}`))}">Page ${row.page}</a> <small>${esc(row.label)}</small></h4><p>${row.placement === "fixed" ? "Fixed page roster" : "Reported chapter sequence · page may vary"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><details class="mission-rewards"><summary>Reported page rewards</summary><ul>${hajinPageIntel[row.page - 1].rewards.map((reward) => `<li>${esc(reward)}</li>`).join("")}</ul><p>${hajinPageIntel[row.page - 1].localAuthored ? "Local authored report; original sources do not verify local edits" : "Community report"} · reviewed ${esc(hajinPageIntel[row.page - 1].reviewedAt)} · current build unverified.</p>${hajinPageIntel[row.page - 1].notes ? `<p>${esc(hajinPageIntel[row.page - 1].notes)}</p>` : ""}<p class="mission-source-links">${hajinPageIntel[row.page - 1].sourceKeys.map((key) => `<a href="${esc(missionSources[key])}" target="_blank" rel="noopener noreferrer">${esc(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details><a href="${esc(auditHref(`page:${packId}:hajin-launch:${row.page}:roster`))}">Audit page ${row.page}</a></section>`,
+          `<section id="hajin-page-${row.page}" class="mission-page-card" data-order-key="hajin-${row.page}" aria-label="Hajin page ${row.page}">${pageCheck(`hajin-${row.page}`, row.objectiveIds, `Hajin page ${row.page}`)}<h4><a href="${esc(chapterReaderPath(`hajin-${row.page}`))}">Page ${row.page}</a> <small>${esc(row.label)}</small></h4><p>${row.placement === "fixed" ? "Fixed page roster" : "Reported chapter sequence · page may vary"}</p><details data-order-disclosure="hajin-${row.page}"><summary>Missions</summary><ol>${row.objectiveIds.map(rowHTML).join("")}</ol></details><details class="mission-rewards"><summary>Reported page rewards</summary><ul>${hajinPageIntel[row.page - 1].rewards.map((reward) => `<li>${esc(reward)}</li>`).join("")}</ul><p>${hajinPageIntel[row.page - 1].localAuthored ? "Local authored report; original sources do not verify local edits" : "Community report"} · reviewed ${esc(hajinPageIntel[row.page - 1].reviewedAt)} · current build unverified.</p>${hajinPageIntel[row.page - 1].notes ? `<p>${esc(hajinPageIntel[row.page - 1].notes)}</p>` : ""}<p class="mission-source-links">${hajinPageIntel[row.page - 1].sourceKeys.map((key) => `<a href="${esc(missionSources[key])}" target="_blank" rel="noopener noreferrer">${esc(key === "codcentral" ? "COD Central" : key === "game8" ? "Game8" : "DMZ Radar")}</a>`).join(" · ")}</p></details><a href="${esc(auditHref(`page:${packId}:hajin-launch:${row.page}:roster`))}">Audit page ${row.page}</a></section>`,
       )
       .join("") +
     "</div>";
@@ -205,10 +266,12 @@ function renderMissionDirectory() {
     x01Pages
       .map(
         (row) =>
-          `<section id="x01-page-${row.page}" class="mission-page-card" aria-label="X01 page ${row.page}"><h4><a href="${esc(chapterReaderPath(`x01-${row.page}`))}">Page ${row.page}</a> <small>X01 ${row.page}/5</small></h4><p>${row.objectiveIds.length ? "Source-reported roster" : "No recorded Orders yet"}</p><ol>${row.objectiveIds.map(rowHTML).join("")}</ol><details class="mission-rewards"><summary>Reported page rewards</summary><ul>${x01PageIntel[row.page - 1].rewards.map((reward) => `<li>${esc(reward)}</li>`).join("")}</ul><p>${x01PageIntel[row.page - 1].localAuthored ? "Local authored report; original source does not verify local edits" : "COD Central report"} · reviewed ${esc(x01PageIntel[row.page - 1].reviewedAt)} · current build unverified.</p>${x01PageIntel[row.page - 1].notes ? `<p>${esc(x01PageIntel[row.page - 1].notes)}</p>` : ""}<a href="${esc(x01PageIntel[row.page - 1].sourceUrl)}" target="_blank" rel="noopener noreferrer">Tips and screenshots at COD Central ↗</a></details><a href="${esc(auditHref(`page:${packId}:x01-season1:${row.page}:roster`))}">Audit X01 page ${row.page}</a></section>`,
+          `<section id="x01-page-${row.page}" class="mission-page-card" data-order-key="x01-${row.page}" aria-label="X01 page ${row.page}">${pageCheck(`x01-${row.page}`, row.objectiveIds, `X01 page ${row.page}`)}<h4><a href="${esc(chapterReaderPath(`x01-${row.page}`))}">Page ${row.page}</a> <small>X01 ${row.page}/5</small></h4><p>${row.objectiveIds.length ? "Source-reported roster" : "No recorded Orders yet"}</p><details data-order-disclosure="x01-${row.page}"><summary>Missions</summary><ol>${row.objectiveIds.map(rowHTML).join("")}</ol></details><details class="mission-rewards"><summary>Reported page rewards</summary><ul>${x01PageIntel[row.page - 1].rewards.map((reward) => `<li>${esc(reward)}</li>`).join("")}</ul><p>${x01PageIntel[row.page - 1].localAuthored ? "Local authored report; original source does not verify local edits" : "COD Central report"} · reviewed ${esc(x01PageIntel[row.page - 1].reviewedAt)} · current build unverified.</p>${x01PageIntel[row.page - 1].notes ? `<p>${esc(x01PageIntel[row.page - 1].notes)}</p>` : ""}<a href="${esc(x01PageIntel[row.page - 1].sourceUrl)}" target="_blank" rel="noopener noreferrer">Tips and screenshots at COD Central ↗</a></details><a href="${esc(auditHref(`page:${packId}:x01-season1:${row.page}:roster`))}">Audit X01 page ${row.page}</a></section>`,
       )
       .join("") +
     "</div>";
+  hydrateOrderChecks(document);
+  applyDirectoryDisclosures();
   const requestedPage = new URLSearchParams(location.search).get("page");
   const anchor =
     /^#(?:mission-directory-hajin|mission-directory-x01|hajin-page-(?:[1-9]|1\d|2[0-4])|x01-page-[1-5])$/.test(
@@ -525,14 +588,14 @@ ${r.url ? `<p><a href="${esc(r.url)}">Open full page &amp; edit</a></p>` : ""}`
   if (focusedUpgrades) hydrateInventoryIcons(state.pack);
 }
 // One save at a time avoids local controls racing the revision used by persist.
-async function save(candidate) {
+async function save(candidate, options = {}) {
   if (saving) return false;
   saving = true;
   const focused = document.activeElement;
   setBusy(true);
   let saved = false;
   try {
-    saved = await persist(candidate);
+    saved = await persist(candidate, {}, options);
     return saved;
   } finally {
     saving = false;
@@ -1147,4 +1210,245 @@ if (focusedUpgrades) {
       row,
     );
   });
+}
+
+// Directory and the legacy progress list share the same profile owner.
+document.addEventListener("change", async (event) => {
+  const control = event.target.closest("[data-order-complete]");
+  if (
+    !control ||
+    !control.closest("#mission-directory-hajin, #mission-directory-x01")
+  )
+    return;
+  const key = control.dataset.orderComplete,
+    wanted = control.checked;
+  const ids = orderTargets.get(key);
+  if (
+    saving ||
+    state.loading ||
+    orderDraft ||
+    orderReturnFlight ||
+    !ids?.length
+  )
+    return;
+  const owner = navigation,
+    intent = orderIntent,
+    packId = state.pack.id;
+  const before = orderProgress(state.pack, state.profile, ids);
+  control.checked = before.complete;
+  control.indeterminate = before.partial;
+  try {
+    const candidate = setOrderCompletion(
+      state.pack,
+      state.profile,
+      [...ids],
+      wanted,
+    );
+    orderDraft = { candidate, revision: state.revision, packId: state.pack.id };
+    if (!(await saveOrderDraft())) return;
+    if (
+      owner !== navigation ||
+      packId !== state.pack.id ||
+      document.visibilityState === "hidden"
+    ) {
+      orderNeedsRefresh = true;
+      if (document.visibilityState !== "hidden") void reconcileOrderReturn();
+      return;
+    }
+    const focusAllowed =
+      intent === orderIntent &&
+      (document.activeElement === control ||
+        document.activeElement === document.body);
+    syncOrderDirectory();
+    if (focusAllowed)
+      document
+        .querySelector('[data-order-complete="' + CSS.escape(key) + '"]')
+        ?.focus({ preventScroll: true });
+  } catch (reason) {
+    error(reason);
+  }
+});
+
+function showOrderRecovery() {
+  let box = document.querySelector("#order-save-recovery");
+  if (!box) {
+    box = document.createElement("section");
+    box.id = "order-save-recovery";
+    box.setAttribute("role", "status");
+    document.querySelector("#mission-directory-hajin").before(box);
+  }
+  box.innerHTML = orderDraft
+    ? '<p>Order progress needs review. Your proposal is retained.</p><button type="button" data-order-recover="retry">Retry / verify</button><button type="button" data-order-recover="export">Export unsaved</button><button type="button" data-order-recover="reload">Reload saved</button>'
+    : "";
+}
+function saveOrderDraft() {
+  if (orderSaveFlight) return orderSaveFlight;
+  if (!orderDraft || saving) return Promise.resolve(false);
+  const draft = orderDraft;
+  orderSaveFlight = (async () => {
+    if (
+      (!draft.committedRevision && draft.revision !== state.revision) ||
+      draft.packId !== state.pack.id
+    ) {
+      error(
+        Error(
+          "Saved progress changed. Export the proposal and reload before editing.",
+        ),
+      );
+      showOrderRecovery();
+      return false;
+    }
+    let saved = false;
+    if (!draft.committedRevision)
+      saved = await save(draft.candidate, {
+        onCommitted: (receipt) => (draft.committedRevision = receipt.revision),
+      });
+    if (orderDraft !== draft) return false;
+    if (draft.committedRevision) {
+      saved = false;
+      try {
+        // Exactly one verification flight owns this draft. A lifecycle change
+        // invalidates its snapshot and requires a fresh canonical read.
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const owner = navigation;
+          const current = await readDashboardProfile(draft.packId);
+          if (orderDraft !== draft || state.pack.id !== draft.packId)
+            return false;
+          if (owner !== navigation) continue;
+          if (
+            !current ||
+            current.contentVersion !== draft.candidate.contentVersion ||
+            current.revision < draft.committedRevision ||
+            current.revision < state.revision
+          )
+            throw Error("Saved Order needs verification.");
+          state.profile = current;
+          state.revision = current.revision;
+          saved = true;
+          break;
+        }
+      } catch {
+        if (orderDraft === draft)
+          error(
+            Error("Order was saved but needs verification. Do not repeat it."),
+          );
+      }
+    }
+    if (orderDraft !== draft) return false;
+    if (saved) orderDraft = null;
+    if (document.visibilityState !== "hidden") showOrderRecovery();
+    setBusy(false);
+    return saved;
+  })().finally(() => {
+    orderSaveFlight = null;
+  });
+  return orderSaveFlight;
+}
+if (focusedMissions) {
+  registerDraftGuard({
+    isDirty: () => !!orderDraft || saving || !!orderSaveFlight,
+    save: () => saveOrderDraft(),
+  });
+  document.addEventListener("click", async (event) => {
+    const action = event.target.closest("[data-order-recover]")?.dataset
+      .orderRecover;
+    if (!action || !orderDraft || saving) return;
+    if (action === "export")
+      download("dmz-unsaved-order-progress.json", orderDraft.candidate);
+    else if (action === "retry") {
+      if (await saveOrderDraft()) syncOrderDirectory();
+    } else if (
+      action === "reload" &&
+      confirm(
+        "Discard the unsaved Order proposal and reload saved progress? Export it first if needed.",
+      )
+    )
+      location.reload();
+  });
+}
+
+function syncOrderDirectory() {
+  applyDirectoryDisclosures();
+  for (const control of document.querySelectorAll("[data-order-complete]")) {
+    const ids = orderTargets.get(control.dataset.orderComplete);
+    if (!ids) continue;
+    const progress = orderProgress(state.pack, state.profile, ids);
+    control.checked = progress.complete;
+    control.indeterminate = progress.partial;
+    const wording = progress.partial ? "Partly done" : "Done";
+    const oldName = control.getAttribute("aria-label") || "";
+    control.setAttribute(
+      "aria-label",
+      wording + ": " + oldName.replace(/^(?:Partly done|Done): /, ""),
+    );
+    control.toggleAttribute("data-order-partial", progress.partial);
+    control.closest("label").querySelector("span").textContent = wording;
+  }
+  for (const control of document.querySelectorAll("[data-progress-id]"))
+    control.value =
+      state.profile.completion[control.dataset.progressId] || "unknown";
+}
+function reconcileOrderReturn() {
+  if (orderReturnFlight) return orderReturnFlight;
+  if (saving || !orderNeedsRefresh || document.visibilityState === "hidden")
+    return Promise.resolve();
+  orderNeedsRefresh = false;
+  const packId = state.pack.id,
+    version = state.pack.contentVersion;
+  setBusy(true);
+  orderReturnFlight = (async () => {
+    try {
+      if (orderDraft) {
+        if (orderDraft.committedRevision) await saveOrderDraft();
+        else return;
+      } else
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const owner = navigation,
+            current = await readDashboardProfile(packId);
+          if (
+            state.pack.id !== packId ||
+            state.pack.contentVersion !== version ||
+            orderDraft
+          )
+            return;
+          if (owner !== navigation) continue;
+          if (
+            current &&
+            current.contentVersion === version &&
+            current.revision >= state.revision
+          ) {
+            state.profile = current;
+            state.revision = current.revision;
+          }
+          break;
+        }
+      if (state.pack.id === packId && document.visibilityState !== "hidden")
+        syncOrderDirectory();
+    } catch (reason) {
+      error(reason);
+    }
+  })().finally(() => {
+    orderReturnFlight = null;
+    setBusy(false);
+  });
+  return orderReturnFlight;
+}
+if (focusedMissions)
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) void reconcileOrderReturn();
+  });
+
+function applyDirectoryDisclosures() {
+  if (!state.pack || !state.profile) return;
+  const pages = [];
+  for (const [key, ids] of orderTargets) {
+    const match = /^(hajin|x01)-(\d+)$/.exec(key);
+    if (match)
+      pages.push({
+        set: match[1],
+        page: Number(match[2]),
+        ...orderProgress(state.pack, state.profile, ids),
+      });
+  }
+  orderDisclosures.apply(activeOrderPageKeys(pages));
 }

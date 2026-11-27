@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · X01",
+  "description": "Lieutenant-drop reports differ; no guaranteed source established.",
+  "id": "mw4:key-x01-chol-min-stash-room",
+  "kind": "item",
+  "name": "Lt. Chol-Min's Stash Room",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-a3147e38e43b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

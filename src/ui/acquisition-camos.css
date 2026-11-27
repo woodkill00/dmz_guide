@@ -1,0 +1,98 @@
+.acquisition-camos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--ui-space-2) + calc(var(--ui-viewport-inline) * 0.001));
+  margin-top: var(--ui-space-3);
+  min-width: 0;
+  font-weight: normal;
+  grid-column: 1 / -1;
+}
+.acquisition-camo-tier {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-1);
+  max-width: 100%;
+}
+.acquisition-camo-tier-label {
+  font-size: var(--ui-type-meta);
+  color: var(--muted);
+}
+.acquisition-camo-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-1);
+}
+.acquisition-camos .acquisition-camo[type="button"] {
+  position: relative;
+  box-sizing: border-box;
+  padding: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-height: 2.75rem;
+  overflow: hidden;
+  border: 2px solid var(--muted);
+  border-radius: var(--ui-radius-1);
+  background: var(--surface, #181e23);
+}
+.acquisition-camo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  font-size: 0;
+}
+.acquisition-camo > span {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  background: #101619;
+  color: #fff;
+  font-size: var(--ui-type-meta);
+  line-height: 1rem;
+  padding-inline: var(--ui-space-1);
+}
+.acquisition-camos .acquisition-camo[data-state="completed"] {
+  border-color: #61c773;
+}
+.acquisition-camos .acquisition-camo[data-state="next"] {
+  border-color: #e8bd49;
+}
+.acquisition-camos .acquisition-camo[data-state="remaining"] {
+  border-color: #e26666;
+}
+.acquisition-camo:focus-visible {
+  outline: 2px solid var(--accent, #fff);
+  outline-offset: 2px;
+}
+.acquisition-camo-panel {
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding: var(--ui-space-5);
+  margin: var(--ui-space-2) 0;
+  border: 1px solid var(--line);
+  border-radius: var(--ui-radius-1);
+  font-size: var(--ui-type-label);
+  overflow-wrap: anywhere;
+}
+.acquisition-camo-panel p {
+  margin-block: var(--ui-space-2);
+}
+
+.acquisition-camo .acquisition-camo-fallback {
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 0;
+  font-size: var(--ui-type-meta);
+  color: var(--text);
+  background: var(--surface, #181e23);
+}
+
+.acquisition-camo-completion {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-3);
+  min-height: 2.75rem;
+  width: fit-content;
+  margin-block: var(--ui-space-2);
+}

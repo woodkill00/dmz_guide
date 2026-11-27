@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-11-02",
+  "checkedAt": "2026-11-22",
   "records": {
     "air-base-access-card-multi-use": {
       "entrance": "Use the conversion terminal in Admin Complex No. 2’s server room.",
@@ -1178,6 +1178,357 @@
           "url": "https://codcentral.net/blog/mw4-dmz-keys/",
           "label": "COD Central · Hospital Chemical Lockers",
           "date": "2026-10-28"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "boathouse-key": {
+      "entrance": null,
+      "floor": null,
+      "loot": [],
+      "notes": [
+        "Opens the reactor island boathouse garage. Mission item; persistent stash behavior is not established."
+      ],
+      "sources": [
+        {
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+          "label": "COD Central key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "helicopter-key": {
+      "entrance": null,
+      "floor": null,
+      "loot": [],
+      "notes": [
+        "Used for the Sky Heist chopper; this is a mission reference, not proof of a permanent stash key."
+      ],
+      "sources": [
+        {
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+          "label": "COD Central key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "downtown-branch-lobby-main": {
+      "entrance": null,
+      "floor": null,
+      "loot": [],
+      "notes": [
+        "Opens the branch lobby; distinct from the vault-access card."
+      ],
+      "sources": [
+        {
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+          "label": "COD Central key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "netshin-security-office": {
+      "entrance": null,
+      "floor": null,
+      "loot": [],
+      "notes": [
+        "Upper-floor office; distinct from Netshin IT Room."
+      ],
+      "sources": [
+        {
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+          "label": "COD Central key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-deep-vault-106": {
+      "entrance": null,
+      "floor": "Provider map floor 1",
+      "loot": [],
+      "notes": [
+        "Numbered room inside the Deep Vault."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-deep-vault-301": {
+      "entrance": null,
+      "floor": "Provider map floor 1",
+      "loot": [],
+      "notes": [
+        "Gate access and the numbered room are separate uses of this card."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-deep-vault-406": {
+      "entrance": null,
+      "floor": "Provider map floor 1",
+      "loot": [],
+      "notes": [
+        "Check the matching room number before using the card."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-vault-drc-locker": {
+      "entrance": null,
+      "floor": "Provider map floor 1",
+      "loot": [],
+      "notes": [
+        "Opens the X01 vault locker, not the three Hajin DRC lockers."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-maintenance-room": {
+      "entrance": null,
+      "floor": "Provider map floor 1",
+      "loot": [],
+      "notes": [
+        "Encoded-card label and room name refer to the same tracked key."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-small-test-chamber": {
+      "entrance": null,
+      "floor": "Provider map floor 1",
+      "loot": [],
+      "notes": [
+        "Encoded-card label and room name refer to the same tracked key."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-executive-room": {
+      "entrance": null,
+      "floor": "Provider map floor 2",
+      "loot": [],
+      "notes": [
+        "Encoded-card label and room name refer to the same tracked key."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-audit-room": {
+      "entrance": null,
+      "floor": "Provider map floor 2",
+      "loot": [],
+      "notes": [
+        "Encoded-card label and room name refer to the same tracked key."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-superintendent-office": {
+      "entrance": null,
+      "floor": "Provider map floor 2",
+      "loot": [],
+      "notes": [
+        "Source grids differ; follow the selected provider marker."
+      ],
+      "sources": [
+        {
+          "url": "https://dmztracker.com/keys/",
+          "label": "DMZTracker key directory",
+          "date": "2026-11-22"
+        },
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-chol-min-stash-room": {
+      "entrance": null,
+      "floor": "Provider map floor 2",
+      "loot": [],
+      "notes": [
+        "DMZHub marks E7; DMZTracker reports D7. Keep the provider distinction."
+      ],
+      "sources": [
+        {
+          "url": "https://dmzhub.gg/maps/x01-black-site",
+          "label": "DMZHub X01 key rooms",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-staff-emergency-exfil-keycard": {
+      "entrance": null,
+      "floor": null,
+      "loot": [],
+      "notes": [
+        "Emergency extraction card; several shafts use it."
+      ],
+      "sources": [
+        {
+          "url": "https://dmzmap.com/keys",
+          "label": "DMZMap key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-encodable-blank-keycard": {
+      "entrance": null,
+      "floor": null,
+      "loot": [],
+      "notes": [
+        "Not a door key by itself; encode it into a room access card."
+      ],
+      "sources": [
+        {
+          "url": "https://dmzmap.com/keys",
+          "label": "DMZMap key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-archive-closet": {
+      "entrance": null,
+      "floor": null,
+      "loot": [],
+      "notes": [
+        "Room is reported but missing from our current named map-marker capture. Floor reports differ; no floor is assigned."
+      ],
+      "sources": [
+        {
+          "url": "https://dmzmap.com/keys",
+          "label": "DMZMap key directory",
+          "date": "2026-11-22"
+        }
+      ],
+      "accessRequirements": [],
+      "lockState": "unknown"
+    },
+    "x01-super-user-data-access-keycard": {
+      "entrance": null,
+      "floor": null,
+      "loot": [],
+      "notes": [
+        "Order item reported for Water Wading; no door use established."
+      ],
+      "sources": [
+        {
+          "url": "https://dmzmap.com/keys",
+          "label": "DMZMap key directory",
+          "date": "2026-11-22"
         }
       ],
       "accessRequirements": [],

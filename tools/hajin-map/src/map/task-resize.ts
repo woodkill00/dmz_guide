@@ -79,6 +79,25 @@ export function mountTaskResize(root: HTMLElement) {
       writable = false;
     }
   };
+  window.addEventListener(
+    "ui-layout-reset",
+    () => {
+      if (drag) {
+        const active = drag;
+        drag = undefined;
+        delete handle.dataset.dragging;
+        if (handle.hasPointerCapture(active.id))
+          handle.releasePointerCapture(active.id);
+      }
+      preferred = undefined;
+      try {
+        localStorage.removeItem(storageKey);
+        writable = true;
+      } catch {}
+      refresh(visible);
+    },
+    { signal: events.signal },
+  );
   const setWidth = (next: number) => {
     bounds();
     preferred = Math.round(Math.max(minimum, Math.min(maximum, next)));

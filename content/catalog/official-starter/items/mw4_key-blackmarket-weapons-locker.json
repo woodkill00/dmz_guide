@@ -1,0 +1,17 @@
+{
+  "aliases": [
+    "Blackmarket Weapons Locker Key"
+  ],
+  "category": "Keys · Hajin",
+  "description": "Recon Equipment Kit at levels 19 and 46.",
+  "id": "mw4:key-blackmarket-weapons-locker",
+  "kind": "item",
+  "name": "Blackmarket Weapons Locker",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-5e7a280c4b5b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

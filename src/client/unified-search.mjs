@@ -9,10 +9,12 @@ if (form) {
     type = document.querySelector("#unified-type"),
     status = document.querySelector("#unified-status"),
     results = document.querySelector("#unified-results"),
-    more = document.querySelector("#unified-more");
+    more = document.querySelector("#unified-more"),
+    previous = document.querySelector("#unified-prev");
   let index,
     offset = 0;
   let controller = new AbortController();
+  let inputTimer;
   window.addEventListener("pagehide", () => controller.abort());
   window.addEventListener("pageshow", (event) => {
     if (event.persisted) {
@@ -50,12 +52,12 @@ if (form) {
   };
   function render() {
     if (!index) return;
-    const { rows, total } = searchEntries(
-      index,
-      query.value,
-      type.value,
-      offset,
-    );
+    let { rows, total } = searchEntries(index, query.value, type.value, offset);
+    const last = Math.max(0, Math.ceil(total / 100) - 1) * 100;
+    if (offset > last) {
+      offset = last;
+      ({ rows, total } = searchEntries(index, query.value, type.value, offset));
+    }
     results.replaceChildren();
     status.textContent = `${total} matching records/tools · showing ${Math.min(offset + 1, total)}–${Math.min(offset + 100, total)}. ${index.limited ? `Limited index: ${index.indexedCount} of ${index.eligibleCount} eligible public records. Missing results may be outside this index.` : "Public index loaded; source coverage remains incomplete."}`;
     for (const kind of [...new Set(rows.map((r) => r.type))]) {
@@ -87,31 +89,83 @@ if (form) {
       results.append(section);
     }
     more.hidden = offset + 100 >= total;
+    previous.hidden = offset === 0;
   }
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+  function writeURL() {
+    const url = new URL(location.href);
+    if (query.value.trim())
+      url.searchParams.set("q", query.value.trim().slice(0, 200));
+    else url.searchParams.delete("q");
+    if (type.value) url.searchParams.set("type", type.value);
+    else url.searchParams.delete("type");
+    if (offset) url.searchParams.set("page", String(offset / 100 + 1));
+    else url.searchParams.delete("page");
+    const next = url.pathname + url.search + url.hash;
+    if (next !== location.pathname + location.search + location.hash)
+      history.pushState(null, "", next);
+  }
+  function readURL() {
+    const p = new URL(location.href).searchParams;
+    query.value = (p.get("q") || "").slice(0, 200);
+    type.value = [...type.options].some((o) => o.value === p.get("type"))
+      ? p.get("type")
+      : "";
+    const page = Number(p.get("page") || 1);
+    offset =
+      Number.isInteger(page) && page >= 1 && page <= 100 ? (page - 1) * 100 : 0;
+  }
+  const pageParam = Number(params.get("page") || 1);
+  if (Number.isInteger(pageParam) && pageParam >= 1 && pageParam <= 100)
+    offset = (pageParam - 1) * 100;
+  function apply() {
     offset = 0;
     render();
+    writeURL();
+  }
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    clearTimeout(inputTimer);
+    apply();
   });
-  form.addEventListener("input", () => {
+  query.addEventListener("input", () => {
     try {
       sessionStorage.setItem(
         "dmz-unified-search-query",
         query.value.slice(0, 200),
       );
     } catch {}
-    offset = 0;
-    render();
+    clearTimeout(inputTimer);
+    inputTimer = setTimeout(apply, 120);
   });
-  form.addEventListener("change", (event) => {
-    if (event.target !== type) return;
-    offset = 0;
-    render();
+  type.addEventListener("change", () => {
+    clearTimeout(inputTimer);
+    apply();
   });
   more.addEventListener("click", () => {
     offset += 100;
     render();
+    writeURL();
+    status.tabIndex = -1;
     status.focus();
+  });
+  previous.addEventListener("click", () => {
+    offset = Math.max(0, offset - 100);
+    render();
+    writeURL();
+    status.tabIndex = -1;
+    status.focus();
+  });
+  document.querySelector("#unified-clear").addEventListener("click", () => {
+    clearTimeout(inputTimer);
+    query.value = "";
+    type.value = "";
+    apply();
+    query.focus();
+  });
+  window.addEventListener("popstate", () => {
+    clearTimeout(inputTimer);
+    readURL();
+    render();
   });
   function loadIndex() {
     const own = controller;

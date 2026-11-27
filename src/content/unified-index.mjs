@@ -1,7 +1,10 @@
+import { readWeaponAcquisition } from "./weapon-acquisition.mjs";
+import { weaponURL, weaponAttachmentURL } from "../domain/weapon-routes.mjs";
 import { resolvePresentation } from "../ui/presentation-config.mjs";
 import { featureLabel } from "../ui/workspace-shell.mjs";
 import { features, featureURL } from "../ui/feature-registry.mjs";
 import { allKeys, keyAccess } from "./key-access.mjs";
+import { keyReference } from "./key-reference.mjs";
 import { keyRoomDetails } from "./key-room-details.mjs";
 import { gridReferences } from "../ui/key-workspace-view.mjs";
 import { readWeaponIntel } from "./weapon-intel.mjs";
@@ -33,6 +36,8 @@ export async function buildUnifiedIndex(packs) {
   );
   const other = [];
   for (const k of allKeys) {
+    const ref = keyReference(k.id),
+      marker = ref.markers[0];
     const grid = gridReferences(k.locations[0]?.grid || "")[0];
     other.push(
       row(
@@ -48,15 +53,22 @@ export async function buildUnifiedIndex(packs) {
         ].join(" "),
         "/keys/" + k.id + "/",
         {
-          mapUrl: grid
-            ? "/map/?key-grid=" +
-              grid +
-              "&key-name=" +
-              encodeURIComponent(k.name).replace(
-                /[!'()*]/g,
-                (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase(),
-              )
-            : null,
+          mapUrl:
+            ref.mapId === "x01"
+              ? marker
+                ? `/map/x01/?floor=${marker.floor}&marker=${marker.id}`
+                : "/map/x01/"
+              : marker
+                ? `/map/?key-source=${marker.provider}&key-marker=${encodeURIComponent(marker.id)}`
+                : grid
+                  ? "/map/?key-grid=" +
+                    grid +
+                    "&key-name=" +
+                    encodeURIComponent(k.name).replace(
+                      /[!'()*]/g,
+                      (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase(),
+                    )
+                  : null,
           planUrl: "/keys/" + k.id + "/",
         },
       ),
@@ -77,6 +89,19 @@ export async function buildUnifiedIndex(packs) {
         "/armory/" + w.id + "/",
       ),
     );
+  const acquisition = await readWeaponAcquisition();
+  for (const weapon of acquisition.weapons.filter(
+    (w) => !db.weapons.some((combat) => combat.id === w.id),
+  ))
+    other.push(
+      row(
+        "weapon:" + weapon.id,
+        "weapon",
+        weapon.name,
+        "Acquisition and camo reference; combat statistics not yet catalogued.",
+        weaponURL(weapon.id),
+      ),
+    );
   for (const a of db.attachments)
     other.push(
       row(
@@ -87,7 +112,10 @@ export async function buildUnifiedIndex(packs) {
           " · " +
           a.about +
           " · Compatibility and effects remain source-reported",
-        "/armory/#attachments",
+        weaponAttachmentURL(
+          a.weapons.find((id) => db.weapons.some((w) => w.id === id)) || "",
+          a.id,
+        ),
       ),
     );
   for (const pack of packs) {

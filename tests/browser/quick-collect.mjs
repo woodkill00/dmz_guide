@@ -6,7 +6,7 @@ const engine = process.env.BROWSER || "chromium",
 const page = await b.newPage({ viewport: { width: 1440, height: 1000 } }),
   errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
-const base = "http://127.0.0.1:4173",
+const base = process.env.DMZ_SITE_URL || "http://127.0.0.1:4173",
   pack = "official:mw4-dmz-starter",
   id = "mw4:ingredient-control-unit",
   url = (p) => `${base}/${p}/?pack=${encodeURIComponent(pack)}`;

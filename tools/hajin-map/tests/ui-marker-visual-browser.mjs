@@ -26,7 +26,9 @@ const cases = process.argv.includes("--safe-route-only")
       ["narrow", 320, 568, "light", 100],
       ["text", 390, 844, "light", 200],
       ["short-text", 320, 400, "dark", 200],
-    ];
+    ].filter(
+      ([label]) => !process.env.UI_CASE || label === process.env.UI_CASE,
+    );
 const stored = (p) =>
   p.evaluate(async () => {
     const { openWorkspace } = await import("/src/workspace/store.ts");
@@ -212,6 +214,14 @@ try {
         await settle(p);
         const before = await camera(p),
           domain = await stored(p);
+        if (!(await hit(p.locator('[data-official-id="b"]')))) {
+          console.log(engineName, label, await p.evaluate(() => Object.fromEntries(
+            ['#map','.map-workspace','.map-controls','.map-top-right','[data-official-id="b"]'].map(selector => {
+              const node=document.querySelector(selector); return [selector,node?.getBoundingClientRect().toJSON()];
+            }),
+          )));
+          await p.screenshot({path:`.local/marker-visual/${engineName}-${label}-blocked.png`});
+        }
         await p.locator('[data-official-id="b"]').click();
         await p.locator("#ui-selection-detail").waitFor();
         await settle(p);
@@ -378,6 +388,28 @@ try {
           .locator("#ui-selection-detail .marker-popup-actions button")
           .last();
         await action.scrollIntoViewIfNeeded();
+        if (!(await hit(action)))
+          console.log(
+            "Unreachable action",
+            engineName,
+            label,
+            await action.evaluate((n) => {
+              const r = n.getBoundingClientRect();
+              const h = document.elementFromPoint(
+                r.x + r.width / 2,
+                r.y + r.height / 2,
+              );
+              return {
+                rect: r.toJSON(),
+                obscuring: h?.outerHTML,
+                viewport: [innerWidth, innerHeight],
+                task: document
+                  .querySelector("#ui-map-task")
+                  ?.getBoundingClientRect()
+                  .toJSON(),
+              };
+            }),
+          );
         assert.equal(
           await hit(action),
           true,

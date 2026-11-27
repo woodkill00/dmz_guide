@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Story reward: Operation Silent Ledger.",
+  "id": "mw4:key-counting-room-vault",
+  "kind": "item",
+  "name": "Counting Room Vault",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-5e7a280c4b5b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

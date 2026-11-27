@@ -2725,6 +2725,7 @@ export function mountWorkspace(
     }
   return {
     ready: initialized,
+    openKeyMarker(sourceId:string,recordId:string){if(disposed||suspended||!hydrated||!canInspect()||unsaved||pendingVisibility)return false;const record=getExplorerRecords().find(r=>r.sourceId===sourceId&&r.id===recordId);if(!record||record.x===null||record.y===null)return false;usabilityUI.jump(record);return true;},
     showInformation(node:HTMLElement){if(!paneHost)return false;if(body.contains(node)&&usabilityDetail){openWorkspacePane();return true;}const parent=node.parentNode,next=node.nextSibling;return paneHost.request({id:'map-information',label:'Open map information',revalidate:()=>!disposed&&node.isConnected,run:()=>{const root=el('section');root.append(button('Back to map task',closeDetail,'ui-information-back'),node);showOwnedDetail(root,()=>{if(parent?.isConnected)parent.insertBefore(node,next?.parentNode===parent?next:null);},false);}});},
     showLayers(target:"key"|"layers"|"grid"|"updates"="layers"){paneHost?.layers(target);},
     openTool,

@@ -53,7 +53,14 @@ export function createMapView(
       if (getComputedStyle(overlay).visibility !== "hidden")
         top = Math.max(top, rect.bottom + 8);
     }
-    const bottom = viewport.bottom - 55;
+    let bottom = viewport.bottom - 8;
+    // Attribution can wrap with enlarged text; reserve its real occupied space.
+    const credit = element.closest('#app')?.querySelector<HTMLElement>('.map-credit');
+    if (credit && getComputedStyle(credit).display !== 'none') {
+      const rect = credit.getBoundingClientRect();
+      if (rect.height && rect.top > viewport.top && rect.top < viewport.bottom)
+        bottom = Math.min(bottom, rect.top - 8);
+    }
     node.style.setProperty(
       "--popup-available-height",
       `${Math.max(80, bottom - top - 42)}px`,
@@ -67,7 +74,13 @@ export function createMapView(
     const dy = Math.max(top - box.top, Math.min(0, bottom - box.bottom));
     node.style.translate = `${dx}px ${dy}px`;
   };
-  const popupObserver = new ResizeObserver(placePopup);
+  let popupFrame = 0;
+  const popupObserver = new ResizeObserver(() => {
+    if (!popupFrame) popupFrame = requestAnimationFrame(() => {
+      popupFrame = 0;
+      placePopup();
+    });
+  });
   map.on("popupopen", (event) => {
     activePopup = event.popup;
     popupObserver.disconnect();
@@ -237,6 +250,7 @@ export function createMapView(
     zoomOut: () => map.zoomOut(0.5, { animate: !reducedMotion.matches }),
     destroy() {
       popupObserver.disconnect();
+      cancelAnimationFrame(popupFrame);
       disposed = true;
       generation++;
       imageRequest?.abort();

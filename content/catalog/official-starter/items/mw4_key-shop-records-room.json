@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Random loot; no guaranteed spawn reported.",
+  "id": "mw4:key-shop-records-room",
+  "kind": "item",
+  "name": "Shop Records Room",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-5e7a280c4b5b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

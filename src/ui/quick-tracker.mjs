@@ -1,25 +1,29 @@
-// Presentation wrapper only: existing page identities, controls and storage owners remain.
+import { features, featureURL, navigationConfig } from "./feature-registry.mjs";
+const e = (value) =>
+  String(value ?? "").replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ],
+  );
+// Presentation only: tab identities, labels and destinations come from the shared registry.
 export function quickTrackerPage(page) {
-  const selected = {
-    inventory: "Inventory",
-    "field-desk": "Field desk",
-    upgrades: "Upgrades",
-    needed: "Needed",
-    "quick-collect": "Quick collect",
-    "armory-workbench": "Weapons",
-  }[page.page];
-  if (!selected) return page;
-  const links = [
-    ["Inventory", "/inventory/"],
-    ["Weapons", "/armory/workbench/#acquisition"],
-    ["Upgrades", "/upgrades/"],
-    ["Needed", "/needed/"],
-    ["Quick collect", "/quick-collect/"],
-    ["Field desk", "/field-desk/"],
-  ];
+  const tabs = navigationConfig.trackerTabs;
+  if (page.page !== "planner" && !tabs.some((tab) => tab.id === page.page))
+    return page;
+  const links = tabs
+    .map((tab) => {
+      const feature = features.find((row) => row.id === tab.id);
+      if (!feature) throw Error("Unknown tracker feature");
+      const url = new URL(featureURL(feature), "https://navigation.invalid");
+      if (tab.hash) url.hash = tab.hash;
+      return `<a href="${e(url.pathname + url.search + url.hash)}" data-tracker-link data-tracker-feature="${e(tab.id)}"${page.page === tab.id ? ' aria-current="page"' : ""}>${e(tab.label)}</a>`;
+    })
+    .join("");
   return {
     ...page,
     styles: [...(page.styles || []), "/assets/src/ui/quick-tracker.css"],
-    body: `<nav class="quick-tracker-nav" aria-label="Quick tracker">${links.map(([label, url]) => `<a href="${url}" data-tracker-link${label === selected ? ' aria-current="page"' : ""}>${label}</a>`).join("")}</nav>${page.body}`,
+    body: `<nav class="quick-tracker-nav" aria-label="Quick tracker">${links}</nav>${page.body}`,
   };
 }

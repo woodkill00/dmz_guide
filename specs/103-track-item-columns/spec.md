@@ -1,0 +1,4 @@
+# Track Items crafting columns
+FR01: Two desktop columns: Used in crafting and Other items. Membership derives from visible recorded crafting input/use relationships, including retained/reference/X01 methods; being craftable as an output alone does not qualify. Other means no recorded visible crafting use, not proof it cannot be crafted/used.
+FR02: Every visible selected-pack item appears exactly once, with existing rarity sections and alphabetical names in each column. Preserve spoiler boundaries, item links/icons/previews and catalog identities. No new source facts or data writes.
+FR03: Search, independent rarity expansion, global expand/collapse, column counts/empty states and catalog switching work across both columns. Stack columns on narrow screens without overflow; default catalog remains readable without JS. Retain read-only browsing/no profile creation.

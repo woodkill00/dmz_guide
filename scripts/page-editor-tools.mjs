@@ -462,7 +462,8 @@ export function createPageEditorTools({
     if (input.savedOperationId !== null) {
       id32(input.savedOperationId);
       assert(
-        (await pageStore.status(input.savedOperationId)).state === "committed",
+        (await pageStore.statusForRefresh(input.savedOperationId)).state ===
+          "committed",
         "Refresh requires a confirmed saved operation",
       );
     }

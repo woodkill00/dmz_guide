@@ -64,7 +64,7 @@ export function createSearchPanel(h:SearchHost){
     if(!result.hits.length)results.append(note('No results match these filters. Try fewer words, a wider radius or another source.'));
     for(const hit of result.hits.slice(page*50,(page+1)*50)){
      const row=h.card(hit.record);row.classList.add('search-result');
-     const location=note(`${hit.grid??'No grid cell'}${hit.distance===null?'':` · ${hit.distance.toFixed(1)} px from origin`}${hit.approximate?' · approximate title match':''}`);row.prepend(location);
+     const location=note(`${hit.grid??'No grid cell'}${hit.distance===null?'':` · ${hit.distance.toFixed(1)} px from origin`}${hit.approximate?' · approximate title match':''}`);row.querySelector('h4')?.after(location);
      if(hit.record.notes)row.append(note('Notes / evidence: '+hit.record.notes.slice(0,220)));
      if(hit.copies.length){const copies=el('details');copies.append(el('summary',`${hit.copies.length} matching source copies`));for(const copy of hit.copies)copies.append(h.card(copy));row.append(copies);}
      results.append(row);

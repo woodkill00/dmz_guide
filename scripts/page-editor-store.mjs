@@ -131,10 +131,15 @@ export function createPageEditorStore({ root, store }) {
     withRepositorySnapshot({ root }, async () =>
       fn(await readCatalog({ root, schema: store.schema })),
     );
-  async function status(id) {
+  const status = (id) => inspectStatus(id);
+  async function inspectStatus(id, snapshotOwned = false) {
     const bytes = await optionalBytes(root, operationPath(id));
     const recovery = await inspectRecovery({ root });
-    if (!bytes || recovery.pending || recovery.lock?.state === "live")
+    if (
+      !bytes ||
+      recovery.pending ||
+      (!snapshotOwned && recovery.lock?.state === "live")
+    )
       return {
         state: "unresolved",
         operationId: id,
@@ -645,6 +650,10 @@ export function createPageEditorStore({ root, store }) {
     preview: (input) => serial(() => preview(input)),
     commit: (input) => serial(() => commit(input)),
     status,
+    // Only this method owns the snapshot barrier. HTTP status reads retain
+    // their unresolved result while any writer holds the repository lock.
+    statusForRefresh: (id) =>
+      withRepositorySnapshot({ root }, () => inspectStatus(id, true)),
     cancel: (id) => serial(() => cancel(id)),
   };
 }

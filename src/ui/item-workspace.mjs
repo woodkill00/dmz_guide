@@ -1,4 +1,6 @@
+import { renderItemIcon } from "./item-card.mjs";
 import { itemSection } from "../domain/inventory-items.mjs";
+import { keyItemReference } from "../domain/key-item-links.mjs";
 // Pure, shared native/private item presentation. No profile or catalog writes.
 const e = (value) =>
   String(value ?? "").replace(
@@ -9,9 +11,7 @@ const e = (value) =>
       ],
   );
 export function itemIcon(record) {
-  if (record.spoiler)
-    return '<span class="item-art"><span aria-hidden="true">◇</span><small>Protected</small></span>';
-  return `<span class="item-art" data-inventory-icon="${e(record.id)}" data-icon-pack="${e(record.pack.id)}" data-icon-status="missing" title="Item image not added"><span aria-hidden="true">◇</span><small>Image needed</small></span>`;
+  return renderItemIcon(record, { className: "item-art", size: "inherit" });
 }
 export function renderItemWorkspace({
   record,
@@ -55,6 +55,6 @@ export function renderItemWorkspace({
       )
       .map(([key, label]) => `<a href="#item-${key}">${label}</a>`)
       .join("")}</nav>
-    <div class="item-workspace-grid"><aside class="item-action-card panel" aria-label="Your item tracking"><h2>Your collection</h2><div data-item-collection><p>Keep quantities and blueprint ownership in your saved inventory.</p></div><a class="button primary" href="${e(readerHref(`/inventory/?pack=${pack}&item=${id}`))}">Inventory &amp; blueprint</a>${target}<a class="button" href="${e(readerHref(`/quick-collect/?pack=${pack}`))}">Quick collect</a><a class="button" href="${e(readerHref(`/field-desk/?pack=${pack}&item=${id}`))}">Field desk &amp; discoveries</a>${primaryEdit ? `<p class="item-primary-edit">${primaryEdit}</p>` : ""}${secondaryActions ? `<details class="item-edit-actions"><summary>Edit &amp; photos</summary>${secondaryActions}</details>` : ""}</aside>
+    <div class="item-workspace-grid"><aside class="item-action-card panel" aria-label="Your item tracking"><h2>Your collection</h2><div data-item-collection><p>Keep quantities and blueprint ownership in your saved inventory.</p></div><a class="button primary" href="${e(readerHref(`/inventory/?pack=${pack}&item=${id}`))}">Inventory &amp; blueprint</a>${target}${keyItemReference(record.id) ? `<a class="button" data-key-reference="${e(keyItemReference(record.id).keyId)}" href="${e(readerHref(`/keys/${keyItemReference(record.id).keyId}/`))}">Key guide · ${keyItemReference(record.id).mapId === "x01" ? "X01" : "Hajin"}</a>` : ""}<a class="button" href="${e(readerHref(`/quick-collect/?pack=${pack}`))}">Quick collect</a><a class="button" href="${e(readerHref(`/field-desk/?pack=${pack}&item=${id}`))}">Field desk &amp; discoveries</a>${primaryEdit ? `<p class="item-primary-edit">${primaryEdit}</p>` : ""}${secondaryActions ? `<details class="item-edit-actions"><summary>Edit &amp; photos</summary>${secondaryActions}</details>` : ""}</aside>
     <div class="item-workspace-content">${detail}${picture ? `<details class="panel item-pictures"><summary>Item photos</summary>${picture}</details>` : ""}<div id="item-private-picture-slot"></div><section id="item-sources" class="item-evidence" tabindex="-1">${evidence}</section></div></div></article>`;
 }

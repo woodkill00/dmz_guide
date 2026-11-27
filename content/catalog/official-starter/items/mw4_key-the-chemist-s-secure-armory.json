@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Reported Chemist Lieutenant drop; field-loot reports also exist.",
+  "id": "mw4:key-the-chemist-s-secure-armory",
+  "kind": "item",
+  "name": "The Chemist's Secure Armory",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

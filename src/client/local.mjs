@@ -11,7 +11,16 @@ import {
 } from "../domain/reader-flow.mjs";
 import { imageDescription } from "../content/image-description.mjs";
 import { loadBundledPayloads } from "../content/bundled-assets.mjs";
-import { getCatalog, init, state, $, esc, error, persist } from "./common.mjs";
+import {
+  getCatalog,
+  init,
+  state,
+  $,
+  esc,
+  error,
+  persist,
+  hasUnsavedDraft,
+} from "./common.mjs";
 import { mountBuildTargets } from "./build-target-controls.mjs";
 import { readRecord } from "../storage/store.mjs";
 import { locationTimeline } from "../domain/field-ops.mjs";
@@ -111,6 +120,7 @@ async function render() {
     markup = `<p class="item-local-context">Saved catalog view · <a href="/local/?pack=${encodeURIComponent(state.pack.id)}">All local records</a></p>`;
   if (chosen) {
     const detailMarkup = renderDetail(chosen, [state.pack], {
+      referenceURL: link,
       authorActions:
         !chosen.spoiler || state.profile.spoilers
           ? `<aside class="record-author-actions" aria-label="Page editing">${repositoryTarget ? `<a class="button primary" data-compose-record href="${esc(servicePath("author", "/?" + new URLSearchParams(repositoryTarget)))}">Edit page</a><a class="button" data-repository-reference href="${esc(recordUrl(chosen))}">${focusedItem ? "Repository item &amp; photo actions" : "Repository reference page"}</a>` : "<p>Private-only record · no repository editor target.</p>"}<a class="button" data-private-edit href="/editor/?pack=${encodeURIComponent(state.pack.id)}&amp;record=${encodeURIComponent(chosen.id)}">${focusedItem ? "Edit private item &amp; pictures" : "Edit private copy"}</a><small>${repositoryTarget ? "Edit page saves repository content through the local author service. " : ""}Private-copy edits and player progress stay separate.</small></aside>`
@@ -142,7 +152,27 @@ async function render() {
     const advice = $("#item-upgrade-advice");
     advice.classList.add("item-personal-uses");
     $("#item-uses")?.append(advice);
-    await enhanceItemWorkspace(state.pack, state.profile);
+    await enhanceItemWorkspace(state.pack, state.profile, {
+      pack: () => state.pack,
+      profile: () => state.profile,
+      busy: () => state.saving || state.loading,
+      dirty: () => hasUnsavedDraft(),
+      adopt: (value) => {
+        state.profile = value;
+        state.revision = value.revision;
+      },
+      save: async (candidate, expected, journal) => {
+        if (expected !== state.revision)
+          throw Error("Saved progress changed. Reload before editing.");
+        let receipt;
+        const saved = await persist(candidate, journal, {
+          onCommitted: (value) => (receipt = value),
+        });
+        if (receipt) return receipt;
+        if (!saved)
+          throw Error("Blueprint not saved. Review the retained proposal.");
+      },
+    });
     if (token !== generation) return;
   }
   await mountBuildTargets($("#local-records"), {

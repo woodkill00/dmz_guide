@@ -275,7 +275,7 @@ test("six existing recipe IDs are retained, rare ingredients are not fabricated 
   );
 });
 test("expanded recipe topology fits its bounded value budget while graph and byte admission remain constrained", () => {
-  assert.equal(TOPOLOGY_JSON_NODES, 400000);
+  assert.equal(TOPOLOGY_JSON_NODES, 500000);
   const pages = Array.from({ length: 900 }, (_, i) => ({
     path: i === 0 ? "/" : "/capacity-" + i + "/",
     title: "Synthetic capacity " + i,

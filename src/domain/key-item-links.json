@@ -1,0 +1,322 @@
+{
+  "mw4:key-mirae-electrical-room": {
+    "keyId": "mirae-electrical-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-counting-room-vault": {
+    "keyId": "counting-room-vault",
+    "mapId": "hajin"
+  },
+  "mw4:key-coin-mining-den": {
+    "keyId": "coin-mining-den",
+    "mapId": "hajin"
+  },
+  "mw4:key-rozes-highrise-armory": {
+    "keyId": "rozes-highrise-armory",
+    "mapId": "hajin"
+  },
+  "mw4:key-gangbyeon-apartment-b": {
+    "keyId": "gangbyeon-apartment-b",
+    "mapId": "hajin"
+  },
+  "mw4:key-gun-store-weapons-locker": {
+    "keyId": "gun-store-weapons-locker",
+    "mapId": "hajin"
+  },
+  "mw4:key-blackmarket-weapons-locker": {
+    "keyId": "blackmarket-weapons-locker",
+    "mapId": "hajin"
+  },
+  "mw4:key-vault-armory": {
+    "keyId": "vault-armory",
+    "mapId": "hajin"
+  },
+  "mw4:key-field-depot": {
+    "keyId": "field-depot",
+    "mapId": "hajin"
+  },
+  "mw4:key-reactor-02-control-room": {
+    "keyId": "reactor-02-control-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-shop-records-room": {
+    "keyId": "shop-records-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-old-barber-shop": {
+    "keyId": "old-barber-shop",
+    "mapId": "hajin"
+  },
+  "mw4:tcno-key-shopping-drc-locker": {
+    "keyId": "shopping-drc-locker",
+    "mapId": "hajin"
+  },
+  "mw4:key-imjin-mill-foremans-office": {
+    "keyId": "imjin-mill-foremans-office",
+    "mapId": "hajin"
+  },
+  "mw4:key-executive-arms-auction": {
+    "keyId": "executive-arms-auction",
+    "mapId": "hajin"
+  },
+  "mw4:key-re-education-center-annex": {
+    "keyId": "re-education-center-annex",
+    "mapId": "hajin"
+  },
+  "mw4:key-police-station-armory": {
+    "keyId": "police-station-armory",
+    "mapId": "hajin"
+  },
+  "mw4:key-the-citadel-side-access": {
+    "keyId": "the-citadel-side-access",
+    "mapId": "hajin"
+  },
+  "mw4:key-hospital-chemical-lab": {
+    "keyId": "hospital-chemical-lab",
+    "mapId": "hajin"
+  },
+  "mw4:key-hospital-chemical-lockers": {
+    "keyId": "hospital-chemical-lockers",
+    "mapId": "hajin"
+  },
+  "mw4:key-air-base-access-card-multi-use": {
+    "keyId": "air-base-access-card-multi-use",
+    "mapId": "hajin"
+  },
+  "mw4:key-air-base-armory-card-single-use": {
+    "keyId": "air-base-armory-card-single-use",
+    "mapId": "hajin"
+  },
+  "mw4:tcno-key-milbase-drc-locker": {
+    "keyId": "air-base-drc-weapons-locker",
+    "mapId": "hajin"
+  },
+  "mw4:key-bank-branch-vault-access": {
+    "keyId": "bank-branch-vault-access",
+    "mapId": "hajin"
+  },
+  "mw4:key-commandant-office": {
+    "keyId": "commandant-office",
+    "mapId": "hajin"
+  },
+  "mw4:key-fire-station-storage": {
+    "keyId": "fire-station-storage",
+    "mapId": "hajin"
+  },
+  "mw4:key-gangbyeon-apartment-a": {
+    "keyId": "gangbyeon-apartment-a",
+    "mapId": "hajin"
+  },
+  "mw4:key-gas-station-electrical-room": {
+    "keyId": "gas-station-electrical-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-gorani-s-scout-overlook": {
+    "keyId": "gorani-s-scout-overlook",
+    "mapId": "hajin"
+  },
+  "mw4:key-haejeok-radio-station": {
+    "keyId": "haejeok-radio-station",
+    "mapId": "hajin"
+  },
+  "mw4:key-hajin-art-center": {
+    "keyId": "hajin-art-center",
+    "mapId": "hajin"
+  },
+  "mw4:key-haksan-school-armory": {
+    "keyId": "haksan-school-armory",
+    "mapId": "hajin"
+  },
+  "mw4:key-hanex-guard-station": {
+    "keyId": "hanex-guard-station",
+    "mapId": "hajin"
+  },
+  "mw4:key-hanwoori-art-records-room": {
+    "keyId": "hanwoori-art-records-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-hazard-storehouse": {
+    "keyId": "hazard-storehouse",
+    "mapId": "hajin"
+  },
+  "mw4:key-hoesik-supply-room": {
+    "keyId": "hoesik-supply-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-hotel-lucera-lobby": {
+    "keyId": "hotel-lucera-lobby",
+    "mapId": "hajin"
+  },
+  "mw4:key-iskra-s-control-room": {
+    "keyId": "iskra-s-control-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-jang-ui-s-converted-power-room": {
+    "keyId": "jang-ui-s-converted-power-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-jin-tae-s-private-lounge": {
+    "keyId": "jin-tae-s-private-lounge",
+    "mapId": "hajin"
+  },
+  "mw4:key-kang-s-arms-incinerator": {
+    "keyId": "kang-s-arms-incinerator",
+    "mapId": "hajin"
+  },
+  "mw4:key-lucera-suite-703-bedroom": {
+    "keyId": "lucera-suite-703-bedroom",
+    "mapId": "hajin"
+  },
+  "mw4:key-mechanic-s-shack": {
+    "keyId": "mechanic-s-shack",
+    "mapId": "hajin"
+  },
+  "mw4:key-militia-arms-depot": {
+    "keyId": "militia-arms-depot",
+    "mapId": "hajin"
+  },
+  "mw4:key-mill-explosives-lab": {
+    "keyId": "mill-explosives-lab",
+    "mapId": "hajin"
+  },
+  "mw4:key-netshin-it-room": {
+    "keyId": "netshin-it-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-police-weapon-depository": {
+    "keyId": "police-weapon-depository",
+    "mapId": "hajin"
+  },
+  "mw4:key-prison-encampment-storage": {
+    "keyId": "prison-encampment-storage",
+    "mapId": "hajin"
+  },
+  "mw4:key-rail-depot-storage": {
+    "keyId": "rail-depot-storage",
+    "mapId": "hajin"
+  },
+  "mw4:tcno-key-fallout-drc-locker": {
+    "keyId": "reactor-drc-locker",
+    "mapId": "hajin"
+  },
+  "mw4:key-rice-mill-bunker": {
+    "keyId": "rice-mill-bunker",
+    "mapId": "hajin"
+  },
+  "mw4:key-south-block-armory": {
+    "keyId": "south-block-armory",
+    "mapId": "hajin"
+  },
+  "mw4:key-supreme-leader-s-bunker-access-card": {
+    "keyId": "supreme-leader-s-bunker-access-card",
+    "mapId": "hajin"
+  },
+  "mw4:key-the-chemist-s-secure-armory": {
+    "keyId": "the-chemist-s-secure-armory",
+    "mapId": "hajin"
+  },
+  "mw4:key-the-citadel-main-control-room": {
+    "keyId": "the-citadel-main-control-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-the-citadel-secondary-control-room": {
+    "keyId": "the-citadel-secondary-control-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-the-citadel-south-wing": {
+    "keyId": "the-citadel-south-wing",
+    "mapId": "hajin"
+  },
+  "mw4:key-the-doctor-s-command-office": {
+    "keyId": "the-doctor-s-command-office",
+    "mapId": "hajin"
+  },
+  "mw4:key-underground-equipment-storage": {
+    "keyId": "underground-equipment-storage",
+    "mapId": "hajin"
+  },
+  "mw4:key-underground-propaganda-store-room": {
+    "keyId": "underground-propaganda-store-room",
+    "mapId": "hajin"
+  },
+  "mw4:key-utility-maintenance-storage": {
+    "keyId": "utility-maintenance-storage",
+    "mapId": "hajin"
+  },
+  "mw4:key-weapons-mod-workshop": {
+    "keyId": "weapons-mod-workshop",
+    "mapId": "hajin"
+  },
+  "mw4:key-boathouse-key": {
+    "keyId": "boathouse-key",
+    "mapId": "hajin"
+  },
+  "mw4:key-helicopter-key": {
+    "keyId": "helicopter-key",
+    "mapId": "hajin"
+  },
+  "mw4:key-downtown-branch-lobby-main": {
+    "keyId": "downtown-branch-lobby-main",
+    "mapId": "hajin"
+  },
+  "mw4:key-netshin-security-office": {
+    "keyId": "netshin-security-office",
+    "mapId": "hajin"
+  },
+  "mw4:key-x01-deep-vault-106": {
+    "keyId": "x01-deep-vault-106",
+    "mapId": "x01"
+  },
+  "mw4:key-x01-deep-vault-301": {
+    "keyId": "x01-deep-vault-301",
+    "mapId": "x01"
+  },
+  "mw4:key-x01-deep-vault-406": {
+    "keyId": "x01-deep-vault-406",
+    "mapId": "x01"
+  },
+  "mw4:key-x01-vault-drc-locker": {
+    "keyId": "x01-vault-drc-locker",
+    "mapId": "x01"
+  },
+  "mw4:tcno-item-x01-maintenance-access": {
+    "keyId": "x01-maintenance-room",
+    "mapId": "x01"
+  },
+  "mw4:key-x01-small-test-chamber": {
+    "keyId": "x01-small-test-chamber",
+    "mapId": "x01"
+  },
+  "mw4:tcno-item-x01-executive-access": {
+    "keyId": "x01-executive-room",
+    "mapId": "x01"
+  },
+  "mw4:key-x01-audit-room": {
+    "keyId": "x01-audit-room",
+    "mapId": "x01"
+  },
+  "mw4:key-x01-superintendent-office": {
+    "keyId": "x01-superintendent-office",
+    "mapId": "x01"
+  },
+  "mw4:key-x01-chol-min-stash-room": {
+    "keyId": "x01-chol-min-stash-room",
+    "mapId": "x01"
+  },
+  "mw4:x01-staff-emergency-exfil-keycard": {
+    "keyId": "x01-staff-emergency-exfil-keycard",
+    "mapId": "x01"
+  },
+  "mw4:x01-encodable-blank-keycard": {
+    "keyId": "x01-encodable-blank-keycard",
+    "mapId": "x01"
+  },
+  "mw4:key-x01-archive-closet": {
+    "keyId": "x01-archive-closet",
+    "mapId": "x01"
+  },
+  "mw4:key-x01-super-user-data-access-keycard": {
+    "keyId": "x01-super-user-data-access-keycard",
+    "mapId": "x01"
+  }
+}

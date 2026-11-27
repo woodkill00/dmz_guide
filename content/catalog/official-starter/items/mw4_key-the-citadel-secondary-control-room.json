@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "A South Wing side-room find after operating the cell controls was reported.",
+  "id": "mw4:key-the-citadel-secondary-control-room",
+  "kind": "item",
+  "name": "The Citadel Secondary Control Room",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

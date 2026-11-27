@@ -1,9 +1,12 @@
+import { renderItemIcon } from "../ui/item-card.mjs";
+import { CURRENCY_STOCK_LIMIT } from "../domain/quantity-limits.mjs";
 import { hydrateInventoryIcons } from "./inventory-icons.mjs";
 import { buildTargetControl } from "../ui/build-target-control.mjs";
 import { inventoryReviewReasons } from "../domain/inventory-review.mjs";
 import {
   automaticIngredientBlueprint,
   inventoryBlueprintAvailable,
+  itemHasNoBlueprint,
   inventoryUpgradeUse,
   compareInventoryMaterialItems,
   currencyQuantityText,
@@ -26,6 +29,7 @@ import {
   compareInventoryFamilies,
 } from "../domain/inventory-items.mjs";
 import { inventorySaveAction } from "./inventory-save.mjs";
+import { keyItemReference } from "../domain/key-item-links.mjs";
 import { upgradeNeeds } from "../domain/upgrade-needs.mjs";
 import {
   upgradeNeedCell,
@@ -454,6 +458,7 @@ function renderInventoryPage(matches) {
             .join("")}<span>Details</span></div>${items
             .map((r) => {
               const uses = inventoryUses.get(r.id);
+              const keyReference = keyItemReference(r.id);
               const granted = automaticIngredientBlueprint(
                 state.pack,
                 state.profile,
@@ -463,10 +468,10 @@ function renderInventoryPage(matches) {
               const url = `/local/?pack=${encodeURIComponent(state.pack.id)}&id=${encodeURIComponent(r.id)}`;
               const quantity = (field, prefix, label) =>
                 `<label class="quantity-cell"><span class="mobile-label">${label}</span><input aria-label="${label} for ${esc(r.name)}" name="${prefix}:${esc(r.id)}" data-id="${esc(r.id)}" data-field="${field}" type="${r.kind === "currency" ? "text" : "number"}" ${r.kind === "currency" ? 'inputmode="numeric" data-currency-quantity="true"' : ""} min="0" max="${inventoryInputLimit(state.profile, r)}" value="${esc(inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "" : r.kind === "currency" ? currencyQuantityText(inventoryDraft.raw.get(`${prefix}:${r.id}`)) : inventoryDraft.raw.get(`${prefix}:${r.id}`))}" ${field === "reserves" ? "required" : `placeholder="${inventoryDraft.raw.get(`${prefix}:${r.id}`) === INVALID_NUMBER_DRAFT ? "Invalid entry" : "Not entered"}"`}></label>`;
-              return `<div class="inventory-entry" role="listitem" data-inventory-item="${esc(r.id)}"><div class="inventory-row"><div class="inventory-name"><a href="${esc(url)}" tabindex="0" target="_blank" rel="noopener noreferrer">${esc(r.name)}</a><small>${esc(r.unit)} · Rarity: ${esc(itemRarity(r))}</small>${upgradeUse.used ? `<small class="inventory-upgrade-use">${upgradeUse.completed ? "* Upgrade use completed" : `Upgrade item - ${upgradeUse.remaining} unfinished`}</small>` : ""}<small class="collection-state" data-collection-state="${esc(r.id)}" hidden><span class="collection-short"></span><span class="collection-kind"></span><span class="sr-only collection-description"></span></small></div><div class="inventory-item-icon" data-inventory-icon="${esc(r.id)}" data-icon-status="missing"><span aria-hidden="true" class="inventory-icon-placeholder">+</span><small>Icon needed</small></div><div class="owned-cell">${quantity("inventory", "owned", "Owned")}<div class="stock-steps"><button type="button" data-stock-step="-1" data-id="${esc(r.id)}" aria-label="Decrease owned ${esc(r.name)}">−</button><button type="button" data-stock-step="1" data-id="${esc(r.id)}" aria-label="Increase owned ${esc(r.name)}">+</button></div></div><div class="inventory-blueprint">${inventoryBlueprintAvailable(r, uses) ? `<label><input type="checkbox" data-item-blueprint="${esc(r.id)}" aria-label="Blueprint owned for ${esc(r.name)}" ${granted || inventoryDraft.blueprintOwned(r.id) ? "checked" : ""} ${granted ? `disabled title="Granted by ${esc(granted.name)}"` : ""}><span>Blueprint owned${granted ? " - upgrade" : ""}</span></label>` : '<span class="inventory-blueprint-unavailable" aria-label="No listed crafting recipe">&mdash;</span>'}</div>${quantity("reserves", "reserve", "Reserve")}<span class="inventory-plan" role="group" aria-label="Needed, consumed / retained"><span class="mobile-label">Goal need</span><span data-plan-item="${esc(r.id)}" data-plan-field="needed"></span></span><span class="inventory-plan" role="group" aria-label="Missing, consumed / retained"><span class="mobile-label">Goal missing</span><span data-plan-item="${esc(r.id)}" data-plan-field="missing"></span></span>${upgradeNeedCell(r.id, "collection", "Upgrades + missions")}${upgradeNeedCell(r.id, "next", "Next upgrade tiers")}${upgradeNeedCell(r.id, "all", "All unfinished upgrades")}${Object.keys(
+              return `<div class="inventory-entry" role="listitem" data-inventory-item="${esc(r.id)}"><div class="inventory-row"><div class="inventory-name"><a href="${esc(url)}" tabindex="0" target="_blank" rel="noopener noreferrer">${esc(r.name)}</a>${keyReference ? `<small><a data-key-reference="${esc(keyReference.keyId)}" href="/keys/${esc(keyReference.keyId)}/" target="_blank" rel="noopener noreferrer">Key guide · ${keyReference.mapId === "x01" ? "X01" : "Hajin"} ↗</a></small>` : ""}<small>${esc(r.unit)} · Rarity: ${esc(itemRarity(r))}</small>${upgradeUse.used ? `<small class="inventory-upgrade-use">${upgradeUse.completed ? "* Upgrade use completed" : `Upgrade item - ${upgradeUse.remaining} unfinished`}</small>` : ""}<small class="collection-state" data-collection-state="${esc(r.id)}" hidden><span class="collection-short"></span><span class="collection-kind"></span><span class="sr-only collection-description"></span></small></div>${renderItemIcon(r, { packId: state.pack.id, size: "compact", className: "inventory-item-icon", tag: "div", reveal: state.profile.spoilers })}<div class="owned-cell">${quantity("inventory", "owned", "Owned")}<div class="stock-steps"><button type="button" data-stock-step="-1" data-id="${esc(r.id)}" aria-label="Decrease owned ${esc(r.name)}">−</button><button type="button" data-stock-step="1" data-id="${esc(r.id)}" aria-label="Increase owned ${esc(r.name)}">+</button></div></div><div class="inventory-blueprint">${inventoryBlueprintAvailable(r, uses) ? `<label><input type="checkbox" data-item-blueprint="${esc(r.id)}" aria-label="Blueprint owned for ${esc(r.name)}" ${granted || inventoryDraft.blueprintOwned(r.id) ? "checked" : ""} ${granted ? `disabled title="Granted by ${esc(granted.name)}"` : ""}><span>Blueprint owned${granted ? " - upgrade" : ""}</span></label>` : `<span class="inventory-blueprint-unavailable">${itemHasNoBlueprint(r) ? "No blueprint" : "Not tracked"}</span>`}</div>${quantity("reserves", "reserve", "Reserve")}<span class="inventory-plan" role="group" aria-label="Needed, consumed / retained"><span class="mobile-label">Goal need</span><span data-plan-item="${esc(r.id)}" data-plan-field="needed"></span></span><span class="inventory-plan" role="group" aria-label="Missing, consumed / retained"><span class="mobile-label">Goal missing</span><span data-plan-item="${esc(r.id)}" data-plan-field="missing"></span></span>${upgradeNeedCell(r.id, "collection", "Upgrades + missions")}${upgradeNeedCell(r.id, "next", "Next upgrade tiers")}${upgradeNeedCell(r.id, "all", "All unfinished upgrades")}${Object.keys(
                 useLabels,
               )
-                .map((kind) => useCell(uses[kind], kind, r.id))
+                .map((kind) => useCell(uses[kind], kind, r.id, state.pack))
                 .join(
                   "",
                 )}<button type="button" data-show-use="${esc(r.id)}" aria-expanded="false" aria-label="Uses and details for ${esc(r.name)}">Uses</button></div><div class="inventory-details" data-item-detail="${esc(r.id)}" hidden><h3>${esc(r.name)} · draft details</h3><p>Rarity: ${esc(itemRarity(r))}. ${esc(r.description || "No acquisition information recorded.")}</p><p>Available after your fixed reserve: <span data-available="${esc(r.id)}"></span>. Blank owned is not entered. Needed/Missing are separate consumed quantities and retained tool floors from your selected goals; units are never combined.</p><button type="button" data-clear-stock="${esc(r.id)}">Clear stock (not entered)</button><p>Catalog uses are references, not quantities allocated or advice to discard.</p><div data-upgrade-needs-detail="${esc(r.id)}"></div>${Object.entries(
@@ -545,7 +550,12 @@ function render() {
   if ($("#inventory-fields")) {
     inventoryUses = itemUses(state.pack, state.profile);
     inventoryIndex = new Map(
-      [...inventoryUses].map(([id, uses]) => [id, uses.item]),
+      [...inventoryUses]
+        .filter(
+          ([, uses]) =>
+            itemSection(uses.item).toLowerCase() !== "weapon manuals",
+        )
+        .map(([id, uses]) => [id, uses.item]),
     );
     if (inventoryPack !== state.pack) {
       inventoryPageNumber = 0;
@@ -848,7 +858,7 @@ $("#inventory-form")?.addEventListener(
         return;
       error(
         new Error(
-          "Enter a whole nonnegative quantity: up to 2,000,000 for currency, or 1,000,000 for other items.",
+          `Enter a whole nonnegative quantity: up to ${CURRENCY_STOCK_LIMIT.toLocaleString("en-US")} for currency, or 1,000,000 for other items.`,
         ),
       );
       revealInvalidInventory();

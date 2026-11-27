@@ -1,3 +1,4 @@
+import workspaceAssets from "../src/ui/site-tools-assets.json" with { type: "json" };
 import { LOCAL_SERVICE_PORTS } from "../src/domain/local-services.mjs";
 import { resolvePresentation } from "../src/ui/presentation-config.mjs";
 import { createServer } from "node:http";
@@ -16,6 +17,10 @@ import codmunityMetrics from "../src/domain/codmunity-metrics.json" with { type:
 const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const statusPath = ".local/weapon-updates/manager-status.json";
 const assets = new Set([
+  ...workspaceAssets,
+  "src/ui/key-directory-flow.css",
+  "src/domain/key-item-links.mjs",
+  "src/domain/key-item-links.json",
   "src/ui/workspace-shell.css",
   "src/ui/directory-view.css",
   "src/ui/directory-view.mjs",
@@ -287,11 +292,13 @@ export async function createWeaponManager({
             return send(
               200,
               await readFile(join(sourceRoot, path), "utf8"),
-              extname(path) === ".css"
-                ? "text/css; charset=utf-8"
-                : extname(path) === ".svg"
-                  ? "image/svg+xml"
-                  : "text/javascript; charset=utf-8",
+              extname(path) === ".json"
+                ? "application/json; charset=utf-8"
+                : extname(path) === ".css"
+                  ? "text/css; charset=utf-8"
+                  : extname(path) === ".svg"
+                    ? "image/svg+xml"
+                    : "text/javascript; charset=utf-8",
             );
           }
           if (req.url === "/api/session")

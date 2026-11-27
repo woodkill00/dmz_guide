@@ -47,9 +47,20 @@ test("Current static registry admission matches its captured inventory; browser 
   assert.equal(new Set(features.map((f) => f.id)).size, features.length);
   assert.equal(
     features.length,
-    88,
+    92,
     "Rebaseline the owning registry contract deliberately",
   );
+  assert.equal(
+    features.find((f) => f.id === "track-items")?.path,
+    "/track/items/",
+    "098 Items directory is the explicit added feature",
+  );
+  for (const id of ["help", "quality", "data-review"])
+    assert.equal(
+      features.find((f) => f.id === id)?.path,
+      `/${id}/`,
+      "105 workflow destinations are explicit registry additions",
+    );
   assert.equal(snapshot.count, 83, "Keep the 071 historical baseline intact");
   for (const prior of snapshot.features) {
     const current = features.find((feature) => feature.id === prior.id);
@@ -119,14 +130,29 @@ test("071 canonical hub and ambiguous feature labels preserve distinct owners", 
   );
 });
 
-test("071 modern SSR navigation retains every registry destination and safe companion links", () => {
+test("071/108 modern SSR navigation retains destinations with one consolidated weapon entry and safe companion links", () => {
   const previous = process.env.DMZ_UI_VARIANT;
   try {
     process.env.DMZ_UI_VARIANT = "modern";
     const html = renderMainNavigation({ page: "inventory", surface: "guide" });
     assert.match(html, /data-ui-navigation="modern"/);
-    for (const feature of features)
-      assert(html.includes(`data-feature-id="${feature.id}"`), feature.id);
+    const weaponAliases = [
+      "weapons",
+      "armory-workbench",
+      "weapon-acquisition",
+      "weapon-camos",
+    ];
+    for (const feature of features) {
+      if (weaponAliases.includes(feature.id)) {
+        assert(
+          !html.includes(`data-feature-id="${feature.id}"`),
+          feature.id + " is consolidated",
+        );
+        assert(featureURL(feature).startsWith("/armory/"));
+      } else
+        assert(html.includes(`data-feature-id="${feature.id}"`), feature.id);
+    }
+    assert.equal((html.match(/data-feature-id="armory"/g) || []).length, 1);
     assert.match(
       html,
       /href="\/map\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/,

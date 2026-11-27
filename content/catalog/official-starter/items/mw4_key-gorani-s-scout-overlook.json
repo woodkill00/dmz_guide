@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Reported Gorani Lieutenant drop; not guaranteed.",
+  "id": "mw4:key-gorani-s-scout-overlook",
+  "kind": "item",
+  "name": "Gorani's Scout Overlook",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

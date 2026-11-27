@@ -668,6 +668,7 @@ export function createUsabilityUI(h: UsabilityHost) {
     destroy:()=>searchUI.destroy(),
     panel,
     popup,
+    jump,
     showRecord,
     openSection: (
       value: string,

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { mkdir, readFile } from "node:fs/promises";
 import { chromium, firefox, webkit } from "playwright";
 import { startBrowserServer } from "./server.mjs";
-const path = "/armory/camos/han-86/";
+const path = "/armory/han-86/#camos";
 const tile = (p, id) => p.locator(`[data-camo-tile="${id}"]`);
 const check = (p, id) => p.locator(`[data-camo-complete="${id}"]`);
 async function ready(p) {
@@ -18,9 +18,9 @@ async function tick(p, id, value = true) {
   await check(p, id).setChecked(value);
   await p.waitForFunction(
     ({ id, value }) => {
-      const root = document.querySelector("#camo-tracker");
+      const root = document.querySelector("main");
       return (
-        root.dataset.busy === "false" &&
+        root.dataset.armoryBusy === "false" &&
         document.querySelector(`[data-camo-tile="${id}"]`).dataset.state ===
           (value
             ? "completed"
@@ -96,7 +96,25 @@ async function main(browser, base, name) {
         ? (await indexedDB.databases()).map((d) => d.name)
         : [],
     );
-    assert(!databases.includes("dmz-armory-local"));
+    assert.equal(
+      (await saved(p)).revision,
+      0,
+      "Reading the shared owner must not save progress",
+    );
+    assert.equal(
+      await p.evaluate(async () => {
+        const { readExistingRecord } = await import(
+          "/assets/src/storage/summary-read.mjs"
+        );
+        return await readExistingRecord(
+          "dmz-armory-local",
+          "workspace",
+          "main",
+        );
+      }),
+      undefined,
+      "Opening the shared database must not create a workspace record",
+    );
     assert.equal(
       await tile(p, "military-camo-1").getAttribute("data-state"),
       "next",
@@ -172,14 +190,15 @@ async function main(browser, base, name) {
       1,
     );
     const camoKeys = record.camoCompletions;
-    await p.goto(base + "/armory/acquisition/?weapon=han-86#weapon-han-86");
+    await p.goto(base + "/armory/han-86/#acquisition");
     await p.waitForFunction(
-      () => !document.querySelector('[data-manual="han-86"]').disabled,
+      () => !document.querySelector("[data-picker-manual]").disabled,
     );
-    await p.locator('[data-manual="han-86"]').check();
+    if (!(await p.locator("#weapon-picker").evaluate((n) => n.open)))
+      await p.locator("#weapon-picker > summary").click();
+    await p.locator('[data-weapon-card="han-86"] [data-picker-manual]').check();
     await p.waitForFunction(
-      () =>
-        document.querySelector("#weapon-acquisition").dataset.busy === "false",
+      () => document.querySelector("main").dataset.armoryBusy === "false",
     );
     record = await saved(p);
     assert.deepEqual(record.camoCompletions, camoKeys);
@@ -413,8 +432,8 @@ async function recovery(browser, base, name) {
     });
     await check(p, "military-camo-1").click();
     await p
-      .locator("#camo-save-error")
-      .filter({ hasText: "Unsaved ticks retained" })
+      .locator("#armory-error")
+      .filter({ hasText: "Synthetic quota" })
       .waitFor();
     assert.equal(
       await tile(p, "military-camo-1").getAttribute("data-state"),
@@ -422,13 +441,15 @@ async function recovery(browser, base, name) {
     );
     assert(!(await check(p, "military-camo-1").isChecked()));
     await p.evaluate(() => window.syntheticRestorePut());
-    await p.locator("#camo-retry").click();
+    await p.locator('.weapon-workspace-tabs a[href="#backups"]').click();
+    await p.locator("#workspace-retry").click();
     await p.waitForFunction(
       () =>
         document.querySelector('[data-camo-tile="military-camo-1"]').dataset
           .state === "completed",
     );
     assert.equal((await saved(p)).revision, 1);
+    await p.locator('.weapon-workspace-tabs a[href="#camos"]').click();
     // An external durable write makes this page stale without focusing another tab.
     await p.evaluate(async () => {
       const { readArmory, saveArmory } = await import(
@@ -446,7 +467,7 @@ async function recovery(browser, base, name) {
     await tile(p, "military-camo-2").click();
     await check(p, "military-camo-2").click();
     await p
-      .locator("#camo-save-error")
+      .locator("#armory-error")
       .filter({ hasText: "Another tab saved" })
       .waitFor();
     assert.equal((await saved(p)).revision, 2);
@@ -455,8 +476,11 @@ async function recovery(browser, base, name) {
         "weapon:han-86:military-camo-2",
       ),
     );
-    await p.locator("#camo-reload").click();
+    await p.locator('.weapon-workspace-tabs a[href="#backups"]').click();
+    p.once("dialog", (dialog) => dialog.accept());
+    await p.locator("#workspace-reload").click();
     await ready(p);
+    await p.locator('.weapon-workspace-tabs a[href="#camos"]').click();
     await tick(p, "military-camo-2");
     assert.equal((await saved(p)).acquisition["han-86"].manualExtractions, 2);
     console.log(
@@ -472,7 +496,7 @@ async function recovery(browser, base, name) {
   try {
     const p = await denied.newPage();
     await p.goto(base + path);
-    await p.locator("#camo-save-error").waitFor();
+    await p.locator("#armory-error").waitFor();
     await tile(p, "gold").click();
     assert(await check(p, "gold").isDisabled());
     assert.equal(await tile(p, "gold").getAttribute("data-state"), "unknown");
@@ -500,7 +524,7 @@ async function recovery(browser, base, name) {
       });
     });
     await p.goto(base + path);
-    await p.locator("#camo-save-error").waitFor();
+    await p.locator("#armory-error").waitFor();
     assert(await check(p, "gold").isDisabled());
     const retained = await p.evaluate(async () => {
       const { readExistingRecord } = await import(
@@ -542,7 +566,7 @@ async function recovery(browser, base, name) {
     await tile(p, "military-camo-1").click();
     await check(p, "military-camo-1").click();
     await p
-      .locator("#camo-save-error")
+      .locator("#armory-error")
       .filter({ hasText: "Invalid private armory envelope" })
       .waitFor();
     const retained = await p.evaluate(async () => {
@@ -586,7 +610,7 @@ async function recovery(browser, base, name) {
     await tile(p, "military-camo-1").click();
     await check(p, "military-camo-1").click();
     await p
-      .locator("#camo-save-error")
+      .locator("#armory-error")
       .filter({ hasText: "Invalid private workspace version" })
       .waitFor();
     const retained = await p.evaluate(async () => {
@@ -605,12 +629,62 @@ async function recovery(browser, base, name) {
     await future.close();
   }
 }
-async function lateAck(browser, base, name) {
+async function lateAck(browser, base, name, mode = "save") {
   const context = await browser.newContext(),
     p = await context.newPage();
   try {
     await p.goto(base + path);
     await ready(p);
+    if (mode === "retry") {
+      await p.evaluate(() => {
+        const put = IDBObjectStore.prototype.put;
+        IDBObjectStore.prototype.put = function (...args) {
+          if (this.transaction.db.name === "dmz-armory-local") {
+            IDBObjectStore.prototype.put = put;
+            throw new DOMException(
+              "Synthetic retry quota",
+              "QuotaExceededError",
+            );
+          }
+          return put.apply(this, args);
+        };
+      });
+      await tile(p, "military-camo-1").click();
+      await check(p, "military-camo-1").click();
+      await p
+        .locator("#armory-error")
+        .filter({ hasText: "Synthetic retry quota" })
+        .waitFor();
+      assert(!(await check(p, "military-camo-1").isChecked()));
+      await p.locator('.weapon-workspace-tabs a[href="#backups"]').click();
+    } else if (mode === "restore") {
+      const workspace = await saved(p);
+      workspace.camoCompletions = ["weapon:han-86:military-camo-1"];
+      await p.locator('.weapon-workspace-tabs a[href="#backups"]').click();
+      await p.locator("#backups").waitFor({ state: "visible" });
+      await p.locator("#workspace-import").setInputFiles({
+        name: "synthetic-resume-backup.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(
+          JSON.stringify({
+            format: "dmz-armory-backup",
+            version: 1,
+            workspace,
+          }),
+        ),
+      });
+      await p.waitForFunction(
+        () =>
+          document.querySelector("#workspace-preview").textContent ||
+          !document.querySelector("#armory-error").hidden,
+      );
+      assert(
+        await p.locator("#workspace-import-apply").isVisible(),
+        (await p.locator("#armory-error").textContent()) +
+          " / " +
+          (await p.locator("#workspace-preview").textContent()),
+      );
+    }
     await p.evaluate(() => {
       const d = Object.getOwnPropertyDescriptor(
         IDBTransaction.prototype,
@@ -636,22 +710,31 @@ async function lateAck(browser, base, name) {
         },
       });
     });
-    await tile(p, "military-camo-1").click();
-    await check(p, "military-camo-1").check();
+    if (mode === "retry") await p.locator("#workspace-retry").click();
+    else if (mode === "restore")
+      await p.locator("#workspace-import-apply").click();
+    else {
+      await tile(p, "military-camo-1").click();
+      await check(p, "military-camo-1").check();
+    }
     await p.waitForFunction(
       () => typeof window.syntheticReleaseAck === "function",
     );
     assert.equal((await saved(p)).revision, 1);
-    await p.evaluate(async () => {
+    await p.evaluate(() => {
       window.dispatchEvent(
         new PageTransitionEvent("pagehide", { persisted: true }),
       );
+    });
+    await p.evaluate(async () => {
       const { readArmory, saveArmory } = await import(
         "/assets/src/storage/armory-store.mjs"
       );
       const w = (await readArmory()).value;
       w.camoCompletions = ["weapon:han-86:military-camo-2"];
       await saveArmory(w, w.revision);
+    });
+    await p.evaluate(() => {
       window.dispatchEvent(
         new PageTransitionEvent("pageshow", { persisted: true }),
       );
@@ -659,9 +742,10 @@ async function lateAck(browser, base, name) {
     });
     await p.waitForFunction(
       () =>
-        document.querySelector("#camo-tracker").dataset.revision === "2" &&
-        document.querySelector("#camo-tracker").dataset.busy === "false",
+        document.querySelector("main").dataset.armoryRevision === "2" &&
+        document.querySelector("main").dataset.armoryBusy === "false",
     );
+    await p.locator('.weapon-workspace-tabs a[href="#camos"]').click();
     assert.equal(
       await tile(p, "military-camo-1").getAttribute("data-state"),
       "next",
@@ -673,7 +757,7 @@ async function lateAck(browser, base, name) {
     assert.equal((await saved(p)).revision, 2);
     await p.evaluate(() => window.syntheticAckRestore());
     console.log(
-      `090 ${name} late durable save acknowledgement acrossresume rereads newerwriter with no replay PASS`,
+      `090 ${name} late durable ${mode} acknowledgement acrossresume rereads newerwriter with no replay PASS`,
     );
   } finally {
     await context.close();
@@ -685,9 +769,12 @@ try {
   for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     const browser = await engine.launch();
     try {
-      await main(browser, server.base, name);
-      await recovery(browser, server.base, name);
-      await lateAck(browser, server.base, name);
+      if (!process.argv.includes("--late-ack-only")) {
+        await main(browser, server.base, name);
+        await recovery(browser, server.base, name);
+      }
+      for (const mode of ["save", "retry", "restore"])
+        await lateAck(browser, server.base, name, mode);
     } finally {
       await browser.close();
     }

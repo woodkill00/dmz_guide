@@ -19,13 +19,14 @@ export function buildHomeHierarchy(topology) {
   const map = nodes.get("feature:hajin-map"),
     guide = pathOwner("/dmz-guide/"),
     fob = pathOwner("/dmz-fob/"),
-    weapons = pathOwner("/dmz-weapons/"),
+    weapons = pathOwner("/armory/") || pathOwner("/dmz-weapons/"),
     tools = pathOwner("/settings/");
   if (!map || !guide || !fob || !weapons || !tools)
     throw Error(
       "Main hubs are missing. Rebuild the guide before opening its mindmap.",
     );
   map.label = "Map";
+  weapons.label = "Weapons";
   tools.label = "Tools & settings";
   const main = [map.id, guide.id, fob.id, weapons.id, tools.id];
   const fobPaths = new Set([
@@ -53,7 +54,7 @@ export function buildHomeHierarchy(topology) {
     item: "/items/",
     recipe: "/recipes/",
     guide: "/guides/",
-    weapon: "/weapons/",
+    weapon: "/armory/",
     objective: "/progression/",
     map: "/maps/",
     location: "/maps/",
@@ -80,6 +81,7 @@ export function buildHomeHierarchy(topology) {
     if (original.id === root.id) continue;
     let p;
     if (main.includes(original.id)) p = root.id;
+    else if (original.href === "/dmz-weapons/") p = weapons.id;
     else if (
       original.service === "Map" ||
       ["/maps/", "/map-workspace/"].includes(original.href)

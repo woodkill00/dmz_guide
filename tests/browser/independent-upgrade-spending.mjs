@@ -1754,11 +1754,11 @@ export async function runIndependentUpgradeSpending({
       await openInventoryDetails(page, cash);
       assert.equal(
         await page.locator(owned(cash)).getAttribute("max"),
-        "2000000",
+        "7000000000",
       );
       assert.equal(
         await page.locator(reserved(cash)).getAttribute("max"),
-        "2000000",
+        "7000000000",
       );
       await page.locator(owned(cash)).fill("2000000");
       await page.locator(reserved(cash)).fill("2000000");

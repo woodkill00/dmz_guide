@@ -1,3 +1,10 @@
+import { dashboardBlueprintCards } from "../ui/blueprint-cards.mjs";
+import { createOrderDisclosures } from "./order-disclosures.mjs";
+import { activeOrderPageKeys } from "../domain/order-progress.mjs";
+import { dashboardOrderCards } from "../ui/order-cards.mjs";
+import { hydrateOrderChecks } from "../ui/order-progress.mjs";
+import { mountDashboardWeapons } from "./dashboard-weapons.mjs";
+import { validateCamoCatalog } from "../domain/weapon-camos.mjs";
 import {
   projectDashboard,
   buildWindow,
@@ -6,7 +13,6 @@ import {
   dashboardTitles,
   dashboardLink,
   dashboardItemLink,
-  weaponDashboard,
 } from "../domain/dashboard.mjs";
 import {
   dashboardEscape as e,
@@ -15,6 +21,7 @@ import {
   dashboardTile,
   dashboardItemPanel,
   dashboardProgressRows,
+  dashboardUpgradeCards,
   dashboardFacts,
   dashboardQualifiers,
 } from "../ui/dashboard-page.mjs";
@@ -28,6 +35,10 @@ import {
 import { validatePack } from "../content/validate.mjs";
 import {
   createFoundOperation,
+  createUpgradeOperation,
+  createBlueprintOperation,
+  createOrderOperation,
+  isStatusOperation,
   commitFoundOperation,
   verifyFoundOperation,
 } from "./collection-action.mjs";
@@ -58,33 +69,51 @@ export async function mountDashboard() {
     model = null,
     armory = null,
     weapons = [],
+    weaponMetadata = null,
+    weaponWidget = null,
     armoryState = "loading",
     generation = 0,
     controller = new AbortController(),
     busy = false,
     operation = null,
     verification = null,
+    upgradeUndo = null,
+    upgradeIntent = 0,
+    upgradeMessage = "",
+    statusKind = "upgrade",
     schema = null,
     overlayTag = "false:0",
     catalogWarning = "";
+  const orderDisclosures = createOrderDisclosures(root, () => pack?.id || "");
   const expanded = {},
     pages = {},
     selected = {},
     drafts = {},
     rows = new Map();
+  let showCompletedOrders = false;
   let crafting = false,
     refreshNeeded = false;
   const status = (text) => {
     $("#dashboard-action-status").textContent = text;
   };
+  for (const type of ["pointerdown", "keydown", "input"])
+    document.addEventListener(type, () => upgradeIntent++);
   const dirty = () =>
     Object.values(drafts).some(Boolean) ||
     busy ||
-    operation?.state === "committed-unverified";
+    weaponWidget?.dirty() ||
+    operation?.state === "committed-unverified" ||
+    (isStatusOperation(operation) &&
+      operation.state === "failed-before-commit");
   const mayLeave = () =>
     !dirty() ||
     (!busy &&
+      !weaponWidget?.dirty() &&
       operation?.state !== "committed-unverified" &&
+      !(
+        isStatusOperation(operation) &&
+        operation.state === "failed-before-commit"
+      ) &&
       window.confirm("Leave the unsaved found amount?"));
   const mayDiscardPanel = (id) =>
     !busy &&
@@ -166,14 +195,14 @@ export async function mountDashboard() {
         content.innerHTML =
           model.builds.status !== "ok"
             ? "<p>Build calculation needs review. Open Quick collect.</p>"
-            : `<p>Missing ingredients for additional items. Group estimates are separate; shared totals count stock once.</p>${window.groups.length ? window.groups.map((g) => `<div class="dash-group"><h3>${e(g.name)}${g.quantity ? " ×" + n(g.quantity) : ""}</h3>${g.ambiguous ? '<a href="' + e(dashboardLink("/collection/", pack.id)) + '#crafting">Choose a recipe</a>' : g.noRecipe ? "<p>No crafting recipe recorded. Collect the item directly.</p>" : ""}${collectionTiles(g.tiles, id, `build-${g.id}`)}${g.total > g.tiles.length ? `<a href="${e(contextHref(id))}">${g.total - g.tiles.length} more ingredients in Quick collect</a>` : ""}</div>`).join("") : "<p>Select Want to build / get in Inventory to see ingredients here.</p>"}${window.truncated || expanded[id] ? expandButton(id) : ""}${expanded[id] ? pager(id, window.total, 5) : ""}`;
+            : `<p>Ingredients still needed for your selected builds.</p>${window.groups.length ? window.groups.map((g) => `<div class="dash-group"><div class="dash-build-heading"><h3>${e(g.name)}</h3>${g.shared ? '<span class="dash-build-badge">Stock counted once</span>' : g.quantity ? `<span class="dash-build-badge">${n(g.quantity)} to build</span>` : ""}</div>${g.ambiguous ? '<a href="' + e(dashboardLink("/collection/", pack.id)) + '#crafting">Choose a recipe for this build</a>' : g.noRecipe ? "<p>Recipe not recorded. Track this item directly.</p>" : ""}${collectionTiles(g.tiles, id, `build-${g.id}`)}${g.total > g.tiles.length ? `<a href="${e(contextHref(id))}">${g.total - g.tiles.length} more ingredients in Quick collect</a>` : ""}</div>`).join("") : "<p>Choose items to build in Inventory to see their ingredients here.</p>"}${window.truncated || expanded[id] ? expandButton(id) : ""}${expanded[id] ? pager(id, window.total, 5) : ""}${window.groups.length ? '<details class="dash-count-note"><summary>How counts work</summary><p>Each build is estimated separately. Shared totals count inventory once. Do not add the groups together.</p></details>' : ""}`;
       } else if (id === "needed") {
         const list = model.needed.items,
           count = expanded[id] ? 50 : 12;
         const last = Math.max(0, Math.ceil(list.length / count) - 1);
         pages[id] = Math.min(pages[id] || 0, last);
         const start = (pages[id] || 0) * count;
-        content.innerHTML = `<label class="dash-inline-options"><input id="dashboard-crafting" type="checkbox"${crafting ? " checked" : ""}>Include crafting alternatives</label>${model.needed.status !== "ok" ? "<p>Counts need a catalog or scope review.</p>" : list.length ? collectionTiles(list.slice(start, start + count), id, "needed") : "<p>No known outstanding items in this scope.</p>"}${list.length > 12 ? expandButton(id) : ""}${expanded[id] ? pager(id, list.length, 50) : ""}<p>Unrecorded requirements may remain. Counts are not added to build estimates.</p>`;
+        content.innerHTML = `<label class="dash-inline-options"><input id="dashboard-crafting" type="checkbox"${crafting ? " checked" : ""}>Show crafting options</label>${model.needed.status !== "ok" ? "<p>Counts need a catalog or scope review.</p>" : list.length ? collectionTiles(list.slice(start, start + count), id, "needed") : "<p>No known outstanding items in this scope.</p>"}${list.length > 12 ? expandButton(id) : ""}${expanded[id] ? pager(id, list.length, 50) : ""}<p>Known requirements only. Build ingredients are tracked separately.</p>`;
       } else if (id === "upgrades") {
         const list = model.upgrades,
           sorted = [
@@ -181,57 +210,38 @@ export async function mountDashboard() {
             ...list.filter((r) => r.complete),
           ],
           count = expanded[id] ? 50 : 5;
-        content.innerHTML = `<p>${list.filter((r) => r.complete).length}/${list.length} listed upgrade families complete</p>${dashboardProgressRows(sorted, pack.id, { limit: count })}${list.length > 5 ? expandButton(id) : ""}`;
+        content.innerHTML = `<p>${list.filter((r) => r.complete).length}/${list.length} listed upgrade families complete</p>${dashboardUpgradeCards(sorted, pack, profile, { limit: count, undo: upgradeUndo })}${list.length > 5 ? expandButton(id) : ""}`;
       } else if (id === "orders") {
         content.innerHTML =
-          ["hajin", "x01", "other"]
-            .map((set) => {
-              const all = model.orders.filter((r) => r.set === set);
-              if (!all.length) return "";
-              const list = [
-                ...all.filter((r) => r.done < r.total || r.total === 0),
-                ...all.filter((r) => r.done === r.total && r.total > 0),
-              ];
-              return `<h3>${set === "hajin" ? "Hajin · 24 reported rosters" : set === "x01" ? "X01 · 5 pages" : "Listed missions"}</h3><p>${all.reduce((a, r) => a + r.done, 0)}/${all.reduce((a, r) => a + r.total, 0)} visible listed missions complete</p><ul class="dash-progress-list">${list
-                .slice(0, expanded[id] ? 29 : 3)
-                .map(
-                  (r) =>
-                    `<li><div><a href="${e(dashboardLink("/missions/", pack.id) + (r.page ? `&page=${set}-${r.page}` : ""))}">${e(r.label)}</a>${r.variable ? "<small> · chapter position may vary</small>" : ""}${r.rows
-                      .filter((m) => !m.done)
-                      .slice(0, 1)
-                      .map(
-                        (m) =>
-                          `<p><a href="${e(dashboardItemLink(pack.id, m.id))}">${e(m.name)}</a></p>`,
-                      )
-                      .join(
-                        "",
-                      )}</div><span>${r.done}/${r.total} complete</span></li>`,
-                )
-                .join("")}</ul>`;
-            })
-            .join("") + expandButton(id);
+          dashboardOrderCards(model, pack, {
+            expanded: expanded[id],
+            showCompleted: showCompletedOrders,
+          }) + expandButton(id);
+        hydrateOrderChecks(content);
+        orderDisclosures.apply(activeOrderPageKeys(model.orders));
       } else if (id === "recipes") {
         const list = model.recipes;
-        content.innerHTML = `<p>${list.filter((r) => r.owned).length}/${list.length} listed item blueprints owned · others not marked owned</p>${dashboardProgressRows(list, pack.id, { kind: "recipes", limit: expanded[id] ? 50 : 5 })}${list.length > 5 ? expandButton(id) : ""}`;
+        content.innerHTML = dashboardBlueprintCards(list, pack, {
+          readonly: model.status !== "ready",
+        });
       }
     }
     const weaponRoot = $('[data-dash-content="weapons"]');
-    if (!["ready", "absent"].includes(armoryState))
-      weaponRoot.innerHTML = `<p>${armoryState === "loading" ? "Reading existing armory…" : "Armory unavailable. Other records remain available."}</p><a href="/armory/acquisition/">Open manual tracker</a>`;
-    else if (!weapons.length)
+    if (!weaponWidget && weaponMetadata)
+      weaponWidget = mountDashboardWeapons(weaponRoot, weaponMetadata, {
+        onSaved: (value) => {
+          armory = value;
+          armoryState = value ? "ready" : "absent";
+        },
+      });
+    if (weaponWidget) weaponWidget.paint(armory, armoryState);
+    else
       weaponRoot.innerHTML =
-        '<p>Weapon list unavailable. Open the manual tracker to review your records.</p><a href="/armory/acquisition/">Open manual tracker</a>';
-    else {
-      const roster = weaponDashboard(armory?.acquisition, weapons);
-      const list = roster.filter((r) => r.outstanding);
-      weaponRoot.innerHTML = `<p>${list.length ? `${roster.filter((r) => !r.manual).length} manuals not marked collected · ${list.length} weapon manual goals to track` : "All listed manuals marked collected with 3+ extractions recorded."}</p><ul class="dash-progress-list">${list
-        .slice(0, expanded.weapons ? 50 : 5)
-        .map(
-          (r) =>
-            `<li data-dashboard-manual="${e(r.id)}"><div><a href="/armory/acquisition/?weapon=${encodeURIComponent(r.id)}#weapon-${encodeURIComponent(r.id)}">${e(r.name)}</a><p>${r.manual ? "Manual collected" : "Manual not marked collected"}</p></div><span>${r.unrecorded ? "<strong>3</strong> to record · extraction count not entered" : `<strong>${r.remaining}</strong> more manual extraction${r.remaining === 1 ? "" : "s"} · ${r.manualExtractions} / 3 recorded`}</span></li>`,
-        )
-        .join("")}</ul>${list.length > 5 ? expandButton("weapons") : ""}`;
-    }
+        armoryState === "loading"
+          ? "<p>Reading existing armory…</p>"
+          : '<p>Weapon list unavailable. Open the manual tracker to review your records.</p><a href="' +
+            weaponURL() +
+            '">Open manual tracker</a>';
     if (state === "ready") {
       const summary = summarizeHomeProgress(pack, profile, {
         reveal: profile.spoilers,
@@ -274,6 +284,8 @@ export async function mountDashboard() {
         readOnly: true,
       });
     } else $("#dashboard-summary").replaceChildren();
+    upgradeFeedback();
+    lock(busy);
     for (const [id, selection] of Object.entries(selected)) {
       const tile = $(`[data-dash-key="${CSS.escape(selection.key)}"]`);
       tile?.setAttribute("aria-expanded", "true");
@@ -329,6 +341,13 @@ export async function mountDashboard() {
       }
       pack = nextPack;
       profile = nextProfile;
+      if (
+        upgradeUndo &&
+        (upgradeUndo.packId !== id ||
+          upgradeUndo.revision !== profile?.revision ||
+          upgradeUndo.overlayTag !== overlayTag)
+      )
+        upgradeUndo = null;
       model = projectDashboard(pack, profile, { crafting });
       $("#hub-progress").textContent =
         model.status === "ready"
@@ -351,6 +370,7 @@ export async function mountDashboard() {
     }
   }
   async function loadArmory() {
+    if (weaponWidget?.dirty()) return;
     const token = generation;
     try {
       const result = await readDashboardArmory({ signal: controller.signal });
@@ -406,9 +426,11 @@ export async function mountDashboard() {
       token = generation,
       contextPack = pack;
     verification = (async () => {
-      let saved;
+      let saved, latestOverlay;
       try {
         saved = await verifyFoundOperation(op);
+        if (isStatusOperation(op))
+          latestOverlay = await readDashboardOverlay(op.packId);
       } catch {
         if (operation === op) {
           status(
@@ -438,11 +460,59 @@ export async function mountDashboard() {
         if (document.visibilityState === "visible") void refresh();
         return;
       }
+      if (isStatusOperation(op) && latestOverlay.tag !== op.overlayTag) {
+        upgradeUndo = null;
+        await refresh({ force: true });
+        status(
+          "Upgrade status saved. Updated catalog loaded; inventory unchanged.",
+        );
+        return;
+      }
       profile = saved;
+      upgradeUndo =
+        op.kind === "upgrade" && saved.revision === op.committedRevision
+          ? { ...op, revision: saved.revision }
+          : null;
+      if (isStatusOperation(op))
+        upgradeMessage =
+          saved.revision === op.committedRevision
+            ? `${op.displayName}: status saved. Inventory unchanged.`
+            : "Latest saved progress loaded. This action did not change inventory.";
       model = projectDashboard(pack, profile, { crafting });
       render();
       syncPanels();
-      status("Found items saved to Inventory.");
+      status(
+        isStatusOperation(op)
+          ? "Progress saved. Inventory quantities unchanged."
+          : "Found items saved to Inventory.",
+      );
+      if (
+        isStatusOperation(op) &&
+        op.intent === upgradeIntent &&
+        document.visibilityState !== "hidden" &&
+        (document.activeElement === document.body ||
+          document.activeElement === op.control ||
+          document.activeElement === op.activeElement)
+      ) {
+        const family = root.querySelector(
+          `[data-dash-upgrade-family="${CSS.escape(op.familyId)}"]`,
+        );
+        (
+          (op.kind === "blueprint"
+            ? root.querySelector(
+                `[data-blueprint-group="${CSS.escape(op.section || "")}"] > summary`,
+              )
+            : null) ||
+          family?.querySelector("[data-dash-upgrade-complete]") ||
+          root.querySelector(
+            `[data-order-complete="${CSS.escape(op.orderKey || "")}"]`,
+          ) ||
+          (op.kind === "order"
+            ? root.querySelector("[data-order-show-completed]")
+            : null) ||
+          $("#dashboard-upgrade-feedback")
+        ).focus({ preventScroll: true });
+      }
     })().finally(() => {
       verification = null;
     });
@@ -459,19 +529,263 @@ export async function mountDashboard() {
     button.addEventListener("click", verify);
     box.append(button);
     const review = document.createElement("a");
-    review.href = dashboardLink("/inventory/", operation.packId);
+    review.href = dashboardLink(
+      operation.kind === "order"
+        ? "/missions/"
+        : operation.kind === "upgrade"
+          ? "/upgrades/"
+          : "/inventory/",
+      operation.packId,
+    );
     review.target = "_blank";
     review.rel = "noopener noreferrer";
-    review.textContent = "Review saved Inventory ↗";
+    review.textContent =
+      operation.kind === "order"
+        ? "Review saved Orders ↗"
+        : operation.kind === "upgrade"
+          ? "Review saved Upgrades ↗"
+          : "Review saved Inventory ↗";
     box.append(" ", review);
   }
   function lock(value) {
     busy = value;
-    $("#hub-pack").disabled =
-      value || operation?.state === "committed-unverified";
+    const blocked =
+      value ||
+      operation?.state === "committed-unverified" ||
+      (isStatusOperation(operation) &&
+        operation.state === "failed-before-commit");
+    $("#hub-pack").disabled = blocked;
+    for (const control of root.querySelectorAll(
+      "[data-dash-upgrade-complete]:not([data-dash-upgrade-readonly]), [data-order-complete]:not([data-order-readonly]), [data-dash-blueprint-owned]:not([data-blueprint-readonly])",
+    ))
+      control.disabled = blocked;
     for (const panel of root.querySelectorAll("[data-dash-detail]"))
       for (const control of panel.querySelectorAll("button,input"))
-        control.disabled = value || operation?.state === "committed-unverified";
+        control.disabled = blocked;
+  }
+  function upgradeFeedback() {
+    const box = $(
+      statusKind === "blueprint"
+        ? "#dashboard-blueprint-feedback"
+        : statusKind === "order"
+          ? "#dashboard-order-feedback"
+          : "#dashboard-upgrade-feedback",
+    );
+    for (const id of [
+      "#dashboard-upgrade-feedback",
+      "#dashboard-order-feedback",
+      "#dashboard-blueprint-feedback",
+    ]) {
+      const other = $(id);
+      if (other !== box && other) other.hidden = true;
+    }
+    if (!box) return;
+    if (
+      upgradeUndo &&
+      (upgradeUndo.packId !== pack?.id ||
+        upgradeUndo.version !== pack?.contentVersion ||
+        upgradeUndo.revision !== profile?.revision ||
+        upgradeUndo.overlayTag !== overlayTag)
+    )
+      upgradeUndo = null;
+    const failed =
+      isStatusOperation(operation) &&
+      operation.state === "failed-before-commit";
+    const verifying =
+      isStatusOperation(operation) &&
+      operation.state === "committed-unverified";
+    box.hidden = !failed && !verifying && !upgradeMessage;
+    box.innerHTML = failed
+      ? `<p>Progress was not saved. Your proposed change is retained.</p><button type="button" data-dash-upgrade-action="export">Export unsaved</button><button type="button" data-dash-upgrade-action="retry"${busy ? " disabled" : ""}>Retry save</button><button type="button" data-dash-upgrade-action="reload"${busy ? " disabled" : ""}>Reload saved</button>`
+      : verifying
+        ? '<p>Progress save needs verification. Do not repeat the change.</p><button type="button" data-dash-upgrade-action="verify">Verify saved update</button>'
+        : `<p>${e(upgradeMessage)}</p>${upgradeUndo ? `<button type="button" data-dash-upgrade-action="undo"${busy ? " disabled" : ""}>Undo ${e(upgradeUndo.displayName)}</button>` : ""}`;
+  }
+  async function saveUpgrade(op) {
+    if (busy || weaponWidget?.dirty()) {
+      status("Finish the current saved operation before changing an upgrade.");
+      return;
+    }
+    const token = generation;
+    lock(true);
+    upgradeFeedback();
+    try {
+      const [current, overlay] = await Promise.all([
+        readDashboardProfile(op.packId),
+        readDashboardOverlay(op.packId),
+      ]);
+      if (token !== generation || document.visibilityState === "hidden")
+        throw Error(
+          "Upgrade change paused by navigation. Review and retry the retained change.",
+        );
+      if (
+        pack.id !== op.packId ||
+        pack.contentVersion !== op.version ||
+        !current ||
+        current.revision !== op.expectedRevision ||
+        overlay.tag !== op.overlayTag
+      )
+        throw Error(
+          "Another page or catalog changed this profile. Export the proposal or reload saved progress.",
+        );
+      await commitFoundOperation(op);
+      await verify();
+    } catch (reason) {
+      if (op.state !== "committed-unverified" && op.state !== "confirmed")
+        op.state = "failed-before-commit";
+      if (token === generation && document.visibilityState !== "hidden")
+        status(reason.message);
+    } finally {
+      lock(false);
+      if (document.visibilityState !== "hidden") upgradeFeedback();
+    }
+  }
+  function changeUpgrade(control) {
+    const row = model?.upgrades?.find(
+      (r) => r.id === control.dataset.dashUpgradeComplete,
+    );
+    const wanted = control.checked;
+    if (row) control.checked = !!row.ownComplete || row.complete;
+    if (!row || control.disabled || model.status !== "ready") return;
+    if (dirty()) {
+      status(
+        "Save or clear your current drafts before changing upgrade progress.",
+      );
+      return;
+    }
+    statusKind = "upgrade";
+    operation = createUpgradeOperation(
+      pack,
+      profile,
+      row.id,
+      wanted ? "completed" : "incomplete",
+      { familyId: row.familyId, overlayTag, displayName: row.currentName },
+    );
+    operation.intent = upgradeIntent;
+    operation.control = control;
+    operation.activeElement = document.activeElement;
+    void saveUpgrade(operation);
+  }
+  function changeBlueprint(control) {
+    const row = model?.recipes?.find(
+        (r) => r.id === control.dataset.dashBlueprintOwned,
+      ),
+      wanted = control.checked;
+    if (row) control.checked = row.owned;
+    if (!row || row.automatic || control.disabled || model.status !== "ready")
+      return;
+    if (dirty()) {
+      status("Finish or clear current drafts before changing blueprints.");
+      return;
+    }
+    statusKind = "blueprint";
+    operation = createBlueprintOperation(pack, profile, row.id, wanted, {
+      overlayTag,
+      displayName: row.name,
+    });
+    operation.intent = upgradeIntent;
+    operation.control = control;
+    operation.activeElement = document.activeElement;
+    operation.section = row.section;
+    void saveUpgrade(operation);
+  }
+  function changeOrder(control) {
+    const key = control.dataset.orderComplete,
+      wanted = control.checked;
+    const page = model.orders.find((r) => r.set + "-" + r.page === key);
+    const mission = model.orders
+      .flatMap((r) => r.rows)
+      .find((r) => r.id === key);
+    control.checked = page
+      ? page.total > 0 && page.done === page.total
+      : !!mission?.done;
+    control.indeterminate = !!page && page.done > 0 && page.done < page.total;
+    if (control.disabled || model.status !== "ready" || dirty()) {
+      status("Finish or clear current drafts before changing Orders.");
+      return;
+    }
+    const ids = page ? page.rows.map((r) => r.id) : mission ? [mission.id] : [];
+    if (!ids.length) return;
+    statusKind = "order";
+    operation = createOrderOperation(pack, profile, ids, wanted, {
+      key,
+      overlayTag,
+      displayName: page?.label || mission.name,
+    });
+    operation.intent = upgradeIntent;
+    operation.control = control;
+    operation.activeElement = document.activeElement;
+    void saveUpgrade(operation);
+  }
+  async function upgradeAction(action, control) {
+    if (action === "verify") {
+      await verify();
+      return;
+    }
+    if (action === "export" && isStatusOperation(operation)) {
+      const url = URL.createObjectURL(
+        new Blob([JSON.stringify(operation.candidate)], {
+          type: "application/json",
+        }),
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `dmz-unsaved-${operation.kind}-progress.json`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return;
+    }
+    if (
+      action === "retry" &&
+      isStatusOperation(operation) &&
+      operation.state === "failed-before-commit"
+    ) {
+      await saveUpgrade(operation);
+      return;
+    }
+    if (
+      action === "reload" &&
+      isStatusOperation(operation) &&
+      !busy &&
+      operation.state === "failed-before-commit"
+    ) {
+      if (
+        !window.confirm(
+          "Discard the unsaved upgrade proposal and reload saved progress? Export it first if needed.",
+        )
+      )
+        return;
+      operation = null;
+      upgradeUndo = null;
+      upgradeMessage = "";
+      upgradeFeedback();
+      await refresh({ force: true });
+      return;
+    }
+    if (action === "undo" && upgradeUndo && !dirty()) {
+      const undo = upgradeUndo;
+      if (
+        undo.revision !== profile.revision ||
+        undo.packId !== pack.id ||
+        undo.version !== pack.contentVersion ||
+        undo.overlayTag !== overlayTag
+      ) {
+        upgradeUndo = null;
+        upgradeFeedback();
+        return;
+      }
+      operation = createUpgradeOperation(
+        pack,
+        profile,
+        undo.upgradeId,
+        undo.before,
+        { familyId: undo.familyId, overlayTag, displayName: undo.displayName },
+      );
+      operation.intent = upgradeIntent;
+      operation.control = control;
+      operation.activeElement = document.activeElement;
+      await saveUpgrade(operation);
+    }
   }
   root.addEventListener("input", (event) => {
     const form = event.target.closest("[data-dashboard-found]");
@@ -488,6 +802,8 @@ export async function mountDashboard() {
     if (
       busy ||
       operation?.state === "committed-unverified" ||
+      (isStatusOperation(operation) &&
+        operation.state === "failed-before-commit") ||
       !profile ||
       model?.status !== "ready"
     )
@@ -542,6 +858,10 @@ export async function mountDashboard() {
   root.addEventListener("click", (event) => {
     const b = event.target.closest("button");
     if (!b) return;
+    if (b.dataset.dashUpgradeAction) {
+      void upgradeAction(b.dataset.dashUpgradeAction, b);
+      return;
+    }
     if (b.id === "hub-refresh") {
       if (!mayLeave()) return;
       clearPanels();
@@ -628,6 +948,29 @@ export async function mountDashboard() {
     }
   });
   root.addEventListener("change", (event) => {
+    if (event.target.matches("[data-order-show-completed]")) {
+      showCompletedOrders = event.target.checked;
+      render();
+      root
+        .querySelector("[data-order-show-completed]")
+        ?.focus({ preventScroll: true });
+      return;
+    }
+    const blueprint = event.target.closest("[data-dash-blueprint-owned]");
+    if (blueprint) {
+      changeBlueprint(blueprint);
+      return;
+    }
+    const order = event.target.closest("[data-order-complete]");
+    if (order) {
+      changeOrder(order);
+      return;
+    }
+    const upgrade = event.target.closest("[data-dash-upgrade-complete]");
+    if (upgrade) {
+      changeUpgrade(upgrade);
+      return;
+    }
     if (event.target.id === "dashboard-crafting") {
       if (!mayLeave()) {
         event.target.checked = crafting;
@@ -675,6 +1018,7 @@ export async function mountDashboard() {
   });
   const resume = () => {
     if (document.visibilityState === "hidden") return;
+    upgradeFeedback();
     if (!catalogs.length || !pack) {
       void loadCatalogs();
       return;
@@ -734,8 +1078,17 @@ export async function mountDashboard() {
           65536,
           owner.signal,
         );
+        weaponMetadata = validateCamoCatalog(
+          await readPublicJSON(
+            "/assets/src/ui/weapon-camos.json",
+            2097152,
+            owner.signal,
+          ),
+          weapons,
+        );
       } catch {
         weapons = [];
+        weaponMetadata = null;
       }
       if (owner.signal.aborted || token !== generation) return;
       await refresh({ force: true });
@@ -749,3 +1102,4 @@ export async function mountDashboard() {
   }
   await loadCatalogs();
 }
+import { weaponURL } from "../domain/weapon-routes.mjs";

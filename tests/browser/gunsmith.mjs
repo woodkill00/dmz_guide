@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readWeaponIntel } from "../../src/content/weapon-intel.mjs";
+import { readWeaponAcquisition } from "../../src/content/weapon-acquisition.mjs";
 import figures from "../../src/ui/weapon-figures.json" with { type: "json" };
 const db = await readWeaponIntel();
 export async function runGunsmithTests({
@@ -11,46 +12,25 @@ export async function runGunsmithTests({
   const context = await browser.newContext(),
     page = await context.newPage();
   try {
-    await page.goto(base + "/armory/");
-    await page.waitForSelector('[data-weapon-filter][data-enhanced="true"]');
-    assert.equal(await page.locator("[data-weapon-row]").count(), 33);
-    await page.getByRole("button", { name: "Preview M4", exact: true }).click();
+    await page.goto(base + "/armory/#reference");
+    await page.waitForSelector('main[data-armory-ready="true"]');
+    if (!(await page.locator(".weapon-picker").evaluate((node) => node.open)))
+      if (!(await page.locator(".weapon-picker").evaluate((node) => node.open)))
+        await page.locator(".weapon-picker > summary").click();
+    assert.equal(await page.locator("[data-weapon-context]").count(), 35);
+    await page.locator("#weapon-context-search").fill("smg");
     assert.equal(
-      await page
-        .locator("#weapon-preview")
-        .getAttribute("data-selected-weapon"),
-      "m4",
+      await page.locator("[data-weapon-context]:visible").count(),
+      (await readWeaponAcquisition()).weapons.filter(
+        (w) => w.category === "smg",
+      ).length,
     );
-    assert.match(await page.locator("#weapon-preview").innerText(), /M4/);
-    await page.locator('[data-gs-class="smg"]').click();
-    assert.equal(await page.locator("[data-weapon-row]:visible").count(), 5);
-    assert.equal(
-      await page
-        .locator("#weapon-preview")
-        .getAttribute("data-selected-weapon"),
-      "iso-nightshade",
-    );
-    await page.locator("[data-weapon-search]").fill("does not exist");
-    assert(await page.locator("#weapon-preview").isHidden());
-    assert(await page.locator("[data-gs-empty]").isVisible());
-    await page.locator("[data-weapon-search]").fill("");
-    await page.locator('[data-gs-class=""]').click();
-    await page.locator('[data-preview-weapon="cronen-squall"]').click();
-    assert.equal(
-      await page
-        .locator("#weapon-preview")
-        .getAttribute("data-selected-weapon"),
-      "cronen-squall",
-    );
-    await page.locator('[data-preview-weapon="han-86"]').focus();
+    await page.locator("#weapon-context-search").fill("does not exist");
+    assert(await page.locator("#weapon-context-empty").isVisible());
+    await page.locator("#weapon-context-search").fill("han 86");
+    await page.locator('[data-weapon-context="han-86"]').focus();
     await page.keyboard.press("Enter");
-    assert.equal(
-      await page
-        .locator("#weapon-preview")
-        .getAttribute("data-selected-weapon"),
-      "han-86",
-    );
-    await page.locator("[data-open-gunsmith]").click();
+    await page.waitForURL("**/armory/han-86/#reference");
     assert.equal(new URL(page.url()).pathname, "/armory/han-86/");
     await page.waitForSelector('[data-armory-filter][data-enhanced="true"]');
     const expected = db.attachments.filter(
@@ -71,13 +51,13 @@ export async function runGunsmithTests({
       ["x-58-nyx", "muzzle"],
       ["warlord", "magazine"],
     ]) {
-      await page.goto(base + `/armory/${id}/`);
+      await page.goto(base + `/armory/${id}/#reference`);
       await page.waitForSelector('[data-armory-filter][data-enhanced="true"]');
       await page.locator(`[data-focus-slot="${slot}"]`).click();
       assert.equal(await page.locator("[data-armory-slot]").inputValue(), slot);
       assert.equal(await page.locator("[data-armory-row]:visible").count(), 0);
     }
-    await page.goto(base + "/armory/han-86/");
+    await page.goto(base + "/armory/han-86/#reference");
     await page.waitForSelector('[data-armory-filter][data-enhanced="true"]');
     await page.locator("#gunsmith").scrollIntoViewIfNeeded();
     await page
@@ -87,7 +67,7 @@ export async function runGunsmithTests({
     assert.equal(await page.locator("#build-weapon").inputValue(), "han-86");
     assert.equal(
       await page.locator("#build-form [name=name]").inputValue(),
-      "Han 86 build",
+      "",
     );
     const stored = await page.evaluate(
       async () =>
@@ -97,17 +77,22 @@ export async function runGunsmithTests({
     );
     assert.equal(stored.value.revision, 0);
     assert.equal(stored.value.builds.length, 0);
-    await page.goto(
-      base + "/armory/workbench/?weapon=m4&weapon=han-86#builder",
-    );
-    await page.waitForSelector('main[data-armory-ready="true"]');
-    assert.match(
-      await page.locator("#armory-status").innerText(),
-      /repeated weapon selection ignored/,
-    );
-    await page.goto(base + "/armory/workbench/?weapon=invalid#builder");
-    await page.waitForSelector('main[data-armory-ready="true"]');
-    assert.match(await page.locator("#armory-status").innerText(), /Unknown/);
+    for (const query of ["weapon=m4&weapon=han-86", "weapon=invalid"]) {
+      await page.goto(base + "/armory/workbench/?" + query + "#builder");
+      await page.waitForFunction(() =>
+        /ignored/.test(
+          document.querySelector("#weapon-alias-notice")?.textContent,
+        ),
+      );
+      assert.match(
+        await page.locator("#weapon-alias-notice").innerText(),
+        /Unknown or repeated weapon selection ignored/,
+      );
+      assert.equal(
+        await page.locator("#weapon-alias").getAttribute("href"),
+        "/armory/#builder",
+      );
+    }
     let layouts = 0;
     for (const route of [
       "/armory/",
@@ -115,7 +100,7 @@ export async function runGunsmithTests({
       "/armory/pila/",
       "/armory/fss-carbon-edge-1095/",
     ]) {
-      await page.goto(base + route);
+      await page.goto(base + route + "#reference");
       await page.waitForSelector('[data-armory-filter][data-enhanced="true"]');
       for (const width of [320, 390, 768, 1440])
         for (const theme of ["dark", "light"])
@@ -158,7 +143,7 @@ export async function runGunsmithTests({
       for (const route of ["/armory/", "/armory/han-86/"])
         for (const width of [390, 1440]) {
           await page.setViewportSize({ width, height: 1050 });
-          await page.goto(base + route);
+          await page.goto(base + route + "#reference");
           await page.waitForSelector(
             '[data-armory-filter][data-enhanced="true"]',
           );
@@ -198,7 +183,7 @@ export async function runGunsmithTests({
         const requested = page.waitForRequest(
           "**/assets/src/client/armory.mjs",
         );
-        await page.goto(base + route, { waitUntil: "commit" });
+        await page.goto(base + route + "#reference", { waitUntil: "commit" });
         await requested;
         await page.waitForFunction(() => window.earlyArtErrors > 0);
         await page
@@ -217,17 +202,18 @@ export async function runGunsmithTests({
     try {
       const p = await native.newPage();
       await p.goto(base + "/armory/");
-      assert.equal(await p.locator("[data-weapon-row]").count(), 33);
-      await p
-        .getByRole("link", { name: "Open M4 Gunsmith", exact: true })
-        .click();
+      assert.equal(await p.locator("[data-weapon-context]").count(), 35);
+      if (!(await p.locator(".weapon-picker").evaluate((node) => node.open)))
+        if (!(await p.locator(".weapon-picker").evaluate((node) => node.open)))
+          await p.locator(".weapon-picker > summary").click();
+      await p.locator('[data-weapon-context="m4"]').click();
       assert.equal(new URL(p.url()).pathname, "/armory/m4/");
       assert(await p.locator('[data-focus-slot="optic"]').count());
     } finally {
       await native.close();
     }
     console.log(
-      `050 Gunsmith PASS: class/search/empty/keyboard preview, slot filter, query safety/no writes, missing-art/no-JS and ${layouts} layouts`,
+      `050 Gunsmith PASS: class/search/empty/keyboard selection, slot filter, query safety/no writes, missing-art/no-JS and ${layouts} layouts`,
     );
   } finally {
     await context.close();

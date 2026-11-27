@@ -1,0 +1,142 @@
+/* Keys own their page flow; shared armory/inventory scrollers stay unchanged. */
+.key-directory-page {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.key-directory-page .key-filter-menu {
+  position: static;
+  inset: auto;
+  z-index: auto;
+}
+.key-directory-page .key-filters {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: calc(var(--ui-space-4) + calc(var(--ui-viewport-inline) * 0.0015));
+  margin-block: var(--ui-space-4);
+  align-items: end;
+}
+.key-directory-page .key-filters label:has(#key-search) {
+  grid-column: span 2;
+}
+.key-directory-page .key-filters :is(input, select) {
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+.key-directory-page .key-directory-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-4);
+  margin-block: var(--ui-space-6);
+}
+.key-directory-page .key-directory-actions[hidden] {
+  display: none;
+}
+.key-directory-page .key-directory-sources {
+  margin-block: var(--ui-space-4);
+}
+.key-directory-page .key-directory-sources > summary {
+  cursor: pointer;
+  min-block-size: 44px;
+  align-content: center;
+}
+.key-directory-page .key-location-group {
+  margin-block: calc(
+    var(--ui-space-5) + calc(var(--ui-viewport-inline) * 0.001)
+  );
+}
+html .key-directory-page .armory-table-wrap,
+html[data-ui-variant="modern"]
+  .key-directory-page
+  [data-ui-directory]
+  [data-ui-directory-scroll] {
+  contain: none;
+  max-block-size: none;
+  block-size: auto;
+  max-height: none;
+  overflow: visible;
+  overscroll-behavior: auto;
+  scrollbar-gutter: auto;
+}
+.key-workspace .key-trip-panel {
+  max-block-size: none;
+  overflow: visible;
+}
+.key-directory-page [data-ui-directory] table.armory-table {
+  inline-size: 100%;
+  min-inline-size: 0;
+  table-layout: fixed;
+}
+.key-directory-page
+  [data-ui-directory]
+  [data-ui-directory-scroll]
+  table.armory-table
+  :is(th, td) {
+  position: static;
+  min-inline-size: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+.key-directory-page .key-use-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-2) var(--ui-space-5);
+}
+.key-directory-page .key-directory th:first-child {
+  inline-size: 28%;
+}
+@media (max-width: 900px) {
+  .key-directory-page .key-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .key-directory-page table.armory-table,
+  .key-directory-page table.armory-table tbody {
+    display: block;
+    inline-size: 100%;
+  }
+  .key-directory-page table.armory-table thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .key-directory-page table.armory-table tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ui-space-3) var(--ui-space-6);
+    border-block-end: 1px solid var(--line);
+    padding-block: var(--ui-space-5);
+  }
+  .key-directory-page table.armory-table tr[hidden] {
+    display: none;
+  }
+  .key-directory-page table.armory-table :is(th, td) {
+    display: block;
+    inline-size: 100%;
+    border: 0;
+    padding: var(--ui-space-2);
+  }
+  .key-directory-page table.armory-table th[scope="row"] {
+    grid-column: 1 / -1;
+    inline-size: 100%;
+  }
+  .key-directory-page table.armory-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 650;
+    margin-block-end: var(--ui-space-2);
+  }
+}
+@media (max-width: 600px) {
+  .key-directory-page table.armory-table tbody tr {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .key-directory-page .key-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .key-directory-page .key-filters label:has(#key-search) {
+    grid-column: auto;
+  }
+}

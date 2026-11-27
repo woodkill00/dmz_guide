@@ -1,0 +1,16 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "A key was reported on a rice-mill control-room desk.",
+  "id": "mw4:key-mill-explosives-lab",
+  "kind": "item",
+  "name": "Mill Explosives Lab",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1",
+    "source:key-reference-c8ed4987b567"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

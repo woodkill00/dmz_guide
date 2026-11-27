@@ -1,0 +1,19 @@
+{
+  "aliases": [
+    "Audit Officer Access Card",
+    "Audit Officer Access"
+  ],
+  "category": "Keys · X01",
+  "description": "Encode a blank card using Audit Officer Access.",
+  "id": "mw4:key-x01-audit-room",
+  "kind": "item",
+  "name": "Audit Room",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1",
+    "source:key-reference-a3147e38e43b"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

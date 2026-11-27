@@ -136,7 +136,26 @@ test("093 T024 chapter save/reopen compiles custom content once on its exact rea
     });
     const page = pages.find((p) => p.path === "/missions/hajin/1/");
     assert.match(page.body, /data-compose-source="mission-chapter"/);
-    assert.match(page.body, /id=hajin-1/);
+    const link = page.body.match(
+      /href="([^"]+)" data-compose-source="mission-chapter"/,
+    );
+    assert.ok(link, "Exact chapter editor link is present");
+    const directory = new URL(
+      link[1].replaceAll("&amp;", "&"),
+      "http://local.invalid",
+    );
+    assert.equal(directory.pathname, "/local-services/author/");
+    const destination = new URL(
+      directory.searchParams.get("destination"),
+      "http://local.invalid",
+    );
+    assert.equal(destination.pathname, "/");
+    assert.deepEqual(Object.fromEntries(destination.searchParams), {
+      adapter: "mission-chapter",
+      catalogId: "mission-chapters",
+      id: "hajin-1",
+      intent: "compose",
+    });
     assert.match(page.body, /Synthetic chapter note/);
     assert.equal(
       page.body.split("Synthetic chapter body marker").length - 1,

@@ -28,11 +28,12 @@ export function renderArmory(
   weaponId = null,
   nativeIds = null,
   codmunity = null,
+  { embedded = false } = {},
 ) {
   db = codmunity ? { ...db, codmunity } : db;
   const weapon = weaponId ? db.weapons.find((w) => w.id === weaponId) : null;
   const count = db.attachments.filter((a) => a.kind === "standard").length;
-  const header = gunsmithHeader(weapon);
+  const header = embedded ? "" : gunsmithHeader(weapon);
   const intro = `<div class="armory-links"><a href="${weapon ? `/armory/camos/${weapon.id}/` : "/armory/camos/"}">Camo challenges</a><a href="/armory/">All weapons</a><a href="/armory/#attachments">Attachment directory</a><a href="/armory/#patch-history">Official patch history</a><a href="/weapons/">Catalog records</a><a href="/armory/updates/">Check for updates</a><a href="/armory/workbench/">Compare / build / track</a></div>${disclosure}`;
   const metrics = new Map(db.metrics.map((m) => [m.id, m]));
   const patches = db.patches
@@ -152,13 +153,30 @@ export function renderArmory(
   )}<p>The provider's reserve_ammo key is retained as reported; it may represent total ammunition rather than reserve-only. Damage-range units and generic recoil scales are not converted.</p></section>`;
   return (
     header +
-    renderGunsmith(db, weapon) +
+    (embedded
+      ? renderGunsmith(db, weapon)
+          .replace(/<nav class="gs-rail"[\s\S]*?<\/nav>/, "")
+          .replace(`/armory/workbench/?weapon=${weapon.id}#builder`, "#builder")
+          .replace(
+            "Attachment selection happens in your private workbench.",
+            "Configure attachments in the Builds tab.",
+          )
+      : renderGunsmith(db, weapon)) +
     renderCodmunity(db, codmunity, weapon) +
-    intro +
+    (embedded ? disclosure : intro) +
     detail +
     attachmentView +
     patchView
   );
+}
+export async function unifiedFeaturePages(packs = []) {
+  const { unifiedWeaponsPages } = await import("./unified-weapons-page.mjs");
+  const pages = await unifiedWeaponsPages(packs);
+  // Keep the separately gated, read-only source-update startup instructions.
+  return [
+    ...pages,
+    ...(await featurePages(packs)).filter((p) => p.path === "/armory/updates/"),
+  ];
 }
 function sources(db) {
   return `<section class="section"><h2>Sources & coverage</h2><p>Imported ${e(db.importedAt)}. Provider reports may be incomplete, stale or conflicting. Weapon figures load separately from ignored local files; no artwork is bundled with the guide.</p><ul>${Object.entries(

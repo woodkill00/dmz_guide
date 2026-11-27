@@ -146,26 +146,26 @@ if (nav) {
     heading.querySelector("h1").textContent = title;
   const syncLinks = () => {
     const pack =
-      $("#pack-select")?.value ||
+      $("#pack-select, #track-items-pack")?.value ||
       new URL(location.href).searchParams.get("pack");
     for (const link of nav.querySelectorAll("a")) {
       const url = new URL(link.href);
-      if (url.pathname.startsWith("/armory/")) continue;
+      if (link.dataset.trackerFeature === "armory-workbench") continue;
       if (pack) url.searchParams.set("pack", pack);
       link.href = url.pathname + url.search + url.hash;
     }
   };
-  $("#pack-select")?.addEventListener("change", syncLinks);
+  $("#pack-select, #track-items-pack")?.addEventListener("change", syncLinks);
   syncLinks();
 }
 
 export function refreshTrackerContext() {
   if (!nav) return;
   queueMicrotask(() => document.dispatchEvent(new Event("tracker-refreshed")));
-  const select = $("#pack-select");
+  const select = $("#pack-select, #track-items-pack");
   for (const link of nav.querySelectorAll("a[data-tracker-link]")) {
     const url = new URL(link.href);
-    if (url.pathname.startsWith("/armory/")) continue;
+    if (link.dataset.trackerFeature === "armory-workbench") continue;
     if (select?.value) url.searchParams.set("pack", select.value);
     link.href = url.pathname + url.search + url.hash;
   }
@@ -178,6 +178,8 @@ export function compactInventoryRows() {
     entry.dataset.quickRow = "true";
     const row = entry.querySelector(".inventory-row"),
       detail = entry.querySelector(".inventory-details");
+    const craftPreview = row.querySelector(":scope > .inventory-craft-preview");
+    if (craftPreview) row.querySelector(".inventory-name").append(craftPreview);
     const advanced = document.createElement("div");
     advanced.className = "tracker-inventory-math";
     for (const cell of [...row.children]) {

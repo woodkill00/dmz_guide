@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Reported inside the same bank, including teller-counter finds.",
+  "id": "mw4:key-bank-branch-vault-access",
+  "kind": "item",
+  "name": "Bank Branch Vault Access",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

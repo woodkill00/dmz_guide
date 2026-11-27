@@ -1,4 +1,6 @@
+import { renderCraftPreview } from "./crafting-preview.mjs";
 import { servicePath } from "../domain/local-services.mjs";
+import { renderCraftingUses } from "./crafting-uses.mjs";
 import {
   renderPageComposition,
   pageProjectionParts,
@@ -168,7 +170,7 @@ export function renderLayout({
     packId,
     extra: extraNavigation,
   });
-  return `<!doctype html><html lang="en" data-theme="dark" ${presentationAttributes("guide")}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/assets/src/favicon.svg" type="image/svg+xml"><meta name="color-scheme" content="dark light"><meta name="description" content="An independent DMZ field guide with source-backed records and private, explainable planning."><title>${e(title)} · DMZ Guide</title><link rel="stylesheet" href="/assets/src/styles.css">${page === "home" ? '<link rel="stylesheet" href="/assets/src/ui/dashboard.css">' : ""}<link rel="stylesheet" href="/assets/src/ui/compact-navigation.css">${styles.map((s) => `<link rel="stylesheet" href="${e(s)}">`).join("")}<script type="module" src="/assets/src/client/navigation.mjs"></script><script type="module" src="/assets/src/client/return-context.mjs"></script><script type="module" src="/assets/src/client/theme.mjs"></script>${scripts.map((s) => `<script type="module" src="${e(s)}"></script>`).join("")}</head><body data-page="${e(page)}" data-ui-feature-id="${e(page)}"${packId ? ` data-nav-pack="${e(packId)}"` : ""}><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">D<span>↗</span></span><span>DMZ <span class="brand-sub">FIELD GUIDE</span></span></a><span class="header-note">INDEPENDENT INTELLIGENCE<br><span>READ. PREPARE. EXTRACT.</span></span><button type="button" class="theme-toggle" id="theme-toggle" aria-label="Light mode — switch theme">Light mode</button></header>${navigation}<main id="main" tabindex="-1">${page === "local" || body.includes('class="breadcrumbs"') ? "" : renderBreadcrumbs(page, title)}${body}</main><footer class="site-footer"><a class="footer-brand" href="/">DMZ / FIELD GUIDE</a><p>Independent community project. Not affiliated with or endorsed by the game publisher.</p><p>Private progress stays in this browser. No accounts, analytics or cloud sync. Local operation needs the static server running. Browser storage is not a backup.</p><a href="/settings/">Backup &amp; privacy</a><a href="/sitemap/">Site map</a></footer></body></html>`;
+  return `<!doctype html><html lang="en" data-theme="dark" ${presentationAttributes("guide")}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/assets/src/favicon.svg" type="image/svg+xml"><meta name="color-scheme" content="dark light"><meta name="description" content="An independent DMZ field guide with source-backed records and private, explainable planning."><title>${e(title)} · DMZ Guide</title><link rel="stylesheet" href="/assets/src/styles.css"><link rel="stylesheet" href="/assets/src/ui/item-card.css">${page === "home" ? '<link rel="stylesheet" href="/assets/src/ui/dashboard.css"><link rel="stylesheet" href="/assets/src/ui/unified-weapons.css">' : ""}<link rel="stylesheet" href="/assets/src/ui/compact-navigation.css">${styles.map((s) => `<link rel="stylesheet" href="${e(s)}">`).join("")}<script type="module" src="/assets/src/client/navigation.mjs"></script><script type="module" src="/assets/src/client/return-context.mjs"></script><script type="module" src="/assets/src/client/theme.mjs"></script>${scripts.map((s) => `<script type="module" src="${e(s)}"></script>`).join("")}</head><body data-page="${e(page)}" data-ui-feature-id="${e(page)}"${packId ? ` data-nav-pack="${e(packId)}"` : ""}><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">D<span>↗</span></span><span>DMZ <span class="brand-sub">FIELD GUIDE</span></span></a><span class="header-note">INDEPENDENT INTELLIGENCE<br><span>READ. PREPARE. EXTRACT.</span></span><button type="button" class="theme-toggle" id="theme-toggle" aria-label="Light mode — switch theme">Light mode</button></header>${navigation}<main id="main" tabindex="-1">${page === "local" || body.includes('class="breadcrumbs"') ? "" : renderBreadcrumbs(page, title)}${body}</main><footer class="site-footer"><a class="footer-brand" href="/">DMZ / FIELD GUIDE</a><p>Independent community project. Not affiliated with or endorsed by the game publisher.</p><p>Private progress stays in this browser. No accounts, analytics or cloud sync. Local operation needs the static server running. Browser storage is not a backup.</p><a href="/settings/">Backup &amp; privacy</a><a href="/sitemap/">Site map</a></footer></body></html>`;
 }
 export function pageHeading(eyebrow, title, description = "") {
   return `<header class="page-heading"><p class="eyebrow">${e(eyebrow)}</p><h1>${e(title)}</h1>${description ? `<p class="lede">${e(description)}</p>` : ""}</header>`;
@@ -281,7 +283,7 @@ export function renderCatalog(
 export function renderItemRow(record, target) {
   record = displayRecord(record);
   const title = publicTitle(record);
-  return `<article class="item-row" data-record-card data-search="${e(recordSearchText(record))}" data-name="${e(title.toLowerCase())}" data-fixture="${isFixture(record.pack)}" data-category="${e(record.spoiler ? "Spoiler-protected" : itemSection(record))}" data-rarity="${e(record.spoiler ? "99:protected" : rarityKey(record))}" data-type="${e(record.kind)}" data-status="${e(statusLabel(record))}" data-pack="${e(record.pack.id)}">${itemIcon(record)}<div class="item-identity"><h3><a href="${e(recordUrl(record))}" tabindex="0">${e(title)}</a></h3><p data-reference-facts>${e(record.kind)} · ${e(record.spoiler ? "Spoiler-protected" : itemSection(record))} · ${e(record.spoiler ? "Spoiler-protected" : itemRarity(record))}</p></div>${!record.spoiler ? `<details class="item-row-build"><summary>Build / get</summary>${buildTargetControl(record.pack, record.id, null, { auto: true })}</details>` : ""}<div class="item-row-actions" aria-label="Actions for ${e(title)}"><a href="${e(recordUrl(record))}" tabindex="0">Details</a>${target ? `<a data-directory-edit href="${e(target + "#edit")}" tabindex="0">Edit<span class="sr-only"> ${e(title)}</span></a><a data-directory-remove href="${e(target + "#remove")}" tabindex="0">Remove<span class="sr-only"> ${e(title)}</span></a>` : ""}</div></article>`;
+  return `<article class="item-row" data-record-card data-search="${e(recordSearchText(record))}" data-name="${e(title.toLowerCase())}" data-fixture="${isFixture(record.pack)}" data-category="${e(record.spoiler ? "Spoiler-protected" : itemSection(record))}" data-rarity="${e(record.spoiler ? "99:protected" : rarityKey(record))}" data-type="${e(record.kind)}" data-status="${e(statusLabel(record))}" data-pack="${e(record.pack.id)}">${itemIcon(record)}<div class="item-identity"><h3><a href="${e(recordUrl(record))}" tabindex="0">${e(title)}</a></h3><p data-reference-facts>${e(record.kind)} · ${e(record.spoiler ? "Spoiler-protected" : itemSection(record))} · ${e(record.spoiler ? "Spoiler-protected" : itemRarity(record))}</p>${!record.spoiler ? renderCraftPreview(record.pack, record.id, { referenceURL: recordUrl }) : ""}</div>${!record.spoiler ? `<details class="item-row-build"><summary>Build / get</summary>${buildTargetControl(record.pack, record.id, null, { auto: true })}</details>` : ""}<div class="item-row-actions" aria-label="Actions for ${e(title)}"><a href="${e(recordUrl(record))}" tabindex="0">Details</a>${target ? `<a data-directory-edit href="${e(target + "#edit")}" tabindex="0">Edit<span class="sr-only"> ${e(title)}</span></a><a data-directory-remove href="${e(target + "#remove")}" tabindex="0">Remove<span class="sr-only"> ${e(title)}</span></a>` : ""}</div></article>`;
 }
 
 function sourceMarkup(source) {
@@ -387,6 +389,7 @@ export function renderDetail(
     detail +=
       renderTcnoItemIntel(record, pack, ref, {
         omitDescription: true,
+        omitCoveredRecipes: true,
         mapAreas,
       }) ||
       `<section id="item-find" tabindex="-1" class="panel"><h2>Where to find</h2><p>No loot source recorded. No location has been inferred.</p>${mapAreas}</section>`;
@@ -395,13 +398,11 @@ export function renderDetail(
         !r.spoiler &&
         (r.inputs || r.requirements || []).some((x) => x.itemId === record.id),
     );
-    const produces = records.filter((r) => r.output?.itemId === record.id);
     const locations = records.filter((r) => r.itemIds?.includes(record.id));
     const list = (title, rows) =>
       rows.length
         ? `<details class="item-use-group"><summary>${e(title)} (${rows.length})</summary><ul class="item-use-list">${[...new Map(rows.map((r) => [r.id, r])).values()].map((r) => `<li>${ref(r.id)}</li>`).join("")}</ul></details>`
         : "";
-    const crafting = uses.filter((r) => r.recordType === "recipe");
     const upgrades = uses.filter(
       (r) => r.recordType === "objective" && r.track === "dmz-upgrade",
     );
@@ -409,12 +410,11 @@ export function renderDetail(
       (r) => r.recordType === "objective" && r.track !== "dmz-upgrade",
     );
     const actualLocations = locations.filter((r) => !r.spoiler);
-    detail += `<section id="item-crafting" tabindex="-1" class="panel item-crafting"><h2>Crafting</h2>${
-      list(
-        "Recipes making this item",
-        produces.filter((r) => !r.spoiler),
-      ) || "<p>No crafting recipe recorded.</p>"
-    }${list("Used to craft", crafting)}</section><section id="item-uses" tabindex="-1" class="panel item-uses"><h2>Item uses</h2>${list("Missions", missions)}${list("Upgrades", upgrades)}${list("Mapped locations", actualLocations)}${!uses.length && !produces.length ? "<p>No crafting or mission uses recorded.</p>" : ""}<p><a href="${e(readerHref(`/local/?pack=${encodeURIComponent(pack.id)}&id=${encodeURIComponent(record.id)}`))}">Track inventory and upgrade progress</a></p></section>`;
+    detail += `<section id="item-crafting" tabindex="-1" class="panel item-crafting"><h2>Crafting</h2>${renderCraftingUses(
+      record,
+      pack,
+      referenceURL,
+    )}</section><section id="item-uses" tabindex="-1" class="panel item-uses"><h2>Item uses</h2>${list("Missions", missions)}${list("Upgrades", upgrades)}${list("Mapped locations", actualLocations)}${!missions.length && !upgrades.length && !actualLocations.length ? "<p>No other mission, upgrade or mapped-location uses recorded.</p>" : ""}<p><a href="${e(readerHref(`/local/?pack=${encodeURIComponent(pack.id)}&id=${encodeURIComponent(record.id)}`))}">Track inventory and upgrade progress</a></p></section>`;
   }
 
   if (record.stats && (record.recordType !== "item" || record.stats.length))

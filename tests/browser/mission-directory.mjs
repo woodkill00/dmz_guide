@@ -75,6 +75,11 @@ try {
     '#mission-directory-x01 a[href="/objectives/mw4--x01-order-source-code/"]',
   );
   assert.equal(await sourceCode.count(), 1);
+  for (const section of await sourceCode
+    .locator("xpath=ancestor::details")
+    .all())
+    if (!(await section.evaluate((node) => node.open)))
+      await section.locator(":scope > summary").click();
   await sourceCode.click();
   assert.match(await page.locator("main").innerText(), /Source Code/);
   assert.equal(await page.locator(".mission-picture-grid img").count(), 0);
@@ -108,13 +113,20 @@ try {
       .getAttribute("href"),
     /#x01-page-5$/,
   );
-  const editor = page.locator('a[href^="http://127.0.0.1:4174/"]', {
+  const editor = page.locator('a[href^="/local-services/author/"]', {
     hasText: "Edit mission content",
   });
   assert.equal(await editor.count(), 1);
-  assert.match(
-    await editor.getAttribute("href"),
-    /mw4%3Ax01-order-source-code|mw4:x01-order-source-code/,
+  const editorHandoff = new URL(await editor.getAttribute("href"), server.base);
+  assert.equal(editorHandoff.origin, new URL(server.base).origin);
+  assert.equal(editorHandoff.pathname, "/local-services/author/");
+  const editorDestination = new URL(
+    editorHandoff.searchParams.get("destination"),
+    server.base,
+  );
+  assert.equal(
+    editorDestination.searchParams.get("id"),
+    "mw4:x01-order-source-code",
   );
   const auditLink = page.getByRole("link", { name: "Audit this mission" });
   assert.equal(

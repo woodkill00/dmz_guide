@@ -1,0 +1,202 @@
+{
+  "scope": "Local desktop implementation coverage; receipts are evidence scopes, not blanket application or physical-device certification",
+  "guideRouteOwners": {
+    "dashboard": 1,
+    "shell-navigation": 4,
+    "reference-details": 1030,
+    "weapons": 76,
+    "inventory-items": 3,
+    "management": 1031,
+    "hajin-map": 3,
+    "field-tools": 3,
+    "backup-settings": 2,
+    "needed-quick-collect": 4,
+    "help-diagnostics": 2,
+    "audits": 2,
+    "editors": 1,
+    "fob-upgrades": 3,
+    "orders-story": 30,
+    "keys": 81,
+    "map-management": 1,
+    "aliases-status": 1
+  },
+  "mapEntries": [
+    {
+      "file": "index.html",
+      "owner": "tools/hajin-map",
+      "family": "hajin-map",
+      "scope": "map companion entry; guide aliases remain registry-owned"
+    },
+    {
+      "file": "help.html",
+      "owner": "tools/hajin-map",
+      "family": "help-diagnostics",
+      "scope": "map companion entry; guide aliases remain registry-owned"
+    },
+    {
+      "file": "safes.html",
+      "owner": "tools/hajin-map",
+      "family": "safe-run",
+      "scope": "map companion entry; guide aliases remain registry-owned"
+    },
+    {
+      "file": "loot.html",
+      "owner": "tools/hajin-map",
+      "family": "loot-run",
+      "scope": "map companion entry; guide aliases remain registry-owned"
+    },
+    {
+      "file": "x01.html",
+      "owner": "tools/hajin-map",
+      "family": "x01-source-view",
+      "scope": "map companion entry; guide aliases remain registry-owned"
+    },
+    {
+      "file": "x01-dmzhub.html",
+      "owner": "tools/hajin-map",
+      "family": "x01-floor-view",
+      "scope": "map companion entry; guide aliases remain registry-owned"
+    },
+    {
+      "file": "x01-workspace.html",
+      "owner": "tools/hajin-map",
+      "family": "x01-workspace",
+      "scope": "map companion entry; guide aliases remain registry-owned"
+    },
+    {
+      "file": "migration.html",
+      "owner": "tools/hajin-map",
+      "family": "backup-settings",
+      "scope": "map companion entry; guide aliases remain registry-owned"
+    }
+  ],
+  "registry": {
+    "checked": 92,
+    "capabilityGated": ["studio"],
+    "evidence": "test-results/109-feature-readiness.json"
+  },
+  "matrices": [
+    {
+      "owner": "shared layout legacy",
+      "engines": 3,
+      "familyCases": 108,
+      "evidence": "test-results/109-layout-settled.log"
+    },
+    {
+      "owner": "shared layout modern Guide",
+      "engines": 3,
+      "familyCases": 108,
+      "evidence": "test-results/109-modern-family-matrix.log"
+    },
+    {
+      "owner": "navigation bounds and link hit regions",
+      "engines": 3,
+      "cases": 48,
+      "evidence": "test-results/109-navigation-bounds-final.log"
+    },
+    {
+      "owner": "shared component references",
+      "engines": 3,
+      "cases": 144,
+      "evidence": "test-results/109-component-reference.log"
+    },
+    {
+      "owner": "Guide Axe dark/light and normal/enlarged text",
+      "engines": 3,
+      "scans": 60,
+      "evidence": "test-results/109-modern-axe.log"
+    }
+  ],
+  "writerOwners": [
+    {
+      "owner": "inventory, Needed and Quick collect",
+      "engines": 3,
+      "evidence": [
+        "109-quick-verified.log",
+        "109-quick-firefox.log",
+        "109-quick-webkit.log"
+      ]
+    },
+    {
+      "owner": "upgrades",
+      "engines": 3,
+      "evidence": ["109-upgrades-fixed.log"]
+    },
+    {
+      "owner": "Orders",
+      "engines": 3,
+      "evidence": ["109-orders.log"]
+    },
+    {
+      "owner": "blueprints and cross-page inventory drafts",
+      "engines": 3,
+      "evidence": ["109-blueprints.log"]
+    },
+    {
+      "owner": "weapons and camo/manual progress",
+      "engines": 3,
+      "evidence": ["109-weapons-fixed.log"]
+    },
+    {
+      "owner": "keys and recovery",
+      "engines": 3,
+      "evidence": ["109-keys.log"]
+    },
+    {
+      "owner": "editorial reviews and backups",
+      "engines": 3,
+      "evidence": ["109-sitewide-accepted.log"]
+    },
+    {
+      "owner": "map marker editing and backups",
+      "engines": 3,
+      "evidence": ["109-marker-edit-controls.log"]
+    },
+    {
+      "owner": "Safe Run",
+      "engines": 3,
+      "evidence": ["109-safe-route.log"]
+    },
+    {
+      "owner": "Loot Run",
+      "engines": 1,
+      "evidence": ["109-loot-route.log"]
+    },
+    {
+      "owner": "X01 source/floor/workspace journeys",
+      "engines": 3,
+      "evidence": ["109-x01-journeys.log"]
+    }
+  ],
+  "services": {
+    "realDisposableStudioAndManager": "test-results/109-services-small-fixture.log",
+    "fullStudio": "PASS Chrome:109-studio-current-chrome.log; Firefox:109-studio-current-firefox.log; WebKit isolated:109-studio-webkit-isolated.log. Earlier concurrent WebKit timeout retained separately."
+  },
+  "remaining": [
+    {
+      "gate": "final-head GitHub quality terminals (local full map browser passed109-map-browser-delivery.log)",
+      "status": "pending"
+    },
+    {
+      "gate": "physical mobile keyboard, dynamic toolbar, hardware device behavior",
+      "status": "not run; no physical-device claim"
+    },
+    {
+      "gate": "final independent implementation acceptance and delivery reconciliation",
+      "status": "pending"
+    }
+  ],
+  "originalOriginSmoke": {
+    "base": "http://127.0.0.1:4173",
+    "engines": 3,
+    "routes": 7,
+    "evidence": "test-results/109-original-origin-smoke.json"
+  },
+  "rollout": {
+    "sourceCommit": "d30fe39",
+    "branch": "feature/109-sitewide-usability-design",
+    "repository": "MW4",
+    "remotePublication": "feature branch pushed; PR41 draft; main merge pending",
+    "storageMigration": false
+  }
+}

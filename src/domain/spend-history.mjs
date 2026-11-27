@@ -1,3 +1,4 @@
+import { CURRENCY_STOCK_LIMIT } from "./quantity-limits.mjs";
 import { assert, ID, LIMITS } from "../content/limits.mjs";
 export const SPEND_LIMIT = 500;
 const object = (v) => v && typeof v === "object" && !Array.isArray(v);
@@ -203,7 +204,10 @@ export function validateSpendHistory(history) {
       assert(
         [c.consumed, c.retained].every((v) => quantity(v)) &&
           [c.before, c.after, c.reserve].every((v) =>
-            quantity(v, c.kind === "currency" ? 2000000 : LIMITS.quantity),
+            quantity(
+              v,
+              c.kind === "currency" ? CURRENCY_STOCK_LIMIT : LIMITS.quantity,
+            ),
           ) &&
           c.consumed + c.retained > 0 &&
           c.after === c.before - c.consumed &&

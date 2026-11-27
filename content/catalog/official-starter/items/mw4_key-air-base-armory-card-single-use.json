@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "Convert the multi-use Air Base card at the Admin No. 2 terminal during Iron Citadel.",
+  "id": "mw4:key-air-base-armory-card-single-use",
+  "kind": "item",
+  "name": "Air Base Armory Card (Single Use)",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}

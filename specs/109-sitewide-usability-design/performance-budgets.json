@@ -1,0 +1,20 @@
+{
+  "scope": "Local fixture budgets, not general device benchmarks",
+  "baseCommit": "a5baed481b92dadf7514234c01fede3bf84834fb",
+  "cssSourceBytesMaximum": 423763,
+  "familyDomGrowthMaximumRatio": 1.2,
+  "navigationInteractionMaximumMs": 466,
+  "baselineNavigationSamplesMs": [
+    64.93189999999981,
+    65.51839999999993,
+    66.28770000000031,
+    66.35249999999996,
+    66.42969999999968,
+    66.95409999999993,
+    66.9677999999999,
+    67.33650000000011,
+    127.87130000000002,
+    232.5698
+  ],
+  "geometry": "no document overflow at320/390/1440; 2D map/data regions owned; pending-hit targets stable"
+}

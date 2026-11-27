@@ -25,7 +25,13 @@ test("saved preview uses validated local IDs, saved revision and eager media", (
       `/api/media?packKey=${entry.key}&amp;assetId=${encodeURIComponent(record.assetId)}`,
     ),
   );
-  assert.doesNotMatch(html, /src="\/assets\/bundled|<script|Open planner/);
+  const scripts = [...html.matchAll(/<script\b[^>]*>[\s\S]*?<\/script>/g)].map(
+    (m) => m[0],
+  );
+  assert.deepEqual(scripts, [
+    '<script type="module" src="/assets/src/client/navigation-menu-entry.mjs"></script>',
+  ]);
+  assert.doesNotMatch(html, /src="\/assets\/bundled|Open planner/);
   assert.equal(renderSavedPreview(snapshot, "missing", record.id), null);
   assert.equal(renderSavedPreview(snapshot, entry.key, "missing:record"), null);
 });

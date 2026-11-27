@@ -1,3 +1,4 @@
+import { publishSaveReceipt } from "./save-events.mjs";
 import { emptyArmory, validateArmory } from "../domain/armory-workspace.mjs";
 let opened;
 function database() {
@@ -92,7 +93,12 @@ export async function saveArmory(
         tx.abort();
       }
     };
-    tx.oncomplete = () => resolve(result);
+    tx.oncomplete = () => {
+      try {
+        publishSaveReceipt("armory", "main", result.revision);
+      } catch {}
+      resolve(result);
+    };
     tx.onerror = () => reject(error || tx.error);
     tx.onabort = () =>
       reject(

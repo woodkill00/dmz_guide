@@ -1,0 +1,15 @@
+{
+  "aliases": [],
+  "category": "Keys · Hajin",
+  "description": "An Iron Citadel-linked office-desk find was reported; no guaranteed spawn.",
+  "id": "mw4:key-air-base-access-card-multi-use",
+  "kind": "item",
+  "name": "Air Base Access Card (Multi Use)",
+  "sourceIds": [
+    "source:key-directory-20261122",
+    "source:key-reference-0bafb867d2d1"
+  ],
+  "stats": [],
+  "status": "observed",
+  "unit": "count"
+}
