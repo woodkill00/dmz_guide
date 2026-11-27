@@ -1,0 +1,6 @@
+interface:
+  display_name: "DMZ testing"
+  short_description: "Implement behavior-first tests at the interfaces agreed in t"
+  default_prompt: "Use $dmz-test-first for the current scoped task and record actual evidence."
+policy:
+  allow_implicit_invocation: true

@@ -11,3 +11,5 @@ Read README.md, .specify/memory/constitution.md, docs/spec-kit-cycle.md, and the
 7. Keep changes small and reversible. Record touched paths, requirement IDs, dependencies and test evidence. Preserve 001 as the approved planning baseline; track implementation changes through reviewed artifacts.
 8. No account linking, paid service, deployment, credential provisioning, publishing assets or repository-setting change is implied by a coding task. Respect the specific authorization given. Stop dependent work on security, rights or data-loss blockers.
 9. Run the repository's documented checks and record exact results, including unavailable checks. Follow CONTRIBUTING.md and SECURITY.md. Do not publish confidential vulnerability details.
+
+For focused diagnosis, testing, review, research or session continuity, select a project `dmz-*` helper using [the agent workflow guide](docs/agents/README.md). Resolve actual owners with [the repository map](docs/agents/repository-map.md) and meanings with [the glossary](GLOSSARY.md). These helpers support the pinned Spec Kit lifecycle and existing authorization; vendored originals are inert reference material.

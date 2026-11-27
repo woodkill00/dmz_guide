@@ -1,0 +1,6 @@
+interface:
+  display_name: "DMZ design"
+  short_description: "Assess a module interface and test boundary when a planned c"
+  default_prompt: "Use $dmz-design for the current scoped task and record actual evidence."
+policy:
+  allow_implicit_invocation: true

@@ -1,5 +1,7 @@
 # Documentation
 
+- [Agent workflow helpers](agents/README.md): reviewed project-local skills, glossary, task authority, testing, updates and session continuity.
+
 - [Hajin and X01 keys](key-directory.md): region lists, inventory links, exact map markers and coverage gaps.
 
 - [Sitewide workflows](sitewide-workflows.md): Workspace navigation, searchable help, reference quality checks, confirmed saves and current/previous recovery.

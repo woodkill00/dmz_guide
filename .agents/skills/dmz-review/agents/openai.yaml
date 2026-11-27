@@ -1,0 +1,6 @@
+interface:
+  display_name: "DMZ review"
+  short_description: "Review a fixed change against repository standards and its o"
+  default_prompt: "Use $dmz-review for the current scoped task and record actual evidence."
+policy:
+  allow_implicit_invocation: true

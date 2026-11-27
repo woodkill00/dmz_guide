@@ -7,6 +7,10 @@
     "node": "22.x || 24.x"
   },
   "scripts": {
+    "skills:check": "node scripts/check-agent-skills.mjs",
+    "skills:list": "node scripts/check-agent-skills.mjs --list",
+    "test:skills": "node --test tests/runtime/agent-skills.test.mjs",
+    "skills:pilots": "node tests/agent-workflows/pilot-fixtures.mjs",
     "local": "node scripts/local.mjs",
     "local:legacy-map": "npm --prefix tools/hajin-map run dev",
     "build:maps": "node scripts/build-unified-map.mjs",
