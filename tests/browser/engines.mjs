@@ -89,6 +89,7 @@ try {
         }),
         page = await context.newPage();
       await page.goto(base);
+      await page.waitForLoadState("networkidle");
       await page.locator(".nav-more > summary").focus();
       await page.keyboard.press("Enter");
       assert(await page.locator(".nav-more").evaluate((n) => n.open));
