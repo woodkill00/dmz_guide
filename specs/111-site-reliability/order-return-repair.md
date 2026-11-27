@@ -1,0 +1,11 @@
+# Clean cached Order return — assessed repair
+
+FR003/007, T014. The initial real WebKit journey timed out waiting for an unchecked directory after a dashboard reopen attempt. Later diagnostics showed native navigation with both saved and in-memory revision4 still completed, so that observation does not establish a successful save or a cache-return cause. It is retained as a separate test/lifecycle investigation; stronger next-revision and acknowledged-dashboard-UI preconditions pass four isolated repeats and the final three-engine journey. The independently confirmed cached-return defect below was discovered while investigating that trigger.
+
+Deterministic reproduction: `BROWSER=chromium node tests/browser/order-return.mjs` selects Gear Up, dispatches a simulated persisted pagehide for the clean document, applies an independent canonical profile edit and dispatches persisted pageshow. Actual result:5000ms timeout waiting for unchecked/enabled UI. The test also requires exactly one external write and unchanged inventory. This simulated lifecycle is labeled, and complements the actual WebKit navigation failure.
+
+Cause: progression.mjs only sets orderNeedsRefresh after an in-flight save crosses a lifecycle boundary. A clean page's pagehide increments navigation but does not mark its canonical profile stale; persisted pageshow calls reconcileOrderReturn, which returns early. The cached list can therefore keep old completion indefinitely.
+
+Scoped fix: mark focused Orders stale on every pagehide. Existing reconciliation reads canonical state, retains uncommitted drafts and verifies committed proposals without replay. No schema, inventory or completion semantics change. Verify deterministic lifecycle on all engines, existing order-completion adverse cases and the real cross-page missing-art journey, then independent review. Preserve all existing deadlines/oracles.
+
+Independent review found R3: a cached return during held initial loading has no pack/profile yet. Its deterministic held-init regression reproduced `Cannot read properties of null (reading 'id')` before the fix. Reconciliation now waits until pack/profile exist; common initialization/resume remains the owner of the first read. Both clean-ready and early-loading return scenarios must pass; never replace this with a generic exception allowance.

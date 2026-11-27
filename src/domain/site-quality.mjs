@@ -39,6 +39,7 @@ export async function projectSiteQuality(
     icons = {},
     weaponAcquisition,
     weaponIntel,
+    weaponCamos,
     specialEditorURL,
     keys,
   } = {},
@@ -178,6 +179,43 @@ export async function projectSiteQuality(
         editorURL: specialEditorURL("weapon-acquisition", weapon.id),
       });
   }
+  // The admitted camo schema requires fields, but whitespace and source
+  // placeholders still need editorial attention. Never infer a challenge.
+  for (const weapon of weaponCamos?.weapons || []) {
+    if (weapon.spoiler) continue;
+    for (const camo of weapon.rows) {
+      const instruction = camo.requirement.trim();
+      if (
+        instruction &&
+        !/^(unknown|not recorded|not available|tbd|pending)[.!]?$/i.test(
+          instruction,
+        )
+      )
+        continue;
+      candidates.push({
+        id: `camo~${weapon.id}~${camo.id}~instructions`,
+        binding: await qualityFingerprint({
+          provider: weaponCamos.provider,
+          checkedAt: weaponCamos.checkedAt,
+          weapon: {
+            id: weapon.id,
+            name: weapon.name,
+            sourceURL: weapon.sourceURL,
+          },
+          camo,
+        }),
+        packId: "weapon-camos",
+        recordId: `${weapon.id}:${camo.id}`,
+        kind: "camo",
+        title: `${weapon.name} · ${camo.name}`.slice(0, 200),
+        field: "instructions",
+        message:
+          "Camo challenge instructions are unrecorded. Verify the cited source before editing.",
+        readerURL: weaponCamoURL(weapon.id, camo.id),
+        editorURL: specialEditorURL("weapon-camos", weapon.id),
+      });
+    }
+  }
   for (const key of keys?.keys || []) {
     if (
       key.spoiler ||
@@ -311,4 +349,4 @@ export function editQualityReview(log, row, state) {
 }
 export const qualityReviewKey = "dmz-quality-reviews-v1";
 export const qualityState = (log, row) => qualityReview(row, log);
-import { weaponURL } from "./weapon-routes.mjs";
+import { weaponURL, weaponCamoURL } from "./weapon-routes.mjs";

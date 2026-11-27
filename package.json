@@ -7,6 +7,8 @@
     "node": "22.x || 24.x"
   },
   "scripts": {
+    "audit:content": "node scripts/content-audit.mjs",
+    "test:reliability": "node tests/browser/reliability.mjs",
     "skills:check": "node scripts/check-agent-skills.mjs",
     "skills:list": "node scripts/check-agent-skills.mjs --list",
     "test:skills": "node --test tests/runtime/agent-skills.test.mjs",

@@ -866,6 +866,9 @@ $("#pack-select").addEventListener(
 );
 window.addEventListener("pagehide", () => {
   navigation++;
+  // A clean cached list can become stale while another page edits progress.
+  // Its return must read canonical state just like an interrupted save does.
+  if (focusedMissions) orderNeedsRefresh = true;
   dismissUpgrade({ focus: false });
 });
 window.addEventListener("popstate", () => {
@@ -1390,7 +1393,13 @@ function syncOrderDirectory() {
 }
 function reconcileOrderReturn() {
   if (orderReturnFlight) return orderReturnFlight;
-  if (saving || !orderNeedsRefresh || document.visibilityState === "hidden")
+  if (
+    saving ||
+    !orderNeedsRefresh ||
+    !state.pack ||
+    !state.profile ||
+    document.visibilityState === "hidden"
+  )
     return Promise.resolve();
   orderNeedsRefresh = false;
   const packId = state.pack.id,

@@ -1,0 +1,8 @@
+# Research and decisions
+
+- Main baseline: `000fb7ffb913395c26e5f71a892962b914474d18`, feature110 accepted; all12 PR/main checks passed. Windows main initial attempt cancelled at exactly60 minutes; unchanged retry passed. PR Windows total47m09s, Studio18m24s. Main retry Studio began33m22s into its shared budget. This supports separating suite lifecycles, not relaxing functional deadlines.
+- GitHub's [workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idneeds) documents dependency handling and job conditionals. Aggregate must use `always()` and inspect every dependency result, because successful unrelated jobs cannot certify a failed/skipped suite.
+- README contains historical starter counts and separate-map wording despite unified local routes and later catalog expansion. Replace current-state claims with generated commands/owner links, retain historical receipts explicitly.
+- Existing `/quality/` already provides bounded filtering, pending/later/checked notes and exact editor links; extending it avoids a second review system. A probe disproved an initial suspected missing weapon-route import: the import is at the module's end, and the missing-combat fixture returns a valid route. Keep regression coverage; do not report this as a repaired defect.
+- Current camos live in src/ui/weapon-camos.json via validated reader. Camo image references do not prove image availability or current-build truth. Mission section/X01 audit remains separate and linked.
+- Confirmed browser is VS Code integrated browser. Origin-scoped snapshot plus owner export captured privately; no recovery exercise, no cookies or account data, no source/profile mutation. No personal contents belong in this research file.

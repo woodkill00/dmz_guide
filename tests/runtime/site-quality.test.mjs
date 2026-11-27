@@ -31,6 +31,66 @@ const options = {
   editorURL: (_p, r) =>
     "/local-services/author/?destination=" + encodeURIComponent("/?id=" + r.id),
 };
+test("111 missing combat references retain exact weapon and editor routes", async () => {
+  const index = await projectSiteQuality([], {
+    weaponAcquisition: {
+      weapons: [
+        { id: "synthetic-rifle", name: "Synthetic rifle", sourceIds: [] },
+      ],
+      sources: [],
+    },
+    weaponIntel: { weapons: [] },
+    specialEditorURL: (adapter, id) =>
+      `/local-services/author/?adapter=${adapter}&id=${id}`,
+  });
+  assert.equal(
+    index.entries[0].readerURL,
+    "/armory/synthetic-rifle/#acquisition",
+  );
+  assert.match(index.entries[0].editorURL, /weapon-acquisition/);
+});
+
+test("111 admitted camo placeholders create bounded actionable gaps and stale when source changes", async () => {
+  const { readWeaponCamos } = await import(
+    "../../src/content/weapon-camos.mjs"
+  );
+  const { readWeaponAcquisition } = await import(
+    "../../src/content/weapon-acquisition.mjs"
+  );
+  const { validateCamoCatalog } = await import(
+    "../../src/domain/weapon-camos.mjs"
+  );
+  const catalog = structuredClone(await readWeaponCamos());
+  const roster = (await readWeaponAcquisition()).weapons;
+  catalog.weapons[0].rows[0].requirement = "   ";
+  catalog.weapons[0].rows[1].requirement = "Not recorded";
+  validateCamoCatalog(catalog, roster); // Reachable admitted text, not a relaxed schema.
+  const before = JSON.stringify(catalog);
+  const args = {
+    weaponCamos: catalog,
+    specialEditorURL: (adapter, id) =>
+      `/local-services/author/?adapter=${adapter}&id=${id}`,
+  };
+  const first = await projectSiteQuality([], args);
+  assert.equal(first.entries.length, 2);
+  const row = first.entries.find((r) => r.recordId.endsWith("military-camo-1"));
+  assert.equal(row.readerURL, "/armory/han-86/#camo:military-camo-1");
+  assert.match(row.editorURL, /adapter=weapon-camos&id=han-86/);
+  const log = editQualityReview({ version: 1, entries: [] }, row, "checked");
+  catalog.provider.date = "2026-11-11";
+  const changed = (await projectSiteQuality([], args)).entries.find(
+    (r) => r.id === row.id,
+  );
+  assert.deepEqual(qualityReview(changed, log), {
+    state: "pending",
+    stale: true,
+  });
+  catalog.provider.date = "2026-11-10";
+  assert.equal(JSON.stringify(catalog), before);
+  catalog.weapons[0].rows[0].requirement = "Reach Weapon Level 10";
+  assert.equal((await projectSiteQuality([], args)).entries.length, 1);
+  assert.throws(() => validateCamoCatalog({ ...catalog, weapons: [] }, roster));
+});
 test("FR08 actual same-version record/context/cited-source edits invalidate review without mutating source", async () => {
   const pack = fixture(),
     before = JSON.stringify(pack),

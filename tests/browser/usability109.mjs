@@ -35,9 +35,25 @@ try {
     try {
       const context = await browser.newContext(),
         page = await context.newPage();
+      const settle = async () => {
+        if (new URL(page.url()).pathname === "/map/") {
+          // Source parsing starts after the shell mounts; network-idle alone
+          // can precede it. This suite measures settled layout/reload state.
+          await page.waitForFunction(() => {
+            const slots = [...document.querySelectorAll("[data-source-slot]")];
+            return (
+              slots.length > 0 &&
+              slots.every((slot) => !slot.textContent.startsWith("Loading ")) &&
+              document.querySelector("#workspace-dialog")?.dataset.ready ===
+                "true"
+            );
+          });
+        }
+        await page.waitForLoadState("networkidle", { timeout: 30000 });
+      };
       const visit = async (url) => {
         const response = await page.goto(url);
-        await page.waitForLoadState("networkidle", { timeout: 30000 });
+        await settle();
         return response;
       };
       await visit(base + "/");
@@ -70,7 +86,7 @@ try {
         );
         assert.equal(await toggle.getAttribute("aria-expanded"), "false");
         await page.reload();
-        await page.waitForLoadState("networkidle", { timeout: 30000 });
+        await settle();
         await page.waitForSelector("[data-ui-navigation-toggle]");
         assert.equal(await toggle.isVisible(), true);
         assert.equal(await toggle.getAttribute("aria-expanded"), "false");
