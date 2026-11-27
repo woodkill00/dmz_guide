@@ -9,3 +9,17 @@ Directly inspected final logs: Gunsmith functional64-layout acceptance and stric
 No health error allowance, cleanup deadline, quantity/state rule, or oracle changed. Parent reports full formatting and repository checks passing. Earlier failed CI receipts remain evidence and must not be relabelled as passing. Physical-device and representative-family limits remain as previously recorded.
 
 Only this reviewer-owned ci-fixture-review.md written.
+
+## Workbench fixture lifecycle follow-up
+
+Read-only reviewed three settlement waits in armory-workbench.mjs: ordinary initial navigation, ordinary reload, and the second tab before its owned close. Stale restore admission is still tested after another writer commits; exact revision8, preserved other-writer manual ownership, candidate export and recovery assertions remain. Deliberately held reads, canceled media, quota and superseded-preview cases were not changed. These waits do not waive missing terminal requests, change the2500ms health guard, or suppress request failures.
+
+Directly inspected the before log's pending-art failure and the after log's complete049 workbench functional40-layout PASS followed by strict lifecycle PASS. This supports fixture quiescence for the reproduced Linux Chromium scope, not a claim that every CI pending request has the same cause. The second-tab write uses the storage API directly, so its wait also settles that page's ordinary outstanding load; no automatic cross-tab rerender is assumed by this review.
+
+Scoped test repair ACCEPTED with no confirmed P1/P2. Full functional replays and required final-head CI remain separate pending gates. No production files edited; only this reviewer-owned note appended.
+
+### Superseding final second-writer setup
+
+The earlier waits-only acceptance did not resolve WebKit's pending-art failure and is superseded as a final verification claim. Reviewed final diff: the second writer now obtains the same origin on Features and imports exactly the same readArmory/saveArmory API, performing the same revision-bound update before closing. This actor never asserted or exercised Armory UI; moving its setup removes unrelated lazy-art startup without weakening stale-CAS/revision8/other-writer preservation assertions. The tested primary Armory view,40 layouts, failed restore/retry/export and ordinary initial/reload settlement remain intact. No claim that this verifies live cross-tab UI synchronization is introduced.
+
+Final neutral-actor source setup is acceptable, no confirmed P1/P2. Its exact Chromium/Firefox/WebKit strict replay logs were still nonterminal/unavailable at this inspection; final acceptance of execution remains pending those receipts and final-head CI. Prior Ubuntu/WebKit failures remain recorded. Only this reviewer-owned note edited.
