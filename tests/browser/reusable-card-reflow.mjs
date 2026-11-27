@@ -154,6 +154,9 @@ try {
       };
       for (const [route, selector] of cases) {
         await page.goto(server.base + route);
+        await page
+          .locator('html[data-layout-system="109"]')
+          .waitFor({ state: "attached" });
         if (selector === ".upgrade-material-card") {
           await page
             .locator(".fob-upgrade-card details")
@@ -276,6 +279,9 @@ try {
       // Synthetic content, real renderers and the actual host page's CSS cascade.
       for (const route of ["/", "/quick-collect/"]) {
         await page.goto(server.base + route);
+        await page
+          .locator('html[data-layout-system="109"]')
+          .waitFor({ state: "attached" });
         const fixture = route === "/" ? "#dashboard" : "main";
         const cards = ["icon", "inline", "compact", "regular"]
           .map(

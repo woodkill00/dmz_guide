@@ -1700,7 +1700,8 @@ html[data-theme="light"]
   padding: var(--ui-space-2);
   font-size: var(--ui-type-meta);
 }
-.quick-tracker .fob-stock-controls input {
+.quick-tracker .fob-stock-controls [data-fob-owned] {
+  min-inline-size: 0;
   text-align: center;
 }
 .quick-tracker .fob-stock-controls button {
