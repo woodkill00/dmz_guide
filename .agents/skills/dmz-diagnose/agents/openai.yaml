@@ -1,0 +1,6 @@
+interface:
+  display_name: "DMZ diagnosis"
+  short_description: "Diagnose a reported defect or regression using a reproductio"
+  default_prompt: "Use $dmz-diagnose for the current scoped task and record actual evidence."
+policy:
+  allow_implicit_invocation: true

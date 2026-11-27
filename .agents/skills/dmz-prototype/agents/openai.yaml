@@ -1,0 +1,6 @@
+interface:
+  display_name: "DMZ prototype"
+  short_description: "Build a disposable UI or logic experiment to resolve a speci"
+  default_prompt: "Use $dmz-prototype for the current scoped task and record actual evidence."
+policy:
+  allow_implicit_invocation: true

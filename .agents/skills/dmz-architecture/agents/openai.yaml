@@ -1,0 +1,6 @@
+interface:
+  display_name: "DMZ architecture"
+  short_description: "Survey a scoped area for evidenced architectural friction an"
+  default_prompt: "Use $dmz-architecture for the current scoped task and record actual evidence."
+policy:
+  allow_implicit_invocation: true

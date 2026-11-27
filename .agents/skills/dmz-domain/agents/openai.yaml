@@ -1,0 +1,6 @@
+interface:
+  display_name: "DMZ domain"
+  short_description: "Clarify project terminology and domain relationships in the "
+  default_prompt: "Use $dmz-domain for the current scoped task and record actual evidence."
+policy:
+  allow_implicit_invocation: true

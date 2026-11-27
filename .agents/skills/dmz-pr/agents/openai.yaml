@@ -1,0 +1,6 @@
+interface:
+  display_name: "DMZ pr"
+  short_description: "Draft concise pull-request evidence using the repository tem"
+  default_prompt: "Use $dmz-pr for the current scoped task and record actual evidence."
+policy:
+  allow_implicit_invocation: true

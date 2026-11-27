@@ -1,0 +1,6 @@
+interface:
+  display_name: "DMZ handoff"
+  short_description: "Prepare a sanitized session handoff that another agent can u"
+  default_prompt: "Use $dmz-handoff for the current scoped task and record actual evidence."
+policy:
+  allow_implicit_invocation: true

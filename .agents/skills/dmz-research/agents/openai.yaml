@@ -1,0 +1,6 @@
+interface:
+  display_name: "DMZ research"
+  short_description: "Research a scoped technical or content question using primar"
+  default_prompt: "Use $dmz-research for the current scoped task and record actual evidence."
+policy:
+  allow_implicit_invocation: true

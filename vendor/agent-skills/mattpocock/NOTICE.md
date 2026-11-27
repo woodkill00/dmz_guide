@@ -1,0 +1,5 @@
+# Selected Matt Pocock agent skills
+
+Original source: https://github.com/mattpocock/skills at commit 6f7f7831a625f040a8e06a0e7954826b87ce775a. Original folders installed with the system skill-installer using explicit --ref and --dest; MIT copyright/license is preserved in LICENSE. References, metadata and PR credits are retained verbatim. These source folders are inert historical references; their instructions/scripts are not automatically invoked.
+
+The twelve local dmz-* skills are adaptations for this repository: approved Spec Kit test boundaries, bounded collaboration, source uncertainty, private artifacts, existing PR template and explicit task authorization. They replace upstream mandatory interview/publishing defaults and optional Bash/CDN assumptions. Local adapters are self-contained and governed by AGENTS.md and docs/agents/workflows.md. Updating originals requires reviewing a new immutable revision, license and all companion files; updating hashes alone is not source review. No updater is automatically run.

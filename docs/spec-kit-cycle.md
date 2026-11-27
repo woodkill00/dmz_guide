@@ -1,5 +1,7 @@
 # Spec Kit lifecycle
 
+Project-local `dmz-*` helpers support individual lifecycle steps: see the [workflow bridge](agents/workflows.md) and [testing/evidence guide](agents/testing.md). They preserve this cycle, reviewer ownership and explicit active-feature selection. The separately inventoried upstream snapshot never replaces the official pins below.
+
 ## Pinned source and installed scope
 
 Official GitHub Spec Kit **v1.2.2**, peeled commit `74be0a63e93c7087c5b06556b7561810d8f78a45`, is the reviewed baseline. See `speckit.lock.json` for provenance. This repository uses Codex-native skills under `.agents/skills` and Bash scripts under `.specify/scripts/bash`.
