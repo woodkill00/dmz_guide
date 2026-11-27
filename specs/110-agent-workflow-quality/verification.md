@@ -40,7 +40,7 @@ The initial UI fixture failed to prove enlarged text because its body used a fix
 
 ## Limits
 
-Fresh actors demonstrated repository/file discovery and direct-path instruction use. The active runtime did not refresh its supplied skill catalog, so automatic UI/catalog selection remains unverified. Structural validation cannot prove model decisions. Fictional exercises do not verify live game data, physical devices or every future task. GitHub CI on this feature head is required before any later merge; no remote run is claimed here.
+Fresh actors initially demonstrated repository/file discovery and direct-path instruction use. The original runtime did not refresh its supplied skill catalog. Subsequent [CLI discovery evidence](evidence/discovery.md) verifies all twelve enabled repository-scoped entries through the actual catalog loader without extra roots. Refreshed IDE picker rendering and implicit model selection remain unverified. Structural validation cannot prove model decisions. Fictional exercises do not verify live game data, physical devices or every future task. Exact-head GitHub CI and post-merge results are tracked in the pull request rather than being claimed by the implementation receipts above.
 
 ## Convergence
 

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `feature/110-agent-workflow-quality`
 **Created**: 2026-11-27
-**Status**: Implemented and locally verified; independently accepted. See verification.md and review.md. Not merged.
+**Status**: Implemented and locally verified; independently accepted. See verification.md and review.md. Publication and exact-head CI status are tracked in the pull request.
 **Input**: Adopt the reviewed Matt Pocock skills plan, cycle artifacts for issues, implement every included helper, and test their actual use.
 
 ## User Scenarios & Testing

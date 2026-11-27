@@ -32,3 +32,9 @@
 ## Dependencies and parallel ownership
 
 T003 gates implementation: T004–T012 cannot start until the independent analysis has zero findings and the reviewer has accepted the requirements checklist. The implementer repairs owning artifacts outside read-only analysis; the reviewer reanalyzes, without repairing implementation. T004 → T005 → T006. T007 precedes T008, which validates the install. T009/T010 precede T011/T012; pilot repairs precede T013/T014. Integration owner serializes manifest/package/CI/docs. After analysis a validator agent may own only its script/tests while the integration owner edits disjoint helpers/docs. Reviewers never edit implementation. Pilot actors write only OS-temp outputs and sanitized receipts. No shared build mutation or concurrent production feature is planned.
+
+## Publication follow-through
+
+- [x] T015 Close the catalog-loading evidence gap through the installed Codex protocol, document compatibility/limits in specs/110-agent-workflow-quality/evidence/discovery.md, and update docs/agents/README.md without changing the approved product scope (FR-001, FR-010; SC-001).
+
+The owner's subsequent request authorizes branch/PR publication, exact-head CI verification, merge, local main update and post-merge workflow verification. Their live run/head results are recorded in pull-request metadata; this implementation artifact does not pre-check future external results.
