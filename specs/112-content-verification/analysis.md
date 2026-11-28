@@ -4,6 +4,16 @@
 
 Independent requirements review, 2026-11-28. Reviewer: `/root/review_112`.
 
+## T024 final identity-sensitive browser review
+
+Reviewed committed fixture changes `39f78b93161549e7815a64d318524a7f3b821d08` and `16be3283cec8cd4696229dcf839332e36a85c6f4`. Focused review verdict: PASS; no production change or supported assertion weakening found.
+
+The workbench comparison now explicitly selects the intended HAN86/M4 identities before retaining the exact740 result assertion; builder explicitly selects HAN86 before retaining legal-template and exact FSS IS300 attachment/save expectations. This removes reliance on roster/default ordering while preserving the original behavior test. CODMunity still explicitly asserts35 combat identities and retains review/apply/repeat controls. Temporary fixture removal now has bounded retries after closing owned context/service; it does not change tested source behavior.
+
+The Osprey builder test correctly replaces the outdated uncatalogued expectation with exact `cronen-osprey` selection, zero attachment picker choices, retained25 camo tiles and an own-weapon reference assertion. Existing runtime tests separately retain null/unknown unsupported official fields, so admission of the supported identity does not certify unrecorded combat values or attachment compatibility. This matches approved T005/FR-005 behavior.
+
+The owner reports focused browser cases passed all three engines. This review independently assesses the committed code changes; it does not claim a currently pending main CI run at16be328 has completed. Any final CI outcome must be recorded from its actual receipt. Owner-deferred Android/TalkBack, unresolved factual findings and deferred recovery remain unchanged.
+
 ## T024 CI fixture convergence review
 
 Reviewed the focused uncommitted fixture repair against HEAD `4436313a8162a383b0dfdb4a06f766ee5513040a`. T024 requirements/implementation review PASS: `tests/browser/codmunity.mjs` derives the actual test database's weapon count, independently asserts35, and uses that same count for manager fixture/status denominators. This aligns the fixture with T005's two admitted identities instead of preserving the stale33 assumption.
