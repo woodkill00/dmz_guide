@@ -58,8 +58,13 @@ export async function runArmoryWorkbenchTests({
       () => document.querySelector("main").dataset.armoryReady === "true",
     );
     await page.locator("#compare-mode").selectOption("launch");
+    for (const input of await page.locator("#comparison-weapons input").all())
+      await input.setChecked(
+        ["han-86", "m4"].includes(await input.inputValue()),
+      );
     assert.match(await page.locator("#comparison-result").innerText(), /740/);
     await tab(page, "builder");
+    await page.locator("#build-weapon").selectOption("han-86");
     assert.match(
       await page.locator("#build-validation").innerText(),
       /Legal planning template/,

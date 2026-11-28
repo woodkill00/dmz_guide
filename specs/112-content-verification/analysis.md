@@ -4,6 +4,12 @@
 
 Independent requirements review, 2026-11-28. Reviewer: `/root/review_112`.
 
+## T024 CI fixture convergence review
+
+Reviewed the focused uncommitted fixture repair against HEAD `4436313a8162a383b0dfdb4a06f766ee5513040a`. T024 requirements/implementation review PASS: `tests/browser/codmunity.mjs` derives the actual test database's weapon count, independently asserts35, and uses that same count for manager fixture/status denominators. This aligns the fixture with T005's two admitted identities instead of preserving the stale33 assumption.
+
+Review/apply/repeat coverage remains intact: apply is disabled before explicit review, accepted status requires the exact numerator/denominator, repeat reports no normalized fact changes and disables apply, accepted bytes remain unchanged, and combat database bytes remain identical to the original fixture. No production change, scope expansion or weakened factual/mode assertion found. The requested full owning-suite/GitHub rerun is still execution evidence to be recorded by the owner; this focused review does not claim those checks passed. Physical device observations and unresolved game facts retain their existing deferred/pending status.
+
 ## T023 owner-deferred device task documentation review
 
 Reviewed the narrow documentation follow-up against HEAD `bc658d49a154165c9b65a6054487f361af8a2c46` and its uncommitted documentation changes. T023 requirements/instructions assessment: PASS. The updated specification records the owner's explicit deferral; T013 remains unchecked. Neither task indexing nor the prior desktop/software pass is presented as a physical Android/TalkBack result.
