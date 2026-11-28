@@ -1,3 +1,4 @@
+import { pollBrowser } from "./poll.mjs";
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium, firefox, webkit } from "playwright";
@@ -49,7 +50,8 @@ async function crossPageChecks(browser, engine) {
     await page
       .getByRole("button", { name: "Save inventory", exact: true })
       .click();
-    await page.waitForFunction(
+    await pollBrowser(
+      page,
       async () =>
         (
           await (
@@ -80,7 +82,8 @@ async function crossPageChecks(browser, engine) {
     await collect
       .getByRole("button", { name: "Add found Control Unit", exact: true })
       .click();
-    await page.waitForFunction(
+    await pollBrowser(
+      page,
       async () =>
         (
           await (
@@ -175,7 +178,8 @@ async function crossPageChecks(browser, engine) {
       (await first.locator(".mission-objective-steps>li").count()) >= 3,
     );
     await first.locator('[data-order-complete="mw4:order-gear-up"]').click();
-    await page.waitForFunction(
+    await pollBrowser(
+      page,
       async () =>
         (
           await (
@@ -184,7 +188,7 @@ async function crossPageChecks(browser, engine) {
         )?.value.completion["mw4:order-gear-up"] === "completed",
     );
     await first.locator('[data-order-complete="hajin-1"]').click();
-    await page.waitForFunction(async () => {
+    await pollBrowser(page, async () => {
       const p = (
         await (
           await import("/assets/src/storage/store.mjs")
@@ -221,21 +225,25 @@ async function crossPageChecks(browser, engine) {
         ).value.revision,
     );
     await completed.click();
-    await page.waitForFunction(async (expected) => {
-      const p = (
-        await (
-          await import("/assets/src/storage/store.mjs")
-        ).loadProfile("official:mw4-dmz-starter")
-      )?.value;
-      return (
-        p?.revision === expected &&
-        [
-          "mw4:order-gear-up",
-          "mw4:order-crackshot",
-          "mw4:order-first-op",
-        ].every((id) => p.completion[id] !== "completed")
-      );
-    }, beforeReopen + 1);
+    await pollBrowser(
+      page,
+      async (expected) => {
+        const p = (
+          await (
+            await import("/assets/src/storage/store.mjs")
+          ).loadProfile("official:mw4-dmz-starter")
+        )?.value;
+        return (
+          p?.revision === expected &&
+          [
+            "mw4:order-gear-up",
+            "mw4:order-crackshot",
+            "mw4:order-first-op",
+          ].every((id) => p.completion[id] !== "completed")
+        );
+      },
+      beforeReopen + 1,
+    );
     await page.waitForFunction(() => {
       const c = document.querySelector(
         '#dashboard-orders [data-order-key="hajin-1"] [data-order-complete="hajin-1"]',
@@ -260,10 +268,12 @@ async function crossPageChecks(browser, engine) {
 
     await page.goto(base + "/quality/");
     await page.locator("#quality-rows select:not(:disabled)").first().waitFor();
-    await page.locator("#quality-type").selectOption("weapon");
+    // Weapon-reference gaps are resolved by source-backed combat identities.
+    // Keep the editorial save/navigation journey on an actual outstanding item.
+    await page.locator("#quality-type").selectOption("item");
     const row = page.locator("#quality-rows tr").first();
     const href = await row.locator("th a").getAttribute("href");
-    assert.match(href, /^\/armory\/[a-z0-9-]+\/#acquisition$/);
+    assert.match(href, /^\/items\/[a-z0-9-]+\/$/);
     assert.match(
       await row.locator("td a").getAttribute("href"),
       /^\/local-services\/author\//,
@@ -274,7 +284,7 @@ async function crossPageChecks(browser, engine) {
     );
     await page.reload();
     await page.locator("#quality-rows select:not(:disabled)").first().waitFor();
-    await page.locator("#quality-type").selectOption("weapon");
+    await page.locator("#quality-type").selectOption("item");
     assert.equal(
       await page.locator("#quality-rows select").first().inputValue(),
       "later",
@@ -326,7 +336,7 @@ async function crossPageChecks(browser, engine) {
         fullPage: true,
       });
     await page.goto(base + href);
-    await armoryReady(page);
+    await page.locator("main h1").waitFor();
     assert.equal(new URL(page.url()).pathname, href.split("#")[0]);
   } catch (error) {
     const diagnostic = await page

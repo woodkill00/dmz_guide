@@ -3,7 +3,7 @@
   "mapId": "x01",
   "coordinateVersion": "codcentral-x01-v4",
   "source": "https://codcentral.net/blog/mw4-dmz-map/",
-  "capturedAt": "2026-11-11T15:00:22.339Z",
+  "capturedAt": "2026-11-28T02:40:53.424Z",
   "floors": [
     {
       "id": 1,
@@ -37,7 +37,7 @@
       "grid": "C2/C3",
       "x": 0.30045,
       "y": 0.32559,
-      "description": "The long wing in the northwest of the Data Center floor, behind a big round vault door at its southeast end, the Deep Vault gate. A Deep Vault keycard such as Deep Vault 301 opens the gate without being used up. The elevator behind the gate goes down to lower levels with numbered keycard rooms, such as Room 301 on the third level. The Core Room and Blix are further in. Expect other squads, it was the busiest spot in our runs."
+      "description": "The long wing in the northwest of the Data Center floor, behind a big round vault door at its southeast end, the Deep Vault gate. A Deep Vault keycard such as Deep Vault 301 opens the gate without being used up. The elevator behind the gate goes down to lower levels with numbered keycard rooms, such as Room 301 on the third level. The Core Room and Blix, its Lieutenant, are further in. Expect other squads, it was the busiest spot in our runs."
     },
     {
       "id": "x01-supply-depot",
@@ -257,7 +257,7 @@
       "grid": "I5",
       "x": 0.84492,
       "y": 0.57786,
-      "description": "Keycard Encoder Station in a small room on the east edge of the Data Center. It turns an Encodable Blank Keycard into the Small Test Chamber keycard (Engineering Access, Epic, about 20 seconds) or the Audit Room keycard (Audit Officer Access, Epic, about 25 seconds). Visiting it also counts for the order Crafting Material."
+      "description": "Keycard Encoder Station in a small room on the east edge of the Data Center. It turns an Encodable Blank Keycard into the Small Test Chamber keycard (Engineering Access, Epic, about 20 seconds) or the Audit Room keycard (Audit Officer Access, Epic, about 20 seconds). Visiting it also counts for the order Crafting Material."
     },
     {
       "id": "x01-exfil-shaft-medical-wing",
@@ -417,7 +417,7 @@
       "grid": "F6",
       "x": 0.5378799999999999,
       "y": 0.7138,
-      "description": "The corridor that loops around the Tech Lab, the Bio Lab and the Production Assembly, and most of the stairs between the floors open onto it. The Wheelson for the X01 5/5 order Door Opener sits in the tunnel next to the Tech Lab, and the wide corridor northwest from the tunnel leads to the Deep Vault. The tac map shows no name here, we added it."
+      "description": "The corridor that loops around the Tech Lab, the Bio Lab and the Production Assembly, and most of the stairs between the floors open onto it. Wheelson, the Commander you destroy for the X01 5/5 order Door Opener, drives loops around the whole tunnel, and the wide corridor northwest from the tunnel leads to the Deep Vault. The tac map shows no name here, we added it."
     },
     {
       "id": "x01-key-audit-room",
@@ -468,6 +468,46 @@
       "x": 0.33787999999999996,
       "y": 0.34007,
       "description": "Keycard. Opens Room 406 on level 4 of the X01 Deep Vault, grid D2, in the middle of the wing and right under Room 106 on the tac map (the card opens the round Deep Vault gate first and is not used up there). Take the elevator behind the gate down and the stairwell down past the painted 3 to the landing with the big painted 4, then go around the corner and along the hall with the railing. Room 406 is the double door with the 406 plate on the wall to its left and the card reader to its right."
+    },
+    {
+      "id": "x01-hidden-room-202",
+      "name": "Deep Vault Room 202",
+      "floor": 1,
+      "layer": "hidden",
+      "grid": "C2",
+      "x": 0.29120999999999997,
+      "y": 0.33552,
+      "description": "Hidden room behind a keypad, no keycard. Room 202 is on level 2 of the X01 Deep Vault, grid C2. Take the elevator behind the Deep Vault gate down to the lab level and the stairwell down to the big painted 2, then follow the corridor with the red stripe past Room 203 to the door with the 202 plate. Code: 8569 (the guards only say 856 and forget the last digit)."
+    },
+    {
+      "id": "x01-hidden-room-motor-pool",
+      "name": "Motor Pool Hidden Room",
+      "floor": 2,
+      "layer": "hidden",
+      "grid": "E7",
+      "x": 0.40053,
+      "y": 0.81785,
+      "description": "Hidden room with no key or code on the west side of the Motor Pool, Main Warehouse floor, grid E7, next to the hall where Chol-Min spawns. Climb the rope in the cage up to the control room, follow the catwalk to the ledge at its end, jump onto the tank hanging from a crane and on to the striped barrier, climb over it onto the container roofs and drop through the square hatch. The blue deadbolt door lets you out from the inside."
+    },
+    {
+      "id": "x01-hidden-room-motor-pool-tank-wall",
+      "name": "Motor Pool Tank Wall Room",
+      "floor": 2,
+      "layer": "hidden",
+      "grid": "E8",
+      "x": 0.41667000000000004,
+      "y": 0.91667,
+      "description": "Hidden room with no key or code behind the cracked wall at the west end of the corridor along the south side of the Motor Pool, Main Warehouse floor, grid E8. Only a tank shot opens the wall. Tanks spawn when Lt. Chol-Min is in the Motor Pool, so hit a tank with an RPG, a grenade, Thermite or a Drill Charge and stand in front of the wall. C4, grenades, trip wires, Claymores and RPGs only crack it."
+    },
+    {
+      "id": "x01-hidden-room-admin-offices",
+      "name": "Admin Offices Hidden Room",
+      "floor": 2,
+      "layer": "hidden",
+      "grid": "C4",
+      "x": 0.25992,
+      "y": 0.53359,
+      "description": "Hidden room with no key or code under the Admin Offices, grid C4. In the Admin Offices lobby on the Main Warehouse floor a crater has broken through the sunken floor with the steps around it. Do not drop through the middle of the hole, that takes you all the way down to the Medical Wing. Drop onto the rubble ledge just below the floor on the north side of the hole and follow the square concrete duct north into a small ventilation room. To leave, go back through the duct and drop down to the Medical Wing."
     },
     {
       "id": "x01-key-superintendents-office",

@@ -1,7 +1,7 @@
 {
   "aliases": [],
   "category": "printer-resource",
-  "description": "",
+  "description": "Resources used for printing in your 3D printer.",
   "id": "mw4:metals",
   "kind": "resource",
   "name": "Metals",
@@ -10,6 +10,6 @@
     "source:tcno-items-20261110"
   ],
   "stats": [],
-  "status": "verified",
+  "status": "observed",
   "unit": "resource-unit"
 }

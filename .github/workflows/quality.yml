@@ -118,6 +118,7 @@ jobs:
       - run: node tests/browser/contributor-workflows.mjs
       - run: npm run test:browser
       - run: node tests/browser/reliability.mjs
+      - run: node tests/browser/content-touch.mjs
       - name: Save compact upgrade inventory ${{ matrix.os }} evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9

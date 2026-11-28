@@ -10,6 +10,12 @@ Open `/missions/audit/` for per-section Hajin24/X015 Orders coverage and Fill la
 
 ## Verification and CI
 
+Feature112 source and usability work is recorded in its [verification receipt](../specs/112-content-verification/verification.md). `npm run verify:content -- --baseline PATH --current PATH --resolutions PATH` reconciles every baseline finding by identity and evidence binding; it rejects unexplained removals. It does not mark editorial reviews or player goals complete.
+
+`npm run test:touch` uses actual tap events in isolated Chromium, Firefox and WebKit contexts, checks saved tracking state, seven core routes at four widths with enlarged text, and Axe. These remain desktop-engine checks; they do not certify Android or TalkBack.
+
+Physical Android/TalkBack acceptance uses [android-verification.md](android-verification.md). Device results are separate from automated browser/touch/layout checks; availability of a phone alone does not establish a pass.
+
 `npm run test:reliability` exercises isolated guide tracking journeys across Chromium, Firefox and WebKit, including cross-page weapon/dashboard progress and content-gap navigation. Existing owner suites retain detailed adverse cases. See the [feature111 matrix](../specs/111-site-reliability/verification-matrix.md) and [verification receipt](../specs/111-site-reliability/verification.md) for exact run results.
 
 CI separates runtime/package, browser acceptance and Studio acceptance on Windows and Ubuntu. Each suite has a45-minute job budget, its own fresh checkout/build, and preserved functional assertions/deadlines. Existing `runtime-checks (os)` names are aggregate gates; failed, cancelled, skipped or missing dependencies fail them. Browser and Studio evidence use distinct artifact names. Other repository/editor/engine/map checks remain intact. This avoids spending one shared60-minute budget on every suite; it does not promise every future runner will be fast.

@@ -3,7 +3,7 @@
     "Cash"
   ],
   "category": "currency",
-  "description": "",
+  "description": "Cash used for purchasing equipment and gear.",
   "id": "mw4:dmz-cash",
   "kind": "currency",
   "name": "DMZ Cash",
@@ -12,6 +12,6 @@
     "source:tcno-items-20261110"
   ],
   "stats": [],
-  "status": "verified",
+  "status": "observed",
   "unit": "dmz-cash"
 }

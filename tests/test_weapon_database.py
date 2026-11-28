@@ -39,7 +39,7 @@ class WeaponUpdates(unittest.TestCase):
 
     def test_actual_population_coverage_and_reference_integrity(self):
         w.validate_database(self.db)
-        self.assertEqual(len(self.db['weapons']), 33)
+        self.assertEqual(len(self.db['weapons']), 35)
         self.assertEqual(len(self.db['attachments']), 643)
         self.assertEqual(sum(bool(v) for a in self.db['attachments'] for v in a['effects'].values()), 991)
         self.assertEqual({a['kind'] for a in self.db['attachments']}, {'standard', 'apex'})
@@ -176,6 +176,53 @@ class WeaponUpdates(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]['mode'], 'multiplayer')
         self.assertTrue(any('Unresolved' in x for x in warnings))
+
+    def test_heading_scoped_damage_profiles_preserve_date_mode_and_subject(self):
+        html = b'<h1>Modern Warfare 4 Season 1 Patch Notes</h1><h2>November 23, 2026</h2><h2>DMZ</h2><h3>Han 86</h3><h4>Han 86 Weapon Adjustments</h4><h3></h3><h4></h4><table><tr><th>Damage Profiles</th><th>Pre-patch</th><th>Post-patch</th></tr><tr><td>Synthetic Max Damage</td><td>40</td><td>36</td></tr></table>'
+        rows, warnings = w.parse_patches(html, w.PATCH, self.db)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual((rows[0]['date'], rows[0]['mode'], rows[0]['weapon'], rows[0]['variant'], rows[0]['before'], rows[0]['after']),
+                         ('2026-11-23', 'dmz', 'han-86', 'Han 86', '40', '36'))
+        self.assertEqual(warnings, [])
+        for altered in (html.replace(b'Pre-patch', b'Unreviewed'),
+                        html.replace(b'<td>40</td>', b''),
+                        html.replace(b'<h3>Han 86</h3><h4>Han 86 Weapon Adjustments</h4>', b'<h3>Unknown weapon</h3>')):
+            with self.assertRaises(ValueError): w.parse_patches(altered, w.PATCH, self.db)
+        unknown_mode = html.replace(b'<h2>DMZ</h2>', b'<h2>Unknown mode</h2>')
+        rows, warnings = w.parse_patches(unknown_mode, w.PATCH, self.db)
+        self.assertEqual(rows, [])
+        self.assertTrue(any('Unresolved' in warning for warning in warnings))
+
+    def test_heading_damage_table_cannot_borrow_previous_weapon_after_new_section(self):
+        first = b'<h1>Modern Warfare 4 Patch Notes</h1><h2>November 23, 2026</h2><h2>DMZ</h2><h3>Han 86 Weapon Adjustments</h3><table><tr><th>Damage Profiles</th><th>Pre-patch</th><th>Post-patch</th></tr><tr><td>Synthetic Damage</td><td>40</td><td>36</td></tr></table>'
+        orphan = b'<h3>Unrelated section</h3><table><tr><th>Damage Profiles</th><th>Pre-patch</th><th>Post-patch</th></tr><tr><td>Synthetic Damage</td><td>36</td><td>30</td></tr></table>'
+        with self.assertRaises(ValueError): w.parse_patches(first + orphan, w.PATCH, self.db)
+
+    def test_publisher_heading_variants_are_exact_and_never_fuzzy_matched(self):
+        prefix = '<h1>Modern Warfare 4 Patch Notes</h1><h2>November 23, 2026</h2><h2>DMZ</h2><h3>Han 86</h3>'
+        table = '<table><tr><th>Damage Profiles</th><th>Pre-patch</th><th>Post-patch</th></tr><tr><td>Synthetic damage</td><td>40</td><td>36</td></tr></table>'
+        for heading in ['Han 86 Adjustments', 'Han 86 Adjustements', 'Han 86 Weapon Adusments']:
+            rows, _ = w.parse_patches((prefix + '<h4>' + heading + '</h4>' + table).encode(), w.PATCH, self.db)
+            self.assertEqual([(r['weapon'],r['mode']) for r in rows], [('han-86','dmz')])
+        for heading in ['Han 86 unrelated', 'Han 86 - invented Apex Attachment Adjustments']:
+            with self.assertRaises(ValueError): w.parse_patches((prefix + '<h4>' + heading + '</h4>' + table).encode(), w.PATCH, self.db)
+
+    def test_reviewed_layout_rows_do_not_allow_partial_data_rows(self):
+        spacer = b'<tr><td>\xe3\x85\xa4</td></tr><tr><td>Additional Updates:</td></tr>'
+        rows, _ = w.parse_patches(self.html().replace(b'</table>', spacer+b'</table>'), w.PATCH, self.db)
+        self.assertEqual(len(rows), 1)
+        for row in [b'<tr><td>Damage</td><td>40</td></tr>', b'<tr><td>Unreviewed label</td></tr>']:
+            with self.assertRaises(ValueError): w.parse_patches(self.html().replace(b'</table>', row+b'</table>'), w.PATCH, self.db)
+
+    def test_location_headers_and_reviewed_paragraph_variant_never_become_base_damage(self):
+        prefix = '<h1>Modern Warfare 4 Patch Notes</h1><h2>November 19, 2026</h2><h2>DMZ</h2><h3>Type 73</h3><h4>Type 73 Weapon Adjustments</h4>'
+        def table(header, metric, before, after):
+            return '<table><tr><th>'+header+'</th><th>Pre-patch</th><th>Post-patch</th></tr><tr><td>'+metric+'</td><td>'+before+'</td><td>'+after+'</td></tr></table>'
+        raw = (prefix + table('Hit Location Modifiers','Synthetic chest','1','1.1') + '<p>Type 73 Assault Appex Attachment Adjustments</p>' + table('Location Modifiers','Synthetic chest','1.1','1.2')).encode()
+        rows, _ = w.parse_patches(raw, w.PATCH, self.db)
+        self.assertEqual([(r['variant'],r['before'],r['after']) for r in rows], [('Type 73','1','1.1'),('Type 73 - Assault Apex Attachment','1.1','1.2')])
+        self.assertEqual(len(set(r['id'] for r in rows)),2)
+        with self.assertRaises(ValueError): w.parse_patches(raw.replace(b'Hit Location Modifiers',b'Unreviewed header'), w.PATCH, self.db)
 
     def test_weapon_prefix_and_unknown_variants_do_not_match(self):
         for subject in ('M4not-a-real-weapon', 'M4 - invented conversion', 'Han 86 unrelated name', 'Han 86 - r Apex Attachment', 'Oden - tinel Apex Attachment'):

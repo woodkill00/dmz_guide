@@ -12,6 +12,8 @@ The official VEL 46 progression table and weapon sheet disagree; both reports ar
 
 ## Explicit patch check
 
+Feature112 adds the source-reported Cronen Osprey and CSG-35 identities, making35 combat-reference identities; their unsupported official measurements remain unknown. The dated launch roster remains33. The November28 source check imported458 additional structured patch reports, retaining65 prior reports. A repeated check found0 added,0 changed and523 unchanged. This is table-extraction coverage, not complete qualitative-note or gameplay verification; see [the current receipt](../specs/112-content-verification/verification.md).
+
 From the project folder with Node 22/24 and Python 3 installed:
 
 ```sh

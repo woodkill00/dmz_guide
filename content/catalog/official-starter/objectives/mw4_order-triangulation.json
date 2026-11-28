@@ -25,13 +25,14 @@
   "requirementsKnown": false,
   "sourceIds": [
     "source:codcentral-orders-20261113",
-    "source:dmztracker-order-la-grande-vie-transmitter-20261114"
+    "source:dmztracker-order-la-grande-vie-transmitter-20261114",
+    "source:codcentral-orders-20261128"
   ],
   "spoiler": false,
   "status": "observed",
   "steps": [
-    "Place Transmitters on top of 2 Radio Towers",
-    "Place a Transmitter on top of La Grande Vie"
+    "Place Transmitters on top of 2 Radio Towers.",
+    "Place a Transmitter on La Grande Vie in Songdo Wharf."
   ],
   "track": "dmz-order"
 }

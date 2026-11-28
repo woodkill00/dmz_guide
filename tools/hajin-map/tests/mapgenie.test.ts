@@ -1,6 +1,15 @@
 // Synthetic fixtures only; no MapGenie POIs/artwork or remote requests.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import {mapgenieHasSprite} from '../server/mapgenie.mjs';
+test('112 absent optional MapGenie artwork may reuse local icons, partial/unsafe declarations cannot',()=>{
+  assert.equal(mapgenieHasSprite({mapData:{}}),false);
+  const full={MARKER_IMAGES_URL:'https://media.mapgenie.io/v2/assets/prod/games/call-of-duty-modern-warfare-4/markers/v1/markers@2x.png',MARKER_IMAGES_WIDTH:256,MARKER_IMAGES_HEIGHT:256,MARKER_SPRITE_POSITIONS_V3:{}};
+  assert.equal(mapgenieHasSprite(full),true);
+  // URL acceptance is deliberately owned by the existing fixed-game allowlist.
+  for(const key of Object.keys(full))assert.throws(()=>mapgenieHasSprite({...full,[key]:undefined}));
+  assert.throws(()=>mapgenieHasSprite({MARKER_IMAGES_URL:'https://example.invalid/sprite.png'}));
+});
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";

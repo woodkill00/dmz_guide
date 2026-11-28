@@ -16,7 +16,7 @@ test("050 all current weapons retain identities, native links and scoped unknown
       .map((m) => m[1]),
     ["han-86", "m4", "hyeon-burst", "kastov-762", "patriot-xmr"],
   );
-  assert.equal((html.match(/data-weapon-row /g) || []).length, 33);
+  assert.equal((html.match(/data-weapon-row /g) || []).length, 35);
   for (const w of db.weapons) {
     assert(html.includes(`href="/armory/${w.id}/"`));
     const detail = renderArmory(db, w.id);
@@ -51,8 +51,15 @@ test("050 untrusted labels remain inert and roster payload round-trips", () => {
 test("050 artwork registry has exact known ownership, bounded crops and fixed sources", () => {
   assert.deepEqual(
     Object.keys(figures).sort(),
-    db.weapons.map((w) => w.id).sort(),
+    db.weapons
+      .filter((w) => !["cronen-osprey", "csg-35"].includes(w.id))
+      .map((w) => w.id)
+      .sort(),
   );
+  for (const id of ["cronen-osprey", "csg-35"]) {
+    assert.equal(figures[id], undefined);
+    assert.match(renderArmory(db, id), /Official artwork not available/);
+  }
   assert.equal(Object.values(figures).filter(Boolean).length, 33);
   for (const figure of Object.values(figures).filter(Boolean)) {
     assert.match(

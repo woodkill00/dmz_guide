@@ -12,9 +12,9 @@ import { fetchItemIcon } from "../../scripts/collect-item-icons.mjs";
 import { imageInfo } from "../../src/content/portable.mjs";
 import { loadFixturePack } from "../helpers/catalog.mjs";
 test("local icon register matches catalog identities without duplicates or currency guesses", () => {
-  assert.equal(Object.keys(registry.assets).length, 168);
+  assert.equal(Object.keys(registry.assets).length, 322);
   for (const [key, count] of [
-    ["official-starter", 166],
+    ["official-starter", 320],
     ["upgrade-observations", 118],
   ]) {
     const pack = loadFixturePack(key),
@@ -28,7 +28,18 @@ test("local icon register matches catalog identities without duplicates or curre
         item.name.toLowerCase().replace(/[^a-z0-9]/g, ""),
         registry.assets[icon].name.toLowerCase().replace(/[^a-z0-9]/g, ""),
       );
-      assert.notEqual(item.kind, "currency");
+      if (item.kind === "currency") {
+        assert.equal(pack.id, "official:mw4-dmz-starter");
+        assert.equal(item.id, "mw4:dmz-cash");
+        assert.equal(
+          registry.assets[icon].sourceURL,
+          "https://tools.tcno.co/dmz/63a4ae096262fe16.webp",
+        );
+        assert.equal(
+          registry.assets[icon].sha256,
+          "c8b7f58fe03bab99f011c1b73f7794c82df0073b79f3219ad2d1dec848e85428",
+        );
+      }
     }
   }
   for (const entry of Object.values(registry.assets)) {

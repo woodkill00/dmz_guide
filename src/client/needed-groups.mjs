@@ -99,7 +99,7 @@ export function groupNeededRows(pack, profile, { inputs = false } = {}) {
     if (!groups.has(family)) groups.set(family, new Map());
     const types = groups.get(family);
     if (!types.has(type)) types.set(type, []);
-    const article = node("article", "needed-entry");
+    const article = node("div", "needed-entry");
     article.setAttribute("role", "listitem");
     article.dataset[inputs ? "neededPrintInput" : "neededItem"] = id;
     const line = node("div", "needed-row"),

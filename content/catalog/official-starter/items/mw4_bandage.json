@@ -1,7 +1,7 @@
 {
   "aliases": [],
   "category": "consumable",
-  "description": "",
+  "description": "Temporarily restores max health when wounded.",
   "id": "mw4:bandage",
   "kind": "item",
   "name": "Bandage",
@@ -12,6 +12,6 @@
     "source:tcno-items-20261110"
   ],
   "stats": [],
-  "status": "verified",
+  "status": "observed",
   "unit": "count"
 }

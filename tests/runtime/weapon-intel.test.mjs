@@ -9,8 +9,22 @@ import { renderArmory } from "../../src/ui/armory-page.mjs";
 import { loadFixturePack } from "../helpers/catalog.mjs";
 import { newProfile } from "../../src/domain/profile.mjs";
 const db = await readWeaponIntel();
+test("112 Season 1 weapon identities expose unknown official fields rather than invented DMZ numbers", () => {
+  for (const id of ["cronen-osprey", "csg-35"]) {
+    const weapon = db.weapons.find((w) => w.id === id);
+    assert(weapon, id);
+    assert.equal(weapon.official.rpm.value, null);
+    assert.equal(weapon.official.rpm.applicability, "unknown");
+    assert.deepEqual(weapon.slots, []);
+    assert(!Object.hasOwn(db.communityStats, id));
+  }
+  assert.equal(
+    db.sources["season1-weapon-identities"].status,
+    "official-reported",
+  );
+});
 test("048 FR001/002 actual roster and compatibility/effect coverage", () => {
-  assert.equal(db.weapons.length, 33);
+  assert.equal(db.weapons.length, 35);
   assert.equal(db.attachments.filter((a) => a.kind === "standard").length, 615);
   assert.equal(db.attachments.filter((a) => a.kind === "apex").length, 28);
   assert.equal(

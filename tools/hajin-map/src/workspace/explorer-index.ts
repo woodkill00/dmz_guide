@@ -1,4 +1,5 @@
 import {overridden,overrideVisible,markerOrigins} from "./marker-overrides.ts";
+import {isQuarantinedHajinRecord} from '../map/source-scope.ts';
 import type { Workspace } from "./model.ts";
 import { placedRecords } from "./backup.ts";
 import { sourcePolicies } from "./policy.ts";
@@ -192,7 +193,7 @@ export function explorerRecords(
       capturedAt: null,
       url: null,
     });
-  return records.filter(r=>!overridden(state,r.kind,r.sourceId,r.id,localEdits));
+  return records.filter(r=>!isQuarantinedHajinRecord(r.sourceId,r.id,r.kind)&&!overridden(state,r.kind,r.sourceId,r.id,localEdits));
 }
 export function asDisplay(r: ExplorerRecord): DisplayRecord | null {
   return r.kind === "source" && r.x !== null && r.y !== null

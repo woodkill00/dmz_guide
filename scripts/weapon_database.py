@@ -255,8 +255,9 @@ def match_subject(subject, db):
             aliases = {apex}
             prefix = compact(weapon['id'])
             if apex.startswith(prefix): aliases.add(apex[len(prefix):])
-            reviewed = {'hyeon-burst': 'hyperburst', 'oden': 'sentinel', 'type-73': 'assault', 'x-58-nyx': 'void'}
-            if weapon['id'] in reviewed: aliases.add(reviewed[weapon['id']])
+            reviewed = {'hyeon-burst': {'hyperburst', 'hyperbust', 'hyeonauto'}, 'oden': {'sentinel'}, 'type-73': {'assault'}, 'x-58-nyx': {'void'},
+                        'kastov-762': {'kastov545'}, 'mar-9': {'mar9e1'}, 'finn-lmg': {'finnlmgadverse'}, 'mojave-357': {'mojave357lawless'}}
+            aliases.update(reviewed.get(weapon['id'], set()))
             if variant and variant in aliases: return weapon
         elif any(a['name'].casefold() == suffix and weapon['id'] in a['weapons'] for a in db['attachments']):
             return weapon
@@ -356,25 +357,45 @@ def parse_patches(raw, url, db):
     blocks = parse_html(raw).blocks
     require(any(t == 'h1' and 'modern warfare 4' in s.lower() for t, s in blocks), 'Not an MW4 patch article')
     date, mode, subject, mode_level = None, 'unknown', '', 0
+    heading_subject, base_subject = '', ''
     rows, warnings, dated, adjustments, tables, data_rows = [], [], 0, False, 0, 0
 
     for tag, value in blocks:
         if tag in ('h2', 'h3', 'h4'):
-            if value: subject = ''
+            if value:
+                subject, heading_subject = '', ''
             try:
                 date = datetime.strptime(value, '%B %d, %Y').date().isoformat()
                 mode, subject, mode_level = 'unknown', '', 0
+                base_subject = ''
                 dated += 1
             except ValueError:
                 upper = value.upper()
                 level = int(tag[1])
                 if value and mode_level and level <= mode_level:
                     mode, mode_level = 'unknown', 0
+                    base_subject = ''
                 if upper in ('MULTIPLAYER', 'DMZ', 'GLOBAL', 'PLAYLIST', 'MULTIPLAYER CONTENT'):
                     mode = {'MULTIPLAYER': 'multiplayer', 'MULTIPLAYER CONTENT': 'multiplayer', 'DMZ': 'dmz', 'GLOBAL': 'global'}.get(upper, 'unknown')
                     subject = ''
                     mode_level = level
                 if 'weapon adjustments' in value.lower(): adjustments = True
+                # November publisher tables put the exact weapon in headings,
+                # not the table header. "Adusments" is the observed publisher
+                # typo; unrelated headings must never inherit the last gun.
+                candidate = re.sub(r'\s+(?:Weapon )?(?:Adjustments|Adusments|Adjustements)$', '', value, flags=re.I)
+                if value and tag == 'h3':
+                    base_subject = candidate if match_subject(candidate, db) else ''
+                if value and match_subject(candidate, db):
+                    heading_subject = candidate
+                elif base_subject and re.search(r' Apex Attachments?$', candidate, re.I):
+                    variant = re.sub(r' Apex Attachments?$', ' Apex Attachment', candidate, flags=re.I)
+                    candidate = base_subject + ' - ' + variant
+                    if match_subject(candidate, db): heading_subject = candidate
+        if tag == 'p' and value == 'Type 73 Assault Appex Attachment Adjustments':
+            # Exact publisher subheading, rendered as a paragraph on Nov19.
+            require(base_subject == 'Type 73', 'Attachment heading outside its weapon')
+            subject, heading_subject = '', 'Type 73 - Assault Apex Attachment'
         if tag != 'tr':
             if tag in ('p', 'li') and date and mode != 'unknown':
                 mentioned = [w['id'] for w in db['weapons'] if re.search(r'(?<![a-z0-9])'+re.escape(w['name'])+r'(?![a-z0-9])', value, re.I)]
@@ -382,8 +403,16 @@ def parse_patches(raw, url, db):
                     warnings.append('Qualitative weapon note requires manual review (' + date + '/' + mode + '/' + ','.join(mentioned) + '): ' + url)
             continue
         cells = [x for x in value if x and not re.fullmatch(r'[\s\u3164\u2190-\u21ff]+', x)]
+        if not cells or cells == ['Additional Updates:']:
+            continue  # Reviewed publisher spacer/subheading rows, not values.
         if 'Pre' in cells and 'Post' in cells:
             subject = cells[0]
+            tables += 1
+            continue
+        if 'Pre-patch' in cells or 'Post-patch' in cells:
+            require(len(cells) == 3 and cells[0] in ('Damage Profiles', 'Hit Location Modifiers', 'Location Modifiers') and cells[1:] == ['Pre-patch', 'Post-patch'], 'Malformed patch table header')
+            require(bool(heading_subject), 'Unresolved weapon heading for damage table')
+            subject = heading_subject
             tables += 1
             continue
         if not subject or len(cells) < 3:

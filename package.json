@@ -8,7 +8,9 @@
   },
   "scripts": {
     "audit:content": "node scripts/content-audit.mjs",
+    "verify:content": "node scripts/content-verification.mjs",
     "test:reliability": "node tests/browser/reliability.mjs",
+    "test:touch": "node tests/browser/content-touch.mjs",
     "skills:check": "node scripts/check-agent-skills.mjs",
     "skills:list": "node scripts/check-agent-skills.mjs --list",
     "test:skills": "node --test tests/runtime/agent-skills.test.mjs",

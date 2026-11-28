@@ -25,14 +25,15 @@
   "requirementsKnown": false,
   "sourceIds": [
     "source:codcentral-orders-20261113",
-    "source:dmztracker-order-civil-service-20261114"
+    "source:dmztracker-order-civil-service-20261114",
+    "source:codcentral-orders-20261128"
   ],
   "spoiler": false,
   "status": "observed",
   "steps": [
-    "Enter NuriGO Mall",
-    "Locate City Hall",
-    "Extract the Financial Ledger Fragments"
+    "Enter NuriGO Mall.",
+    "Locate City Hall.",
+    "Extract the Financial Ledger Fragments found on City Hall’s second floor."
   ],
   "track": "dmz-order"
 }

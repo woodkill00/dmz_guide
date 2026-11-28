@@ -30,6 +30,28 @@ import {
 import definitions from "../../src/domain/codmunity-metrics.json" with { type: "json" };
 import { createWeaponManager } from "../../scripts/weapon-manager.mjs";
 const db = await readWeaponIntel();
+
+test("112 nested comparator headings and optional Updated delimiter retain strict mode checks", () => {
+  const nested = codFixture()
+    .replace(
+      "Modern Warfare 4 Stats Comparator: MW4 multiplayer",
+      " Modern Warfare 4 <span> Stats Comparator </span> : <em> MW4 multiplayer </em> ",
+    )
+    .replace("Updated:30/10/2026", "Updated 21/11/2026");
+  const parsed = parseComparator(nested, "mw4", db, definitions);
+  assert.equal(parsed.sourceDate, "2026-11-21");
+  assert.equal(parsed.weapons["han-86"].stats.rpm, 741);
+  for (const invalid of [
+    nested.replace("MW4 multiplayer", "Warzone"),
+    nested.replace(/<h1[\s\S]*?<\/h1>/, ""),
+    nested.replace('game:"mw4"', 'game:"dmz"'),
+  ])
+    assert.throws(() => parseComparator(invalid, "mw4", db, definitions));
+  assert.throws(() => parseComparator(nested, "dmz", db, definitions));
+  const dmz = parseComparator(codFixture("dmz"), "dmz", db, definitions);
+  assert.equal(codCoverage(dmz, db).reviewAvailable, false);
+  assert.equal(codCoverage(dmz, db).damage, 0);
+});
 test("051 network requests are fixed, bounded, cancellable and abort failed responses", async (t) => {
   let signal;
   const stub = t.mock.method(globalThis, "fetch", async (url, options) => {
@@ -89,7 +111,7 @@ test("051 parses only inert source literals, preserves mode/signed units/body un
   const dmz = parseComparator(codFixture("dmz"), "dmz", db, definitions);
   assert.equal(codCoverage(dmz, db).status, "reachable-untested");
   assert.equal(codCoverage(dmz, db).damage, 0);
-  assert.equal(codCoverage(dmz, db).total, 33);
+  assert.equal(codCoverage(dmz, db).total, 35);
   assert.equal(
     codCoverage(
       parseComparator(

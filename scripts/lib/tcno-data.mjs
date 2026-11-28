@@ -1,4 +1,18 @@
 import { parse } from "acorn";
+export function referenceDescription(current, reported) {
+  if (
+    typeof current !== "string" ||
+    (reported != null && typeof reported !== "string")
+  )
+    throw Error("Invalid reference description");
+  if (reported?.length > 4000) throw Error("Description limit");
+  const generic = [
+    "",
+    "Source-reported item reference; current-build behavior is not independently verified.",
+    "TroubleChute-listed item. Current-build behavior is not independently verified.",
+  ].includes(current.trim());
+  return generic && reported?.trim() ? reported.trim() : current;
+}
 export function parseTcnoBundle(text) {
   if (Buffer.byteLength(text) > 2_000_000)
     throw Error("Provider bundle exceeds limit");

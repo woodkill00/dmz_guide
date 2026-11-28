@@ -7,6 +7,24 @@ import { projectDashboard } from "../../src/domain/dashboard.mjs";
 import { dashboardOrderCards } from "../../src/ui/order-cards.mjs";
 import { renderMissionObjectives } from "../../src/ui/mission-objectives.mjs";
 const pack = loadFixturePack("official-starter");
+test("112 reviewed Order details retain source disagreement and explicit locations/actions", () => {
+  const get = (suffix) =>
+    pack.objectives.find((r) => r.id === "mw4:order-" + suffix);
+  assert.match(get("hunter").steps.join(" "), /nearest Lieutenant/);
+  assert.match(get("triangulation").steps.join(" "), /Songdo Wharf/);
+  assert.match(get("civil-service").steps.join(" "), /second floor/);
+  assert.match(get("navigate-with-care").steps[0], /Pay/);
+  assert.match(get("drc").steps[0], /Loot.*Chang-san.*Haneul.*NuriGO/);
+  assert.match(get("hard-carry").steps.join(" "), /2.*5.*check/i);
+  assert.equal(get("hard-carry").requirementsKnown, false);
+  assert(
+    get("hard-carry").sourceIds.includes("source:codcentral-orders-20261128"),
+  );
+  const code = pack.objectives.find(
+    (r) => r.id === "mw4:x01-order-source-code",
+  );
+  assert.match(code.steps.join(" "), /three.*same deployment/i);
+});
 test("earliest incomplete nonempty page defaults independent per map and complete/empty pages skipped", () => {
   assert.deepEqual(
     [

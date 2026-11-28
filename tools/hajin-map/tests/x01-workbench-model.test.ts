@@ -7,6 +7,7 @@ import {
   alignPoint,
   candidateMatches,
   deriveAlignment,
+  crossValidateAlignment,
   pairedConnectors,
   routeLegs,
   sourceDiff,
@@ -27,6 +28,99 @@ const hub = validateHubSnapshot(
       ),
     ),
   );
+test("112 leave-one-out diagnostics independently predict omitted landmarks and preserve floors/inputs", () => {
+  const h = structuredClone(hub),
+    c = structuredClone(cod);
+  const points = Array.from({ length: 9 }, (_, i) => ({
+    x: 0.1 + (i % 3) * 0.4,
+    y: 0.1 + Math.floor(i / 3) * 0.4,
+  }));
+  h.markers = [
+    ...h.markers.filter((r) => r.floor === 2),
+    ...points.map((p, i) => ({
+      ...h.markers[0],
+      id: `syn-h-${i}`,
+      floor: 1 as const,
+      title: `SYNTHETIC anchor ${i}`,
+      x: 0.15 + 0.6 * p.x,
+      y: 0.12 + 0.7 * p.y,
+    })),
+  ];
+  c.markers = [
+    ...c.markers.filter((r) => r.floor === 2),
+    ...points.map((p, i) => ({
+      ...c.markers[0],
+      id: `x01-syn-${i}`,
+      floor: 1 as const,
+      name: `SYNTHETIC anchor ${i}`,
+      ...p,
+    })),
+  ];
+  const before = JSON.stringify([h, c]);
+  const result = crossValidateAlignment(h, c, 1);
+  assert.equal(result.method, "leave-one-out");
+  assert.equal(result.landmarks, 9);
+  assert.equal(result.evaluated, 9);
+  assert.equal(result.accepted, true);
+  assert.ok(result.maxError !== null && result.maxError < 1e-10);
+  assert.deepEqual(result.failures, []);
+  assert.equal(JSON.stringify([h, c]), before);
+  assert.deepEqual(
+    crossValidateAlignment(
+      { ...h, markers: [...h.markers].reverse() },
+      { ...c, markers: [...c.markers].reverse() },
+      1,
+    ),
+    result,
+  );
+  const moved = structuredClone(h);
+  moved.markers.find((r) => r.id === "syn-h-0")!.x += 0.12;
+  const outlier = crossValidateAlignment(moved, c, 1);
+  assert.equal(outlier.accepted, false);
+  assert.ok(outlier.maxError !== null && outlier.maxError > 0.035);
+  assert.deepEqual(
+    crossValidateAlignment(moved, c, 2),
+    crossValidateAlignment(h, c, 2),
+  );
+  assert.equal(
+    crossValidateAlignment(
+      {
+        ...h,
+        markers: h.markers.filter(
+          (r) => r.floor === 2 || Number(r.id.at(-1)) < 6,
+        ),
+      },
+      c,
+      1,
+    ).accepted,
+    false,
+  );
+  assert.equal(
+    crossValidateAlignment(
+      {
+        ...h,
+        markers: h.markers.map((r) =>
+          r.floor === 1 ? { ...r, x: 1 - r.x } : r,
+        ),
+      },
+      c,
+      1,
+    ).accepted,
+    false,
+  );
+  assert.equal(
+    crossValidateAlignment(
+      h,
+      {
+        ...c,
+        markers: c.markers.map((r) => (r.floor === 1 ? { ...r, x: 0.5 } : r)),
+      },
+      1,
+    ).accepted,
+    false,
+  );
+});
+
 test("X01 source calibration uses unique named landmarks with bounded residuals on both floors", () => {
   for (const floor of [1, 2] as const) {
     const result = deriveAlignment(hub, cod, floor);

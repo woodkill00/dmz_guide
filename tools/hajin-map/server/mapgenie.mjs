@@ -9,6 +9,32 @@ export const mapgenieFrame = Object.freeze({
   max: 511,
   size: 1024,
 });
+export function mapgenieHasSprite(meta) {
+  const fields = [
+    "MARKER_IMAGES_URL",
+    "MARKER_IMAGES_WIDTH",
+    "MARKER_IMAGES_HEIGHT",
+    "MARKER_SPRITE_POSITIONS_V3",
+  ];
+  const present = fields.filter((key) => Object.hasOwn(meta, key));
+  if (!present.length) return false;
+  if (
+    present.length !== fields.length ||
+    fields.some((key) => meta[key] === undefined)
+  )
+    throw Error("Partial MapGenie sprite declarations.");
+  mapgenieSpriteURL(meta.MARKER_IMAGES_URL);
+  if (
+    ![meta.MARKER_IMAGES_WIDTH, meta.MARKER_IMAGES_HEIGHT].every(
+      (v) => Number.isSafeInteger(v) && v > 0 && v <= 16384,
+    ) ||
+    !meta.MARKER_SPRITE_POSITIONS_V3 ||
+    typeof meta.MARKER_SPRITE_POSITIONS_V3 !== "object" ||
+    Array.isArray(meta.MARKER_SPRITE_POSITIONS_V3)
+  )
+    throw Error("Invalid MapGenie sprite declarations.");
+  return true;
+}
 const names = new Set([
   "mapData",
   "MARKER_SPRITE_POSITIONS_V3",
@@ -206,8 +232,20 @@ export function projectMapgenie(latitude, longitude) {
   return { x: clamp(x), y: clamp(y) };
 }
 export function mapgenieRows(data, meta) {
-  const coordinate=value=>{if(typeof value==='number')return value;if(typeof value==='string'&&value.length<=32&&/^-?(?:0|[1-9][0-9]{0,2})(?:\.[0-9]{1,16})?$/.test(value))return Number(value);throw Error('Invalid MapGenie decimal coordinate.');};
-  const referenceCategories=new Set([28403,28408,28405,28423,28424,28425,28426,28427,28428,28429,28430,28431]);
+  const coordinate = (value) => {
+    if (typeof value === "number") return value;
+    if (
+      typeof value === "string" &&
+      value.length <= 32 &&
+      /^-?(?:0|[1-9][0-9]{0,2})(?:\.[0-9]{1,16})?$/.test(value)
+    )
+      return Number(value);
+    throw Error("Invalid MapGenie decimal coordinate.");
+  };
+  const referenceCategories = new Set([
+    28403, 28408, 28405, 28423, 28424, 28425, 28426, 28427, 28428, 28429, 28430,
+    28431,
+  ]);
   if (
     !data ||
     !Array.isArray(data.locations) ||
@@ -232,7 +270,7 @@ export function mapgenieRows(data, meta) {
     ids.add(p.id);
     if (p.description?.length > 3500) truncated++;
     const category = categories.get(p.category_id),
-      point = projectMapgenie(coordinate(p.latitude),coordinate(p.longitude)),
+      point = projectMapgenie(coordinate(p.latitude), coordinate(p.longitude)),
       row = {
         id: `mg-${p.id}`,
         title: p.title.trim(),
@@ -241,7 +279,7 @@ export function mapgenieRows(data, meta) {
         group: category.group,
         ...point,
         notes: (p.description ?? "").slice(0, 3500),
-        allowReference:referenceCategories.has(p.category_id),
+        allowReference: referenceCategories.has(p.category_id),
       };
     if (p.floor != null) {
       if (
@@ -416,18 +454,28 @@ export async function mapgenieSpriteIcons(
     },
     { raw: bytes.toString("base64"), crops, width, height },
   );
-  let timer, encoded,expired=false;
+  let timer,
+    encoded,
+    expired = false;
   try {
     encoded = await new Promise((resolve, reject) => {
       timer = setTimeout(
         () => {
-          expired=true;
-          const fail=()=>reject(Error("Sprite decode timed out; decoder page disposed."));
-          void page.close().then(fail,fail);
+          expired = true;
+          const fail = () =>
+            reject(Error("Sprite decode timed out; decoder page disposed."));
+          void page.close().then(fail, fail);
         },
         Math.min(10000, Math.max(1, decodeTimeoutMs)),
       );
-      decoding.then(value=>{if(!expired)resolve(value);},error=>{if(!expired)reject(error);});
+      decoding.then(
+        (value) => {
+          if (!expired) resolve(value);
+        },
+        (error) => {
+          if (!expired) reject(error);
+        },
+      );
     });
   } finally {
     clearTimeout(timer);

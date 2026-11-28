@@ -1,6 +1,26 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseTcnoBundle } from "../../scripts/lib/tcno-data.mjs";
+import {
+  parseTcnoBundle,
+  referenceDescription,
+} from "../../scripts/lib/tcno-data.mjs";
+
+test("112 source descriptions fill empty references without overwriting authored text", () => {
+  assert.equal(
+    referenceDescription("", "SYNTHETIC source detail"),
+    "SYNTHETIC source detail",
+  );
+  assert.equal(
+    referenceDescription("  ", "SYNTHETIC source detail"),
+    "SYNTHETIC source detail",
+  );
+  assert.equal(
+    referenceDescription("Owner-written note", "SYNTHETIC source detail"),
+    "Owner-written note",
+  );
+  assert.equal(referenceDescription("", null), "");
+  assert.throws(() => referenceDescription("", "x".repeat(4001)));
+});
 import { renderTcnoItemIntel } from "../../src/ui/tcno-item-intel.mjs";
 import intel from "../../src/content/tcno-item-intel.json" with { type: "json" };
 import { loadFixturePack } from "../helpers/catalog.mjs";
