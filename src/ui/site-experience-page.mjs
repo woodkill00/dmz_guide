@@ -2,6 +2,7 @@ import { siteTopics, workflowLink } from "../domain/site-workflows.mjs";
 import { projectSiteQuality } from "../domain/site-quality.mjs";
 import { readWeaponAcquisition } from "../content/weapon-acquisition.mjs";
 import { readWeaponIntel } from "../content/weapon-intel.mjs";
+import { readWeaponCamos } from "../content/weapon-camos.mjs";
 import { keyGuide } from "../content/keys.mjs";
 import icons from "../content/item-icons.json" with { type: "json" };
 import { authorPath } from "../content/author-target.mjs";
@@ -17,6 +18,7 @@ export async function featurePages(packs, { catalog } = {}) {
     icons: icons.items,
     weaponAcquisition: acquisition,
     weaponIntel: intel,
+    weaponCamos: await readWeaponCamos(),
     keys: keyGuide,
     readerURL: (pack, record, kind) =>
       recordUrl({ ...record, recordType: kind, pack }),

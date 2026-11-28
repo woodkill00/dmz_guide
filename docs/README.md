@@ -1,5 +1,7 @@
 # Documentation
 
+- [Site reliability](reliability.md): current content-gap reports, journey/layout checks, CI suite boundaries and the deferred final recovery workpackage.
+
 - [Agent workflow helpers](agents/README.md): reviewed project-local skills, glossary, task authority, testing, updates and session continuity.
 
 - [Hajin and X01 keys](key-directory.md): region lists, inventory links, exact map markers and coverage gaps.

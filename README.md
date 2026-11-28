@@ -2,13 +2,13 @@
 
 A community field guide being built around trustworthy game data and explainable “what should I collect next?” planning.
 
-**Status: the runnable multipage guide and Repository Content Studio are merged on main.** Content Studio passed independent implementation and visual review at [`ce4d50c`](https://github.com/woodkill00/dmz_guide/tree/ce4d50c35b785db17e1eca96822918fffbe6a3aa), then merged through [PR #8](https://github.com/woodkill00/dmz_guide/pull/8). See [Content Studio acceptance](specs/009-repository-content-studio/acceptance.md) and [baseline guide acceptance](specs/008-community-release/acceptance.md) for exact test evidence. With Node 22.x or 24.x, run `npm ci` and `npm run author` to edit repository JSON/media at the printed local address. To read the public guide, run `npm run build` and `npm start`. No public deployment or complete verified game catalog is claimed. See the [run and content-editing guide](docs/release.md) and [quickstart](docs/quickstart.md).
+**Status: runnable local guide, tracking dashboard, unified maps and repository editing tools.** With Node22.x or24.x, install dependencies using `npm ci` and `npm run map:install`, then run `npm run local` for the guide and maps at one address. Repository editing is optional: `npm run author`. No public deployment or complete verified game catalog is claimed. See the [quickstart](docs/quickstart.md), [unified local service](docs/unified-local-site.md) and [current reliability work](docs/reliability.md).
 
-## Integrated catalog and navigation update
+## Current product and historical evidence
 
-[PR #28](https://github.com/woodkill00/dmz_guide/pull/28) adds shared page navigation, `/sitemap/`, a compact searchable/sortable `/items/` directory with detail links and exact local Studio Edit/Remove previews, and an expanded attributed upgrades/unlocks catalog. Removal remains a reference-checked local draft operation, never automatic public deletion or inventory removal. The optional map workspace remains a separate local app.
+The current site includes a progress dashboard; inventory, needed items and quick collection; upgrades and Hajin/X01 Orders; a unified weapon workspace with manuals/camos; keys, recipes and contextual editing; and Hajin, X01, Safe Run and Loot Run maps. Guide/maps use the unified service. Standalone map development and the authoring tool remain separate optional processes.
 
-The upgrade-observations pack contains 28 reported FOB definitions, 75 recipe-unlock identities and 69 level milestones; these are source reports, not a complete verified current-build catalog. Unknown prices/mechanics remain unknown and unlock references do not invent executable crafting recipes or grant rewards. The repaired implementation passed all nine cross-platform CI jobs; final documentation-head and post-merge gates are tracked in PR #28. See [catalog acceptance](specs/032-sourced-unlocks-catalog/acceptance.md) and [navigation acceptance](specs/033-navigation-item-directory/acceptance.md).
+Historical milestones retain their exact evidence: [baseline guide](specs/008-community-release/acceptance.md), [Content Studio](specs/009-repository-content-studio/acceptance.md), [catalog/navigation](specs/033-navigation-item-directory/acceptance.md), [unified weapons](specs/108-unified-weapons/acceptance.md), [sitewide design](specs/109-sitewide-usability-design/acceptance.md) and [agent workflows](specs/110-agent-workflow-quality/verification.md). A past passing run is not a test of a later revision. See the [roadmap](docs/roadmap.md) for current capabilities and remaining acceptance work.
 
 ## Start here
 
@@ -39,7 +39,7 @@ The upgrade-observations pack contains 28 reported FOB definitions, 75 recipe-un
 - Separate DMZ Orders/upgrades and campaign progression, spoiler controls and local correction/review export.
 - Optional Discord configuration is unset. No login, bot, public moderation service, sync, PWA installation or paid hosting is simulated.
 
-The source-backed starter has **19 items/weapon identities, 6 recipes, 1 disputed objective, 6 guides, 1 map, 13 locations and 2 conflict claims**. This is a small starter, not a complete verified current-build catalog. Unknown weapon numbers are not zero, and source-supported identity never certifies every stat.
+Catalog counts change as attributed records are reviewed. Run `npm run audit:content` for a current scoped inventory and exact gap links, or open `/quality/` and `/missions/audit/`. Those checks cover repository records, not everything in the game. Unknown weapon numbers are not zero, and a source-supported identity never certifies every stat.
 
 Public content and private player state stay separate. Only original or explicitly licensed assets may be distributed; private screenshots and profile backups must never enter public history. Local operation needs the server running. Browser storage is not a backup.
 
@@ -59,7 +59,7 @@ This is an independent community project, not an official game service. No affil
 
 ## Local home dashboard and navigation
 
-The local field desk now provides grouped access to Map, Prepare, Track, Reference and Manage, unified public search, pinned/recent workspaces and read-only progress summaries. Upgrades and Missions have dedicated entry points and tested requirement/progress/return journeys. See [Home and navigation](docs/home-navigation.md) for behavior, source-coverage limits, separate map tools and verification commands. This local feature does not claim a remote merge or deployment.
+Home is the progress dashboard. Current primary navigation uses Home, Map, Track, Orders, Reference, Manage and Search; labels and destinations live in `src/ui/feature-registry.mjs`. Tracker tabs connect Inventory, Items, Weapons, Upgrades, Needed, Quick collect and Field desk. See [Home and navigation](docs/home-navigation.md) for supporting behavior and [unified local routes](docs/unified-local-site.md) for current map destinations.
 
 The [visual site map and link audit](docs/site-map.md) now provide a generated inventory of every built page and companion destination, with searchable branches, connection inspection, named controls and reproducible local menu/tab checks.
 
