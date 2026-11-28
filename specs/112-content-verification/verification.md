@@ -26,4 +26,8 @@ The new touch suite uses real tap events in isolated desktop contexts, seven cor
 
 ## Remaining acceptance
 
+Owner update,2026-11-28: physical Android/TalkBack testing is deferred until later. [User task instructions](../../user-tasks/android-testing.md) preserve the full procedure and blank result template. No phone test was performed or marked passed; T013 remains uncompleted.
+
+T023 documentation follow-up: independent requirements/instructions review passed; duplicate index entry removed. Repository/link checks report zero failures and whitespace checks pass. Runtime tests are not applicable: only documentation and task status changed. The old Android documentation path remains a link to the maintained instructions.
+
 Physical Android Chrome and TalkBack are pending actual observations. The owner has an Android phone available; use [the USB forwarding/test guide](../../docs/android-verification.md) without exposing authoring ports or importing private inventory. No physical pass is claimed from availability or desktop accessibility checks. Resolve the remaining factual gaps with source/game evidence rather than suppressing quality findings. Backup/recovery remains the separate last follow-up.

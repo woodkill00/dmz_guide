@@ -3,6 +3,8 @@
 **Branch**: feature/112-content-verification | **Date**: 2026-11-28 | **Spec**: [spec.md](spec.md)
 
 ## Summary
+Documentation follow-up: `user-tasks/README.md` indexes deferred user actions; `user-tasks/android-testing.md` owns setup, execution checklist, cleanup and results. Existing `docs/android-verification.md` links to it rather than duplicating instructions. Update status/index links, independently review and run repository/documentation checks. Runtime tests are not applicable to this documentation-only follow-up.
+
 Complete source-supported corrections and verification for the five approved follow-ups; retain exact outstanding facts/device dependencies instead of certifying full-game truth. Preserve the private local backup and defer recovery.
 
 ## Technical Context

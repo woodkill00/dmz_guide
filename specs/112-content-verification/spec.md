@@ -2,7 +2,7 @@
 
 **Feature Branch**: `feature/112-content-verification`
 **Created**: 2026-11-28
-**Status**: Software implemented and verified; physical Android/TalkBack observations pending
+**Status**: Software implemented and verified; physical Android/TalkBack testing deferred by owner
 **Input**: Complete follow-ups 1–5: content gaps, source verification, map coverage, weapon statistics and manual usability; Android phone available. Backup/recovery verification remains deferred.
 
 ## User Scenarios & Testing
@@ -56,4 +56,6 @@ Existing public catalog identities, source captures, quality findings, map featu
 - **SC-005**: Independent review has no unresolved implementation defects; content and external-verification limitations remain separate from software completion.
 
 ## Clarifications and Assumptions
+Owner follow-up,2026-11-28: defer physical Android/TalkBack testing. Keep step-by-step instructions and an indexed user task under root `user-tasks/`. T013 remains uncompleted; preparation and deferral are not passes. Keep the existing documentation URL working. Documentation-only: no runtime, network, device or player-data changes.
+
 Existing owner permission covers local collection from the previously approved providers; it does not create a public artwork redistribution grant. Use ignored local captures/assets where required. Android is available; connection and assistive-technology setup are not yet established. Source agreement is source verification, not an in-game measurement. The requested full-game completeness cannot be certified from incomplete third-party lists; record every remaining evidence gap instead of fabricating it. Dedicated backup/recovery remains outside this feature even if other work finishes.

@@ -4,6 +4,14 @@
 
 Independent requirements review, 2026-11-28. Reviewer: `/root/review_112`.
 
+## T023 owner-deferred device task documentation review
+
+Reviewed the narrow documentation follow-up against HEAD `bc658d49a154165c9b65a6054487f361af8a2c46` and its uncommitted documentation changes. T023 requirements/instructions assessment: PASS. The updated specification records the owner's explicit deferral; T013 remains unchecked. Neither task indexing nor the prior desktop/software pass is presented as a physical Android/TalkBack result.
+
+Read `user-tasks/README.md`, `user-tasks/android-testing.md`, the legacy `docs/android-verification.md` link page, and affected feature/status/index references. The maintained guide covers site startup, USB debugging and Chrome forwarding of4173 to desktop loopback, isolated Incognito synthetic progress, touch and TalkBack checklists, blank per-area results/reproduction/version fields, and cleanup. It preserves the existing documentation destination, avoids authoring-port/LAN/firewall exposure, and excludes private profiles/credentials from repository receipts. All local task/index/legacy destinations inspected exist. No device action or runtime test is implied or needed for this documentation-only change.
+
+One LOW editorial finding at inspection: `docs/README.md:3` and `:5` duplicate the User task lists entry with nearly identical descriptions. Remove either duplicate; it does not invalidate the procedure or deferral semantics. The owner is running the final repository/documentation check; this report does not turn an earlier check receipt into verification of later edits. Software acceptance remains PASS as previously scoped, physical testing is now explicitly owner-deferred, factual1,006 findings remain visible, and backup/recovery remains deferred.
+
 ## Final integration receipt verification
 
 **Final independent software review/convergence: PASS.** The last pending integration execution receipt is now resolved. Independently read `test-results/content112/python.log`: `Ran 84 tests in 660.476s` followed by `OK`. Its later synthetic blocked-provider diagnostic is explicitly fixture output, not a real-source failure claim. Independently read `repo-final.log`: `Repository checks: 0 failure(s)`. Parsed the final map-browser JSON: 117 checks, zero runtime errors, zero external requests, `synthetic:true`, `physicalDeviceTested:false`. Earlier final touch/reliability, focused, runtime/build, card and visual assessments remain scoped above. No unresolved must-fix implementation finding remains.
