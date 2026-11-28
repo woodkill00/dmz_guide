@@ -5,9 +5,11 @@
   "id": "mw4:key-air-base-access-card-multi-use",
   "kind": "item",
   "name": "Air Base Access Card (Multi Use)",
+  "rarity": "Epic",
   "sourceIds": [
     "source:key-directory-20261122",
-    "source:key-reference-0bafb867d2d1"
+    "source:key-reference-0bafb867d2d1",
+    "source:dmzcodex-air-base-access-card-multi-use-20261128"
   ],
   "stats": [],
   "status": "observed",

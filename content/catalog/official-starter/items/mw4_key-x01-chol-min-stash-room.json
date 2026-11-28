@@ -5,9 +5,11 @@
   "id": "mw4:key-x01-chol-min-stash-room",
   "kind": "item",
   "name": "Lt. Chol-Min's Stash Room",
+  "rarity": "Legendary",
   "sourceIds": [
     "source:key-directory-20261122",
-    "source:key-reference-a3147e38e43b"
+    "source:key-reference-a3147e38e43b",
+    "source:codcentral-key-rarity-20261128"
   ],
   "stats": [],
   "status": "observed",

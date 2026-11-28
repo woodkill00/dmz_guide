@@ -8,10 +8,12 @@
   "id": "mw4:key-hospital-chemical-lockers",
   "kind": "item",
   "name": "Hospital Chemical Lockers",
+  "rarity": "Rare",
   "sourceIds": [
     "source:key-directory-20261122",
     "source:key-reference-255efda5932d",
-    "source:key-reference-f5a54d242af4"
+    "source:key-reference-f5a54d242af4",
+    "source:codcentral-key-rarity-20261128"
   ],
   "stats": [],
   "status": "observed",

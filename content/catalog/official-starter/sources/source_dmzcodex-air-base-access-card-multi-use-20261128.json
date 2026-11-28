@@ -1,0 +1,16 @@
+{
+  "id": "source:dmzcodex-air-base-access-card-multi-use-20261128",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-28",
+    "kind": "web",
+    "lineageKey": "dmzcodex-items",
+    "observationKey": "mw4-key-air-base-access-card-multi-use"
+  },
+  "publishedAt": "Not stated",
+  "reviewedAt": "2026-11-28",
+  "supports": "Explicit Rarity field: Epic. Source-reported; current game build unverified.",
+  "title": "DMZCodex: Air Base Access Card (Multi Use) explicit rarity",
+  "type": "community",
+  "url": "https://dmzcodex.com/items/air-base-access-card-multi-use/"
+}

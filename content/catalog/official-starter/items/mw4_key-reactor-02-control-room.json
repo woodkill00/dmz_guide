@@ -5,9 +5,11 @@
   "id": "mw4:key-reactor-02-control-room",
   "kind": "item",
   "name": "Reactor 02 Control Room",
+  "rarity": "Rare",
   "sourceIds": [
     "source:key-directory-20261122",
-    "source:key-reference-5e7a280c4b5b"
+    "source:key-reference-5e7a280c4b5b",
+    "source:codcentral-key-rarity-20261128"
   ],
   "stats": [],
   "status": "observed",
