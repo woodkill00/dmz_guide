@@ -9,12 +9,13 @@
   "requirementsKnown": false,
   "sourceIds": [
     "source:codcentral-orders-20261113",
-    "source:dmztracker-order-drc-20261114"
+    "source:dmztracker-order-drc-20261114",
+    "source:codcentral-orders-20261128"
   ],
   "spoiler": false,
   "status": "observed",
   "steps": [
-    "Open a DRC weapon locker."
+    "Loot a DRC weapon locker in Chang-san Air Base Armory, Haneul Nuclear Reactor, or the NuriGO Mall labs."
   ],
   "track": "dmz-order"
 }

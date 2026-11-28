@@ -1,7 +1,7 @@
 {
   "aliases": [],
   "category": "backpack",
-  "description": "",
+  "description": "A small backpack with limited space.",
   "id": "mw4:small-backpack",
   "kind": "item",
   "name": "Small Backpack",
@@ -12,6 +12,6 @@
     "source:tcno-items-20261110"
   ],
   "stats": [],
-  "status": "verified",
+  "status": "observed",
   "unit": "count"
 }

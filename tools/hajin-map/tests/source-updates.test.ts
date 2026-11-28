@@ -449,6 +449,17 @@ test("022 detached parser extracts CC/CM/WZ/official contracts without execution
     assert.equal(requests, 0);
   });
 });
+test("112 CODCentral keeps Hajin pins separate from every interior floor, including shared and unknown floors", async () => {
+  await withInertParser(async (page) => {
+    const pin = (id, floor = "") => `<button class="dmzm-pin" data-slug="${id}" data-name="Synthetic ${id}" data-layer="safe" ${floor ? `data-floor="${floor}"` : ""} style="left:30%;top:40%"></button>`;
+    const html = pin("hajin-safe") + pin("x01-entrance") +
+      pin("x01-floor-one", "1") + pin("x01-floor-two", "2") +
+      pin("x01-connector", "1 2") + pin("future-interior", "unknown");
+    const parsed = await parsePage(page, "codcentral", html);
+    assert.deepEqual(parsed.rows.map((r) => r.id), ["hajin-safe", "x01-entrance"]);
+    assert.equal(await page.evaluate(() => document.querySelectorAll("button").length), 0);
+  });
+});
 async function fixture(t, opts = {}) {
   const root = await mkdtemp(path.join(os.tmpdir(), "dmz-update-"));
   t.after(async () => {

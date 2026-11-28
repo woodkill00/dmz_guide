@@ -14,7 +14,7 @@ export async function runX01WorkbenchBrowser(browser, base) {
     await page.locator("#wb-results button").first().waitFor();
     assert.match(
       await page.locator("#wb-count").textContent(),
-      /106 visible markers/,
+      /107 visible markers/,
     );
     assert.match(
       await page.locator("#wb-alignment").textContent(),
@@ -42,7 +42,7 @@ export async function runX01WorkbenchBrowser(browser, base) {
     );
     assert.match(
       await missing.locator("#wb-count").textContent(),
-      /106 visible markers/,
+      /107 visible markers/,
     );
     await missing.close();
     const nearbyIndex = await page.evaluate(() => {

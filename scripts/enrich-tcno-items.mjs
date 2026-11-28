@@ -1,5 +1,6 @@
 import { ensureLootTypeGuides } from "../src/domain/loot-types.mjs";
 import { applyTcnoChanges } from "./lib/tcno-apply.mjs";
+import { referenceDescription } from "./lib/tcno-data.mjs";
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -98,11 +99,8 @@ for (const item of Object.values(snapshot.items)) {
   target.sourceIds = [...new Set([...target.sourceIds, sourceId])];
   const marker = "\n\nTroubleChute reference:";
   const prior = target.description.split(marker)[0];
-  const generic = [
-    "Source-reported item reference; current-build behavior is not independently verified.",
-    "TroubleChute-listed item. Current-build behavior is not independently verified.",
-  ].includes(prior.trim());
-  target.description = generic && item.description ? item.description : prior;
+  target.description = referenceDescription(prior, item.description);
+  if (!prior.trim() && target.description.trim()) target.status = "observed";
   assert(target.description.length <= 4000, "Description limit: " + target.id);
   mapping[item.id] = target.id;
 }

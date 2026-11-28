@@ -22,6 +22,7 @@ import {
   alignPoint,
   candidateMatches,
   deriveAlignment,
+  crossValidateAlignment,
   pairedConnectors,
   routeLegs,
   sourceDiff,
@@ -418,8 +419,9 @@ function renderResults() {
 }
 function renderAlignment() {
   const host = $("#wb-alignment");
+  const heldOut = crossValidateAlignment(hub,cod,floor);
   host.textContent = alignment.accepted
-    ? `${alignment.anchors.length} named anchors · average fit error ${(alignment.rmse * 100).toFixed(2)}% of image · largest ${(alignment.maxError * 100).toFixed(2)}%. Overlay is approximate.`
+    ? `${alignment.anchors.length} named anchors · training fit ${(alignment.rmse * 100).toFixed(2)}% of image. Omitted-landmark check: ${heldOut.accepted ? "passed" : "insufficient"} (${heldOut.evaluated}/${heldOut.landmarks})${heldOut.rmse===null ? "" : ` · prediction error ${(heldOut.rmse*100).toFixed(2)}%, largest ${(heldOut.maxError!*100).toFixed(2)}%`}. Cross-source alignment only; positions and routes are not gameplay-verified.`
     : "Alignment quality is insufficient; COD Central overlay is unavailable.";
 }
 function render() {

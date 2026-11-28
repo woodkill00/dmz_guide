@@ -60,12 +60,16 @@ export function patchWeapon(subject, db) {
     const aliases = [
       apex,
       apex.startsWith(prefix) ? apex.slice(prefix.length) : null,
-      {
-        "hyeon-burst": "hyperburst",
-        oden: "sentinel",
-        "type-73": "assault",
-        "x-58-nyx": "void",
-      }[weapon.id],
+      ...({
+        "hyeon-burst": ["hyperburst", "hyperbust", "hyeonauto"],
+        oden: ["sentinel"],
+        "type-73": ["assault"],
+        "x-58-nyx": ["void"],
+        "kastov-762": ["kastov545"],
+        "mar-9": ["mar9e1"],
+        "finn-lmg": ["finnlmgadverse"],
+        "mojave-357": ["mojave357lawless"],
+      }[weapon.id] || []),
     ];
     return variant && aliases.includes(variant) ? weapon.id : null;
   }

@@ -22,6 +22,7 @@ export async function fetchItemIcon(entry, { fetcher = fetch } = {}) {
       "tools.tcno.co",
       "dmzcodex.com",
       "img.wzstats.gg",
+      "img.game8.co",
     ].includes(url.hostname)
   )
     throw Error("Unapproved icon host");

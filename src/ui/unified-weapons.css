@@ -47,6 +47,10 @@
   cursor: pointer;
   font-weight: 650;
 }
+.picker-head {
+  display: inline;
+  font: inherit;
+}
 .weapon-picker summary small {
   color: var(--muted, #aab5af);
   margin-inline-start: var(--ui-space-4);
@@ -84,10 +88,8 @@
 }
 .weapon-picker-group > summary {
   padding-block: var(--ui-space-2);
-  cursor: pointer;
 }
 .weapon-picker-group h3 small {
-  color: var(--muted, #aab5af);
   font-size: var(--ui-type-meta);
 }
 .weapon-context-card {

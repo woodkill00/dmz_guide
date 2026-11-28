@@ -1,6 +1,7 @@
 import { toPixels, type MapPosition } from "./coordinates.ts";
 import { hajin } from "./hajin.ts";
 import type { MarkerSource } from "./marker-sources.ts";
+import {isQuarantinedHajinRecord} from './source-scope.ts';
 export interface Category {
   id: string;
   name: string;
@@ -101,5 +102,5 @@ export function parseSnapshot(value: unknown, source: MarkerSource): Snapshot {
     )
       throw new Error("Invalid source floor.");
   }
-  return data;
+  return {...data, records:data.records.filter(r=>!isQuarantinedHajinRecord(source.id,r.id))};
 }

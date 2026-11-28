@@ -69,7 +69,17 @@ test("official starter audits Hajin and X01 separately without fixing variable H
       .every(
         (row) =>
           row.status === "observed" &&
-          row.sourceIds.length === 2 &&
+          row.sourceIds.length >= 2 &&
+          (row.id.startsWith("mw4:x01-")
+            ? [
+                "source:codcentral-x01-orders-20261114",
+                "source:dmzcodex-x01-orders-20261114",
+              ].every((id) => row.sourceIds.includes(id))
+            : row.sourceIds.includes("source:codcentral-orders-20261113") &&
+              row.sourceIds.some((id) =>
+                id.startsWith("source:dmztracker-order"),
+              )) &&
+          row.sourceIds.every((id) => pack.sources.some((s) => s.id === id)) &&
           row.effects.length === 0,
       ),
   );

@@ -31,6 +31,58 @@ const options = {
   editorURL: (_p, r) =>
     "/local-services/author/?destination=" + encodeURIComponent("/?id=" + r.id),
 };
+
+test("112 a complete structured recipe supplies its description without repetitive prose; unknown inputs remain findings", async () => {
+  const pack = fixture();
+  pack.recipes = [
+    {
+      id: "test:recipe",
+      name: "Synthetic print",
+      ingredientsKnown: true,
+      output: { itemId: "test:item", quantity: 1 },
+      inputs: [{ itemId: "test:item", quantity: 2 }],
+      sourceIds: ["source"],
+    },
+  ];
+  const before = JSON.stringify(pack);
+  let index = await projectSiteQuality([pack], options);
+  assert(
+    !index.entries.some(
+      (r) => r.recordId === "test:recipe" && r.field === "description",
+    ),
+  );
+  assert.equal(JSON.stringify(pack), before);
+  pack.recipes[0].ingredientsKnown = false;
+  index = await projectSiteQuality([pack], options);
+  assert(
+    index.entries.some(
+      (r) => r.recordId === "test:recipe" && r.field === "description",
+    ),
+  );
+  assert(
+    index.entries.some(
+      (r) => r.recordId === "test:recipe" && r.field === "ingredients",
+    ),
+  );
+});
+
+test("112 container hints do not erase missing calibrated map locations", async () => {
+  const pack = fixture();
+  pack.guides = [
+    {
+      id: "mw4:loot-type-synthetic",
+      title: "Synthetic container",
+      relatedIds: ["test:item"],
+      sourceIds: ["source"],
+    },
+  ];
+  const index = await projectSiteQuality([pack], options);
+  const gap = index.entries.find(
+    (r) => r.recordId === "test:item" && r.field === "locations",
+  );
+  assert(gap);
+  assert.match(gap.message, /calibrated.*container/i);
+});
 test("111 missing combat references retain exact weapon and editor routes", async () => {
   const index = await projectSiteQuality([], {
     weaponAcquisition: {

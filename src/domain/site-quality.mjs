@@ -65,7 +65,21 @@ export async function projectSiteQuality(
         const title = record.name || record.title || record.id;
         if (guard.contains(title)) continue;
         const checks = [];
+        const structuredRecipe =
+          kind === "recipe" &&
+          record.ingredientsKnown === true &&
+          Number.isSafeInteger(record.output?.quantity) &&
+          record.output.quantity > 0 &&
+          pack.items.some((i) => i.id === record.output.itemId) &&
+          record.inputs?.length > 0 &&
+          record.inputs.every(
+            (r) =>
+              Number.isSafeInteger(r.quantity) &&
+              r.quantity > 0 &&
+              pack.items.some((i) => i.id === r.itemId),
+          );
         if (
+          !structuredRecipe &&
           ![record.description, record.body].some(
             (v) => typeof v === "string" && v.trim(),
           )
@@ -91,7 +105,13 @@ export async function projectSiteQuality(
           if (!record.locationIds?.length && !record.locations?.length)
             checks.push([
               "locations",
-              "No catalog loot-location links. Container hints may be recorded separately.",
+              pack.guides?.some(
+                (g) =>
+                  g.id.startsWith("mw4:loot-type-") &&
+                  g.relatedIds?.includes(record.id),
+              )
+                ? "No calibrated map-location links. Reported container hints are available on the item page."
+                : "No catalog loot-location links. Container hints may be recorded separately.",
             ]);
         }
         if (

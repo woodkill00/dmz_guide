@@ -9,13 +9,14 @@
   "requirementsKnown": false,
   "sourceIds": [
     "source:codcentral-orders-20261113",
-    "source:dmztracker-order-you-wont-see-me-20261114"
+    "source:dmztracker-order-you-wont-see-me-20261114",
+    "source:codcentral-orders-20261128"
   ],
   "spoiler": false,
   "status": "observed",
   "steps": [
-    "Build a sniper rifle with 5 or more attachments",
-    "Get 100 kills with it"
+    "Build a sniper rifle in Gunsmith with at least 5 attachments.",
+    "Kill 100 enemies using a sniper rifle with at least 5 attachments."
   ],
   "track": "dmz-order"
 }

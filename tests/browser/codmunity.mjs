@@ -76,6 +76,8 @@ export async function runCodmunityTests({ browser, base }) {
   const original = await readFile(
     new URL("../../content/weapon-intel.json", import.meta.url),
   );
+  const weaponCount = JSON.parse(original).weapons.length;
+  assert.equal(weaponCount, 35);
   await writeFile(join(root, "content/weapon-intel.json"), original);
   let checks = 0;
   const app = await createWeaponManager({
@@ -86,7 +88,7 @@ export async function runCodmunityTests({ browser, base }) {
         return {
           revision: "0".repeat(64),
           sourceDates: {},
-          weapons: 33,
+          weapons: weaponCount,
           attachments: 643,
           reports: 65,
           backupAvailable: false,
@@ -132,10 +134,12 @@ export async function runCodmunityTests({ browser, base }) {
     assert(await manager.locator("#codmunity-apply").isDisabled());
     await manager.locator("#codmunity-review").check();
     await manager.locator("#codmunity-apply").click();
-    await manager.waitForFunction(() =>
-      document
-        .querySelector("#codmunity-status")
-        .textContent.includes("Accepted MW4: 1/33"),
+    await manager.waitForFunction(
+      (count) =>
+        document
+          .querySelector("#codmunity-status")
+          .textContent.includes(`Accepted MW4: 1/${count}`),
+      weaponCount,
     );
     const before = await readFile(join(root, "content/codmunity-stats.json"));
     await manager.locator("#codmunity-check").click();
@@ -179,6 +183,11 @@ export async function runCodmunityTests({ browser, base }) {
   } finally {
     await managerContext.close();
     await app.close();
-    await rm(root, { recursive: true, force: true });
+    await rm(root, {
+      recursive: true,
+      force: true,
+      maxRetries: 3,
+      retryDelay: 100,
+    });
   }
 }

@@ -1,5 +1,5 @@
 {
-  "description": "Reported as page 21 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified.",
+  "description": "Reported as page 21 in one provider sequence; later page positions may vary. Secondary-source report; current DMZ build is unverified. Source conflict reviewed 2026-11-28: COD Central lists 5 Structural Alloy; DMZTracker lists 2. The current in-game amount is unconfirmed.",
   "effects": [],
   "id": "mw4:order-hard-carry",
   "name": "Hard Carry",
@@ -9,14 +9,15 @@
   "requirementsKnown": false,
   "sourceIds": [
     "source:codcentral-orders-20261113",
-    "source:dmztracker-order-hard-carry-20261114"
+    "source:dmztracker-order-hard-carry-20261114",
+    "source:codcentral-orders-20261128"
   ],
   "spoiler": false,
   "status": "observed",
   "steps": [
-    "Print or extract 2 Nylon Laminate",
-    "Extract 2 Structural Alloy",
-    "Print a Large Backpack"
+    "Print or extract 2 Nylon Laminate.",
+    "Extract Structural Alloy: sources disagree between 2 and 5; check your current Order.",
+    "Print a Large Backpack."
   ],
   "track": "dmz-order"
 }

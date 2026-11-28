@@ -1,0 +1,16 @@
+{
+  "id": "source:codcentral-orders-20261128",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-28",
+    "kind": "web",
+    "lineageKey": "codcentral-dmz",
+    "observationKey": "codcentral-orders-20261128"
+  },
+  "publishedAt": "Not stated",
+  "reviewedAt": "2026-11-28",
+  "supports": "Nine task/action/location clarifications. Hard Carry conflicts with DMZTracker on Structural Alloy quantity (5 versus 2); neither is current-build gameplay verification.",
+  "title": "COD Central: reviewed Order task details and Hard Carry source conflict",
+  "type": "community",
+  "url": "https://codcentral.net/blog/mw4-dmz-orders/"
+}

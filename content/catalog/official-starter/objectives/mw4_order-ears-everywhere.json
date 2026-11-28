@@ -9,14 +9,15 @@
   "requirementsKnown": false,
   "sourceIds": [
     "source:codcentral-orders-20261113",
-    "source:dmztracker-order-ears-everywhere-20261114"
+    "source:dmztracker-order-ears-everywhere-20261114",
+    "source:codcentral-orders-20261128"
   ],
   "spoiler": false,
   "status": "observed",
   "steps": [
     "Enter Cheonwang Peak Array.",
-    "Hack the broadcast system in the DBN TV building at Cheonwang Peak Array",
-    "Loot the Encrypted Voice Logs"
+    "Hack the broadcast system on the second floor of DBN TV.",
+    "Loot the Encrypted Voice Logs."
   ],
   "track": "dmz-order"
 }

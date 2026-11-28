@@ -1,6 +1,6 @@
 export type X01Marker = { id:string; name:string; floor:1|2; layer:string; grid:string; x:number; y:number; description:string };
 export type X01Snapshot = { schemaVersion:1; mapId:"x01"; coordinateVersion:"codcentral-x01-v4"; source:string; capturedAt:string; floors:{id:1|2;name:string;url:string;sha256:string}[]; markers:X01Marker[] };
-export const layerNames:Record<string,string> = {poi:"Areas",spawn:"Spawn",exfil:"Exfils",key:"Keys",stash:"Hidden stash",printer:"3D printer",encoder:"Keycard encoders",ammo:"Ammo caches",conn:"Floor connectors",bounty:"Bounty terminal"};
+export const layerNames:Record<string,string> = {poi:"Areas",spawn:"Spawn",exfil:"Exfils",key:"Keys",stash:"Hidden stash",printer:"3D printer",encoder:"Keycard encoders",ammo:"Ammo caches",conn:"Floor connectors",bounty:"Bounty terminal",hidden:"Hidden rooms"};
 export function validateSnapshot(input:unknown):X01Snapshot {
   const value=input as X01Snapshot;
   if(!value||value.schemaVersion!==1||value.mapId!=="x01"||value.coordinateVersion!=="codcentral-x01-v4"||value.source!=="https://codcentral.net/blog/mw4-dmz-map/"||!/^\d{4}-\d{2}-\d{2}T/.test(value.capturedAt)||!Array.isArray(value.floors)||value.floors.length!==2||!Array.isArray(value.markers)||value.markers.length<1||value.markers.length>500)throw Error("Invalid X01 source snapshot");

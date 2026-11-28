@@ -8,7 +8,7 @@ export const FLOORS = [
   { id: 1, name: "Data Center floor", url: "https://codcentral.net/assets/library/mw4/dmz/map/x01-floor-1-v4.webp", sha256: "7c928152f8552195b75ba6a0fbb0518bbf8f696b505ad882e194e4964ef7b2d4" },
   { id: 2, name: "Main Warehouse floor", url: "https://codcentral.net/assets/library/mw4/dmz/map/x01-floor-2-v4.webp", sha256: "01074c7bbc2bec9e7438d073bd9efbef8580a03460a57b1f8f5b8cc7a47679b0" },
 ];
-const layers = new Set(["poi", "spawn", "exfil", "key", "stash", "printer", "encoder", "ammo", "conn", "bounty"]);
+const layers = new Set(["poi", "spawn", "exfil", "key", "stash", "printer", "encoder", "ammo", "conn", "bounty", "hidden"]);
 const root = fileURLToPath(new URL("../", import.meta.url));
 const snapshotPath = fileURLToPath(new URL("../src/x01/codcentral-snapshot.json", import.meta.url));
 const assetDirectory = fileURLToPath(new URL("../public/maps/x01/codcentral/", import.meta.url));

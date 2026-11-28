@@ -247,15 +247,15 @@ export async function runUnifiedWeaponsTests({
     }
     await page.goto(base + "/armory/cronen-osprey/#builder");
     await ready(page);
-    assert.match(await page.locator("#builder").innerText(), /not catalogued/);
-    assert(await page.locator("#build-form button[type=submit]").isDisabled());
+    assert.equal(
+      await page.locator("#build-weapon").inputValue(),
+      "cronen-osprey",
+    );
+    assert.equal(await page.locator("#build-pickers select").count(), 0);
     await tab(page, "camos");
     assert.equal(await page.locator("[data-camo-tile]").count(), 25);
     await tab(page, "reference");
-    assert.match(
-      await page.locator("#reference").innerText(),
-      /no substitute weapon/,
-    );
+    assert.match(await page.locator("#reference").innerText(), /Cronen Osprey/);
 
     await page.goto(base + "/armory/?weapon=m4#acquisition");
     await ready(page);

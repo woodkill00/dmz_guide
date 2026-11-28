@@ -1,6 +1,7 @@
 import { parseSnapshot } from "./validation.ts";
 import type { SourceSnapshot } from "./types.ts";
 import { requireCapability, sourcePolicies } from "./policy.ts";
+import {isQuarantinedHajinRecord} from '../map/source-scope.ts';
 export async function sha256(bytes: Uint8Array): Promise<string> {
   return [
     ...new Uint8Array(
@@ -192,7 +193,7 @@ export function adaptOfficial(
             },
           ],
         };
-      }),
+      }).filter((r:any)=>!isQuarantinedHajinRecord(sourceId,r.id)),
     }),
     sourceId,
   );

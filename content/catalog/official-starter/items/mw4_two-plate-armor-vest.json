@@ -1,7 +1,7 @@
 {
   "aliases": [],
   "category": "plate-carrier",
-  "description": "",
+  "description": "A slightly more durable armor plate carrier with slots for 2 armor plates.",
   "id": "mw4:two-plate-armor-vest",
   "kind": "item",
   "name": "2-Plate Armor Vest",
@@ -12,6 +12,6 @@
     "source:tcno-items-20261110"
   ],
   "stats": [],
-  "status": "verified",
+  "status": "observed",
   "unit": "count"
 }

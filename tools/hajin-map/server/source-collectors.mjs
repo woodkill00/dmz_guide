@@ -9,12 +9,14 @@ import {
   validateCapture,
 } from "./source-contract.mjs";
 import { sourceNetwork } from "./source-network.mjs";
+import { wzstatsRows } from "./wzstats.mjs";
 import {
   mapgenieBindings,
   validateMapgenieMetadata,
   mapgenieRows,
   verifyMapgenieFrame,
   mapgenieSpriteURL,
+  mapgenieHasSprite,
   mapgenieSpriteIcons,
 } from "./mapgenie.mjs";
 const text = (b) => new TextDecoder("utf-8", { fatal: true }).decode(b);
@@ -272,16 +274,21 @@ export async function parsePage(page, id, html) {
           image:
             doc.querySelector(".dmzm-img")?.getAttribute("data-hi") ??
             doc.querySelector(".dmzm-img")?.getAttribute("src"),
-          rows: [...doc.querySelectorAll(".dmzm-pin")].map((n) => ({
-            id: n.dataset.slug || "pin-" + n.dataset.i,
-            title: n.dataset.name,
-            category: n.dataset.layer,
-            label: n.dataset.label,
-            x: (parseFloat(n.style.left) / 100) * 2880,
-            y: (parseFloat(n.style.top) / 100) * 2700,
-            icon: safeIcon(n),
-            notes: n.dataset.text,
-          })),
+          // This page also embeds X01 floor maps. Floor metadata must be
+          // checked before it is discarded by Hajin normalization. A no-floor
+          // x01-entrance is a legitimate Hajin pin, so names are not a filter.
+          rows: [...doc.querySelectorAll(".dmzm-pin")]
+            .filter((n) => !(n.getAttribute("data-floor") || "").trim())
+            .map((n) => ({
+              id: n.dataset.slug || "pin-" + n.dataset.i,
+              title: n.dataset.name,
+              category: n.dataset.layer,
+              label: n.dataset.label,
+              x: (parseFloat(n.style.left) / 100) * 2880,
+              y: (parseFloat(n.style.top) / 100) * 2700,
+              icon: safeIcon(n),
+              notes: n.dataset.text,
+            })),
         };
       if (id === "codmunity")
         return {
@@ -568,11 +575,17 @@ export async function collectSource(
         await verifyMapgenieFrame(meta, authorization, registration, get);
         const data = JSON.parse(text(await get(sites.mapgenie.publicData))),
           { rows, warnings } = mapgenieRows(data, meta);
-        const sprite = await get(
+        let icons = new Map();
+        if (mapgenieHasSprite(meta)) {
+          const sprite = await get(
             mapgenieSpriteURL(meta.MARKER_IMAGES_URL),
             4 * 1024 * 1024,
-          ),
+          );
           icons = await mapgenieSpriteIcons(page, sprite, meta);
+        } else
+          warnings.push(
+            "Provider sprite declarations are absent; existing local icons or generic fallbacks are retained. Artwork was not refreshed.",
+          );
         const result = await normalizedCapture({
           id,
           rows,
@@ -654,27 +667,7 @@ export async function collectSource(
             };
           });
         if (id === "wzstats") {
-          const state = JSON.parse(parsed.state);
-          const matches = Object.values(state).filter(
-            (s) => s?.b?.map === "hajin" && Array.isArray(s.b.pins),
-          );
-          if (matches.length !== 1) throw Error("WZStats hydration changed.");
-          rows = matches[0].b.pins.map((p) => {
-            if (
-              ![p.x, p.y].every(
-                (v) => typeof v === "number" && Number.isFinite(v),
-              )
-            )
-              throw Error("WZStats coordinate schema changed.");
-            return {
-              id: p.id,
-              title: p.title,
-              category: p.type,
-              x: (p.x / 1000) * 1080,
-              y: (p.y / 1000) * 1080,
-              notes: p.note,
-            };
-          });
+          rows = wzstatsRows(JSON.parse(parsed.state));
         }
       }
       return normalizedCapture({

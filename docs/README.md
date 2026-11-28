@@ -1,5 +1,7 @@
 # Documentation
 
+- [User task lists](../user-tasks/README.md): deferred hands-on tasks and instructions, starting with Android Chrome/TalkBack testing.
+
 - [Site reliability](reliability.md): current content-gap reports, journey/layout checks, CI suite boundaries and the deferred final recovery workpackage.
 
 - [Agent workflow helpers](agents/README.md): reviewed project-local skills, glossary, task authority, testing, updates and session continuity.

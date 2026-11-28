@@ -1,3 +1,4 @@
+import { pollBrowser } from "./poll.mjs";
 import assert from "node:assert/strict";
 import { chromium, firefox, webkit } from "playwright";
 import { pathToFileURL } from "node:url";
@@ -66,16 +67,36 @@ export async function runCollectionTests({ browser, base }) {
         (await import("/assets/src/client/common.mjs")).state.revision,
     );
     await page.locator('#inventory-form button[type="submit"]').click();
-    await page.waitForFunction(async (previous) => {
-      const { state } = await import("/assets/src/client/common.mjs");
-      return !state.saving && state.revision === previous + 1;
-    }, savedRevision);
+    await pollBrowser(
+      page,
+      async (previous) => {
+        const { state } = await import("/assets/src/client/common.mjs");
+        return !state.saving && state.revision === previous + 1;
+      },
+      savedRevision,
+    );
     const saved = await page.evaluate(async () => {
       const { state } = await import("/assets/src/client/common.mjs");
       const { readRecord } = await import("/assets/src/storage/store.mjs");
       return readRecord("profiles", state.pack.id);
     });
-    assert.equal(saved.value.revision, savedRevision + 1);
+    assert.equal(
+      saved.value.revision,
+      savedRevision + 1,
+      JSON.stringify(
+        await page.evaluate(async () => {
+          const { state } = await import("/assets/src/client/common.mjs");
+          return {
+            pack: state.pack.id,
+            revision: state.revision,
+            saving: state.saving,
+            loading: state.loading,
+            status: document.querySelector('[role="status"]')?.textContent,
+            error: document.querySelector("#error")?.textContent,
+          };
+        }),
+      ),
+    );
     assert.equal(saved.value.inventory["craft:wire"], 12);
     await inventory();
     await page.locator("#inventory-view").selectOption("needed");

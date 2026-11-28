@@ -10,13 +10,14 @@
   "requirementsKnown": false,
   "sourceIds": [
     "source:codcentral-orders-20261113",
-    "source:dmztracker-order-arms-deal-20261114"
+    "source:dmztracker-order-arms-deal-20261114",
+    "source:codcentral-orders-20261128"
   ],
   "spoiler": false,
   "status": "observed",
   "steps": [
-    "Buy a gun at the Gunsmith",
-    "Equip a weapon with at least 3 attachments"
+    "Buy a gun at the Gunsmith.",
+    "Use Gunsmith to fit at least 3 attachments to a weapon."
   ],
   "track": "dmz-order"
 }

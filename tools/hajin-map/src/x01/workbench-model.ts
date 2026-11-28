@@ -106,6 +106,92 @@ export function alignPoint(
     y: alignment.y.offset + alignment.y.scale * row.y,
   };
 }
+/** Cross-source prediction, not gameplay calibration or a route guarantee. */
+export function crossValidateAlignment(
+  hub: HubSnapshot,
+  cod: X01Snapshot,
+  floor: Floor,
+) {
+  hub = {
+    ...hub,
+    markers: [...hub.markers].sort((a, b) => a.id.localeCompare(b.id)),
+  };
+  cod = {
+    ...cod,
+    markers: [...cod.markers].sort((a, b) => a.id.localeCompare(b.id)),
+  };
+  const rows: { codId: string; hubId: string; error: number }[] = [];
+  const failures: string[] = [];
+  let landmarks = 0,
+    trainingAccepted = false;
+  try {
+    const training = deriveAlignment(hub, cod, floor);
+    landmarks = training.anchors.length;
+    trainingAccepted = training.accepted;
+    if (landmarks < 7)
+      failures.push("At least seven unique landmarks are required");
+    else
+      for (const anchor of [...training.anchors].sort((a, b) =>
+        a.codId.localeCompare(b.codId),
+      )) {
+        try {
+          const omitted = hub.markers.find(
+            (r) => r.floor === floor && r.id === anchor.hubId,
+          )!;
+          const input = cod.markers.find(
+            (r) => r.floor === floor && r.id === anchor.codId,
+          )!;
+          const fold = deriveAlignment(
+            {
+              ...hub,
+              markers: hub.markers.filter(
+                (r) => r.floor !== floor || r.id !== anchor.hubId,
+              ),
+            },
+            cod,
+            floor,
+          );
+          const predicted = alignPoint(input, fold);
+          const error = Math.hypot(
+            predicted.x - omitted.x,
+            predicted.y - omitted.y,
+          );
+          if (!Number.isFinite(error)) throw Error("Nonfinite prediction");
+          rows.push({ codId: anchor.codId, hubId: anchor.hubId, error });
+        } catch {
+          failures.push(
+            `Omitted landmark ${anchor.codId} could not be predicted by a usable fit`,
+          );
+        }
+      }
+  } catch {
+    failures.push("Source landmarks do not define a usable alignment");
+  }
+  const rmse = rows.length
+    ? Math.sqrt(rows.reduce((sum, r) => sum + r.error ** 2, 0) / rows.length)
+    : null;
+  const maxError = rows.length ? Math.max(...rows.map((r) => r.error)) : null;
+  return {
+    method: "leave-one-out" as const,
+    floor,
+    landmarks,
+    evaluated: rows.length,
+    rmse,
+    maxError,
+    rows,
+    failures,
+    accepted:
+      trainingAccepted &&
+      landmarks >= 7 &&
+      rows.length === landmarks &&
+      failures.length === 0 &&
+      rmse !== null &&
+      rmse <= 0.015 &&
+      maxError !== null &&
+      maxError <= 0.035,
+  };
+}
+
 const compatible: Record<string, string[]> = {
   poi: ["major-poi-labels", "minor-poi-labels"],
   spawn: ["player-s-spawn"],

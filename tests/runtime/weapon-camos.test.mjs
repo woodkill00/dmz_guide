@@ -136,7 +136,7 @@ test("089 every route and native gun/acquisition linkage is present without comb
   for (const w of catalog.weapons)
     assert(pages.some((p) => p.path === `/armory/camos/${w.id}/`));
   assert(
-    !pages
+    pages
       .find((p) => p.path === "/armory/camos/cronen-osprey/")
       .body.includes('href="/armory/cronen-osprey/"'),
   );

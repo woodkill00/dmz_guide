@@ -9,7 +9,7 @@ import './shared-icons.css';
 
 const snapshot=validateSnapshot(raw), width=1320, height=1188;
 const bounds=L.latLngBounds([0,0],[height,width]);
-const glyphs:Record<string,string>={poi:"P",spawn:"S",exfil:"E",key:"K",stash:"H",printer:"3D",encoder:"C",ammo:"A",conn:"↕",bounty:"B"};
+const glyphs:Record<string,string>={poi:"P",spawn:"S",exfil:"E",key:"K",stash:"H",printer:"3D",encoder:"C",ammo:"A",conn:"↕",bounty:"B",hidden:"◇"};
 let sharedIcons:SharedIcons={};
 const storageKey="dmz-x01-map-ui-v1";
 type Preferences={floor:1|2;enabled:string[];grid:boolean};

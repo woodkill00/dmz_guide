@@ -9,13 +9,14 @@
   "requirementsKnown": false,
   "sourceIds": [
     "source:codcentral-orders-20261113",
-    "source:dmztracker-order-hunter-20261114"
+    "source:dmztracker-order-hunter-20261114",
+    "source:codcentral-orders-20261128"
   ],
   "spoiler": false,
   "status": "observed",
   "steps": [
-    "Climb a Hunt Lieutenant Tower",
-    "Use the terminal at the top"
+    "Climb a Hunt Lieutenant Tower.",
+    "Use its rooftop terminal to locate the nearest Lieutenant."
   ],
   "track": "dmz-order"
 }

@@ -143,7 +143,9 @@ export function parseComparator(
     throw Error("Comparator byte limit");
   const heading = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i
     .exec(html)?.[1]
-    .replace(/<[^>]+>/g, " ");
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   if (
     !heading ||
     !(
@@ -163,7 +165,7 @@ export function parseComparator(
       return String.fromCodePoint(n);
     })
     .replace(/&(?:nbsp|ensp|emsp|thinsp|ThinSpace|NewLine|Tab);/gi, " ");
-  const date = /Updated\s*:\s*(\d{2})\/(\d{2})\/(\d{4})/i.exec(visible);
+  const date = /Updated\s*:?\s*(\d{2})\/(\d{2})\/(\d{4})/i.exec(visible);
   const snapshot = {
     sourceURL: COD_URLS[mode],
     mode: mode === "mw4" ? "multiplayer" : "dmz",
