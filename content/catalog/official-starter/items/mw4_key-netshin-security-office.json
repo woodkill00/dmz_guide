@@ -5,9 +5,11 @@
   "id": "mw4:key-netshin-security-office",
   "kind": "item",
   "name": "Netshin Security Office",
+  "rarity": "Rare",
   "sourceIds": [
     "source:key-directory-20261122",
-    "source:key-reference-f5a54d242af4"
+    "source:key-reference-f5a54d242af4",
+    "source:codcentral-key-rarity-20261128"
   ],
   "stats": [],
   "status": "observed",

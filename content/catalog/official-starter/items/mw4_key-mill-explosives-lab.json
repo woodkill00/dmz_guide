@@ -5,10 +5,12 @@
   "id": "mw4:key-mill-explosives-lab",
   "kind": "item",
   "name": "Mill Explosives Lab",
+  "rarity": "Uncommon",
   "sourceIds": [
     "source:key-directory-20261122",
     "source:key-reference-0bafb867d2d1",
-    "source:key-reference-c8ed4987b567"
+    "source:key-reference-c8ed4987b567",
+    "source:codcentral-key-rarity-20261128"
   ],
   "stats": [],
   "status": "observed",

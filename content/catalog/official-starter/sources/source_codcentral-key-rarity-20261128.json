@@ -1,0 +1,16 @@
+{
+  "id": "source:codcentral-key-rarity-20261128",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-28",
+    "kind": "web",
+    "lineageKey": "codcentral-dmz",
+    "observationKey": "codcentral-key-rarity-20261128"
+  },
+  "publishedAt": "2026-10-25; updated 2026-11-23",
+  "reviewedAt": "2026-11-28",
+  "supports": "Explicit rarity labels for53 existing key identities; source report only, current game build unverified.",
+  "title": "COD Central: explicit key rarity labels",
+  "type": "community",
+  "url": "https://codcentral.net/blog/mw4-dmz-keys/"
+}

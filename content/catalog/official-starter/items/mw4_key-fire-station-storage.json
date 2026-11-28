@@ -5,9 +5,11 @@
   "id": "mw4:key-fire-station-storage",
   "kind": "item",
   "name": "Fire Station Storage",
+  "rarity": "Uncommon",
   "sourceIds": [
     "source:key-directory-20261122",
-    "source:key-reference-0bafb867d2d1"
+    "source:key-reference-0bafb867d2d1",
+    "source:codcentral-key-rarity-20261128"
   ],
   "stats": [],
   "status": "observed",

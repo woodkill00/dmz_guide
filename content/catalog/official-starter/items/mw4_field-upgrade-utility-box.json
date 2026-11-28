@@ -1,14 +1,16 @@
 {
   "aliases": [],
   "category": "Field upgrades",
-  "description": "Player-reported Field upgrade item. Recipe costs, rarity, effects and unlock conditions are not documented in this catalog.",
+  "description": "Player-reported Field upgrade item. Recipe costs, effects and unlock conditions are not documented in this catalog.",
   "id": "mw4:field-upgrade-utility-box",
   "kind": "item",
   "name": "Utility Box",
+  "rarity": "Ultra",
   "sourceIds": [
-    "source:owner-field-upgrades-20261109"
+    "source:owner-field-upgrades-20261109",
+    "source:dmzcodex-utility-box-20261128"
   ],
   "stats": [],
-  "status": "unverified",
+  "status": "observed",
   "unit": "count"
 }

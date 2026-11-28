@@ -1,0 +1,16 @@
+{
+  "id": "source:dmzcodex-medical-box-20261128",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-28",
+    "kind": "web",
+    "lineageKey": "dmzcodex-items",
+    "observationKey": "mw4-field-upgrade-medical-box"
+  },
+  "publishedAt": "Not stated",
+  "reviewedAt": "2026-11-28",
+  "supports": "Explicit Rarity field: Legendary. Source-reported; current game build unverified.",
+  "title": "DMZCodex: Medical Box explicit rarity",
+  "type": "community",
+  "url": "https://dmzcodex.com/items/medical-box/"
+}

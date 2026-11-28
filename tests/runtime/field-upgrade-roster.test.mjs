@@ -80,8 +80,18 @@ test("new boxes have owner provenance and no invented recipes/rarities; existing
       const matches = pack.items.filter((item) => item.name === name);
       assert.equal(matches.length, 1);
       const item = matches[0];
-      assert.equal(item.rarity, undefined);
-      assert.equal(item.status, "unverified");
+      assert.equal(
+        item.rarity,
+        pack === starter
+          ? {
+              "Consumable Box": "Epic",
+              "Medical Box": "Legendary",
+              "Hazmat Box": "Legendary",
+              "Utility Box": "Ultra",
+            }[name]
+          : undefined,
+      );
+      assert.equal(item.status, pack === starter ? "observed" : "unverified");
       assert(!pack.recipes.some((recipe) => recipe.output.itemId === item.id));
       assert(item.sourceIds.includes("source:owner-field-upgrades-20261109"));
     }

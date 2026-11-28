@@ -1,0 +1,1240 @@
+{
+  "source": {
+    "id": "source:codcentral-key-rarity-20261128",
+    "title": "COD Central: explicit key rarity labels",
+    "url": "https://codcentral.net/blog/mw4-dmz-keys/",
+    "type": "community",
+    "publishedAt": "2026-10-25; updated 2026-11-23",
+    "reviewedAt": "2026-11-28",
+    "captureSha256": "450de2647514927cc158fe81ca9d45b8ed335470ede72d4e8b2a0f8140b818df",
+    "status": "source-reported-unverified"
+  },
+  "rows": [
+    {
+      "itemId": "mw4:key-x01-audit-room",
+      "rarity": "Epic",
+      "mapId": "x01",
+      "sourceMarkers": [
+        {
+          "id": "x01-key-audit-room",
+          "name": "Audit Room",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-x01-audit-room-keycard/"
+        }
+      ],
+      "existingKeyId": "x01-audit-room",
+      "existingMarkerReferences": [
+        {
+          "provider": "dmzhub",
+          "id": "dmzhub-727",
+          "floor": 2
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-bank-branch-vault-access",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-bank-branch-vault-access-1",
+          "name": "Bank Branch Vault Access (north Songdo Wharf)",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-bank-branch-vault-access-key/"
+        },
+        {
+          "id": "key-bank-branch-vault-access-2",
+          "name": "Bank Branch Vault Access (Wolves Stadium branch)",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-bank-branch-vault-access-key/"
+        },
+        {
+          "id": "key-bank-branch-vault-access-3",
+          "name": "Bank Branch Vault Access (Cheongun Village branch)",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-bank-branch-vault-access-key/"
+        }
+      ],
+      "existingKeyId": "bank-branch-vault-access",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-bank-branch-vault-access-1",
+          "floor": null
+        },
+        {
+          "provider": "codcentral",
+          "id": "key-bank-branch-vault-access-2",
+          "floor": null
+        },
+        {
+          "provider": "codcentral",
+          "id": "key-bank-branch-vault-access-3",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-blackmarket-weapons-locker",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-blackmarket-weapons-locker-1",
+          "name": "Blackmarket Weapons Locker (Hanrim Village)",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-blackmarket-weapons-locker-key/"
+        },
+        {
+          "id": "key-blackmarket-weapons-locker-2",
+          "name": "Blackmarket Weapons Locker (south Deadtown)",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-blackmarket-weapons-locker-key/"
+        }
+      ],
+      "existingKeyId": "blackmarket-weapons-locker",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-blackmarket-weapons-locker-1",
+          "floor": null
+        },
+        {
+          "provider": "codcentral",
+          "id": "key-blackmarket-weapons-locker-2",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-commandant-office",
+      "rarity": "Epic",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-commandant-office",
+          "name": "Commandant Office",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-commandant-office-key/"
+        }
+      ],
+      "existingKeyId": "commandant-office",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-commandant-office",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-x01-deep-vault-106",
+      "rarity": "Legendary",
+      "mapId": "x01",
+      "sourceMarkers": [
+        {
+          "id": "x01-key-deep-vault-106",
+          "name": "Deep Vault 106",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-x01-deep-vault-106-keycard/"
+        }
+      ],
+      "existingKeyId": "x01-deep-vault-106",
+      "existingMarkerReferences": [
+        {
+          "provider": "dmzhub",
+          "id": "dmzhub-811",
+          "floor": 1
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-x01-deep-vault-301",
+      "rarity": "Legendary",
+      "mapId": "x01",
+      "sourceMarkers": [
+        {
+          "id": "x01-key-deep-vault-301",
+          "name": "Deep Vault 301",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-x01-deep-vault-301-keycard/"
+        }
+      ],
+      "existingKeyId": "x01-deep-vault-301",
+      "existingMarkerReferences": [
+        {
+          "provider": "dmzhub",
+          "id": "dmzhub-732",
+          "floor": 1
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-x01-deep-vault-406",
+      "rarity": "Legendary",
+      "mapId": "x01",
+      "sourceMarkers": [
+        {
+          "id": "x01-key-deep-vault-406",
+          "name": "Deep Vault 406",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-x01-deep-vault-406-keycard/"
+        }
+      ],
+      "existingKeyId": "x01-deep-vault-406",
+      "existingMarkerReferences": [
+        {
+          "provider": "dmzhub",
+          "id": "dmzhub-806",
+          "floor": 1
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-downtown-branch-lobby-main",
+      "rarity": "Uncommon",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-downtown-branch-lobby-main",
+          "name": "Downtown Branch Lobby Main",
+          "rarity": "Uncommon",
+          "url": "https://codcentral.net/blog/mw4-dmz-downtown-branch-lobby-main-key/"
+        }
+      ],
+      "existingKeyId": "downtown-branch-lobby-main",
+      "existingMarkerReferences": []
+    },
+    {
+      "itemId": "mw4:key-executive-arms-auction",
+      "rarity": "Epic",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-executive-arms-auction",
+          "name": "Executive Arms Auction",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-executive-arms-auction-key/"
+        }
+      ],
+      "existingKeyId": "executive-arms-auction",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-executive-arms-auction",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-field-depot",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-field-depot",
+          "name": "Field Depot",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-field-depot-key/"
+        }
+      ],
+      "existingKeyId": "field-depot",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-field-depot",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-fire-station-storage",
+      "rarity": "Uncommon",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-fire-station-storage-1",
+          "name": "Fire Station Storage (Imjin Farmland)",
+          "rarity": "Uncommon",
+          "url": "https://codcentral.net/blog/mw4-dmz-fire-station-storage-key/"
+        },
+        {
+          "id": "key-fire-station-storage-2",
+          "name": "Fire Station Storage (Cheongun Village)",
+          "rarity": "Uncommon",
+          "url": "https://codcentral.net/blog/mw4-dmz-fire-station-storage-key/"
+        }
+      ],
+      "existingKeyId": "fire-station-storage",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-fire-station-storage-1",
+          "floor": null
+        },
+        {
+          "provider": "codcentral",
+          "id": "key-fire-station-storage-2",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-gangbyeon-apartment-b",
+      "rarity": "Uncommon",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-gangbyeon-apartment-b",
+          "name": "Gangbyeon Apartment B",
+          "rarity": "Uncommon",
+          "url": "https://codcentral.net/blog/mw4-dmz-gangbyeon-apartment-b-key/"
+        }
+      ],
+      "existingKeyId": "gangbyeon-apartment-b",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-gangbyeon-apartment-b",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-gas-station-electrical-room",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-gas-station-electrical-room",
+          "name": "Gas Station Electrical Room",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-gas-station-electrical-room-key/"
+        }
+      ],
+      "existingKeyId": "gas-station-electrical-room",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-gas-station-electrical-room",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-gorani-s-scout-overlook",
+      "rarity": "Legendary",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-goranis-scout-overlook",
+          "name": "Gorani's Scout Overlook",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-goranis-scout-overlook-key/"
+        }
+      ],
+      "existingKeyId": "gorani-s-scout-overlook",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-goranis-scout-overlook",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-gun-store-weapons-locker",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-gun-store-weapons-locker-1",
+          "name": "Gun Store Weapons Locker (west Cheongun Village)",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-gun-store-weapons-locker-key/"
+        },
+        {
+          "id": "key-gun-store-weapons-locker-2",
+          "name": "Gun Store Weapons Locker (north Songdo Wharf)",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-gun-store-weapons-locker-key/"
+        }
+      ],
+      "existingKeyId": "gun-store-weapons-locker",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-gun-store-weapons-locker-1",
+          "floor": null
+        },
+        {
+          "provider": "codcentral",
+          "id": "key-gun-store-weapons-locker-2",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-haejeok-radio-station",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-haejeok-radio-station",
+          "name": "Haejeok Radio Station",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-haejeok-radio-station-key/"
+        }
+      ],
+      "existingKeyId": "haejeok-radio-station",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-haejeok-radio-station",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-haksan-school-armory",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-haksan-school-armory",
+          "name": "Haksan School Armory",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-haksan-school-armory-key/"
+        }
+      ],
+      "existingKeyId": "haksan-school-armory",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-haksan-school-armory",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-hanex-guard-station",
+      "rarity": "Epic",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-hanex-guard-station",
+          "name": "Hanex Guard Station",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-hanex-guard-station-key/"
+        }
+      ],
+      "existingKeyId": "hanex-guard-station",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-hanex-guard-station",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-hanwoori-art-records-room",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-hanwoori-art-records-room",
+          "name": "Hanwoori Art Records Room",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-hanwoori-art-records-room-key/"
+        }
+      ],
+      "existingKeyId": "hanwoori-art-records-room",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-hanwoori-art-records-room",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-hazard-storehouse",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-hazard-storehouse",
+          "name": "Hazard Storehouse",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-hazard-storehouse-key/"
+        }
+      ],
+      "existingKeyId": "hazard-storehouse",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-hazard-storehouse",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-hoesik-supply-room",
+      "rarity": "Epic",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-hoesik-supply-room",
+          "name": "Hoesik Supply Room",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-hoesik-supply-room-key/"
+        }
+      ],
+      "existingKeyId": "hoesik-supply-room",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-hoesik-supply-room",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-hospital-chemical-lab",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-hospital-chemical-lab",
+          "name": "Hospital Chemical Lab",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-hospital-chemical-lockers-key/"
+        }
+      ],
+      "existingKeyId": "hospital-chemical-lab",
+      "existingMarkerReferences": []
+    },
+    {
+      "itemId": "mw4:key-hospital-chemical-lockers",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-hospital-chemical-lockers",
+          "name": "Hospital Chemical Lockers",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-hospital-chemical-lockers-key/"
+        }
+      ],
+      "existingKeyId": "hospital-chemical-lockers",
+      "existingMarkerReferences": []
+    },
+    {
+      "itemId": "mw4:key-imjin-mill-foremans-office",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-imjin-mill-foremans-office",
+          "name": "Imjin Mill Foreman's Office",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-imjin-mill-foremans-office-key/"
+        }
+      ],
+      "existingKeyId": "imjin-mill-foremans-office",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-imjin-mill-foremans-office",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-iskra-s-control-room",
+      "rarity": "Legendary",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-iskras-control-room",
+          "name": "Iskra's Control Room",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-iskras-control-room-key/"
+        }
+      ],
+      "existingKeyId": "iskra-s-control-room",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-iskras-control-room",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-jang-ui-s-converted-power-room",
+      "rarity": "Legendary",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-jang-uis-converted-power-room",
+          "name": "Jang-ui's Converted Power Room",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-jang-uis-converted-power-room-key/"
+        }
+      ],
+      "existingKeyId": "jang-ui-s-converted-power-room",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-jang-uis-converted-power-room",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-jin-tae-s-private-lounge",
+      "rarity": "Legendary",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-jin-taes-private-lounge",
+          "name": "Jin-Tae's Private Lounge",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-jin-taes-private-lounge-key/"
+        }
+      ],
+      "existingKeyId": "jin-tae-s-private-lounge",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-jin-taes-private-lounge",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-kang-s-arms-incinerator",
+      "rarity": "Legendary",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-kangs-arms-incinerator",
+          "name": "Kang's Arms Incinerator",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-kangs-arms-incinerator-key/"
+        }
+      ],
+      "existingKeyId": "kang-s-arms-incinerator",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-kangs-arms-incinerator",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-lucera-suite-703-bedroom",
+      "rarity": "Epic",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-lucera-suite-703-bedroom",
+          "name": "Lucera Suite 703 Bedroom",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-lucera-suite-703-bedroom-key/"
+        }
+      ],
+      "existingKeyId": "lucera-suite-703-bedroom",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-lucera-suite-703-bedroom",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-mechanic-s-shack",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-mechanics-shack",
+          "name": "Mechanic's Shack",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-mechanics-shack-key/"
+        }
+      ],
+      "existingKeyId": "mechanic-s-shack",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-mechanics-shack",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-militia-arms-depot",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-militia-arms-depot",
+          "name": "Militia Arms Depot",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-militia-arms-depot-key/"
+        }
+      ],
+      "existingKeyId": "militia-arms-depot",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-militia-arms-depot",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-mill-explosives-lab",
+      "rarity": "Uncommon",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-mill-explosives-lab",
+          "name": "Mill Explosives Lab",
+          "rarity": "Uncommon",
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/#mill-explosives-lab"
+        }
+      ],
+      "existingKeyId": "mill-explosives-lab",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-mill-explosives-lab",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-netshin-it-room",
+      "rarity": "Epic",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-netshin-it-room",
+          "name": "Netshin IT Room",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-netshin-it-room-key/"
+        }
+      ],
+      "existingKeyId": "netshin-it-room",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-netshin-it-room",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-netshin-security-office",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-netshin-security-office",
+          "name": "Netshin Security Office",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-netshin-security-office-key/"
+        }
+      ],
+      "existingKeyId": "netshin-security-office",
+      "existingMarkerReferences": []
+    },
+    {
+      "itemId": "mw4:key-old-barber-shop",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-old-barber-shop",
+          "name": "Old Barber Shop",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-old-barber-shop-key/"
+        }
+      ],
+      "existingKeyId": "old-barber-shop",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-old-barber-shop",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-police-station-armory",
+      "rarity": "Uncommon",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-police-station-armory-1",
+          "name": "Police Station Armory (Pyeonghwa Village)",
+          "rarity": "Uncommon",
+          "url": "https://codcentral.net/blog/mw4-dmz-police-station-armory-key/"
+        },
+        {
+          "id": "key-police-station-armory-2",
+          "name": "Police Station Armory (Revolution Dam)",
+          "rarity": "Uncommon",
+          "url": "https://codcentral.net/blog/mw4-dmz-police-station-armory-key/"
+        },
+        {
+          "id": "key-police-station-armory-3",
+          "name": "Police Station Armory (Cheongun Village)",
+          "rarity": "Uncommon",
+          "url": "https://codcentral.net/blog/mw4-dmz-police-station-armory-key/"
+        },
+        {
+          "id": "key-police-station-armory-4",
+          "name": "Police Station Armory (NuriGO Mall north)",
+          "rarity": "Uncommon",
+          "url": "https://codcentral.net/blog/mw4-dmz-police-station-armory-key/"
+        },
+        {
+          "id": "key-police-station-armory-5",
+          "name": "Police Station Armory (Wolves Stadium)",
+          "rarity": "Uncommon",
+          "url": "https://codcentral.net/blog/mw4-dmz-police-station-armory-key/"
+        }
+      ],
+      "existingKeyId": "police-station-armory",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-police-station-armory-1",
+          "floor": null
+        },
+        {
+          "provider": "codcentral",
+          "id": "key-police-station-armory-2",
+          "floor": null
+        },
+        {
+          "provider": "codcentral",
+          "id": "key-police-station-armory-3",
+          "floor": null
+        },
+        {
+          "provider": "codcentral",
+          "id": "key-police-station-armory-4",
+          "floor": null
+        },
+        {
+          "provider": "codcentral",
+          "id": "key-police-station-armory-5",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-police-weapon-depository",
+      "rarity": "Epic",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-police-weapon-depository",
+          "name": "Police Weapon Depository",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-police-weapon-depository-key/"
+        }
+      ],
+      "existingKeyId": "police-weapon-depository",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-police-weapon-depository",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-prison-encampment-storage",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-prison-encampment-storage",
+          "name": "Prison Encampment Storage",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-prison-encampment-storage-key/"
+        }
+      ],
+      "existingKeyId": "prison-encampment-storage",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-prison-encampment-storage",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-rail-depot-storage",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-rail-depot-storage",
+          "name": "Rail Depot Storage",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-rail-depot-storage-key/"
+        }
+      ],
+      "existingKeyId": "rail-depot-storage",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-rail-depot-storage",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-re-education-center-annex",
+      "rarity": "Epic",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-re-education-center-annex",
+          "name": "Re-Education Center Annex",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-re-education-center-annex-key/"
+        }
+      ],
+      "existingKeyId": "re-education-center-annex",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-re-education-center-annex",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-reactor-02-control-room",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-reactor-02-control-room",
+          "name": "Reactor 02 Control Room",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-reactor-02-control-room-key/"
+        }
+      ],
+      "existingKeyId": "reactor-02-control-room",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-reactor-02-control-room",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-shop-records-room",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-shop-records-room",
+          "name": "Shop Records Room",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-shop-records-room-key/"
+        }
+      ],
+      "existingKeyId": "shop-records-room",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-shop-records-room",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-the-chemist-s-secure-armory",
+      "rarity": "Legendary",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-the-chemists-secure-armory",
+          "name": "The Chemist's Secure Armory",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-the-chemists-secure-armory-key/"
+        }
+      ],
+      "existingKeyId": "the-chemist-s-secure-armory",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-the-chemists-secure-armory",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-the-citadel-south-wing",
+      "rarity": "Uncommon",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-the-citadel-south-wing",
+          "name": "The Citadel South Wing",
+          "rarity": "Uncommon",
+          "url": "https://codcentral.net/blog/mw4-dmz-keys/#the-citadel-south-wing"
+        }
+      ],
+      "existingKeyId": "the-citadel-south-wing",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-the-citadel-south-wing",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-the-doctor-s-command-office",
+      "rarity": "Legendary",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-the-doctors-command-office",
+          "name": "The Doctor's Command Office",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-the-doctors-command-office-key/"
+        }
+      ],
+      "existingKeyId": "the-doctor-s-command-office",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-the-doctors-command-office",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-underground-propaganda-store-room",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-underground-propaganda-store-room",
+          "name": "Underground Propaganda Store Room",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-underground-propaganda-store-room-key/"
+        }
+      ],
+      "existingKeyId": "underground-propaganda-store-room",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-underground-propaganda-store-room",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-utility-maintenance-storage",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-utility-maintenance-storage",
+          "name": "Utility Maintenance Storage",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-utility-maintenance-storage-key/"
+        }
+      ],
+      "existingKeyId": "utility-maintenance-storage",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-utility-maintenance-storage",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-vault-armory",
+      "rarity": "Epic",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-vault-armory",
+          "name": "Vault Armory",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-vault-armory-key/"
+        }
+      ],
+      "existingKeyId": "vault-armory",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-vault-armory",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "itemId": "mw4:key-weapons-mod-workshop",
+      "rarity": "Rare",
+      "mapId": "hajin",
+      "sourceMarkers": [
+        {
+          "id": "key-weapons-mod-workshop",
+          "name": "Weapons Mod Workshop",
+          "rarity": "Rare",
+          "url": "https://codcentral.net/blog/mw4-dmz-weapons-mod-workshop-key/"
+        }
+      ],
+      "existingKeyId": "weapons-mod-workshop",
+      "existingMarkerReferences": [
+        {
+          "provider": "codcentral",
+          "id": "key-weapons-mod-workshop",
+          "floor": null
+        }
+      ]
+    },
+    {
+      "findingId": "official%3Amw4-dmz-starter~mw4%3Akey-air-base-armory-card-single-use~rarity",
+      "binding": "1fd7a991f1f9140aa7427258bf0480ea354b6189e6d893781d9d0188d51d2b68",
+      "packId": "official:mw4-dmz-starter",
+      "itemId": "mw4:key-air-base-armory-card-single-use",
+      "name": "Air Base Armory Card (Single Use)",
+      "mapId": "hajin",
+      "rarity": "Legendary",
+      "operation": "fill-missing-rarity",
+      "status": "source-reported-unverified",
+      "sourceId": "source:codcentral-key-rarity-20261128",
+      "sourceURL": "https://codcentral.net/blog/mw4-dmz-keys/",
+      "checkedAt": "2026-11-28T12:02:07.656Z",
+      "matchType": "independently-reviewed-explicit-name-and-map",
+      "existingKeyId": "air-base-armory-card-single-use",
+      "existingMarkerReferences": [],
+      "sourceMarkers": [
+        {
+          "id": "key-air-base-armory-card",
+          "name": "Air Base Armory Card (Single Use)",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-air-base-armory-card/"
+        }
+      ],
+      "reason": "The current provider explicitly labels this exact key/map identity with this rarity. The provider claim is observed, not independently verified in game."
+    },
+    {
+      "findingId": "official%3Amw4-dmz-starter~mw4%3Akey-x01-chol-min-stash-room~rarity",
+      "binding": "136eb629a552d0a81baaf4edb17e60065805ffcd5b6f6ec692c2c9b9822c8d41",
+      "packId": "official:mw4-dmz-starter",
+      "itemId": "mw4:key-x01-chol-min-stash-room",
+      "name": "Lt. Chol-Min's Stash Room",
+      "mapId": "x01",
+      "rarity": "Legendary",
+      "operation": "fill-missing-rarity",
+      "status": "source-reported-unverified",
+      "sourceId": "source:codcentral-key-rarity-20261128",
+      "sourceURL": "https://codcentral.net/blog/mw4-dmz-keys/",
+      "checkedAt": "2026-11-28T12:02:07.656Z",
+      "matchType": "independently-reviewed-explicit-name-and-map",
+      "existingKeyId": "x01-chol-min-stash-room",
+      "existingMarkerReferences": [
+        {
+          "provider": "dmzhub",
+          "id": "dmzhub-741",
+          "floor": 2
+        }
+      ],
+      "sourceMarkers": [
+        {
+          "id": "x01-key-chol-mins-stash-room",
+          "name": "Lt. Chol-Min's Stash Room",
+          "rarity": "Legendary",
+          "url": "https://codcentral.net/blog/mw4-dmz-x01-chol-mins-stash-room-key/"
+        }
+      ],
+      "reason": "The current provider explicitly labels this exact key/map identity with this rarity. The provider claim is observed, not independently verified in game."
+    },
+    {
+      "findingId": "official%3Amw4-dmz-starter~mw4%3Akey-x01-small-test-chamber~rarity",
+      "binding": "7660ef333dd04210da9474a073ac193d4bd1a2c78ec7424d2814adb01a7932e7",
+      "packId": "official:mw4-dmz-starter",
+      "itemId": "mw4:key-x01-small-test-chamber",
+      "name": "Small Test Chamber",
+      "mapId": "x01",
+      "rarity": "Epic",
+      "operation": "fill-missing-rarity",
+      "status": "source-reported-unverified",
+      "sourceId": "source:codcentral-key-rarity-20261128",
+      "sourceURL": "https://codcentral.net/blog/mw4-dmz-keys/",
+      "checkedAt": "2026-11-28T12:02:07.656Z",
+      "matchType": "independently-reviewed-explicit-name-and-map",
+      "existingKeyId": "x01-small-test-chamber",
+      "existingMarkerReferences": [
+        {
+          "provider": "dmzhub",
+          "id": "dmzhub-723",
+          "floor": 1
+        }
+      ],
+      "sourceMarkers": [
+        {
+          "id": "x01-small-test-chamber",
+          "name": "Small Test Chamber",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-x01-small-test-chamber-keycard/"
+        }
+      ],
+      "reason": "The current provider explicitly labels this exact key/map identity with this rarity. The provider claim is observed, not independently verified in game."
+    },
+    {
+      "findingId": "official%3Amw4-dmz-starter~mw4%3Akey-x01-superintendent-office~rarity",
+      "binding": "9a83ff03a4109a9a3c8bca4dedf79f80f391f2029a6ba5f28a391290dc5365b2",
+      "packId": "official:mw4-dmz-starter",
+      "itemId": "mw4:key-x01-superintendent-office",
+      "name": "Superintendent's Office",
+      "mapId": "x01",
+      "rarity": "Epic",
+      "operation": "fill-missing-rarity",
+      "status": "source-reported-unverified",
+      "sourceId": "source:codcentral-key-rarity-20261128",
+      "sourceURL": "https://codcentral.net/blog/mw4-dmz-keys/",
+      "checkedAt": "2026-11-28T12:02:07.656Z",
+      "matchType": "independently-reviewed-explicit-name-and-map",
+      "existingKeyId": "x01-superintendent-office",
+      "existingMarkerReferences": [
+        {
+          "provider": "dmzhub",
+          "id": "dmzhub-667",
+          "floor": 2
+        }
+      ],
+      "sourceMarkers": [
+        {
+          "id": "x01-key-superintendents-office",
+          "name": "Superintendent's Office",
+          "rarity": "Epic",
+          "url": "https://codcentral.net/blog/mw4-dmz-x01-superintendents-office-keycard/"
+        }
+      ],
+      "reason": "The current provider explicitly labels this exact key/map identity with this rarity. The provider claim is observed, not independently verified in game."
+    }
+  ]
+}

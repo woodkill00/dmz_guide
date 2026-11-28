@@ -5,9 +5,11 @@
   "id": "mw4:key-lucera-suite-703-bedroom",
   "kind": "item",
   "name": "Lucera Suite 703 Bedroom",
+  "rarity": "Epic",
   "sourceIds": [
     "source:key-directory-20261122",
-    "source:key-reference-0bafb867d2d1"
+    "source:key-reference-0bafb867d2d1",
+    "source:codcentral-key-rarity-20261128"
   ],
   "stats": [],
   "status": "observed",

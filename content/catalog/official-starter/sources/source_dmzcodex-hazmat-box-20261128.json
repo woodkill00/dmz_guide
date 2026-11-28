@@ -1,0 +1,16 @@
+{
+  "id": "source:dmzcodex-hazmat-box-20261128",
+  "provenance": {
+    "buildStatus": "unknown",
+    "captureDate": "2026-11-28",
+    "kind": "web",
+    "lineageKey": "dmzcodex-items",
+    "observationKey": "mw4-field-upgrade-hazmat-box"
+  },
+  "publishedAt": "Not stated",
+  "reviewedAt": "2026-11-28",
+  "supports": "Explicit Rarity field: Legendary. Source-reported; current game build unverified.",
+  "title": "DMZCodex: Hazmat Box explicit rarity",
+  "type": "community",
+  "url": "https://dmzcodex.com/items/hazmat-box/"
+}

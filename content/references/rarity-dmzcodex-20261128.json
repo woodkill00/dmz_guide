@@ -1,0 +1,104 @@
+{
+  "rows": [
+    {
+      "findingId": "official%3Amw4-dmz-starter~mw4%3Afield-upgrade-consumable-box~rarity",
+      "binding": "0ea50cda86a7726782126e38ee7c518972ba7fa9c85252ffc9602b2cb5bf4eeb",
+      "packId": "official:mw4-dmz-starter",
+      "itemId": "mw4:field-upgrade-consumable-box",
+      "name": "Consumable Box",
+      "rarity": "Epic",
+      "operation": "fill-missing-rarity",
+      "status": "source-reported-unverified",
+      "sourceId": "source:dmzcodex-consumable-box-20261128",
+      "sourceURL": "https://dmzcodex.com/items/consumable-box/",
+      "reviewedAt": "2026-11-28",
+      "evidence": {
+        "captureSha256": "c5fd460f1b2095fad06c1e5b491e0e61f44320365c22ab01d63f87215e7abfd3",
+        "visibleHeading": "Consumable Box",
+        "fieldLabel": "Rarity",
+        "fieldValue": "Epic"
+      },
+      "reason": "Fresh native provider page explicitly labels the exact item rarity; no contents, quantities, acquisition guarantees or gameplay verification inferred."
+    },
+    {
+      "findingId": "official%3Amw4-dmz-starter~mw4%3Afield-upgrade-medical-box~rarity",
+      "binding": "638d53f38da1761228b859e5c60dc06a4924dd1a2b08ac22d213c9b4c870b8cb",
+      "packId": "official:mw4-dmz-starter",
+      "itemId": "mw4:field-upgrade-medical-box",
+      "name": "Medical Box",
+      "rarity": "Legendary",
+      "operation": "fill-missing-rarity",
+      "status": "source-reported-unverified",
+      "sourceId": "source:dmzcodex-medical-box-20261128",
+      "sourceURL": "https://dmzcodex.com/items/medical-box/",
+      "reviewedAt": "2026-11-28",
+      "evidence": {
+        "captureSha256": "63308210729ce94ace52f3b1045f7d3c1b492f98c50d2ef0d23fbff00556ebff",
+        "visibleHeading": "Medical Box",
+        "fieldLabel": "Rarity",
+        "fieldValue": "Legendary"
+      },
+      "reason": "Fresh native provider page explicitly labels the exact item rarity; no contents, quantities, acquisition guarantees or gameplay verification inferred."
+    },
+    {
+      "findingId": "official%3Amw4-dmz-starter~mw4%3Afield-upgrade-hazmat-box~rarity",
+      "binding": "94f0dd9a45de922b6bef3990c3ef8e9cb59c2af72829cc2d502c8c727198a6d9",
+      "packId": "official:mw4-dmz-starter",
+      "itemId": "mw4:field-upgrade-hazmat-box",
+      "name": "Hazmat Box",
+      "rarity": "Legendary",
+      "operation": "fill-missing-rarity",
+      "status": "source-reported-unverified",
+      "sourceId": "source:dmzcodex-hazmat-box-20261128",
+      "sourceURL": "https://dmzcodex.com/items/hazmat-box/",
+      "reviewedAt": "2026-11-28",
+      "evidence": {
+        "captureSha256": "0184f8a60647db05587335b1298f04d0975610ac86e9ca77c723f217f0e9eb38",
+        "visibleHeading": "Hazmat Box",
+        "fieldLabel": "Rarity",
+        "fieldValue": "Legendary"
+      },
+      "reason": "Fresh native provider page explicitly labels the exact item rarity; no contents, quantities, acquisition guarantees or gameplay verification inferred."
+    },
+    {
+      "findingId": "official%3Amw4-dmz-starter~mw4%3Afield-upgrade-utility-box~rarity",
+      "binding": "60e0545f42d971927e75b62b261504d7ae851bcf9b9083846128f32130d7260e",
+      "packId": "official:mw4-dmz-starter",
+      "itemId": "mw4:field-upgrade-utility-box",
+      "name": "Utility Box",
+      "rarity": "Ultra",
+      "operation": "fill-missing-rarity",
+      "status": "source-reported-unverified",
+      "sourceId": "source:dmzcodex-utility-box-20261128",
+      "sourceURL": "https://dmzcodex.com/items/utility-box/",
+      "reviewedAt": "2026-11-28",
+      "evidence": {
+        "captureSha256": "9e29c1a862137c9b2c4c8686c6299e08eb39e2399737f3763aba8a5dae66db53",
+        "visibleHeading": "Utility Box",
+        "fieldLabel": "Rarity",
+        "fieldValue": "Ultra"
+      },
+      "reason": "Fresh native provider page explicitly labels the exact item rarity; no contents, quantities, acquisition guarantees or gameplay verification inferred."
+    },
+    {
+      "findingId": "official%3Amw4-dmz-starter~mw4%3Akey-air-base-access-card-multi-use~rarity",
+      "binding": "37245de830942aaf064d2a5fc65f426cae3ff98ff587cdc30861f6afc403f194",
+      "packId": "official:mw4-dmz-starter",
+      "itemId": "mw4:key-air-base-access-card-multi-use",
+      "name": "Air Base Access Card (Multi Use)",
+      "rarity": "Epic",
+      "operation": "fill-missing-rarity",
+      "status": "source-reported-unverified",
+      "sourceId": "source:dmzcodex-air-base-access-card-multi-use-20261128",
+      "sourceURL": "https://dmzcodex.com/items/air-base-access-card-multi-use/",
+      "reviewedAt": "2026-11-28",
+      "evidence": {
+        "captureSha256": "0348f7854799c1eba790cdb86835f57ef52885cd34b4ed5bf2540eba69d171cf",
+        "visibleHeading": "Air Base Access Card - Multi Use",
+        "fieldLabel": "Rarity",
+        "fieldValue": "Epic"
+      },
+      "reason": "Fresh native provider page explicitly labels the exact item rarity; no contents, quantities, acquisition guarantees or gameplay verification inferred."
+    }
+  ]
+}

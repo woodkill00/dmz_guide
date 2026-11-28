@@ -5,9 +5,11 @@
   "id": "mw4:key-gas-station-electrical-room",
   "kind": "item",
   "name": "Gas Station Electrical Room",
+  "rarity": "Rare",
   "sourceIds": [
     "source:key-directory-20261122",
-    "source:key-reference-0bafb867d2d1"
+    "source:key-reference-0bafb867d2d1",
+    "source:codcentral-key-rarity-20261128"
   ],
   "stats": [],
   "status": "observed",

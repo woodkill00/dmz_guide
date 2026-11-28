@@ -8,10 +8,12 @@
   "id": "mw4:key-x01-small-test-chamber",
   "kind": "item",
   "name": "Small Test Chamber",
+  "rarity": "Epic",
   "sourceIds": [
     "source:key-directory-20261122",
     "source:key-reference-0bafb867d2d1",
-    "source:key-reference-a3147e38e43b"
+    "source:key-reference-a3147e38e43b",
+    "source:codcentral-key-rarity-20261128"
   ],
   "stats": [],
   "status": "observed",

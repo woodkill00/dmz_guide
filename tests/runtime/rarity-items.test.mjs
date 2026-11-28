@@ -86,12 +86,12 @@ test("all376 starter items occur once in their recorded groups and keep exact pa
     groups.map((g) => [g.label, g.items.length]),
     [
       ["Common", 16],
-      ["Uncommon", 29],
-      ["Rare", 29],
-      ["Epic", 25],
-      ["Legendary", 23],
-      ["Ultra", 137],
-      ["Not recorded", 117],
+      ["Uncommon", 35],
+      ["Rare", 52],
+      ["Epic", 39],
+      ["Legendary", 37],
+      ["Ultra", 138],
+      ["Not recorded", 59],
     ],
   );
   const html = renderTrackItems([p]);

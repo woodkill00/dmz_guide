@@ -1,14 +1,16 @@
 {
   "aliases": [],
   "category": "Field upgrades",
-  "description": "Player-reported Field upgrade item. Recipe costs, rarity, effects and unlock conditions are not documented in this catalog.",
+  "description": "Player-reported Field upgrade item. Recipe costs, effects and unlock conditions are not documented in this catalog.",
   "id": "mw4:field-upgrade-medical-box",
   "kind": "item",
   "name": "Medical Box",
+  "rarity": "Legendary",
   "sourceIds": [
-    "source:owner-field-upgrades-20261109"
+    "source:owner-field-upgrades-20261109",
+    "source:dmzcodex-medical-box-20261128"
   ],
   "stats": [],
-  "status": "unverified",
+  "status": "observed",
   "unit": "count"
 }
